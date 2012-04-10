@@ -35,6 +35,8 @@ void CScriptBinder::init			()
 
 void CScriptBinder::clear			()
 {
+	Msg("Exception catched for [%s]", smart_cast<CGameObject*>(this) ? *smart_cast<CGameObject*>(this)->cName() : "");
+	ai().script_engine().last_called();
 	try {
 		xr_delete			(m_object);
 	}
@@ -181,8 +183,7 @@ void CScriptBinder::shedule_Update	(u32 time_delta)
 			m_object->shedule_Update	(time_delta);
 		}
 		catch(...) {
-			Msg("Exception catched on schedule_Update for [%s]", smart_cast<CGameObject*>(this) ? *smart_cast<CGameObject*>(this)->cName() : "");
-			ai().script_engine().last_called();
+			
 			clear			();
 		}
 	}

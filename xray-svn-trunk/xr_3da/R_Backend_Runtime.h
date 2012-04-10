@@ -85,8 +85,7 @@ IC void CBackend::set_Matrices			(SMatrixList*	_M)
 					matrices	[it]	= mat;
 					mat->Calculate		();
 					set_xform			(D3DTS_TEXTURE0+it,mat->xform);
-                                        //FOR SDK TEST
-				       	  stat.matrices		++;
+					stat.matrices		++;
 				}
 			}
 		}

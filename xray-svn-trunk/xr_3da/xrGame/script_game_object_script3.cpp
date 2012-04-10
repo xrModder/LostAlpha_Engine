@@ -206,6 +206,9 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 			value("no_pda_msg",				int(ePdaMsgMax))
 		]
 
+		.def("set_fast_update",				&CScriptGameObject::SetFastUpdate)
+		.def("remove_fast_update",			&CScriptGameObject::RemoveFastUpdate)
+
 		//CustomZone
 		.def("enable_anomaly",              &CScriptGameObject::EnableAnomaly)
 		.def("disable_anomaly",             &CScriptGameObject::DisableAnomaly)

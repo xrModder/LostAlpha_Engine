@@ -33,6 +33,7 @@
 #include "level_graph.h"
 #include "mt_config.h"
 #include "phcommander.h"
+#include "fast_entity_update.h"
 #include "map_manager.h"
 #include "../CameraManager.h"
 #include "level_sounds.h"
@@ -130,6 +131,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	
 	m_ph_commander				= xr_new<CPHCommander>();
 	m_ph_commander_scripts		= xr_new<CPHCommander>();
+
+	m_fast_updater				= xr_new<CFastEntityUpdater>();
 
 #ifdef DEBUG
 	m_bSynchronization			= false;
@@ -257,6 +260,7 @@ CLevel::~CLevel()
 
 	//-----------------------------------------------------------
 	xr_delete					(m_ph_commander);
+	xr_delete					(m_fast_updater);
 	xr_delete					(m_ph_commander_scripts);
 	//-----------------------------------------------------------
 	pObjects4CrPr.clear();
@@ -555,6 +559,7 @@ void CLevel::OnFrame	()
 	//Device.Statistic->Scripting.End	();
 	m_ph_commander->update				();
 	m_ph_commander_scripts->update		();
+	m_fast_updater->Update				();
 //	autosave_manager().update			();
 
 	//просчитать полет пуль

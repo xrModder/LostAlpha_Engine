@@ -68,8 +68,7 @@ public:
 	static	int		__cdecl		script_log					(ELuaMessageType message,	LPCSTR	caFormat, ...);
 	static	bool				print_output				(lua_State *L,		LPCSTR	caScriptName,		int		iErorCode = 0);
 	static	void				print_error					(lua_State *L,		int		iErrorCode);
-			void				last_called					(void);
-
+			void				last_called					();
 #ifdef DEBUG
 public:
 			void				flush_log					();

@@ -18,6 +18,8 @@
 #include "PHScriptCall.h"
 #include "PHSimpleCalls.h"
 #include "phworld.h"
+#include "fast_entity_update.h"
+
 void CScriptGameObject::SetTipText (LPCSTR tip_text)
 {
 	CUsableScriptObject	*l_tpUseableScriptObject = smart_cast<CUsableScriptObject*>(&object());
@@ -190,6 +192,17 @@ void CScriptGameObject::SetCallback(GameObject::ECallbackType type, const luabin
 void CScriptGameObject::SetCallback(GameObject::ECallbackType type)
 {
 	object().callback(type).clear();
+}
+
+void CScriptGameObject::SetFastUpdate(const luabind::functor<void> &functor, const luabind::object &object)
+{
+	Level().fast_entity_updater().RemoveCall(m_game_object->ID());
+	Level().fast_entity_updater().AddCall(m_game_object, functor, object);
+}
+
+void CScriptGameObject::RemoveFastUpdate()
+{
+	Level().fast_entity_updater().RemoveCall(m_game_object->ID());
 }
 
 void CScriptGameObject::set_fastcall(const luabind::functor<bool> &functor, const luabind::object &object)

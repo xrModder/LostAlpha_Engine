@@ -6,6 +6,7 @@
 //	Description : Stalker combat planner
 ////////////////////////////////////////////////////////////////////////////
 
+
 #include "pch_script.h"
 #include "stalker_combat_planner.h"
 #include "stalker_combat_actions.h"
@@ -461,6 +462,7 @@ void CStalkerCombatPlanner::add_actions			()
 	add_condition			(action,eWorldPropertyShouldThrowGrenade,	true);
 	add_effect				(action,eWorldPropertyShouldThrowGrenade,	false);
 	add_operator			(eWorldOperatorThrowGrenade,				action);
+
 }
 
 void CStalkerCombatPlanner::save(NET_Packet &packet)

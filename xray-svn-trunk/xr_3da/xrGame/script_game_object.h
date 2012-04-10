@@ -196,6 +196,9 @@ public:
 	_DECLARE_FUNCTION10	(GetEnemyStrength, int);
 	_DECLARE_FUNCTION10	(can_script_capture, bool);
 	
+	void RemoveFastUpdate(void);
+	void SetFastUpdate(const luabind::functor<void> &functor, const luabind::object &object);
+	
 
 			CScriptEntityAction	*GetCurrentAction	() const;
 			void				AddAction			(const CScriptEntityAction *tpEntityAction, bool bHighPriority = false);

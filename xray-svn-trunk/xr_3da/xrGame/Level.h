@@ -30,6 +30,7 @@ class	CAutosaveManager;
 class	CPHCommander;
 class	CLevelDebug;
 class	CLevelSoundManager;
+class	CFastEntityUpdater;
 
 #ifdef DEBUG
 	class	CDebugRenderer;
@@ -86,6 +87,8 @@ protected:
 
 	CPHCommander				*m_ph_commander;
 	CPHCommander				*m_ph_commander_scripts;
+
+	CFastEntityUpdater			*m_fast_updater;
 	
 	// level name
 	shared_str					m_name;
@@ -285,6 +288,7 @@ public:
 
 	IC CPHCommander					&ph_commander				();
 	IC CPHCommander					&ph_commander_scripts		();
+	IC CFastEntityUpdater			&fast_entity_updater		();
 
 	// C/D
 	CLevel();
@@ -405,6 +409,13 @@ IC CPHCommander & CLevel::ph_commander_scripts()
 	VERIFY(m_ph_commander_scripts);
 	return *m_ph_commander_scripts;
 }
+
+IC CFastEntityUpdater &CLevel::fast_entity_updater()
+{
+	VERIFY(m_fast_updater);
+	return *m_fast_updater;
+}
+
 //by Mad Max 
 IC bool					OnServer()	{ return Level().IsServer();}
 IC bool					OnClient()	{ return Level().IsClient();}

@@ -364,7 +364,11 @@ void CObjectFactory::register_classes	()
 	ADD(CProjector				,CSE_ALifeObjectProjector		,CLSID_OBJECT_PROJECTOR			,"projector");
 	ADD(CWeaponMounted			,CSE_ALifeMountedWeapon			,CLSID_OBJECT_W_MOUNTED			,"wpn_mounted");
 	ADD(CWeaponStatMgun			,CSE_ALifeStationaryMgun		,CLSID_OBJECT_W_STATMGUN		,"wpn_stat_mgun");
+//#if 0
 	ADD(CMountedTurret			,CSE_ALifeMountedTurret			,CLSID_OBJECT_W_TURRET			,"wpn_turret");
+//#else
+//	ADD(CPhysicObject			,CSE_ALifeObjectPhysic			,CLSID_OBJECT_W_TURRET			,"wpn_turret");
+//#endif
 //	ADD(CTrigger				,CSE_Trigger					,CLSID_OBJECT_TRIGGER			,"trigger");
 
 	// entity
@@ -378,7 +382,6 @@ void CObjectFactory::register_classes	()
 
 	ADD(CInventoryBox			,CSE_InventoryBox				,CLSID_INVENTORY_BOX			,"inventory_box");
 
-	
 	// hack, for dedicated server only
 	// because we do not have scripts
 	// and script functionality is not

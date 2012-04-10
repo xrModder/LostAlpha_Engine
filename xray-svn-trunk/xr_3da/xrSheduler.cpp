@@ -376,7 +376,7 @@ void CSheduler::ProcessStep			()
 #ifndef DEBUG
 		}
 		__except(EXCEPTION_EXECUTE_HANDLER) {
-			Debug.log_stack_trace	();
+			//Debug.log_stack_trace	();
 			Msg						("2nd attempt - Scheduler tried to update object [%s][0x%08x]", 
 											*T.scheduled_name, T.Object);
 			FlushLog				();

@@ -597,6 +597,7 @@ void CScriptStorage::last_called()
 	int level = 0;
 	lua_Debug dbg;
 	lua_State *L = lua();
+	
 	while (lua_getstack(L, level, &dbg))
 	{
 		lua_getinfo(L, "lnuS", &dbg);
