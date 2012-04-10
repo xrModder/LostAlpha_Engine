@@ -254,7 +254,6 @@ void CUIMapWnd::Show(bool status)
 			it->second->Show		(true);
 			it->second->SetClipRect	(ActiveMapRect());
 		}
-
 		if(	m_flags.test(lmFirst)){
 			inherited::Update		();// only maps, not action planner
 			OnToolActorClicked		(NULL,NULL);

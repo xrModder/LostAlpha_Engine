@@ -101,7 +101,6 @@ BOOL	CWeaponMounted::net_Spawn(CSE_Abstract* DC)
 	PPhysicsShell()			= P_build_Shell(this,false,fixed_bones);
 	K						->CalculateBones_Invalidate();
 	K						->CalculateBones();
-
 	CShootingObject::Light_Create();
 
 	setVisible	(TRUE);
