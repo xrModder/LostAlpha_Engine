@@ -255,13 +255,14 @@ void 	IWriter::w_sdir	(const Fvector& D)
 	w_dir	(C);
 	w_float (mag);
 }
-void	IWriter::w_printf(const char* format, ...)
+void    IWriter::w_printf(const char* format, ...)
 {
-	va_list mark;
-	char buf[1024];
-	va_start( mark, format );
-	vsprintf( buf, format, mark );
-	w		( buf, xr_strlen(buf) );
+    va_list mark;
+    char buf[1024];
+    va_start( mark , format );
+    vsprintf_s( buf , format , mark );
+    va_end( mark );
+    w        ( buf, xr_strlen(buf) );
 }
 
 //---------------------------------------------------
