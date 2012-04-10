@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ETools" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option compiler="bcc" />
+		<Build>
+			<Target title="Release Win32">
+				<Option output="ETools" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Release Win32\ETools" />
+				<Option type="3" />
+				<Option compiler="bcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="/DWIN32" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DETOOLS_EXPORTS" />
+					<Add option="/D_SECURE_SCL=0" />
+					<Add option="/W3" />
+					<Add option="/Zi" />
+					<Add option="/O2" />
+					<Add option="/MD" />
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:user32.lib" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add option="/pdb:D:\Games\STALKER_SRC\trunk\binaries\ETools.pdb" />
+					<Add library="ogg_static" />
+					<Add library="vorbis_static" />
+					<Add library="vorbisenc_static" />
+					<Add library="vorbisfile_static" />
+				</Linker>
+			</Target>
+			<Target title="Debug Win32">
+				<Option output="ETools" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Debug Win32\ETools" />
+				<Option type="3" />
+				<Option compiler="bcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="/DWIN32" />
+					<Add option="/DDEBUG" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/D_USRDLL" />
+					<Add option="/DETOOLS_EXPORTS" />
+					<Add option="/D_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MD" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+					<Add directory="..\xrQslim\src\" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+					<Add directory="..\xrQslim\src\" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:user32.lib" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/NODEFAULTLIB:LIBCMTD" />
+					<Add library="ogg_static_d" />
+					<Add library="vorbis_static_d" />
+					<Add library="vorbisenc_static" />
+					<Add library="vorbisfile_static_d" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+			<Target title="Mixed Win32">
+				<Option output="ETools" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Mixed Win32\ETools" />
+				<Option type="3" />
+				<Option compiler="bcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-tWV" />
+					<Add option="-tWR" />
+					<Add option="-tWM" />
+					<Add option="-tW" />
+					<Add option="-y" />
+					<Add option="-vi-" />
+					<Add option="-vi" />
+					<Add option="-v-" />
+					<Add option="-v" />
+					<Add option="-C" />
+					<Add option="-AU" />
+					<Add option="-AT" />
+					<Add option="-AK" />
+					<Add option="-A" />
+					<Add option="-K" />
+					<Add option="-b-" />
+					<Add option="-a4" />
+					<Add option="-ps" />
+					<Add option="-pr" />
+					<Add option="-pm" />
+					<Add option="-pc" />
+					<Add option="-p" />
+					<Add option="-ff" />
+					<Add option="-f" />
+					<Add option="-Ve" />
+					<Add option="-Vx" />
+					<Add option="-xs" />
+					<Add option="-xp" />
+					<Add option="-xf" />
+					<Add option="-xd" />
+					<Add option="-k-" />
+					<Add option="-d" />
+					<Add option="-Ov" />
+					<Add option="-OS" />
+					<Add option="-Oi" />
+					<Add option="-Od" />
+					<Add option="/DWIN32" />
+					<Add option="/DDEBUG" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DETOOLS_EXPORTS" />
+					<Add option="/D_SECURE_SCL=0" />
+					<Add option="/Ox" />
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:user32.dll" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/NODEFAULTLIB:user32" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add library="ogg_static" />
+					<Add library="vorbis_static" />
+					<Add library="vorbisenc_static" />
+					<Add library="vorbisfile_static" />
+				</Linker>
+			</Target>
+			<Target title="MASTER_GOLD Win32">
+				<Option output="ETools" prefix_auto="1" extension_auto="1" />
+				<Option object_output="MASTER_GOLD Win32" />
+				<Option type="3" />
+				<Option compiler="bcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="/DWIN32" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DETOOLS_EXPORTS" />
+					<Add option="/D_SECURE_SCL=0" />
+					<Add option="/W3" />
+					<Add option="/Zi" />
+					<Add option="/O2" />
+					<Add option="/MD" />
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\xrQslim\src\" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:user32.lib" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add option="/pdb:D:\Games\STALKER_SRC\trunk\binaries\ETools.pdb" />
+					<Add library="ogg_static" />
+					<Add library="vorbis_static" />
+					<Add library="vorbisenc_static" />
+					<Add library="vorbisfile_static" />
+				</Linker>
+			</Target>
+			<Target title="NDEBUG Win32">
+				<Option output="ETools" prefix_auto="1" extension_auto="1" />
+				<Option object_output="NDEBUG Win32" />
+				<Option type="3" />
+				<Option compiler="bcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="/DWIN32" />
+					<Add option="/DDEBUG" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/D_USRDLL" />
+					<Add option="/DETOOLS_EXPORTS" />
+					<Add option="/D_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MD" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+					<Add directory="..\xrQslim\src\" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+					<Add directory="..\xrQslim\src\" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:user32.lib" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/NODEFAULTLIB:LIBCMTD" />
+					<Add library="ogg_static_d" />
+					<Add library="vorbis_static_d" />
+					<Add library="vorbisenc_static" />
+					<Add library="vorbisfile_static_d" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="ArbitraryList.h" />
+		<Unit filename="BinaryHeap.h" />
+		<Unit filename="ColorPicker.lib" />
+		<Unit filename="CreateDX.cpp" />
+		<Unit filename="D3DX_Wrapper.h" />
+		<Unit filename="DLink.h" />
+		<Unit filename="ETools.cpp" />
+		<Unit filename="ETools.h" />
+		<Unit filename="ETools_cm.cpp" />
+		<Unit filename="PropSlimTools.cpp" />
+		<Unit filename="PropSlimTools.h" />
+		<Unit filename="StdAfx.cpp" />
+		<Unit filename="StdAfx.h" />
+		<Unit filename="audio.cpp" />
+		<Unit filename="audio.h" />
+		<Unit filename="encode.cpp" />
+		<Unit filename="encode.h" />
+		<Unit filename="mesh.h" />
+		<Unit filename="object.cpp" />
+		<Unit filename="object.h" />
+		<Unit filename="object_sliding.cpp" />
+		<Unit filename="object_sliding.h" />
+		<Unit filename="ogg_enc.cpp" />
+		<Unit filename="optimize_vertex_order.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="platform.cpp" />
+		<Unit filename="platform.h" />
+		<Unit filename="quad.h" />
+		<Unit filename="resample.cpp" />
+		<Unit filename="resample.h" />
+		<Unit filename="xrXRC.cpp" />
+		<Unit filename="xrXRC.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

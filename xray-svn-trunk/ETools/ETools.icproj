@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Intel C++ Project"
+	Version="11.1"
+	Name="ETools"
+	ProjectGUID="{3406CA33-87CC-438A-882F-13D930B12BD8}"
+	VCNestedProjectGUID="{65CBB9D0-FBC6-41A4-8316-F5E9B5D7FB33}"
+	VCNestedProjectFileName="ETools.vcproj">
+	<Configurations/>
+	<Files/>
+</VisualStudioProject>

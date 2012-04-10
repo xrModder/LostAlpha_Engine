@@ -1,0 +1,72 @@
+Publics by module
+
+adler32 	size = 1121
+	_adler32                          _adler32_combine
+
+compress	size = 239
+	_compress                         _compress2
+	_compressBound                  
+
+crc32   	size = 10999
+	_crc32                            _crc32_combine
+	_get_crc_table                  
+
+deflate 	size = 12124
+	_deflate                          _deflateBound
+	_deflateCopy                      _deflateEnd
+	_deflateInit2_                    _deflateInit_
+	_deflateParams                    _deflatePrime
+	_deflateReset                     _deflateSetDictionary
+	_deflateSetHeader                 _deflateTune
+	_deflate_copyright              
+
+gzio    	size = 5388
+	_gzclearerr                       _gzclose
+	_gzdirect                         _gzdopen
+	_gzeof                            _gzerror
+	_gzflush                          _gzgetc
+	_gzgets                           _gzopen
+	_gzprintf                         _gzputc
+	_gzputs                           _gzread
+	_gzrewind                         _gzseek
+	_gzsetparams                      _gztell
+	_gzungetc                         _gzwrite
+
+infback 	size = 7835
+	_inflateBack                      _inflateBackEnd
+	_inflateBackInit_               
+
+inffast 	size = 1845
+	_inflate_fast                   
+
+inflate 	size = 12772
+	_inflate                          _inflateCopy
+	_inflateEnd                       _inflateGetHeader
+	_inflateInit2_                    _inflateInit_
+	_inflatePrime                     _inflateReset
+	_inflateSetDictionary             _inflateSync
+	_inflateSyncPoint               
+
+inftrees	size = 1581
+	_inflate_copyright                _inflate_table
+
+minigzip	size = 1522
+	_error                            _file_compress
+	_file_uncompress                  _gz_compress
+	_gz_uncompress                    _main
+	_prog                           
+
+trees   	size = 10207
+	__dist_code                       __length_code
+	__tr_align                        __tr_flush_block
+	__tr_init                         __tr_stored_block
+	__tr_tally                      
+
+uncompr 	size = 212
+	_uncompress                     
+
+zutil   	size = 463
+	_zError                           _z_errmsg
+	_z_error                          _z_verbose
+	_zcalloc                          _zcfree
+	_zlibCompileFlags                 _zlibVersion

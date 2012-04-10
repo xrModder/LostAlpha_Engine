@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="XR_3DA" />
+		<Option pch_mode="2" />
+		<Option compiler="bcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Debug Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD" />
+					<Add option="/DSECURE_GAMEDATA;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MD" />
+					<Add option="/Zm200" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmtd" />
+					<Add option="/NODEFAULTLIB:libc" />
+					<Add option="/NODEFAULTLIB:libcd" />
+					<Add option="/MACHINE:I386" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static_d" />
+					<Add library="theora_static_d" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+			<Target title="Mixed Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Mixed Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEBUG" />
+					<Add option="/DMIXED" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MD" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmt" />
+					<Add option="/MACHINE:I386" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static" />
+					<Add library="theora_static" />
+					<Add library="openAL32" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\Release Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DNDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/O2" />
+					<Add option="/MD" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmt" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add option="/pdb:D:\Games\STALKER_SRC\trunk\binaries\XR_3DA.pdb" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static" />
+					<Add library="theora_static" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+			<Target title="Debug_Dedicated Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="x:\intermediate\Debug_Dedicated Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEDICATED_SERVER" />
+					<Add option="/D_DEBUG" />
+					<Add option="/DDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD" />
+					<Add option="/DSECURE_GAMEDATA;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MDd" />
+					<Add option="/Zm200" />
+				</Compiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmtd" />
+					<Add option="/NODEFAULTLIB:libc" />
+					<Add option="/NODEFAULTLIB:libcd" />
+					<Add option="/MACHINE:I386" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static_d" />
+					<Add library="theora_static_d" />
+				</Linker>
+			</Target>
+			<Target title="Mixed_Dedicated Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="x:\intermediate\Mixed_Dedicated Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEDICATED_SERVER" />
+					<Add option="/DDEBUG" />
+					<Add option="/DMIXED" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Ox" />
+					<Add option="/MD" />
+				</Compiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmt" />
+					<Add option="/MACHINE:I386" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static" />
+					<Add library="theora_static" />
+				</Linker>
+			</Target>
+			<Target title="Release_Dedicated Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="x:\intermediate\Release_Dedicated Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEDICATED_SERVER" />
+					<Add option="/DNDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Ox" />
+					<Add option="/MD" />
+				</Compiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmt" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static" />
+					<Add library="theora_static" />
+				</Linker>
+			</Target>
+			<Target title="MASTER_GOLD Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="D:\Games\STALKER_SRC\trunk\MASTER_GOLD Win32\XR_3DA" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DNDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/O2" />
+					<Add option="/MD" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmt" />
+					<Add option="/MACHINE:I386" />
+					<Add option="/INCREMENTAL:NO" />
+					<Add option="/pdb:D:\Games\STALKER_SRC\trunk\binaries\XR_3DA.pdb" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static" />
+					<Add library="theora_static" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+			<Target title="NDEBUG Win32">
+				<Option output="XR_3DA" prefix_auto="1" extension_auto="1" />
+				<Option object_output="NDEBUG Win32" />
+				<Option type="0" />
+				<Option compiler="bcc" />
+				<Compiler>
+					<Add option="/DDEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_WINDOWS" />
+					<Add option="/DENGINE_BUILD" />
+					<Add option="/DSECURE_GAMEDATA;_SECURE_SCL=0" />
+					<Add option="/W4" />
+					<Add option="/Zi" />
+					<Add option="/Od" />
+					<Add option="/MD" />
+					<Add option="/Zm200" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrLua\src" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\xrCore" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="/NODEFAULTLIB:libcmtd" />
+					<Add option="/NODEFAULTLIB:libc" />
+					<Add option="/NODEFAULTLIB:libcd" />
+					<Add option="/MACHINE:I386" />
+					<Add library="msacm32" />
+					<Add library="vfw32" />
+					<Add library="ogg_static_d" />
+					<Add library="theora_static_d" />
+					<Add directory="D:\Games\STALKER_SRC\trunk\libraries" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="ClientServer.txt" />
+		<Unit filename="Effects description.txt" />
+		<Unit filename="features.txt" />
+		<Unit filename="TODO.txt" />
+		<Unit filename="_d3d_extensions.h" />
+		<Unit filename="CopyProtection.h" />
+		<Unit filename="defines.cpp" />
+		<Unit filename="defines.h" />
+		<Unit filename="stdafx.cpp" />
+		<Unit filename="stdafx.h" />
+		<Unit filename="trivial_encryptor.h" />
+		<Unit filename="x_ray.cpp" />
+		<Unit filename="x_ray.h" />
+		<Unit filename="OutOfVirtError.RES" />
+		<Unit filename="resource.h" />
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="stalker.ico" />
+		<Unit filename="ui_splash3.bmp" />
+		<Unit filename="psystem.h" />
+		<Unit filename="IInputReceiver.cpp" />
+		<Unit filename="IInputReceiver.h" />
+		<Unit filename="Xr_input.cpp" />
+		<Unit filename="xr_input.h" />
+		<Unit filename="ISheduled.cpp" />
+		<Unit filename="ISheduled.h" />
+		<Unit filename="xrSheduler.cpp" />
+		<Unit filename="xrSheduler.h" />
+		<Unit filename="IRenderable.cpp" />
+		<Unit filename="IRenderable.h" />
+		<Unit filename="IRenderDetailModel.h" />
+		<Unit filename="Render.cpp" />
+		<Unit filename="Render.h" />
+		<Unit filename="ISpatial.cpp" />
+		<Unit filename="ISpatial.h" />
+		<Unit filename="ISpatial_q_box.cpp" />
+		<Unit filename="ISpatial_q_frustum.cpp" />
+		<Unit filename="ISpatial_q_ray.cpp" />
+		<Unit filename="ISpatial_verify.cpp" />
+		<Unit filename="ICollidable.cpp" />
+		<Unit filename="ICollidable.h" />
+		<Unit filename="IGame_Level.cpp" />
+		<Unit filename="IGame_Level.h" />
+		<Unit filename="IGame_Level_check_textures.cpp" />
+		<Unit filename="IGame_Persistent.cpp" />
+		<Unit filename="IGame_Persistent.h" />
+		<Unit filename="xrLevel.h" />
+		<Unit filename="IGame_ObjectPool.cpp" />
+		<Unit filename="IGame_ObjectPool.h" />
+		<Unit filename="pure_relcase.cpp" />
+		<Unit filename="pure_relcase.h" />
+		<Unit filename="xr_object.cpp" />
+		<Unit filename="xr_object.h" />
+		<Unit filename="xr_object_list.cpp" />
+		<Unit filename="xr_object_list.h" />
+		<Unit filename="CustomHUD.cpp" />
+		<Unit filename="CustomHUD.h" />
+		<Unit filename="Environment.cpp" />
+		<Unit filename="Environment.h" />
+		<Unit filename="Environment_misc.cpp" />
+		<Unit filename="Environment_render.cpp" />
+		<Unit filename="xrHemisphere.cpp" />
+		<Unit filename="xrHemisphere.h" />
+		<Unit filename="Rain.cpp" />
+		<Unit filename="Rain.h" />
+		<Unit filename="thunderbolt.cpp" />
+		<Unit filename="thunderbolt.h" />
+		<Unit filename="xr_efflensflare.cpp" />
+		<Unit filename="xr_efflensflare.h" />
+		<Unit filename="CameraBase.cpp" />
+		<Unit filename="CameraBase.h" />
+		<Unit filename="CameraDebug.h" />
+		<Unit filename="CameraDefs.h" />
+		<Unit filename="CameraManager.cpp" />
+		<Unit filename="CameraManager.h" />
+		<Unit filename="Effector.cpp" />
+		<Unit filename="Effector.h" />
+		<Unit filename="EffectorPP.cpp" />
+		<Unit filename="EffectorPP.h" />
+		<Unit filename="xr_area.cpp" />
+		<Unit filename="xr_area.h" />
+		<Unit filename="xr_area_query.cpp" />
+		<Unit filename="xr_area_raypick.cpp" />
+		<Unit filename="xr_collide_defs.h" />
+		<Unit filename="xr_collide_form.cpp" />
+		<Unit filename="xr_collide_form.h" />
+		<Unit filename="bone.h" />
+		<Unit filename="Envelope.cpp" />
+		<Unit filename="envelope.h" />
+		<Unit filename="interp.cpp" />
+		<Unit filename="motion.cpp" />
+		<Unit filename="motion.h" />
+		<Unit filename="ObjectAnimator.cpp" />
+		<Unit filename="ObjectAnimator.h" />
+		<Unit filename="Feel_Sound.h" />
+		<Unit filename="Feel_Touch.cpp" />
+		<Unit filename="Feel_Touch.h" />
+		<Unit filename="Feel_Vision.cpp" />
+		<Unit filename="Feel_Vision.h" />
+		<Unit filename="FDemoPlay.cpp" />
+		<Unit filename="FDemoPlay.h" />
+		<Unit filename="FDemoRecord.cpp" />
+		<Unit filename="FDemoRecord.h" />
+		<Unit filename="FBasicVisual.cpp" />
+		<Unit filename="FBasicVisual.h" />
+		<Unit filename="FHierrarhyVisual.cpp" />
+		<Unit filename="FHierrarhyVisual.h" />
+		<Unit filename="fmesh.cpp" />
+		<Unit filename="Fmesh.h" />
+		<Unit filename="ParticleCustom.cpp" />
+		<Unit filename="ParticleCustom.h" />
+		<Unit filename="EnnumerateVertices.h" />
+		<Unit filename="SkeletonAnimated.cpp" />
+		<Unit filename="SkeletonAnimated.h" />
+		<Unit filename="SkeletonCustom.cpp" />
+		<Unit filename="SkeletonCustom.h" />
+		<Unit filename="SkeletonMotions.cpp" />
+		<Unit filename="SkeletonMotions.h" />
+		<Unit filename="SkeletonRigid.cpp" />
+		<Unit filename="SkeletonX.cpp" />
+		<Unit filename="SkeletonX.h" />
+		<Unit filename="vis_common.h" />
+		<Unit filename="Frustum.cpp" />
+		<Unit filename="Frustum.h" />
+		<Unit filename="PS_instance.cpp" />
+		<Unit filename="PS_instance.h" />
+		<Unit filename="LightAnimLibrary.cpp" />
+		<Unit filename="LightAnimLibrary.h" />
+		<Unit filename="GameFont.cpp" />
+		<Unit filename="GameFont.h" />
+		<Unit filename="MbHelpers.cpp" />
+		<Unit filename="MbHelpers.h" />
+		<Unit filename="device.cpp" />
+		<Unit filename="device.h" />
+		<Unit filename="Device_create.cpp" />
+		<Unit filename="Device_destroy.cpp" />
+		<Unit filename="Device_Initialize.cpp" />
+		<Unit filename="Device_Misc.cpp" />
+		<Unit filename="Device_overdraw.cpp" />
+		<Unit filename="Device_wndproc.cpp" />
+		<Unit filename="StatGraph.cpp" />
+		<Unit filename="StatGraph.h" />
+		<Unit filename="Stats.cpp" />
+		<Unit filename="Stats.h" />
+		<Unit filename="HW.cpp" />
+		<Unit filename="HW.h" />
+		<Unit filename="HWCaps.cpp" />
+		<Unit filename="HWCaps.h" />
+		<Unit filename="xr_effgamma.cpp" />
+		<Unit filename="xr_effgamma.h" />
+		<Unit filename="Shader_xrLC.h" />
+		<Unit filename="WaveForm.h" />
+		<Unit filename="Blenders\Blender.cpp" />
+		<Unit filename="Blenders\Blender.h" />
+		<Unit filename="Blenders\Blender_CLSID.h" />
+		<Unit filename="Blenders\Blender_Palette.cpp" />
+		<Unit filename="Blenders\Blender_Recorder.cpp" />
+		<Unit filename="Blenders\Blender_Recorder.h" />
+		<Unit filename="Blender_Recorder_R2.cpp" />
+		<Unit filename="Blender_Recorder_StandartBinding.cpp" />
+		<Unit filename="tss.h" />
+		<Unit filename="tss_def.cpp" />
+		<Unit filename="tss_def.h" />
+		<Unit filename="tntQAVI.cpp" />
+		<Unit filename="tntQAVI.h" />
+		<Unit filename="xrImage_Resampler.cpp" />
+		<Unit filename="xrImage_Resampler.h" />
+		<Unit filename="xrTheora_Stream.cpp" />
+		<Unit filename="xrTheora_Stream.h" />
+		<Unit filename="xrTheora_Surface.cpp" />
+		<Unit filename="xrTheora_Surface.h" />
+		<Unit filename="xrTheora_Surface_mmx.cpp" />
+		<Unit filename="xrTheora_Surface_mmx.h" />
+		<Unit filename="ETextureParams.cpp" />
+		<Unit filename="ETextureParams.h" />
+		<Unit filename="ResourceManager.cpp" />
+		<Unit filename="ResourceManager.h" />
+		<Unit filename="ResourceManager_Loader.cpp" />
+		<Unit filename="ResourceManager_Reset.cpp" />
+		<Unit filename="ResourceManager_Resources.cpp" />
+		<Unit filename="ResourceManager_Scripting.cpp" />
+		<Unit filename="TextureDescrManager.cpp" />
+		<Unit filename="TextureDescrManager.h" />
+		<Unit filename="doug_lea_memory_allocator.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="doug_lea_memory_allocator.h" />
+		<Unit filename="r_constants.cpp" />
+		<Unit filename="r_constants.h" />
+		<Unit filename="SH_Atomic.cpp" />
+		<Unit filename="SH_Atomic.h" />
+		<Unit filename="SH_Constant.cpp" />
+		<Unit filename="SH_Constant.h" />
+		<Unit filename="SH_Matrix.cpp" />
+		<Unit filename="SH_Matrix.h" />
+		<Unit filename="SH_RT.cpp" />
+		<Unit filename="SH_RT.h" />
+		<Unit filename="SH_Texture.cpp" />
+		<Unit filename="SH_Texture.h" />
+		<Unit filename="Shader.cpp" />
+		<Unit filename="Shader.h" />
+		<Unit filename="r_constants_cache.cpp" />
+		<Unit filename="r_constants_cache.h" />
+		<Unit filename="Text_Console.cpp" />
+		<Unit filename="Text_Console.h" />
+		<Unit filename="Text_Console_WndProc.cpp" />
+		<Unit filename="D3DUtils.cpp" />
+		<Unit filename="D3DUtils.h" />
+		<Unit filename="DrawUtils.h" />
+		<Unit filename="du_box.cpp" />
+		<Unit filename="du_box.h" />
+		<Unit filename="du_cone.cpp" />
+		<Unit filename="du_cone.h" />
+		<Unit filename="du_cylinder.cpp" />
+		<Unit filename="du_cylinder.h" />
+		<Unit filename="du_sphere.cpp" />
+		<Unit filename="du_sphere.h" />
+		<Unit filename="du_sphere_part.cpp" />
+		<Unit filename="du_sphere_part.h" />
+		<Unit filename="FVF.h" />
+		<Unit filename="R_Backend.cpp" />
+		<Unit filename="R_Backend.h" />
+		<Unit filename="R_Backend_DBG.cpp" />
+		<Unit filename="R_Backend_Runtime.cpp" />
+		<Unit filename="R_Backend_Runtime.h" />
+		<Unit filename="R_Backend_xform.cpp" />
+		<Unit filename="R_Backend_xform.h" />
+		<Unit filename="R_DStreams.cpp" />
+		<Unit filename="R_DStreams.h" />
+		<Unit filename="Properties.h" />
+		<Unit filename="pure.cpp" />
+		<Unit filename="pure.h" />
+		<Unit filename="std_classes.h" />
+		<Unit filename="cl_intersect.h" />
+		<Unit filename="xrXRC.cpp" />
+		<Unit filename="xrXRC.h" />
+		<Unit filename="xr_ioc_cmd.cpp" />
+		<Unit filename="xr_ioc_cmd.h" />
+		<Unit filename="XR_IOConsole.cpp" />
+		<Unit filename="XR_IOConsole.h" />
+		<Unit filename="Engine.cpp" />
+		<Unit filename="Engine.h" />
+		<Unit filename="EngineAPI.cpp" />
+		<Unit filename="EngineAPI.h" />
+		<Unit filename="EventAPI.cpp" />
+		<Unit filename="EventAPI.h" />
+		<Unit filename="mailSlot.cpp" />
+		<Unit filename="xrCPU_Pipe.h" />
+		<Unit filename="_scripting.cpp" />
+		<Unit filename="ai_script_lua_debug.cpp" />
+		<Unit filename="ai_script_lua_extension.cpp" />
+		<Unit filename="ai_script_lua_extension.h" />
+		<Unit filename="ai_script_lua_space.h" />
+		<Unit filename="ai_script_space.h" />
+		<Unit filename="perlin.cpp" />
+		<Unit filename="perlin.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
