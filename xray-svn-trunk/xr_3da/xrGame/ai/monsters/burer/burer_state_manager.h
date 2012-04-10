@@ -9,5 +9,8 @@ public:
 					CStateManagerBurer		(CBurer *monster); 
 	virtual void	execute					();
 	virtual void	setup_substates			();
+
+private:
+	float				m_last_health;
 };
 

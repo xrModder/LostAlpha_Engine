@@ -23,7 +23,7 @@ public:
 	void			set_on_dialog		(on_dialog* on_dialog)		{ m_on_dialog = on_dialog;	}
 
 	LPCSTR			error2string		(long  code	);
-
+	void			log_stack_trace		(void);
 	void			fail				(const char *e1, const char *file, int line, const char *function, bool &ignore_always);
 	void			fail				(const char *e1, const std::string &e2, const char *file, int line, const char *function, bool &ignore_always);
 	void			fail				(const char *e1, const char *e2, const char *file, int line, const char *function, bool &ignore_always);
@@ -34,6 +34,7 @@ public:
 	void _cdecl		fatal				(const char *file, int line, const char *function, const char* F,...);
 	void			backend				(const char* reason, const char* expression, const char *argument0, const char *argument1, const char* file, int line, const char *function, bool &ignore_always);
 	void			do_exit				(const std::string &message);
+	
 };
 
 // warning

@@ -187,7 +187,8 @@ void CDetailManager::UpdateVisibleM()
 	View.CreateFromMatrix		(Device.mFullTransform, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
 
 	float fade_limit			= dm_fade;	fade_limit=fade_limit*fade_limit;
-	float fade_start			= 1.f;		fade_start=fade_start*fade_start;
+//	float fade_start			= 1.f;		fade_start=fade_start*fade_start;
+	float fade_start			= 0.f;		fade_start=fade_start*fade_start;
 	float fade_range			= fade_limit-fade_start;
 	float		r_ssaCHEAP		= 16*r_ssaDISCARD;
 

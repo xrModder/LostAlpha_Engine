@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "../level.h"
-//.#include "../LevelFogOfWar.h"
+#include "../LevelFogOfWar.h"
 #include "../map_location.h"
 #include "../map_manager.h"
 #include "../map_spot.h"
@@ -359,14 +359,14 @@ void CUILevelMap::Draw()
 	inherited::Draw();
 
 }
-
+#pragma TODO("restore here!")
 void CUILevelMap::Init	(shared_str name, CInifile& gameLtx, LPCSTR sh_name)
 {
 	inherited::Init(name, gameLtx, sh_name);
 	Fvector4 tmp = gameLtx.r_fvector4(MapName(),"global_rect");
 	m_GlobalRect.set(tmp.x, tmp.y, tmp.z, tmp.w);
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	float kw = m_GlobalRect.width	()	/	BoundRect().width		();
 	float kh = m_GlobalRect.height	()	/	BoundRect().height	();
 
@@ -374,7 +374,7 @@ void CUILevelMap::Init	(shared_str name, CInifile& gameLtx, LPCSTR sh_name)
 		Msg(" --incorrect global rect definition for map [%s]  kw=%f kh=%f",*MapName(),kw,kh);
 		Msg(" --try x2=%f or  y2=%f",m_GlobalRect.x1+kh*BoundRect().width(), m_GlobalRect.y1+kw*BoundRect().height());
 	}
-#endif
+//#endif
 //	Msg("Succesfully loaded map %s. Zoom=%f",*name, kw);
 /*	
 	if(gameLtx.line_exist(MapName(),"anomalies_texture")){
@@ -405,10 +405,12 @@ void CUILevelMap::UpdateSpots		()
 		m_anomalies_map->SetWndSize	(GetWndSize());
 		AttachChild					(m_anomalies_map);
 	}
-
-	CLevelFogOfWar* F	= Level().FogOfWarMngr().GetFogOfWar(MapName());
-	AttachChild		(F);
 */
+
+
+//	CLevelFogOfWar* F	= Level().FogOfWarMngr().GetFogOfWar(MapName());
+//	AttachChild		(F);
+
 	Locations& ls =Level().MapManager().Locations();
 	for(Locations_it it=ls.begin(); it!=ls.end(); ++it){
 		if ((*it).location->Update())

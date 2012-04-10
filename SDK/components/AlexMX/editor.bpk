@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="R:\Borland\Components6\AlexMX\editor.bpl"/>
+    <PROJECT value="X:\STALKER\SDK\components\AlexMX\editor.bpl"/>
     <OBJFILES value="editor.obj MxRegister.obj"/>
     <RESFILES value="editor.res"/>
     <IDLFILES value=""/>
@@ -94,6 +94,9 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
+
 [HistoryLists\hlIncludePath]
 Count=1
 Item0=..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
@@ -112,9 +115,10 @@ Count=1
 Item0=_DEBUG
 
 [HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=R:\Borland\Components6\AlexMX\
-Item1=R:\Borland\Components6\AlexMX
+Count=3
+Item0=X:\STALKER\SDK\components\AlexMX\
+Item1=R:\Borland\Components6\AlexMX\
+Item2=R:\Borland\Components6\AlexMX
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl

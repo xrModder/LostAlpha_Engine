@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrStatisticConvert"
 	ProjectGUID="{2EA2CBBA-16BD-4B97-80B3-3F824CFBD4F1}"
 	RootNamespace="xrStatisticConvert"
@@ -102,7 +102,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -171,7 +171,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

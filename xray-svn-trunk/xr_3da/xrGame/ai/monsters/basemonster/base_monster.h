@@ -138,6 +138,7 @@ public:
 	virtual	void			on_before_sell					(CInventoryItem *item);
 			float			GetSatiety						()							{return 0.5f;}
 			void			ChangeSatiety					(float v)					{}
+	        float m_vampire_want_speed;
 	// ---------------------------------------------------------------------------------
 	// Process scripts
 	// ---------------------------------------------------------------------------------

@@ -100,6 +100,7 @@ public:
 	virtual void		finalize					();
 };
 
+
 //////////////////////////////////////////////////////////////////////////
 // CStalkerActionTakeCover
 //////////////////////////////////////////////////////////////////////////
@@ -278,6 +279,23 @@ public:
 	virtual void		initialize					();
 	virtual void		execute						();
 	virtual void		finalize					();
+};
+
+//////////////////////////////////////////////////////////////////////////
+// CStalkerCombatActionThrowGrenade
+//////////////////////////////////////////////////////////////////////////
+
+class CStalkerCombatActionThrowGrenade : public CStalkerActionCombatBase 
+{
+	protected:
+		typedef CStalkerActionCombatBase inherited;
+		ALife::_OBJECT_ID	m_grenade_id;
+
+	public:
+							CStalkerCombatActionThrowGrenade(CAI_Stalker *object, LPCSTR action_name = "");
+		virtual void		initialize						();
+		virtual void		execute							();
+		virtual void		finalize						();
 };
 
 #include "stalker_combat_actions_inline.h"

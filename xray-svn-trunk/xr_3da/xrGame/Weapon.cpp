@@ -478,6 +478,7 @@ BOOL CWeapon::net_Spawn		(CSE_Abstract* DC)
 	SetState						(E->wpn_state);
 	SetNextState					(E->wpn_state);
 	
+	R_ASSERT2(m_ammoType < m_ammoTypes.size(), Name());
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));	
 	if(iAmmoElapsed) 
 	{
@@ -943,12 +944,15 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 			}
 		}
 
-		for(TIItemContainer::iterator l_it = m_pCurrentInventory->m_ruck.begin(); m_pCurrentInventory->m_ruck.end() != l_it; ++l_it) 
+		if (g_actor->m_inventory != m_pCurrentInventory)
 		{
-			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
-			if(l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType)) 
+			for(TIItemContainer::iterator l_it = m_pCurrentInventory->m_ruck.begin(); m_pCurrentInventory->m_ruck.end() != l_it; ++l_it) 
 			{
-				iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+				CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
+				if(l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType)) 
+				{
+					iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+				}
 			}
 		}
 

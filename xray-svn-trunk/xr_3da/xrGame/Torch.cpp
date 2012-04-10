@@ -61,6 +61,7 @@ CTorch::~CTorch(void)
 	HUD_SOUND::DestroySound	(m_NightVisionOffSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
+	HUD_SOUND::DestroySound (m_FlashlightSwitchSnd);
 }
 
 inline bool CTorch::can_use_dynamic_lights	()
@@ -79,8 +80,7 @@ void CTorch::Load(LPCSTR section)
 {
 	inherited::Load			(section);
 	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
-
-
+	HUD_SOUND::LoadSound(section, "snd_flashlight_switch_on", m_FlashlightSwitchSnd, SOUND_TYPE_ITEM_USING);
 	m_bNightVisionEnabled = !!pSettings->r_bool(section,"night_vision");
 	if(m_bNightVisionEnabled)
 	{
@@ -88,8 +88,7 @@ void CTorch::Load(LPCSTR section)
 		HUD_SOUND::LoadSound(section,"snd_night_vision_off"	, m_NightVisionOffSnd	, SOUND_TYPE_ITEM_USING);
 		HUD_SOUND::LoadSound(section,"snd_night_vision_idle", m_NightVisionIdleSnd	, SOUND_TYPE_ITEM_USING);
 		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
-
-	
+		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
 		/*m_NightVisionRechargeTime		= pSettings->r_float(section,"night_vision_recharge_time");
 		m_NightVisionRechargeTimeMin	= pSettings->r_float(section,"night_vision_recharge_time_min");
 		m_NightVisionDischargeTime		= pSettings->r_float(section,"night_vision_discharge_time");
@@ -190,14 +189,23 @@ void CTorch::Switch()
 	Switch					(bActive);
 }
 
+void CTorch::SetBatteryStatus(u16 val)
+{
+	m_current_battery_state = val;
+}
+
 void CTorch::Switch	(bool light_on)
 {
+	CActor *pA = smart_cast<CActor *>(H_Parent());
+	m_actor_item = (pA) ? true : false;
+	if (!m_current_battery_state && m_actor_item)
+	{
+		light_on = false;
+	}
 	m_switched_on			= light_on;
 	if (can_use_dynamic_lights())
 	{
 		light_render->set_active(light_on);
-		
-		CActor *pA = smart_cast<CActor *>(H_Parent());
 		if(!pA)light_omni->set_active(light_on);
 	}
 	glow_render->set_active					(light_on);
@@ -212,6 +220,8 @@ void CTorch::Switch	(bool light_on)
 
 		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE); //hack
 	}
+	if (m_switched_on)
+		HUD_SOUND::PlaySound(m_FlashlightSwitchSnd, pA->Position(), pA, true, false);
 }
 
 BOOL CTorch::net_Spawn(CSE_Abstract* DC) 
@@ -261,6 +271,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	SwitchNightVision		(false);
 
 	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
+	m_current_battery_state = m_battery_duration = pSettings->r_u16(cNameSect(), "battery_duration");
 
 	return					(TRUE);
 }
@@ -294,13 +305,31 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 	//m_NightVisionChargeTime		= m_NightVisionRechargeTime;
 }
 
+void CTorch::Recharge(void)
+{
+	m_current_battery_state = m_battery_duration;
+}
+
+void CTorch::UpdateBattery(void)
+{
+	if (m_switched_on)
+	{
+		m_current_battery_state--;
+		if (!m_current_battery_state)
+		{
+			Switch(false);
+			return;
+		}
+	}
+}
+
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
 	
 	UpdateSwitchNightVision		();
 
-	if (!m_switched_on)			return;
+	if (!m_switched_on)		return;
 
 	CBoneInstance			&BI = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 	Fmatrix					M;
@@ -458,6 +487,7 @@ void CTorch::net_Export			(NET_Packet& P)
 			F |= eAttached;
 	}
 	P.w_u8(F);
+	P.w_u16(m_current_battery_state);
 //	Msg("CTorch::net_export - NV[%d]", m_bNightVisionOn);
 }
 
@@ -476,6 +506,7 @@ void CTorch::net_Import			(NET_Packet& P)
 
 		SwitchNightVision			(new_m_bNightVisionOn);
 	}
+	m_current_battery_state = P.r_u16();
 }
 
 bool  CTorch::can_be_attached		() const
@@ -486,7 +517,13 @@ bool  CTorch::can_be_attached		() const
 	if (pA) 
 	{
 //		if(pA->inventory().Get(ID(), false))
-		if((const CTorch*)smart_cast<CTorch*>(pA->inventory().m_slots[GetSlot()].m_pIItem) == this )
+		//check slot and belt
+		bool b = false;
+		int slot = GetSlot();
+		if (slot != NO_ACTIVE_SLOT)
+			b = (const CTorch*)smart_cast<CTorch*>(pA->inventory().m_slots[slot].m_pIItem) == this;
+		b = b || pA->inventory().InBelt(const_cast<CTorch*>(this));
+		if(b)
 			return true;
 		else
 			return false;
@@ -498,7 +535,24 @@ void CTorch::afterDetach			()
 	inherited::afterDetach	();
 	Switch					(false);
 }
+
 void CTorch::renderable_Render()
 {
 	inherited::renderable_Render();
 }
+
+u16 CTorch::GetBatteryLifetime()
+{
+	return m_battery_duration;
+}
+
+u16 CTorch::GetBatteryStatus()
+{
+	return m_current_battery_state;
+}
+
+bool CTorch::IsSwitchedOn()
+{
+	return m_switched_on;
+}
+

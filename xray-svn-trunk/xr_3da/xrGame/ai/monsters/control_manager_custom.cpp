@@ -151,14 +151,14 @@ void CControlManagerCustom::update_schedule()
 //////////////////////////////////////////////////////////////////////////
 void CControlManagerCustom::ta_fill_data(SAnimationTripleData &data, LPCSTR s1, LPCSTR s2, LPCSTR s3, bool execute_once, bool skip_prep, u32 capture_type)
 {
-	// Load triple animations
-	CKinematicsAnimated	*skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
-	data.pool[0]		= skel_animated->ID_Cycle_Safe(s1);	VERIFY(data.pool[0]);
-	data.pool[1]		= skel_animated->ID_Cycle_Safe(s2);	VERIFY(data.pool[1]);
-	data.pool[2]		= skel_animated->ID_Cycle_Safe(s3);	VERIFY(data.pool[2]);
-	data.execute_once	= execute_once;
-	data.skip_prepare	= skip_prep;
-	data.capture_type	= capture_type;
+    // Load triple animations
+    CKinematicsAnimated    *skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+    data.pool[0]        = skel_animated->ID_Cycle_Safe(s1);    VERIFY2(data.pool[0], s1);
+    data.pool[1]        = skel_animated->ID_Cycle_Safe(s2);    VERIFY2(data.pool[1], s2);
+    data.pool[2]        = skel_animated->ID_Cycle_Safe(s3);    VERIFY2(data.pool[2], s3);
+    data.execute_once    = execute_once;
+    data.skip_prepare    = skip_prep;
+    data.capture_type    = capture_type;
 }
 
 

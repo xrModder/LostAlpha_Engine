@@ -123,6 +123,44 @@ void CGrenade::State(u32 state)
 	inherited::State(state);
 }
 
+bool CGrenade::DropGrenade()
+{
+	/*
+	EMissileStates grenade_state = static_cast<EMissileStates>(GetState());
+	if (((grenade_state == eThrowStart) ||
+		(grenade_state == eReady) ||
+		(grenade_state == eThrow)) &&
+		(!m_thrown)
+		)
+	{
+		Throw();
+		return true;
+	}
+	return false;
+	*/
+	switch (GetState())
+	{	
+		case MS_THREATEN:
+		case MS_READY:
+		case MS_THROW:
+		{
+			if (!m_thrown)
+			{
+				Throw();
+				return true;
+			}
+		}
+		default: break;
+	}
+	return false;
+}
+
+void CGrenade::DiscardState()
+{
+	if(IsGameTypeSingle() && (GetState()==MS_READY || GetState()==MS_THROW) )
+		OnStateSwitch(MS_IDLE);
+}
+
 void CGrenade::Throw() 
 {
 	if (!m_fake_missile || m_thrown)

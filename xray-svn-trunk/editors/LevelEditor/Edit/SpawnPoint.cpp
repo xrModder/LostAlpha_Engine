@@ -129,7 +129,10 @@ void CSpawnPoint::CLE_Motion::PlayMotion()
 //------------------------------------------------------------------------------
 void CSpawnPoint::SSpawnData::Create(LPCSTR _entity_ref)
 {
+
     m_Data 	= create_entity	(_entity_ref);
+      //ISE_Abstract *mData = create_entity	(_entity_ref);
+
     if (m_Data){
     	m_Data->set_name	(_entity_ref);
         if (m_Data->visual()){
@@ -149,6 +152,7 @@ void CSpawnPoint::SSpawnData::Create(LPCSTR _entity_ref)
     }else{
     	Log("!Can't create entity: ",_entity_ref);
     }
+
 }
 void CSpawnPoint::SSpawnData::Destroy()
 {

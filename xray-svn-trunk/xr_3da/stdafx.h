@@ -62,7 +62,7 @@ extern ENGINE_API CInifile *pGameIni;
 #pragma comment( lib, "dxguid.lib"		)
 
 #ifndef DEBUG
-#	define LUABIND_NO_ERROR_CHECKING
+#define LUABIND_NO_ERROR_CHECKING
 #endif
 
 #if	!defined(DEBUG) || defined(FORCE_NO_EXCEPTIONS)

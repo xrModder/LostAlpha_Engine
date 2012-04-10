@@ -24,7 +24,7 @@ void CAnomalyDetector::reinit()
 {
 	m_storage.clear();
 
-	m_active = false;
+	m_active = true;
 }
 
 

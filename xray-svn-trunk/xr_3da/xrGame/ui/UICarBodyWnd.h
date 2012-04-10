@@ -18,6 +18,9 @@ class CUICarBodyWnd: public CUIDialogWnd
 private:
 	typedef CUIDialogWnd	inherited;
 	bool					m_b_need_update;
+
+	void ColorizeItem(CUICellItem* itm);
+
 public:
 							CUICarBodyWnd				();
 	virtual					~CUICarBodyWnd				();

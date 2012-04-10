@@ -157,7 +157,7 @@
 #define CLSID_Z_TORRID  			MK_CLSID('Z','_','T','O','R','R','I','D')
 #define CLSID_SPACE_RESTRICTOR 		MK_CLSID('S','P','A','C','E','_','R','S')
 #define CLSID_SMART_ZONE			MK_CLSID('S','M','R','T','Z','O','N','E')
-
+#define CLSID_Z_FOG					MK_CLSID('Z','_','R','U','S','T','Y','F')
 // Detectors
 #define CLSID_DETECTOR_SIMPLE		MK_CLSID('D','_','S','I','M','D','E','T')
 #define CLSID_DETECTOR_VISUAL		MK_CLSID('D','_','V','I','S','D','E','T')

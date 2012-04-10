@@ -3,6 +3,7 @@
 #pragma once
 
 #include "xrSyncronize.h"
+//#include "..\xrCore\xrSyncronize.h"
 
 class XRNETSERVER_API NET_Compressor
 {

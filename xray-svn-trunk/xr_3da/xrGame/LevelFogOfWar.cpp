@@ -1,7 +1,8 @@
 // LevelFogOfWar.cpp:  для карты уровня в одиночном режиме игры
 // 
 //////////////////////////////////////////////////////////////////////
-
+#include "stdafx.h"
+/**
 #include "stdafx.h"
 #include "LevelFogOfWar.h"
 #include "level.h"
@@ -21,8 +22,10 @@ struct FindFogByLevelName{
 
 CFogOfWarMngr::CFogOfWarMngr()
 {
+	
 	m_fogOfWarRegistry = xr_new<CFogOfWarWrapper>();
 	m_fogOfWarRegistry->registry().init(0);
+	
 }
 
 CFogOfWarMngr::~CFogOfWarMngr()
@@ -31,6 +34,7 @@ CFogOfWarMngr::~CFogOfWarMngr()
 }
 CLevelFogOfWar* CFogOfWarMngr::GetFogOfWar	(const shared_str& level_name)
 {
+	
 	if(GameID()!=GAME_SINGLE) return NULL;
 	FOG_STORAGE_IT it = std::find_if(GetFogStorage().begin(),GetFogStorage().end(),FindFogByLevelName(level_name));
 	if(it!=GetFogStorage().end())return &(*it);
@@ -40,19 +44,22 @@ CLevelFogOfWar* CFogOfWarMngr::GetFogOfWar	(const shared_str& level_name)
 		F.Init(level_name);
 		return &F;
 	};
+	
 }
 
 FOG_STORAGE_T& CFogOfWarMngr::GetFogStorage()
 {
+	
 	VERIFY(m_fogOfWarRegistry);
 	return m_fogOfWarRegistry->registry().objects();
+	
 };
 
 CLevelFogOfWar::CLevelFogOfWar():m_rowNum(0), m_colNum(0)
 {
-//	m_levelRect.set	(0.0f,0.0f,0.0f,0.0f);
-//	hShader.create	("hud\\default","ui\\ui_fog_of_war");
-//	hGeom.create	(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+	m_levelRect.set	(0.0f,0.0f,0.0f,0.0f);
+	hShader.create	("hud\\default","ui\\ui_fog_of_war");
+	hGeom.create	(FVF::F_TL, RCache.Vertex.Buffer(), 0);
 };
 
 
@@ -80,6 +87,7 @@ void CLevelFogOfWar::Init	(const shared_str& level)
 
 	hShader.create	("hud\\fog_of_war","ui\\ui_fog_of_war");
 	hGeom.create	(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+	
 }
 
 #define FOG_OPEN_RADIUS		(FOG_CELL_SZ/4)
@@ -150,16 +158,19 @@ enum {
 
 void CLevelFogOfWar::GetTexUVLT(Fvector2& uv, u32 col, u32 row)
 {
+	
 	if (row>=m_rowNum || col>=m_colNum)				uv.set(0.5f,0.0f);
 	else{
 		bool cell_mask								= m_cells[row*m_colNum+col];
 		if (cell_mask==true)						uv.set(0.0f,0.0f);
 		else 										uv.set(0.5f,0.0f);
 	}
+	
 }
 
 void CLevelFogOfWar::Draw	()
 {
+	
 	CUICustomMap* m					= ((CUICustomMap*)(GetParent()));
 
 	Frect	tgt;
@@ -229,19 +240,23 @@ void CLevelFogOfWar::Draw	()
 		RCache.Render			(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
 	}
 	UI()->PopScissor		 	();
+	
 }
 
 void CLevelFogOfWar::save	(IWriter &stream)
 {
+	
 	save_data			(m_level_name,stream);
 	save_data			(m_levelRect,stream);
 	save_data			(m_rowNum,stream);
 	save_data			(m_colNum,stream);
 	save_data			(m_cells,stream);
+	
 }
 
 void CLevelFogOfWar::load	(IReader &stream)
 {
+	
 	load_data			(m_level_name,stream);
 	Init				(m_level_name);
 
@@ -255,4 +270,6 @@ void CLevelFogOfWar::load	(IReader &stream)
 	VERIFY				(rowNum == m_rowNum);
 	VERIFY				(colNum == m_colNum);
 	load_data			(m_cells,stream);
+	
 }
+**/

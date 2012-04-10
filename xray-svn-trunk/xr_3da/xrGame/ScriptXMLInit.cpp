@@ -49,6 +49,11 @@ CScriptXmlInit& CScriptXmlInit::operator =(const CScriptXmlInit& other){
 void CScriptXmlInit::ParseFile(LPCSTR xml_file){
 	m_xml.Init(CONFIG_PATH, UI_PATH, xml_file);
 }
+// lost alpha start
+void CScriptXmlInit::ParseFile(LPCSTR xml_path, LPCSTR xml_file)
+{
+	m_xml.Init(CONFIG_PATH, xml_path, xml_file);
+}
 
 void CScriptXmlInit::InitWindow(LPCSTR path, int index, CUIWindow* pWnd){
 	CUIXmlInit::InitWindow(m_xml, path, index, pWnd);
@@ -289,7 +294,8 @@ void CScriptXmlInit::script_register(lua_State *L){
 	[
 		class_<CScriptXmlInit>			("CScriptXmlInit")
 		.def(							constructor<>())
-		.def("ParseFile",				&CScriptXmlInit::ParseFile)
+		.def("ParseFile",				(void(CScriptXmlInit::*)(LPCSTR))(&CScriptXmlInit::ParseFile))
+		.def("ParseFile",				(void(CScriptXmlInit::*)(LPCSTR, LPCSTR))(&CScriptXmlInit::ParseFile))
 		.def("ParseShTexInfo",			&CScriptXmlInit::ParseShTexInfo)
 		.def("InitWindow",				&CScriptXmlInit::InitWindow)
 		.def("InitFrame",				&CScriptXmlInit::InitFrame)

@@ -61,9 +61,9 @@ void CControllerAnimation::on_event(ControlCom::EEventType type, ControlCom::IEv
 		{
 			SAnimationSignalEventData *event_data = (SAnimationSignalEventData *)data;
 			if (event_data->event_id == CControlAnimation::eAnimationHit) {
-				if (event_data->motion == m_torso[eTorsoPsyAttack])
-					m_controller->psy_fire();
-				else
+//				if (event_data->motion == m_torso[eTorsoPsyAttack])
+//					m_controller->psy_fire();
+//				else
 					check_hit(event_data->motion,event_data->time_perc);	break;
 			}
 		}
@@ -175,10 +175,13 @@ void CControllerAnimation::select_velocity()
 			m_man->path_builder().set_desirable_speed(4.f);
 		}
 		
-	} else if (m_current_legs_action == eLegsTypeStealMotion)
-		m_man->path_builder().set_desirable_speed(1.1f);
+	} 
+	else if (eLegsTypeWalk == m_current_legs_action)
+	{	m_man->path_builder().set_desirable_speed(1.3f); }
+	else if (m_current_legs_action == eLegsTypeStealMotion)
+	{	m_man->path_builder().set_desirable_speed(1.1f); }
 	else 
-		m_man->path_builder().set_desirable_speed(0.f);
+	{	m_man->path_builder().set_desirable_speed(0.f); }
 }
 
 // set body direction using path_direction
@@ -207,12 +210,12 @@ void CControllerAnimation::select_torso_animation()
 	MotionID target_motion;
 
 	// check fire animation
-	if (m_controller->can_psy_fire()) {
-		target_motion			= m_torso[eTorsoPsyAttack];
-		m_wait_torso_anim_end	= true;
-	} else {
+//	if (m_controller->can_psy_fire()) {
+//		target_motion			= m_torso[eTorsoPsyAttack];
+//		m_wait_torso_anim_end	= true;
+//	} else {
 		target_motion			= m_torso[m_current_torso_action];
-	}
+//	}
 	
 	if ((ctrl_data->torso.motion != target_motion) || m_wait_torso_anim_end) {
 		ctrl_data->torso.motion	= target_motion;
@@ -282,10 +285,10 @@ CControllerAnimation::SPathRotations CControllerAnimation::get_path_rotation(flo
 
 void CControllerAnimation::set_body_state(ETorsoActionType torso, ELegsActionType legs)
 {
-	m_current_legs_action		= CControllerAnimation::eLegsTypeStealMotion;
-	m_current_torso_action		= CControllerAnimation::eTorsoSteal;
-	//m_current_legs_action		= legs;
-	//m_current_torso_action		= torso;
+	//m_current_legs_action		= CControllerAnimation::eLegsTypeStealMotion;
+	//m_current_torso_action		= CControllerAnimation::eTorsoSteal;
+	m_current_legs_action		= legs;
+	m_current_torso_action		= torso;
 }
 
 bool CControllerAnimation::is_moving()

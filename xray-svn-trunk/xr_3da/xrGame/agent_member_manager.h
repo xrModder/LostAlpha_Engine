@@ -27,7 +27,8 @@ private:
 	MEMBER_STORAGE					m_combat_members;
 	bool							m_actuality;
 	squad_mask_type					m_combat_mask;
-
+	u32								m_last_throw_time;
+	u32								m_throw_time_interval;
 
 protected:
 	IC		CAgentManager			&object					() const;
@@ -57,6 +58,10 @@ public:
 			bool					can_detour				() const;
 			bool					cover_detouring			() const;
 			bool					can_cry_noninfo_phrase	() const;
+			bool					can_throw_grenade		(const Fvector &location) const;
+			void					on_throw_completed		();
+	IC		const u32				&throw_time_interval	() const;
+	IC		void					throw_time_interval		(const u32 &value);
 };
 
 #include "agent_member_manager_inline.h"

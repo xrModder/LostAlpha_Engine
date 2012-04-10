@@ -86,10 +86,19 @@ public:
 	virtual void				OnAppDeactivate				(void);
 
 	IInputReceiver*				CurrentIR					();
+	
+	// lost alpha start
+	int GetLastKeyPressed(void) { return (int)m_last_key_pressed; }
+	int GetLastKeyReleased(void) { return (int)m_last_key_released; }
+	int GetButtonCount(void) { return COUNT_KB_BUTTONS; }
 
 public:
 			void				exclusive_mode				(const bool &exclusive);
 			bool				get_dik_name				(int dik, LPSTR dest, int dest_sz);
+//lost alpha start
+private:
+	u32 m_last_key_pressed;
+	u32 m_last_key_released;
 };
 
 extern ENGINE_API CInput *		pInput;

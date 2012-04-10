@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="stalker_net"
 	ProjectGUID="{AF9ACB0D-451A-4878-A04C-0B9E221CC705}"
 	RootNamespace="stalker_net"
@@ -44,6 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
 				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
@@ -112,7 +113,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -146,6 +147,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -192,7 +194,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

@@ -43,6 +43,8 @@ public:
 	virtual	bool	bfAssignWatch(CScriptEntityAction	*tpEntityAction);
 	virtual	bool	bfAssignObject(CScriptEntityAction *tpEntityAction);
 
+	virtual void	Hit(SHit* pHDS);
+
 			Fvector GetCurrentDirection	();
 private:
 			void	TurnOn			();

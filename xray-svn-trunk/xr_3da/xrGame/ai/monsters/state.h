@@ -43,6 +43,7 @@ protected:
 	u32					prev_substate;
 
 	u32					time_state_started;
+	u32                 controlling_value;
 
 	_Object				*object;
 	

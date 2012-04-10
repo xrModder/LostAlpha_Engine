@@ -198,17 +198,23 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 	SGameMtlPair* mtl_pair	= GMLib.GetMaterialPair(bullet->bullet_material_idx, target_material);
 	Fvector particle_dir;
 
+//FILE *log11;
+//log11 = fopen("testlog.txt","a");
+
 	if (R.O)
 	{
 		particle_dir		 = vDir;
 		particle_dir.invert	();
 
+//		fprintf (log11,"Section works! R.0 \n");
+
 		//на текущем актере отметок не ставим
-		if(Level().CurrentEntity() && Level().CurrentEntity()->ID() == R.O->ID()) return;
+		if(Level().CurrentEntity() && Level().CurrentEntity()->ID() == R.O->ID())  return;
 
 		ref_shader* pWallmarkShader = (!mtl_pair || mtl_pair->CollideMarks.empty())?
-						NULL:&mtl_pair->CollideMarks[::Random.randI(0,mtl_pair->CollideMarks.size())];;
+		NULL:&mtl_pair->CollideMarks[::Random.randI(0,mtl_pair->CollideMarks.size())];;
 
+	//	fprintf (log11,"Section works! (!mtl_pair || mtl_pair->CollideMarks.empty()) \n");
 		if (pWallmarkShader && ShowMark)
 		{
 			//добавить отметку на материале
@@ -217,6 +223,11 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 			::Render->add_SkeletonWallmark	(&R.O->renderable.xform, 
 							PKinematics(R.O->Visual()), *pWallmarkShader,
 							p, bullet->dir, bullet->wallmark_size);
+
+//Fvector*    pVerts    = Level().ObjectSpace.GetStaticVerts();
+//CDB::TRI*    pTri    = Level().ObjectSpace.GetStaticTris()+R.element;
+//::Render->add_StaticWallmark    (*pWallmarkShader, vEnd, bullet->wallmark_size, pTri, pVerts);
+//		fprintf (log11,"Section works main! ::Render->add_SkeletonWallmark \n");
 		}		
 	} 
 	else 
@@ -229,11 +240,15 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 		ref_shader* pWallmarkShader =	(!mtl_pair || mtl_pair->CollideMarks.empty())?
 										NULL:&mtl_pair->CollideMarks[::Random.randI(0,mtl_pair->CollideMarks.size())];;
 
+	//			fprintf (log11,"Section works! ref_shader* pWallmarkShader \n");
+
 		if (pWallmarkShader && ShowMark)
 		{
 			//добавить отметку на материале
 			::Render->add_StaticWallmark	(*pWallmarkShader, vEnd, bullet->wallmark_size, pTri, pVerts);
+									//	fprintf (log11,"Section works! add_StaticWallmark \n");
 		}
+								//				fclose(log11);
 	}
 
 	ref_sound* pSound = (!mtl_pair || mtl_pair->CollideSounds.empty())?
@@ -457,9 +472,11 @@ std::pair<float, float>  CBulletManager::ObjectHit	(SBullet* bullet, const Fvect
 
 	float ricoshet_factor	= bullet->dir.dotproduct(tgt_dir);
 
-	float f			= Random.randF	(0.5f,1.f);
-	//float f				= Random.randF	(0.0f,0.3);
+	//float f			= Random.randF	(0.5f,1.f);
+	float f				= Random.randF	(0.0f,0.05f); //was 0.3
+	//float f				= Random.randF	(5.0f,5.0);
 //	if(shoot_factor<RICOCHET_THRESHOLD &&  )
+	//Msg("mtl=%s,oshootfact=%.3f,wip=%d,f=%.3f,ricochet_factor=%.3f,shoot_factor=%.3f", mtl->m_Name.c_str(), mtl->fShootFactor, bullet->weapon_id, f, ricoshet_factor, shoot_factor);
 	if (((f+shoot_factor)<ricoshet_factor) && bullet->flags.allow_ricochet)	{
 		//уменьшение скорости полета в зависимости 
 		//от угла падения пули (чем прямее угол, тем больше потеря)
@@ -479,10 +496,10 @@ std::pair<float, float>  CBulletManager::ObjectHit	(SBullet* bullet, const Fvect
 		float energy_lost = 1.f - bullet->speed/old_speed;
 		//импульс переданный объекту равен прямопропорционален потерянной энергии
 		impulse = bullet->hit_impulse*speed_factor*energy_lost;
-
 		#ifdef DEBUG
 		bullet_state = 0;
 		#endif		
+		//Msg("Ricochet ok for %s", mtl->m_Name.c_str());
 	} else if(shoot_factor <  1.0) {
 		//застрявание пули в материале
 		bullet->speed  = 0.f;

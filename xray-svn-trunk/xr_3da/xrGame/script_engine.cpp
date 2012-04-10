@@ -43,6 +43,8 @@ CScriptEngine::~CScriptEngine			()
 	while (!m_script_processes.empty())
 		remove_script_process(m_script_processes.begin()->first);
 
+
+//CUSTOM
 #ifdef DEBUG
 	flush_log				();
 #endif // DEBUG

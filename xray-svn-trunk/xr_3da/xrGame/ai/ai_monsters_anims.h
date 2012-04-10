@@ -34,10 +34,10 @@ public:
 		{
 			strconcat	(sizeof(S),S,caBaseName,caBaseNames[i]);
 			A[i]		= tpKinematics->ID_Cycle_Safe(S);
-#ifdef DEBUG
-			if (A[i] && psAI_Flags.test(aiAnimation))
-				Msg		("* Loaded animation %s",S);
-#endif
+//#ifdef DEBUG
+//			if (A[i] && psAI_Flags.test(aiAnimation))
+//				Msg		("* CAniFVector<%s> Loaded animation %s",caBaseName,S);
+//#endif
 		}
 	}
 };
@@ -48,6 +48,7 @@ public:
 
 	IC	void		Load(CKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
 	{
+	//	Msg("* CAniCollection::Load %s", caBaseName);
 		A.clear		();
 		string256	S;
 		for (int j=0; caBaseNames[j]; ++j);

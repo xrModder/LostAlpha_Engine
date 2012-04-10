@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="xrDO_Light"
 	ProjectGUID="{B730F54D-1199-481A-AAD0-5DB684E067C0}"
+	RootNamespace="xrDO_Light"
 	>
 	<Platforms>
 		<Platform
@@ -46,6 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\FreeImage"
 				PreprocessorDefinitions="WIN32,DEBUG,_WINDOWS;_SECURE_SCL=0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -80,6 +82,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries;X:\STALKER\SDK\FreeImage"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
@@ -114,7 +117,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -152,6 +155,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\FreeImage"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -190,6 +194,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries_release;X:\STALKER\SDK\FreeImage"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -197,7 +202,7 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -262,6 +267,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\FreeImage"
 				PreprocessorDefinitions="MIXED,WIN32,DEBUG,_WINDOWS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -298,6 +304,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries;X:\STALKER\SDK\FreeImage"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"

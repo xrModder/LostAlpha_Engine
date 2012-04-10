@@ -53,7 +53,7 @@ void CStateControllerHideAbstract::execute()
 	} else 
 		object->custom_dir().head_look_point(object->EnemyMan.get_enemy_position());
 
-	object->custom_anim().set_body_state(CControllerAnimation::eTorsoRun,CControllerAnimation::eLegsTypeRun);
+	//object->custom_anim().set_body_state(CControllerAnimation::eTorsoRun,CControllerAnimation::eLegsTypeRun);
 }
 
 TEMPLATE_SPECIALIZATION

@@ -453,6 +453,7 @@ dSpaceID dGeomGetSpace (dxGeom *g)
 int dGeomGetClass (dxGeom *g)
 {
   dAASSERT (g);
+ //if (g->type == 0) return 5;
   return g->type;
 }
 

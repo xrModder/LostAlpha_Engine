@@ -63,7 +63,7 @@ void CStalkerPlanner::setup			(CAI_Stalker *object)
 	clear						();
 	add_evaluators				();
 	add_actions					();
-
+	
 	m_alive_goal.clear			();
 	m_alive_goal.add_condition	(CWorldProperty(eWorldPropertyPuzzleSolved,true));
 
@@ -192,4 +192,5 @@ void CStalkerPlanner::add_actions			()
 	add_condition			(action,eWorldPropertyItems,		true);
 	add_effect				(action,eWorldPropertyItems,		false);
 	add_operator			(eWorldOperatorGatherItems,			action);
+
 }

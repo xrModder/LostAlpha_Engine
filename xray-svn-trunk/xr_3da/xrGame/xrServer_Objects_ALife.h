@@ -484,6 +484,23 @@ SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeCar)
 #define script_type_list save_type_list(CSE_ALifeCar)
 
+
+SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeMountedTurret, CSE_ALifeDynamicObjectVisual, CSE_PHSkeleton)
+	public:
+										CSE_ALifeMountedTurret		(LPCSTR caSection);
+		virtual							~CSE_ALifeMountedTurret		();
+		virtual bool					used_ai_locations			() const;
+		virtual	void					load						(NET_Packet &tNetPacket);
+		virtual bool					can_save					() const;
+		virtual CSE_Abstract			*cast_abstract				() {return this;}
+	protected:
+		virtual void					data_load					(NET_Packet &tNetPacket);
+		virtual void					data_save					(NET_Packet &tNetPacket);
+SERVER_ENTITY_DECLARE_END
+add_to_type_list(CSE_ALifeMountedTurret)
+#define script_type_list save_type_list(CSE_ALifeMountedTurret)
+
+
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeObjectBreakable,CSE_ALifeDynamicObjectVisual)
     float							m_health;
 									CSE_ALifeObjectBreakable	(LPCSTR caSection);

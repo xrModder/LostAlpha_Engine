@@ -275,7 +275,7 @@ void CSheduler::Pop					()
 	std::pop_heap	(Items.begin(), Items.end());
 	Items.pop_back	();
 }
-
+#define BOOL2STR(expr) ((expr) ? "true" : "false")
 void CSheduler::ProcessStep			()
 {
 	// Normal priority
@@ -299,7 +299,9 @@ void CSheduler::ProcessStep			()
 #ifndef DEBUG
 		}
 		__except(EXCEPTION_EXECUTE_HANDLER) {
-			Msg						("Scheduler tried to update object %s",*T.scheduled_name);
+			
+			Msg						("1st attempt - Scheduler tried to update object [%s][0x%08x] condition [%s]", 
+											*T.scheduled_name, T.Object, BOOL2STR(condition));
 			FlushLog				();
 			T.Object				= 0;
 			continue;
@@ -374,7 +376,9 @@ void CSheduler::ProcessStep			()
 #ifndef DEBUG
 		}
 		__except(EXCEPTION_EXECUTE_HANDLER) {
-			Msg						("Scheduler tried to update object %s",*T.scheduled_name);
+			Debug.log_stack_trace	();
+			Msg						("2nd attempt - Scheduler tried to update object [%s][0x%08x]", 
+											*T.scheduled_name, T.Object);
 			FlushLog				();
 			T.Object				= 0;
 			continue;

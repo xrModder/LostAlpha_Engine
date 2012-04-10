@@ -16,6 +16,11 @@ int get_console_integer(CConsole* c, LPCSTR cmd)
 	return val;
 }
 
+bool is_console_active(CConsole *c)
+{
+	return (c->bVisible != 0) ? true : false;
+}
+
 float get_console_float(CConsole* c, LPCSTR cmd)
 {
 	float val=0,min=0,max=0;
@@ -47,6 +52,7 @@ void console_registrator::script_register(lua_State *L)
 		.def("get_bool",					&get_console_bool)
 		.def("get_float",					&get_console_float)
 		.def("get_token",					&CConsole::GetToken)
+		.def("is_active", &is_console_active)
 //		.def("",				&CConsole::)
 
 	];

@@ -97,8 +97,11 @@ public:
 	float	m_tele_object_max_mass;
 	float	m_tele_find_radius;
 
-
+	u32		m_shield_cooldown;
+	u32		m_shield_time;
 	bool	m_shield_active;
+	LPCSTR	m_shield_keep_particle;
+	u32		m_shield_keep_particle_period;
 	LPCSTR	particle_fire_shield;
 
 	CBurerFastGravi	*m_fast_gravi;
@@ -141,7 +144,7 @@ public:
 public:
 	SAnimationTripleData	anim_triple_gravi;
 	SAnimationTripleData	anim_triple_tele;
-
+	SAnimationTripleData	anim_triple_shield;
 
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();

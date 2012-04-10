@@ -577,7 +577,7 @@ public:
 			bool			isObjectVisible				(CScriptGameObject* O);
 			Fvector			CurrentVel					();
 	virtual float			GetfHealth					() const		{return CEntity::GetfHealth();};
-	virtual float			SetfHealth					(float value)	{return CEntity::SetfHealth(value);};
+	virtual float			SetfHealth					(float value);
 
 	// Hits
 	virtual void			HitSignal					(float /**HitAmount/**/,	Fvector& /**local_dir/**/, CObject* /**who/**/, s16 /**element/**/)	{};
@@ -632,6 +632,8 @@ private:
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
+public:
+	void RemoveDamangeParticles()	{ m_damage_particles.Stop1(this); m_damage_particles.Stop2(this); }
 };
 add_to_type_list(CCar)
 #undef script_type_list

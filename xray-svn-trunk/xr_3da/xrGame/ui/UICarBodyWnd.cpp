@@ -237,6 +237,7 @@ void CUICarBodyWnd::UpdateLists()
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
 		CUICellItem* itm				= create_cell_item(*it);
+		ColorizeItem(itm);
 		m_pUIOurBagList->SetItem		(itm);
 	}
 
@@ -303,9 +304,16 @@ void CUICarBodyWnd::Update()
 	if(	m_b_need_update||
 		m_pOurObject->inventory().ModifyFrame()==Device.dwFrame || 
 		(m_pOthersObject&&m_pOthersObject->inventory().ModifyFrame()==Device.dwFrame))
+	{
+
+		int pos1 = m_pUIOurBagList->ScrollPos();
+		int pos2 = m_pUIOthersBagList->ScrollPos();
 
 		UpdateLists		();
 
+		m_pUIOurBagList->SetScrollPos(pos1);
+		m_pUIOthersBagList->SetScrollPos(pos2);
+	}
 	
 	if(m_pOthersObject && (smart_cast<CGameObject*>(m_pOurObject))->Position().distance_to((smart_cast<CGameObject*>(m_pOthersObject))->Position()) > 3.0f)
 	{
@@ -402,6 +410,7 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
+#include "../battery.h"
 
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
@@ -410,14 +419,15 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	m_pUIPropertiesBox->RemoveAll();
 	
 //.	CWeaponMagazined*		pWeapon			= smart_cast<CWeaponMagazined*>(CurrentIItem());
-	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>(CurrentIItem());
+	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>		(CurrentIItem());
 	CMedkit*				pMedkit			= smart_cast<CMedkit*>			(CurrentIItem());
 	CAntirad*				pAntirad		= smart_cast<CAntirad*>			(CurrentIItem());
 	CBottleItem*			pBottleItem		= smart_cast<CBottleItem*>		(CurrentIItem());
+	CBattery*				pBattery		= smart_cast<CBattery*>			(CurrentIItem());
     bool					b_show			= false;
 	
 	LPCSTR _action				= NULL;
-	if(pMedkit || pAntirad)
+	if(pMedkit || pAntirad || pBattery)
 	{
 		_action						= "st_use";
 		b_show						= true;
@@ -614,4 +624,12 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
+}
+
+void CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
+{
+	//LOST ALPHA starts
+	PIItem iitem		= (PIItem)itm->m_pData;
+	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetTextureColor				(color_rgba(100,255,100,255));
 }

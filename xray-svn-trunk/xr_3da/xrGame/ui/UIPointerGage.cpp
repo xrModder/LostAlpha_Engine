@@ -43,8 +43,9 @@ void CUIPointerGage::Update		()
 void CUIPointerGage::Draw		()
 {
 	inherited::Draw();
-	m_ArrowPointer.SetPos(GetAbsoluteRect().left + m_iArrowOffsetX, 
-							GetAbsoluteRect().top + m_iArrowOffsetY);
+	Frect r;
+	GetAbsoluteRect(r);
+	m_ArrowPointer.SetPos(r.left + m_iArrowOffsetX, r.top + m_iArrowOffsetY);
 	m_ArrowPointer.Render(m_fAngle);
 }
 

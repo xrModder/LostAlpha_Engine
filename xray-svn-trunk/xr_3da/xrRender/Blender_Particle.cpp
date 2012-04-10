@@ -33,12 +33,12 @@ void	CBlender_Particle::Save	( IWriter& fs	)
 	// Blend mode
 	xrP_TOKEN::Item	I;
 	xrPWRITE_PROP	(fs,"Blending",	xrPID_TOKEN,     oBlend);
-	I.ID = 0; strcpy(I.str,"SET");			fs.w		(&I,sizeof(I));
-	I.ID = 1; strcpy(I.str,"BLEND");		fs.w		(&I,sizeof(I));
-	I.ID = 2; strcpy(I.str,"ADD");			fs.w		(&I,sizeof(I));
-	I.ID = 3; strcpy(I.str,"MUL");			fs.w		(&I,sizeof(I));
-	I.ID = 4; strcpy(I.str,"MUL_2X");		fs.w		(&I,sizeof(I));
-	I.ID = 5; strcpy(I.str,"ALPHA-ADD");	fs.w		(&I,sizeof(I));
+	I.ID = 0; strcpy_s(I.str,"SET");			fs.w		(&I,sizeof(I));
+	I.ID = 1; strcpy_s(I.str,"BLEND");			fs.w		(&I,sizeof(I));
+	I.ID = 2; strcpy_s(I.str,"ADD");			fs.w		(&I,sizeof(I));
+	I.ID = 3; strcpy_s(I.str,"MUL");			fs.w		(&I,sizeof(I));
+	I.ID = 4; strcpy_s(I.str,"MUL_2X");			fs.w		(&I,sizeof(I));
+	I.ID = 5; strcpy_s(I.str,"ALPHA-ADD");		fs.w		(&I,sizeof(I));
 	
 	// Params
 	xrPWRITE_PROP		(fs,"Texture clamp",xrPID_BOOL,		oClamp);
@@ -88,6 +88,8 @@ void	CBlender_Particle::Compile	(CBlender_Compile& C)
 		case 5:	C.r_Pass	("particle",		"particle",			FALSE,	TRUE,FALSE,	TRUE,	D3DBLEND_SRCALPHA,	D3DBLEND_ONE,			TRUE,0);	break;	// ALPHA-ADD
 		};
 		C.r_Sampler			("s_base",	C.L_textures[0],false,oClamp.value?D3DTADDRESS_CLAMP:D3DTADDRESS_WRAP);
+		//	Igor: soft particles
+		//C.r_Sampler			("s_position",	"$user$position");
 		C.r_End				();
 		break;
 	case SE_R2_SHADOW:		// smap
@@ -102,6 +104,8 @@ void	CBlender_Particle::Compile	(CBlender_Compile& C)
 		case 5:	C.r_Pass	("particle-clip",	"particle_s-aadd",	FALSE,	TRUE,FALSE,	TRUE,	D3DBLEND_DESTCOLOR,	D3DBLEND_ZERO,	TRUE,0);	break;	// ALPHA-ADD
 		};
 		C.r_Sampler			("s_base",	C.L_textures[0],false,oClamp.value?D3DTADDRESS_CLAMP:D3DTADDRESS_WRAP);
+		//	Igor: soft particles
+		//C.r_Sampler			("s_position",	"$user$position");
 		C.r_End				();
 		break;
 	case 4: 	// deffer-EMAP

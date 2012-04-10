@@ -264,7 +264,7 @@ void CAI_Stalker::update_sell_info					()
 	}
 }
 
-bool CAI_Stalker::can_sell							(CInventoryItem const * item)
+bool CAI_Stalker::can_sell							(CInventoryItem const *item)
 {
 	update_sell_info		();
 	xr_vector<CTradeItem>::const_iterator	I = std::find(m_temp_items.begin(),m_temp_items.end(),item->object().ID());

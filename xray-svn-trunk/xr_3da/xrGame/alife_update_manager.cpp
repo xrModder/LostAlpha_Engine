@@ -322,6 +322,30 @@ void CALifeUpdateManager::set_switch_offline	(ALife::_OBJECT_ID id, bool value)
 	object->can_switch_offline		(value);
 }
 
+void CALifeUpdateManager::switch_to_offline(ALife::_OBJECT_ID id)
+{
+	CSE_ALifeDynamicObject *object = objects().object(id, true);
+	VERIFY(object);
+	if (object->m_bOnline)
+	{
+		switch_offline(object);
+		object->can_switch_online(false);
+		object->can_switch_offline(true);
+	}
+}
+
+void CALifeUpdateManager::switch_to_online(ALife::_OBJECT_ID id)
+{
+	CSE_ALifeDynamicObject *object = objects().object(id, true);
+	VERIFY(object);
+	if (!object->m_bOnline)
+	{
+		switch_online(object);
+		object->can_switch_online(true);
+		object->can_switch_offline(false);
+	}
+}
+
 void CALifeUpdateManager::set_interactive		(ALife::_OBJECT_ID id, bool value)
 {
 	CSE_ALifeDynamicObject			*object = objects().object(id);

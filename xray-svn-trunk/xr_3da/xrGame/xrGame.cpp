@@ -16,12 +16,12 @@
 #pragma comment(lib,"xr_3da.lib")
 
 #ifdef NDEBUG
-namespace std {
-	void terminate()
-	{
-		abort();
-	}
-}
+//namespace std {
+//	void terminate()
+//	{
+//		abort();
+//	}
+//}
 #endif // #ifdef NDEBUG
 
 extern "C" {

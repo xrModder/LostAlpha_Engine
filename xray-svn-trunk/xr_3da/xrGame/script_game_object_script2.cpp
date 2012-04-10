@@ -113,9 +113,15 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("rank",						&CScriptGameObject::GetRank)
 		.def("command",						&CScriptGameObject::AddAction)
 		.def("action",						&CScriptGameObject::GetCurrentAction, adopt(result))
+		
 		.def("object_count",				&CScriptGameObject::GetInventoryObjectCount)
 		.def("object",						(CScriptGameObject *(CScriptGameObject::*)(LPCSTR))(&CScriptGameObject::GetObjectByName))
 		.def("object",						(CScriptGameObject *(CScriptGameObject::*)(int))(&CScriptGameObject::GetObjectByIndex))
+
+		.def("object_on_belt_count",		&CScriptGameObject::GetBeltObjectCount)
+		.def("object_on_belt",				(CScriptGameObject *(CScriptGameObject::*)(LPCSTR))(&CScriptGameObject::GetBeltObjectByName))
+		.def("object_on_belt",				(CScriptGameObject *(CScriptGameObject::*)(int))(&CScriptGameObject::GetBeltObjectByIndex))
+
 		.def("active_item",					&CScriptGameObject::GetActiveItem)
 		
 		.def("set_callback",				(void (CScriptGameObject::*)(GameObject::ECallbackType, const luabind::functor<void> &))(&CScriptGameObject::SetCallback))
@@ -131,6 +137,10 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("set_enemy_callback",			(void (CScriptGameObject::*)(const luabind::functor<bool> &, const luabind::object &))(&CScriptGameObject::set_enemy_callback))
 
 		.def("patrol",						&CScriptGameObject::GetPatrolPathName)
+
+		// lost alpha start
+		.def("set_torch_state", &CScriptGameObject::SetTorchState)
+		.def("get_torch_state", &CScriptGameObject::GetTorchState)
 
 		.def("get_ammo_in_magazine",		&CScriptGameObject::GetAmmoElapsed)
 		.def("get_ammo_total",				&CScriptGameObject::GetAmmoCurrent)
@@ -241,13 +251,17 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 
 		.def("item_in_slot",				&CScriptGameObject::item_in_slot)
 		.def("active_slot",					&CScriptGameObject::active_slot)
+		.def("deactivate_slot",				&CScriptGameObject::deactivate_slot)
 		.def("activate_slot",				&CScriptGameObject::activate_slot)
+		.def("move_to_ruck",				&CScriptGameObject::MoveToRuck)
+		.def("move_to_slot",				&CScriptGameObject::MoveToSlot)
+		.def("remove_from_inventory",		&CScriptGameObject::RemoveFromInventory)
 
 #ifdef DEBUG
 		.def("debug_planner",				&CScriptGameObject::debug_planner)
 #endif // DEBUG
 		.def("invulnerable",				(bool (CScriptGameObject::*)() const)&CScriptGameObject::invulnerable)
 		.def("invulnerable",				(void (CScriptGameObject::*)(bool))&CScriptGameObject::invulnerable)
-
+		
 	;return	(instance);
 }

@@ -33,7 +33,8 @@
 	extern void restore_actor();
 #endif
 
-bool g_bDisableAllInput = false;
+bool g_bDisableAllInput			= false;
+bool g_bDisableKeyboardInput	= false;
 extern	float	g_fTimeFactor;
 
 #define CURRENT_ENTITY()	(game?((GameID() == GAME_SINGLE) ? CurrentEntity() : CurrentControlEntity()):NULL)
@@ -100,7 +101,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 
 //.	if (DIK_F10 == key)		vtune.enable();
 //.	if (DIK_F11 == key)		vtune.disable();
-	
+//	Msg("CLevel::IR_OnKeyboardPress(%d)", key);
 	EGameActions _curr = get_binded_action(key);
 	switch ( _curr ) 
 	{
@@ -125,6 +126,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		}break;
 
 	case kPAUSE:
+		/*
 		if(!g_block_pause)
 		{
 			if ( IsGameTypeSingle() )
@@ -133,11 +135,39 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			}
 		}
 		return;
+		*/
 		break;
+/*	
+	case DIK_DIVIDE:
+		if( OnServer() ){
+			if (GameID() == GAME_SINGLE)
+				Server->game->SetGameTimeFactor(g_fTimeFactor);
+			else
+			{
+				Server->game->SetEnvironmentGameTimeFactor(g_fTimeFactor);
+				Server->game->SetGameTimeFactor(g_fTimeFactor);
+			};
+		}
 	
-	};
+		break;	
 
-	if(	g_bDisableAllInput )	return;
+case DIK_MULTIPLY:
+		if( OnServer() ){
+			float NewTimeFactor				= 1000.f;
+			if (GameID() == GAME_SINGLE)
+				Server->game->SetGameTimeFactor(NewTimeFactor);
+			else
+			{
+				Server->game->SetEnvironmentGameTimeFactor(NewTimeFactor);
+			};
+		}
+
+		break;
+*/
+
+	};
+	
+	if(	g_bDisableAllInput || g_bDisableKeyboardInput)	return;
 	if ( !b_ui_exist )			return;
 
 	if ( b_ui_exist && pHUD->GetUI()->IR_OnKeyboardPress(key)) return;
@@ -182,6 +212,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		}
 		break;
 #endif // MASTER_GOLD
+
 #ifdef DEBUG
 	case DIK_RETURN:
 			bDebug	= !bDebug;
@@ -270,9 +301,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		}
 		break;
 	}
-	/**/
-
-
+	  
 	case DIK_DIVIDE:
 		if( OnServer() ){
 //			float NewTimeFactor				= pSettings->r_float("alife","time_factor");
@@ -298,8 +327,10 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			};
 		}
 		break;
+	/**/
 #endif
 #ifdef DEBUG
+//#ifdef NDEBUG
 	case DIK_F9:{
 //		if (!ai().get_alife())
 //			break;
@@ -367,7 +398,7 @@ void CLevel::IR_OnKeyboardRelease(int key)
 {
 	bool b_ui_exist = (pHUD && pHUD->GetUI());
 
-	if (g_bDisableAllInput	) return;
+	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
 	if ( b_ui_exist && pHUD->GetUI()->IR_OnKeyboardRelease(key)) return;
 	if (Device.Paused()		) return;
 	if (game && Game().OnKeyboardRelease(get_binded_action(key)) ) return;
@@ -381,7 +412,7 @@ void CLevel::IR_OnKeyboardRelease(int key)
 
 void CLevel::IR_OnKeyboardHold(int key)
 {
-	if(g_bDisableAllInput) return;
+	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
 
 	bool b_ui_exist = (pHUD && pHUD->GetUI());
 

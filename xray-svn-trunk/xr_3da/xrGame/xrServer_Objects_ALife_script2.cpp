@@ -49,6 +49,18 @@ void CSE_ALifeCar::script_register(lua_State *L)
 	];
 }
 
+void CSE_ALifeMountedTurret::script_register(lua_State *L)
+{
+	module(L)[
+		luabind_class_dynamic_alife2(
+			CSE_ALifeMountedTurret,
+			"cse_alife_mounted_turret",
+			CSE_ALifeDynamicObjectVisual,
+			CSE_PHSkeleton
+		)
+	];
+}
+
 void CSE_ALifeObjectBreakable::script_register(lua_State *L)
 {
 	module(L)[

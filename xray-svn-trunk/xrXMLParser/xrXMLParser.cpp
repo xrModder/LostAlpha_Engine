@@ -83,7 +83,7 @@ bool CXml::Init(LPCSTR path, LPCSTR  xml_filename)
 	if (m_Doc.Error())
 	{
 		string1024			str;
-		sprintf				(str, "XML file:%s value:%s errDescr:%s",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc());
+		sprintf				(str, "XML file:%s value:%s errDescr:%s at [row:%d|col:%d]",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc(), m_Doc.ErrorRow(), m_Doc.ErrorCol());
 		R_ASSERT2			(false, str);
 	} 
 

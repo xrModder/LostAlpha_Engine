@@ -120,11 +120,15 @@ void CAI_Stalker::react_on_grenades		()
 	if (missile && agent_manager().member().group_behaviour()) {
 //		Msg						("%6d : Stalker %s : grenade reaction",Device.dwTimeGlobal,*m_object->cName());
 		CEntityAlive			*initiator = smart_cast<CEntityAlive*>(Level().Objects.net_Find(reaction.m_grenade->CurrentParentID()));
-		if (is_relation_enemy(initiator))
-			sound().play		(StalkerSpace::eStalkerSoundGrenadeAlarm);
-		else
-			if (missile->Position().distance_to(Position()) < FRIENDLY_GRENADE_ALARM_DIST)
-				sound().play	(StalkerSpace::eStalkerSoundFriendlyGrenadeAlarm);
+		if (initiator) {
+			if (is_relation_enemy(initiator))
+				sound().play		(StalkerSpace::eStalkerSoundGrenadeAlarm);
+			else
+				if (missile->Position().distance_to(Position()) < FRIENDLY_GRENADE_ALARM_DIST) {
+					u32 const time	= missile->destroy_time() >= Device.dwTimeGlobal ? u32(missile->destroy_time() - Device.dwTimeGlobal) : 0;
+					sound().play	( StalkerSpace::eStalkerSoundFriendlyGrenadeAlarm, time + 1500, time + 1000 );
+				}
+		}
 	}
 
 	reaction.clear				();
@@ -182,3 +186,4 @@ void CAI_Stalker::process_enemies		()
 		break;
 	}
 }
+

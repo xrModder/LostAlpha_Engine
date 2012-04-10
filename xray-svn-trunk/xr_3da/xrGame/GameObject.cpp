@@ -28,6 +28,7 @@
 #include "game_level_cross_table.h"
 #include "animation_movement_controller.h"
 #include "game_object_space.h"
+#include "map_manager.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -129,6 +130,7 @@ void CGameObject::net_Destroy	()
 
 	xr_delete								(m_lua_game_object);
 	m_spawned								= false;
+
 }
 
 void CGameObject::OnEvent		(NET_Packet& P, u16 type)
@@ -202,6 +204,7 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 					Device.dwFrame);
 			}
 			setDestroy		(TRUE);
+			Level().MapManager().RemoveMapLocationByObjectID(this->ID());
 		}
 		break;
 	}

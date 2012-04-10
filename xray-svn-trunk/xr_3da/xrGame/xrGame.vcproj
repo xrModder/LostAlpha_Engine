@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrGame"
 	ProjectGUID="{200652A6-043E-4634-8837-87983B3BD5E0}"
 	RootNamespace="xrGame"
@@ -51,6 +51,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -70,7 +71,7 @@
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
 				BrowseInformation="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -94,7 +95,7 @@
 				ShowProgress="0"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="X:\libraries"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
@@ -237,7 +238,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -268,13 +269,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
+				FavorSizeOrSpeed="0"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -294,7 +296,7 @@
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
 				BrowseInformation="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -316,7 +318,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="X:\libraries_release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -326,7 +328,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -7026,6 +7028,14 @@
 								>
 							</File>
 							<File
+								RelativePath=".\ai\monsters\burer\burer_state_attack_shield.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\monsters\burer\burer_state_attack_shield_inline.h"
+								>
+							</File>
+							<File
 								RelativePath=".\ai\Monsters\Burer\burer_state_attack_tele.h"
 								>
 							</File>
@@ -9887,76 +9897,18 @@
 								RelativePath=".\ai\stalker\ai_stalker_script_entity.cpp"
 								>
 							</File>
-						</Filter>
-						<Filter
-							Name="SoundDataVisitor"
-							>
-							<File
-								RelativePath=".\stalker_sound_data_visitor.cpp"
+							<Filter
+								Name="Trajectories"
 								>
-								<FileConfiguration
-									Name="Debug|Win32"
+								<File
+									RelativePath=".\trajectories.cpp"
 									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Mixed|Win32"
+								</File>
+								<File
+									RelativePath=".\trajectories.h"
 									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug_Priquel|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Mixed_Priquel|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release_Priquel|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										PrecompiledHeaderThrough="pch_script.h"
-										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath=".\stalker_sound_data_visitor.h"
-								>
-							</File>
-							<File
-								RelativePath=".\stalker_sound_data_visitor_inline.h"
-								>
-							</File>
+								</File>
+							</Filter>
 						</Filter>
 						<Filter
 							Name="SoundUserData"
@@ -9973,6 +9925,76 @@
 								RelativePath=".\stalker_sound_data_inline.h"
 								>
 							</File>
+							<Filter
+								Name="SoundDataVisitor"
+								>
+								<File
+									RelativePath=".\stalker_sound_data_visitor.cpp"
+									>
+									<FileConfiguration
+										Name="Debug|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Debug_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\stalker_sound_data_visitor.h"
+									>
+								</File>
+								<File
+									RelativePath=".\stalker_sound_data_visitor_inline.h"
+									>
+								</File>
+							</Filter>
 						</Filter>
 					</Filter>
 				</Filter>
@@ -12726,80 +12748,6 @@
 						</File>
 					</Filter>
 					<Filter
-						Name="ScriptHit"
-						>
-						<File
-							RelativePath=".\script_hit.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\script_hit.h"
-							>
-						</File>
-						<File
-							RelativePath=".\script_hit_inline.h"
-							>
-						</File>
-						<File
-							RelativePath=".\script_hit_script.cpp"
-							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Mixed|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug_Priquel|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Mixed_Priquel|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release_Priquel|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									PrecompiledHeaderThrough="pch_script.h"
-									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-								/>
-							</FileConfiguration>
-						</File>
-					</Filter>
-					<Filter
 						Name="ScriptIniFile"
 						>
 						<File
@@ -13148,6 +13096,80 @@
 								/>
 							</FileConfiguration>
 						</File>
+						<Filter
+							Name="ScriptHit"
+							>
+							<File
+								RelativePath=".\script_hit.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\script_hit.h"
+								>
+							</File>
+							<File
+								RelativePath=".\script_hit_inline.h"
+								>
+							</File>
+							<File
+								RelativePath=".\script_hit_script.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Mixed|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Mixed_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="ScriptRenderDevice"
@@ -15718,47 +15740,7 @@
 							RelativePath=".\LevelFogOfWar.cpp"
 							>
 							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Mixed|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
 								Name="Release|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug_Priquel|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Mixed_Priquel|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release_Priquel|Win32"
 								ExcludedFromBuild="true"
 								>
 								<Tool
@@ -20049,6 +20031,14 @@
 								Name="HUD"
 								>
 								<File
+									RelativePath=".\weapon_bobbing.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\weapon_bobbing.h"
+									>
+								</File>
+								<File
 									RelativePath=".\WeaponHUD.cpp"
 									>
 								</File>
@@ -20087,6 +20077,130 @@
 								<File
 									RelativePath=".\WeaponStatMgunIR.cpp"
 									>
+								</File>
+							</Filter>
+							<Filter
+								Name="Mounted Turret"
+								>
+								<File
+									RelativePath=".\mounted_turret.cpp"
+									>
+									<FileConfiguration
+										Name="Debug|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Debug_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+								</File>
+								<File
+									RelativePath=".\mounted_turret.h"
+									>
+								</File>
+								<File
+									RelativePath=".\mounted_turret_script.cpp"
+									>
+									<FileConfiguration
+										Name="Debug|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Debug_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Mixed_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
+										Name="Release_Priquel|Win32"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+											PrecompiledHeaderThrough="pch_script.h"
+											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+										/>
+									</FileConfiguration>
 								</File>
 							</Filter>
 						</Filter>
@@ -20411,6 +20525,18 @@
 											PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
 										/>
 									</FileConfiguration>
+								</File>
+							</Filter>
+							<Filter
+								Name="Battery"
+								>
+								<File
+									RelativePath=".\battery.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\battery.h"
+									>
 								</File>
 							</Filter>
 						</Filter>
@@ -20909,6 +21035,14 @@
 						<Filter
 							Name="AcidFog"
 							>
+							<File
+								RelativePath=".\AcidFog.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\AcidFog.h"
+								>
+							</File>
 						</Filter>
 						<Filter
 							Name="CustomZone"
@@ -26571,23 +26705,7 @@
 						RelativePath=".\ui\UIPointerGage.cpp"
 						>
 						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
 							Name="Mixed|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -27135,23 +27253,7 @@
 						RelativePath=".\ui\UISleepWnd.cpp"
 						>
 						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
 							Name="Mixed|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
 							ExcludedFromBuild="true"
 							>
 							<Tool

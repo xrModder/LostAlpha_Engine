@@ -39,6 +39,7 @@ public:
 
 	void						Play				();
 	void						PlayAtPos			(const Fvector &pos);
+	void						Play(const Fvector &pos, const Fvector &dir, const Fvector &vel);
 	void						Stop				();
 	void						StopDeffered		();
 
@@ -51,6 +52,7 @@ public:
 	void						StartPath			(bool looped);
 	void						StopPath			();
 	void						PausePath			(bool val);
+	void SetDir(const Fvector &dir, const Fvector &vel);
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

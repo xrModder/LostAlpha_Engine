@@ -73,6 +73,8 @@ protected:
 	virtual void			net_Relcase			(CObject* O );
 protected:
 
+	//время нахождения в текущем состоянии
+	u32						m_dwStateTime;
 	bool					m_throw;
 	
 	//время уничтожения
@@ -114,6 +116,7 @@ protected:
 protected:
 			void			setup_throw_params		();
 public:
+	Fvector const&			throw_point_offset		() const {return m_vThrowPoint;}
 	virtual void			activate_physic_shell	();
 	virtual void			setup_physic_shell		();
 	virtual void			create_physic_shell		();
@@ -124,7 +127,8 @@ protected:
 
 public:
 	virtual u32				ef_weapon_type			() const;
-	IC		u32				destroy_time			() const {return m_dwDestroyTime;};
+	IC		u32				destroy_time			() const { return m_dwDestroyTime; }
+	IC		int				time_from_begin_throw	() const { return (Device.dwTimeGlobal + m_dwDestroyTimeMax - m_dwDestroyTime); }
 	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/);
 	virtual u16				bone_count_to_synchronize	() const;
 };

@@ -325,6 +325,12 @@ int CUIDragDropListEx::ScrollPos()
 	return m_vScrollBar->GetScrollPos();
 }
 
+void CUIDragDropListEx::SetScrollPos(int pos)
+{
+	m_vScrollBar->SetScrollPos(pos);
+	m_container->SetWndPos		(m_container->GetWndPos().x, float(-m_vScrollBar->GetScrollPos()));
+}
+
 void CUIDragDropListEx::SetItem(CUICellItem* itm) //auto
 {
 	if(m_container->AddSimilar(itm)){
@@ -700,7 +706,9 @@ void CUICellContainer::Draw()
 
 	// fill cell buffer
 	u32 vOffset					= 0;
-	FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.Lock	((tgt_cells.width()+1)*(tgt_cells.height()+1)*6,hGeom.stride(),vOffset);
+	//FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.DEBUG_LOCK	((tgt_cells.width()+1)*(tgt_cells.height()+1)*6,hGeom.stride(),vOffset);
+    FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.Lock	((tgt_cells.width()+1)*(tgt_cells.height()+1)*6,hGeom.stride(),vOffset);
+	
 	FVF::TL* pv					= start_pv;
 	for (int x=0; x<=tgt_cells.width(); ++x){
 		for (int y=0; y<=tgt_cells.height(); ++y){

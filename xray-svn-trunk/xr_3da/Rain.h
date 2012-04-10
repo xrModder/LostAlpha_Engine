@@ -12,6 +12,23 @@
 class ENGINE_API IRender_DetailModel;
 
 
+// gr1ph start
+#define RAIN_MANAGER_LTX "rain_manager"
+
+struct SRainParams
+{
+	public:
+		int		max_desired_items;
+		float	source_radius, source_offset;
+		float	max_distance, sink_offset, drop_length;
+		float	drop_width, drop_angle, drop_max_angle;
+		float	drop_max_wind_vel, drop_speed_min, drop_speed_max;
+		int		max_particles, particles_cache;
+		float	particles_time;
+	public:
+				SRainParams();
+};
+
 //
 class ENGINE_API CEffect_Rain
 {

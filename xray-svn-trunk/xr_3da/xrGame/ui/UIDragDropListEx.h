@@ -77,6 +77,7 @@ public:
 	 const	Ivector2&		CellSize			();
 			void			SetCellSize			(const Ivector2 new_sz);
 			int				ScrollPos			();
+			void			SetScrollPos		(int pos);
 			void			ReinitScroll		();
 			void			GetClientArea		(Frect& r);
 			Fvector2		GetDragItemPosition	();

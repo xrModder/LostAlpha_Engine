@@ -78,6 +78,20 @@ void CUIInventoryWnd::InitInventory()
 		m_pUIAutomaticList->SetItem		(itm);
 	}
 
+	_itm								= m_pInv->m_slots[KNIFE_SLOT].m_pIItem;
+	if(_itm)
+	{
+		CUICellItem* itm				= create_cell_item(_itm);
+		m_pUIKnifeList->SetItem		(itm);
+	}
+
+	_itm								= m_pInv->m_slots[APPARATUS_SLOT].m_pIItem;
+	if(_itm)
+	{
+		CUICellItem* itm				= create_cell_item(_itm);
+		m_pUIBinocularList->SetItem		(itm);
+	}
+
 	PIItem _outfit						= m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
 	CUICellItem* outfit					= (_outfit)?create_cell_item(_outfit):NULL;
 	m_pUIOutfitList->SetItem			(outfit);
@@ -342,6 +356,14 @@ CUIDragDropListEx* CUIInventoryWnd::GetSlotList(u32 slot_idx)
 			return m_pUIAutomaticList;
 			break;
 
+		case KNIFE_SLOT:
+			return m_pUIKnifeList;
+			break;
+
+		case APPARATUS_SLOT:
+			return m_pUIBinocularList;
+			break;
+
 		case OUTFIT_SLOT:
 			return m_pUIOutfitList;
 			break;
@@ -354,9 +376,11 @@ CUIDragDropListEx* CUIInventoryWnd::GetSlotList(u32 slot_idx)
 
 void CUIInventoryWnd::ClearAllLists()
 {
-	m_pUIBagList->ClearAll					(true);
-	m_pUIBeltList->ClearAll					(true);
-	m_pUIOutfitList->ClearAll				(true);
-	m_pUIPistolList->ClearAll				(true);
-	m_pUIAutomaticList->ClearAll			(true);
+	m_pUIBagList->ClearAll(true);
+	m_pUIBeltList->ClearAll(true);
+	m_pUIOutfitList->ClearAll(true);
+	m_pUIPistolList->ClearAll(true);
+	m_pUIAutomaticList->ClearAll(true);
+	m_pUIKnifeList->ClearAll(true);
+	m_pUIBinocularList->ClearAll(true);
 }

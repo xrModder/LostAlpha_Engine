@@ -181,6 +181,7 @@ void CStalkerMovementManager::init_velocity_masks	()
 	add_velocity	(eVelocityWalkDangerCrouchNegative	,m_velocities->velocity(eMentalStateDanger,eBodyStateCrouch,eMovementTypeWalk,eMovementDirectionForward),100*PI		,cf*PI_DIV_2	);
 	add_velocity	(eVelocityRunDangerStandNegative	,m_velocities->velocity(eMentalStateDanger,eBodyStateStand,eMovementTypeRun,eMovementDirectionForward)	,100*PI		,cf*PI			);
 	add_velocity	(eVelocityRunDangerCrouchNegative	,m_velocities->velocity(eMentalStateDanger,eBodyStateCrouch,eMovementTypeRun,eMovementDirectionForward)	,100*PI		,cf*PI			);
+
 }
 
 void CStalkerMovementManager::reinit				()
@@ -315,6 +316,7 @@ void CStalkerMovementManager::setup_velocities		()
 	}
 
 	// setup_movement_type
+	
 	switch (movement_type()) {
 		case eMovementTypeWalk : {
 			velocity_mask	|= eVelocityWalk;
@@ -324,6 +326,7 @@ void CStalkerMovementManager::setup_velocities		()
 			velocity_mask	|= eVelocityRun;
 			break;
 		}
+
 		default : {
 			velocity_mask	|= eVelocityStanding;
 			velocity_mask	&= u32(-1) ^ (eVelocityNegativeVelocity | eVelocityPositiveVelocity);
@@ -474,6 +477,10 @@ void CStalkerMovementManager::parse_velocity_mask	()
 			m_current.m_movement_type	= eMovementTypeRun;
 			break;
 		}
+//		case eVelocityDrunk : {
+//			m_current.m_movement_type	= eMovementTypeDrunk;
+//			break;
+//		}
 		default : NODEFAULT;
 	}
 

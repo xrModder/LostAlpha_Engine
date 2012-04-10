@@ -32,7 +32,8 @@ void CScriptMovementAction::script_register(lua_State *L)
 			[
 				value("walk",					int(MonsterSpace::eMovementTypeWalk)),
 				value("run",					int(MonsterSpace::eMovementTypeRun)),
-				value("stand",					int(MonsterSpace::eMovementTypeStand))
+				value("stand",					int(MonsterSpace::eMovementTypeStand))//,
+//				value("drunk",					int(MonsterSpace::eMovementTypeDrunk))
 			]
 			.enum_("path")
 			[

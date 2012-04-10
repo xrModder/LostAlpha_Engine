@@ -29,6 +29,8 @@ CStalkerAnimationState::~CStalkerAnimationState	()
 void CStalkerAnimationState::Load				(CKinematicsAnimated *kinematics, LPCSTR base_name)
 {
 	string256			S;
+//#pragma todo("remove this later too...")
+	//Msg("CStalkerAnimationState::Load %s", base_name);
 	m_global.Load		(kinematics,base_name);
 	m_torso.Load		(kinematics,strconcat(sizeof(S),S,base_name,"torso_"));
 	m_movement.Load		(kinematics,base_name);

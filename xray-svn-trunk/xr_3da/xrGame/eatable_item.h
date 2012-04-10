@@ -4,6 +4,7 @@
 
 class CPhysicItem;
 class CEntityAlive;
+class CActor;
 
 class CEatableItem : public CInventoryItem {
 private:
@@ -35,6 +36,8 @@ protected:
 	float					m_fMaxPowerUpInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
+	// lost alpha start
+//	BOOL					m_bIsBattery;
 
 	//количество порций еды, 
 	//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)

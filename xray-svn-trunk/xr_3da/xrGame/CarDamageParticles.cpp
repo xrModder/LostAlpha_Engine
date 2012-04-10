@@ -62,6 +62,25 @@ void CCarDamageParticles::Play2(CCar* car)
 	}
 }
 
+void CCarDamageParticles::Stop1(CCar* car)
+{
+	if(*m_car_damage_particles1)
+	{
+		BIDS_I i=bones1.begin(),e=bones1.end();
+		for(;e!=i;++i) car->StopParticles(car->ID(), *i, false);
+	}
+}
+
+void CCarDamageParticles::Stop2(CCar* car)
+{
+	VERIFY(!ph_world->Processing());
+	if(*m_car_damage_particles2)
+	{
+		BIDS_I i=bones2.begin(),e=bones2.end();
+		for(;e!=i;++i) car->StopParticles(car->ID(), *i, false);
+	}
+}
+
 void CCarDamageParticles::PlayWheel1(CCar*car,u16 bone_id)
 {
 	VERIFY(!ph_world->Processing());

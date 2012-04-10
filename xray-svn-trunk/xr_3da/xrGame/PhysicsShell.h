@@ -5,7 +5,9 @@
 #include "PHDefs.h"
 #include "PhysicsCommon.h"
 #include "alife_space.h"
+#include "pch_script.h"
 #include "script_export_space.h"
+
 
 
 class CPhysicsJoint;
@@ -328,7 +330,10 @@ IC					CKinematics					*PKinematics								()																{return m_pKinemati
 	virtual			Fmatrix						&ObjectInRoot								()																							= 0;
 	virtual			void						ObjectToRootForm							(const Fmatrix& form)							    										= 0;
 	virtual			void						SetPrefereExactIntegration					()																							= 0;
-	virtual										~CPhysicsShell								()																							;
+	virtual										~CPhysicsShell								()	;
+	//lost alpha start
+	virtual void ElementsForEach(const luabind::functor<void> &functor) = 0;
+	virtual u32	ElementsCount() = 0;
 	//build_FromKinematics		in returns elements  & joint pointers according bone IDs;
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 	};

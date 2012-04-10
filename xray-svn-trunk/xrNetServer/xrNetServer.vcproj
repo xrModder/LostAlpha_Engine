@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrNetServer"
 	ProjectGUID="{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
+	RootNamespace="xrNetServer"
 	>
 	<Platforms>
 		<Platform
@@ -15,7 +16,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -54,7 +55,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".."
+				AdditionalIncludeDirectories="..;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;XR_NETSERVER_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -103,7 +104,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -168,7 +169,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories=".."
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;XR_NETSERVER_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -275,7 +276,7 @@
 				AdditionalOptions=""
 				Optimization="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories=".."
+				AdditionalIncludeDirectories="..;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;XR_NETSERVER_EXPORTS;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"

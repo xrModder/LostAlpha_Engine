@@ -97,6 +97,7 @@ void CUIPdaWnd::Init()
 
 	if( IsGameTypeSingle() )
 	{
+
 		// Oкно коммуникaции
 		UIPdaContactsWnd		= xr_new<CUIPdaContactsWnd>();
 		UIPdaContactsWnd->Init	();
@@ -145,6 +146,8 @@ void CUIPdaWnd::Init()
 	m_pActiveSection				= eptNoActiveTab;
 
 	RearrangeTabButtons			(UITabControl, m_sign_places_main);
+
+	
 }
 
 void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)

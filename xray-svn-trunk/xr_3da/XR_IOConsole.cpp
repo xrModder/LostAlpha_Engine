@@ -189,6 +189,11 @@ void CConsole::OnRender	()
 			out_font		(pFont,&ls[2],ypos);
 //.			pFont->OutI  (-1.f,ypos,"%s",&ls[2]);
 			break;
+		// lost alpha start
+		case '$':
+			pFont->SetColor(color_rgba(138, 43, 226, 255));
+			out_font		(pFont,&ls[2],ypos);
+			break;
 		default:
 			pFont->SetColor(color_rgba(255,255,255, 255));
 			out_font		(pFont,ls,ypos);
@@ -380,6 +385,17 @@ void CConsole::OnPressKey(int dik, BOOL bHold)
 			}
 		}
 		break;
+	// lost alpha start
+	case DIK_NUMPAD1: strcat(editor, "1"); break;
+	case DIK_NUMPAD2: strcat(editor, "2"); break;
+	case DIK_NUMPAD3: strcat(editor, "3"); break;
+	case DIK_NUMPAD4: strcat(editor, "4"); break;
+	case DIK_NUMPAD5: strcat(editor, "5"); break;
+	case DIK_NUMPAD6: strcat(editor, "6"); break;
+	case DIK_NUMPAD7: strcat(editor, "7"); break;
+	case DIK_NUMPAD8: strcat(editor, "8"); break;
+	case DIK_NUMPAD9: strcat(editor, "9"); break;
+	case DIK_NUMPAD0: strcat(editor, "0"); break;
 	default:
 		break;
 	}

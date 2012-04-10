@@ -31,6 +31,10 @@ void CPhysicsShell::script_register(lua_State *L)
 			.def("is_breakable",				&CPhysicsShell::isBreakable)
 			.def("get_linear_vel",				&CPhysicsShell::get_LinearVel)
 			.def("get_angular_vel",				&CPhysicsShell::get_AngularVel)
+			.def("iterate_bones",				&CPhysicsShell::ElementsForEach)
+			.def("elements_count",				&CPhysicsShell::ElementsCount)
+			.def("apply_gravity",				&CPhysicsShell::set_ApplyByGravity)
+			.def("get_mass",					&CPhysicsShell::getMass)
 		];
 }
 
@@ -50,6 +54,7 @@ void CPhysicsElement::script_register(lua_State *L)
 			.def("release_fixed",				&CPhysicsElement::ReleaseFixed)
 			.def("is_fixed",					&CPhysicsElement::isFixed)
 			.def("global_transform",			&global_transform)
+			.def("apply_impulse",				&CPhysicsElement::applyImpulse)
 		];
 }
 

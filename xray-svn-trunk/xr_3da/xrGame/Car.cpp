@@ -157,13 +157,13 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 	BOOL							R = inherited::net_Spawn(DC);
 
 	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones();
+	PKinematics(Visual())->CalculateBones(TRUE);
 
 	CPHSkeleton::Spawn(e);
 	setEnabled						(TRUE);
 	setVisible						(TRUE);
 	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones();
+	PKinematics(Visual())->CalculateBones(TRUE);
 	m_fSaveMaxRPM					= m_max_rpm;
 	SetfHealth						(co->health);
 
@@ -206,7 +206,7 @@ void CCar::SpawnInitPhysics	(CSE_Abstract	*D)
 	CreateSkeleton					(D);//creates m_pPhysicsShell & fill in bone_map
 	CKinematics *K					=smart_cast<CKinematics*>(Visual());
 	K->CalculateBones_Invalidate();//this need to call callbacks
-	K->CalculateBones	();
+	K->CalculateBones	(TRUE);
 	Init							();//inits m_driving_wheels,m_steering_wheels,m_breaking_wheels values using recieved in ParceDefinitions & from bone_map
 	//PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
 	SetDefaultNetState				(so);
@@ -341,7 +341,7 @@ void CCar::RestoreNetState(CSE_PHSkeleton* po)
 	{
 		
 		PKinematics(Visual())->CalculateBones_Invalidate();
-		PKinematics(Visual())->CalculateBones();
+		PKinematics(Visual())->CalculateBones(TRUE);
 		PPhysicsShell()->DisableCollision();
 		CPHActivationShape activation_shape;//Fvector start_box;m_PhysicMovementControl.Box().getsize(start_box);
 
@@ -579,24 +579,50 @@ void CCar::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_obj
 
 void CCar::ApplyDamage(u16 level)
 {
-	CDamagableItem::ApplyDamage(level);
-	switch(level)
+	if (level == m_level_applied) return;
+
+	if (level > m_level_applied)
 	{
-		case 1: m_damage_particles.Play1(this);break;
-		case 2: 
-			{
-				if(!CDelayedActionFuse::isActive())
+		switch(level)
+		{
+			case 1: m_damage_particles.Play1(this);break;
+			case 2: 
 				{
-					CDelayedActionFuse::CheckCondition(GetfHealth());
+					if(!CDelayedActionFuse::isActive())
+					{
+						CDelayedActionFuse::CheckCondition(GetfHealth());
+					}
+					m_damage_particles.Play2(this);
 				}
-				m_damage_particles.Play2(this);
-			}
-											   break;
-		case 3: m_fuel=0.f;
-			
+												   break;
+			case 3: m_fuel=0.f;
+				
+		}
+	}
+	else
+	{
+		switch(level)
+		{
+			case 0: 
+				m_damage_particles.Stop1(this);
+				break;
+			case 1: 
+				m_damage_particles.Stop2(this);
+				CDelayedActionFuse::Reset();
+				break;		
+		}
 	}
 
+	CDamagableItem::ApplyDamage(level);
 }
+
+float CCar::SetfHealth(float value)
+{
+	float result = CEntity::SetfHealth(value);
+	CDamagableItem::HitEffect();
+	return result;
+}
+
 void CCar::detach_Actor()
 {
 	if(!Owner()) return;

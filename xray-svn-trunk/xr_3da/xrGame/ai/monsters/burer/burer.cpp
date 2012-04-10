@@ -39,7 +39,7 @@ void CBurer::reinit()
 	inherited::reinit			();
 	TScanner::reinit			();
 
-	DeactivateShield			();
+	DeactivateShield();
 
 	time_last_scan				= 0;
 }
@@ -61,6 +61,7 @@ void CBurer::reload(LPCSTR section)
 	// add triple animations
 	com_man().ta_fill_data(anim_triple_gravi,	"stand_gravi_0",	"stand_gravi_1",	"stand_gravi_2",	TA_EXECUTE_ONCE, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 	com_man().ta_fill_data(anim_triple_tele,	"stand_tele_0",		"stand_tele_1",		"stand_tele_2",		TA_EXECUTE_ONCE, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
+	com_man().ta_fill_data(anim_triple_shield,	"stand_tele_0",		"stand_tele_1",		"stand_tele_2",		TA_EXECUTE_LOOPED, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 }
 
 void CBurer::Load(LPCSTR section)
@@ -97,6 +98,10 @@ void CBurer::Load(LPCSTR section)
 	m_tele_object_max_mass			= pSettings->r_float(section,"Tele_Object_Max_Mass");
 	m_tele_find_radius				= pSettings->r_float(section,"Tele_Find_Radius");
 
+	m_shield_cooldown				= READ_IF_EXISTS(pSettings,r_u32,section,"shield_cooldown",4000);
+	m_shield_time					= READ_IF_EXISTS(pSettings,r_u32,section,"shield_time",3000);
+	m_shield_keep_particle			= READ_IF_EXISTS(pSettings,r_string,section,"shield_keep_particle",0);
+	m_shield_keep_particle_period	= READ_IF_EXISTS(pSettings,r_u32,section,"shield_keep_particle_period",1000);
 	particle_fire_shield			= pSettings->r_string(section,"Particle_Shield");
 	
 	SVelocityParam &velocity_none		= move().get_velocity(MonsterMovement::eVelocityParameterIdle);	
@@ -386,5 +391,3 @@ CBaseMonster::SDebugInfo CBurer::show_debug_info()
 	return CBaseMonster::SDebugInfo();
 }
 #endif
-
-

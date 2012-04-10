@@ -36,6 +36,7 @@
 #include "../CameraBase.h"
 #include "ai/stalker/ai_stalker.h"
 #include "car.h"
+#include "mounted_turret.h"
 #include "movement_manager.h"
 #include "detail_path_manager.h"
 
@@ -181,7 +182,7 @@ CScriptGameObject *CScriptGameObject::GetBestEnemy()
 	if (monster->memory().enemy().selected())
 		return				(monster->memory().enemy().selected()->lua_game_object());
 	return					(0);
-}
+} 
 
 const CDangerObject *CScriptGameObject::GetBestDanger()
 {
@@ -235,6 +236,15 @@ void CScriptGameObject::enable_memory_object	(CScriptGameObject *game_object, bo
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member enable_memory_object!");
 	else
 		monster->memory().enable			(&game_object->object(),enable);
+}
+
+void CScriptGameObject::SetFire(CScriptGameObject *obj)
+{
+	CAI_Stalker *stalker = smart_cast<CAI_Stalker*>(&object());
+	CGameObject *target = smart_cast<CGameObject*>(obj);
+	if (!(stalker && target))
+		NODEFAULT;
+	stalker->SetFireForced(target);
 }
 
 const xr_vector<CNotYetVisibleObject> &CScriptGameObject::not_yet_visible_objects() const
@@ -409,6 +419,13 @@ float CScriptGameObject::max_ignore_monster_distance	() const
 		return			(0.f);
 	}
 	return				(stalker->memory().enemy().max_ignore_monster_distance());
+}
+
+CMountedTurret* CScriptGameObject::get_turret()
+{
+	CMountedTurret *turret = smart_cast<CMountedTurret*>(&object());
+	R_ASSERT2(turret, make_string("CMountedTurret: can't cast '%s'", object().cName().c_str()));
+	return turret;
 }
 
 CCar* CScriptGameObject::get_car	()

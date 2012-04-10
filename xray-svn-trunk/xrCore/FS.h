@@ -39,6 +39,7 @@ public:
 	virtual void	seek	(u32 pos)						= 0;
 	virtual u32		tell	()								= 0;
 
+
 	virtual void	w		(const void* ptr, u32 count)	= 0;
 
 	// generalized writing functions

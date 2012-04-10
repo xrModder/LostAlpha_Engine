@@ -272,7 +272,8 @@ void CWallmarksEngine::AddStaticWallmark	(CDB::TRI* pTri, const Fvector* pVerts,
 
 void CWallmarksEngine::AddSkeletonWallmark	(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size)
 {	
-	if( 0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL)				return;
+	if(::RImplementation.phase != CRender::PHASE_NORMAL)				return;
+//	if( 0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL)				return;
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
 	if (xf->c.distance_to_sqr(Device.vCameraPosition) > _sqr(50.f))				return;
 
@@ -284,7 +285,8 @@ void CWallmarksEngine::AddSkeletonWallmark	(const Fmatrix* xf, CKinematics* obj,
 
 void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
-	if(0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL) return;
+//	if(0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL) return;
+if(::RImplementation.phase != CRender::PHASE_NORMAL) return;
 
 	if (!::RImplementation.val_bHUD)
 	{
@@ -305,7 +307,7 @@ extern float r_ssaDISCARD;
 ICF void BeginStream(ref_geom hGeom, u32& w_offset, FVF::LIT*& w_verts, FVF::LIT*& w_start)
 {
 	w_offset				= 0;
-	w_verts					= (FVF::LIT*)RCache.Vertex.Lock	(MAX_TRIS*3,hGeom->vb_stride,w_offset);
+	w_verts					= (FVF::LIT*)RCache.Vertex.Lock (MAX_TRIS*3,hGeom->vb_stride,w_offset);
 	w_start					= w_verts;
 }
 

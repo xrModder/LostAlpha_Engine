@@ -122,9 +122,17 @@ void CScriptStorage::reinit	()
 	}
 	// initialize lua standard library functions 
 	luaopen_base			(lua()); 
-	luaopen_table			(lua());
+	luaL_openlibs           (lua());
+//	luaopen_table			(lua());
 	luaopen_string			(lua());
 	luaopen_math			(lua());
+
+//	luaopen_io				(lua());
+/*
+	if (strstr(Core.Params,"-script_debug")) 
+	{
+		luaopen_debug		(lua());
+	}*/
 
 #ifdef DEBUG
 	luaopen_debug			(lua());
@@ -583,3 +591,26 @@ void CScriptStorage::flush_log()
 	m_output.save_to	(log_file_name);
 }
 #endif // DEBUG
+
+void CScriptStorage::last_called()
+{
+	int level = 0;
+	lua_Debug dbg;
+	lua_State *L = lua();
+	while (lua_getstack(L, level, &dbg))
+	{
+		lua_getinfo(L, "lnuS", &dbg);
+		if (!dbg.name)
+		{
+			Msg("%2d : [%s] %s(%d) : %s", level, dbg.what, dbg.short_src, dbg.currentline, "");
+		}
+		else
+		{
+			if (!xr_strcmp(dbg.what, "C"))
+				Msg("%2d : [C  ] %s", level, dbg.name);
+			else
+				Msg("%2d : [%s] %s(%d) : %s", level, dbg.what, dbg.short_src, dbg.currentline, dbg.name);
+		}
+		level++;
+	}
+}

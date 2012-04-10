@@ -17,6 +17,7 @@
 #include "weaponmagazined.h"
 #include "object_handler_space.h"
 #include "stalker_animation_manager.h"
+#include "object_handler_planner.h"
 
 #define ALLOW_STRANGE_BEHAVIOUR
 
@@ -715,7 +716,7 @@ void CObjectActionDrop::initialize		()
 	P.w_u16					(u16(m_item->object().ID()));
 	m_object->u_EventSend	(P);
 }
-
+/*
 //////////////////////////////////////////////////////////////////////////
 // CObjectActionThreaten
 //////////////////////////////////////////////////////////////////////////
@@ -731,7 +732,7 @@ void CObjectActionThreaten::execute			()
 	if (completed())
 		object().inventory().Action(kWPN_FIRE,	CMD_STOP);
 }
-
+*/
 //////////////////////////////////////////////////////////////////////////
 // CObjectActionAim
 //////////////////////////////////////////////////////////////////////////
@@ -784,4 +785,80 @@ void CObjectActionIdle::initialize	()
 	if (m_storage->property(ObjectHandlerSpace::eWorldPropertyUseEnough))
 		object().CObjectHandler::set_goal(MonsterSpace::eObjectActionActivate,object().inventory().ActiveItem());
 	m_storage->set_property	(ObjectHandlerSpace::eWorldPropertyUseEnough,false);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectActionIdleMissile
+//////////////////////////////////////////////////////////////////////////
+
+CObjectActionIdleMissile::CObjectActionIdleMissile(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name) :
+	inherited			(item,owner,storage,action_name)
+{
+}
+
+void CObjectActionIdleMissile::initialize	()
+{
+	inherited::initialize();
+
+	VERIFY						(m_item);
+	VERIFY						(object().inventory().ActiveItem());
+	VERIFY						(object().inventory().ActiveItem()->object().ID() == m_item->object().ID());
+
+	m_storage->set_property		(
+		object().planner().uid(m_item->object().ID(),ObjectHandlerSpace::eWorldPropertyThrowStarted),
+		false
+	);
+	m_storage->set_property		(
+		object().planner().uid(m_item->object().ID(),ObjectHandlerSpace::eWorldPropertyThrowIdle),
+		false
+	);
+	m_storage->set_property		(
+		object().planner().uid(m_item->object().ID(),ObjectHandlerSpace::eWorldPropertyFiring1),
+		false
+	);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectActionThrowMissile
+//////////////////////////////////////////////////////////////////////////
+
+CObjectActionThrowMissile::CObjectActionThrowMissile	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name) :
+	inherited			(item,owner,storage,action_name)
+{
+}
+
+void CObjectActionThrowMissile::initialize	()
+{
+	inherited::initialize();
+
+	VERIFY						(m_item);
+	VERIFY						(object().inventory().ActiveItem());
+	VERIFY						(object().inventory().ActiveItem()->object().ID() == m_item->object().ID());
+
+	object().inventory().Action	(kWPN_ZOOM,	CMD_START);
+
+	float						distance = object().throw_target().distance_to(object().Position());
+	if (distance > 45) {
+		set_inertia_time		(2500);
+		return;
+	}
+
+	if (distance > 30) {
+		set_inertia_time		(2000);
+		return;
+	}
+
+	if (distance > 15) {
+		set_inertia_time		(1500);
+		return;
+	}
+
+	set_inertia_time			(1000);
+}
+
+void CObjectActionThrowMissile::execute		()
+{
+	inherited::execute		();
+	if (completed())
+		object().inventory().Action	(kWPN_ZOOM,CMD_STOP);
 }

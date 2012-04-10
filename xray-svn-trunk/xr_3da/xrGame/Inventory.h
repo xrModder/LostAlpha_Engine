@@ -87,6 +87,9 @@ public:
 
 	u32						dwfGetObjectCount	();
 	PIItem					tpfGetObjectByIndex	(int iIndex);
+
+	CInventoryItem	*		tpfGetBeltObjectByIndex(int iIndex);
+
 	PIItem					GetItemFromInventory(LPCSTR caItemName);
 
 	bool					Eat					(PIItem pIItem);								

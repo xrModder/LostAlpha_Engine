@@ -165,8 +165,19 @@ void CMissile::OnH_A_Chield()
 void CMissile::OnH_B_Independent(bool just_before_destroy) 
 {
 	inherited::OnH_B_Independent(just_before_destroy);
-
 	m_pHUD->Hide();
+	if (!just_before_destroy) 
+	{
+		VERIFY								(PPhysicsShell());
+		PPhysicsShell()->SetAirResistance	(0.f, 0.f);
+		PPhysicsShell()->set_DynamicScales	(1.f, 1.f);
+
+		if(GetState() == MS_THROW)
+		{
+			Msg("Throw on reject");
+			Throw				();
+		}
+	}
 
 	if(!m_dwDestroyTime && Local()) 
 	{
@@ -178,8 +189,8 @@ void CMissile::OnH_B_Independent(bool just_before_destroy)
 void CMissile::UpdateCL() 
 {
 	inherited::UpdateCL();
-
-	if(GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
+	CActor* pActor	= smart_cast<CActor*>(H_Parent());
+	if(pActor && GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
 		OnStateSwitch(MS_PLAYING);
 	
 	if(GetState() == MS_READY) 
@@ -188,8 +199,8 @@ void CMissile::UpdateCL()
 			SwitchState(MS_THROW);
 		}else 
 		{
-			CActor	*actor = smart_cast<CActor*>(H_Parent());
-			if (actor) {				
+//			CActor	*actor = smart_cast<CActor*>(H_Parent());
+			if (pActor) {				
 				m_fThrowForce		+= (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
 				clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
 			}
@@ -290,6 +301,7 @@ void CMissile::OnStateSwitch	(u32 S)
 
 void CMissile::OnAnimationEnd(u32 state) 
 {
+	/*Msg("CMissile::OnAnimationEnd %d %u %d", ID(), state, GetState());*/
 	switch(state) 
 	{
 	case MS_HIDING:
@@ -304,16 +316,8 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	case MS_THREATEN:
 		{
-			if (!m_fake_missile) {
-				CMissile				*missile = smart_cast<CMissile*>(H_Parent());
-				if (!missile) {
-					CEntityAlive		*entity_alive = smart_cast<CEntityAlive*>(H_Parent());
-					if (!entity_alive || entity_alive->g_Alive())
-					{
-						spawn_fake_missile	();
-					}
-				}
-			}
+			if(!m_fake_missile && !smart_cast<CMissile*>(H_Parent())) 
+				spawn_fake_missile	();
 
 			if(m_throw) 
 				SwitchState(MS_THROW); 
@@ -335,6 +339,7 @@ void CMissile::OnAnimationEnd(u32 state)
 		{
 			OnStateSwitch(MS_IDLE);
 		} break;
+	default: break;
 	}
 }
 
@@ -439,6 +444,7 @@ void CMissile::setup_throw_params()
 
 void CMissile::Throw() 
 {
+	/*Msg("Throw is called for %d", ID());*/
 	VERIFY								(smart_cast<CEntity*>(H_Parent()));
 	setup_throw_params					();
 	
@@ -506,7 +512,7 @@ void CMissile::Destroy()
 bool CMissile::Action(s32 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
-
+	/*Msg("CMissile::Action %d %d %u", ID(), cmd, flags);*/
 	switch(cmd) 
 	{
 	case kWPN_FIRE:
@@ -514,9 +520,11 @@ bool CMissile::Action(s32 cmd, u32 flags)
 			m_constpower = true;			
 			if(flags&CMD_START) 
 			{
-				m_throw = true;
-				if(GetState() == MS_IDLE) 
+				if(GetState()==MS_IDLE) 
+				{
+					m_throw = true;
 					SwitchState(MS_THREATEN);
+				}
 			} 
 			return true;
 		}break;
@@ -527,20 +535,25 @@ bool CMissile::Action(s32 cmd, u32 flags)
         	if(flags&CMD_START) 
 			{
 				m_throw = false;
-				if(GetState() == MS_IDLE) 
+				if(GetState()==MS_IDLE) 
 					SwitchState(MS_THREATEN);
-				else if(GetState() == MS_READY)
+				else 
+				if(GetState()==MS_READY)
 				{
 					m_throw = true; 
 				}
 
 			} 
-			else if(GetState() == MS_READY || GetState() == MS_THREATEN || GetState() == MS_IDLE) 
+			else 
+			{
+			if(GetState()==MS_READY || GetState()==MS_THREATEN || GetState()==MS_IDLE) 
 			{
 				m_throw = true; 
-				if(GetState() == MS_READY) SwitchState(MS_THROW);
+				if(GetState()==MS_READY) 
+					SwitchState(MS_THROW);
 			}
 			return true;
+			}
 		}break;
 	}
 	return false;

@@ -58,46 +58,46 @@ int			ps_r1_GlowsPerFrame			= 16	;					// r1-only
 // R2
 float		ps_r2_ssaLOD_A				= 48.f	;
 float		ps_r2_ssaLOD_B				= 32.f	;
-float		ps_r2_tf_Mipbias			= 0.0f	;
+float		ps_r2_tf_Mipbias			= 0.f	;
 
-// R2-specific
-Flags32		ps_r2_ls_flags				= { R2FLAG_SUN | R2FLAG_SUN_IGNORE_PORTALS | R2FLAG_EXP_DONT_TEST_UNSHADOWED | R2FLAG_USE_NVSTENCIL | R2FLAG_EXP_SPLIT_SCENE | R2FLAG_EXP_MT_CALC};	// r2-only
-float		ps_r2_df_parallax_h			= 0.02f;
+// R2-specific - gr1ph here for lost alpha presets
+Flags32		ps_r2_ls_flags				= { R2FLAG_SUN | R2FLAG_SUN_TSM | R2FLAG_TONEMAP | R2FLAG_SUN_IGNORE_PORTALS | R2FLAG_R1LIGHTS | R2FLAG_SUN_DETAILS | R2FLAG_SUN_FOCUS | R2FLAG_EXP_DONT_TEST_UNSHADOWED | R2FLAG_USE_NVSTENCIL | R2FLAG_EXP_SPLIT_SCENE | R2FLAG_EXP_MT_CALC};	// r2-only
+float		ps_r2_df_parallax_h			= 0.5f;
 float		ps_r2_df_parallax_range		= 75.f;
-float		ps_r2_tonemap_middlegray	= 0.25f;			// r2-only
-float		ps_r2_tonemap_adaptation	= 5.f;				// r2-only
-float		ps_r2_tonemap_low_lum		= 0.001f;			// r2-only
-float		ps_r2_tonemap_amount		= 0.5f;				// r2-only
-float		ps_r2_ls_bloom_kernel_g		= 3.3f;				// r2-only
-float		ps_r2_ls_bloom_kernel_b		= .7f;				// r2-only
-float		ps_r2_ls_bloom_speed		= 10.f;				// r2-only
-float		ps_r2_ls_bloom_kernel_scale	= 1.0f;				// r2-only	// gauss
-float		ps_r2_ls_dsm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_psm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_ssm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_bloom_threshold	= .3f;				// r2-only
-Fvector		ps_r2_aa_barier				= { .8f, .1f, 0};	// r2-only
-Fvector		ps_r2_aa_weight				= { .25f,.25f,0};	// r2-only
-float		ps_r2_aa_kernel				= .5f;				// r2-only
-float		ps_r2_mblur					= .5f;				// .5f
+float		ps_r2_tonemap_middlegray	= 1.2f;			// r2-only
+float		ps_r2_tonemap_adaptation	= 1.f;				// r2-only
+float		ps_r2_tonemap_low_lum		= 0.4f;			// r2-only
+float		ps_r2_tonemap_amount		= 1.f;				// r2-only
+float		ps_r2_ls_bloom_kernel_g		= 3.f;	// was 3.3f			// r2-only
+float		ps_r2_ls_bloom_kernel_b		= 0.5f;		// was 0.7f		// r2-only
+float		ps_r2_ls_bloom_speed		= 100.f;	// was 10.f			// r2-only
+float		ps_r2_ls_bloom_kernel_scale	= 0.7f;		// was 0.5f		// r2-only	// gauss
+float		ps_r2_ls_dsm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_psm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_ssm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_bloom_threshold	= 0.0f;		// was 0.3f		// r2-only
+Fvector		ps_r2_aa_barier				= {0.800000, 0.100000, 0.000000}; //{ .8f, .1f, 0};	// r2-only
+Fvector		ps_r2_aa_weight				= { 0.250000, 0.250000, 0.000000};	// r2-only
+float		ps_r2_aa_kernel				= 0.5f;				// r2-only
+float		ps_r2_mblur					= 0.03f;				// .5f
 int			ps_r2_GI_depth				= 1;				// 1..5
 int			ps_r2_GI_photons			= 16;				// 8..64
-float		ps_r2_GI_clip				= EPS_L;			// EPS
+float		ps_r2_GI_clip				= 0.f; //EPS_L;			// EPS
 float		ps_r2_GI_refl				= .9f;				// .9f
 float		ps_r2_ls_depth_scale		= 1.00001f;			// 1.00001f
 float		ps_r2_ls_depth_bias			= -0.0001f;			// -0.0001f
 float		ps_r2_ls_squality			= 1.0f;				// 1.00f
-float		ps_r2_sun_tsm_projection	= 0.18f;			// 0.18f
-float		ps_r2_sun_tsm_bias			= -0.05f;			// 
-float		ps_r2_sun_near				= 12.f;				// 12.0f
-float		ps_r2_sun_near_border		= 0.66f;			// 1.0f
+float		ps_r2_sun_tsm_projection	= 0.3f;			// 0.18f
+float		ps_r2_sun_tsm_bias			= -0.01f;			// 
+float		ps_r2_sun_near				= 20.f;				// 12.0f
+float		ps_r2_sun_near_border		= 0.99f;			// 1.0f
 float		ps_r2_sun_depth_far_scale	= 1.00000f;			// 1.00001f
 float		ps_r2_sun_depth_far_bias	= 0.00000f;			// -0.0000f
-float		ps_r2_sun_depth_near_scale	= 1.00001f;			// 1.00001f
-float		ps_r2_sun_depth_near_bias	= -0.00004f;		// -0.00005f
+float		ps_r2_sun_depth_near_scale	= 1.f; // was 1.00001f;			// 1.00001f
+float		ps_r2_sun_depth_near_bias	= 0.f; //was -0.00004f;		// -0.00005f
 float		ps_r2_sun_lumscale			= 1.0f;				// 1.0f
 float		ps_r2_sun_lumscale_hemi		= 1.0f;				// 1.0f
-float		ps_r2_sun_lumscale_amb		= 1.0f;
+float		ps_r2_sun_lumscale_amb		= 0.3f;
 float		ps_r2_gmaterial				= 0.f;				// 
 float		ps_r2_zfill					= 0.1f;				// .1f
 
@@ -106,11 +106,11 @@ int			ps_r2_dhemi_count			= 5;				// 5
 int			ps_r2_wait_sleep			= 0;
 
 float		ps_r2_lt_smooth				= 1.f;				// 1.f
-float		ps_r2_slight_fade			= 1.f;				// 1.f
+float		ps_r2_slight_fade			= 2.f;				// 1.f
 
 
 //- Mad Max
-float		ps_r2_gloss_factor			= 1.0f;
+float		ps_r2_gloss_factor			= 1.f;
 //- Mad Max
 #ifndef _EDITOR
 #include	"..\xr_ioconsole.h"
@@ -147,7 +147,7 @@ public:
 			CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) value)));
 	}
 
-	CCC_tf_MipBias(LPCSTR N, float*	v) : CCC_Float(N, v, -0.5f, +0.5f)	{ };
+	CCC_tf_MipBias(LPCSTR N, float*	v) : CCC_Float(N, v, -3.0f, +3.0f)	{ };
 	virtual void Execute(LPCSTR args)
 	{
 		CCC_Float::Execute	(args);
@@ -244,20 +244,24 @@ void		xrRender_initconsole	()
 
 // Common
 	CMD1(CCC_Screenshot,"screenshot"			);
+
+
 #ifdef DEBUG
 #if RENDER==R_R2
 	CMD1(CCC_BuildSSA,	"build_ssa"				);
 #endif
 	CMD4(CCC_Integer,	"r__lsleep_frames",		&ps_r__LightSleepFrames,	4,		30		);
-	CMD4(CCC_Float,		"r__ssa_glod_start",	&ps_r__GLOD_ssa_start,		128,	512		);
-	CMD4(CCC_Float,		"r__ssa_glod_end",		&ps_r__GLOD_ssa_end,		16,		96		);
-	CMD4(CCC_Float,		"r__wallmark_shift_pp",	&ps_r__WallmarkSHIFT,		0.0f,	1.f		);
-	CMD4(CCC_Float,		"r__wallmark_shift_v",	&ps_r__WallmarkSHIFT_V,		0.0f,	1.f		);
-	CMD4(CCC_Float,		"r__wallmark_ttl",		&ps_r__WallmarkTTL,			1.0f,	5.f*60.f);
 	CMD1(CCC_ModelPoolStat,"stat_models"		);
 #endif // DEBUG
 
+	CMD4(CCC_Float,		"r__ssa_glod_start",	&ps_r__GLOD_ssa_start,		128,	512		);
+	CMD4(CCC_Float,		"r__ssa_glod_end",		&ps_r__GLOD_ssa_end,		16,		96		);
+
 //	CMD4(CCC_Integer,	"r__supersample",		&ps_r__Supersample,			1,		4		);
+
+	CMD4(CCC_Float,		"r__wallmark_shift_pp",	&ps_r__WallmarkSHIFT,		0.0f,	1.f		);
+	CMD4(CCC_Float,		"r__wallmark_shift_v",	&ps_r__WallmarkSHIFT_V,		0.0f,	1.f		);
+	CMD4(CCC_Float,		"r__wallmark_ttl",		&ps_r__WallmarkTTL,			1.0f,	5.f*60.f);
 
 	Fvector	tw_min,tw_max;
 	
@@ -265,7 +269,8 @@ void		xrRender_initconsole	()
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
 //.	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.05f,	0.99f	);
-	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.2f,	0.6f	);
+//	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.2f,	0.6f	);
+CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.02f,	1.00f	);
 
 #ifdef DEBUG
 	CMD4(CCC_Float,		"r__detail_l_ambient",	&ps_r__Detail_l_ambient,	.5f,	.95f	);

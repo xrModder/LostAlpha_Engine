@@ -44,18 +44,20 @@ void	CCar::cam_Update			(float dt, float fov)
 	Level().Cameras().Update		(active_camera);
 }
 
+
 void	CCar::OnCameraChange		(int type)
 {
 	if(Owner())
 	{
-		if	(type==ectFirst)
-		{
-			Owner()->setVisible(FALSE);
-		}
-		else if(active_camera->tag==ectFirst)
-		{
+		// if	(type==ectFirst)
+		// {
+		//	Owner()->setVisible(FALSE);
+		// }
+		// else if(active_camera->tag==ectFirst)
+		// {
 			Owner()->setVisible(TRUE);
-		}
+
+		// }
 	}
 	
 	if (!active_camera||active_camera->tag!=type){

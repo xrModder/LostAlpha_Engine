@@ -32,7 +32,10 @@ void CDamagableItem::Init(float max_health,u16 level_num)
 void CDamagableItem::HitEffect()
 {
 	u16 new_lewel=DamageLevel();
-	for(u16 i=m_level_applied+1;i<=new_lewel;i++) ApplyDamage(i);
+	if (new_lewel > m_level_applied)
+		for(u16 i=m_level_applied+1;i<=new_lewel;i++) ApplyDamage(i);
+	else
+		for(int i=(int)m_level_applied-1;i>=new_lewel;i--) ApplyDamage(i);
 }
 void CDamagableItem::ApplyDamage(u16 level)
 {

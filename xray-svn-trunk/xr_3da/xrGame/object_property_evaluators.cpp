@@ -171,3 +171,49 @@ CObjectPropertyEvaluatorMissile::_value_type CObjectPropertyEvaluatorMissile::ev
 	VERIFY			(m_item);
 	return			(_value_type((m_item->GetState() == m_state) == m_equality));
 }
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectPropertyEvaluatorMissileStarted
+//////////////////////////////////////////////////////////////////////////
+
+CObjectPropertyEvaluatorMissileStarted::CObjectPropertyEvaluatorMissileStarted	(CMissile *item, CAI_Stalker *owner) :
+	inherited		(item,owner)
+{
+}
+
+CObjectPropertyEvaluatorMissileStarted::_value_type CObjectPropertyEvaluatorMissileStarted::evaluate	()
+{
+	VERIFY			(m_item);
+	if (m_item->GetState() != MS_THROW)
+		return		(false);
+
+	return			(true);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectPropertyEvaluatorMissileHidden
+//////////////////////////////////////////////////////////////////////////
+
+CObjectPropertyEvaluatorMissileHidden::CObjectPropertyEvaluatorMissileHidden	(CMissile *item, CAI_Stalker *owner) :
+	inherited		(item,owner)
+{
+}
+
+CObjectPropertyEvaluatorMissileHidden::_value_type CObjectPropertyEvaluatorMissileHidden::evaluate	()
+{
+	VERIFY			(m_item);
+
+	if (!object().inventory().ActiveItem())
+		return		(true);
+
+	if (object().inventory().ActiveItem() != m_item)
+		return		(true);
+
+	if (m_item->GetState() == MS_HIDDEN)
+		return		(true);
+
+	if (m_item->GetState() == MS_SHOWING)
+		return		(true);
+
+	return			(false);
+}

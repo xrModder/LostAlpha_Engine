@@ -62,6 +62,7 @@
 #include "Game_Object_Space.h"
 #include "script_callback_ex.h"
 #include "InventoryBox.h"
+#include "mounted_turret.h"
 #include "location_manager.h"
 
 const u32		patch_frames	= 50;
@@ -155,7 +156,7 @@ CActor::CActor() : CEntityAlive()
 	inventory().SetBeltUseful(true);
 
 	m_pPersonWeLookingAt	= NULL;
-	m_pVehicleWeLookingAt	= NULL;
+	m_pHolderWeLookingAt	= NULL;
 	m_pObjectWeLookingAt	= NULL;
 	m_bPickupMode			= false;
 
@@ -190,6 +191,8 @@ CActor::CActor() : CEntityAlive()
 	m_dwILastUpdateTime		= 0;
 
 	m_location_manager		= xr_new<CLocationManager>(this);
+	m_current_torch = 0;
+//	m_torch_battery_duration = 0;
 }
 
 
@@ -406,6 +409,7 @@ if(!g_dedicated_server)
 	m_sCarCharacterUseAction		= "car_character_use";
 	m_sInventoryItemUseAction		= "inventory_item_use";
 	m_sInventoryBoxUseAction		= "inventory_box_use";
+	m_sTurretCharacterUseAction		= "turret_character_use";
 	//---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
 
@@ -853,7 +857,7 @@ float CActor::currentFOV()
 	else
 		return g_fov;
 }
-
+extern int g_bHudAdjustMode;
 void CActor::UpdateCL	()
 {
 	if(m_feel_touch_characters>0)
@@ -912,12 +916,22 @@ void CActor::UpdateCL	()
 			float fire_disp_full = pWeapon->GetFireDispersion(true);
 
 			HUD().SetCrosshairDisp(fire_disp_full, 0.02f);
-			HUD().ShowCrosshair(pWeapon->use_crosshair());
+			if (psHUD_Flags.test(HUD_USE_CROSSHAIR))
+				HUD().ShowCrosshair(pWeapon->use_crosshair());
+			else
+				HUD().ShowCrosshair(false);
 
 			psHUD_Flags.set( HUD_CROSSHAIR_RT2, pWeapon->show_crosshair() );
 			psHUD_Flags.set( HUD_DRAW_RT,		pWeapon->show_indicators() );
 		}
 
+	}
+	else if (m_holder && smart_cast<CMountedTurret*>(m_holder))
+	{
+		HUD().SetCrosshairDisp(0.f);
+		HUD().ShowCrosshair(true);
+		psHUD_Flags.set(HUD_CROSSHAIR_RT2, true);
+		psHUD_Flags.set(HUD_DRAW_RT, true);
 	}
 	else
 	{
@@ -947,6 +961,11 @@ void CActor::UpdateCL	()
 		else
 			xr_delete(m_sndShockEffector);
 	}
+	CTorch *flashlight = GetCurrentTorch();
+	if (flashlight)
+		flashlight->UpdateBattery();
+//	if (g_bHudAdjustMode)
+//		StopAnyMove();
 }
 
 float	NET_Jump = 0;
@@ -1141,7 +1160,7 @@ void CActor::shedule_Update	(u32 DT)
 		m_pInvBoxWeLookingAt			= smart_cast<CInventoryBox*>(game_object);
 		inventory().m_pTarget			= smart_cast<PIItem>(game_object);
 		m_pPersonWeLookingAt			= smart_cast<CInventoryOwner*>(game_object);
-		m_pVehicleWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
+		m_pHolderWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
 		CEntityAlive* pEntityAlive		= smart_cast<CEntityAlive*>(game_object);
 		
 		if (GameID() == GAME_SINGLE )
@@ -1164,8 +1183,14 @@ void CActor::shedule_Update	(u32 DT)
 					else
 						m_sDefaultObjAction = m_sDeadCharacterUseAction;
 
-				}else if (m_pVehicleWeLookingAt)
-					m_sDefaultObjAction = m_sCarCharacterUseAction;
+				}
+				else if (m_pHolderWeLookingAt)
+				{
+					if (smart_cast<CCar*>(m_pHolderWeLookingAt))
+						m_sDefaultObjAction = m_sCarCharacterUseAction;
+					else
+						m_sDefaultObjAction = m_sTurretCharacterUseAction;
+				}
 
 				else if (inventory().m_pTarget && inventory().m_pTarget->CanTake() )
 					m_sDefaultObjAction = m_sInventoryItemUseAction;
@@ -1183,7 +1208,7 @@ void CActor::shedule_Update	(u32 DT)
 		m_sDefaultObjAction		= NULL;
 		m_pUsableObject			= NULL;
 		m_pObjectWeLookingAt	= NULL;
-		m_pVehicleWeLookingAt	= NULL;
+		m_pHolderWeLookingAt	= NULL;
 		m_pInvBoxWeLookingAt	= NULL;
 	}
 
@@ -1276,6 +1301,7 @@ void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, ref_shader Ind
 	if (!g_Alive()) return;
 
 	u32			dwOffset = 0,dwCount = 0;
+//	FVF::LIT* pv_start				= (FVF::LIT*)RCache.Vertex.DEBUG_LOCK(4,hFriendlyIndicator->vb_stride,dwOffset);
 	FVF::LIT* pv_start				= (FVF::LIT*)RCache.Vertex.Lock(4,hFriendlyIndicator->vb_stride,dwOffset);
 	FVF::LIT* pv					= pv_start;
 	// base rect
@@ -1698,4 +1724,44 @@ CCustomOutfit* CActor::GetOutfit() const
 {
 	PIItem _of	= inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
+}
+
+// lost alpha start
+
+void CActor::RechargeTorchBattery(void)
+{
+	m_current_torch->Recharge();
+}
+
+CTorch *CActor::GetCurrentTorch(void)
+{
+	CTorch *torch = 0;
+	if (!m_current_torch)
+	{
+		const xr_vector<CAttachableItem*> &all = CAttachmentOwner::attached_objects();
+		xr_vector<CAttachableItem*>::const_iterator it, last;
+		for (it = all.begin(), last = all.end(); it != last; ++it)
+		{
+			torch = smart_cast<CTorch*>(*it);
+			if (torch)
+			{
+				m_current_torch = torch;
+				break;
+			}
+		}
+	}
+//	R_ASSERT(m_current_torch);
+	return m_current_torch;
+}
+
+bool CActor::UsingTurret()
+{
+	return m_holder && smart_cast<CMountedTurret*>(m_holder);
+}
+
+u16 CActor::GetTurretTemp()
+{
+	CMountedTurret *turret = smart_cast<CMountedTurret*>(m_holder);
+	R_ASSERT(turret);
+	return turret->GetTemperature();
 }

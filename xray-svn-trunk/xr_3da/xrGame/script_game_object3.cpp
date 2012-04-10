@@ -620,6 +620,51 @@ CScriptGameObject	*CScriptGameObject::GetObjectByIndex	(int iIndex) const
 	}
 }
 
+u32	CScriptGameObject::GetBeltObjectCount() const
+{
+	CInventoryOwner		*l_tpInventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (l_tpInventoryOwner)
+		return			(l_tpInventoryOwner->inventory().m_belt.size());
+	else {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member belt_obj_count!");
+		return			(0);
+	}
+}
+
+CScriptGameObject	*CScriptGameObject::GetBeltObjectByName	(LPCSTR caObjectName) const
+{
+	CInventoryOwner		*l_tpInventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (l_tpInventoryOwner) {
+		CInventoryItem	*l_tpInventoryItem = l_tpInventoryOwner->inventory().Get(caObjectName, false);
+		CGameObject		*l_tpGameObject = smart_cast<CGameObject*>(l_tpInventoryItem);
+		if (!l_tpGameObject)
+			return		(0);
+		else
+			return		(l_tpGameObject->lua_game_object());
+	}
+	else {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member object_on_belt!");
+		return			(0);
+	}
+}
+
+CScriptGameObject	*CScriptGameObject::GetBeltObjectByIndex	(int iIndex) const
+{
+	CInventoryOwner		*l_tpInventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (l_tpInventoryOwner) {
+		CInventoryItem	*l_tpInventoryItem = l_tpInventoryOwner->inventory().tpfGetBeltObjectByIndex(iIndex);
+		CGameObject		*l_tpGameObject = smart_cast<CGameObject*>(l_tpInventoryItem);
+		if (!l_tpGameObject)
+			return		(0);
+		else
+			return		(l_tpGameObject->lua_game_object());
+	}
+	else {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member object_on_belt!");
+		return			(0);	
+	}
+}
+
 void CScriptGameObject::EnableAnomaly()
 {
 	CCustomZone		*zone = smart_cast<CCustomZone*>(&object()); THROW(zone);

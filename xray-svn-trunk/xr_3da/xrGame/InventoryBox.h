@@ -14,4 +14,5 @@ public:
 	virtual		void	net_Relcase						(CObject* O	);
 				void	AddAvailableItems				(TIItemContainer& items_container) const;
 				bool	IsEmpty							() {return m_items.empty();}
+
 };

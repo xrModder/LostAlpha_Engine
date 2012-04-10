@@ -201,7 +201,7 @@ MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState
 		slot						= 0;
 
 	const xr_vector<CAniVector>		&animation = m_data_storage->m_part_animations.A[body_state].m_torso.A[slot].A;
-
+//	CKinematicsAnimated *K = smart_cast<CKinematicsAnimated*>(object().Visual());
 	switch (m_missile->GetState()) {
 		case MS_SHOWING	 :
 			return					(torso().select(animation[0].A));
@@ -214,14 +214,24 @@ MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState
 		case MS_THROW	 :
 			return					(animation[1].A[2]);
 		case MS_END		 :
-			return					(animation[1].A[2]);
+			return					(animation[6].A[0]);
 		case MS_PLAYING	 :
-			return					(animation[1].A[2]);
-		case MS_IDLE	 :
-		case MS_HIDDEN	 :
-		case MS_EMPTY	 :
-		default			 :
-			return					(torso().select(animation[6].A));
+			return					(animation[1].A[1]);
+		case MS_HIDDEN   : 
+			return					(animation[6].A[0]);
+		case MS_EMPTY:
+		case MS_IDLE:
+		default:
+		{
+			if (standing()) {
+				return				(animation[6].A[0]);
+			}
+			if (object().movement().movement_type() == eMovementTypeWalk)
+			{
+				return animation[6].A[2];
+			}
+			return animation[6].A[3];	
+		}
 	}
 }
 

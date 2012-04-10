@@ -7,12 +7,11 @@ class	CStateBloodsuckerVampire : public CState<_Object> {
 	typedef CState<_Object>*	state_ptr;
 
 	u32					m_time_last_vampire;
-
-	const CEntityAlive *enemy;
+    
 
 public:
 						CStateBloodsuckerVampire		(_Object *obj);
-	
+
 	virtual void		reinit							();
 	
 	virtual void		initialize						();
@@ -24,6 +23,11 @@ public:
 
 	virtual void		setup_substates					();
 	virtual void		check_force_state				();
+
+	const CEntityAlive *m_enemy;
+    const CAI_Bloodsucker *monster;
+//	float b_max_reach_distance;
 };
+
 
 #include "bloodsucker_vampire_inline.h"

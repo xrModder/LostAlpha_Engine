@@ -317,6 +317,39 @@ bool dont_has_info								(const CALifeSimulator *self, const ALife::_OBJECT_ID 
 	// absurdly, but only because of scriptwriters needs
 	return								(!has_info(self,id,info_id));
 }
+// lost alpha start
+void teleport_entity(CALifeSimulator *self, CSE_Abstract *object, Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id)
+{
+	VERIFY(self);
+	THROW(object);
+	self->teleport_object(object->ID, game_vertex_id, level_vertex_id, position);
+}
+
+void script_switch_to_offline(CALifeSimulator *self, u16 id)
+{
+	VERIFY(self);
+	self->switch_to_offline(id);
+}
+
+void script_switch_to_online(CALifeSimulator *self, u16 id)
+{
+	VERIFY(self);
+	self->switch_to_online(id);
+}
+
+void force_entity_update(const CALifeSimulator *self, u16 id)
+{
+	NET_Packet p;
+	CSE_Abstract *sobj = 0;
+	CSE_ALifeDynamicObject *dsobj = 0;
+	VERIFY(self);
+	dsobj = self->objects().object(id, true);
+	R_ASSERT2(dsobj, make_string("can't find entity [%d]", id));
+	sobj = smart_cast<CSE_Abstract*>(dsobj);
+	p.w_begin(M_UPDATE);
+	sobj->UPDATE_Write(p);
+
+}
 
 //void disable_info_portion						(const CALifeSimulator *self, const ALife::_OBJECT_ID &id)
 //{
@@ -363,6 +396,11 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("dont_has_info",			&dont_has_info)
 			.def("switch_distance",			&CALifeSimulator::switch_distance)
 			.def("switch_distance",			&CALifeSimulator::set_switch_distance)
+			// lost alpha start
+			.def("teleport_entity",			&teleport_entity)
+			.def("switch_offline",			&script_switch_to_offline)
+			.def("switch_online",			&script_switch_to_online)
+			.def("force_entity_update",		&force_entity_update)
 
 		,def("alife",						&alife)
 	];

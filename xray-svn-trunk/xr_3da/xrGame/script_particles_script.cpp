@@ -18,7 +18,9 @@ void CScriptParticles::script_register(lua_State *L)
 	[
 		class_<CScriptParticles>("particles_object")
 			.def(								constructor<LPCSTR>())
-			.def("play",						&CScriptParticles::Play)
+			// lost alpha edit
+			.def("play",						(void (CScriptParticles::*)(void))(&CScriptParticles::Play))
+			.def("play",						(void (CScriptParticles::*)(const Fvector &, const Fvector &, const Fvector &))(&CScriptParticles::Play))
 			.def("play_at_pos",					&CScriptParticles::PlayAtPos)
 			.def("stop",						&CScriptParticles::Stop)
 			.def("stop_deffered",				&CScriptParticles::StopDeffered)
@@ -32,5 +34,6 @@ void CScriptParticles::script_register(lua_State *L)
 			.def("start_path",					&CScriptParticles::StartPath)
 			.def("stop_path",					&CScriptParticles::StopPath)
 			.def("pause_path",					&CScriptParticles::PausePath)
+			.def("set_dir", &CScriptParticles::SetDir)
 	];
 }

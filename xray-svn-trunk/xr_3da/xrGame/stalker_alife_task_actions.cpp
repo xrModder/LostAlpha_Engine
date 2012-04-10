@@ -208,6 +208,7 @@ void CStalkerActionSmartTerrain::execute				()
 {
 	inherited::execute					();
 
+#ifndef GRENADE_TEST
 	if (completed())
 		object().CObjectHandler::set_goal		(eObjectActionStrapped,object().best_weapon());
 
@@ -234,4 +235,20 @@ void CStalkerActionSmartTerrain::execute				()
 	}
 
 	object().movement().set_nearest_accessible_position	(task->position(),task->level_vertex_id());
+#else
+	object().movement().set_desired_direction	(0);
+	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().movement().set_body_state			(eBodyStateStand);
+	object().movement().set_movement_type		(eMovementTypeStand);
+	object().movement().set_mental_state		(eMentalStateDanger);
+	object().sight().setup						(CSightAction(g_actor,true));
+	object().throw_target						(g_actor->Position(), g_actor);
+	if (object().throw_enabled()) {
+		object().CObjectHandler::set_goal		(eObjectActionFire1,object().inventory().ItemFromSlot(GRENADE_SLOT));
+		return;
+	}
+
+	object().CObjectHandler::set_goal			(eObjectActionIdle,object().inventory().ItemFromSlot(GRENADE_SLOT));
+#endif
 }

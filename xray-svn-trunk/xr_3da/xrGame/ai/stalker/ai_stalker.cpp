@@ -80,6 +80,7 @@ CAI_Stalker::CAI_Stalker			()
 	m_boneHitProtection				= NULL;
 	m_power_fx_factor				= flt_max;
 	m_wounded						= false;
+	
 #ifdef DEBUG
 	m_debug_planner					= 0;
 #endif // DEBUG
@@ -163,11 +164,19 @@ void CAI_Stalker::reinit			()
 	m_computed_object_position		= Fvector().set(flt_max,flt_max,flt_max);
 	m_computed_object_direction		= Fvector().set(flt_max,flt_max,flt_max);
 
-	m_throw_target					= Fvector().set(flt_max,flt_max,flt_max);
+	m_throw_target_position			= Fvector().set(flt_max,flt_max,flt_max);
+	m_throw_ignore_object			= 0;
 
-	m_throw_force					= flt_max;
 	m_throw_position				= Fvector().set(flt_max,flt_max,flt_max);
-	m_throw_direction				= Fvector().set(flt_max,flt_max,flt_max);
+	m_throw_velocity				= Fvector().set(flt_max,flt_max,flt_max);
+
+	m_throw_collide_position		= Fvector().set(flt_max,flt_max,flt_max);
+	m_throw_enabled					= false;
+
+	m_last_throw_time				= 0;
+
+	m_can_throw_grenades			= true;
+	m_throw_time_interval			= 20000;
 
 	brain().CStalkerPlanner::m_storage.set_property	(StalkerDecisionSpace::eWorldPropertyCriticallyWounded,	false);
 
@@ -211,6 +220,7 @@ void CAI_Stalker::LoadSounds		(LPCSTR section)
 	sound().add						(pSettings->r_string(section,"sound_kill_wounded"),					100, SOUND_TYPE_MONSTER_TALKING,	5, u32(eStalkerSoundMaskKillWounded),				eStalkerSoundKillWounded,				head_bone_name, xr_new<CStalkerSoundData>(this));
 	sound().add						(pSettings->r_string(section,"sound_enemy_critically_wounded"),		100, SOUND_TYPE_MONSTER_TALKING,	4, u32(eStalkerSoundMaskEnemyCriticallyWounded),	eStalkerSoundEnemyCriticallyWounded,	head_bone_name, xr_new<CStalkerSoundData>(this));
 	sound().add						(pSettings->r_string(section,"sound_enemy_killed_or_wounded"),		100, SOUND_TYPE_MONSTER_TALKING,	4, u32(eStalkerSoundMaskEnemyKilledOrWounded),		eStalkerSoundEnemyKilledOrWounded,		head_bone_name, xr_new<CStalkerSoundData>(this));
+	sound().add						(pSettings->r_string(section,"snd_throw_grenade"),				100, SOUND_TYPE_MONSTER_TALKING,	5, u32(eStalkerSoundMaskKillWounded),				eStalkerSoundThrowGrenade,				head_bone_name, xr_new<CStalkerSoundData>(this));
 }
 
 void CAI_Stalker::reload			(LPCSTR section)
@@ -624,6 +634,8 @@ void CAI_Stalker::create_anim_mov_ctrl	(CBlend *b)
 void CAI_Stalker::destroy_anim_mov_ctrl	()
 {
 	inherited::destroy_anim_mov_ctrl();
+	if (!g_Alive())
+		return;
 	
 	sight().enable					(m_sight_enabled_before_animation_controller);
 

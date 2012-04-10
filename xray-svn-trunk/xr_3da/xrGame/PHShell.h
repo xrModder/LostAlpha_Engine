@@ -261,5 +261,9 @@ private:
 				void				ReanableObject					()																				;
 				void				ExplosionHit					(const Fvector& pos, const Fvector& dir, float val,const u16 id)				;
 				void				ClearBreakInfo					();
+
+				// lost alpha start
+				virtual void ElementsForEach(const luabind::functor<void> &functor);
+				virtual u32	ElementsCount() { return Elements().size(); }
 };
 #endif

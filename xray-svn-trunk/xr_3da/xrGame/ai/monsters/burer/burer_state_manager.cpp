@@ -28,6 +28,8 @@ CStateManagerBurer::CStateManagerBurer(CBurer *monster) : inherited(monster)
 	add_state(eStateHearDangerousSound,		xr_new<CStateMonsterHearDangerousSound<CBurer> >	(monster));
 	add_state(eStateHitted,					xr_new<CStateMonsterHitted<CBurer> >				(monster));
 	add_state(eStateBurerScanning,			xr_new<CStateMonsterCustomAction<CBurer> >				(monster));
+	add_state(eStateBurerAttack_Shield,		xr_new<CStateBurerShield<CBurer> >(monster));
+	m_last_health			= 1.f;
 }
 
 #define SCAN_STATE_TIME 4000
@@ -36,7 +38,21 @@ void CStateManagerBurer::execute()
 {
 	u32 state = u32(-1);
 
-	if (object->EnemyMan.get_enemy()) {
+	bool lost_health = false;
+	if (m_last_health - 0.01 > object->GetfHealth())
+	{
+		m_last_health = object->GetfHealth();
+		lost_health = true;
+	}
+
+	if (current_substate == eStateBurerAttack_Shield && check_state(eStateBurerAttack_Shield))
+	{
+		state = eStateBurerAttack_Shield;
+	}
+	else if	(lost_health && check_state(eStateBurerAttack_Shield)) {
+		state = eStateBurerAttack_Shield;
+	}
+	else if (object->EnemyMan.get_enemy()) {
 		switch (object->EnemyMan.get_danger_type()) {
 				case eStrong:	state = eStatePanic; break;
 				case eWeak:		state = eStateAttack; break;

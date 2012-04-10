@@ -15,6 +15,7 @@
 #include "entity_alive.h"
 #include "EntityCondition.h"
 #include "InventoryOwner.h"
+#include "actor.h"
 
 CEatableItem::CEatableItem()
 {
@@ -41,14 +42,14 @@ DLL_Pure *CEatableItem::_construct	()
 void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
-
+	
 	m_fHealthInfluence			= pSettings->r_float(section, "eat_health");
 	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
 	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
 	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
-	
+//	m_bIsBattery				 = READ_IF_EXISTS(pSettings, r_bool, section, "is_battery", false);
 	m_iStartPortionsNum			= pSettings->r_s32	(section, "eat_portions_num");
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
 	VERIFY						(m_iPortionsNum<10000);
@@ -88,16 +89,18 @@ void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
+	CActor *actor = 0;
 	R_ASSERT		(IO);
 	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
+
 	entity_alive->conditions().ChangeHealth		(m_fHealthInfluence);
 	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
 	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence);
 	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
 	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
-	
-	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
+	entity_alive->conditions().SetMaxPower		(entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence);
+
 	
 	//уменьшить количество порций
 	if(m_iPortionsNum > 0)

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrRender_R1"
 	ProjectGUID="{57A498C9-A741-4DDF-8EFC-BFB9EB6B00E2}"
+	RootNamespace="xrRender_R1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -41,6 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -74,6 +76,7 @@
 				IgnoreImportLibrary="true"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
@@ -109,7 +112,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -140,6 +143,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -172,6 +176,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="X:\libraries_release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -181,7 +186,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -240,6 +245,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -270,6 +276,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="X:\libraries"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"

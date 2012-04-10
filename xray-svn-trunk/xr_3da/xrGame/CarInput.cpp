@@ -129,6 +129,7 @@ void CCar::OnKeyboardPress(int cmd)
 	case kCAM_3:	OnCameraChange(ectFree);	break;
 	case kACCEL:	TransmissionUp();			break;
 	case kCROUCH:	TransmissionDown();			break;
+//	case kFWD:		DoorOpen(1);                break;
 	case kFWD:		PressForward();				break;
 	case kBACK:		PressBack();				break;
 	case kR_STRAFE:	PressRight();				if (OwnerActor()) OwnerActor()->steer_Vehicle(1);	break;
@@ -136,7 +137,7 @@ void CCar::OnKeyboardPress(int cmd)
 	case kJUMP:		PressBreaks();				break;
 	case kENGINE:	SwitchEngine();				break;
 	case kTORCH:	m_lights.SwitchHeadLights();break;
-	case kUSE:									break;
+	case kUSE:		            				 break;
 	};
 
 }

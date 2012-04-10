@@ -276,8 +276,8 @@ public:
 						CObjectActionDrop	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
 	virtual void		initialize			();
 };
-
-//////////////////////////////////////////////////////////////////////////
+/*
+/////////////////////////////////////////////////////////////////////////
 // CObjectActionThreaten
 //////////////////////////////////////////////////////////////////////////
 
@@ -289,10 +289,10 @@ public:
 						CObjectActionThreaten	(CAI_Stalker *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
 	virtual void		execute					();
 };
-
+*/
 //////////////////////////////////////////////////////////////////////////
 // CObjectActionAim
-//////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 class CObjectActionAim : public CObjectActionMember<CInventoryItem> {
 protected:
@@ -320,4 +320,30 @@ public:
 	virtual void		initialize				();
 };
 
+//////////////////////////////////////////////////////////////////////////
+// CObjectActionIdleMissile
+//////////////////////////////////////////////////////////////////////////
+
+class CObjectActionIdleMissile : public CObjectActionBase<CInventoryItem> {
+protected:
+	typedef CObjectActionBase<CInventoryItem> inherited;
+
+public:
+						CObjectActionIdleMissile(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
+	virtual void		initialize				();
+};
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectActionThrowMissile
+//////////////////////////////////////////////////////////////////////////
+
+class CObjectActionThrowMissile : public CObjectActionBase<CInventoryItem> {
+protected:
+	typedef CObjectActionBase<CInventoryItem> inherited;
+
+public:
+						CObjectActionThrowMissile	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
+	virtual void		initialize				();
+	virtual void		execute					();
+};
 #include "object_actions_inline.h"

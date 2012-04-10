@@ -10,7 +10,7 @@
 CBlender_Editor_Selection::CBlender_Editor_Selection()
 {
 	description.CLS		= B_EDITOR_SEL;
-	strcpy				(oT_Factor,"$null");
+	strcpy_s				(oT_Factor,"$null");
 }
 
 CBlender_Editor_Selection::~CBlender_Editor_Selection()

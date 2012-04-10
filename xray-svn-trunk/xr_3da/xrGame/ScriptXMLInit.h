@@ -31,6 +31,7 @@ class CUIMMShniaga;
 class CUIScrollView;
 class CUIProgressBar;
 
+// lost alpha edit
 class CScriptXmlInit {
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
@@ -41,6 +42,7 @@ public:
 
 	void ParseFile		(LPCSTR xml_file);
 	void ParseShTexInfo	(LPCSTR xml_file);
+	void ParseFile		(LPCSTR xml_path, LPCSTR xml_file);
 	void InitWindow		(LPCSTR path, int index, CUIWindow* pWnd);
 	//void InitList		(LPCSTR path, int index, CUIListWnd* pWnd);
 
@@ -69,6 +71,7 @@ public:
 	CUIScrollView*		InitScrollView(LPCSTR path, CUIWindow* parent);
 	CUIProgressBar*		InitProgressBar(LPCSTR path, CUIWindow* parent);
 	void				InitAutoStaticGroup(LPCSTR path, CUIWindow* pWnd);
+
 protected:
 	CUIXml	m_xml;
 };

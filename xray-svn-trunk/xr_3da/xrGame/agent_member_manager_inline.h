@@ -24,7 +24,9 @@ public:
 	}
 };
 
-IC	CAgentMemberManager::CAgentMemberManager	(CAgentManager *object)
+IC	CAgentMemberManager::CAgentMemberManager	(CAgentManager *object) : 
+	m_last_throw_time		(0),
+	m_throw_time_interval	(0)
 {
 	VERIFY				(object);
 	m_object			= object;
@@ -83,4 +85,14 @@ IC	bool CAgentMemberManager::group_behaviour					() const
 IC	const CAgentMemberManager::squad_mask_type &CAgentMemberManager::combat_mask() const
 {
 	return				(m_combat_mask);
+}
+
+IC	const u32 &CAgentMemberManager::throw_time_interval			() const
+{
+	return					(m_throw_time_interval);
+}
+
+IC	void CAgentMemberManager::throw_time_interval				(const u32 &value)
+{
+	m_throw_time_interval	= value;
 }

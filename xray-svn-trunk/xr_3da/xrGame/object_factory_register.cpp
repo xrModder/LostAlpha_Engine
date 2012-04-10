@@ -123,6 +123,7 @@
 
 #	include "customzone.h"
 #	include "mosquitobald.h"
+#	include "AcidFog.h"
 #	include "mincer.h"
 #	include "gravizone.h"
 #	include "radioactivezone.h"
@@ -137,7 +138,10 @@
 #	include "simpledetector.h"
 
 #	include "torch.h"
+#	include "battery.h"
 #	include "pda.h"
+
+#	include "mounted_turret.h"
 
 #	include "searchlight.h"
 
@@ -306,6 +310,7 @@ void CObjectFactory::register_classes	()
 	ADD(CFoodItem				,CSE_ALifeItem					,CLSID_IITEM_FOOD				,"obj_food");
 	ADD(CBottleItem				,CSE_ALifeItem					,CLSID_IITEM_BOTTLE				,"obj_bottle");
 	ADD(CExplosiveItem			,CSE_ALifeItemExplosive			,CLSID_IITEM_EXPLOSIVE			,"obj_explosive");
+	ADD(CBattery				,CSE_ALifeItem					,CLSID_IITEM_BATTERY			,"obj_battery");				
 	
 	//Info Document
 	ADD(CInfoDocument			,CSE_ALifeItemDocument			,CLSID_IITEM_DOCUMENT			,"obj_document");
@@ -347,6 +352,7 @@ void CObjectFactory::register_classes	()
 	ADD(CSpaceRestrictor		,CSE_ALifeSpaceRestrictor		,CLSID_SPACE_RESTRICTOR			,"space_restrictor");
 	ADD(CAmebaZone				,CSE_ALifeZoneVisual			,CLSID_Z_AMEBA					,"ameba_zone");
 	ADD(CNoGravityZone			,CSE_ALifeAnomalousZone			,CLSID_Z_NOGRAVITY				,"nogravity_zone");
+	ADD(CRustyFog				,CSE_ALifeAnomalousZone			,CLSID_Z_FOG					,"zone_rusty_fog"); 
 	// Detectors
 	ADD(CSimpleDetector			,CSE_ALifeItemDetector			,CLSID_DETECTOR_SIMPLE			,"device_detector_simple");
 
@@ -358,6 +364,7 @@ void CObjectFactory::register_classes	()
 	ADD(CProjector				,CSE_ALifeObjectProjector		,CLSID_OBJECT_PROJECTOR			,"projector");
 	ADD(CWeaponMounted			,CSE_ALifeMountedWeapon			,CLSID_OBJECT_W_MOUNTED			,"wpn_mounted");
 	ADD(CWeaponStatMgun			,CSE_ALifeStationaryMgun		,CLSID_OBJECT_W_STATMGUN		,"wpn_stat_mgun");
+	ADD(CMountedTurret			,CSE_ALifeMountedTurret			,CLSID_OBJECT_W_TURRET			,"wpn_turret");
 //	ADD(CTrigger				,CSE_Trigger					,CLSID_OBJECT_TRIGGER			,"trigger");
 
 	// entity
@@ -371,6 +378,7 @@ void CObjectFactory::register_classes	()
 
 	ADD(CInventoryBox			,CSE_InventoryBox				,CLSID_INVENTORY_BOX			,"inventory_box");
 
+	
 	// hack, for dedicated server only
 	// because we do not have scripts
 	// and script functionality is not

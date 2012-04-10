@@ -50,6 +50,8 @@
 #	include "game_graph.h"
 #endif // DEBUG
 
+
+
 #include "hudmanager.h"
 
 string_path		g_last_saved_game;
@@ -236,7 +238,36 @@ public:
 		}
 	}
 };
-
+/*
+class CCC_DynamicWeather : public IConsole_Command 
+{
+	public:
+		CCC_DynamicWeather(LPCSTR N) : IConsole_Command(N)
+		{
+			bEmptyArgsHandled = false;
+		}
+		virtual void Execute(LPCSTR args) 
+		{
+			bool set = false;
+			luabind::functor<void> lua_func;
+			string16 str = { 0 };
+			if (!g_pGamePersistent) 
+				return;
+			if (!OnServer())		
+				return;
+			sscanf(args, "%s", str);
+			if (EQ(str, "on") || EQ(str, "1") || EQ(str, "true"))
+				set = true;
+			ai().script_engine().
+			R_ASSERT2(ai().script_engine().functor("level_weathers.set_dynamic", lua_func), "Can't find level_weathers.set_dynamic");
+			lua_func(set);
+		};
+		virtual void Info(TInfo& I)
+		{ 
+			strcpy(I, "Set dynamic weather");
+		}
+};
+*/
 class CCC_ALifeSwitchDistance : public IConsole_Command {
 public:
 	CCC_ALifeSwitchDistance(LPCSTR N) : IConsole_Command(N)  { };
@@ -311,7 +342,7 @@ public:
 	}
 };
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
 class CCC_TimeFactor : public IConsole_Command {
 public:
 					CCC_TimeFactor	(LPCSTR N) : IConsole_Command(N) {}
@@ -322,7 +353,7 @@ public:
 		Device.time_factor	(time_factor);
 	}
 };
-#endif // MASTER_GOLD
+//#endif // MASTER_GOLD
 
 //-----------------------------------------------------------------------
 class CCC_DemoRecord : public IConsole_Command
@@ -573,6 +604,22 @@ public:
 		Msg		("* Log file has been saved successfully!");
 	}
 };
+// lost alpha starts
+class CCC_LogPrint : public IConsole_Command
+{
+	public:
+		CCC_LogPrint(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+		virtual void Execute(LPCSTR args)
+		{
+			string256 text;
+			text[0] = 0;
+			strcpy_s(text, args);
+			if (!xr_strlen(text))
+				return;
+			Msg("$ LA_DBG: %s", text);
+			FlushLog();
+		}
+};
 
 class CCC_ClearLog : public IConsole_Command {
 public:
@@ -627,7 +674,7 @@ public:
 };
 
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
 class CCC_Script : public IConsole_Command {
 public:
 	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -679,7 +726,7 @@ public:
 		}
 	}
 };
-#endif // MASTER_GOLD
+//#endif // MASTER_GOLD
 
 #ifdef DEBUG
 
@@ -927,7 +974,7 @@ public:
 	  }
 };
 
-#ifdef DEBUG
+// #ifdef DEBUG
 class CCC_PHGravity : public IConsole_Command {
 public:
 		CCC_PHGravity(LPCSTR N) :
@@ -955,7 +1002,7 @@ public:
 	}
 	
 };
-#endif // DEBUG
+//#endif // DEBUG
 
 class CCC_PHFps : public IConsole_Command {
 public:
@@ -974,8 +1021,12 @@ public:
 	  }
 
 };
+/*
+
+*/
 
 #ifdef DEBUG
+
 extern void print_help(lua_State *L);
 
 struct CCC_LuaHelp : public IConsole_Command {
@@ -1003,7 +1054,7 @@ struct CCC_ClearSmartCastStats : public IConsole_Command {
 };
 #endif
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
 #	include "game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
@@ -1026,7 +1077,7 @@ struct CCC_JumpToLevel : public IConsole_Command {
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
 };
-#endif // MASTER_GOLD
+//#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
 
@@ -1175,7 +1226,7 @@ struct CCC_DbgBullets : public CCC_Integer {
 		CCC_Integer::Execute	(args);
 	}
 };
-
+#endif
 #include "attachable_item.h"
 #include "attachment_owner.h"
 class CCC_TuneAttachableItem : public IConsole_Command
@@ -1206,7 +1257,7 @@ public		:
 		sprintf_s(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
 	}
 };
-
+#ifdef DEBUG
 class CCC_Crash : public IConsole_Command {
 public:
 	CCC_Crash(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1356,10 +1407,40 @@ void CCC_RegisterCommands()
 	CMD1(CCC_MemStats,			"stat_memory"			);
 	// game
 	psActorFlags.set(AF_ALWAYSRUN, true);
+	psActorFlags.set(AF_WPN_BOBBING, true);
 	CMD3(CCC_Mask,				"g_always_run",			&psActorFlags,	AF_ALWAYSRUN);
+	CMD3(CCC_Mask,				"weapon_bobbing",		&psActorFlags,	AF_WPN_BOBBING);
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
+
+	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
+	//cheats
+	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
+	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
+	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
+	CMD1(CCC_FlushLog,			"flush"					);		// flush log
+	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);
+	CMD3(CCC_Mask,				"hud_weapon",			&psHUD_Flags,	HUD_WEAPON);
+	CMD3(CCC_Mask,				"hud_info",				&psHUD_Flags,	HUD_INFO);
+	CMD3(CCC_Mask,				"hud_draw",				&psHUD_Flags,	HUD_DRAW);
+	CMD1(CCC_StartTimeSingle,	"start_time_single");
+	CMD4(CCC_TimeFactorSingle,	"time_factor_single", &g_fTimeFactor, 0.f,flt_max);
+	CMD1(CCC_PHGravity,			"ph_gravity"																					);
+	CMD1(CCC_TimeFactor,	"time_factor");	
+	CMD4(CCC_Float,				"fov",					&g_fov,			5.0f,	180.0f);
+
+#ifndef MASTER_GOLD
+#endif // MASTER_GOLD
+
+	// hud
+	psHUD_Flags.set(HUD_CROSSHAIR,		true);
+	psHUD_Flags.set(HUD_WEAPON,			true);
+	psHUD_Flags.set(HUD_DRAW,			true);
+	psHUD_Flags.set(HUD_INFO,			true);
+
+	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
+	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
 	// alife
 #ifdef DEBUG
@@ -1370,8 +1451,11 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ALifeLoadFrom,		"load"					);		// load game from ...
 	CMD1(CCC_LoadLastSave,		"load_last_save"		);		// load last saved game from ...
 
-	CMD1(CCC_FlushLog,			"flush"					);		// flush log
+//	CMD1(CCC_FlushLog,			"flush"					);		// flush log
 	CMD1(CCC_ClearLog,			"clear_log"					);
+
+	// lost alpha starts
+	CMD1(CCC_LogPrint, "log_print");
 
 #ifndef MASTER_GOLD
 	CMD1(CCC_ALifeTimeFactor,		"al_time_factor"		);		// set time factor
@@ -1382,24 +1466,8 @@ void CCC_RegisterCommands()
 #endif // MASTER_GOLD
 
 
-	CMD3(CCC_Mask,				"hud_weapon",			&psHUD_Flags,	HUD_WEAPON);
-	CMD3(CCC_Mask,				"hud_info",				&psHUD_Flags,	HUD_INFO);
-
-#ifndef MASTER_GOLD
-	CMD3(CCC_Mask,				"hud_draw",				&psHUD_Flags,	HUD_DRAW);
-#endif // MASTER_GOLD
-	// hud
-	psHUD_Flags.set(HUD_CROSSHAIR,		true);
-	psHUD_Flags.set(HUD_WEAPON,			true);
-	psHUD_Flags.set(HUD_DRAW,			true);
-	psHUD_Flags.set(HUD_INFO,			true);
-
-	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
-	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
-
 #ifdef DEBUG
-	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);
-	CMD4(CCC_Float,				"fov",					&g_fov,			5.0f,	180.0f);
+
 #endif // DEBUG
 
 	// Demo
@@ -1481,7 +1549,8 @@ void CCC_RegisterCommands()
 
 	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
 #endif // DEBUG
-	
+//	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
+//	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
 #ifndef MASTER_GOLD
 	CMD3(CCC_Mask,				"ai_ignore_actor",		&psAI_Flags,	aiIgnoreActor);
 #endif // MASTER_GOLD
@@ -1491,7 +1560,6 @@ void CCC_RegisterCommands()
 	CMD1(CCC_PHIterations,		"ph_iterations"																					);
 
 #ifdef DEBUG
-	CMD1(CCC_PHGravity,			"ph_gravity"																					);
 	CMD4(CCC_FloatBlock,		"ph_timefactor",				&phTimefactor				,			0.0001f	,1000.f			);
 	CMD4(CCC_FloatBlock,		"ph_break_common_factor",		&phBreakCommonFactor		,			0.f		,1000000000.f	);
 	CMD4(CCC_FloatBlock,		"ph_rigid_break_weapon_factor",	&phRigidBreakWeaponFactor	,			0.f		,1000000000.f	);
@@ -1501,19 +1569,15 @@ void CCC_RegisterCommands()
 
 
 #ifndef MASTER_GOLD
-	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
-	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
-	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
-	CMD1(CCC_Script,		"run_script");
 	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");		
+	CMD1(CCC_Script,		"run_script");
 #endif // MASTER_GOLD
 
-	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
-
-
+	CMD3(CCC_Mask, "g_autopickup", &psActorFlags, AF_AUTOPICKUP);
+	//CMD1(CCC_DynamicWeather,  "r2_dynamic_weather");
+	//
 #ifdef DEBUG
-	CMD1(CCC_LuaHelp,				"lua_help");
+	CMD1(CCC_LuaHelp, "lua_help");
 	CMD1(CCC_ShowSmartCastStats,	"show_smart_cast_stats");
 	CMD1(CCC_ClearSmartCastStats,	"clear_smart_cast_stats");
 
@@ -1581,11 +1645,11 @@ void CCC_RegisterCommands()
 #endif
 
 	CMD3(CCC_Mask,			"cl_dynamiccrosshair",	&psHUD_Flags,	HUD_CROSSHAIR_DYNAMIC);
+	CMD3(CCC_Mask,			"la_use_crosshair",		&psHUD_Flags,	HUD_USE_CROSSHAIR);
+	CMD3(CCC_Mask,			"show_clock",			&psHUD_Flags,	HUD_SHOW_CLOCK);
 	CMD1(CCC_MainMenu,		"main_menu"				);
 
 #ifndef MASTER_GOLD
-	CMD1(CCC_StartTimeSingle,	"start_time_single");
-	CMD4(CCC_TimeFactorSingle,	"time_factor_single", &g_fTimeFactor, 0.f,flt_max);
 #endif // MASTER_GOLD
 
 

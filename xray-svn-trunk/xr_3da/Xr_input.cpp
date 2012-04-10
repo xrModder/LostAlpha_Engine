@@ -69,6 +69,9 @@ CInput::CInput						( BOOL bExclusive, int deviceForInit)
 	Device.seqAppDeactivate.Add		(this);
 	Device.seqFrame.Add				(this, REG_PRIORITY_HIGH);
 #endif
+
+	m_last_key_pressed = COUNT_KB_BUTTONS + 1;
+	m_last_key_released = COUNT_KB_BUTTONS + 1;
 }
 
 CInput::~CInput(void)
@@ -169,9 +172,17 @@ void CInput::KeyUpdate	( )
 		key					= od[i].dwOfs;
 		KBState[key]		= od[i].dwData & 0x80;
 		if ( KBState[key])	
+		{
 			cbStack.back()->IR_OnKeyboardPress	( key );
+			m_last_key_pressed = key;
+			m_last_key_released = COUNT_KB_BUTTONS + 1;
+		}
 		if (!KBState[key])	
+		{
 			cbStack.back()->IR_OnKeyboardRelease	( key );
+			m_last_key_pressed = COUNT_KB_BUTTONS + 1;
+			m_last_key_released = key;
+		}
 	}
 	for ( i = 0; i < COUNT_KB_BUTTONS; i++ )
 		if (KBState[i]) 
@@ -251,21 +262,39 @@ void CInput::MouseUpdate( )
 		case DIMOFS_Z:	offs[2]	+= od[i].dwData; timeStamp[2] = od[i].dwTimeStamp;	break;
 		case DIMOFS_BUTTON0:
 			if ( od[i].dwData & 0x80 )	
-			{ mouseState[0] = TRUE;				cbStack.back()->IR_OnMousePress(0);		}
+			{ 
+				mouseState[0] = TRUE;				
+				cbStack.back()->IR_OnMousePress(0);	
+			}
 			if ( !(od[i].dwData & 0x80))
-			{ mouseState[0] = FALSE;			cbStack.back()->IR_OnMouseRelease(0);	}
+			{ 
+				mouseState[0] = FALSE;			
+				cbStack.back()->IR_OnMouseRelease(0);
+			}
 			break;
 		case DIMOFS_BUTTON1:
 			if ( od[i].dwData & 0x80 )	
-			{ mouseState[1] = TRUE;				cbStack.back()->IR_OnMousePress(1);		}
+			{ 
+				mouseState[1] = TRUE;				
+				cbStack.back()->IR_OnMousePress(1);	
+			}
 			if ( !(od[i].dwData & 0x80))
-			{ mouseState[1] = FALSE;			cbStack.back()->IR_OnMouseRelease(1);	}
+			{ 
+				mouseState[1] = FALSE;			
+				cbStack.back()->IR_OnMouseRelease(1);
+			}
 			break;
 		case DIMOFS_BUTTON2:
 			if ( od[i].dwData & 0x80 )	
-			{ mouseState[2] = TRUE;				cbStack.back()->IR_OnMousePress(2);		}
+			{ 
+				mouseState[2] = TRUE;				
+				cbStack.back()->IR_OnMousePress(2);
+			}
 			if ( !(od[i].dwData & 0x80))
-			{ mouseState[2] = FALSE;			cbStack.back()->IR_OnMouseRelease(2);	}
+			{ 
+				mouseState[2] = FALSE;	
+				cbStack.back()->IR_OnMouseRelease(2);	
+			}
 			break;
 		case DIMOFS_BUTTON3:
 			if ( od[i].dwData & 0x80 )	

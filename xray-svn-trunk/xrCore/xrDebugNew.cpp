@@ -127,6 +127,11 @@ void LogStackTrace	(LPCSTR header)
 		Msg			("%s",g_stackTrace[i]);
 }
 
+void xrDebug::log_stack_trace()
+{
+	LogStackTrace("Error");
+}
+
 void gather_info		(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, LPSTR assertion_info)
 {
 	LPSTR				buffer = assertion_info;
@@ -819,7 +824,13 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 
 	static void std_out_of_memory_handler	()
 	{
-		handler_base					("std: out of memory");
+		u32 curr_free_blocks	= 0, curr_used_blocks = 0;
+		u32 curr_mem_usage		= Memory.mem_usage(&curr_used_blocks, &curr_free_blocks);
+		u32	process_heap		= mem_usage_impl(GetProcessHeap(), 0, 0);
+		std::string str	= make_string("std: out of memory, usage: %d kb, used blocks: %d, free blocks: %d, heap: %d kb",
+			curr_mem_usage / 1024, curr_used_blocks, curr_free_blocks, process_heap / 1024);
+		
+		handler_base					(str.c_str());
 	}
 
 	static void pure_call_handler			()

@@ -27,9 +27,9 @@
 #include <xrCore.h>
 #include <boost/config.hpp>
 
-namespace std {
-	void terminate();
-}
+//namespace std {
+//	void terminate();
+//}
 
 #ifdef BOOST_MSVC
 	#define LUABIND_ANONYMOUS_FIX static

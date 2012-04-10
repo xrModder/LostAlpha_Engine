@@ -93,6 +93,7 @@
 
 #define CLSID_OBJECT_W_MOUNTED		MK_CLSID('W','_','M','O','U','N','T','D')
 #define	CLSID_OBJECT_W_STATMGUN		MK_CLSID('W','_','S','T','M','G','U','N')
+#define	CLSID_OBJECT_W_TURRET		MK_CLSID('W','_','T','U','R','R','E','T')
 // Weapons Ammo
 //#define CLSID_OBJECT_A_FN2000		MK_CLSID('A','_','F','N','2','0','0','0')
 //#define CLSID_OBJECT_A_AK74			MK_CLSID('A','_','A','K','7','4',' ',' ')
@@ -138,9 +139,12 @@
 #define CLSID_PHYSICS_DESTROYABLE	MK_CLSID('P','_','D','S','T','R','B','L')
 #define CLSID_INVENTORY_BOX			MK_CLSID('O','_','I','N','V','B','O','X')
 
+#define CLSID_FAKE_OBJECT			MK_CLSID('O','_','F','K','_','O','B','J')
+
 // Zones 
 #define CLSID_ZONE					MK_CLSID('Z','_','Z','O','N','E',' ',' ')
 #define CLSID_Z_MBALD				MK_CLSID('Z','_','M','B','A','L','D',' ')
+#define CLSID_Z_FOG					MK_CLSID('Z','_','R','U','S','T','Y','F')
 #define CLSID_Z_MINCER				MK_CLSID('Z','_','M','I','N','C','E','R')
 #define CLSID_Z_ACIDF 				MK_CLSID('Z','_','A','C','I','D','F',' ')
 #define CLSID_Z_GALANT				MK_CLSID('Z','_','G','A','L','A','N','T')
@@ -178,6 +182,7 @@
 #define CLSID_IITEM_BOTTLE			MK_CLSID('I','I','_','B','O','T','T','L')
 #define CLSID_IITEM_ANTIRAD			MK_CLSID('I','I','_','A','N','T','I','R')
 #define CLSID_IITEM_EXPLOSIVE		MK_CLSID('I','I','_','E','X','P','L','O')
+#define CLSID_IITEM_BATTERY			MK_CLSID('I','I','_','B','A','T','T','E')
 
 // Info Document
 #define CLSID_IITEM_DOCUMENT		MK_CLSID('I','I','_','D','O','C',' ',' ')

@@ -46,6 +46,11 @@ bool has_active_tutotial()
 	return (g_tutorial!=NULL);
 }
 
+bool is_r2_active()
+{
+	return (psDeviceFlags.test(rsR2)) ? true : false;
+}
+
 #pragma optimize("s",on)
 void game_sv_GameState::script_register(lua_State *L)
 {
@@ -115,7 +120,8 @@ void game_sv_GameState::script_register(lua_State *L)
 
 	def("start_tutorial",		&start_tutorial),
 	def("has_active_tutorial",	&has_active_tutotial),
-	def("translate_string",		&translate_string)
+	def("translate_string",		&translate_string),
+	def("convert_time", &convert_time)
 
 	];
 	

@@ -12,7 +12,7 @@
 #include "InventoryOwner.h"
 #include "../StatGraph.h"
 #include "PhraseDialogManager.h"
-
+#include "torch.h"
 #include "step_manager.h"
 
 using namespace ACTOR_DEFS;
@@ -35,7 +35,7 @@ class CEffectorBobbing;
 class CHolderCustom;
 class CUsableScriptObject;
 
-struct SShootingEffector;
+//struct SShootingEffector;
 struct SSleepEffector;
 class  CSleepEffectorPP;
 class CInventoryBox;
@@ -58,6 +58,7 @@ class CActorMemory;
 class CActorStatisticMgr;
 
 class CLocationManager;
+class CTorch;
 
 class	CActor: 
 	public CEntityAlive, 
@@ -359,7 +360,7 @@ protected:
 	Fvector					vPrevCamDir;
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
-
+//try shooting effector
 //	void					LoadShootingEffector	(LPCSTR section);
 //	SShootingEffector*		m_pShootingEffector;
 
@@ -393,7 +394,7 @@ protected:
 	CUsableScriptObject*	m_pUsableObject;
 	// Person we're looking at
 	CInventoryOwner*		m_pPersonWeLookingAt;
-	CHolderCustom*			m_pVehicleWeLookingAt;
+	CHolderCustom*			m_pHolderWeLookingAt;
 	CGameObject*			m_pObjectWeLookingAt;
 	CInventoryBox*			m_pInvBoxWeLookingAt;
 
@@ -405,6 +406,7 @@ protected:
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
 	shared_str				m_sInventoryBoxUseAction;
+	shared_str				m_sTurretCharacterUseAction;
 
 	//режим подбирания предметов
 	bool					m_bPickupMode;
@@ -443,7 +445,8 @@ public:
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 
-	bool					is_jump					();		
+	bool					is_jump					();	
+	u32						GetCurrentState()		{ return mstate_real; }
 protected:
 	u32						mstate_wishful;
 	u32						mstate_old;
@@ -757,6 +760,15 @@ private:
 
 public:
 	virtual bool				register_schedule				() const {return false;}
+// lost alpha start
+	void RechargeTorchBattery(void);
+	CTorch *GetCurrentTorch(void);
+	bool IsLimping();
+	bool UsingTurret();
+	u16 GetTurretTemp();
+private:
+	CTorch *m_current_torch;
+//	u16 m_torch_battery_duration;
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

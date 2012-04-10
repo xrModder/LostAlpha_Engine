@@ -12,6 +12,7 @@
 #include "Inventory.h"
 
 #include "SleepEffector.h"
+//#include "ShootingHitEffector.h"
 #include "ActorEffector.h"
 #include "level.h"
 #include "../cl_intersect.h"
@@ -361,6 +362,7 @@ void CActor::OnRender	()
 	inherited::OnRender();
 }
 #endif
+//try shooting effector
 /*
 void CActor::LoadShootingEffector (LPCSTR section)
 {
@@ -386,8 +388,8 @@ void CActor::LoadShootingEffector (LPCSTR section)
 	m_pShootingEffector->time_attack		= pSettings->r_float(section,"time_attack");
 	m_pShootingEffector->time_release		= pSettings->r_float(section,"time_release");
 
-}*/
-
+}
+*/
 void CActor::LoadSleepEffector	(LPCSTR section)
 {
 	if(!m_pSleepEffector) 

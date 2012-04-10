@@ -176,11 +176,12 @@ BOOL CEntity::net_Spawn		(CSE_Abstract* DC)
 	// load damage params
 	if (!E) {
 		// Car or trader only!!!!
-		CSE_ALifeCar		*C	= smart_cast<CSE_ALifeCar*>(e);
-		CSE_ALifeTrader		*T	= smart_cast<CSE_ALifeTrader*>(e);
-		CSE_ALifeHelicopter	*H	= smart_cast<CSE_ALifeHelicopter*>(e);
+		CSE_ALifeCar			*C	= smart_cast<CSE_ALifeCar*>(e);
+		CSE_ALifeTrader			*T	= smart_cast<CSE_ALifeTrader*>(e);
+		CSE_ALifeHelicopter		*H	= smart_cast<CSE_ALifeHelicopter*>(e);
+		CSE_ALifeMountedTurret	*M	= smart_cast<CSE_ALifeMountedTurret*>(e);
 
-		R_ASSERT2			(C||T||H,"Invalid entity (no inheritance from CSE_CreatureAbstract, CSE_ALifeItemCar and CSE_ALifeTrader and CSE_ALifeHelicopter)!");
+		R_ASSERT2			(C||T||H||M,"Invalid entity (no inheritance from CSE_CreatureAbstract, CSE_ALifeItemCar and CSE_ALifeTrader and CSE_ALifeHelicopter)!");
 		id_Team				= id_Squad = id_Group = 0;
 	}
 	else {

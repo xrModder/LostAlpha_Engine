@@ -49,7 +49,9 @@ class CController : public CBaseMonster {
 public:	
 	float			aura_radius;
 	float			aura_damage;
-
+	
+	bool tube_at_once() { return m_tube_at_once; }
+	bool set_tube_at_once(bool val) { m_tube_at_once = val; }
 	//////////////////////////////////////////////////////////////////////////
 
 public:	
@@ -72,7 +74,7 @@ public:
 	SVelocityParam		m_velocity_move_bkwd;
 
 public:	
-	CControllerAnimation	&custom_anim()	{return (*m_custom_anim_base);}
+	//CControllerAnimation	&custom_anim()	{return (*m_custom_anim_base);}
 	CControllerDirection	&custom_dir()	{return (*m_custom_dir_base);}
 
 public:
@@ -132,6 +134,8 @@ public:
 
 			void	tube_fire					();
 			bool	can_tube_fire				();
+			//bool	can_melee_at				();
+			//void	melee_attack				();
 			u32		m_time_last_tube;
 			
 			float	m_psy_hit_damage;
@@ -147,7 +151,6 @@ public:
 public: 
 
 	void						draw_fire_particles();
-	
 	void						test_covers();
 
 

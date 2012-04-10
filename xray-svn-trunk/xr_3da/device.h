@@ -102,6 +102,8 @@ public:
 	Fmatrix									mInvFullTransform;
 	float									fFOV;
 	float									fASPECT;
+
+	bool IsR2Active(void);
 	
 	CRenderDevice			()
 		#ifdef PROFILE_CRITICAL_SECTIONS

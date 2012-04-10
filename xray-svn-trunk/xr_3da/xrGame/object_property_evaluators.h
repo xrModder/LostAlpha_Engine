@@ -163,4 +163,34 @@ public:
 	virtual _value_type		evaluate						();
 };
 
+//////////////////////////////////////////////////////////////////////////
+// CObjectPropertyEvaluatorMissileStarted
+//////////////////////////////////////////////////////////////////////////
+
+class CObjectPropertyEvaluatorMissileStarted : public CObjectPropertyEvaluatorBase<CMissile> {
+protected:
+	typedef CObjectPropertyEvaluatorBase<CMissile> inherited;
+	u32						m_state;
+	bool					m_equality;
+
+public:
+							CObjectPropertyEvaluatorMissileStarted	(CMissile *item, CAI_Stalker *owner);
+	virtual _value_type		evaluate								();
+};
+
+//////////////////////////////////////////////////////////////////////////
+// CObjectPropertyEvaluatorMissileHidden
+//////////////////////////////////////////////////////////////////////////
+
+class CObjectPropertyEvaluatorMissileHidden : public CObjectPropertyEvaluatorBase<CMissile> {
+protected:
+	typedef CObjectPropertyEvaluatorBase<CMissile> inherited;
+	u32						m_state;
+	bool					m_equality;
+
+public:
+							CObjectPropertyEvaluatorMissileHidden	(CMissile *item, CAI_Stalker *owner);
+	virtual _value_type		evaluate								();
+};
+
 #include "object_property_evaluators_inline.h"

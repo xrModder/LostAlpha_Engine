@@ -280,7 +280,7 @@ void CCC_LoadCFG::Execute(LPCSTR args)
 			FS.r_close(F);
 			Msg("[%s] successfully loaded.",cfg_full_name);
 		} else {
-			Msg("! Cannot open script file [%s]",cfg_full_name);
+			Msg("! Cannot open script file [%s]",cfg_full_name);			
 		}
 }
 
@@ -522,6 +522,8 @@ void CCC_Register()
 	CMD1(CCC_DbgMemCheck,	"dbg_mem_check"		);
 #endif // DEBUG_MEMORY_MANAGER
 
+	CMD3(CCC_Mask,		"rs_detail",			&psDeviceFlags,		rsDetails	);
+
 #ifdef DEBUG
 	CMD3(CCC_Mask,		"mt_particles",			&psDeviceFlags,			mtParticles);
 
@@ -535,18 +537,17 @@ void CCC_Register()
 	// Events
 	CMD1(CCC_E_Dump,	"e_list"				);
 	CMD1(CCC_E_Signal,	"e_signal"				);
-
 	CMD3(CCC_Mask,		"rs_wireframe",			&psDeviceFlags,		rsWireframe);
 	CMD3(CCC_Mask,		"rs_clear_bb",			&psDeviceFlags,		rsClearBB);
 	CMD3(CCC_Mask,		"rs_occlusion",			&psDeviceFlags,		rsOcclusion);
 
-	CMD3(CCC_Mask,		"rs_detail",			&psDeviceFlags,		rsDetails	);
-	CMD4(CCC_Float,		"r__dtex_range",		&r__dtex_range,		5,		175	);
 
 	CMD3(CCC_Mask,		"rs_constant_fps",		&psDeviceFlags,		rsConstantFPS			);
 	CMD3(CCC_Mask,		"rs_render_statics",	&psDeviceFlags,		rsDrawStatic			);
 	CMD3(CCC_Mask,		"rs_render_dynamics",	&psDeviceFlags,		rsDrawDynamic			);
 #endif
+
+	CMD4(CCC_Float,		"r__dtex_range",		&r__dtex_range,		5,		175	);
 
 	// Render device states
 	CMD4(CCC_Integer,	"r__supersample",		&ps_r__Supersample,			1,		4		);
@@ -563,9 +564,9 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"rs_cam_pos",			&psDeviceFlags,		rsCameraPos				);
 	CMD3(CCC_Mask,		"rs_occ_draw",			&psDeviceFlags,		rsOcclusionDraw			);
 	CMD3(CCC_Mask,		"rs_occ_stats",			&psDeviceFlags,		rsOcclusionStats		);
-	CMD4(CCC_Integer,	"rs_skeleton_update",	&psSkeletonUpdate,	2,		128	);
 #endif // DEBUG
 
+	CMD4(CCC_Integer,	"rs_skeleton_update",	&psSkeletonUpdate,	2,		128	);
 	CMD2(CCC_Gamma,		"rs_c_gamma"			,&ps_gamma			);
 	CMD2(CCC_Gamma,		"rs_c_brightness"		,&ps_brightness		);
 	CMD2(CCC_Gamma,		"rs_c_contrast"			,&ps_contrast		);
@@ -580,8 +581,8 @@ void CCC_Register()
 	CMD1(CCC_VidMode,	"vid_mode"				);
 
 #ifdef DEBUG
-	CMD3(CCC_Token,		"vid_bpp",				&psCurrentBPP,	vid_bpp_token );
 #endif // DEBUG
+    CMD3(CCC_Token,		"vid_bpp",				&psCurrentBPP,	vid_bpp_token );
 
 	CMD1(CCC_VID_Reset, "vid_restart"			);
 	

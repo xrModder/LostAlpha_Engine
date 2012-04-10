@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="zlib"
 	ProjectGUID="{CA2604CA-A2AC-49A1-A468-8AB5A2E6CBC9}"
 	RootNamespace="zlib"
@@ -79,7 +79,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\libraries"
+			OutputDirectory="x:\libraries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="4"
 			CharacterSet="2"

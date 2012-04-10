@@ -29,6 +29,7 @@ bool g_bAutoClearCrouch = true;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
+//	Msg("CActor::IR_OnKeyboardPress %d", cmd);
 	if (Remote())		return;
 
 //	if (conditions().IsSleeping())	return;
@@ -105,15 +106,23 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			}
 		}break;
 	case kTORCH:{ 
-		const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
-		xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-		xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-		for(;it!=it_e;++it){
-				CTorch* torch = smart_cast<CTorch*>(*it);
-				if (torch){		
-					torch->Switch();
-					break;
+		if (!m_current_torch)
+		{
+			const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
+			xr_vector<CAttachableItem*>::const_iterator it = all.begin();
+			xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
+			for(;it!=it_e;++it){
+					CTorch* torch = smart_cast<CTorch*>(*it);
+					if (torch){		
+							m_current_torch = torch;
+							m_current_torch->Switch();
+						break;
+					}
 				}
+		}
+		else
+		{
+			m_current_torch->Switch();
 		}
 		}break;
 	case kWPN_1:	
@@ -277,8 +286,9 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 			b = use_Vehicle(0);
 		else
 			if (holderGO->CLS_ID==CLSID_OBJECT_W_MOUNTED ||
-				holderGO->CLS_ID==CLSID_OBJECT_W_STATMGUN)
-				b = use_MountedWeapon(0);
+				holderGO->CLS_ID==CLSID_OBJECT_W_STATMGUN ||
+				holderGO->CLS_ID==CLSID_OBJECT_W_TURRET)
+					b = use_MountedWeapon(0);
 
 		if(inventory().ActiveItem()){
 			CHudItem* hi = smart_cast<CHudItem*>(inventory().ActiveItem());
@@ -293,8 +303,9 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 			b = use_Vehicle(holder);
 
 		if (holderGO->CLS_ID==CLSID_OBJECT_W_MOUNTED ||
-			holderGO->CLS_ID==CLSID_OBJECT_W_STATMGUN)
-			b = use_MountedWeapon(holder);
+			holderGO->CLS_ID==CLSID_OBJECT_W_STATMGUN ||
+			holderGO->CLS_ID==CLSID_OBJECT_W_TURRET)
+				b = use_MountedWeapon(holder);
 		
 		if(b){//used succesfully
 			// switch off torch...

@@ -127,11 +127,14 @@ void CStalkerActionGatherItems::initialize	()
 		object().CObjectHandler::set_goal	(eObjectActionIdle);
 	else
 		object().CObjectHandler::set_goal	(eObjectActionIdle,object().inventory().ActiveItem());
+	
 }
 
 void CStalkerActionGatherItems::finalize	()
 {
 	inherited::finalize		();
+
+	object().sight().setup						(SightManager::eSightTypePathDirection);
 
 	object().movement().set_desired_position	(0);
 

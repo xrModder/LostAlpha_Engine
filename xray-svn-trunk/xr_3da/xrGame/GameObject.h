@@ -32,6 +32,7 @@ class CAI_Stalker;
 class CScriptEntity;
 class CAI_ObjectLocation;
 class CWeapon;
+class CMountedTurret;
 class CExplosive;
 class CHolderCustom;
 class CAttachmentOwner;
@@ -87,6 +88,7 @@ public:
 	virtual CAttachableItem*			cast_attachable_item		()						{return NULL;}
 	virtual CHolderCustom*				cast_holder_custom			()						{return NULL;}
 	virtual CBaseMonster*				cast_base_monster			()						{return NULL;}
+	virtual CMountedTurret*				cast_mounted_turret			()						{return NULL;}
 
 public:
 	virtual BOOL						feel_touch_on_contact	(CObject *)					{return TRUE;}

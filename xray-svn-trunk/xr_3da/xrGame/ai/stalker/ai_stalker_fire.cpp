@@ -51,15 +51,20 @@
 #include "../../script_game_object.h"
 #include "../../inventory.h"
 
+#include "../../trajectories.h"
+
 using namespace StalkerSpace;
 
-const float DANGER_DISTANCE				= 3.f;
-const u32	DANGER_INTERVAL				= 120000;
+static float const DANGER_DISTANCE			= 3.f;
+static u32	 const DANGER_INTERVAL			= 120000;
+			 
+static float const PRECISE_DISTANCE			= 2.5f;
+static float const FLOOR_DISTANCE			= 2.f;
+static float const NEAR_DISTANCE			= 2.5f;
+static u32	 const FIRE_MAKE_SENSE_INTERVAL	= 10000;
 
-const float PRECISE_DISTANCE			= 2.5f;
-const float FLOOR_DISTANCE				= 2.f;
-const float NEAR_DISTANCE				= 2.5f;
-const u32	FIRE_MAKE_SENSE_INTERVAL	= 10000;
+//static float const min_throw_distance		= 10.f;
+static float const max_distance				= 45.f;
 
 float CAI_Stalker::GetWeaponAccuracy	() const
 {
@@ -112,7 +117,7 @@ void CAI_Stalker::g_fireParams(const CHudItem* pHudItem, Fvector& P, Fvector& D)
 		if (missile) {
 			update_throw_params	();
 			P			= m_throw_position;
-			D			= m_throw_direction;
+			D			= Fvector().set(m_throw_velocity).normalize();
 			VERIFY		(!fis_zero(D.square_magnitude()));
 			return;
 		}
@@ -744,6 +749,9 @@ void CAI_Stalker::notify_on_wounded_or_killed	(CObject *object)
 	if (!stalker)
 		return;
 
+	if ( !stalker->g_Alive() )
+		return;
+
 	stalker->on_enemy_wounded_or_killed	(this);
 
 	typedef CAgentCorpseManager::MEMBER_CORPSES	MEMBER_CORPSES;
@@ -771,6 +779,9 @@ void CAI_Stalker::notify_on_wounded_or_killed	()
 void CAI_Stalker::wounded					(bool value)
 {
 	if (m_wounded == value)
+		return;
+
+	if (!g_Alive())
 		return;
 
 	if (value)
@@ -820,15 +831,87 @@ bool CAI_Stalker::use_throw_randomness		()
 float CAI_Stalker::missile_throw_force		() 
 {
 	update_throw_params		();
-	VERIFY					(_valid(m_throw_force));
-	return					(m_throw_force);
+	return					(m_throw_velocity.magnitude());
 }
 
-void CAI_Stalker::throw_target				(const Fvector &position)
+void CAI_Stalker::compute_throw_miss		( u32 const vertex_id )
 {
-	float					distance_to_sqr = position.distance_to_sqr(m_throw_target);
+	float const throw_miss_radius		= ::Random.randF(2.f,5.f);
+	u32 const try_count					= 6;
+
+	CLevelGraph const& level_graph		= ai().level_graph();
+	for (u32 i = 0; i < try_count; ++i) {
+		Fvector const direction			= Fvector().random_dir();
+		Fvector const check_position	= Fvector().mad( m_throw_target_position, direction, throw_miss_radius );
+		u32 const check_vertex_id		= level_graph.check_position_in_direction(vertex_id, m_throw_target_position, check_position);
+		if ( !level_graph.valid_vertex_id(check_vertex_id) )
+			continue;
+
+		m_throw_target_position			= check_position;
+		return;
+	}
+}
+
+void CAI_Stalker::throw_target_impl			(const Fvector &position, CObject *throw_ignore_object )
+{
+	float					distance_to_sqr = position.distance_to_sqr(m_throw_target_position);
 	m_throw_actual			= m_throw_actual && (distance_to_sqr < _sqr(.1f));
-	m_throw_target			= position;
+	m_throw_target_position	= position;
+	m_throw_ignore_object	= throw_ignore_object;
+}
+
+void CAI_Stalker::throw_target				(const Fvector &position, CObject *throw_ignore_object )
+{
+	throw_target_impl		( position, throw_ignore_object );
+}
+
+void CAI_Stalker::throw_target				(const Fvector &position, u32 const vertex_id, CObject *throw_ignore_object )
+{
+	throw_target_impl		( position, throw_ignore_object );
+	compute_throw_miss		( vertex_id );
+}
+
+// delete this function!!!!
+bool CAI_Stalker::throw_check_error			(
+		float low,
+		float high,
+		const Fvector &position,
+		const Fvector &velocity,
+		const Fvector &gravity
+	)
+{
+	return		true;
+}
+
+void CAI_Stalker::check_throw_trajectory	(const float &throw_time)
+{
+	m_throw_enabled			= false;
+
+	xr_vector<trajectory_pick> * trajectory_picks	=	NULL;
+	xr_vector<Fvector> *		collide_tris		=	NULL;
+#ifdef DEBUG
+//	trajectory_picks				=	& m_throw_picks;
+//	collide_tris					=	& m_throw_collide_tris;
+#endif // #ifdef DEBUG
+
+	Fvector box_size				=	{ 0.f, 0.f , 0.f };
+	//Fvector box_size				=	{ 0.1f, 0.1f , 0.1f };
+
+	if ( !trajectory_intersects_geometry(throw_time, 
+										 m_throw_position, 
+										 m_throw_target_position,
+										 m_throw_velocity,
+										 m_throw_collide_position,
+										 this,
+										 m_throw_ignore_object,
+										 rq_storage,
+										 trajectory_picks,
+										 collide_tris,
+										 box_size) )
+	{
+		m_throw_collide_position	= Fvector().set(flt_max,flt_max,flt_max);
+		m_throw_enabled				= true;
+	}
 }
 
 void CAI_Stalker::update_throw_params		()
@@ -836,7 +919,7 @@ void CAI_Stalker::update_throw_params		()
 	if (m_throw_actual) {
 		if (m_computed_object_position.similar(Position())) {
 			if (m_computed_object_direction.similar(Direction())) {
-				VERIFY		(_valid(m_throw_force));
+				VERIFY		(_valid(m_throw_velocity));
 				return;
 			}
 		}
@@ -846,16 +929,59 @@ void CAI_Stalker::update_throw_params		()
 	m_computed_object_position	= Position();
 	m_computed_object_direction	= Direction();
 
+#if 0
 	m_throw_position		= eye_matrix.c;
+#else
+	m_throw_position		= Position();
+
+	CMissile* const pMissile = dynamic_cast<CMissile*>(inventory().ActiveItem());
+	if ( pMissile ) {
+		static const LPCSTR third_person_offset_id	= "third_person_throw_point_offset";
+
+		if ( !pSettings->line_exist(pMissile->cNameSect(), third_person_offset_id ) ) {
+			m_throw_position.y	+= 2.f;
+
+			if ( pMissile ) {
+				Fvector			offset;
+				XFORM().transform_dir(offset, pMissile->throw_point_offset());
+				m_throw_position.add(offset);
+			}
+		}
+		else
+			m_throw_position.add( pSettings->r_fvector3(pMissile->cNameSect(), third_person_offset_id) );
+	}
+#endif
+
+//	static float const distances[] = {
+//		30.f, 40.f, 50.f, 60.f
+//	};
+//	VERIFY					(g_SingleGameDifficulty < sizeof(distances)/sizeof(distances[0]));
+//	float const max_distance = 45.f; //distances[g_SingleGameDifficulty];
 
 	// computing velocity with minimum magnitude
-	Fvector					velocity;
-	velocity.sub			(m_throw_target,m_throw_position);
-	float					time = ThrowMinVelTime(velocity,ph_world->Gravity());
-	TransferenceToThrowVel	(velocity,time,ph_world->Gravity());
-	m_throw_force			= velocity.magnitude();
-	m_throw_direction		= velocity.normalize();
-	VERIFY					(_valid(m_throw_force));
+	m_throw_velocity.sub	(m_throw_target_position,m_throw_position);
+	
+	if (m_throw_velocity.magnitude() > max_distance) {
+		m_throw_enabled		= false;
+
+#ifdef DEBUG
+//		m_throw_picks.clear	();
+#endif // DEBUG
+		return;
+	}
+
+	float					time = ThrowMinVelTime(m_throw_velocity, ph_world->Gravity());
+	TransferenceToThrowVel	(m_throw_velocity, time, ph_world->Gravity());
+
+	check_throw_trajectory	(time);
+	
+	m_throw_velocity.mul(::Random.randF(.99f,1.01f));
+}
+
+void CAI_Stalker::on_throw_completed		()
+{
+	agent_manager().member().on_throw_completed	();
+	m_last_throw_time		= Device.dwTimeGlobal;
 }
 
 bool CAI_Stalker::critically_wounded		()
@@ -953,6 +1079,7 @@ bool CAI_Stalker::can_cry_enemy_is_wounded		() const
 		case StalkerDecisionSpace::eWorldOperatorSearchEnemy:
 		case StalkerDecisionSpace::eWorldOperatorKillEnemyIfNotVisible:
 		case StalkerDecisionSpace::eWorldOperatorKillEnemyIfCriticallyWounded:
+		case StalkerDecisionSpace::eWorldOperatorThrowGrenade:
 			return					(true);
 		case StalkerDecisionSpace::eWorldOperatorGetItemToKill:
 		case StalkerDecisionSpace::eWorldOperatorRetreatFromEnemy:
@@ -972,7 +1099,10 @@ bool CAI_Stalker::can_cry_enemy_is_wounded		() const
 
 void CAI_Stalker::on_critical_wound_initiator	(const CAI_Stalker *critically_wounded)
 {
-	if (!can_cry_enemy_is_wounded())
+	if ( !g_Alive() )
+		return;
+
+	if ( !can_cry_enemy_is_wounded() )
 		return;
 
 	sound().play					(eStalkerSoundEnemyCriticallyWounded);
@@ -980,6 +1110,9 @@ void CAI_Stalker::on_critical_wound_initiator	(const CAI_Stalker *critically_wou
 
 void CAI_Stalker::on_enemy_wounded_or_killed	(const CAI_Stalker *wounded_or_killed)
 {
+	if (!g_Alive())
+		return;
+
 	if (!can_cry_enemy_is_wounded())
 		return;
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrCPU_Pipe"
 	ProjectGUID="{CA0649DD-D089-423A-981C-46B57A884EB9}"
+	RootNamespace="xrCPU_Pipe"
 	>
 	<Platforms>
 		<Platform
@@ -15,7 +16,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -53,6 +54,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRCPU_PIPE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -92,6 +94,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries_release;X:\STALKER\SDK\Xiph\Libs"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -101,7 +104,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -164,6 +167,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRCPU_PIPE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -205,6 +209,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="x:\libraries\"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
@@ -276,6 +281,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCPU_PIPE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -313,6 +319,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries;X:\STALKER\SDK\Xiph\Libs"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""

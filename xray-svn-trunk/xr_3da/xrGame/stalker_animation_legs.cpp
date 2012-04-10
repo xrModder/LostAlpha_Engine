@@ -212,7 +212,7 @@ MotionID CStalkerAnimationManager::legs_move_animation		()
 
 	m_current_speed				= movement.speed(speed_direction);
 
-	return						(
+	return  (
 		m_data_storage->m_part_animations.A[
 			body_state()
 		].m_movement.A[

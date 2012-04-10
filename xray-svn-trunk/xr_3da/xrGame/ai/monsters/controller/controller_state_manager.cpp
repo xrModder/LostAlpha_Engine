@@ -25,6 +25,8 @@
 
 #include "../states/state_test_state.h"
 
+#include "controller_tube.h"
+
 CStateManagerController::CStateManagerController(CController *obj) : inherited(obj)
 {
 	add_state(eStateRest,					xr_new<CStateMonsterRest<CController> >					(obj));
@@ -32,19 +34,11 @@ CStateManagerController::CStateManagerController(CController *obj) : inherited(o
 	add_state(eStateHearInterestingSound,	xr_new<CStateMonsterHearInterestingSound<CController> >	(obj));
 	add_state(eStateHearDangerousSound,		xr_new<CStateMonsterHearDangerousSound<CController> >	(obj));
 	add_state(eStateHitted,					xr_new<CStateMonsterHitted<CController> >				(obj));
-	
-	add_state(eStateAttack,					xr_new<CStateMonsterAttackRun<CController> >			(obj));
-
-	//add_state(
-	//	eStateAttack, 
-	//	xr_new<CStateControllerAttack<CController> > (obj,
-	//		xr_new<CStateMonsterAttackRun<CController> >(obj), 
-	//		xr_new<CStateMonsterAttackMelee<CController> >(obj)
-	//	)
-	//);
-
-	add_state(eStateEat,		xr_new<CStateMonsterEat<CController> >(obj));
-	add_state(eStateCustom,		xr_new<CStateControlHide<CController> >(obj));
+	// gr1ph
+	add_state(eStateAttack,					xr_new<CStateControllerAttack<CController>>				(obj));
+	add_state(eStateEat,					xr_new<CStateMonsterEat<CController> >					(obj));
+	add_state(eStateCustom,					xr_new<CStateControlHide<CController> >					(obj));
+	add_state(eStateCustom_Tubeman,			xr_new<CStateControllerTube<CController>>				(obj));
 }
 
 CStateManagerController::~CStateManagerController()
@@ -67,10 +61,19 @@ void CStateManagerController::execute()
 		
 	const CEntityAlive* enemy	= object->EnemyMan.get_enemy();
 
-	if (enemy) {
-		switch (object->EnemyMan.get_danger_type()) {
-			case eStrong:	state_id = eStatePanic; break;
-			case eWeak:		state_id = eStateAttack; break;
+	if (enemy) 
+	{
+		if (get_state(eStateCustom_Tubeman)->check_start_conditions())
+		{
+			state_id = eStateCustom_Tubeman;
+		} 
+		else
+		{	
+			switch (object->EnemyMan.get_danger_type()) 
+			{
+				case eStrong:	state_id = eStateAttack; break; // was eStatePanic
+				case eWeak:		state_id = eStateAttack; break;
+			}
 		}
 	} else if (object->HitMemory.is_hit()) {
 		state_id = eStateHitted;

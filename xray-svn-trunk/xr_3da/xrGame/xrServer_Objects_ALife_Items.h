@@ -98,6 +98,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemTorch,CSE_ALifeItem)
 	bool							m_active;
 	bool							m_nightvision_active;
 	bool							m_attached;
+	u16								m_battery_state;
 									CSE_ALifeItemTorch	(LPCSTR caSection);
     virtual							~CSE_ALifeItemTorch	();
 	virtual BOOL					Net_Relevant			();

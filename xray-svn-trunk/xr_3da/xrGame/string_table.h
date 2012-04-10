@@ -38,3 +38,4 @@ private:
 //.	bool						GetKeyboardItem			(LPCSTR src, char* dst);
 	static STRING_TABLE_DATA*	pData;
 };
+

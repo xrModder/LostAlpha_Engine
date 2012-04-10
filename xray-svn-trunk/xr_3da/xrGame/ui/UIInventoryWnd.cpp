@@ -34,6 +34,7 @@ using namespace InventoryUtilities;
 #include "UIOutfitSlot.h"
 #include "UI3tButton.h"
 
+
 #define				INVENTORY_ITEM_XML		"inventory_item.xml"
 #define				INVENTORY_XML			"inventory_new.xml"
 
@@ -74,7 +75,7 @@ void CUIInventoryWnd::Init()
 
 	AttachChild							(&UIBagWnd);
 	xml_init.InitStatic					(uiXml, "bag_static", 0, &UIBagWnd);
-	
+
 	AttachChild							(&UIMoneyWnd);
 	xml_init.InitStatic					(uiXml, "money_static", 0, &UIMoneyWnd);
 
@@ -82,11 +83,16 @@ void CUIInventoryWnd::Init()
 	xml_init.InitStatic					(uiXml, "descr_static", 0, &UIDescrWnd);
 
 
+//	AttachChild						    (&UICacoWnd);
+//	xml_init.InitStatic					(uiXml, "texture_static", 0, &UICacoWnd);
+
+
 	UIDescrWnd.AttachChild				(&UIItemInfo);
 	UIItemInfo.Init						(0, 0, UIDescrWnd.GetWidth(), UIDescrWnd.GetHeight(), INVENTORY_ITEM_XML);
 
 	AttachChild							(&UIPersonalWnd);
 	xml_init.InitFrameWindow			(uiXml, "character_frame_window", 0, &UIPersonalWnd);
+//	xml_init.InitAutoStatic				(uiXml, "bottom_inv_static", &UIPersonalWnd);
 
 	AttachChild							(&UIProgressBack);
 	xml_init.InitStatic					(uiXml, "progress_background", 0, &UIProgressBack);
@@ -98,9 +104,11 @@ void CUIInventoryWnd::Init()
 		UIProgressBack_rank.AttachChild	(&UIProgressBarRank);
 		xml_init.InitProgressBar		(uiXml, "progress_bar_rank", 0, &UIProgressBarRank);
 		UIProgressBarRank.SetProgressPos(100);
-
 	}
-	
+		//	    CUIXmlInit::InitAutoStatic	(uiXml, "drop_inv_static", this);
+		//		CUIXmlInit::InitAutoStatic	(uiXml, "sleep_inv_static", this);
+		//		CUIXmlInit::InitAutoStatic	(uiXml, "top_inv_static", this);
+		//		CUIXmlInit::InitAutoStatic	(uiXml, "slots_old_static", this);
 
 	UIProgressBack.AttachChild (&UIProgressBarHealth);
 	xml_init.InitProgressBar (uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
@@ -110,6 +118,9 @@ void CUIInventoryWnd::Init()
 
 	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
 	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
+
+	UIProgressBack.AttachChild    (&UIProgressBarHunger);
+    xml_init.InitProgressBar (uiXml, "progress_bar_hunger", 0, &UIProgressBarHunger);
 
 	UIPersonalWnd.AttachChild			(&UIStaticPersonal);
 	xml_init.InitStatic					(uiXml, "static_personal",0, &UIStaticPersonal);
@@ -121,7 +132,6 @@ void CUIInventoryWnd::Init()
 
 	//Элементы автоматического добавления
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
-
 
 	if (GameID() != GAME_SINGLE){
 		UIRankFrame = xr_new<CUIStatic> (); UIRankFrame->SetAutoDelete(true);
@@ -153,6 +163,14 @@ void CUIInventoryWnd::Init()
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_automatic", 0, m_pUIAutomaticList);
 	BindDragDropListEnents				(m_pUIAutomaticList);
 
+	m_pUIKnifeList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUIKnifeList); m_pUIKnifeList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx			(uiXml, "dragdrop_knife", 0, m_pUIKnifeList);
+	BindDragDropListEnents				(m_pUIKnifeList);
+
+	m_pUIBinocularList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUIBinocularList); m_pUIBinocularList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx			(uiXml, "dragdrop_binocular", 0, m_pUIBinocularList);
+	BindDragDropListEnents				(m_pUIBinocularList);
+
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
 	UIPropertiesBox.Init				(0,0,300,300);
@@ -161,14 +179,29 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIStaticTime);
 	xml_init.InitStatic					(uiXml, "time_static", 0, &UIStaticTime);
 
-	UIStaticTime.AttachChild			(&UIStaticTimeString);
-	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
+//	UIStaticTime.AttachChild			(&UIStaticTimeString);
+//	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
 
 	UIExitButton						= xr_new<CUI3tButton>();UIExitButton->SetAutoDelete(true);
 	AttachChild							(UIExitButton);
 	xml_init.Init3tButton				(uiXml, "exit_button", 0, UIExitButton);
 
 //Load sounds
+
+
+CUISleepWnd                   UISleepWnd;
+AttachChild (&UISleepWnd);
+UISleepWnd.Init ();
+
+//	UIRestBtn				= xr_new<CUIButton>();UIRestBtn->SetAutoDelete(true);
+//	AttachChild              (UIRestBtn);
+//	xml_init.InitButton    (uiXml, "rest_button", 0, UIRestBtn);
+//UISleepBtn				= xr_new<CUIButton>();UIRestBtn->SetAutoDelete(true);
+//AttachChild              (UISleepBtn);
+//xml_init.InitButton				(uiXml, "sleep_button", 0, UISleepBtn);
+//UISleepWnd						= xr_new<CUISleepWnd>();UISleepWnd->SetAutoDelete(true);
+//AttachChild							(UISleepWnd);
+
 
 	XML_NODE* stored_root				= uiXml.GetLocalRoot		();
 	uiXml.SetLocalRoot					(uiXml.NavigateToNode		("action_sounds",0));
@@ -194,6 +227,8 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	if(l==m_pUIAutomaticList)	return iwSlot;
 	if(l==m_pUIPistolList)		return iwSlot;
 	if(l==m_pUIOutfitList)		return iwSlot;
+	if(l==m_pUIKnifeList)	return iwSlot;
+	if(l==m_pUIBinocularList)	return iwSlot;
 
 	NODEFAULT;
 #ifdef DEBUG
@@ -257,6 +292,11 @@ void CUIInventoryWnd::Update()
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		UIProgressBarRadiation.SetProgressPos	(v);
+
+		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+        v = pActor->conditions().GetSatiety()*100.0f;
+        UIProgressBarHunger.SetProgressPos    (v);
+
 
 		CInventoryOwner* pOurInvOwner	= smart_cast<CInventoryOwner*>(pEntityAlive);
 		u32 _money						= 0;

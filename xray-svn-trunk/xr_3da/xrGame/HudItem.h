@@ -88,7 +88,6 @@ public:
 	//просчет дополнительных вычислений (переопределяется в потомках)
 	virtual void	UpdateHudAdditonal		(Fmatrix&);
 
-
 	virtual	void	UpdateXForm			() = 0;
 	void					animGet		(MotionSVec& lst, LPCSTR prefix);
 
@@ -130,5 +129,6 @@ public:
 	IC CInventoryItem&		item					() const {	VERIFY(m_item);	return(*m_item);}
 
 	virtual void			on_renderable_Render	() = 0;
+
 };
 

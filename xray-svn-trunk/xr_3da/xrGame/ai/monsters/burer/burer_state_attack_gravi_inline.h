@@ -76,7 +76,7 @@ void CStateBurerAttackGraviAbstract::finalize()
 	inherited::finalize();
 
 	object->com_man().ta_pointbreak	();
-	object->DeactivateShield		();
+//	object->DeactivateShield		();
 	object->set_script_capture		(true);
 }
 
@@ -86,7 +86,7 @@ void CStateBurerAttackGraviAbstract::critical_finalize()
 	inherited::critical_finalize();
 	
 	object->com_man().ta_pointbreak	();
-	object->DeactivateShield		();
+//	object->DeactivateShield		();
 	object->StopGraviPrepare		();
 	object->set_script_capture		(false);
 }
@@ -121,7 +121,7 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviStart()
 	time_gravi_started			= Device.dwTimeGlobal;
 
 	object->StartGraviPrepare();
-	object->ActivateShield();
+//	object->ActivateShield();
 }
 
 TEMPLATE_SPECIALIZATION
@@ -153,7 +153,7 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviFire()
 
 	object->StopGraviPrepare	();
 	object->sound().play		(CBurer::eMonsterSoundGraviAttack);
-	object->DeactivateShield	();
+//	object->DeactivateShield	();
 }
 
 #undef TEMPLATE_SPECIALIZATION

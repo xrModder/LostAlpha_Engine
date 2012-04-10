@@ -3,6 +3,7 @@
 #include "../../../../skeletoncustom.h"
 #include "../../../actor.h"
 #include "../../../../CameraBase.h"
+#include "../../../../CustomHUD.h"
 
 #define TEMPLATE_SPECIALIZATION template <\
 	typename _Object\
@@ -11,13 +12,15 @@
 #define CStateBloodsuckerVampireExecuteAbstract CStateBloodsuckerVampireExecute<_Object>
 
 #define VAMPIRE_TIME_HOLD		4000
-#define VAMPIRE_HIT_IMPULSE		400.f
+#define VAMPIRE_HIT_IMPULSE		40.f
 #define VAMPIRE_MIN_DIST		0.5f
-#define VAMPIRE_MAX_DIST		1.5f
+#define VAMPIRE_MAX_DIST		1.f
 
 TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::initialize()
 {
+    controlling_value = 1;
+
 	inherited::initialize					();
 
 	object->CControlledActor::install		();
@@ -27,6 +30,8 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	m_action				= eActionPrepare;
 	time_vampire_started	= 0;
 
+	psHUD_Flags.set(HUD_DRAW, FALSE);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 	object->stop_invisible_predator	();
 
 	m_effector_activated			= false;
@@ -63,32 +68,46 @@ void CStateBloodsuckerVampireExecuteAbstract::execute()
 			}
 
 		case eActionCompleted:
+			controlling_value = 0;
+			show_hud();
 			break;
 	}
+	object->set_action						(ACT_STAND_IDLE);
+	object->dir().face_target	(object->EnemyMan.get_enemy());	
+}
 
-	object->set_action			(ACT_STAND_IDLE);
-	object->dir().face_target	(object->EnemyMan.get_enemy());
+TEMPLATE_SPECIALIZATION
+void CStateBloodsuckerVampireExecuteAbstract::show_hud()
+{
+	psHUD_Flags.set(HUD_DRAW, TRUE);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+}
+
+TEMPLATE_SPECIALIZATION
+void CStateBloodsuckerVampireExecuteAbstract::cleanup()
+{	
+	show_hud();
+	if ( object->com_man().ta_is_active() )
+		object->com_man().ta_deactivate();
+
+	if (object->CControlledActor::is_controlling())
+		object->CControlledActor::release		();
+
 }
 
 TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::finalize()
 {
 	inherited::finalize();
-
+	cleanup();
 	object->start_invisible_predator	();
-
-	if (object->CControlledActor::is_controlling())
-		object->CControlledActor::release		();
 }
 
 TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::critical_finalize()
 {
 	inherited::critical_finalize();
-
-	if (object->CControlledActor::is_controlling())
-		object->CControlledActor::release		();
-	
+	cleanup();
 	object->start_invisible_predator	();
 }
 

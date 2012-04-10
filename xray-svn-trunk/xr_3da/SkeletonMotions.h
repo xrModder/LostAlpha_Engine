@@ -86,6 +86,7 @@ private:
 public:
 	shared_str		name;
 	void			Load			(IReader*);
+	bool			is_empty		()								{ return (intervals.empty()); }
 
 #ifdef _EDITOR
 	void			Save			(IWriter*);

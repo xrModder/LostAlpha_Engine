@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="xrAI"
 	ProjectGUID="{EA5932F3-02FE-4AD3-89E8-7072DC465D25}"
+	RootNamespace="xrAI"
 	>
 	<Platforms>
 		<Platform
@@ -46,6 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include;X:\STALKER\SDK\loki;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Include"
 				PreprocessorDefinitions="WIN32,_WINDOWS,DEBUG,AI_COMPILER;_SECURE_SCL=0"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
@@ -83,6 +85,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Library\ReleaseDLL"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
@@ -121,7 +124,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -159,6 +162,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include;X:\STALKER\SDK\loki;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -198,6 +202,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries_release;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Library\ReleaseDLL"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -207,7 +212,7 @@
 				StackCommitSize="0"
 				LargeAddressAware="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -273,6 +278,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include;X:\STALKER\SDK\loki;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Include"
 				PreprocessorDefinitions="WIN32,DEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -310,6 +316,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="X:\libraries;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Library\ReleaseDLL"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"

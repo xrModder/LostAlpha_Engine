@@ -470,7 +470,7 @@ bool CCar::SDoor::CanExit(const Fvector& pos,const Fvector& dir)
 
 void CCar::SDoor::GetExitPosition(Fvector& pos)
 {
-	if(!joint) 
+//	if(!joint) 
 	{
 		CKinematics* K=PKinematics(pcar->Visual());
 		//CBoneInstance bi=K->LL_GetBoneInstance(bone_id);
@@ -497,39 +497,39 @@ void CCar::SDoor::GetExitPosition(Fvector& pos)
 		pos.add(add1);
 		return;
 	}
-	float lo_ext,hi_ext;
-	Fvector door_axis,door_pos,door_dir,closed_door_dir,add;
-	joint->GetAxisDirDynamic(0,door_axis);
-	joint->GetAnchorDynamic(door_pos);
+	//float lo_ext,hi_ext;
+	//Fvector door_axis,door_pos,door_dir,closed_door_dir,add;
+	//joint->GetAxisDirDynamic(0,door_axis);
+	//joint->GetAnchorDynamic(door_pos);
 
-	Fmatrix door_form,root_form;
-	root_form.mul(pcar->m_root_transform,pcar->XFORM());
-	joint->PSecond_element()->InterpolateGlobalTransform(&door_form);
-	door_form.transform_dir(door_dir,door_dir_in_door);
+	//Fmatrix door_form,root_form;
+	//root_form.mul(pcar->m_root_transform,pcar->XFORM());
+	//joint->PSecond_element()->InterpolateGlobalTransform(&door_form);
+	//door_form.transform_dir(door_dir,door_dir_in_door);
 
-	
-	closed_door_form_in_object.transform_dir(closed_door_dir,door_dir_in_door);
-	pcar->XFORM().transform_dir(closed_door_dir);
+	//
+	//closed_door_form_in_object.transform_dir(closed_door_dir,door_dir_in_door);
+	//pcar->XFORM().transform_dir(closed_door_dir);
 
 
-	pos.set(door_pos);
-	door_axis.normalize();
-	float center_prg=door_axis.dotproduct(door_pos);
-	joint->PSecond_element()->get_Extensions(door_axis,center_prg,lo_ext,hi_ext);
-	add.set(door_axis);
-	if(door_axis.dotproduct(root_form.j)>0.f) add.mul(lo_ext);
-	else									  add.mul(hi_ext);
-	pos.add(add);
+	//pos.set(door_pos);
+	//door_axis.normalize();
+	//float center_prg=door_axis.dotproduct(door_pos);
+	//joint->PSecond_element()->get_Extensions(door_axis,center_prg,lo_ext,hi_ext);
+	//add.set(door_axis);
+	//if(door_axis.dotproduct(root_form.j)>0.f) add.mul(lo_ext);
+	//else									  add.mul(hi_ext);
+	//pos.add(add);
 
-	door_dir.normalize();
-	center_prg=door_pos.dotproduct(door_dir);
-	joint->PSecond_element()->get_Extensions(door_dir,center_prg,lo_ext,hi_ext);
-	closed_door_dir.normalize();
-	add.add(closed_door_dir,door_dir);
-	add.normalize();
-	if(hi_ext>-lo_ext)add.mul(hi_ext);
-	else			  add.mul(lo_ext);
-	pos.add(add);
+	//door_dir.normalize();
+	//center_prg=door_pos.dotproduct(door_dir);
+	//joint->PSecond_element()->get_Extensions(door_dir,center_prg,lo_ext,hi_ext);
+	//closed_door_dir.normalize();
+	//add.add(closed_door_dir,door_dir);
+	//add.normalize();
+	//if(hi_ext>-lo_ext)add.mul(hi_ext);
+	//else			  add.mul(lo_ext);
+	//pos.add(add);
 }
 
 

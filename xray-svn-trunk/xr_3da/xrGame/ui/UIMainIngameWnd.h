@@ -51,6 +51,14 @@ protected:
 	CUIMotionIcon		UIMotionIcon;	
 	CUIZoneMap*			UIZoneMap;
 
+	// lost alpha start
+	CUIStatic UIStaticTime;
+	CUIStatic UIStaticDate;
+	CUIStatic UIStaticTorch;
+	CUIProgressBar UIFlashlightBar;
+	CUIStatic UIStaticTurret;
+	CUIProgressBar UITurretBar;
+
 	//иконка, показывающая количество активных PDA
 	CUIStatic			UIPdaOnline;
 	
@@ -132,6 +140,7 @@ protected:
 	void				DestroyFlashingIcons			();
 	void				UpdateFlashingIcons				();
 	void				UpdateActiveItemInfo			();
+	void				HandleBolt						();
 
 	void				SetAmmoIcon						(const shared_str& seсt_name);
 
@@ -165,7 +174,9 @@ protected:
 	void				UpdatePickUpItem();
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
+
 #ifdef DEBUG
 	void				draw_adjust_mode					();
 #endif
 };
+//#pragma TODO("restore here!")

@@ -60,6 +60,7 @@
 #	include "script_monster_action.h"
 #	include "script_entity_action.h"
 #	include "helicopter.h"
+#	include "mounted_turret.h"
 #	include "game_base.h"
 #	include "game_sv_base.h"
 #	include "game_sv_mp.h"

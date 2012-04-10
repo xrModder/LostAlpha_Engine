@@ -60,6 +60,7 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	VERIFY	(fWallmarkSize>0);
 
 	m_InvShortName			= CStringTable().translate( pSettings->r_string(section, "inv_name_short"));
+	//Msg("Allow Ricochet for %s %s", section, (m_flags.test(cfRicochet)) ? "true" : "false");
 }
 
 CWeaponAmmo::CWeaponAmmo(void) 

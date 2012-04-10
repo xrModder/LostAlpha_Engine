@@ -576,7 +576,9 @@ bool CRelationMapLocation::Update()
 		CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(temp);
 		if(pCreature) //maybe trader ?
 			bAlive = pCreature->g_Alive		();
-	}else{
+	}
+	else
+	{
 		CInventoryOwner*			pEnt = NULL;
 		CInventoryOwner*			pAct = NULL;
 
@@ -595,7 +597,8 @@ bool CRelationMapLocation::Update()
 	else
 		sname = RELATION_REGISTRY().GetSpotName(m_last_relation);
 
-	if(m_curr_spot_name != sname){
+	if(m_curr_spot_name != sname)
+	{
 		LoadSpot(*sname, true);
 		m_curr_spot_name = sname;
 	}

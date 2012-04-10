@@ -366,6 +366,7 @@ void CStalkerActionGetReadyToKill::execute		()
 		object().best_cover_can_try_advance	();
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 // CStalkerActionKillEnemy
 //////////////////////////////////////////////////////////////////////////
@@ -1288,3 +1289,90 @@ void CStalkerActionCriticalHit::execute						()
 {
 	inherited::execute						();
 }
+
+//////////////////////////////////////////////////////////////////////////
+// CStalkerCombatActionThrowGrenade
+//////////////////////////////////////////////////////////////////////////
+
+CStalkerCombatActionThrowGrenade::CStalkerCombatActionThrowGrenade	(CAI_Stalker *object, LPCSTR action_name) :
+	inherited(object,action_name)
+{
+//	Msg("CStalkerCombatActionThrowGrenade instanced for [%s]", object->cName().c_str());
+}
+
+void CStalkerCombatActionThrowGrenade::initialize			()
+{
+	inherited::initialize					();
+//	Msg("1. CStalkerCombatActionThrowGrenade::initialize [%s]", object().cName().c_str());
+	object().movement().set_mental_state	(eMentalStateDanger);
+
+	const CInventoryItem					*grenade = object().inventory().ItemFromSlot(GRENADE_SLOT);
+	VERIFY									(grenade);
+	m_grenade_id							= grenade->object().ID();
+
+	object().movement().set_movement_type	(eMovementTypeStand);
+	object().movement().set_body_state		(eBodyStateStand);
+	object().sound().play					(eStalkerSoundThrowGrenade);
+	m_storage->set_property					(eWorldPropertyStartedToThrowGrenade, true);
+//	Msg("2. CStalkerCombatActionThrowGrenade::initialize [%s]", object().cName().c_str());
+}
+
+void CStalkerCombatActionThrowGrenade::finalize				()
+{
+	inherited::finalize						();
+
+	m_storage->set_property					(eWorldPropertyStartedToThrowGrenade, false);
+//	Msg("1. CStalkerCombatActionThrowGrenade::finalize [%s]", object().cName().c_str());
+}
+
+void CStalkerCombatActionThrowGrenade::execute				()
+{
+	inherited::execute						();
+//	Msg("1. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	const CInventoryItem					*grenade = object().inventory().ItemFromSlot(GRENADE_SLOT);
+	if (!grenade || grenade->object().ID() != m_grenade_id) {
+		object().on_throw_completed			();
+		m_storage->set_property				(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+//	Msg("2. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	const CEntityAlive						*enemy = object().memory().enemy().selected();
+	if (!enemy) {
+		m_storage->set_property				(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+//	Msg("3. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	CMemoryInfo								mem_object = object().memory().memory(enemy);
+	if (!mem_object.m_object) {
+		m_storage->set_property				(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+	u32 enemy_vertex_id	;
+	Fvector	enemy_position;
+	if (object().memory().visual().visible_now(enemy)) {
+		enemy_position						= enemy->Position();
+		enemy_vertex_id						= enemy->ai_location().level_vertex_id();
+		object().sight().setup				(CSightAction(enemy,true,true));
+	}
+	else {
+		enemy_position						= mem_object.m_object_params.m_position;
+		enemy_vertex_id						= mem_object.m_object_params.m_level_vertex_id;
+		object().sight().setup				(CSightAction(SightManager::eSightTypePosition,mem_object.m_object_params.m_position,true));
+	}
+//	Msg("4. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	Fvector const enemy_direction			= Fvector().sub( enemy_position, object().Position() ).normalize_safe();
+	Fvector const head_direction			= Fvector().setHP( -object().movement().m_head.current.yaw, -object().movement().m_head.current.pitch );
+	float const cos_alpha					= head_direction.dotproduct(enemy_direction);
+
+	if ( _abs(acosf(cos_alpha)) >= PI_DIV_8 )
+		return;
+//	Msg("5. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	object().throw_target					(enemy_position, enemy_vertex_id, const_cast<CEntityAlive*>(enemy));
+//	Msg("6. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+	u32										min_queue_size, max_queue_size, min_queue_interval, max_queue_interval;
+	float									distance = enemy->Position().distance_to(object().Position());
+	select_queue_params						(distance,min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
+	object().CObjectHandler::set_goal		(eObjectActionFire1,&grenade->object(),min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
+//	Msg("7. CStalkerCombatActionThrowGrenade::execute [%s]", object().cName().c_str());
+}
+

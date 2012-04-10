@@ -105,11 +105,11 @@ public:
 	virtual void		SetWndRect(const Frect& rect)					= 0;
 	virtual void		SetHeight(float height)							= 0;
 	virtual void		SetWidth(float width)							= 0;
-/*
+
 private:
-						IUISimpleWindow									(const IUISimpleWindow& other);
-	IUISimpleWindow&	operator =										( const IUISimpleWindow& other );
-*/
+//						IUISimpleWindow									(const IUISimpleWindow& other);
+//	virtual IUISimpleWindow&	operator =										( const IUISimpleWindow& other );
+
 };
 
 class CUISimpleWindow : public IUISimpleWindow {

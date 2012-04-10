@@ -22,6 +22,13 @@ u32 get_time()
 	return u32(__game_time() & u32(-1));
 }
 
+xrTime convert_time(u32 time)
+{
+	float time_factor = READ_IF_EXISTS(pGameIni, r_float, "alife", "time_factor", 10.0);
+	ALife::_TIME_ID val = iFloor(time_factor * ((float)time));
+	return xrTime(val);
+}
+
 xrTime get_time_struct()
 {
 	return xrTime(__game_time());

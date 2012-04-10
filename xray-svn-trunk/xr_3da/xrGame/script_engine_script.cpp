@@ -14,6 +14,7 @@
 
 using namespace luabind;
 
+
 void LuaLog(LPCSTR caMessage)
 {
 	ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeMessage,"%s",caMessage);
@@ -36,8 +37,8 @@ void ErrorLog(LPCSTR caMessage)
 
 void FlushLogs()
 {
+		FlushLog();
 #ifdef DEBUG
-	FlushLog();
 	ai().script_engine().flush_log();
 #endif // DEBUG
 }

@@ -7,6 +7,7 @@ class	CStateBurerAttack : public CState<_Object> {
 	typedef CState<_Object> *state_ptr;
 
 	bool				m_force_gravi;
+
 public:
 						CStateBurerAttack		(_Object *obj);
 

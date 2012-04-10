@@ -62,7 +62,8 @@ void CAI_Stalker::script_register(lua_State *L)
 				luabind::value("property_anomaly",							StalkerDecisionSpace::eWorldPropertyAnomaly),
 				luabind::value("property_inside_anomaly",					StalkerDecisionSpace::eWorldPropertyInsideAnomaly),
 				luabind::value("property_pure_enemy",						StalkerDecisionSpace::eWorldPropertyPureEnemy),
-				luabind::value("property_script",							StalkerDecisionSpace::eWorldPropertyScript)
+				luabind::value("property_script",							StalkerDecisionSpace::eWorldPropertyScript),
+				luabind::value("property_should_throw_grenade",				StalkerDecisionSpace::eWorldPropertyShouldThrowGrenade)
 			]
 			
 			.enum_("action")
@@ -101,6 +102,7 @@ void CAI_Stalker::script_register(lua_State *L)
 				luabind::value("action_kill_if_player_on_the_path",			StalkerDecisionSpace::eWorldOperatorKillEnemyIfPlayerOnThePath),
 				luabind::value("action_critically_wounded",					StalkerDecisionSpace::eWorldOperatorCriticallyWounded),
 				luabind::value("action_kill_if_enemy_critically_wounded",	StalkerDecisionSpace::eWorldOperatorKillEnemyIfCriticallyWounded),
+				luabind::value("action_throw_grenade",						StalkerDecisionSpace::eWorldOperatorThrowGrenade),
 
 				luabind::value("action_danger_unknown_planner",				StalkerDecisionSpace::eWorldOperatorDangerUnknownPlanner),
 				luabind::value("action_danger_in_direction_planner",		StalkerDecisionSpace::eWorldOperatorDangerInDirectionPlanner),

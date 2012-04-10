@@ -41,7 +41,7 @@ const int maxRP					= 64;
 const int maxTeams				= 32;
 
 //class CFogOfWar;
-class CFogOfWarMngr;
+//class CFogOfWarMngr;
 class CBulletManager;
 class CMapManager;
 
@@ -316,7 +316,7 @@ public:
 	float				GetEnvironmentGameDayTimeSec();
 
 protected:
-//	CFogOfWarMngr*		m_pFogOfWarMngr;
+//	CFogOfWarMngr		*m_pFogOfWarMngr;
 protected:	
 	CMapManager *			m_map_manager;
 public:

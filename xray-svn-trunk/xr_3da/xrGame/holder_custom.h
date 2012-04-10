@@ -43,6 +43,7 @@ public:
 	virtual void			Action				(int id, u32 flags)				{};
 	virtual void			SetParam			(int id, Fvector2 val)			{};
 	virtual void			SetParam			(int id, Fvector val)			{};
+	virtual void			SetNpcOwner			(CGameObject *obj)				{m_owner=obj;}
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

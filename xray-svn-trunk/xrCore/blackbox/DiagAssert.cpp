@@ -600,6 +600,7 @@ void DoStackTrace ( LPTSTR szString  ,
                                              NULL     ,
                                              FALSE     ) )
         {
+//for sdk test
             TRACE ( "DiagAssert : Unable to initialize the "
                     "symbol engine!!!\n" ) ;
 #ifdef _DEBUG

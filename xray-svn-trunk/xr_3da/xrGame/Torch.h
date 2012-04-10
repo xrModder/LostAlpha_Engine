@@ -27,6 +27,10 @@ protected:
 	ref_light		light_omni;
 	ref_glow		glow_render;
 	Fvector			m_focus;
+	// lost alpha start
+	u16 m_battery_duration;
+	u16 m_current_battery_state;
+	bool m_actor_item;
 private:
 	inline	bool	can_use_dynamic_lights	();
 
@@ -44,9 +48,16 @@ public:
 	virtual void	OnH_B_Independent	(bool just_before_destroy);
 
 	virtual void	UpdateCL			();
-
+			
+			void	UpdateBattery		(void);
 			void	Switch				();
 			void	Switch				(bool light_on);
+
+			void	Recharge(void);
+			u16		GetBatteryStatus(void);
+			void	SetBatteryStatus(u16 val);
+			bool	IsSwitchedOn(void); 
+			u16		GetBatteryLifetime(void);
 
 	virtual bool	can_be_attached		() const;
  
@@ -63,6 +74,7 @@ protected:
 	HUD_SOUND				m_NightVisionOffSnd;
 	HUD_SOUND				m_NightVisionIdleSnd;
 	HUD_SOUND				m_NightVisionBrokenSnd;
+	HUD_SOUND				m_FlashlightSwitchSnd;
 
 	/*float					m_NightVisionRechargeTime;
 	float					m_NightVisionRechargeTimeMin;
@@ -74,6 +86,7 @@ protected:
 		eNightVisionActive			= (1<<1),
 		eAttached					= (1<<2)
 	};
+
 
 public:
 

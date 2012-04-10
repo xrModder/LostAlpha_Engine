@@ -629,6 +629,10 @@ void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 
 void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 {
-	if(!b)
+	//lost alpha starts
+	PIItem iitem		= (PIItem)itm->m_pData;
+	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetColor				(color_rgba(100,255,100,255));
+	else if(!b)
 		itm->SetColor				(color_rgba(255,100,100,255));
 }

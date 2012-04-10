@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+/*
 #include "UI/UIWindow.h"
 #include "alife_abstract_registry.h"
 
@@ -53,3 +53,4 @@ public:
 	virtual					~CFogOfWarMngr	();
 	CLevelFogOfWar*			GetFogOfWar		(const shared_str& level_name);
 };
+*/

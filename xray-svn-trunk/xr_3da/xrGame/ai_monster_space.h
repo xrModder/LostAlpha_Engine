@@ -26,6 +26,8 @@ namespace MonsterSpace {
 		eMovementTypeWalk = 0,
 		eMovementTypeRun,
 		eMovementTypeStand,
+		//lost alpha start
+//		eMovementTypeDrunk,
 	};
 
 	enum EMovementDirection {

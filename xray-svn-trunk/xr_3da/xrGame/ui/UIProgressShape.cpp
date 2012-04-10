@@ -22,6 +22,8 @@ void CUIProgressShape::SetPos(float pos){
 }
 
 void CUIProgressShape::SetPos(int pos, int max){
+	if (!max)
+		max = 1;
 	m_stage					= float(pos)/float(max);
 	if (m_bText)
 	{
@@ -66,7 +68,9 @@ void CUIProgressShape::Draw()
 
 	
 	u32	offset;
+	//FVF::TL*	pv					= (FVF::TL*)RCache.Vertex.DEBUG_LOCK	(m_sectorCount*3, gm.stride(), offset);
 	FVF::TL*	pv					= (FVF::TL*)RCache.Vertex.Lock	(m_sectorCount*3, gm.stride(), offset);
+
 
 	Frect pos_rect;
 	m_pTexture->GetAbsoluteRect		(pos_rect);

@@ -88,8 +88,8 @@ void CController::Load(LPCSTR section)
 	m_controlled_objects.reserve	(m_max_controlled_number);
 
 	anim().accel_load			(section);
-	//anim().accel_chain_add		(eAnimWalkFwd,		eAnimRun);
-	//anim().accel_chain_add		(eAnimWalkDamaged,	eAnimRunDamaged);
+	anim().accel_chain_add		(eAnimWalkFwd,		eAnimRun);
+	anim().accel_chain_add		(eAnimWalkDamaged,	eAnimRunDamaged);
 
 	::Sound->create(control_start_sound,pSettings->r_string(section,"sound_control_start"),	st_Effect,SOUND_TYPE_WORLD);
 	::Sound->create(control_hit_sound,	pSettings->r_string(section,"sound_control_hit"),	st_Effect,SOUND_TYPE_WORLD);
@@ -97,6 +97,8 @@ void CController::Load(LPCSTR section)
 	anim().AddReplacedAnim(&m_bDamaged, eAnimStandIdle,	eAnimStandDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimRun,		eAnimRunDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimWalkFwd,	eAnimWalkDamaged);
+	anim().AddReplacedAnim(&m_bRunTurnLeft,	eAnimRun,	eAnimStandTurnLeft);
+	anim().AddReplacedAnim(&m_bRunTurnRight, eAnimRun,	eAnimStandTurnRight);
 
 	// Load control postprocess --------------------------------------------------------
 	LPCSTR ppi_section = pSettings->r_string(section, "control_effector");
@@ -125,9 +127,9 @@ void CController::Load(LPCSTR section)
 	SVelocityParam &velocity_none		= move().get_velocity(MonsterMovement::eVelocityParameterIdle);	
 	SVelocityParam &velocity_turn		= move().get_velocity(MonsterMovement::eVelocityParameterStand);
 	SVelocityParam &velocity_walk		= move().get_velocity(MonsterMovement::eVelocityParameterWalkNormal);
-	//SVelocityParam &velocity_run		= move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
-	//SVelocityParam &velocity_walk_dmg	= move().get_velocity(MonsterMovement::eVelocityParameterWalkDamaged);
-	//SVelocityParam &velocity_run_dmg	= move().get_velocity(MonsterMovement::eVelocityParameterRunDamaged);
+	SVelocityParam &velocity_run		= move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
+	SVelocityParam &velocity_walk_dmg	= move().get_velocity(MonsterMovement::eVelocityParameterWalkDamaged);
+	SVelocityParam &velocity_run_dmg	= move().get_velocity(MonsterMovement::eVelocityParameterRunDamaged);
 	SVelocityParam &velocity_steal		= move().get_velocity(MonsterMovement::eVelocityParameterSteal);
 	//SVelocityParam &velocity_drag		= move().get_velocity(MonsterMovement::eVelocityParameterDrag);
 
@@ -139,10 +141,11 @@ void CController::Load(LPCSTR section)
 	anim().AddAnim(eAnimSitIdle,		"sit_idle_",			-1, &velocity_none,		PS_SIT);
 	anim().AddAnim(eAnimEat,			"sit_eat_",				-1, &velocity_none,		PS_SIT);
 	anim().AddAnim(eAnimWalkFwd,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
-	anim().AddAnim(eAnimWalkDamaged,	"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
-	anim().AddAnim(eAnimRun,			"stand_walk_fwd_",		-1,	&velocity_walk,		PS_STAND);
-	anim().AddAnim(eAnimRunDamaged,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
+	anim().AddAnim(eAnimWalkDamaged,	"stand_walk_fwd_",		-1, &velocity_walk_dmg,	PS_STAND);
+//	anim().AddAnim(eAnimRun,			"stand_walk_fwd_",		-1,	&velocity_walk,		PS_STAND);
+//	anim().AddAnim(eAnimRunDamaged,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
 	anim().AddAnim(eAnimAttack,			"stand_attack_",		-1, &velocity_turn,		PS_STAND);
+	anim().AddAnim(eAnimAttackRun,		"stand_attack_",		-1, &velocity_run,		PS_STAND);
 	anim().AddAnim(eAnimSteal,			"stand_steal_",			-1, &velocity_steal,	PS_STAND);
 	anim().AddAnim(eAnimCheckCorpse,	"stand_check_corpse_",	-1,	&velocity_none,		PS_STAND);
 	anim().AddAnim(eAnimDie,			"stand_die_",			-1, &velocity_none,		PS_STAND);
@@ -179,8 +182,8 @@ void CController::Load(LPCSTR section)
 	//anim().AddAnim(eAnimEat,			"sit_eat_",				-1, &velocity_none,		PS_SIT);
 	//anim().AddAnim(eAnimWalkFwd,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
 	//anim().AddAnim(eAnimWalkDamaged,	"stand_walk_dmg_",		-1, &velocity_walk_dmg,	PS_STAND);
-	//anim().AddAnim(eAnimRun,			"run_scared_",			-1,	&velocity_run,		PS_STAND);
-	//anim().AddAnim(eAnimRunDamaged,		"stand_run_dmg_",		-1, &velocity_run_dmg,	PS_STAND);
+	anim().AddAnim(eAnimRun,			"run_scared_",			-1,	&velocity_run,		PS_STAND);
+	anim().AddAnim(eAnimRunDamaged,		"stand_run_dmg_",		-1, &velocity_run_dmg,	PS_STAND);
 	//anim().AddAnim(eAnimAttack,			"stand_attack_",		-1, &velocity_turn,		PS_STAND);
 	//anim().AddAnim(eAnimSteal,			"stand_steal_",			-1, &velocity_steal,	PS_STAND);
 	//anim().AddAnim(eAnimCheckCorpse,	"stand_check_corpse_",	-1,	&velocity_none,		PS_STAND);
@@ -205,6 +208,7 @@ void CController::Load(LPCSTR section)
 
 	anim().AddTransition(PS_STAND,	PS_SIT,		eAnimStandSitDown,	false);
 	anim().AddTransition(PS_SIT,	PS_STAND,	eAnimSitStandUp,	false);
+	
 
 #ifdef DEBUG	
 	anim().accel_chain_test		();
@@ -447,7 +451,11 @@ void CController::shedule_Update(u32 dt)
 	
 	if (g_Alive()) {
 		UpdateControlled();
-		if (can_tube_fire()) tube_fire();
+		//bool can_melee = can_melee_at();
+		//bool can_tube = can_tube_fire();
+		//if (can_melee) melee_attack();
+		//if (can_tube && !can_melee) tube_fire();
+		//if (can_tube_fire())	tube_fire();
 	}
 
 	// DEBUG
@@ -584,8 +592,24 @@ void CController::tube_fire()
 
 	control().activate	(ControlCom::eComCustom1);
 }
+/*
+bool CController::can_melee_at()
+{
+	return (MeleeChecker.can_start_melee(EnemyMan.get_enemy()) &&
+				EnemyMan.see_enemy_now());
+}
 
+void CController::melee_attack()
+{
+	set_action(ACT_ATTACK);
+	if (control().direction().is_face_target(EnemyMan.get_enemy(), PI_DIV_3))
+		dir().face_target	(EnemyMan.get_enemy(), 800);
+	else 
+		dir().face_target	(EnemyMan.get_enemy(), 0, deg(15));
 
+	set_state_sound		(MonsterSound::eMonsterSoundAggressive);
+}
+*/
 bool CController::can_tube_fire()
 {
 	if (m_tube_at_once) {
@@ -622,38 +646,73 @@ void CController::test_covers()
 
 void CController::create_base_controls()
 {
-	m_custom_anim_base	= xr_new<CControllerAnimation>		(); 
+	//m_custom_anim_base	= xr_new<CControllerAnimation>		(); 
 	m_custom_dir_base	= xr_new<CControllerDirection>		(); 
 	
-	m_anim_base			= m_custom_anim_base;
+	//m_anim_base			= m_custom_anim_base;
 	m_dir_base			= m_custom_dir_base;
-
+	m_anim_base			= xr_new<CControlAnimationBase>();
+	
 	m_move_base			= xr_new<CControlMovementBase>		();
 	m_path_base			= xr_new<CControlPathBuilderBase>	();
 }
 
 void CController::TranslateActionToPathParams()
 {
-	//if (m_mental_state == eStateIdle) {
-	//	inherited::TranslateActionToPathParams();
-	//	return;
-	//}
-	//custom_anim().set_path_params();
-
+	
+//	if (m_mental_state == eStateIdle) 
+//	{
+//		inherited::TranslateActionToPathParams();
+//		return;
+//	}
+//	custom_anim().set_path_params();
+	inherited::TranslateActionToPathParams();
+/*
 	if ((anim().m_tAction != ACT_RUN) && (anim().m_tAction != ACT_WALK_FWD)) {
 		inherited::TranslateActionToPathParams();
 		return;
 	}
 	
-	u32 vel_mask = (m_bDamaged ? MonsterMovement::eVelocityParamsWalkDamaged : MonsterMovement::eVelocityParamsWalk);
-	u32 des_mask = (m_bDamaged ? MonsterMovement::eVelocityParameterWalkDamaged : MonsterMovement::eVelocityParameterWalkNormal);
-
+	u32 vel_mask = u32(-1);
+	u32 des_mask = u32(-1);
+	switch (anim().m_tAction)
+	{
+		case ACT_RUN:
+		{	
+			if (m_bDamaged)
+			{
+				vel_mask = MonsterMovement::eVelocityParamsRunDamaged;
+				des_mask = MonsterMovement::eVelocityParameterRunDamaged;
+			}
+			else
+			{
+				vel_mask = MonsterMovement::eVelocityParamsRun;
+				des_mask = MonsterMovement::eVelocityParameterRunNormal;
+			}
+			break;
+		}
+		case ACT_WALK_FWD:
+		{
+			if (m_bDamaged) 
+			{
+				vel_mask = MonsterMovement::eVelocityParamsWalkDamaged;
+				des_mask = MonsterMovement::eVelocityParameterWalkDamaged;
+			}
+			else
+			{
+				vel_mask = MonsterMovement::eVelocityParamsWalk;
+				des_mask = MonsterMovement::eVelocityParameterWalkNormal;
+			}
+			break;
+		}
+		default: NODEFAULT;
+	}
 	if (m_force_real_speed) vel_mask = des_mask;
 
 	path().set_velocity_mask	(vel_mask);
 	path().set_desirable_mask	(des_mask);
 	path().enable_path			();
-
+*/
 }
 
 bool CController::is_relation_enemy(const CEntityAlive *tpEntityAlive) const
@@ -671,7 +730,7 @@ void CController::set_mental_state(EMentalState state)
 	
 	m_mental_state = state;
 	
-	m_custom_anim_base->on_switch_controller	();
+	//m_custom_anim_base->on_switch_controller	();
 }
 
 

@@ -1,10 +1,13 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "searchlight.h"
 #include "../LightAnimLibrary.h"
 #include "script_entity_action.h"
 #include "xrServer_Objects_ALife.h"
 #include "../skeletoncustom.h"
 #include "game_object_space.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -32,6 +35,15 @@ void CProjector::Load(LPCSTR section)
 	inherited::Load(section);
 }
 
+void CProjector::Hit(SHit *pHDS)
+{
+	callback(GameObject::eHit)(
+		lua_game_object(), 
+		pHDS->power,
+		pHDS->dir,
+		(smart_cast<const CGameObject*>(pHDS->who))->lua_game_object(),
+		pHDS->bone());
+}
 
 void  CProjector::BoneCallbackX(CBoneInstance *B)
 {

@@ -4,6 +4,7 @@
 //  Modified 	: 06.02.2004
 //	Author		: Dmitriy Iassenev
 //	Description : XRay Script sound class
+//	modified: 19/08/2011 lost alpha
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -118,6 +119,17 @@ void CScriptParticles::MoveTo	(const Fvector &pos, const Fvector& vel)
 	m_particles->UpdateParent	(XF,vel);
 }
 
+void CScriptParticles::SetDir(const Fvector &dir, const Fvector &vel)
+{
+	VERIFY(m_particles);
+	Fmatrix xform;
+	xform.identity();
+	xform.k.normalize(dir);
+	Fvector::generate_orthonormal_basis(xform.k, xform.j, xform.i);
+	m_particles->UpdateParent(xform, vel);
+	m_particles->Play();
+}
+
 bool CScriptParticles::IsPlaying() const
 {
 	VERIFY						(m_particles);
@@ -146,4 +158,15 @@ void CScriptParticles::StopPath	()
 void CScriptParticles::PausePath(bool val)
 {
 	m_particles->PausePath		(val);
+}
+void CScriptParticles::Play(const Fvector &pos, const Fvector &dir, const Fvector &vel)
+{
+	Fmatrix xform;
+	xform.identity();
+	xform.k.normalize(dir);
+	Fvector::generate_orthonormal_basis(xform.k, xform.j, xform.i);
+	xform.c.set(pos);
+	m_particles->UpdateParent(xform, vel);
+	if (!(m_particles->IsPlaying()))
+		m_particles->Play();
 }

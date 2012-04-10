@@ -224,7 +224,7 @@ IRender_Visual* CModelPool::Create(const char* name, IReader* data)
 	string_path low_name;	VERIFY	(xr_strlen(name)<sizeof(low_name));
 	strcpy(low_name,name);	strlwr	(low_name);
 	if (strext(low_name))	*strext	(low_name)=0;
-//	Msg						("-CREATE %s",low_name);
+	//Msg						("-CREATE %s",low_name);
 
 	// 0. Search POOL
 	POOL_IT	it			=	Pool.find	(low_name);

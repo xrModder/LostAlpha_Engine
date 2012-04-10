@@ -111,7 +111,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 	#endif
 #endif
 		FS._initialize		(flags,0,fs_fname);
-		Msg					("'%s' build %d, %s\n","xrCore",build_id, build_date);
+		Msg					("Lost Alpha '%s' build %d, %s\n","xrCore",build_id, build_date);
 		EFS._initialize		();
 #ifdef DEBUG
     #ifndef	_EDITOR

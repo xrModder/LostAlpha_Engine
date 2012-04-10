@@ -29,6 +29,7 @@
 #include "relation_registry.h"
 #include "GameTask.h"
 #include "car.h"
+#include "mounted_turret.h"
 
 using namespace luabind;
 
@@ -66,6 +67,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("vision_enabled",				&CScriptGameObject::vision_enabled)
 		.def("set_sound_threshold",			&CScriptGameObject::set_sound_threshold)
 		.def("restore_sound_threshold",		&CScriptGameObject::restore_sound_threshold)
+		.def("set_fire_forced",				&CScriptGameObject::SetFire)
 
 		// sight manager
 		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, const Fvector *vector3d, u32 dwLookOverDelay))(&CScriptGameObject::set_sight))
@@ -144,6 +146,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("is_trade_enabled",			&CScriptGameObject::IsTradeEnabled)
 
 		.def("inventory_for_each",			&CScriptGameObject::ForEachInventoryItems)
+		.def("inventory_box_foreach",		&CScriptGameObject::InventoryBoxIterator)
 		.def("drop_item",					&CScriptGameObject::DropItem)
 		.def("drop_item_and_teleport",		&CScriptGameObject::DropItemAndTeleport)
 		.def("transfer_item",				&CScriptGameObject::TransferItem)
@@ -212,6 +215,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		//HELICOPTER
 		.def("get_helicopter",              &CScriptGameObject::get_helicopter)
 		.def("get_car",						&CScriptGameObject::get_car)
+		.def("get_turret",					&CScriptGameObject::get_turret)
 		.def("get_hanging_lamp",            &CScriptGameObject::get_hanging_lamp)
 		.def("get_physics_shell",			&CScriptGameObject::get_physics_shell)
 		.def("get_holder_class",			&CScriptGameObject::get_custom_holder)

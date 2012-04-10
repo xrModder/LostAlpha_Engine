@@ -23,4 +23,5 @@ protected:
 				CDelayedActionFuse		()																;
 virtual void	ChangeCondition			(float fDeltaCondition)											=0;
 virtual void	StartTimerEffects		()																=0;
+		void	Reset();
 };

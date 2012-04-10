@@ -27,19 +27,24 @@
 #include <luabind/class.hpp>
 #include <luabind/detail/get_signature.hpp>
 
+ 
+
 #include <cstring>
 //#include <iostream>
 
-void boost::throw_exception	( std::exception const & )
+#ifndef DEBUG
+void boost::throw_exception    ( std::exception const & )
 {
-	abort();
+    abort();
 }
-
+#endif
 #ifdef NDEBUG
+/*
 void std::terminate()
 {
 	abort();
 }
+*/
 #endif // #ifdef NDEBUG
 
 namespace luabind { namespace detail {

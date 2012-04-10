@@ -29,6 +29,7 @@ void CUIInventoryWnd::EatItem(PIItem itm)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
+#include "../battery.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
 	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
@@ -46,6 +47,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
 	CBottleItem*		pBottleItem			= smart_cast<CBottleItem*>		(CurrentIItem());
+	CBattery*			pBattery			= smart_cast<CBattery*>			(CurrentIItem());
     
 	bool	b_show			= false;
 
@@ -167,7 +169,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 	LPCSTR _action = NULL;
 
-	if(pMedkit || pAntirad)
+	if(pMedkit || pAntirad || pBattery)
 	{
 		_action					= "st_use";
 	}
@@ -272,8 +274,9 @@ bool CUIInventoryWnd::TryUseItem(PIItem itm)
 	CMedkit*			pMedkit				= smart_cast<CMedkit*>			(itm);
 	CAntirad*			pAntirad			= smart_cast<CAntirad*>			(itm);
 	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(itm);
+	CBattery*			pBattery			= smart_cast<CBattery*>			(itm);
 
-	if(pMedkit || pAntirad || pEatableItem || pBottleItem)
+	if(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery)
 	{
 		EatItem(itm);
 		return true;

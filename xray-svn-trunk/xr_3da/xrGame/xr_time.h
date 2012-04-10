@@ -37,3 +37,4 @@ public:
 
 extern u32 get_time();
 extern xrTime get_time_struct();
+extern xrTime convert_time(u32 time);

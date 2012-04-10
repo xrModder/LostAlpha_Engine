@@ -13,6 +13,7 @@ using namespace MonsterSpace;
 
 CStalkerVelocityCollection::CStalkerVelocityCollection	(const shared_str &section)
 {
+	
 	m_danger[eBodyStateCrouch][eMovementTypeWalk][eMovementDirectionForward]	= pSettings->r_float(section,"danger_crouch_walk_forward");
 	m_danger[eBodyStateCrouch][eMovementTypeWalk][eMovementDirectionBackward]	= pSettings->r_float(section,"danger_crouch_walk_backward");
 	m_danger[eBodyStateCrouch][eMovementTypeWalk][eMovementDirectionLeft]		= pSettings->r_float(section,"danger_crouch_walk_left");
@@ -35,6 +36,6 @@ CStalkerVelocityCollection::CStalkerVelocityCollection	(const shared_str &sectio
 
 	m_free[eMovementTypeWalk]													= pSettings->r_float(section,"free_stand_walk_forward");
 	m_free[eMovementTypeRun]													= pSettings->r_float(section,"free_stand_run_forward");
-
+	 
 	m_panic																		= pSettings->r_float(section,"panic_stand_run_forward");
 }

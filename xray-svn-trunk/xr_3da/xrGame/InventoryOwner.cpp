@@ -439,7 +439,7 @@ void CInventoryOwner::OnItemDropUpdate ()
 
 void CInventoryOwner::OnItemBelt	(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
-//.	attach		(inventory_item);
+	attach		(inventory_item);
 }
 void CInventoryOwner::OnItemRuck	(CInventoryItem *inventory_item, EItemPlace previous_place)
 {

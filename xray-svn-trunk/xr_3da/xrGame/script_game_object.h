@@ -78,6 +78,7 @@ class CHolderCustom;
 struct ScriptCallbackInfo;
 struct STasks;
 class CCar;
+class CMountedTurret;
 class CDangerObject;
 class CScriptGameObject;
 
@@ -183,6 +184,9 @@ public:
 			void				set_range			(float new_range);
 			bool				Alive				() const;
 			ALife::ERelationType	GetRelationType	(CScriptGameObject* who);
+			bool MoveToSlot(CScriptGameObject *obj, bool not_activate = false);
+			bool MoveToRuck(CScriptGameObject *obj);
+			void RemoveFromInventory(u32 obj_id);
 
 	// CScriptEntity
 	
@@ -279,6 +283,7 @@ public:
 			void				DropItem			(CScriptGameObject* pItem);
 			void				DropItemAndTeleport	(CScriptGameObject* pItem, Fvector position);
 			void				ForEachInventoryItems(const luabind::functor<void> &functor);
+			void				InventoryBoxIterator(const luabind::functor<void> &functor);
 			void				TransferItem		(CScriptGameObject* pItem, CScriptGameObject* pForWho);
 			void				TransferMoney		(int money, CScriptGameObject* pForWho);
 			void				GiveMoney			(int money);
@@ -325,6 +330,9 @@ public:
 			CScriptGameObject	*GetObjectByName	(LPCSTR caObjectName) const;
 			CScriptGameObject	*GetObjectByIndex	(int iIndex) const;
 
+			u32	GetBeltObjectCount() const;
+			CScriptGameObject	*GetBeltObjectByName	(LPCSTR caObjectName) const;
+			CScriptGameObject	*GetBeltObjectByIndex	(int iIndex) const;
 			
 	// Callbacks			
 			void				SetCallback			(GameObject::ECallbackType type, const luabind::functor<void> &functor);
@@ -357,7 +365,7 @@ public:
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();
-
+			 
 	_DECLARE_FUNCTION10			(GetActionCount,u32);
 	
 			const				CScriptEntityAction	*GetActionByIndex(u32 action_index = 0);
@@ -450,6 +458,7 @@ public:
 			void				extrapolate_length		(float extrapolate_length);
 			float				extrapolate_length		() const;
 			void				enable_memory_object	(CScriptGameObject *object, bool enable);
+			void				SetFire(CScriptGameObject *obj);
 			int					active_sound_count		();
 			int					active_sound_count		(bool only_playing);
 			const CCoverPoint	*best_cover				(const Fvector &position, const Fvector &enemy_position, float radius, float min_enemy_distance, float max_enemy_distance);
@@ -496,6 +505,8 @@ public:
 			CHangingLamp*		get_hanging_lamp		();
 			CHolderCustom*		get_custom_holder		();
 			CHolderCustom*		get_current_holder		(); //actor only
+			// Turret
+			CMountedTurret		*get_turret				();
 
 			Fvector				bone_position			(LPCSTR bone_name) const;
 			bool				is_body_turning			() const;
@@ -527,6 +538,7 @@ public:
 			CScriptGameObject	*item_in_slot						(u32 slot_id) const;
 			u32					active_slot							();
 			void				activate_slot						(u32 slot_id);
+			void				deactivate_slot						();
 
 #ifdef DEBUG
 			void				debug_planner						(const script_planner *planner);
@@ -556,6 +568,10 @@ public:
 
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
+			// lost alpha start
+			void				SetTorchState(bool state);
+			bool				GetTorchState(void);
+
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

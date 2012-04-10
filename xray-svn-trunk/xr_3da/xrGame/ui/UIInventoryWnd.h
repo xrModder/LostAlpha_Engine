@@ -50,6 +50,7 @@ public:
 	void					AddItemToBag				(PIItem pItem);
 
 protected:
+//	  CUISleepWnd				UISleepWnd;
 	enum eInventorySndAction{	eInvSndOpen	=0,
 								eInvSndClose,
 								eInvItemToSlot,
@@ -70,13 +71,15 @@ protected:
 	CUIStatic*					UIRankFrame;
 	CUIStatic*					UIRank;
 
+	CUIStatic					UICacoWnd;
 	CUIStatic					UIBagWnd;
 	CUIStatic					UIMoneyWnd;
 	CUIStatic					UIDescrWnd;
 	CUIFrameWindow				UIPersonalWnd;
 
 	CUI3tButton*				UIExitButton;
-
+//	CUI3tButton*				UISleepWnd;
+//	CUIButton*		            UIRestBtn;
 	CUIStatic					UIStaticBottom;
 	CUIStatic					UIStaticTime;
 	CUIStatic					UIStaticTimeString;
@@ -87,6 +90,8 @@ protected:
 	CUIDragDropListEx*			m_pUIBeltList;
 	CUIDragDropListEx*			m_pUIPistolList;
 	CUIDragDropListEx*			m_pUIAutomaticList;
+	CUIDragDropListEx*			m_pUIKnifeList;
+	CUIDragDropListEx*			m_pUIBinocularList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
@@ -106,6 +111,7 @@ protected:
 	CUIProgressBar				UIProgressBarHealth;	
 	CUIProgressBar				UIProgressBarPsyHealth;
 	CUIProgressBar				UIProgressBarRadiation;
+	CUIProgressBar              UIProgressBarHunger;
 	CUIProgressBar				UIProgressBarRank;
 
 	CUIPropertiesBox			UIPropertiesBox;
@@ -150,5 +156,6 @@ protected:
 
 	TIItemContainer				ruck_list;
 	u32							m_iCurrentActiveSlot;
+
 
 };

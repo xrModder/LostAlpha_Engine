@@ -53,6 +53,8 @@ LPCSTR weapon_action_names	[] = {
 LPCSTR movement_names		[] = {
 	"walk_",
 	"run_",
+	//lost alpha
+//	"drunk",
 	0
 };
 

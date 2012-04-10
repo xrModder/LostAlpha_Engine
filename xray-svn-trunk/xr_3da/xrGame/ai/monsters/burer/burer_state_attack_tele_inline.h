@@ -94,7 +94,7 @@ void CStateBurerAttackTeleAbstract::finalize()
 	inherited::finalize				();
 
 	tele_objects.clear				();
-	object->DeactivateShield		();
+//	object->DeactivateShield		();
 
 	// clear particles on active objects
 	if (object->CTelekinesis::is_active()) {
@@ -114,7 +114,7 @@ void CStateBurerAttackTeleAbstract::critical_finalize()
 
 	object->com_man().ta_pointbreak		();
 	object->CTelekinesis::Deactivate	();
-	object->DeactivateShield			();
+//	object->DeactivateShield			();
 
 	tele_objects.clear					();
 
@@ -206,7 +206,7 @@ void CStateBurerAttackTeleAbstract::ExecuteTeleStart()
 {
 	object->com_man().ta_activate(object->anim_triple_tele);
 	time_started = Device.dwTimeGlobal;
-	object->ActivateShield();
+//	object->ActivateShield();
 
 }
 
@@ -257,7 +257,7 @@ void CStateBurerAttackTeleAbstract::ExecuteTeleFire()
 
 	object->StopTeleObjectParticle	(selected_object);
 	object->sound().play			(CBurer::eMonsterSoundTeleAttack);
-	object->DeactivateShield		();
+//	object->DeactivateShield		();
 }
 
 TEMPLATE_SPECIALIZATION

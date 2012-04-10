@@ -13,7 +13,8 @@ namespace StalkerMovement {
 		eVelocityStanding								= u32(1) <<  0,
 		eVelocityWalk									= u32(1) <<  1,
 		eVelocityRun									= u32(1) <<  2,
-		eVelocityMovementType							= eVelocityStanding | eVelocityWalk | eVelocityRun,
+
+		eVelocityMovementType							= eVelocityStanding | eVelocityWalk | eVelocityRun, 
 
 		eVelocityStand									= u32(1) <<  3,
 		eVelocityCrouch									= u32(1) <<  4,
@@ -66,5 +67,6 @@ namespace StalkerMovement {
 		eVelocityRunDangerStandNegative					= eVelocityRunDangerStand				| eVelocityNegativeVelocity,
 		eVelocityRunDangerCrouchNegative				= eVelocityRunDangerCrouch				| eVelocityNegativeVelocity,
 		eVelocityRunPanicStandNegative					= eVelocityRunPanicStand				| eVelocityNegativeVelocity,
+		
 	};
 };

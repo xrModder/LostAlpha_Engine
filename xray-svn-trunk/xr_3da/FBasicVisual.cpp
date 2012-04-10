@@ -64,6 +64,7 @@ void IRender_Visual::Load		(const char* N, IReader *data, u32 )
 		data->r_stringZ	(fnT,sizeof(fnT));
 		data->r_stringZ	(fnS,sizeof(fnS));
 		shader.create	(fnS,fnT);
+//		Msg("loaded name=[%s] shader=[%s] texture=[%s]", N, fnS, fnT);
 	}
 
     // desc

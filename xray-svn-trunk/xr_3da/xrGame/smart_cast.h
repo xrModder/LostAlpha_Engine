@@ -194,6 +194,10 @@
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(CHolderCustom,	CGameObject)
 
+		DECLARE_SPECIALIZATION	(CMountedTurret,	CGameObject,	cast_mounted_turret);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(CMountedTurret,	CGameObject)
+
 		DECLARE_SPECIALIZATION	(CAttachmentOwner,	CGameObject,	cast_attachment_owner);
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(CAttachmentOwner,	CGameObject)

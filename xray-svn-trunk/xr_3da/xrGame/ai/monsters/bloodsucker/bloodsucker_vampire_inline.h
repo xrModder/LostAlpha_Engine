@@ -5,6 +5,7 @@
 #include "bloodsucker_vampire_approach.h"
 #include "bloodsucker_vampire_hide.h"
 #include "../../../clsid_game.h"
+#include "../../../entity_alive.h"
 
 #define TEMPLATE_SPECIALIZATION template <\
 	typename _Object\
@@ -12,15 +13,19 @@
 
 #define CStateBloodsuckerVampireAbstract CStateBloodsuckerVampire<_Object>
 
-#define RUN_AWAY_DISTANCE			50.f
+#define RUN_AWAY_DISTANCE			5.f
+#define MAX_DISTANCE_TO_ENEMY	2.f
 
 TEMPLATE_SPECIALIZATION
+
+
 CStateBloodsuckerVampireAbstract::CStateBloodsuckerVampire(_Object *obj) : inherited(obj)
 {
 	add_state	(eStateVampire_ApproachEnemy,	xr_new<CStateBloodsuckerVampireApproach<_Object> >	(obj));
 	add_state	(eStateVampire_Execute,			xr_new<CStateBloodsuckerVampireExecute<_Object> >	(obj));
 	add_state	(eStateVampire_RunAway,			xr_new<CStateMonsterHideFromPoint<_Object> >		(obj));
 	add_state	(eStateVampire_Hide,			xr_new<CStateBloodsuckerVampireHide<_Object> >		(obj));
+//	add_state	(eStatePredator_LookOpenPlace,	xr_new<CStateMonsterLookToPoint<_Object> >	(obj));
 }
 
 TEMPLATE_SPECIALIZATION
@@ -28,7 +33,7 @@ void CStateBloodsuckerVampireAbstract::reinit()
 {
 	inherited::reinit	();
 	
-	m_time_last_vampire	= 0;
+	m_time_last_vampire	= 35;
 }
 
 TEMPLATE_SPECIALIZATION
@@ -37,7 +42,7 @@ void CStateBloodsuckerVampireAbstract::initialize()
 	inherited::initialize						();
 	object->start_invisible_predator			();
 
-	enemy	= object->EnemyMan.get_enemy		();
+	m_enemy	= object->EnemyMan.get_enemy		();
 
 	object->sound().play						(CAI_Bloodsucker::eVampireStartHunt);
 }
@@ -46,7 +51,25 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireAbstract::reselect_state()
 {
 	u32 state_id = u32(-1);
-		
+
+	// check if we executed 
+	if (prev_substate == eStateVampire_ApproachEnemy) {
+		if (get_state(eStateVampire_Execute)->check_start_conditions())		state_id = eStateVampire_Execute;
+	}
+
+    // check if reach time in vampire state is out - then hide
+		if (prev_substate == eStateVampire_Execute)
+		state_id = eStateVampire_Hide;
+/*
+	// check if we hiding - then run away
+	if ( prev_substate == eStateVampire_Hide) 
+		state_id = eStateVampire_RunAway;
+
+	if (prev_substate == eStateVampire_RunAway)
+		state_id = 	eStatePredator_LookOpenPlace;
+*/
+
+/*
 	// check if we can start execute
 	if (prev_substate == eStateVampire_ApproachEnemy) {
 		if (get_state(eStateVampire_Execute)->check_start_conditions())		state_id = eStateVampire_Execute;
@@ -63,7 +86,7 @@ void CStateBloodsuckerVampireAbstract::reselect_state()
 	// check if we hiding - then hide again
 	if ( prev_substate == eStateVampire_Hide) 
 		state_id = eStateVampire_Hide;
-
+*/
 	// else just 
 	if (state_id == u32(-1)) state_id = eStateVampire_ApproachEnemy;
 
@@ -102,23 +125,52 @@ void CStateBloodsuckerVampireAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireAbstract::check_start_conditions()
 {
-	if (!object->WantVampire()) return false;
-	if (object->berserk_always) return false;
-	
-	// является ли враг актером
-	const CEntityAlive *enemy = object->EnemyMan.get_enemy();
-	if (enemy->CLS_ID != CLSID_OBJECT_ACTOR)		return false;
-	if (!object->EnemyMan.see_enemy_now())			return false;
+
+	const CEntityAlive *m_enemy = object->EnemyMan.get_enemy();
+	if  (m_enemy->CLS_ID != CLSID_OBJECT_ACTOR) 
+	{
+		return false;
+	}
+
 	if (object->CControlledActor::is_controlling())	return false;
 
-	const CActor *actor = smart_cast<const CActor *>(enemy);
-	VERIFY(actor);
-	if (actor->input_external_handler_installed()) return false;
+	float dist_to_enemy = object->EnemyMan.get_enemy_position().distance_to(object->Position());
+	if (dist_to_enemy > MAX_DISTANCE_TO_ENEMY) return false; 
 
-	if (m_time_last_vampire + object->m_vampire_min_delay > Device.dwTimeGlobal) return false;
+if (controlling_value == 1) return false;
 
 	return true;
-}
+
+  }
+
+/*
+b_max_reach_distance = 1.5;
+&& bl_entity_alive->human_being()
+if	(m_enemy->CLS_ID == CLSID_OBJECT_ACTOR && (m_enemy->Position().distance_to(monster->Position()) > b_max_reach_distance))
+
+
+if	((m_enemy->Position().distance_to(monster->Position()) > b_max_reach_distance)) 
+    {
+		return	false;
+    }
+*/
+
+//	if (!object->WantVampire()) return false;
+//	if (object->berserk_always) return false;
+	
+	// является ли враг актером
+//	const CEntityAlive *enemy = object->EnemyMan.get_enemy();
+//	if (enemy->CLS_ID != CLSID_OBJECT_ACTOR)		return false;
+//	if (!object->EnemyMan.see_enemy_now())			return false;
+//	if (object->CControlledActor::is_controlling())	return false;
+
+//	const CActor *actor = smart_cast<const CActor *>(enemy);
+//	VERIFY(actor);
+//	if (actor->input_external_handler_installed()) return false;
+
+//	if (m_time_last_vampire + object->m_vampire_min_delay > Device.dwTimeGlobal) return false;
+
+
 
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireAbstract::check_completion()
@@ -128,7 +180,7 @@ bool CStateBloodsuckerVampireAbstract::check_completion()
 		get_state_current()->check_completion())	return true;
 
 	// если враг изменился
-	if (enemy != object->EnemyMan.get_enemy())		return true;
+	if (m_enemy != object->EnemyMan.get_enemy())		return true;
 	
 	// если актера уже контролит другой кровосос
 	if ((current_substate != eStateVampire_Execute) && 
@@ -154,7 +206,7 @@ void CStateBloodsuckerVampireAbstract::setup_substates()
 		data.action.action		= ACT_RUN;
 		data.action.sound_type	= MonsterSound::eMonsterSoundAggressive;
 		data.action.sound_delay = object->db().m_dwAttackSndDelay;
-		data.action.time_out	= 15000;
+		data.action.time_out	= 3000;
 
 		state->fill_data_with(&data, sizeof(SStateHideFromPoint));
 

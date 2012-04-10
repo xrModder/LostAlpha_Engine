@@ -175,7 +175,7 @@ void CAI_Bloodsucker::reinit()
 	// save visual	
 	m_visual_default			= cNameVisual();
 
-	m_vampire_want_value		= 0.f;
+	m_vampire_want_value		= 1.f;
 	m_predator					= false;
 }
 
@@ -315,7 +315,7 @@ void CAI_Bloodsucker::UpdateCL()
 	
 	// update vampire need
 	m_vampire_want_value += m_vampire_want_speed * client_update_fdelta();
-	clamp(m_vampire_want_value,0.f,1.f);
+	clamp(m_vampire_want_value,1.f,1.f);
 }
 
 

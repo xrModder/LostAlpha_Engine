@@ -34,6 +34,7 @@
 #include "AI/Monsters/BaseMonster/base_monster.h"
 #include "weaponmagazined.h"
 #include "ai/stalker/ai_stalker.h"
+#include "torch.h"
 
 bool CScriptGameObject::GiveInfoPortion(LPCSTR info_id)
 {
@@ -202,6 +203,22 @@ void CScriptGameObject::ForEachInventoryItems(const luabind::functor<void> &func
 		if( inv_go ){
 			functor(inv_go->lua_game_object(),this);
 		}
+	}
+}
+#include "InventoryBox.h"
+void CScriptGameObject::InventoryBoxIterator(const luabind::functor<void> &functor)
+{
+	TIItemContainer items;
+	TIItemContainer::iterator it;
+	CInventoryBox *box = smart_cast<CInventoryBox*>(&object());
+	if (!box)
+		return;
+	box->AddAvailableItems(items);
+	for (it = items.begin(); items.end() != it; ++it) 
+	{
+		CGameObject *item = smart_cast<CGameObject*>(*it);
+		if (item)
+			functor(item->lua_game_object());
 	}
 }
 
@@ -823,6 +840,16 @@ void CScriptGameObject::GiveTaskToActor(CGameTask* t, u32 dt, bool bCheckExistin
 	Actor()->GameTaskManager().GiveGameTaskToActor(t, dt, bCheckExisting);
 }
 
+void CScriptGameObject::deactivate_slot()
+{
+	CInventoryOwner	*inventory_owner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventory_owner) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member active_slot!");
+		return;
+	}
+	inventory_owner->inventory().Activate(NO_ACTIVE_SLOT);
+}
+
 u32	CScriptGameObject::active_slot()
 {
 	CInventoryOwner	*inventory_owner = smart_cast<CInventoryOwner*>(&object());
@@ -831,6 +858,62 @@ u32	CScriptGameObject::active_slot()
 		return		(0);
 	}
 	return inventory_owner->inventory().GetActiveSlot();
+}
+/*
+void CScriptGameObject::PlayHandAnim(u32 obj_id, LPCSTR anim)
+{
+	CActor *actor = smart_cast<CActor*>(&object());
+	R_ASSERT2(actor, "actor is null");
+	PIItem bolt = actor->inventory().m_slots[BOLT_SLOT].m_pIItem;
+	actor->inventory().Ruck(bolt);
+	PIItem item = actor->inventory().get_object_by_id(obj_id);
+	R_ASSERT2(item, "item is null");
+	actor->inventory().Slot(item);
+	actor->inventory().Activate(BOLT_SLOT);
+	CHudItem *hud = smart_cast<CHudItem*>(item);
+	R_ASSERT2(hud, "hud is null");
+	hud->GetHUD()->animPlay(hud->GetHUD()->animGet(anim), true, hud, hud->GetState());
+	actor->inventory().Activate(NO_ACTIVE_SLOT);
+	actor->inventory().Ruck(item);
+	actor->inventory().Slot(bolt);
+	NET_Packet P;
+	CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, actor->ID());
+	P.w_u16(item->object().ID());
+	CGameObject::u_EventSend(P);
+	CGameObject::u_EventGen(P, GE_DESTROY, item->object().ID());
+	CGameObject::u_EventSend(P);
+
+}
+*/
+
+bool CScriptGameObject::MoveToSlot(CScriptGameObject *obj, bool not_activate)
+{
+	CActor *actor = smart_cast<CActor*>(&object());
+	PIItem item = NULL;
+	R_ASSERT2(actor, "actor is null");
+	if (!(item = actor->inventory().get_object_by_id(obj->ID())))
+		return false;	
+	return actor->inventory().Slot(item, not_activate);
+}
+
+bool CScriptGameObject::MoveToRuck(CScriptGameObject *obj)
+{
+	CActor *actor = smart_cast<CActor*>(&object());
+	PIItem item = NULL;
+	R_ASSERT2(actor, "actor is null");
+	if (!(item = actor->inventory().get_object_by_id(obj->ID())))
+		return false;	
+	return actor->inventory().Ruck(item);
+}
+
+void CScriptGameObject::RemoveFromInventory(u32 obj_id)
+{
+	NET_Packet P;
+	CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, object().ID());
+	P.w_u16(obj_id);
+	CGameObject::u_EventSend(P);
+	CGameObject::u_EventGen(P, GE_DESTROY, obj_id);
+	CGameObject::u_EventSend(P);
 }
 
 void CScriptGameObject::activate_slot	(u32 slot_id)
@@ -863,4 +946,46 @@ bool CScriptGameObject::movement_enabled()
 	}
 
 	return								(monster->movement().enabled());
+}
+
+void CScriptGameObject::SetTorchState(bool state)
+{
+	CActor *actor = smart_cast<CActor*>(&object());
+	CTorch *flashlight = 0;
+	if (actor)
+	{
+		flashlight = actor->GetCurrentTorch();
+		if (!flashlight)
+		{
+			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor's flashlight does not exist!");
+			return;
+		}
+		flashlight->Switch(state);
+	}
+	else
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "This method works only for actor, check your code!");
+		return;
+	}
+}
+
+bool CScriptGameObject::GetTorchState(void)
+{
+	CActor *actor = smart_cast<CActor*>(&object());
+	CTorch *flashlight = 0;
+	if (actor)
+	{
+		flashlight = actor->GetCurrentTorch();
+		if (!flashlight)
+		{
+			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor's flashlight does not exist!");
+			return false;
+		}
+		return flashlight->IsSwitchedOn();
+	}
+	else
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "This method works only for actor, check your code!");
+		return false;
+	}
 }

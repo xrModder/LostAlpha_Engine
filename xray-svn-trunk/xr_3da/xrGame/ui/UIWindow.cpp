@@ -53,7 +53,9 @@ void draw_rect(Frect& r, u32 color)
 	}
 	RCache.set_Shader			(dbg_draw_sh);
 	u32							vOffset;
+	//FVF::TL* pv					= (FVF::TL*)RCache.Vertex.DEBUG_LOCK	(5,dbg_draw_gm.stride(),vOffset);
 	FVF::TL* pv					= (FVF::TL*)RCache.Vertex.Lock	(5,dbg_draw_gm.stride(),vOffset);
+
 
 	pv->set(r.lt.x, r.lt.y, color, 0,0); ++pv;
 	pv->set(r.rb.x, r.lt.y, color, 0,0); ++pv;

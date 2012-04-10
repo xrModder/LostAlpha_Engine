@@ -63,6 +63,11 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= READ_IF_EXISTS(!!pSettings,r_bool,section,"berserk_always", false);
+
+	if (pSettings->line_exist(section,"vampire_speed")) {
+		m_vampire_want_speed = !!pSettings->r_float (section,"vampire_speed");
+	}
+
 }
 
 // if sound is absent just do not load that one

@@ -341,6 +341,7 @@ void CObjectFactory::register_classes	()
 	ADD(CSpaceRestrictor		,CSE_ALifeSpaceRestrictor		,CLSID_SPACE_RESTRICTOR			,"space_restrictor");
 	ADD(CAmebaZone				,CSE_ALifeZoneVisual			,CLSID_Z_AMEBA					,"ameba_zone");
 	ADD(CNoGravityZone			,CSE_ALifeAnomalousZone			,CLSID_Z_NOGRAVITY				,"nogravity_zone");
+	ADD(CRustyFog, CSE_ALifeAnomalousZone, CLSID_Z_FOG, "zone_rusty_fog");
 	// Detectors
 	ADD(CSimpleDetector			,CSE_ALifeItemDetector			,CLSID_DETECTOR_SIMPLE			,"device_detector_simple");
 

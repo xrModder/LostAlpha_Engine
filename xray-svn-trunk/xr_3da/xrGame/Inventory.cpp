@@ -217,7 +217,9 @@ bool CInventory::DropItem(CGameObject *pObj)
 			m_ruck.erase(std::find(m_ruck.begin(), m_ruck.end(), pIItem));
 		}break;
 	case eItemPlaceSlot:{
-			R_ASSERT			(InSlot(pIItem));
+			//R_ASSERT			(InSlot(pIItem));
+			if (!InSlot(pIItem))
+				return false;
 			if(m_iActiveSlot == pIItem->GetSlot()) 
 				Activate	(NO_ACTIVE_SLOT);
 
@@ -752,7 +754,8 @@ PIItem CInventory::SameSlot(const u32 slot, PIItem pIItem, bool bSearchRuck) con
 //найти в инвенторе вещь с указанным именем
 PIItem CInventory::Get(const char *name, bool bSearchRuck) const
 {
-	const TIItemContainer &list = bSearchRuck ? m_ruck : m_belt;
+	//для ГГ ищем только на поясе
+	const TIItemContainer &list = (this == &g_actor->inventory()) ? m_belt : (bSearchRuck ? m_ruck : m_belt);
 	
 	for(TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it) 
 	{
@@ -983,6 +986,23 @@ CInventoryItem	*CInventory::tpfGetObjectByIndex(int iIndex)
 	}
 	else {
 		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"invalid inventory index!");
+		return	(0);
+	}
+	R_ASSERT	(false);
+	return		(0);
+}
+
+CInventoryItem	*CInventory::tpfGetBeltObjectByIndex(int iIndex)
+{
+	if ((iIndex >= 0) && (iIndex < (int)m_belt.size())) {
+		TIItemContainer	&l_list = m_belt;
+		int			i = 0;
+		for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it, ++i) 
+			if (i == iIndex)
+                return	(*l_it);
+	}
+	else {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"invalid belt index!");
 		return	(0);
 	}
 	R_ASSERT	(false);

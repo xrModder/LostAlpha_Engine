@@ -24,6 +24,7 @@
 #include "HUDManager.h"
 #include "script_engine.h"
 #include "game_cl_single.h"
+#include "../xr_input.h"
 
 #include "map_manager.h"
 #include "map_location.h"
@@ -237,6 +238,13 @@ void start_stop_menu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	HUD().GetUI()->StartStopMenu(pDialog,bDoHideIndicators);
 }
 
+void lua_debug_print(LPCSTR str)
+{
+	if (!xr_strlen(str))
+		return;
+	Msg("$ LA_DBG: %s", str);
+	FlushLog();
+}
 
 void add_dialog_to_render(CUIDialogWnd* pDialog)
 {
@@ -348,6 +356,7 @@ CEnvDescriptor *current_environment(CEnvironment *self)
 	return		(&self->CurrentEnv);
 }
 extern bool g_bDisableAllInput;
+extern bool g_bDisableKeyboardInput;
 void disable_input()
 {
 	g_bDisableAllInput = true;
@@ -355,6 +364,14 @@ void disable_input()
 void enable_input()
 {
 	g_bDisableAllInput = false;
+}
+void disable_keyboard_input()
+{
+	g_bDisableKeyboardInput = true;
+}
+void enable_keyboard_input()
+{
+	g_bDisableKeyboardInput = false;
 }
 
 void spawn_phantom(const Fvector &position)
@@ -420,6 +437,16 @@ float add_cam_effector2(LPCSTR fn, int id, bool cyclic, LPCSTR cb_func)
 	e->Start					(fn);
 	Actor()->Cameras().AddCamEffector(e);
 	return						e->GetAnimatorLength();
+}
+
+void add_custom_cam_effector(const Fvector &src_pos, const Fvector &target_pos, float time)
+{
+	Actor()->Cameras().AddCamEffector(xr_new<CControllerPsyHitCamEffector>(eCECustom, src_pos, target_pos, time));
+}
+
+void remove_custom_cam_effector()
+{
+	Actor()->Cameras().RemoveCamEffector(eCECustom);
 }
 
 void remove_cam_effector(int id)
@@ -523,6 +550,23 @@ void g_change_community_goodwill(LPCSTR _community, int _entity_id, int val)
 	RELATION_REGISTRY().ChangeCommunityGoodwill(c.index(), u16(_entity_id), val);
 }
 
+int get_pressed_key(void)
+{
+	return pInput->GetLastKeyPressed();
+}
+
+int get_released_key(void)
+{
+	return pInput->GetLastKeyReleased();
+}
+
+int get_button_count(void)
+{
+	return pInput->GetButtonCount();
+}
+
+
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -537,6 +581,7 @@ void CLevel::script_register(lua_State *L)
 	[
 		// obsolete\deprecated
 		def("object_by_id",						get_object_by_id),
+		
 #ifdef DEBUG
 		def("debug_object",						get_object_by_name),
 		def("debug_actor",						tpfGetActor),
@@ -547,7 +592,7 @@ void CLevel::script_register(lua_State *L)
 		def("set_weather",						set_weather),
 		def("set_weather_fx",					set_weather_fx),
 		def("is_wfx_playing",					is_wfx_playing),
-
+		
 		def("environment",						environment),
 		
 		def("set_time_factor",					set_time_factor),
@@ -555,6 +600,8 @@ void CLevel::script_register(lua_State *L)
 
 		def("set_game_difficulty",				set_game_difficulty),
 		def("get_game_difficulty",				get_game_difficulty),
+
+		def("add_custom_cam_effector",			add_custom_cam_effector),
 		
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),
@@ -592,6 +639,8 @@ void CLevel::script_register(lua_State *L)
 		def("present",							is_level_present),
 		def("disable_input",					disable_input),
 		def("enable_input",						enable_input),
+		def("disable_keyboard_input",			disable_keyboard_input),
+		def("enable_keyboard_input",			enable_keyboard_input),
 		def("spawn_phantom",					spawn_phantom),
 
 		def("get_bounding_volume",				get_bounding_volume),
@@ -611,7 +660,7 @@ void CLevel::script_register(lua_State *L)
 
 		def("add_complex_effector",				&add_complex_effector),
 		def("remove_complex_effector",			&remove_complex_effector),
-		
+		def("remove_custom_cam_effector",		&remove_custom_cam_effector),
 		def("game_id",							&GameID)
 	],
 	
@@ -628,7 +677,8 @@ void CLevel::script_register(lua_State *L)
 	module(L)
 	[
 		def("command_line",						&command_line),
-		def("IsGameTypeSingle",					&IsGameTypeSingle)
+		def("IsGameTypeSingle",					&IsGameTypeSingle),
+		def("debug_print",						&lua_debug_print)
 	];
 
 	module(L,"relation_registry")
@@ -636,5 +686,12 @@ void CLevel::script_register(lua_State *L)
 		def("community_goodwill",				&g_community_goodwill),
 		def("set_community_goodwill",			&g_set_community_goodwill),
 		def("change_community_goodwill",		&g_change_community_goodwill)
+	];
+	// lost alpha start
+	module(L, "keyboard")
+	[
+		def("get_pressed_key", &get_pressed_key),
+		def("get_released_key", &get_released_key)	//,
+//		def("get_button_count", &get_button_count)
 	];
 }

@@ -7,11 +7,14 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "ai_monster_space.h"
 #include "stalker_animation_data.h"
-
+//skeleton_animated->ID_Cycle_Safe("drunk_walk_0");
 CStalkerAnimationData::CStalkerAnimationData	(CKinematicsAnimated *skeleton_animated)
 {
+	
 	m_part_animations.Load		(skeleton_animated,"");
 	m_head_animations.Load		(skeleton_animated,"");
 	m_global_animations.Load	(skeleton_animated,"item_");
+	
 }

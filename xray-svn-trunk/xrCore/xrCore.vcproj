@@ -116,7 +116,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
+			OutputDirectory="x:\binaries_release"
 			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -189,7 +189,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -242,12 +242,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				EnableIntrinsicFunctions="false"
+				FavorSizeOrSpeed="0"
 				OmitFramePointers="false"
-				EnableFiberSafeOptimizations="true"
+				EnableFiberSafeOptimizations="false"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCORE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -474,6 +475,10 @@
 			</File>
 			<File
 				RelativePath="_vector3d.h"
+				>
+			</File>
+			<File
+				RelativePath=".\_vector3d_ext.h"
 				>
 			</File>
 			<File

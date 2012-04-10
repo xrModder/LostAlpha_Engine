@@ -28,9 +28,13 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 {
 	CUIInventoryCellItem* ci = smart_cast<CUIInventoryCellItem*>(itm);
 	if(!itm)				return false;
+
+	bool b_place					= ( (object()->m_eItemPlace == ci->object()->m_eItemPlace) );
+
 	return					(
 								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
-								(object()->object().cNameSect() == ci->object()->object().cNameSect())
+								(object()->object().cNameSect() == ci->object()->object().cNameSect()) &&
+								b_place
 							);
 }
 
@@ -266,9 +270,9 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	if(!ci)							return false;
 
 	bool b_addons					= ( (object()->GetAddonsState() == ci->object()->GetAddonsState()) );
-	bool b_place					= ( (object()->m_eItemPlace == ci->object()->m_eItemPlace) );
+//	bool b_place					= ( (object()->m_eItemPlace == ci->object()->m_eItemPlace) );
 	
-	return							b_addons && b_place;
+	return							b_addons;// && b_place;
 }
 
 CBuyItemCustomDrawCell::CBuyItemCustomDrawCell	(LPCSTR str, CGameFont* pFont)

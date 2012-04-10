@@ -14,6 +14,7 @@
 #include "agent_memory_manager.h"
 #include "explosive.h"
 #include "sound_player.h"
+#include "grenade.h"
 
 class CMemberPredicate2 {
 protected:
@@ -90,6 +91,11 @@ void CAgentMemberManager::remove_links			(CObject *object)
 			VERIFY				(explosive);
 			if (explosive->ID() == object->ID())
 				(*I)->grenade_reaction().clear();
+			else {
+				CGrenade const*	grenade = smart_cast<CGrenade const*>(explosive);
+				if (grenade && grenade->CurrentParentID() == object->ID())
+					(*I)->grenade_reaction().clear();
+			}
 		}
 
 		if ((*I)->grenade_reaction().m_game_object && ((*I)->grenade_reaction().m_game_object->ID() == object->ID()))
@@ -237,4 +243,37 @@ CMemberOrder *CAgentMemberManager::get_member	(const ALife::_OBJECT_ID &object_i
 		return			(0);
 
 	return				(&**I);
+}
+
+bool CAgentMemberManager::can_throw_grenade		(const Fvector &location) const
+{
+	if (Device.dwTimeGlobal <= m_last_throw_time + m_throw_time_interval)
+		return			(false);
+	
+	typedef CAgentMemberManager::MEMBER_STORAGE	MEMBER_STORAGE;
+	const float						member_danger_radius_sqr = _sqr(5.f);
+//	if (members().size() <= 1)
+//		return true;
+//	const float						cover_danger_radius_sqr = _sqr(5.f);
+	MEMBER_STORAGE::const_iterator	I = members().begin();
+	MEMBER_STORAGE::const_iterator	E = members().end();
+	for ( ; I != E; ++I)
+	{
+		if ((*I)->object().Position().distance_to_sqr(location) <= member_danger_radius_sqr)
+			return					(false);
+		/*
+		if (!(*I)->cover())
+			continue;
+
+		if ((*I)->cover()->m_position.distance_to_sqr(location) <= cover_danger_radius_sqr)
+			return					(false);
+		*/
+	}
+	
+	return							(true);
+}
+
+void CAgentMemberManager::on_throw_completed	()
+{
+	m_last_throw_time				= Device.dwTimeGlobal;
 }

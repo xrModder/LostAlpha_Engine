@@ -166,7 +166,7 @@ void CScriptBinder::net_Destroy		()
 void CScriptBinder::set_object		(CScriptBinderObject *object)
 {
 	if (IsGameTypeSingle()) {
-		VERIFY2				(!m_object,"Cannot bind to the object twice!");
+		R_ASSERT2			(!m_object, "Object is already binded!");
 #ifdef _DEBUG
 		Msg					("* Core object %s is binded with the script object",smart_cast<CGameObject*>(this) ? *smart_cast<CGameObject*>(this)->cName() : "");
 #endif // _DEBUG
@@ -181,6 +181,8 @@ void CScriptBinder::shedule_Update	(u32 time_delta)
 			m_object->shedule_Update	(time_delta);
 		}
 		catch(...) {
+			Msg("Exception catched on schedule_Update for [%s]", smart_cast<CGameObject*>(this) ? *smart_cast<CGameObject*>(this)->cName() : "");
+			ai().script_engine().last_called();
 			clear			();
 		}
 	}

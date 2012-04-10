@@ -22,7 +22,7 @@
 #include "../game_cl_base.h"
 #include "../level.h"
 #include "../seniority_hierarchy_holder.h"
-
+#include "../torch.h"
 #include "../date_time.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
 #include "../../LightAnimLibrary.h"
@@ -37,12 +37,13 @@
 
 #include "../string_table.h"
 #include "../clsid_game.h"
+#include "../mounted_turret.h"
 #include "UIArtefactPanel.h"
 
-#ifdef DEBUG
+//#ifdef DEBUG
 #	include "../attachable_item.h"
 #	include "../../xr_input.h"
-#endif
+//#endif
 
 #include "UIScrollView.h"
 #include "map_hint.h"
@@ -131,6 +132,16 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic			(uiXml, "static_wpn_icon", 0, &UIWeaponIcon);
 	UIWeaponIcon.SetShader		(GetEquipmentIconsShader());
 	UIWeaponIcon_rect			= UIWeaponIcon.GetWndRect();
+	// lost alpha start
+	AttachChild(&UIStaticTime);
+	xml_init.InitStatic(uiXml, "static_time", 0, &UIStaticTime);
+	AttachChild(&UIStaticDate);
+	xml_init.InitStatic(uiXml, "static_date", 0, &UIStaticDate);
+	AttachChild(&UIStaticTorch);
+	xml_init.InitStatic(uiXml, "static_flashlight", 0, &UIStaticTorch);
+	AttachChild(&UIStaticTurret);
+	xml_init.InitStatic(uiXml, "static_turret", 0, &UIStaticTurret);
+	
 	//---------------------------------------------------------
 	AttachChild					(&UIPickUpItemIcon);
 	xml_init.InitStatic			(uiXml, "pick_up_item", 0, &UIPickUpItemIcon);
@@ -168,6 +179,15 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitProgressBar	(uiXml, "progress_bar_armor", 0, &UIArmorBar);
 
 	
+	UIStaticTorch.AttachChild(&UIFlashlightBar);
+	xml_init.InitProgressBar(uiXml, "progress_bar_flashlight", 0, &UIFlashlightBar);
+	UIFlashlightBar.Show(false);
+	UIStaticTorch.Show(false);
+
+	UIStaticTurret.AttachChild(&UITurretBar);
+	xml_init.InitProgressBar(uiXml, "progress_bar_turret", 0, &UITurretBar);
+	UITurretBar.Show(false);
+	UIStaticTurret.Show(false);
 
 	// Подсказки, которые возникают при наведении прицела на объект
 	AttachChild					(&UIStaticQuickHelp);
@@ -303,7 +323,7 @@ void CUIMainIngameWnd::Draw()
 	UIZoneMap->Render			();			
 
 	RenderQuickInfos			();		
-
+//#pragma TODO("restore here!")
 #ifdef DEBUG
 	draw_adjust_mode			();
 #endif
@@ -484,6 +504,56 @@ void CUIMainIngameWnd::Update()
 	UIHealthBar.SetProgressPos		(m_pActor->GetfHealth()*100.0f);
 	UIMotionIcon.SetPower			(m_pActor->conditions().GetPower()*100.0f);
 
+	// lost alpha start 
+	if (psHUD_Flags.test(HUD_SHOW_CLOCK))
+	{
+		if (!UIStaticTime.IsShown())
+			UIStaticTime.Show(true);
+		if (!UIStaticDate.IsShown())
+			UIStaticDate.Show(true);
+		UIStaticTime.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
+		UIStaticDate.SetText(*InventoryUtilities::GetGameDateAsString(InventoryUtilities::edpDateToDay));
+	}
+	else
+	{
+		if (UIStaticTime.IsShown())
+			UIStaticTime.Show(false);
+		if (UIStaticDate.IsShown())
+			UIStaticDate.Show(false);
+	}
+
+	CTorch *flashlight = m_pActor->GetCurrentTorch();
+	if (flashlight)
+	{
+		if (flashlight->IsSwitchedOn())
+		{
+			if (!UIStaticTorch.IsShown())
+				UIStaticTorch.Show(true);
+			if (!UIFlashlightBar.IsShown())
+				UIFlashlightBar.Show(true);
+			UIFlashlightBar.SetProgressPos(100.0f * (((float)flashlight->GetBatteryStatus()) / ((float)flashlight->GetBatteryLifetime())));
+		}
+		else
+		{
+			if (UIStaticTorch.IsShown())
+				UIStaticTorch.Show(false);
+			if (UIFlashlightBar.IsShown())
+				UIFlashlightBar.Show(false);
+		}
+	}
+	if (m_pActor->UsingTurret())
+	{
+		if (!UIStaticTurret.IsShown())
+			UIStaticTurret.Show(true);
+		if (!UITurretBar.IsShown())
+			UITurretBar.Show(true);
+		UITurretBar.SetProgressPos(100.0f * ((float)m_pActor->GetTurretTemp()) / MAX_FIRE_TEMP);
+	}
+	else
+	{
+		UIStaticTurret.Show(false);
+		UITurretBar.Show(false);
+	}
 	UIZoneMap->UpdateRadar			(Device.vCameraPosition);
 	float h,p;
 	Device.vCameraDirection.getHP	(h,p);
@@ -807,7 +877,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		if (flag) return true;
 	}
 
-#ifdef DEBUG
+//#ifdef DEBUG
 		if(CAttachableItem::m_dbgItem){
 			static float rot_d = deg2rad(0.5f);
 			static float mov_d = 0.01f;
@@ -868,7 +938,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 			}		
 		if(flag)return true;;
 		}
-#endif		
+//#endif		
 
 	if(Level().IR_GetKeyState(DIK_LSHIFT) || Level().IR_GetKeyState(DIK_RSHIFT))
 	{
@@ -1120,7 +1190,8 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
-	PIItem item		=  m_pActor->inventory().ActiveItem();
+	PIItem	item		= m_pActor->inventory().ActiveItem();
+	u32		active_slot	= m_pActor->inventory().GetActiveSlot();
 	if(item) 
 	{
 		xr_string					str_name;
@@ -1134,7 +1205,9 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		SetAmmoIcon					(icon_sect_name.c_str	()	);
 
 		//-------------------
-		m_pWeapon = smart_cast<CWeapon*> (item);		
+		m_pWeapon = smart_cast<CWeapon*> (item);
+		if (active_slot == BOLT_SLOT)
+			HandleBolt();		
 	}else
 	{
 		UIWeaponIcon.Show			(false);
@@ -1143,6 +1216,12 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		m_pWeapon					= NULL;
 	}
 }
+
+void CUIMainIngameWnd::HandleBolt()
+{
+	SetAmmoIcon("bolt");
+}
+
 
 void CUIMainIngameWnd::OnConnected()
 {
@@ -1158,7 +1237,7 @@ void CUIMainIngameWnd::reset_ui()
 	m_pPickUpItem					= NULL;
 	UIMotionIcon.ResetVisibility	();
 }
-
+//#pragma TODO("restore here")
 #ifdef DEBUG
 /*
 #include "d3dx9core.h"
@@ -1306,7 +1385,7 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		F->SetAligment		(CGameFont::alCenter);
 //.		F->SetSizeI			(0.02f);
 		F->OutSetI			(0.f,-0.8f);
-		F->SetColor			(0xffffffff);
+		F->SetColor			(D3DCOLOR_XRGB(255, 0, 0));//(0xffffffff);
 		F->OutNext			("Hud_adjust_mode=%d",g_bHudAdjustMode);
 		if(g_bHudAdjustMode==1)
 			F->OutNext			("adjusting zoom offset");

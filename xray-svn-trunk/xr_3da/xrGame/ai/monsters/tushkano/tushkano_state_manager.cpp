@@ -46,7 +46,7 @@ void CStateManagerTushkano::execute()
 
 		if (enemy) {
 			switch (object->EnemyMan.get_danger_type()) {
-				case eStrong:	state_id = eStatePanic; break;
+				case eStrong:	state_id = eStateAttack; break;
 				case eWeak:		state_id = eStateAttack; break;
 			}
 		} else if (object->HitMemory.is_hit()) {

@@ -154,6 +154,7 @@ public:
 
 public:
 	virtual	CCharacterPhysicsSupport*	character_physics_support	()						{return m_pPhysics_support;}
+	
 	virtual CPHDestroyable*				ph_destroyable				()						;
 	virtual CAttachmentOwner*			cast_attachment_owner		()						{return this;}
 	virtual CInventoryOwner*			cast_inventory_owner		()						{return this;}
@@ -453,6 +454,7 @@ private:
 
 private:
 			float						best_cover_value					(const Fvector &position_to_cover_from);
+			void						compute_enemy_distances				(float &minimum_enemy_distance, float &maximum_enemy_distance);
 			const CCoverPoint			*find_best_cover					(const Fvector &position_to_cover_from);
 			void						update_best_cover_actuality			(const Fvector &position_to_cover_from);
 			void						on_best_cover_changed				(const CCoverPoint *new_cover, const CCoverPoint *old_cover);
@@ -484,18 +486,49 @@ private:
 	Fvector								m_computed_object_position;
 	Fvector								m_computed_object_direction;
 	// target parameters
-	Fvector								m_throw_target;
+	Fvector								m_throw_target_position;
+	CObject								*m_throw_ignore_object;
 	// computed
-	float								m_throw_force;
 	Fvector								m_throw_position;
-	Fvector								m_throw_direction;
+	Fvector								m_throw_velocity;
+	// collision prediction
+	Fvector								m_throw_collide_position;
+	bool								m_throw_enabled;
+
+	u32									m_last_throw_time;
+	u32									m_throw_time_interval;
+public:
+	IC		const bool					&throw_enabled						();
+
+private:
+	bool								m_can_throw_grenades;
+
+public:
+	IC		const bool					&can_throw_grenades					() const;
+	IC		void						can_throw_grenades					(const bool &value);
+
+private:
+			bool						throw_check_error					(
+											float low,
+											float high,
+											const Fvector &start,
+											const Fvector &velocity,
+											const Fvector &gravity
+										);
+			void						check_throw_trajectory				(const float &throw_time);
+			void						throw_target_impl					(const Fvector &position, CObject *throw_ignore_object );
+			void						compute_throw_miss					( u32 const vertex_id );
 
 public:
 	virtual	bool						use_default_throw_force				();
 	virtual	float						missile_throw_force					(); 
 	virtual	bool						use_throw_randomness				();
-			void						throw_target						(const Fvector &position); 
+			void						throw_target						(const Fvector &position, CObject *throw_ignore_object );
+			void						throw_target						(const Fvector &position, u32 const vertex_id, CObject *throw_ignore_object );
+	IC		const Fvector				&throw_target						() const;
 			void						update_throw_params					(); 
+			void						on_throw_completed					();
+	IC		const u32					&last_throw_time					() const;
 
 #ifdef DEBUG
 public:
@@ -547,7 +580,15 @@ public:
 
 private:
 	bool	m_can_select_items;
+// gr1ph
+public:
+	IC		const u32					&throw_time_interval						() const;
+	IC		void						throw_time_interval							(const u32 &value);
 
+public:
+	void SetFireForced(CGameObject *obj);
+private:
+	void select_queue_params(const float &distance, u32 &min_queue_size, u32 &max_queue_size, u32 &min_queue_interval, u32 &max_queue_interval);
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

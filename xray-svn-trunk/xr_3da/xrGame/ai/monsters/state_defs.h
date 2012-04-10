@@ -1,7 +1,12 @@
 #pragma once
 
 enum EMonsterState {
+	//lost alpha
+#ifndef DEBUG
 	eGlobalState					= u32(1) << 15,
+#else
+	eGlobalState					= 1 << 15,
+#endif
 
 	// -------------------------------------------------------------
 	
@@ -153,6 +158,8 @@ enum EMonsterState {
 	eStateSmartTerrainTaskLevelPathWalk	= eStateCustom | 5,
 	eStateSmartTerrainTaskWaitCapture	= eStateCustom | 6,
 
+	eStateBurerAttack_Shield			= eStateCustom | 7,
+
 	// -------------------------------------------------------------
 	// custom attack states
 
@@ -174,6 +181,8 @@ enum EMonsterState {
 	eStatePredator_Camp				= eStateCustom | eStateAttack | 13,
 
 	eStatePredator					= eStateCustom | eStateAttack | 14,
+
+	eStateCustom_Tubeman			= eStateCustom | eStateAttack | 15,
 
 	// -------------------------------------------------------------
 
