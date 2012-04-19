@@ -243,7 +243,8 @@ CCommandVar CommandInitialize(CCommandVar p1, CCommandVar p2)
     // make interface
     //----------------
     EPrefs->OnCreate		();
-    if (UI->OnCreate((TD3DWindow*)(u32)p1,(TPanel*)(u32)p2)){
+    if (UI->OnCreate((TD3DWindow*)(u32)p1,(TPanel*)(u32)p2))
+    {
         ExecCommand		(COMMAND_CREATE_SOUND_LIB);	R_ASSERT(SndLib);
         SndLib->OnCreate();
         LALib.OnCreate	();
@@ -252,7 +253,8 @@ CCommandVar CommandInitialize(CCommandVar p1, CCommandVar p2)
         psDeviceFlags.set(rsEnvironment, FALSE);
         g_pGamePersistent= xr_new<IGame_Persistent>();
 
-        if (Tools->OnCreate()){
+        if (Tools->OnCreate())
+        {
         	EPrefs->Load();
             Device.seqAppStart.Process(rp_AppStart);
             ExecCommand	(COMMAND_RESTORE_UI_BAR);
@@ -388,7 +390,12 @@ CCommandVar 	CommandExit(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandShowProperties(CCommandVar p1, CCommandVar p2)
 {
-    Tools->ShowProperties();
+	if(p1.IsString())
+    {
+    	xr_string SSS = p1;
+    	Tools->ShowProperties(SSS.c_str());
+	}else
+    	Tools->ShowProperties(NULL);
     return				TRUE;
 }
 CCommandVar 	CommandUpdateProperties(CCommandVar p1, CCommandVar p2)

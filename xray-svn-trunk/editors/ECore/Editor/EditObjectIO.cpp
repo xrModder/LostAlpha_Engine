@@ -368,12 +368,14 @@ bool CEditableObject::Load(IReader& F)
         }
 
         if (bRes){
-            if (F.find_chunk	(EOBJ_CHUNK_ACTORTRANSFORM)){
+            if (F.find_chunk	(EOBJ_CHUNK_ACTORTRANSFORM))
+            {
                 F.r_fvector3	(a_vPosition);
                 F.r_fvector3	(a_vRotate);
             }
 
-            if (F.find_chunk	(EOBJ_CHUNK_DESC)){
+            if (F.find_chunk	(EOBJ_CHUNK_DESC))
+            {
                 F.r_stringZ		(m_CreateName);
                 F.r				(&m_CreateTime,sizeof(m_CreateTime));
                 F.r_stringZ		(m_ModifName);

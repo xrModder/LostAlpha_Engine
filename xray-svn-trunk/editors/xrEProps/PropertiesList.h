@@ -179,7 +179,8 @@ public:		// User declarations
     bool __fastcall 	IsModified				();
     void __fastcall 	ResetModified			(){bModified = false;}
     void __fastcall 	RefreshForm				();
-
+    
+    void __fastcall		SelectFolder			(const AnsiString& folder_name);
     void __fastcall		SelectItem				(const AnsiString& full_name);
     void __fastcall 	AssignItems				(PropItemVec& values);
     void __fastcall 	ResetItems				();

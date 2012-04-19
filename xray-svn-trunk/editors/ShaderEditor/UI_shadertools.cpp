@@ -208,7 +208,7 @@ void CShaderTools::ApplyChanges()
 	Current()->ApplyChanges();
 }
 
-void CShaderTools::ShowProperties()
+void CShaderTools::ShowProperties(LPCSTR focused_item)
 {
 	m_ItemProps->ShowProperties();
 }

@@ -221,8 +221,10 @@ bool CEditableObject::Import_LWO(const char* fn, bool bNeedOptimize)
                     	MESH->m_VertCount	= Ilr->point.count;
                         MESH->m_Verts 		= xr_alloc<Fvector>(MESH->m_VertCount);
 	                    int id = Ilr->polygon.count/50;
-	                    if (id==0) id = 1;
-                        for (int i=0; i<Ilr->point.count; i++){
+	                    if (id==0) 
+	                    id = 1;
+                        for (int i=0; i<Ilr->point.count; i++)
+                        {
 //	                    	if ((i%id)==0) UI->ProgressUpdate(i);
                             st_lwPoint& Ipt = Ilr->point.pt[i];
                             Fvector& Mpt	= MESH->m_Verts[i];

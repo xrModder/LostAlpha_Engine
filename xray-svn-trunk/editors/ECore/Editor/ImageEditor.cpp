@@ -89,7 +89,8 @@ ETextureThumbnail* TfrmImageLib::FindUsedTHM(LPCSTR name)
 
 void TfrmImageLib::SaveUsedTHM()
 {
-	for (THMIt t_it=m_THM_Used.begin(); t_it!=m_THM_Used.end(); t_it++){ 
+	for (THMIt t_it=m_THM_Used.begin(); t_it!=m_THM_Used.end(); ++t_it)
+	{ 
     	if (modif_map.find(FS_File((*t_it)->SrcName()))!=modif_map.end())
         	(*t_it)->Save();
     }
@@ -180,7 +181,9 @@ void __fastcall TfrmImageLib::FormClose(TObject *, TCloseAction &Action)
 #include "ResourceManager.h"
 void TfrmImageLib::InitItemsList()
 {
-    if (!form->bImportMode)  ImageLib.GetTexturesRaw(texture_map);
+	R_ASSERT				(m_THM_Used.empty());
+    if (!form->bImportMode)  
+       ImageLib.GetTexturesRaw(texture_map);
     
 	ListItemsVec 		items;
 /*
@@ -196,8 +199,8 @@ void TfrmImageLib::InitItemsList()
     {
 	pb->Inc			();
     	ListItem* I		= LHelper().CreateItem(items,it->name.c_str(),0);
-//.     I->tag			= ltx_ini->line_exist("types",it->name.c_str())?ltx_ini->r_u32("types",it->name.c_str()):-1;
-        I->tag                  = Device.Resources->m_textures_description.GetTextureType(it->name.c_str());
+        I->m_Object			= (void*)(FindUsedTHM(it->name.c_str()));
+        R_ASSERT2			(I->m_Object, it->name.c_str());
         Msg("%s-%d",it->name.c_str(),I->tag);
     }
     UI->ProgressEnd		(pb);
@@ -244,7 +247,8 @@ void __fastcall TfrmImageLib::ebCancelClick(TObject *)
 void __fastcall TfrmImageLib::RegisterModifiedTHM()
 {
 	if (m_ItemProps->IsModified()||bImportMode){
-	    for (THMIt t_it=m_THM_Current.begin(); t_it!=m_THM_Current.end(); t_it++){
+	    for (THMIt t_it=m_THM_Current.begin(); t_it!=m_THM_Current.end(); t_it++)
+	    {
             FS_FileSetIt it	= texture_map.find(FS_File((*t_it)->SrcName())); R_ASSERT(it!=texture_map.end());
             modif_map.insert(*it);
         }
@@ -353,7 +357,7 @@ void __fastcall TfrmImageLib::ebRemoveTextureClick(TObject *)
 
 void TfrmImageLib::DestroyUsedTHM()
 {
-    for (THMIt it=m_THM_Used.begin(); it!=m_THM_Used.end(); it++)
+    for (THMIt it=m_THM_Used.begin(); it!=m_THM_Used.end(); ++it)
     	xr_delete(*it);
     m_THM_Used.clear();
 }
@@ -428,6 +432,7 @@ void TfrmImageLib::OnItemsFocused(ListItemsVec& items)
         }
     }
     paImage->Repaint				();
+    m_ItemProps->tvProperties->MultiSelect = true;
 	m_ItemProps->AssignItems		(props);
 }
 //---------------------------------------------------------------------------

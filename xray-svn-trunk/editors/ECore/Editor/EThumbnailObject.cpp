@@ -89,8 +89,10 @@ void EObjectThumbnail::Save(int age, LPCSTR path)
     F.close_chunk	();
 
 	string_path 	fn;
-    if (path) 		FS.update_path(fn,path,m_Name.c_str());
-    else			FS.update_path(fn,_objects_,m_Name.c_str());
+    //if (path) 		FS.update_path(fn,path,m_Name.c_str());
+    //else			FS.update_path(fn,_objects_,m_Name.c_str());
+    
+    strcpy			(fn,m_Name.c_str());
     if (F.save_to(fn))
     {
 	    FS.set_file_age	(fn,age?age:m_Age);

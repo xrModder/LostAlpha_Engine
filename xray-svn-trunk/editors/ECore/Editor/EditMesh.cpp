@@ -115,7 +115,9 @@ void CEditableMesh::GenerateFNormals()
 
     // face normals
 	for (u32 k=0; k<m_FaceCount; k++)
-        m_FNormals[k].mknormal(	m_Verts[m_Faces[k].pv[0].pindex], m_Verts[m_Faces[k].pv[1].pindex], m_Verts[m_Faces[k].pv[2].pindex]);
+        m_FNormals[k].mknormal(	m_Verts[m_Faces[k].pv[0].pindex], 
+                                m_Verts[m_Faces[k].pv[1].pindex], 
+                                m_Verts[m_Faces[k].pv[2].pindex]);
 }
 
 void CEditableMesh::GenerateVNormals()
@@ -227,12 +229,14 @@ void CEditableMesh::GenerateSVertices(u32 influence)
                 st_VMap& VM = *m_VMaps[vmpt_lst.pts[vmpt_id].vmap_index];
                 if (VM.type==vmtWeight){
                     wb.push_back(st_WB(m_Parent->GetBoneIndexByWMap(VM.name.c_str()),VM.getW(vmpt_lst.pts[vmpt_id].index)));
-                    if (wb.back().bone==BI_NONE){
+                    if (wb.back().bone==BI_NONE)
+                    {
                         ELog.DlgMsg	(mtError,"Can't find bone assigned to weight map %s",*VM.name);
                         FATAL("Editor crashed.");
                         return;
                     }
-                }else if(VM.type==vmtUV){	
+                }else if(VM.type==vmtUV)
+                {	
 //                 	R_ASSERT2(!uv,"More than 1 uv per vertex found.");
                     SV.uv.set(VM.getUV(vmpt_lst.pts[vmpt_id].index));
                 }
@@ -245,7 +249,11 @@ void CEditableMesh::GenerateSVertices(u32 influence)
             SV.offs	= P;
             SV.norm	= N;
             SV.bones.resize(wb.size());
-            for (u8 k=0; k<(u8)SV.bones.size(); k++){	SV.bones[k].id=wb[k].bone; SV.bones[k].w=wb[k].weight; }
+            for (u8 k=0; k<(u8)SV.bones.size(); k++)
+            {	
+            SV.bones[k].id=wb[k].bone; 
+            SV.bones[k].w=wb[k].weight; 
+            }
         }
 	}
 
@@ -282,7 +290,8 @@ void CEditableMesh::GetFaceTC(u32 fid, const Fvector2* tc[3])
 {
 	R_ASSERT(fid<m_FaceCount);
 	st_Face& F = m_Faces[fid];
-    for (int k=0; k<3; k++){
+    for (int k=0; k<3; k++)
+    {
 	    st_VMapPt& vmr = m_VMRefs[F.pv[k].vmref].pts[0];
     	tc[k] = &(m_VMaps[vmr.vmap_index]->getUV(vmr.index));
     }
@@ -292,7 +301,8 @@ void CEditableMesh::GetFacePT(u32 fid, const Fvector* pt[3])
 {
 	R_ASSERT(fid<m_FaceCount);
 	st_Face& F = m_Faces[fid];
-    for (int k=0; k<3; k++)
+	
+    for (int k=0; k<3; ++k)
     	pt[k] = &m_Verts[F.pv[k].pindex];
 }
 

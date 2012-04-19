@@ -14,7 +14,8 @@
 #include "SkeletonCustom.h"
 
 // definition (Renderer)
-class CRenderTarget{
+class CRenderTarget
+{
 public:	
 	virtual u32			get_width			()				{ return Device.dwWidth;	}
 	virtual u32			get_height			()				{ return Device.dwHeight;	}
@@ -34,7 +35,8 @@ public:
 	virtual	GenerationLevel	get_generation			()=0;
 };
 
-class	ECORE_API CRender: public IRender_interface{
+class	ECORE_API CRender: public IRender_interface
+{
     CRenderTarget*			Target;
     Fmatrix					current_matrix;
 public:

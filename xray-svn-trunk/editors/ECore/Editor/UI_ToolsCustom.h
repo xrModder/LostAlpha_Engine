@@ -95,6 +95,7 @@ public:
             u32			c;
             bool		i;
             bool		m;
+            xr_string	descr;
 	    };
 	    DEFINE_VECTOR(Face,FaceVec,FaceIt);
 	    DEFINE_VECTOR(Line,LineVec,LineIt);
@@ -209,7 +210,7 @@ public:
     virtual bool		Pick				(TShiftState Shift)=0;
 	virtual bool 		RayPick				(const Fvector& start, const Fvector& dir, float& dist, Fvector* pt=0, Fvector* n=0)=0;
 
-    virtual void		ShowProperties		()=0;
+    virtual void		ShowProperties		(LPCSTR focused_item)=0;
     virtual void		UpdateProperties	(BOOL bForced=FALSE)=0;
     virtual void		RefreshProperties	()=0;
 

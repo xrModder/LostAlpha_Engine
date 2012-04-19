@@ -240,7 +240,10 @@ TElTreeItem* CFolderHelper::AppendObject(TElTree* tv, AnsiString full_name, bool
     }
 	AnsiString obj;
 	_GetItem(full_name.c_str(),fld_cnt,obj,'\\',"",false);
-    if (!allow_duplicate&&FindItemInFolder(TYPE_OBJECT,tv,fld_node,obj)) return 0;
+	
+    if (!allow_duplicate&&FindItemInFolder(TYPE_OBJECT,tv,fld_node,obj)) 
+    return 0;
+    
 	return LL_CreateObject(tv,fld_node,obj);
 }
 //---------------------------------------------------------------------------
@@ -646,21 +649,29 @@ AnsiString CFolderHelper::GenerateName(LPCSTR _pref, int dgt_cnt, TFindObjectByN
         if (!res)return result;
     }
     // generate new name
-    string256 	prefix	= {"name"};
+    //string256 	prefix	= {"name"};
+    string512 	prefix  = {"name"};
+    strcpy		(prefix, pref.c_str());
     string32	mask;
     sprintf		(mask,"%%s%s%%0%dd",allow_?"_":"",dgt_cnt);
 
     int pref_dgt_cnt	= dgt_cnt+(allow_?1:0);
     int pref_size		= pref.size();
-    if (pref_size>pref_dgt_cnt){
-    	strcpy			(prefix, pref.c_str());
+    if (pref_size>pref_dgt_cnt)
+    {
         bool del_suff	= false;   
-        if (allow_&&(prefix[pref_size-pref_dgt_cnt]=='_')){
+        if (allow_ && (prefix[pref_size-pref_dgt_cnt]=='_'))
+        {
         	del_suff	= true;
-        	for (int i=pref_size-pref_dgt_cnt+1; i<pref_size; i++)
-            	if (!isdigit(prefix[i])){ del_suff=false; break; }
+        	for (int i=pref_size-pref_dgt_cnt+1; i<pref_size; ++i)
+            	if (!isdigit(prefix[i]))
+            	{ 
+            	del_suff=false; 
+            	break; 
+            	}
         }
-        if (del_suff)	prefix[pref_size-pref_dgt_cnt] = 0;
+        if (del_suff)	
+           prefix[pref_size-pref_dgt_cnt] = 0;
     }
 
     bool 	res;

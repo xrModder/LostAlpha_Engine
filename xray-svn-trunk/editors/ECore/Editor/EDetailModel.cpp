@@ -139,7 +139,8 @@ bool EDetail::Update	(LPCSTR name)
     // fill vertices
     bv_bb.invalidate();
     u32 idx			= 0;
-    for (u32 f_id=0; f_id<M->GetFCount(); f_id++){
+    for (u32 f_id=0; f_id<M->GetFCount(); f_id++)
+    {
         st_Face& F 	= M->GetFaces()[f_id];
     	u16 ind[3];
     	for (int k=0; k<3; k++,idx++){

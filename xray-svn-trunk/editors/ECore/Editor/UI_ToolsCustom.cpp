@@ -206,9 +206,20 @@ void CToolsCustom::Render()
     Device.SetRS			(D3DRS_CULLMODE,D3DCULL_NONE);
     AnsiString temp;
     int cnt=0;
-    for (SDebugDraw::PointIt vit=m_DebugDraw.m_Points.begin(); vit!=m_DebugDraw.m_Points.end(); vit++){
-        if (vit->i)        temp.sprintf		("P: %d",cnt++);
-        DU.dbgDrawVert(vit->p[0],						vit->c,	vit->i?temp.c_str():"");
+    for (SDebugDraw::PointIt vit=m_DebugDraw.m_Points.begin(); vit!=m_DebugDraw.m_Points.end(); ++vit)
+    {
+        LPCSTR s = NULL;
+        if (vit->i)        
+         {
+        temp.sprintf		("P: %d",cnt++);
+        s = temp.c_str();
+         }
+        
+        if(vit->descr.size())
+         {
+            s = vit->descr.c_str();
+         }
+        DU.dbgDrawVert(vit->p[0],	vit->c,	s?s:"");
     }
     Device.SetShader		(Device.m_SelectionShader);
     cnt=0;

@@ -38,7 +38,8 @@ void __stdcall  CloseSoundSource()
 void __stdcall  FillSoundSource(ChooseItemVec& items, void* param)
 {
     FS_FileSet lst;
-    if (SndLib->GetSounds(lst)){
+    if (SndLib->GetSounds(lst))
+    {
 	    FS_FileSetIt  it			= lst.begin();
     	FS_FileSetIt	_E			= lst.end();
 	    for (; it!=_E; it++)		items.push_back(SChooseItem(it->name.c_str(),""));
@@ -161,9 +162,12 @@ void __stdcall  DrawLAnim(LPCSTR name, HDC hdc, const Irect& r)
 {
     int frame;
 	CLAItem* item 					= LALib.FindItem(name);
+	    if(item)
+    {
     HBRUSH hbr 						= CreateSolidBrush(item->CalculateBGR(Device.fTimeGlobal,frame));
     FillRect						(hdc,(RECT*)&r,hbr);
     DeleteObject 					(hbr);
+    }
 }
 //---------------------------------------------------------------------------
 void __stdcall  FillEShader(ChooseItemVec& items, void* param)
@@ -280,7 +284,8 @@ void __stdcall  FillSkeletonAnims(ChooseItemVec& items, void* param)
 void __stdcall  FillSkeletonBones(ChooseItemVec& items, void* param)
 {
 	IRender_Visual* V 				= ::Render->model_Create((LPCSTR)param);
-    if (PKinematics(V)){
+    if (PKinematics(V))
+    {
         CKinematicsAnimated::accel  	*ll_bones	= PKinematics(V)->LL_Bones();
         CKinematicsAnimated::accel::iterator _I, _E;
         _I							= ll_bones->begin();

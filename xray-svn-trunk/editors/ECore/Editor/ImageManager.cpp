@@ -180,17 +180,22 @@ bool CImageManager::MakeGameTexture(ETextureThumbnail* THM, LPCSTR game_name, u3
     FS.file_delete			(game_name2.c_str());
 
     U32Vec 	ext_data;
-    if ((THM->m_TexParams.type==STextureParams::ttBumpMap)&&(THM->m_TexParams.ext_normal_map_name.size())){
+    if ((THM->m_TexParams.type==STextureParams::ttBumpMap)&&(THM->m_TexParams.ext_normal_map_name.size()))
+    {
     	bool e_res			= true;
         LPCSTR e_name		= THM->m_TexParams.ext_normal_map_name.c_str();
         ETextureThumbnail* 	NM_THM = xr_new<ETextureThumbnail>(e_name);
-        if (NM_THM->_Format().type==STextureParams::ttImage){
-	        if (NM_THM->_Format().fmt==STextureParams::tfRGBA){
+        if (NM_THM->_Format().type==STextureParams::ttImage)
+        {
+	        if (NM_THM->_Format().fmt==STextureParams::tfRGBA)
+	        {
             	u32 _w,_h;
-                if (!LoadTextureData(e_name,ext_data,_w,_h)){
+                if (!LoadTextureData(e_name,ext_data,_w,_h))
+                {
                     ELog.DlgMsg	(mtError,"Can't load special normal map texture '%s'.",e_name);
                     e_res		= false;
-                }else if ((_w!=w)||(_h!=h)){
+                }else if ((_w!=w)||(_h!=h))
+                {
                     ELog.DlgMsg	(mtError,"Invalid load special normal map size '%s'. It should be [%dx%d]",e_name,w,h);
                     e_res		= false;
                 }

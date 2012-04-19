@@ -7,7 +7,8 @@
 // refs
 class ESoundThumbnail;
 
-class ECORE_API CSoundManager{
+class ECORE_API CSoundManager
+{
 	void 		MakeGameSound		(ESoundThumbnail* THM, LPCSTR src_name, LPCSTR game_name);
 public:
 				CSoundManager		(){}
@@ -18,6 +19,7 @@ public:
 
 	// texture routines
     int			GetSounds			(FS_FileSet& files, BOOL bFolders=FALSE);
+    int			GetGameSounds		(FS_FileSet& files);
     int			GetSoundEnvs		(AStringVec& items);
 
 	int 		GetLocalNewSounds	(FS_FileSet& files);

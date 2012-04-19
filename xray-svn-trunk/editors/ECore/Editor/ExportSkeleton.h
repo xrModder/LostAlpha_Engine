@@ -31,7 +31,10 @@ struct ECORE_API SSkelVert: public st_SVert{
         uv.set		(_uv);
         VERIFY		(_w_cnt>0 && _w_cnt<4);
         bones.resize(_w_cnt);
-        for (u8 k=0; k<_w_cnt; k++)	{bones[k]=b[k];}
+        for (u8 k=0; k<_w_cnt; k++)	
+        {
+        bones[k]=b[k];
+        }
         sort_by_bone(); // need to similar 
     }
 	BOOL	similar_pos(SSkelVert& V)
@@ -41,7 +44,10 @@ struct ECORE_API SSkelVert: public st_SVert{
 	BOOL	similar(SSkelVert& V)
     {
     	if (bones.size()!=V.bones.size())	return FALSE;
-        for (u8 k=0; k<(u8)bones.size(); k++)	{ if (!bones[k].similar(V.bones[k])) return FALSE; }
+        for (u8 k=0; k<(u8)bones.size(); k++)	
+        { 
+        if (!bones[k].similar(V.bones[k])) return FALSE; 
+        }
         if (!uv.similar	(V.uv,EPS_S))		return FALSE;
 		if (!offs.similar(V.offs,EPS_L))	return FALSE;
 		if (!norm.similar(V.norm,EPS_L))	return FALSE;

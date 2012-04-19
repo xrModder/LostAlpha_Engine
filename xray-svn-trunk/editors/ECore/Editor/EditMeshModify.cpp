@@ -271,14 +271,19 @@ void CEditableMesh::Optimize(BOOL NoOpt)
             m_SGs		= xr_alloc<u32>		(m_FaceCount-i_del_face);
             
             u32 new_dk	= 0;
-            for (u32 dk=0; dk<m_FaceCount; dk++){
+            for (u32 dk=0; dk<m_FaceCount; dk++)
+            {
             	if (faces_mark[dk]){
                     for (SurfFacesPairIt plp_it=m_SurfFaces.begin(); plp_it!=m_SurfFaces.end(); plp_it++){
                         IntVec& 	pol_lst = plp_it->second;
-                        for (int k=0; k<int(pol_lst.size()); k++){
+                        for (int k=0; k<int(pol_lst.size()); k++)
+                        {
                             int& f = pol_lst[k];
-                            if (f>(int)dk){ f--;
-                            }else if (f==(int)dk){
+                            if (f>(int)dk)
+                            { 
+                            f--;
+                            }else if (f==(int)dk)
+                            {
                                 pol_lst.erase(pol_lst.begin()+k);
                                 k--;
                             }

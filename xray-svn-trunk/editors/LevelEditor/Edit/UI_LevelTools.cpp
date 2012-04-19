@@ -225,10 +225,21 @@ void CLevelTools::RefreshProperties()
 	m_Props->RefreshForm();
 }
 
-void CLevelTools::ShowProperties()
+void CLevelTools::ShowProperties(LPCSTR focus_to_item)
 {
     m_Props->ShowProperties	();
-    UpdateProperties		(false);
+    RealUpdateProperties	();
+
+	if(focus_to_item)
+    	m_Props->SelectFolder	(focus_to_item);
+    else
+    {
+    	if(pCurTools && pCurTools->ClassID!=OBJCLASS_DUMMY)
+        {
+           	LPCSTR cn = pCurTools->ClassDesc();
+    		m_Props->SelectFolder	(cn);
+        }
+    }
     UI->RedrawScene			();
 }
 //---------------------------------------------------------------------------

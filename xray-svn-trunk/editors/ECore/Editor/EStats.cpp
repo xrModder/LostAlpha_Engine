@@ -132,8 +132,6 @@ void CStats::Show(CGameFont* font)
 	DPS.verts	= 0;
 	DPS.calls	= 0;
 	DPS.vs		= 0;
-
-        //FOR SDK TEST
 	DPS.vb		= 0;
 	DPS.ib		= 0;
 

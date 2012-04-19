@@ -76,7 +76,7 @@ public:
     virtual bool		Pick				(TShiftState Shift){return false;}
 	virtual bool 		RayPick				(const Fvector& start, const Fvector& dir, float& dist, Fvector* pt, Fvector* n);
 
-    virtual void		ShowProperties		();
+    virtual void		ShowProperties		(LPCSTR focused_item);
     virtual void		UpdateProperties	(BOOL bForced=false){m_Flags.set(flRefreshProps,TRUE); if (bForced) RealUpdateProperties();}
     virtual void		RefreshProperties	(){;}
     virtual void		UpdateList			(bool bForced=false){m_Flags.set(flRefreshList,TRUE); if (bForced) RealUpdateList();}

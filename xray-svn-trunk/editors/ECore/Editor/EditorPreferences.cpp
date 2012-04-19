@@ -235,7 +235,12 @@ void CCustomPreferences::Load(CInifile* I)
 	// read recent list    
     for (u32 i=0; i<scene_recent_count; i++){
     	shared_str fn  	= R_STRING_SAFE	("editor_prefs",AnsiString().sprintf("recent_files_%d",i).c_str(),shared_str("") );
-        if (fn.size())	scene_recent_list.push_back(*fn);
+        if (fn.size())
+        {
+        	AStringIt it =   std::find(scene_recent_list.begin(), scene_recent_list.end(), fn.c_str() ) ;
+            if (it==scene_recent_list.end())
+	        	scene_recent_list.push_back(*fn);
+        }
     }
     sWeather = R_STRING_SAFE	("editor_prefs", "weather", shared_str("") );
     // load shortcuts
@@ -309,6 +314,7 @@ void CCustomPreferences::Save()
 	string_path			fn;
 	INI_NAME			(fn);
     CInifile* I 		= xr_new<CInifile>(fn, FALSE, TRUE, TRUE);
+    //I->set_override_names(TRUE);
 	Save				(I);
 	xr_delete			(I);
 }
