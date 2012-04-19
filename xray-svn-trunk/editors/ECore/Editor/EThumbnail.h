@@ -72,7 +72,7 @@ public:
     IC u32			_Height			(){return m_TexParams.height;}
     IC u32			_Alpha			(){return m_TexParams.HasAlphaChannel();}
     // thumbnail public routines
-    IC STextureParams& _Format		(){R_ASSERT(Valid());return m_TexParams;}
+    IC STextureParams& _Format		(){return m_TexParams;}
 	virtual bool 	Load			(LPCSTR src_name=0, LPCSTR path=0);
 	virtual void 	Save			(int age=0,LPCSTR path=0);
     virtual bool	Valid			(){return m_bValid; /*return !m_Pixels.empty();*/}

@@ -181,7 +181,7 @@ void __fastcall TfrmImageLib::FormClose(TObject *, TCloseAction &Action)
 #include "ResourceManager.h"
 void TfrmImageLib::InitItemsList()
 {
-	R_ASSERT				(m_THM_Used.empty());
+    R_ASSERT				(m_THM_Used.empty());
     if (!form->bImportMode)  
        ImageLib.GetTexturesRaw(texture_map);
     
@@ -199,8 +199,7 @@ void TfrmImageLib::InitItemsList()
     {
 	pb->Inc			();
     	ListItem* I		= LHelper().CreateItem(items,it->name.c_str(),0);
-        I->m_Object			= (void*)(FindUsedTHM(it->name.c_str()));
-        R_ASSERT2			(I->m_Object, it->name.c_str());
+        I->tag                  = Device.Resources->m_textures_description.GetTextureType(it->name.c_str());
         Msg("%s-%d",it->name.c_str(),I->tag);
     }
     UI->ProgressEnd		(pb);
