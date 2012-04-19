@@ -35,7 +35,9 @@ CLevelTools::~CLevelTools()
 
 TForm*	CLevelTools::GetFrame()
 {
-	if (pCurTools) return pCurTools->pFrame;
+	if (pCurTools) 
+	    return pCurTools->pFrame;
+	    
     return 0;
 }
 //---------------------------------------------------------------------------
@@ -53,7 +55,13 @@ bool CLevelTools::OnCreate()
     Scene->OnCreate	();
     // change target to Object
     ExecCommand		(COMMAND_CHANGE_TARGET, OBJCLASS_SCENEOBJECT);
-	m_Props 		= TProperties::CreateForm("Object Inspector",0,alClient,TOnModifiedEvent(this,&CLevelTools::OnPropsModified),0,TOnCloseEvent(this,&CLevelTools::OnPropsClose),TProperties::plItemFolders|TProperties::plFolderStore|TProperties::plNoClearStore|TProperties::plFullExpand);
+	m_Props 		= TProperties::CreateForm("Object Inspector",
+	                  0,
+	                  alClient,
+	                  TOnModifiedEvent(this,&CLevelTools::OnPropsModified),
+	                  0,
+	                  TOnCloseEvent(this,&CLevelTools::OnPropsClose),
+	                  TProperties::plItemFolders|TProperties::plFolderStore|TProperties::plNoClearStore|TProperties::plFullExpand);
     pObjectListForm = TfrmObjectList::CreateForm();
     return true;
 }
@@ -65,7 +73,8 @@ void CLevelTools::OnDestroy()
     TfrmObjectList::DestroyForm(pObjectListForm);
 	TProperties::DestroyForm(m_Props);
     // scene destroing
-    if (pCurTools) 		pCurTools->OnDeactivate();
+    if (pCurTools) 		
+        pCurTools->OnDeactivate();
 	Scene->OnDestroy		();
 }
 //---------------------------------------------------------------------------
@@ -77,9 +86,12 @@ void CLevelTools::Reset()
 
 bool __fastcall CLevelTools::MouseStart(TShiftState Shift)
 {
-    if(pCurTools&&pCurTools->pCurControl){
+    if(pCurTools&&pCurTools->pCurControl)
+    {
     	if ((pCurTools->pCurControl->Action()!=etaSelect)&&
-	    	(!pCurTools->IsEditable()||(pCurTools->ClassID==OBJCLASS_DUMMY))) return false;
+	    	(!pCurTools->IsEditable()||(pCurTools->ClassID==OBJCLASS_DUMMY))) 
+	    	return false;
+	    	
         return pCurTools->pCurControl->Start(Shift);
     }
     return false;
@@ -87,16 +99,22 @@ bool __fastcall CLevelTools::MouseStart(TShiftState Shift)
 //---------------------------------------------------------------------------
 void __fastcall CLevelTools::MouseMove(TShiftState Shift) 
 {
-    if(pCurTools&&pCurTools->pCurControl){
-	    if (HiddenMode())	ExecCommand(COMMAND_UPDATE_PROPERTIES);
+    if(pCurTools&&pCurTools->pCurControl)
+    {
+	    if (HiddenMode())	
+	        ExecCommand(COMMAND_UPDATE_PROPERTIES);
+	        
      	pCurTools->pCurControl->Move(Shift);
     }
 }
 //---------------------------------------------------------------------------
 bool __fastcall CLevelTools::MouseEnd(TShiftState Shift)
 {
-    if(pCurTools&&pCurTools->pCurControl){	
-	    if (HiddenMode())	ExecCommand(COMMAND_UPDATE_PROPERTIES);
+    if(pCurTools&&pCurTools->pCurControl)
+    {	
+	    if (HiddenMode())	
+	    ExecCommand(COMMAND_UPDATE_PROPERTIES);
+	    
     	return pCurTools->pCurControl->End(Shift);
     }
     return false;
@@ -105,30 +123,38 @@ bool __fastcall CLevelTools::MouseEnd(TShiftState Shift)
 void __fastcall CLevelTools::OnObjectsUpdate()
 {
 	UpdateProperties(false);
-    if(pCurTools&&pCurTools->pCurControl) return pCurTools->OnObjectsUpdate();
+    if(pCurTools&&pCurTools->pCurControl) 
+         return pCurTools->OnObjectsUpdate();
 }
 //---------------------------------------------------------------------------
 bool __fastcall CLevelTools::HiddenMode()
 {
-    if(pCurTools&&pCurTools->pCurControl) return pCurTools->pCurControl->HiddenMode();
+    if(pCurTools&&pCurTools->pCurControl) 
+        return pCurTools->pCurControl->HiddenMode();
     return false;
 }
 //---------------------------------------------------------------------------
 bool __fastcall CLevelTools::KeyDown   (WORD Key, TShiftState Shift)
 {
-    if(pCurTools&&pCurTools->pCurControl) return pCurTools->pCurControl->KeyDown(Key,Shift);
+    if(pCurTools&&pCurTools->pCurControl) 
+        return pCurTools->pCurControl->KeyDown(Key,Shift);
+        
     return false;
 }
 //---------------------------------------------------------------------------
 bool __fastcall CLevelTools::KeyUp     (WORD Key, TShiftState Shift)
 {
-    if(pCurTools&&pCurTools->pCurControl) return pCurTools->pCurControl->KeyUp(Key,Shift);
+    if(pCurTools&&pCurTools->pCurControl) 
+       return pCurTools->pCurControl->KeyUp(Key,Shift);
+    
     return false;
 }
 //---------------------------------------------------------------------------
 bool __fastcall CLevelTools::KeyPress  (WORD Key, TShiftState Shift)
 {
-    if(pCurTools&&pCurTools->pCurControl) return pCurTools->pCurControl->KeyPress(Key,Shift);
+    if(pCurTools&&pCurTools->pCurControl) 
+        return pCurTools->pCurControl->KeyPress(Key,Shift);
+        
     return false;
 }
 //---------------------------------------------------------------------------
@@ -136,7 +162,9 @@ bool __fastcall CLevelTools::KeyPress  (WORD Key, TShiftState Shift)
 void CLevelTools::RealSetAction   (ETAction act)
 {
 	inherited::SetAction(act);
-    if (pCurTools) pCurTools->SetAction(act);
+    if (pCurTools) 
+        pCurTools->SetAction(act);
+        
     ExecCommand(COMMAND_UPDATE_TOOLBAR);
     m_Flags.set	(flChangeAction,FALSE);
 }
@@ -161,13 +189,16 @@ void __fastcall CLevelTools::RealSetTarget   (ObjClassID tgt,int sub_tgt,bool bF
             DETACH_FRAME(pCurTools->pFrame);
             pCurTools->OnDeactivate();
         }
-        pCurTools				= Scene->GetMTools(tgt); VERIFY(pCurTools);
+        pCurTools				= Scene->GetMTools(tgt); 
+        VERIFY(pCurTools);
         pCurTools->SetSubTarget	(sub_target);
 
         pCurTools->OnActivate	();
         
         pCurTools->SetAction	(GetAction());
-        if (pCurTools->IsEditable()) ATTACH_FRAME(pCurTools->pFrame, paParent); 
+        
+        if (pCurTools->IsEditable()) 
+            ATTACH_FRAME(pCurTools->pFrame, paParent); 
     }
     UI->RedrawScene();
     fraLeftBar->ChangeTarget(tgt);
@@ -187,8 +218,15 @@ void __fastcall CLevelTools::SetTarget(ObjClassID tgt, int sub_tgt)
 	// если мышь захвачена - изменим target после того как она освободится
 	if (UI->IsMouseCaptured()||UI->IsMouseInUse()||!false){
 	    m_Flags.set(flChangeTarget,TRUE);
-        iNeedTarget		= tgt;
-        iNeedSubTarget  = sub_tgt;
+        if(tgt == OBJCLASS_WAY && sub_tgt==2 && target==tgt)
+        {
+            iNeedTarget		= tgt;
+            iNeedSubTarget  = (sub_target)?0:1;
+        }else
+        {
+            iNeedTarget		= tgt;
+            iNeedSubTarget  = sub_tgt;
+        }
     }else
     	RealSetTarget(tgt,sub_tgt,false);
 }
@@ -246,12 +284,16 @@ void CLevelTools::ShowProperties(LPCSTR focus_to_item)
 
 void CLevelTools::RealUpdateProperties()
 {
-	if (m_Props->Visible){
+	if (m_Props->Visible)
+	{
 		if (m_Props->IsModified()) Scene->UndoSave();
+		
         ObjectList lst;
         PropItemVec items;
+        
         // scene common props
         Scene->FillProp				("",items,CurrentClassID());
+        
 		m_Props->AssignItems		(items);
     }
 	m_Flags.set(flUpdateProperties,FALSE);

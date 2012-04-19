@@ -13,13 +13,20 @@
 //----------------------------------------------------
 CCustomObject* EScene::FindObjectByName( LPCSTR name, ObjClassID classfilter )
 {
+	if(!name)
+    return NULL;
+    
 	CCustomObject* object = 0;
-    if (classfilter==OBJCLASS_DUMMY){
+    if (classfilter==OBJCLASS_DUMMY)
+    {
         SceneToolsMapPairIt _I = m_SceneTools.begin();
         SceneToolsMapPairIt _E = m_SceneTools.end();
-        for (; _I!=_E; _I++){
+        for (; _I!=_E; ++_I)
+        {
             ESceneCustomOTools* mt = dynamic_cast<ESceneCustomOTools*>(_I->second);
-            if (mt&&(0!=(object=mt->FindObjectByName(name)))) return object;
+            
+            if (mt&&(0!=(object=mt->FindObjectByName(name)))) 
+                return object;
         }
     }else{
         ESceneCustomOTools* mt = GetOTools(classfilter); VERIFY(mt);
