@@ -26,8 +26,7 @@
       X:\intermediate_ed\sound\xrCDB_Collector.obj 
       X:\intermediate_ed\sound\soundrender_targetD.obj 
       X:\intermediate_ed\sound\SoundRender_CoreD.obj 
-      X:\intermediate_ed\sound\OpenALDeviceList.obj 
-      X:\intermediate_ed\sound\ExceptionLog.obj"/>
+      X:\intermediate_ed\sound\OpenALDeviceList.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -43,26 +42,25 @@
       webdsnap.bpi bdecds.bpi dbxcds.bpi dclocx.bpi inetdb.bpi websnap.bpi 
       elpproB6.bpi elpackB6.bpi nmfast.bpi qrpt.bpi teeqr.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;"/>
+    <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_EDITOR;_XRSOUNDB;XRSOUND_EXPORTS;_DEBUG;EUREKALOG;EUREKALOG_VER6"/>
+    <USERDEFINES value="_EDITOR;_XRSOUNDB;XRSOUND_EXPORTS;_DEBUG;"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrSoundB.bpf"/>
-    <INCLUDEPATH value="&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;;$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(CORESOC_DIR);$(XIPH_DIR);$(ETOOLSSOC_DIR);$(EAX_DIR);$(ALSOC_DIR)"/>
-    <LIBPATH value="&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;;x:\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries"/>
+    <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(CORESOC_DIR);$(XIPH_DIR);$(ETOOLSSOC_DIR);$(EAX_DIR);$(ALSOC_DIR)"/>
+    <LIBPATH value="x:\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries"/>
     <WARNINGS value="-w-par -w-8027"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot; 
-      -I$(DXSDK_DIR)\Include -I$(BCB)\include -I$(BCB)\include\vcl 
+    <IDLCFLAGS value="-I$(DXSDK_DIR)\Include -I$(BCB)\include -I$(BCB)\include\vcl 
       -I$(CORESOC_DIR) -I$(XIPH_DIR) -I$(ETOOLSSOC_DIR) -I$(EAX_DIR) 
       -I$(ALSOC_DIR) -src_suffix cpp -D_EDITOR -D_XRSOUNDB -DXRSOUND_EXPORTS 
-      -D_DEBUG -DEUREKALOG -DEUREKALOG_VER6 -boa"/>
+      -D_DEBUG -boa"/>
     <CFLAG1 value="-WD -Od -H=X:\intermediate_ed\sound\pch.csm -Hc -Q -Vx -Ve -xf -xp -VF -ff 
       -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -tWD -tWM -c"/>
     <PFLAGS value="-N2X:\intermediate_ed\sound -N0X:\intermediate_ed\sound -$Y+ -$W -$O- -$A8 
@@ -109,7 +107,6 @@
       <FILE FILENAME="soundrender_targetD.cpp" FORMNAME="" UNITNAME="soundrender_targetD.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="SoundRender_CoreD.cpp" FORMNAME="" UNITNAME="SoundRender_CoreD.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="OpenALDeviceList.cpp" FORMNAME="" UNITNAME="OpenALDeviceList" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6\ExceptionLog.pas" FORMNAME="" UNITNAME="ExceptionLog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
