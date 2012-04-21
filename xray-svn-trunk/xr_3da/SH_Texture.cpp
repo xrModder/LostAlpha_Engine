@@ -177,8 +177,8 @@ void CTexture::Load		()
 		m_play_time	= 0xFFFFFFFF;
 
 		if (!pTheora->Load(fn)) {
-			xr_delete(pTheora);
-			FATAL				("Can't open video stream");
+			xr_delete				(pTheora);
+			R_ASSERT3				(0, "Can't open video stream", *cName);
 		} else {
 			flags.MemoryUsage	= pTheora->Width(true)*pTheora->Height(true)*4;
 			pTheora->Play		(TRUE,Device.dwTimeContinual);
@@ -194,7 +194,7 @@ void CTexture::Load		()
 			pSurface = pTexture;
 			if (FAILED(hrr))
 			{
-				FATAL		("Invalid video stream");
+				R_ASSERT3	(0, "Invalid video stream", *cName);
 				R_CHK		(hrr);
 				xr_delete	(pTheora);
 				pSurface	= 0;
@@ -208,7 +208,7 @@ void CTexture::Load		()
 
 		if (!pAVI->Load(fn)) {
 			xr_delete(pAVI);
-			FATAL				("Can't open video stream");
+			R_ASSERT3(0, "Can't open video stream", *cName);
 		} else {
 			flags.MemoryUsage	= pAVI->m_dwWidth*pAVI->m_dwHeight*4;
 
@@ -221,7 +221,7 @@ void CTexture::Load		()
 			pSurface	= pTexture;
 			if (FAILED(hrr))
 			{
-				FATAL		("Invalid video stream");
+				R_ASSERT3	(0, "Invalid video stream", *cName);
 				R_CHK		(hrr);
 				xr_delete	(pAVI);
 				pSurface = 0;

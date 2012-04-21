@@ -12,8 +12,7 @@ void CBackend::dbg_DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV
 	RCache.set_Geometry		(geom);
 	RCache.Render			(pt,baseV,startV,countV,startI,PC);
 }
-//#pragma TODO("restore here!")
-#ifdef DEBUG
+
 
 void CBackend::dbg_Draw			(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt)
 {
@@ -159,4 +158,3 @@ void CBackend::dbg_DrawEllipse(Fmatrix& T, u32 C)
 	HW.pDevice->SetRenderState	(D3DRS_FILLMODE, D3DFILL_SOLID);
 }
 
-#endif
