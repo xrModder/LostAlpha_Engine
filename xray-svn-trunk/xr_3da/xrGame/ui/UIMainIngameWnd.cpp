@@ -323,10 +323,9 @@ void CUIMainIngameWnd::Draw()
 	UIZoneMap->Render			();			
 
 	RenderQuickInfos			();		
-//#pragma TODO("restore here!")
-#ifdef DEBUG
+
 	draw_adjust_mode			();
-#endif
+
 }
 
 
