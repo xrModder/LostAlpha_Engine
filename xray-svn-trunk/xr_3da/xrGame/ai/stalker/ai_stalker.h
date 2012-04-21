@@ -586,10 +586,6 @@ public:
 	IC		void						throw_time_interval							(const u32 &value);
 
 public:
-	void SetFireForced(CGameObject *obj);
-private:
-	void select_queue_params(const float &distance, u32 &min_queue_size, u32 &max_queue_size, u32 &min_queue_interval, u32 &max_queue_interval);
-public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CAI_Stalker)

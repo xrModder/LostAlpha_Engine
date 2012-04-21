@@ -238,15 +238,6 @@ void CScriptGameObject::enable_memory_object	(CScriptGameObject *game_object, bo
 		monster->memory().enable			(&game_object->object(),enable);
 }
 
-void CScriptGameObject::SetFire(CScriptGameObject *obj)
-{
-	CAI_Stalker *stalker = smart_cast<CAI_Stalker*>(&object());
-	CGameObject *target = smart_cast<CGameObject*>(obj);
-	if (!(stalker && target))
-		NODEFAULT;
-	stalker->SetFireForced(target);
-}
-
 const xr_vector<CNotYetVisibleObject> &CScriptGameObject::not_yet_visible_objects() const
 {
 	CCustomMonster			*monster = smart_cast<CCustomMonster*>(&object());

@@ -71,7 +71,7 @@
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
 				BrowseInformation="0"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -14737,7 +14737,6 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
-								ExcludedFromBuild="true"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -29764,6 +29763,14 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\fast_entity_update.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fast_entity_update.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

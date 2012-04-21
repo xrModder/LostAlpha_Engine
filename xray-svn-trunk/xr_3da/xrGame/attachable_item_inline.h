@@ -15,9 +15,9 @@ IC	CAttachableItem::CAttachableItem				()
 	m_bone_name			= "";
 	m_enabled			= true;
 //	m_auto_attach		= true;
-//#ifdef DEBUG
+#ifdef DEBUG
 	m_valid				= false;
-//#endif
+#endif
 }
 
 IC	shared_str CAttachableItem::bone_name			() const

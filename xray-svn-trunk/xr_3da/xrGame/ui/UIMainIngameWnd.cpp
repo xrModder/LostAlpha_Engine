@@ -40,10 +40,10 @@
 #include "../mounted_turret.h"
 #include "UIArtefactPanel.h"
 
-//#ifdef DEBUG
+#ifdef DEBUG
 #	include "../attachable_item.h"
 #	include "../../xr_input.h"
-//#endif
+#endif
 
 #include "UIScrollView.h"
 #include "map_hint.h"
@@ -118,8 +118,8 @@ void CUIMainIngameWnd::Init()
 	AttachChild					(&UIStaticHealth);
 	xml_init.InitStatic			(uiXml, "static_health", 0, &UIStaticHealth);
 
-	AttachChild					(&UIStaticArmor);
-	xml_init.InitStatic			(uiXml, "static_armor", 0, &UIStaticArmor);
+	//AttachChild					(&UIStaticArmor);
+	//xml_init.InitStatic			(uiXml, "static_armor", 0, &UIStaticArmor);
 
 	AttachChild					(&UIWeaponBack);
 	xml_init.InitStatic			(uiXml, "static_weapon", 0, &UIWeaponBack);
@@ -174,9 +174,9 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitProgressBar	(uiXml, "progress_bar_health", 0, &UIHealthBar);
 
 	//Полоса прогресса армора
-	UIStaticArmor.AttachChild	(&UIArmorBar);
+//	UIStaticArmor.AttachChild	(&UIArmorBar);
 //.	xml_init.InitAutoStaticGroup(uiXml,"static_armor", &UIStaticArmor);
-	xml_init.InitProgressBar	(uiXml, "progress_bar_armor", 0, &UIArmorBar);
+//	xml_init.InitProgressBar	(uiXml, "progress_bar_armor", 0, &UIArmorBar);
 
 	
 	UIStaticTorch.AttachChild(&UIFlashlightBar);
@@ -431,18 +431,18 @@ void CUIMainIngameWnd::Update()
 		}
 
 		// Armor indicator stuff
-		PIItem	pItem = m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
-		if (pItem)
-		{
-			UIArmorBar.Show					(true);
-			UIStaticArmor.Show				(true);
-			UIArmorBar.SetProgressPos		(pItem->GetCondition()*100);
-		}
-		else
-		{
-			UIArmorBar.Show					(false);
-			UIStaticArmor.Show				(false);
-		}
+//		PIItem	pItem = m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
+//		if (pItem)
+//		{
+//			UIArmorBar.Show					(true);
+//			UIStaticArmor.Show				(true);
+//			UIArmorBar.SetProgressPos		(pItem->GetCondition()*100);
+//		}
+//		else
+//		{
+//			UIArmorBar.Show					(false);
+//			UIStaticArmor.Show				(false);
+//		}
 
 		UpdateActiveItemInfo				();
 
@@ -728,7 +728,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				flag = true;
 				break;
 			}
-#ifdef	DEBUG
+//#ifdef	DEBUG
 			if(TRUE==m_pWeapon->GetHUDmode())
 				if (2 == g_bHudAdjustMode) pWpnHud->dbg_SetFirePoint(tmpV);
 				else pWpnHud->dbg_SetFirePoint2(tmpV);
@@ -737,7 +737,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				if (2 == g_bHudAdjustMode)  m_pWeapon->vLoadedFirePoint = tmpV;
 				else m_pWeapon->vLoadedFirePoint2 = tmpV;
 			}
-#endif
+//#endif
 		}
 		else if (4 == g_bHudAdjustMode) //ShellPoint
 		{
@@ -801,13 +801,13 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				flag = true;
 				break;
 			}
-#ifdef DEBUG
+//#ifdef DEBUG
 			if(TRUE==m_pWeapon->GetHUDmode())
 				pWpnHud->dbg_SetShellPoint(tmpV);
 			else
 				m_pWeapon->vLoadedShellPoint = tmpV;
 
-#endif
+//#endif
 		}
 		else if (3 == g_bHudAdjustMode) //MissileOffset
 		{
@@ -877,7 +877,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		if (flag) return true;
 	}
 
-//#ifdef DEBUG
+#ifdef DEBUG
 		if(CAttachableItem::m_dbgItem){
 			static float rot_d = deg2rad(0.5f);
 			static float mov_d = 0.01f;
@@ -938,7 +938,7 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 			}		
 		if(flag)return true;;
 		}
-//#endif		
+#endif		
 
 	if(Level().IR_GetKeyState(DIK_LSHIFT) || Level().IR_GetKeyState(DIK_RSHIFT))
 	{
@@ -1237,8 +1237,8 @@ void CUIMainIngameWnd::reset_ui()
 	m_pPickUpItem					= NULL;
 	UIMotionIcon.ResetVisibility	();
 }
-//#pragma TODO("restore here")
-#ifdef DEBUG
+
+
 /*
 #include "d3dx9core.h"
 #include "winuser.h"
@@ -1441,4 +1441,4 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		}
 	}
 }
-#endif
+

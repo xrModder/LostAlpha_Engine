@@ -139,8 +139,6 @@
 #define CLSID_PHYSICS_DESTROYABLE	MK_CLSID('P','_','D','S','T','R','B','L')
 #define CLSID_INVENTORY_BOX			MK_CLSID('O','_','I','N','V','B','O','X')
 
-#define CLSID_FAKE_OBJECT			MK_CLSID('O','_','F','K','_','O','B','J')
-
 // Zones 
 #define CLSID_ZONE					MK_CLSID('Z','_','Z','O','N','E',' ',' ')
 #define CLSID_Z_MBALD				MK_CLSID('Z','_','M','B','A','L','D',' ')

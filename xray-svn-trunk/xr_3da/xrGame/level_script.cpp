@@ -439,16 +439,6 @@ float add_cam_effector2(LPCSTR fn, int id, bool cyclic, LPCSTR cb_func)
 	return						e->GetAnimatorLength();
 }
 
-void add_custom_cam_effector(const Fvector &src_pos, const Fvector &target_pos, float time)
-{
-	Actor()->Cameras().AddCamEffector(xr_new<CControllerPsyHitCamEffector>(eCECustom, src_pos, target_pos, time));
-}
-
-void remove_custom_cam_effector()
-{
-	Actor()->Cameras().RemoveCamEffector(eCECustom);
-}
-
 void remove_cam_effector(int id)
 {
 	Actor()->Cameras().RemoveCamEffector((ECamEffectorType)id );
@@ -600,8 +590,6 @@ void CLevel::script_register(lua_State *L)
 
 		def("set_game_difficulty",				set_game_difficulty),
 		def("get_game_difficulty",				get_game_difficulty),
-
-		def("add_custom_cam_effector",			add_custom_cam_effector),
 		
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),
@@ -660,7 +648,7 @@ void CLevel::script_register(lua_State *L)
 
 		def("add_complex_effector",				&add_complex_effector),
 		def("remove_complex_effector",			&remove_complex_effector),
-		def("remove_custom_cam_effector",		&remove_custom_cam_effector),
+		
 		def("game_id",							&GameID)
 	],
 	

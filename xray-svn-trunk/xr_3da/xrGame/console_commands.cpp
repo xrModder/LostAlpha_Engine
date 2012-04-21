@@ -1226,7 +1226,7 @@ struct CCC_DbgBullets : public CCC_Integer {
 		CCC_Integer::Execute	(args);
 	}
 };
-#endif
+
 #include "attachable_item.h"
 #include "attachment_owner.h"
 class CCC_TuneAttachableItem : public IConsole_Command
@@ -1257,7 +1257,7 @@ public		:
 		sprintf_s(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
 	}
 };
-#ifdef DEBUG
+
 class CCC_Crash : public IConsole_Command {
 public:
 	CCC_Crash(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1414,7 +1414,6 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
 
-	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
 	//cheats
 	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
@@ -1549,8 +1548,8 @@ void CCC_RegisterCommands()
 
 	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
 #endif // DEBUG
-//	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
-//	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
+	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
+	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
 #ifndef MASTER_GOLD
 	CMD3(CCC_Mask,				"ai_ignore_actor",		&psAI_Flags,	aiIgnoreActor);
 #endif // MASTER_GOLD

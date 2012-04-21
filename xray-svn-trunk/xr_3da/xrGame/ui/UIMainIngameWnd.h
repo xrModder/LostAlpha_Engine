@@ -43,7 +43,7 @@ protected:
 	
 	CUIStatic			UIStaticDiskIO;
 	CUIStatic			UIStaticHealth;
-	CUIStatic			UIStaticArmor;
+	//CUIStatic			UIStaticArmor;
 	CUIStatic			UIStaticQuickHelp;
 	CUIProgressBar		UIHealthBar;
 	CUIProgressBar		UIArmorBar;
@@ -175,8 +175,6 @@ protected:
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
 
-#ifdef DEBUG
+
 	void				draw_adjust_mode					();
-#endif
 };
-//#pragma TODO("restore here!")

@@ -947,7 +947,7 @@ void CAI_Stalker::Think			()
 
 void CAI_Stalker::SelectAnimation(const Fvector &view, const Fvector &move, float speed)
 {
-	if (!Device.Paused())
+	if (!Device.Paused() && g_Alive())
 		animation().update();
 }
 
