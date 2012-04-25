@@ -135,7 +135,7 @@
     <USERDEFINES value="_EDITOR;_LEVEL_EDITOR;_DEBUG;EUREKALOG;EUREKALOG_VER6"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="LevelEditor.cpp"/>
-    <INCLUDEPATH value="&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)\Include"/>
+    <INCLUDEPATH value="&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR);$(MAGIC_SW_DIR)\Include"/>
     <LIBPATH value="&quot;C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6&quot;;..\..\..\SDK\components\ElPack\Code;..\..\xr_3da\xrRender;..\..\xr_3da;Edit;Engine;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
       -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
@@ -146,7 +146,7 @@
       -I$(DXSDK_DIR)\Include -IEdit -IEngine -I$(BCB)\Projects 
       -I$(BCB)\include\vcl -I$(BCB)\include -I$(COMPONENTS_SOC)\alexmx 
       -I$(COMPONENTS_SOC)\ElPack\Code -I$(COMPONENTS_SOC)\ElPack\Code\Source 
-      -I$(CORESOC_DIR) -I../../xr_3da -I../../xr_3da/xrRender 
+      -I$(CORESOC_DIR) -I../../xr_3da -I../../xr_3da/xrRender -I$(MAGIC_SW_DIR) 
       -I$(MAGIC_SW_DIR)\Include -src_suffix cpp -D_EDITOR -D_LEVEL_EDITOR 
       -D_DEBUG -DEUREKALOG -DEUREKALOG_VER6"/>
     <CFLAG1 value="-Od -H=x:\intermediate_ed\le\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp -VF -ff 
@@ -337,19 +337,22 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
-c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
-c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
+C:\Program Files\Borland\CBuilder6\Bin\bcbsmp60.bpl=Borland C++ Sample Components
+C:\Program Files\Borland\CBuilder6\Bin\indy60.bpl=Internet Direct (Indy) for D6
+G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dceldbB6.bpl=EldoS DB-Aware Controls (Design-time)
+G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visual Components (Design-time)
 
 [HistoryLists\hlIncludePath]
-Count=8
-Item0=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)\Include
+Count=9
+Item0=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR);$(MAGIC_SW_DIR)\Include
 Item1=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)
-Item2=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)
-Item3=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)
-Item4=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender
-Item5=Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender
-Item6=Edit;H:\RAD\Borland\CBuilder6\Projects;&quot;R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include&quot;Edit;Engine;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;..\xrEProps;P:\xrSound
-Item7=H:\RAD\Borland\CBuilder6\Projects;R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include;Engine\Game;Edit;Engine;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;..\xrEProps;P:\xrSound
+Item2=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)\Include
+Item3=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)
+Item4=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR)
+Item5=$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender
+Item6=Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender
+Item7=Edit;H:\RAD\Borland\CBuilder6\Projects;&quot;R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include&quot;Edit;Engine;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;..\xrEProps;P:\xrSound
+Item8=H:\RAD\Borland\CBuilder6\Projects;R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include;Engine\Game;Edit;Engine;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;..\xrEProps;P:\xrSound
 
 [HistoryLists\hlLibraryPath]
 Count=11
@@ -414,6 +417,11 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
   <!-- EurekaLog First Line
 [Exception Log]
 EurekaLog Version=6104
