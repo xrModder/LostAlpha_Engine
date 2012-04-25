@@ -1380,11 +1380,13 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		bool bCamFirstEye = !!m_pWeapon->GetHUDmode();
 		string32 hud_view="HUD view";
 		string32 _3rd_person_view="3-rd person view";
+		LPCSTR wpn_name		= *m_pWeapon->cName();
 		CGameFont* F		= UI()->Font()->pFontDI;
 		F->SetAligment		(CGameFont::alCenter);
 //.		F->SetSizeI			(0.02f);
 		F->OutSetI			(0.f,-0.8f);
 		F->SetColor			(D3DCOLOR_XRGB(255, 0, 0));//(0xffffffff);
+		F->OutNext			("wpn_name=%s", wpn_name);
 		F->OutNext			("Hud_adjust_mode=%d",g_bHudAdjustMode);
 		if(g_bHudAdjustMode==1)
 			F->OutNext			("adjusting zoom offset");
