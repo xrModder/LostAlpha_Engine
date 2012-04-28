@@ -146,9 +146,9 @@ void CSpaceRestrictionComposition::initialize	()
 
 	process_borders				();
 
-#ifdef DEBUG
+/*#ifdef DEBUG
 	test_correctness			();
-#endif
+#endif*/
 }
 
 #ifdef DEBUG
