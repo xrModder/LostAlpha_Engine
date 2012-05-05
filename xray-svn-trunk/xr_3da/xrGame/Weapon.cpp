@@ -478,7 +478,9 @@ BOOL CWeapon::net_Spawn		(CSE_Abstract* DC)
 	SetState						(E->wpn_state);
 	SetNextState					(E->wpn_state);
 	
-	R_ASSERT2(m_ammoType < m_ammoTypes.size(), Name());
+//	R_ASSERT2(m_ammoType < m_ammoTypes.size(), Name());
+	R_ASSERT2(m_ammoType < m_ammoTypes.size(), 
+		make_string("[%s] ammo type [%d] ammo type size [%d]", Name(), m_ammoType, m_ammoTypes.size()));
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));	
 	if(iAmmoElapsed) 
 	{
