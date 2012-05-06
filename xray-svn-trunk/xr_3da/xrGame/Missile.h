@@ -74,7 +74,7 @@ protected:
 protected:
 
 	//время нахождения в текущем состоянии
-	u32						m_dwStateTime;
+	//u32						m_dwStateTime;
 	bool					m_throw;
 	
 	//время уничтожения
