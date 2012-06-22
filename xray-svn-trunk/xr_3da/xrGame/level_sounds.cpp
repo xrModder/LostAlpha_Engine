@@ -59,6 +59,12 @@ void SStaticSound::Update(u32 game_time, u32 global_time)
 			m_Source.stop_deffered();
 	}
 }
+void SStaticSound::Stop()
+{
+	m_Source.stop_deffered();
+	m_StopTime = m_NextTime = Device.dwTimeGlobal;
+}
+
 //-----------------------------------------------------------------------------
 // music tracks
 //-----------------------------------------------------------------------------
@@ -109,6 +115,7 @@ void SMusicTrack::Stop()
 CLevelSoundManager::CLevelSoundManager()
 {
 	m_NextTrackTime		= 0;
+	m_enabled			= true;
 }
 
 void CLevelSoundManager::Load()
@@ -159,7 +166,8 @@ void CLevelSoundManager::Unload()
 void CLevelSoundManager::Update()
 {
 	if (Device.Paused())				return;
-	if (Device.dwPrecacheFrame!=0)	return;
+	if (Device.dwPrecacheFrame!=0)		return;
+	if (!m_enabled)						return;
 	// static sounds
 	u32 game_time				= Level().GetGameDayTimeMS();
 	u32 engine_time				= Device.dwTimeGlobal;
@@ -201,5 +209,32 @@ void CLevelSoundManager::Update()
 					m_NextTrackTime	+= Random.randI(T.m_PauseTime.x,T.m_PauseTime.y);
 			}
 		}
+	}
+}
+
+
+bool CLevelSoundManager::Enabled() const
+{
+	return m_enabled;
+}
+
+void CLevelSoundManager::Enable()
+{
+	m_enabled = true;
+}
+
+void CLevelSoundManager::Disable()
+{
+	m_enabled = false;
+	for (u32 k = 0; k < m_StaticSounds.size(); ++k)
+	{
+		SStaticSound& s			= m_StaticSounds[k];
+		s.Stop					();
+	}
+	for (u32 k=0; k < m_MusicTracks.size(); ++k)
+	{
+		SMusicTrack& T	= m_MusicTracks[k];
+		if (T.IsPlaying()) 
+			T.Stop();
 	}
 }

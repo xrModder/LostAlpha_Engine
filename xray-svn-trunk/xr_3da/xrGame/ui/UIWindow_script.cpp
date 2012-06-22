@@ -111,7 +111,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("GetWidth",				&CUIWindow::GetWidth)
 		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
-		.def("SetHeight",				&CUIWindow::SetHeight)
+		.def("SetHeight",				(void (CUIWindow::*)(float)) &CUIWindow::SetHeight)
 
 		.def("Enable",					&CUIWindow::Enable)
 		.def("IsEnabled",				&CUIWindow::IsEnabled)

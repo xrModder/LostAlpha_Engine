@@ -17,6 +17,7 @@ struct SStaticSound
 public:
 	void 			Load			(IReader& F);
 	void 			Update			(u32 gt, u32 rt);
+	void			Stop			();
 };
 
 // music interface
@@ -46,11 +47,16 @@ class CLevelSoundManager
 	MusicTrackVec	m_MusicTracks;
 	u32				m_NextTrackTime;
 	int				m_CurrentTrack;
+private:
+	bool			m_enabled;
 public:
 					CLevelSoundManager();
 	void			Load			();
 	void			Unload			();
 	void __stdcall	Update			();
+	void			Enable			();
+	void			Disable			();
+	bool			Enabled			() const;
 };
 
 #endif

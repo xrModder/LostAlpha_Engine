@@ -66,6 +66,12 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
         }
 		GetCurrentDirectory(sizeof(WorkingPath),WorkingPath);
 
+#ifdef DEBUG
+		isDebugMode = true;
+#else
+		isDebugMode = false;
+#endif	
+
 		// User/Comp Name
 		DWORD	sz_user		= sizeof(UserName);
 		GetUserName			(UserName,&sz_user);

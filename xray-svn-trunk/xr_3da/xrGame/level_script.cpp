@@ -555,7 +555,24 @@ int get_button_count(void)
 	return pInput->GetButtonCount();
 }
 
+#include "level_sounds.h"
+void set_level_sound_enabled(bool state)
+{
+	if (state)
+		Level().level_sound_manager().Enable();
+	else
+		Level().level_sound_manager().Disable();
+}
 
+bool level_sound_enabled()
+{
+	return Level().level_sound_manager().Enabled();
+}
+
+bool is_mixed_mode()
+{
+	return Core.isDebugMode;
+}
 
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
@@ -582,7 +599,8 @@ void CLevel::script_register(lua_State *L)
 		def("set_weather",						set_weather),
 		def("set_weather_fx",					set_weather_fx),
 		def("is_wfx_playing",					is_wfx_playing),
-		
+		def("level_sound_enabled",				level_sound_enabled),
+		def("set_level_sound_enabled",			set_level_sound_enabled),
 		def("environment",						environment),
 		
 		def("set_time_factor",					set_time_factor),
@@ -666,7 +684,8 @@ void CLevel::script_register(lua_State *L)
 	[
 		def("command_line",						&command_line),
 		def("IsGameTypeSingle",					&IsGameTypeSingle),
-		def("debug_print",						&lua_debug_print)
+		def("debug_print",						&lua_debug_print),
+		def("IsMixedMode",						&is_mixed_mode)
 	];
 
 	module(L,"relation_registry")

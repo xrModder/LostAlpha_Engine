@@ -51,7 +51,7 @@ protected:
 	// temp
 	ALife::SCHEDULE_P_VECTOR					m_tpaCombatGroups[2];
 
-protected:
+public:
 	IC		CALifeSimulatorHeader				&header						();
 	IC		CALifeTimeManager					&time						();
 	IC		CALifeSpawnRegistry					&spawns						();

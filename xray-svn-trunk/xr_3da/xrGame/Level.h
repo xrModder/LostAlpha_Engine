@@ -289,7 +289,7 @@ public:
 	IC CPHCommander					&ph_commander				();
 	IC CPHCommander					&ph_commander_scripts		();
 	IC CFastEntityUpdater			&fast_entity_updater		();
-
+	IC CLevelSoundManager			&level_sound_manager		();
 	// C/D
 	CLevel();
 	virtual ~CLevel();
@@ -408,6 +408,12 @@ IC CPHCommander & CLevel::ph_commander_scripts()
 {
 	VERIFY(m_ph_commander_scripts);
 	return *m_ph_commander_scripts;
+}
+
+IC CLevelSoundManager &CLevel::level_sound_manager()
+{
+	VERIFY(m_level_sound_manager);
+	return *m_level_sound_manager;
 }
 
 IC CFastEntityUpdater &CLevel::fast_entity_updater()

@@ -461,7 +461,26 @@ int luabind::detail::class_rep::operator_dispatcher(lua_State* L)
             return 1;
 		}
 	}
-
+	// gr1ph:
+	int level = 0;
+	lua_Debug dbg;
+	
+	while (lua_getstack(L, level, &dbg))
+	{
+		lua_getinfo(L, "lnuS", &dbg);
+		if (!dbg.name)
+		{
+			Msg("! %2d : [%s] %s(%d) : %s", level, dbg.what, dbg.short_src, dbg.currentline, "");
+		}
+		else
+		{
+			if (!xr_strcmp(dbg.what, "C"))
+				Msg("! %2d : [C  ] %s", level, dbg.name);
+			else
+				Msg("! %2d : [%s] %s(%d) : %s", level, dbg.what, dbg.short_src, dbg.currentline, dbg.name);
+		}
+		level++;
+	}
 	lua_pop(L, lua_gettop(L));
 	lua_pushstring(L, "No such operator defined");
 	lua_error(L);

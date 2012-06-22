@@ -17,7 +17,7 @@
 ENGINE_API bool g_dedicated_server;
 
 const int max_objects_size			= 2*1024;
-const int max_objects_size_in_save	= 6*1024;
+const int max_objects_size_in_save	= 4*1024;
 
 extern bool	g_b_ClearGameCaptions;
 
@@ -226,7 +226,9 @@ void CLevel::ClientSave	()
 {
 	NET_Packet		P;
 	u32				start	= 0;
-
+	int				packet_count = 0;
+	int				total_stored = 0;
+	int				object_count = 0;
 	for (;;) {
 		P.w_begin	(M_SAVE_PACKET);
 		
@@ -236,7 +238,12 @@ void CLevel::ClientSave	()
 			Send	(P, net_flags(FALSE));
 		else
 			break;
+		packet_count++;
+		total_stored += P.w_tell();
+		object_count += start;
+		Msg("~ NetPacket #%d stores %d objects in %.2fkb", packet_count, start, P.w_tell() / 1000);
 	}
+	Msg("~ Used %d NetPacket(s) total objects %d total stored %.2fkb", packet_count, object_count, total_stored / 1000);
 }
 
 extern		float		phTimefactor;
