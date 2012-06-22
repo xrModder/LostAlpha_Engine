@@ -381,7 +381,8 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 
 
 #ifdef DEBUG
-	Msg("pause [%s] timer=[%s] sound=[%s] reason=%s",bOn?"ON":"OFF", bTimer?"ON":"OFF", bSound?"ON":"OFF", reason);
+//if (psDeviceFlags.test(rsDebugMsg)) 
+	//Msg("pause [%s] timer=[%s] sound=[%s] reason=%s",bOn?"ON":"OFF", bTimer?"ON":"OFF", bSound?"ON":"OFF", reason);
 #endif // DEBUG
 
 #ifndef DEDICATED_SERVER	
@@ -397,7 +398,8 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 		if(bSound){
 			snd_emitters_ =					::Sound->pause_emitters(true);
 #ifdef DEBUG
-			Log("snd_emitters_[true]",snd_emitters_);
+//if (psDeviceFlags.test(rsDebugMsg))
+			//Log("snd_emitters_[true]",snd_emitters_);
 #endif // DEBUG
 		}
 	}else
@@ -411,11 +413,13 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 			{
 				snd_emitters_ =				::Sound->pause_emitters(false);
 #ifdef DEBUG
-				Log("snd_emitters_[false]",snd_emitters_);
+//if (psDeviceFlags.test(rsDebugMsg))
+				//Log("snd_emitters_[false]",snd_emitters_);
 #endif // DEBUG
 			}else {
 #ifdef DEBUG
-				Log("Sound->pause_emitters underflow");
+//if (psDeviceFlags.test(rsDebugMsg))
+				//Log("Sound->pause_emitters underflow");
 #endif // DEBUG
 			}
 		}

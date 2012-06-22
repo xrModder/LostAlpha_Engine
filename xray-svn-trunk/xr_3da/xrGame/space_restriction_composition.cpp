@@ -146,9 +146,11 @@ void CSpaceRestrictionComposition::initialize	()
 
 	process_borders				();
 
-/*#ifdef DEBUG
-	test_correctness			();
-#endif*/
+#ifdef DEBUG
+	if (psAI_Flags.test(aiTestCorrectness)) {
+	    test_correctness			();
+	}
+#endif
 }
 
 #ifdef DEBUG

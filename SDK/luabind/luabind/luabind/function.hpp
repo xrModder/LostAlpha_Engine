@@ -417,4 +417,3 @@ int call(R(*f)(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), A)), lua_State* L, con
 
 
 #endif
-

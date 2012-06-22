@@ -197,7 +197,7 @@ void CSE_InventoryBox::add_online	(const bool &update_registries)
 		object->alife().server().entity_Destroy(l_tpAbstract);
 
 #ifdef DEBUG
-//		if (psAI_Flags.test(aiALife))
+	if (psAI_Flags.test(aiALife)) {
 //			Msg					("[LSS] Spawning item [%s][%s][%d]",l_tpALifeInventoryItem->base()->name_replace(),*l_tpALifeInventoryItem->base()->s_name,l_tpALifeDynamicObject->ID);
 		Msg						(
 			"[LSS][%d] Going online [%d][%s][%d] with parent [%d][%s] on '%s'",
@@ -209,6 +209,7 @@ void CSE_InventoryBox::add_online	(const bool &update_registries)
 			name_replace(),
 			"*SERVER*"
 		);
+	}
 #endif
 
 		l_tpALifeDynamicObject->o_Position		= object->o_Position;

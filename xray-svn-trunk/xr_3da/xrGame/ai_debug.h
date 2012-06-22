@@ -44,4 +44,7 @@
 #	define aiDebugOnFrameAllocs			(1<<25)
 #	define aiDrawVisibilityRays			(1<<26)
 #	define aiAnimationStats				(1<<27)
+#	define aiPath			            (1<<28)
+#	define aiTestCorrectness		    (1<<29)
+#	define aiDebugMsg		            (1<<30)
 #endif // DEBUG

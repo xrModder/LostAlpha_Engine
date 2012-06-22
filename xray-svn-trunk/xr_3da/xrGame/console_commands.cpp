@@ -1508,6 +1508,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"ai_dbg_serialize",		&psAI_Flags,	aiSerialize);
 	CMD3(CCC_Mask,				"ai_dbg_dialogs",		&psAI_Flags,	aiDialogs);
 	CMD3(CCC_Mask,				"ai_dbg_infoportion",	&psAI_Flags,	aiInfoPortion);
+	CMD3(CCC_Mask,				"ai_dbg_path",			&psAI_Flags,	aiPath);
+	CMD3(CCC_Mask,				"ai_dbg_restrictors",	&psAI_Flags,	aiTestCorrectness);
+	CMD3(CCC_Mask,				"ai_debug_msg",	        &psAI_Flags,	aiDebugMsg);
 
 	CMD3(CCC_Mask,				"ai_draw_game_graph",				&psAI_Flags,	aiDrawGameGraph				);
 	CMD3(CCC_Mask,				"ai_draw_game_graph_stalkers",		&psAI_Flags,	aiDrawGameGraphStalkers		);

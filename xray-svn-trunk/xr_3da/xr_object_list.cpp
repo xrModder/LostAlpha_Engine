@@ -201,7 +201,8 @@ void CObjectList::Update		(bool bForce)
 			CObject*		O	= destroy_queue[it];
 //			Msg				("Object [%x]", O);
 #ifdef DEBUG
-			Msg				("Destroying object[%x] [%d][%s] frame[%d]",O, O->ID(),*O->cName(), Device.dwFrame);
+//if (psDeviceFlags.test(rsDebugMsg))
+		//Msg				("Destroying object[%x] [%d][%s] frame[%d]",O, O->ID(),*O->cName(), Device.dwFrame);
 #endif // DEBUG
 			O->net_Destroy	( );
 			Destroy			(O);
@@ -316,7 +317,8 @@ void CObjectList::Unload	( )
 		O->setDestroy	( TRUE );
 		
 #ifdef DEBUG
-		Msg				("Destroying object [%d][%s]",O->ID(),*O->cName());
+//if (psDeviceFlags.test(rsDebugMsg))
+		//Msg				("Destroying object [%d][%s]",O->ID(),*O->cName());
 #endif
 		O->net_Destroy	(   );
 		Destroy			( O );
@@ -328,7 +330,8 @@ void CObjectList::Unload	( )
 		O->setDestroy	( TRUE );
 
 #ifdef DEBUG
-		Msg				("Destroying object [%d][%s]",O->ID(),*O->cName());
+//if (psDeviceFlags.test(rsDebugMsg))
+		//Msg				("Destroying object [%d][%s]",O->ID(),*O->cName());
 #endif
 		O->net_Destroy	(   );
 		Destroy			( O );

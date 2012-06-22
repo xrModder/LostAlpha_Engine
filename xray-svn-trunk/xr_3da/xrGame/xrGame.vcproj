@@ -51,7 +51,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;"
+				AdditionalIncludeDirectories="X:\STALKER\SDK\boost_1_30_0;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -8180,7 +8180,8 @@
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat.cpp"
 							>
 							<FileConfiguration
-								Name="Release|Win32"
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -8190,6 +8191,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat.h"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								>
@@ -8201,6 +8210,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_animations.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
@@ -8214,6 +8231,14 @@
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_behaviour.cpp"
 							>
 							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
 								>
@@ -8225,6 +8250,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_feel.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
@@ -8238,6 +8271,14 @@
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_fire.cpp"
 							>
 							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
 								>
@@ -8249,6 +8290,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_fsm.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
@@ -8262,6 +8311,14 @@
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_impl.h"
 							>
 							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Release|Win32"
 								>
 								<Tool
@@ -8272,6 +8329,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_inline.h"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
@@ -8285,6 +8350,14 @@
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_space.h"
 							>
 							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
 								>
@@ -8296,6 +8369,14 @@
 						<File
 							RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\ai_rat_templates.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
 							<FileConfiguration
 								Name="Release|Win32"
 								ExcludedFromBuild="true"
@@ -8312,6 +8393,14 @@
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\rat_state_activation.cpp"
 								>
 								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
 									>
@@ -8323,6 +8412,14 @@
 							<File
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\rat_state_initialize.cpp"
 								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
@@ -8336,6 +8433,14 @@
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ai\monsters\rats\rat_state_switch.cpp"
 								>
 								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
 									>
@@ -8348,6 +8453,14 @@
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_states.cpp"
 								>
 								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
 									>
@@ -8359,6 +8472,14 @@
 							<File
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_states.h"
 								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
 								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
@@ -8375,6 +8496,14 @@
 									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base.cpp"
 									>
 									<FileConfiguration
+										Name="Debug|Win32"
+										ExcludedFromBuild="true"
+										>
+										<Tool
+											Name="VCCLCompilerTool"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
 										Name="Release|Win32"
 										ExcludedFromBuild="true"
 										>
@@ -8387,6 +8516,14 @@
 									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base.h"
 									>
 									<FileConfiguration
+										Name="Debug|Win32"
+										ExcludedFromBuild="true"
+										>
+										<Tool
+											Name="VCCustomBuildTool"
+										/>
+									</FileConfiguration>
+									<FileConfiguration
 										Name="Release|Win32"
 										ExcludedFromBuild="true"
 										>
@@ -8398,6 +8535,14 @@
 								<File
 									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base_inline.h"
 									>
+									<FileConfiguration
+										Name="Debug|Win32"
+										ExcludedFromBuild="true"
+										>
+										<Tool
+											Name="VCCustomBuildTool"
+										/>
+									</FileConfiguration>
 									<FileConfiguration
 										Name="Release|Win32"
 										ExcludedFromBuild="true"
@@ -8416,6 +8561,14 @@
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.cpp"
 								>
 								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
 									>
@@ -8428,6 +8581,14 @@
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.h"
 								>
 								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
 									>
@@ -8439,6 +8600,14 @@
 							<File
 								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager_inline.h"
 								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
 								<FileConfiguration
 									Name="Release|Win32"
 									ExcludedFromBuild="true"
