@@ -109,7 +109,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWndPos",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndPos)
 		.def("SetWndSize",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndSize)
 		.def("GetWidth",				&CUIWindow::GetWidth)
-		.def("SetWidth",				&CUIWindow::SetWidth)
+		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
 		.def("SetHeight",				&CUIWindow::SetHeight)
 
