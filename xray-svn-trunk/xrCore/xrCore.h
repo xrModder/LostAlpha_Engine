@@ -269,6 +269,7 @@ public:
 	string64	UserName;
 	string64	CompName;
 	string512	Params;
+	u32			BuildId;
 	bool		isDebugMode;
 
 public:

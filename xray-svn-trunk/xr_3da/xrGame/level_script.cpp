@@ -569,9 +569,14 @@ bool level_sound_enabled()
 	return Level().level_sound_manager().Enabled();
 }
 
-bool is_mixed_mode()
+bool is_mixed_mode() 
 {
 	return Core.isDebugMode;
+}
+
+u32 get_build_id() 
+{
+	return Core.BuildId;
 }
 
 #pragma optimize("s",on)
@@ -685,7 +690,8 @@ void CLevel::script_register(lua_State *L)
 		def("command_line",						&command_line),
 		def("IsGameTypeSingle",					&IsGameTypeSingle),
 		def("debug_print",						&lua_debug_print),
-		def("IsMixedMode",						&is_mixed_mode)
+		def("IsMixedMode",						&is_mixed_mode),
+		def("EngineBuildId",					&get_build_id)
 	];
 
 	module(L,"relation_registry")
