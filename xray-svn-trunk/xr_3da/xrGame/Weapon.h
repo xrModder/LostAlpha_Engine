@@ -237,8 +237,8 @@ protected:
 public:
 
 	IC bool					IsZoomEnabled		()	const	{return m_bZoomEnabled;}
-	virtual	void			ZoomInc				(){};
-	virtual	void			ZoomDec				(){};
+	virtual	void			ZoomInc				();
+	virtual	void			ZoomDec				();
 	virtual void			OnZoomIn			();
 	virtual void			OnZoomOut			();
 			bool			IsZoomed			()	const	{return m_bZoomMode;};
@@ -252,8 +252,10 @@ public:
 
 			void			LoadZoomOffset		(LPCSTR section, LPCSTR prefix);
 
-	virtual float				Weight			();		
-
+	virtual float			Weight				();		
+//gr1ph:
+protected:
+	virtual void			GetZoomData			(const float scope_factor, float& delta, float& min_zoom_factor);
 public:
     virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}
 			bool				IsSingleHanded		()	const		{	return m_bIsSingleHanded; }

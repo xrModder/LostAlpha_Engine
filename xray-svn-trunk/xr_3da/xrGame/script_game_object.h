@@ -336,6 +336,7 @@ public:
 			u32	GetBeltObjectCount() const;
 			CScriptGameObject	*GetBeltObjectByName	(LPCSTR caObjectName) const;
 			CScriptGameObject	*GetBeltObjectByIndex	(int iIndex) const;
+			CScriptGameObject	*GetBeltObjectById		(int item_id) const;
 			
 	// Callbacks			
 			void				SetCallback			(GameObject::ECallbackType type, const luabind::functor<void> &functor);

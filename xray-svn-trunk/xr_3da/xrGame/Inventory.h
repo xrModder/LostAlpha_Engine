@@ -29,8 +29,20 @@ enum EActivationReason{
 typedef xr_vector<CInventorySlot> TISlotArr;
 
 
+
 class CInventory
-{				
+{	
+//gr1ph:
+private:
+	struct SBeltItemPred
+	{
+		private:
+			int m_id;
+		public:
+			SBeltItemPred(int id) : m_id(id)	{ }
+			IC	bool operator()	(PIItem &item);
+	};
+
 public:
 							CInventory			();
 	virtual					~CInventory			();
@@ -89,6 +101,7 @@ public:
 	PIItem					tpfGetObjectByIndex	(int iIndex);
 
 	CInventoryItem	*		tpfGetBeltObjectByIndex(int iIndex);
+	CInventoryItem	*		tpfGetBeltObjectById(int item_id);
 
 	PIItem					GetItemFromInventory(LPCSTR caItemName);
 

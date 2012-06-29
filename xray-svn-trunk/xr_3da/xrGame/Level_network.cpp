@@ -241,9 +241,9 @@ void CLevel::ClientSave	()
 		packet_count++;
 		total_stored += P.w_tell();
 		object_count += start;
-		Msg("~ NetPacket #%d stores %d objects in %.2fkb", packet_count, start, P.w_tell() / 1000);
+		Msg("~ NetPacket #%d stores %d objects in %db", packet_count, start, P.w_tell());
 	}
-	Msg("~ Used %d NetPacket(s) total objects %d total stored %.2fkb", packet_count, object_count, total_stored / 1000);
+	Msg("~ Used %d NetPacket(s) total objects %d total stored %db", packet_count, object_count, total_stored);
 }
 
 extern		float		phTimefactor;

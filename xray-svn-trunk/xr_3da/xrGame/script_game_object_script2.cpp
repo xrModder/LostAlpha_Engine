@@ -121,6 +121,7 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("object_on_belt_count",		&CScriptGameObject::GetBeltObjectCount)
 		.def("object_on_belt",				(CScriptGameObject *(CScriptGameObject::*)(LPCSTR))(&CScriptGameObject::GetBeltObjectByName))
 		.def("object_on_belt",				(CScriptGameObject *(CScriptGameObject::*)(int))(&CScriptGameObject::GetBeltObjectByIndex))
+		.def("object_on_belt_by_id",		(CScriptGameObject *(CScriptGameObject::*)(int))(&CScriptGameObject::GetBeltObjectById))
 
 		.def("active_item",					&CScriptGameObject::GetActiveItem)
 		

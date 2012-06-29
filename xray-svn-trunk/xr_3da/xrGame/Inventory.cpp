@@ -48,6 +48,7 @@ bool CInventorySlot::IsBlocked() const
 	return (m_blockCounter>0);
 }
 
+
 CInventory::CInventory() 
 {
 	m_fTakeDist									= pSettings->r_float	("inventory","take_dist");
@@ -992,6 +993,13 @@ CInventoryItem	*CInventory::tpfGetObjectByIndex(int iIndex)
 	return		(0);
 }
 
+CInventoryItem	*CInventory::tpfGetBeltObjectById(int item_id)
+{
+	TIItemContainer	&list = m_belt;
+	TIItemContainer::iterator it = std::find_if(list.begin(), list.end(), SBeltItemPred(item_id));
+	return (it != list.end()) ? *it : NULL;
+}
+
 CInventoryItem	*CInventory::tpfGetBeltObjectByIndex(int iIndex)
 {
 	if ((iIndex >= 0) && (iIndex < (int)m_belt.size())) {
@@ -1151,4 +1159,9 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 					SetPrevActiveSlot(ActiveSlot);
 		}
 	}
+}
+
+bool CInventory::SBeltItemPred::operator ()(PIItem &item)
+{ 
+	return item->object().ID() == m_id; 
 }

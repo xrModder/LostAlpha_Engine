@@ -1598,3 +1598,35 @@ const float &CWeapon::hit_probability	() const
 	VERIFY					((g_SingleGameDifficulty >= egdNovice) && (g_SingleGameDifficulty <= egdMaster)); 
 	return					(m_hit_probability[egdNovice]);
 }
+
+// gr1ph: added zoom in/out
+
+void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor)
+{
+	float def_fov = (float) g_fov;
+	float min_zoom_k = 0.3f;
+	float zoom_step_count = 3.0f;
+	float delta_factor_total = def_fov - scope_factor;
+	min_zoom_factor = def_fov - delta_factor_total * min_zoom_k;
+	delta = (delta_factor_total * (1 - min_zoom_k)) / zoom_step_count;
+}
+
+void CWeapon::ZoomInc()
+{
+	float delta, min_zoom_factor;
+	if (!IsScopeAttached())
+		return;
+	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
+	m_fZoomFactor -= delta;
+	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
+}
+
+void CWeapon::ZoomDec()
+{
+	float delta, min_zoom_factor;
+	if (!IsScopeAttached())
+		return;
+	GetZoomData(m_fScopeZoomFactor,delta,min_zoom_factor);
+	m_fZoomFactor += delta;
+	clamp(m_fZoomFactor,m_fScopeZoomFactor, min_zoom_factor);
+}
