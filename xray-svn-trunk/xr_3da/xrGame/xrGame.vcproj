@@ -30011,6 +30011,30 @@
 			RelativePath=".\fast_entity_update.h"
 			>
 		</File>
+		<File
+			RelativePath=".\ZoneCampfire.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ZoneCampfire.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ZoneGalantine.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ZoneGalantine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ZoneMine.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ZoneMine.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

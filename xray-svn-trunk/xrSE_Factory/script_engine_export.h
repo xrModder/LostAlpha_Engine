@@ -157,5 +157,6 @@
 #	include "saved_game_wrapper.h"
 #	include "mincer.h"
 #	include "mosquitobald.h"
+#	include "zonemine.h"
 #	include "HairsZone.h"
 #endif

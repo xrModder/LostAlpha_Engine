@@ -69,6 +69,8 @@
 #	include "RustyHairArtifact.h"
 #	include "GalantineArtifact.h"
 #	include "GraviArtifact.h"
+#	include "zonemine.h"
+#	include "ZoneGalantine.h"
 
 #	include "weaponFN2000.h"
 #	include "weaponAK74.h"

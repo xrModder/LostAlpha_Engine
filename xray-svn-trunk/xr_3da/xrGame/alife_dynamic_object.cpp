@@ -132,7 +132,7 @@ void CSE_ALifeDynamicObject::try_switch_online		()
 	if (!can_switch_online()) {
 #ifdef DEBUG
 		if (!client_data.empty())
-			Msg					("CSE_ALifeDynamicObject::try_switch_online: client_data is cleared for [%d][%s]",ID,name_replace());
+			//Msg					("CSE_ALifeDynamicObject::try_switch_online: client_data is cleared for [%d][%s]",ID,name_replace());
 #endif // DEBUG
 		if (!keep_saved_data_anyway())
 			client_data.clear	();
@@ -147,7 +147,7 @@ void CSE_ALifeDynamicObject::try_switch_online		()
 	if (alife().graph().actor()->o_Position.distance_to(o_Position) > alife().online_distance()) {
 #ifdef DEBUG
 		if (!client_data.empty())
-			Msg					("CSE_ALifeDynamicObject::try_switch_online2: client_data is cleared for [%d][%s]",ID,name_replace());
+//			Msg					("CSE_ALifeDynamicObject::try_switch_online2: client_data is cleared for [%d][%s]",ID,name_replace());
 #endif // DEBUG
 		if (!keep_saved_data_anyway())
 			client_data.clear	();

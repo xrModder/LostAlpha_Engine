@@ -71,7 +71,7 @@
 #	include "RustyHairArtifact.h"
 #	include "GalantineArtifact.h"
 #	include "GraviArtifact.h"
-
+#	include "ZoneCampfire.h"
 #	include "weaponFN2000.h"
 #	include "weaponAK74.h"
 #	include "weaponLR300.h"
@@ -123,6 +123,8 @@
 
 #	include "customzone.h"
 #	include "mosquitobald.h"
+#	include "zonemine.h"
+#	include "ZoneGalantine.h"
 #	include "AcidFog.h"
 #	include "mincer.h"
 #	include "gravizone.h"
@@ -339,11 +341,12 @@ void CObjectFactory::register_classes	()
 	ADD(CMosquitoBald			,CSE_ALifeAnomalousZone			,CLSID_Z_MBALD					,"zone_mosquito_bald");
 	ADD(CMincer					,CSE_ALifeAnomalousZone			,CLSID_Z_MINCER					,"zone_mincer");
 	ADD(CMosquitoBald			,CSE_ALifeAnomalousZone			,CLSID_Z_ACIDF					,"zone_acid_fog");
-	ADD(CMincer					,CSE_ALifeAnomalousZone			,CLSID_Z_GALANT					,"zone_galantine");
+	ADD(CZoneGalantine			,CSE_ALifeAnomalousZone			,CLSID_Z_GALANT					,"zone_galantine");
 	ADD(CRadioactiveZone		,CSE_ALifeAnomalousZone			,CLSID_Z_RADIO					,"zone_radioactive");
 	ADD(CHairsZone				,CSE_ALifeZoneVisual			,CLSID_Z_BFUZZ					,"zone_bfuzz");
 	ADD(CHairsZone				,CSE_ALifeZoneVisual			,CLSID_Z_RUSTYH					,"zone_rusty_hair");
 	ADD(CMosquitoBald			,CSE_ALifeAnomalousZone			,CLSID_Z_DEAD					,"zone_dead");
+	ADD(CZoneMine				,CSE_ALifeAnomalousZone			,CLSID_Z_MINEF					,"zone_mine_field");
 	ADD(CLevelChanger			,CSE_ALifeLevelChanger			,CLSID_LEVEL_CHANGER			,"level_changer");
 	ADD(CScriptZone				,CSE_ALifeSpaceRestrictor		,CLSID_SCRIPT_ZONE				,"script_zone");
 	ADD(CSmartZone				,CSE_ALifeSmartZone				,CLSID_SMART_ZONE				,"smart_zone");
@@ -353,6 +356,7 @@ void CObjectFactory::register_classes	()
 	ADD(CAmebaZone				,CSE_ALifeZoneVisual			,CLSID_Z_AMEBA					,"ameba_zone");
 	ADD(CNoGravityZone			,CSE_ALifeAnomalousZone			,CLSID_Z_NOGRAVITY				,"nogravity_zone");
 	ADD(CRustyFog				,CSE_ALifeAnomalousZone			,CLSID_Z_FOG					,"zone_rusty_fog"); 
+	ADD(CZoneCampfire			,CSE_ALifeAnomalousZone			,CLSID_Z_CAMPFIRE				,"zone_campfire");
 	// Detectors
 	ADD(CSimpleDetector			,CSE_ALifeItemDetector			,CLSID_DETECTOR_SIMPLE			,"device_detector_simple");
 

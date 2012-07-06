@@ -18,7 +18,7 @@ class CMincer :
 	public CBaseGraviZone,
 	public CPHDestroyableNotificator
 {
-private:
+protected:
 	typedef CBaseGraviZone inherited;
 	CTeleWhirlwind m_telekinetics;
 	shared_str	   m_torn_particles;

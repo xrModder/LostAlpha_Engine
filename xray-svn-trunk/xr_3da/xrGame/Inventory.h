@@ -37,9 +37,9 @@ private:
 	struct SBeltItemPred
 	{
 		private:
-			int m_id;
+			ALife::_OBJECT_ID m_id;
 		public:
-			SBeltItemPred(int id) : m_id(id)	{ }
+			SBeltItemPred(ALife::_OBJECT_ID id) : m_id(id)	{ }
 			IC	bool operator()	(PIItem &item);
 	};
 

@@ -290,8 +290,8 @@ protected:
 
 
 	//для визуализации зоны
-				void		PlayIdleParticles			();
-				void		StopIdleParticles			();
+	virtual		void		PlayIdleParticles			();
+	virtual		void		StopIdleParticles			();
 				void		PlayAccumParticles			();
 				void		PlayAwakingParticles		();
 				void		PlayBlowoutParticles		();
