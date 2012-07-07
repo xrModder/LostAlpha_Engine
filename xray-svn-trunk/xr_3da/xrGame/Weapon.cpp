@@ -1611,7 +1611,7 @@ void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoo
 	delta = (delta_factor_total * (1 - min_zoom_k)) / zoom_step_count;
 }
 
-void CWeapon::ZoomInc()
+void CWeapon::ZoomDec()
 {
 	float delta, min_zoom_factor;
 	if (!IsScopeAttached())
@@ -1621,12 +1621,12 @@ void CWeapon::ZoomInc()
 	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
 }
 
-void CWeapon::ZoomDec()
+void CWeapon::ZoomInc()
 {
 	float delta, min_zoom_factor;
 	if (!IsScopeAttached())
 		return;
-	GetZoomData(m_fScopeZoomFactor,delta,min_zoom_factor);
+	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
 	m_fZoomFactor += delta;
-	clamp(m_fZoomFactor,m_fScopeZoomFactor, min_zoom_factor);
+	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
 }
