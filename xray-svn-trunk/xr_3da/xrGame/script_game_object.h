@@ -574,6 +574,7 @@ public:
 			// lost alpha start
 			void				SetTorchState(bool state);
 			bool				GetTorchState(void);
+			void				SetStalkerDebug(bool state);
 
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

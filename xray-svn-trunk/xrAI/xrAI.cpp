@@ -207,6 +207,21 @@ void Startup(LPSTR     lpCmdLine)
 
 #include "factory_api.h"
 
+BOOL TerminateProcess(DWORD dwProcessId, UINT uExitCode)
+{
+    DWORD dwDesiredAccess = PROCESS_TERMINATE;
+    BOOL  bInheritHandle  = FALSE;
+    HANDLE hProcess = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+    if (hProcess == NULL)
+        return FALSE;
+
+    BOOL result = TerminateProcess(hProcess, uExitCode);
+
+    CloseHandle(hProcess);
+
+    return result;
+}
+
 Factory_Create	*create_entity	= 0;
 Factory_Destroy	*destroy_entity	= 0;
 
@@ -233,5 +248,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	Core._destroy			();
 
-	return					(0);
+//	return					(0);
+	return TerminateProcess	(GetCurrentProcessId(), 0);
 }

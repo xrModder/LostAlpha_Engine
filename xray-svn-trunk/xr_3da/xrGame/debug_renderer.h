@@ -8,7 +8,7 @@
 
 #pragma once
 
-#ifdef DEBUG
+#if 1
 class CDebugRenderer {
 private:
 	enum {line_vertex_limit	= 32767};

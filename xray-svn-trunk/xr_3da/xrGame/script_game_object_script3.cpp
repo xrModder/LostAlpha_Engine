@@ -68,6 +68,8 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("set_sound_threshold",			&CScriptGameObject::set_sound_threshold)
 		.def("restore_sound_threshold",		&CScriptGameObject::restore_sound_threshold)
 
+		// LA
+		.def("set_stalker_debug",			&CScriptGameObject::SetStalkerDebug)
 		// sight manager
 		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, const Fvector *vector3d, u32 dwLookOverDelay))(&CScriptGameObject::set_sight))
 		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, bool torso_look, bool path))(&CScriptGameObject::set_sight))

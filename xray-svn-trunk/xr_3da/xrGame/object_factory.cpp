@@ -27,3 +27,4 @@ void CObjectFactory::init		()
 {
 	register_script_classes		();
 }
+

@@ -29,6 +29,11 @@ xrTime convert_time(u32 time)
 	return xrTime(val);
 }
 
+u32 convert_time(const xrTime &timer) 
+{
+	return (u32) timer.get();
+}
+
 xrTime get_time_struct()
 {
 	return xrTime(__game_time());

@@ -81,11 +81,13 @@ IC	void CObjectFactory::add	(CObjectItemAbstract *item)
 	const_iterator		I;
 
 	I					= std::find_if(clsids().begin(),clsids().end(),CObjectItemPredicateCLSID(item->clsid()));
-	VERIFY				(I == clsids().end());
+//	VERIFY				(I == clsids().end());
+	R_ASSERT2			(I == clsids().end(), make_string("class [%d:%s] already present", item->clsid(), item->script_clsid().c_str()));
 	
 #ifndef NO_XR_GAME
 	I					= std::find_if(clsids().begin(),clsids().end(),CObjectItemPredicateScript(item->script_clsid()));
-	VERIFY				(I == clsids().end());
+//	VERIFY				(I == clsids().end());
+	R_ASSERT2			(I == clsids().end(), make_string("class [%d:%s] already present", item->clsid(), item->script_clsid().c_str()));
 #endif
 	
 	m_actual			= false;

@@ -207,11 +207,11 @@ public:
 	virtual	void						PHHit								(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type = ALife::eHitTypeWound);
 	virtual BOOL						feel_vision_isRelevant				(CObject* who);
 	virtual float						Radius								() const;
-#ifdef DEBUG
-	virtual void						OnHUDDraw							(CCustomHUD* hud);
+//#ifdef DEBUG
+//	virtual void						OnHUDDraw							(CCustomHUD* hud);
 	virtual void						OnRender							();
-#endif
-
+//#endif
+			void						SetDebug							(bool state);
 	virtual bool						useful								(const CItemManager *manager, const CGameObject *object) const;
 	virtual	float						evaluate							(const CItemManager *manager, const CGameObject *object) const;
 	virtual bool						useful								(const CEnemyManager *manager, const CEntityAlive *object) const;
@@ -251,6 +251,9 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// action/evaluators support functions
 	//////////////////////////////////////////////////////////////////////////
+private:
+	bool								m_can_debug;
+
 public:
 	virtual void						OnItemTake				(CInventoryItem *inventory_item);
 	virtual void						OnItemDrop				(CInventoryItem *inventory_item);

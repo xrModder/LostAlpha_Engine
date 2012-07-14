@@ -211,6 +211,22 @@ CSE_Abstract *CALifeSimulator__spawn_item3		(CALifeSimulator *self, LPCSTR secti
 	return entity;
 }
 
+CSE_Abstract *CALifeSimulator__spawn_item4		(CALifeSimulator *self, LPCSTR section, const Fvector &position, const Fvector &direction,
+													 u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, ALife::_STORY_ID sid = INVALID_STORY_ID)
+{
+	CSE_Abstract			*entity		= NULL;
+	CSE_ALifeDynamicObject	*object		= NULL;
+	THROW																		(self);
+	R_ASSERT																	(!self->story_objects().object(sid, false));
+	entity								= self->spawn_item						(section, position, level_vertex_id, game_vertex_id, ALife::_OBJECT_ID(-1), false);
+	object								= smart_cast<CSE_ALifeDynamicObject*>	(entity);
+	R_ASSERT																	(object);
+	object->m_story_id					= sid;
+	object->o_Angle						= direction;
+	self->register_object														(object, true);
+	return entity;
+}
+
 CSE_Abstract *CALifeSimulator__spawn_ammo		(CALifeSimulator *self, LPCSTR section, const Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, ALife::_OBJECT_ID id_parent, int ammo_to_spawn)
 {
 //	if (id_parent == ALife::_OBJECT_ID(-1))
@@ -415,7 +431,8 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("switch_offline",			&script_switch_to_offline)
 			.def("switch_online",			&script_switch_to_online)
 			.def("force_entity_update",		&force_entity_update)
-			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, Fvector, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
+			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
+			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
 
 		,def("alife",						&alife)
 	];

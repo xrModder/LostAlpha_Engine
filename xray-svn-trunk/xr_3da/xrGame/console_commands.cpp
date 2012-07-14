@@ -1382,7 +1382,6 @@ public:
 };
 
 
-
 class CCC_Net_SV_GuaranteedPacketMode : public CCC_Integer {
 protected:
 	int		*value_blin;
@@ -1415,6 +1414,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
 
 	//cheats
+	
 	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);

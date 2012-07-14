@@ -191,7 +191,11 @@ void CStalkerAnimationManager::update						()
 		update_impl			();
 	}
 	catch(...) {
-		Msg					("! error in stalker with visual %s",*object().cNameVisual());
+		Msg					("! error in stalker %s with visual %s",*object().cName(),*object().cNameVisual());
+		Msg					("! lua stacktrace:");
+		ai().script_engine().last_called();
+		Msg					("! Engine stacktrace:");
+		Debug.log_stack_trace();
 		throw;
 	}
 	STOP_PROFILE

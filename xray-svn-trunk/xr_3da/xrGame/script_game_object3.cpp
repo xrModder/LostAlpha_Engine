@@ -547,6 +547,14 @@ void CScriptGameObject::set_sight		(CScriptGameObject *object_to_look, bool tors
 		stalker->sight().setup	(CSightAction(&object_to_look->object(),torso_look,fire_object,no_pitch));
 }
 
+void CScriptGameObject::SetStalkerDebug(bool state)
+{
+	CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(&object());
+	if (stalker)
+	{
+		stalker->SetDebug(state);
+	}
+}
 void CScriptGameObject::set_sight		(const CMemoryInfo *memory_object, bool	torso_look)
 {
 	CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(&object());

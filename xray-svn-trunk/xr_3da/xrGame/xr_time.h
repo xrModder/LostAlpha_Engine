@@ -29,6 +29,8 @@ public:
 	void	setHMSms		(int h, int m, int s, int ms);
 	void	set				(int y, int mo, int d, int h, int mi, int s, int ms);
 	void	get				(u32 &y, u32 &mo, u32 &d, u32 &h, u32 &mi, u32 &s, u32 &ms);
+	
+	u32		get				() const { return u32(m_time & u32(-1)); }
 
 	LPCSTR	dateToString	(int mode);
 	LPCSTR	timeToString	(int mode);
@@ -38,3 +40,4 @@ public:
 extern u32 get_time();
 extern xrTime get_time_struct();
 extern xrTime convert_time(u32 time);
+extern u32 convert_time(const xrTime &timer);

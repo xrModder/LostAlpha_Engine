@@ -86,6 +86,8 @@ void compute_build_id	()
 
 	for (int i=0; i<start_month-1; ++i)
 		build_id		-= days_in_month[i];
+
+
 }
 //---------------------------------------------------------------------
 // 2446363

@@ -51,6 +51,9 @@
 #	include "physicobject.h"
 #endif
 
+#include "debug_renderer.h"
+#include "ai/stalker/ai_stalker.h"
+
 ENGINE_API bool g_dedicated_server;
 
 extern BOOL	g_bDebugDumpPhysicsStep;
@@ -114,7 +117,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_debug_renderer			= xr_new<CDebugRenderer>();
 		m_level_debug				= xr_new<CLevelDebug>();
 	#endif
-
+		m_debug_renderer			= xr_new<CDebugRenderer>();
 	}else
 	{
 		m_level_sound_manager		= NULL;
@@ -125,6 +128,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_debug_renderer			= NULL;
 		m_level_debug				= NULL;
 	#endif
+		m_debug_renderer			= NULL;
 	}
 
 
@@ -238,9 +242,9 @@ CLevel::~CLevel()
 
 	xr_delete					(m_autosave_manager);
 	
-#ifdef DEBUG
+//#ifdef DEBUG
 	xr_delete					(m_debug_renderer);
-#endif
+//#endif
 
 	if (!g_dedicated_server)
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
@@ -621,6 +625,16 @@ void CLevel::OnRender()
 	HUD().RenderUI();
 
 	draw_wnds_rects();
+
+	debug_renderer().render();
+
+	for (u32 I=0; I < Level().Objects.o_count(); I++)
+	{
+		CObject						*object = Objects.o_get_by_iterator(I);
+		CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(object);
+		if (!stalker)				continue;
+		stalker->OnRender			();
+	}
 
 
 #ifdef DEBUG

@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#ifdef DEBUG
+//#ifdef DEBUG
+#if 1
 #	include "debug_renderer.h"
 
 CDebugRenderer::CDebugRenderer		()
