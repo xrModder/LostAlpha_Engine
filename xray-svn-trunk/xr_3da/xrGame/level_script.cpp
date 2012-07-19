@@ -588,12 +588,7 @@ u32 get_build_id()
 {
 	return Core.BuildId;
 }
-#include "debug_renderer.h"
-void draw_line(Fvector3 p1, Fvector3 p2)
-{
-//	RCache.dbg_DrawLINE(Fidentity, p1, p2, D3DCOLOR_XRGB(0,255,0));
-	Level().debug_renderer().draw_line(Fidentity, p1, p2, D3DCOLOR_XRGB(0,255,0));
-}
+
 
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
@@ -710,8 +705,7 @@ void CLevel::script_register(lua_State *L)
 		def("IsGameTypeSingle",					&IsGameTypeSingle),
 		def("debug_print",						&lua_debug_print),
 		def("IsMixedMode",						&is_mixed_mode),
-		def("EngineBuildId",					&get_build_id),
-		def("draw_line",						((void (*) (Fvector3, Fvector3)) &draw_line))
+		def("EngineBuildId",					&get_build_id)
 	];
 
 	module(L,"relation_registry")

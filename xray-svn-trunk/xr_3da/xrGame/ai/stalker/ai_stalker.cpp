@@ -80,7 +80,6 @@ CAI_Stalker::CAI_Stalker			()
 	m_boneHitProtection				= NULL;
 	m_power_fx_factor				= flt_max;
 	m_wounded						= false;
-	m_can_debug						= false;
 	
 #ifdef DEBUG
 	m_debug_planner					= 0;
