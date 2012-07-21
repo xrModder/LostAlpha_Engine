@@ -659,7 +659,7 @@ void CObjectActionQueueWait::finalize		()
 	VERIFY						(object().inventory().ActiveItem());
 	VERIFY						(object().inventory().ActiveItem()->object().ID() == m_item->object().ID());
 
-	if (!completed())
+	if ( (object().inventory().ActiveItem() == m_magazined) && !completed())
 		m_magazined->StopedAfterQueueFired(false);
 }
 

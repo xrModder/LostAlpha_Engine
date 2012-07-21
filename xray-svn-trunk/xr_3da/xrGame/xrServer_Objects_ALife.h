@@ -493,6 +493,7 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeMountedTurret, CSE_ALifeDynamicObjectVisua
 		virtual	void					load						(NET_Packet &tNetPacket);
 		virtual bool					can_save					() const;
 		virtual CSE_Abstract			*cast_abstract				() {return this;}
+		virtual void					on_spawn					();
 	protected:
 		virtual void					data_load					(NET_Packet &tNetPacket);
 		virtual void					data_save					(NET_Packet &tNetPacket);

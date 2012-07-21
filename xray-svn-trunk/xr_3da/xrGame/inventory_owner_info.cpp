@@ -51,7 +51,6 @@ private:
 	shared_str element;
 };
 
-
 bool CInventoryOwner::OnReceiveInfo(shared_str info_id) const
 {
 	VERIFY( info_id.size() );
@@ -68,6 +67,9 @@ bool CInventoryOwner::OnReceiveInfo(shared_str info_id) const
 		Msg("[%s] Received Info [%s]", Name(), *info_id);
 #endif
 
+	if (!CInfoPortion::ValidInfoPortion(*info_id)) 
+		return true;
+
 	//Запустить скриптовый callback
 	const CGameObject* pThisGameObject = smart_cast<const CGameObject*>(this);
 	VERIFY(pThisGameObject);
@@ -75,7 +77,6 @@ bool CInventoryOwner::OnReceiveInfo(shared_str info_id) const
 //	SCRIPT_CALLBACK_EXECUTE_2(*m_pInfoCallback, pThisGameObject->lua_game_object(), info_index);
 //	pThisGameObject->callback(GameObject::eInventoryInfo)(pThisGameObject->lua_game_object(), *info_id);
 	
-
 	CInfoPortion info_portion;
 	info_portion.Load(info_id);
 
@@ -134,7 +135,7 @@ void CInventoryOwner::TransferInfo(shared_str info_id, bool add_info) const
 	P.w_stringZ		(info_id);							//сообщение
 	P.w_u8			(add_info?1:0);							//добавить/удалить информацию
 	CGameObject::u_EventSend(P);
-
+/*
 	CInfoPortion info_portion;
 	info_portion.Load(info_id);
 	{
@@ -143,6 +144,11 @@ void CInventoryOwner::TransferInfo(shared_str info_id, bool add_info) const
 		else
 			OnDisableInfo	(info_id);
 	}
+*/
+	if (add_info)
+		OnReceiveInfo	(info_id);
+	else
+		OnDisableInfo	(info_id);
 }
 
 bool CInventoryOwner::HasInfo(shared_str info_id) const

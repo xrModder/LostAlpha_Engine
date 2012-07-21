@@ -15,6 +15,7 @@
 #include "UI/UIGameTutorial.h"
 #include "string_table.h"
 #include "object_broker.h"
+#include "infoportion.h"
 
 using namespace luabind;
 
@@ -34,6 +35,11 @@ void start_tutorial(LPCSTR name)
 	if(g_tutorial2)
 		g_tutorial->m_pStoredInputReceiver = g_tutorial2->m_pStoredInputReceiver;
 
+}
+
+bool is_infoportion_valid(LPCSTR info_id)
+{
+	return CInfoPortion::ValidInfoPortion(info_id);
 }
 
 LPCSTR translate_string(LPCSTR str)
@@ -123,7 +129,8 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("has_active_tutorial",	&has_active_tutotial),
 	def("translate_string",		&translate_string),
 	def("convert_time",			((xrTime (*) (u32)) &convert_time)),
-	def("convert_time",			((u32	 (*) (const xrTime &)) &convert_time))
+	def("convert_time",			((u32	 (*) (const xrTime &)) &convert_time)),
+	def("is_infoportion_valid",	&is_infoportion_valid)
 	];
 	
 	module(L)

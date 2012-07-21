@@ -527,7 +527,8 @@ void CCustomZone::shedule_Update(u32 dt)
 		for(OBJECT_INFO_VEC_IT it = m_ObjectInfoMap.begin(); 
 			m_ObjectInfoMap.end() != it; ++it) 
 		{
-			CObject* pObject = (*it).object;
+			CGameObject* pObject		= (*it).object;
+//			CObject* pObject = (*it).object;
 			if (!pObject) continue;
 			CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(pObject);
 			SZoneObjectInfo& info = (*it);
@@ -543,7 +544,8 @@ void CCustomZone::shedule_Update(u32 dt)
 			if(m_iDisableIdleTime != -1 && (int)info.time_in_zone > m_iDisableIdleTime)
 			{
 				if(!pEntityAlive || !pEntityAlive->g_Alive())
-					StopObjectIdleParticles(smart_cast<CPhysicsShellHolder*>(pObject));
+					StopObjectIdleParticles( pObject );
+//					StopObjectIdleParticles(smart_cast<CPhysicsShellHolder*>(pObject));
 			}
 
 			//если есть хотя бы один не дисабленый объект, то
@@ -707,7 +709,10 @@ void CCustomZone::StopIdleParticles()
 	m_idle_sound.stop();
 
 	if(m_pIdleParticles)
+	{
 		m_pIdleParticles->Stop(FALSE);
+		CParticlesObject::Destroy(m_pIdleParticles);
+	}
 
 	StopIdleLight();
 }
@@ -894,7 +899,7 @@ void CCustomZone::PlayObjectIdleParticles(CGameObject* pObject)
 void CCustomZone::StopObjectIdleParticles(CGameObject* pObject)
 {
 	//. new
-	if (m_bIdleObjectParticlesDontStop&&!pObject->cast_actor())
+	if (!pObject || (m_bIdleObjectParticlesDontStop&&!pObject->cast_actor()))
 		return;
 
 	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pObject);

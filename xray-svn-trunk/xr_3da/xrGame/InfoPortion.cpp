@@ -138,3 +138,9 @@ void _destroy_item_data_vector_cont(T_VECTOR* vec)
 //.	Log("_tmp.size()",_tmp.size());
 	delete_data	(_tmp);
 }
+
+bool CInfoPortion::ValidInfoPortion(LPCSTR info_id)
+{
+	return id_to_index::GetById(info_id, true) != NULL;
+}
+

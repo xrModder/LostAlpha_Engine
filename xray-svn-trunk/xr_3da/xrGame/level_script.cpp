@@ -589,7 +589,6 @@ u32 get_build_id()
 	return Core.BuildId;
 }
 
-
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {

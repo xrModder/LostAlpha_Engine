@@ -228,9 +228,9 @@ MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState
 			}
 			if (object().movement().movement_type() == eMovementTypeWalk)
 			{
-				return animation[6].A[2];
+				return (animation[6].A[2]);
 			}
-			return animation[6].A[3];	
+			return (animation[6].A[3]);	
 		}
 	}
 }

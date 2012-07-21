@@ -180,19 +180,18 @@ void CAniVector::Load(CKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
 	for (int i=0; ; ++i)
 		if (!!(tpMotionDef = tpKinematics->ID_Cycle_Safe(strconcat(sizeof(S1),S1,caBaseName,itoa(i,S2,10))))) {
 			A.push_back(tpMotionDef);
-//#pragma TODO("remove this later...")
-//#ifdef DEBUG
-//			if (psAI_Flags.test(aiAnimation))
-			//Msg		("* Loaded animation %u:%s", tpMotionDef.val, S1);
-//#endif
+#ifdef DEBUG
+			if (psAI_Flags.test(aiAnimation))
+				Msg		("* Loaded animation %s",S1);
+#endif
 		}
 		else
 			if (!!(tpMotionDef = tpKinematics->ID_FX_Safe(strconcat(sizeof(S1),S1,caBaseName,itoa(i,S2,10))))) {
 				A.push_back(tpMotionDef);
-//#ifdef DEBUG
-//			if (psAI_Flags.test(aiAnimation))
-				//Msg		("* Loaded animation fx %u:%s",tpMotionDef.val,S1);
-//#endif
+#ifdef DEBUG
+			if (psAI_Flags.test(aiAnimation))
+				Msg		("* Loaded animation fx %s",S1);
+#endif
 			}
 			else
 				if (i<10)

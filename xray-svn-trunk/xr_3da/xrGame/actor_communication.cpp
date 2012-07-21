@@ -118,11 +118,13 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 	if(!CInventoryOwner::OnReceiveInfo(info_id))
 		return false;
 
-	CInfoPortion info_portion;
-	info_portion.Load(info_id);
-
-	AddEncyclopediaArticle	(&info_portion);
-	AddGameTask				(&info_portion);
+	if (CInfoPortion::ValidInfoPortion(*info_id))
+	{
+		CInfoPortion info_portion;
+		info_portion.Load(info_id);
+		AddEncyclopediaArticle	(&info_portion);
+		AddGameTask				(&info_portion);
+	}
 
 	callback(GameObject::eInventoryInfo)(lua_game_object(), *info_id);
 
@@ -179,8 +181,11 @@ void   CActor::UpdateAvailableDialogs	(CPhraseDialogManager* partner)
 		for(KNOWN_INFO_VECTOR::const_iterator it = CInventoryOwner::m_known_info_registry->registry().objects_ptr()->begin();
 			CInventoryOwner::m_known_info_registry->registry().objects_ptr()->end() != it; ++it)
 		{
-			//подгрузить кусочек информации с которым мы работаем
 			CInfoPortion info_portion;
+
+			if (!CInfoPortion::ValidInfoPortion(*((*it).info_id))) 
+				continue;
+			
 			info_portion.Load((*it).info_id);
 
 			for(u32 i = 0; i<info_portion.DialogNames().size(); i++)

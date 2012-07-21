@@ -34,10 +34,10 @@ public:
 		{
 			strconcat	(sizeof(S),S,caBaseName,caBaseNames[i]);
 			A[i]		= tpKinematics->ID_Cycle_Safe(S);
-//#ifdef DEBUG
-//			if (A[i] && psAI_Flags.test(aiAnimation))
-//				Msg		("* CAniFVector<%s> Loaded animation %s",caBaseName,S);
-//#endif
+#ifdef DEBUG
+			if (A[i] && psAI_Flags.test(aiAnimation))
+				Msg		("* Loaded animation %s",S);
+#endif
 		}
 	}
 };

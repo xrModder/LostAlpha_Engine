@@ -29,6 +29,7 @@ void _destroy_item_data_vector_cont(T_VECTOR* vec);
 #define TEMPLATE_SPECIALIZATION template<typename T_INIT>
 #define CSXML_IdToIndex CXML_IdToIndex<T_INIT>
 
+
 TEMPLATE_SPECIALIZATION
 class CXML_IdToIndex
 {
@@ -66,7 +67,9 @@ public:
 	static const int		GetMaxIndex	()					 {return m_pItemDataVector->size()-1;}
 
 	//удаление статичекого массива
-	static void					DeleteIdToIndexData		();
+	static void				DeleteIdToIndexData		();
+
+	static void				AddItem					(LPCSTR item_name);
 };
 
 
@@ -105,11 +108,12 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bo
 
 	if(m_pItemDataVector->end() == it)
 	{
+		/*
 		int i=0;
 		for(T_VECTOR::iterator it = m_pItemDataVector->begin();	m_pItemDataVector->end() != it; it++,i++)
 			Msg("[%d]=[%s]",i,*(*it).id );
-
-		R_ASSERT3(no_assert, "item not found, id", *str_id);
+		*/
+		R_ASSERT2(no_assert, make_string("item [%s] not found!!", *str_id));
 		return NULL;
 	}
 		
@@ -169,7 +173,7 @@ typename void	CSXML_IdToIndex::InitInternal ()
 			LPCSTR item_name	= uiXml->ReadAttrib(uiXml->GetRoot(), tag_name, i, "id", NULL);
 
 			string256			buf;
-			sprintf_s				(buf, "id for item don't set, number %d in %s", i, xml_file);
+			sprintf_s			(buf, "id for item don't set, number %d in %s", i, xml_file);
 			R_ASSERT2			(item_name, buf);
 
 
@@ -197,6 +201,7 @@ typename void	CSXML_IdToIndex::InitInternal ()
 			delete_data(uiXml);
 	}
 }
+
 
 #undef TEMPLATE_SPECIALIZATION
 

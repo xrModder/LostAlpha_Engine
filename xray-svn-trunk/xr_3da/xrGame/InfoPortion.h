@@ -80,4 +80,6 @@ protected:
 	const SInfoPortionData* info_data				() const { VERIFY(inherited_shared::get_sd()); return inherited_shared::get_sd();}
 
 	static void InitXmlIdToIndex();
+public:
+	static bool	ValidInfoPortion					(LPCSTR info_id);
 };
