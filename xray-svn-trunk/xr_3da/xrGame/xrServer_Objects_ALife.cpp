@@ -1527,8 +1527,7 @@ void CSE_ALifeCar::FillProps				(LPCSTR pref, PropItemVec& values)
 CSE_ALifeMountedTurret::CSE_ALifeMountedTurret(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_PHSkeleton(caSection)
 {
 	if (pSettings->section_exist(caSection) && pSettings->line_exist(caSection, "visual"))
-    	set_visual				(pSettings->r_string(caSection, "visual"));
-		
+    	set_visual				(pSettings->r_string(caSection, "visual"));	
 }
 
 CSE_ALifeMountedTurret::~CSE_ALifeMountedTurret	()

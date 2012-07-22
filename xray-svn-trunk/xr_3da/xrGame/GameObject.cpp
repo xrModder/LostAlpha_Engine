@@ -81,9 +81,9 @@ void CGameObject::Load(LPCSTR section)
 
 void CGameObject::reinit	()
 {
-	m_visual_callback.clear	();
+	m_visual_callback.clear			();
 	if (!g_dedicated_server)
-        ai_location().reinit	();
+        ai_location().reinit		();
 
 	// clear callbacks	
 	for (CALLBACK_MAP_IT it = m_callbacks->begin(); it != m_callbacks->end(); ++it) it->second.clear();
@@ -129,6 +129,7 @@ void CGameObject::net_Destroy	()
 
 	xr_delete								(m_lua_game_object);
 	m_spawned								= false;
+
 
 }
 

@@ -55,7 +55,7 @@ void	CKinematicsAnimated::Bone_Motion_Stop_IM	(CBoneData* bd, CBlend* handle)
 	LL_GetBlendInstance	(bd->GetSelfID()).blend_remove	(handle);
 }
 
-#ifdef DEBUG
+//#ifdef DEBUG
 std::pair<LPCSTR,LPCSTR> CKinematicsAnimated::LL_MotionDefName_dbg	(MotionID ID)
 {
 	shared_motions& s_mots	= m_Motions[ID.slot].motions;
@@ -79,7 +79,7 @@ LPCSTR CKinematicsAnimated::LL_MotionDefName_dbg	(LPVOID ptr)
 	return 0;
 }
 */
-#endif
+//#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

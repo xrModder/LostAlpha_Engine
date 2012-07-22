@@ -69,7 +69,6 @@ public:
 	//удаление статичекого массива
 	static void				DeleteIdToIndexData		();
 
-	static void				AddItem					(LPCSTR item_name);
 };
 
 

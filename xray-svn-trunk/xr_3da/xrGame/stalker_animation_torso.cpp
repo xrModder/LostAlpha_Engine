@@ -196,43 +196,68 @@ MotionID CStalkerAnimationManager::weapon_animation	(u32 slot, const EBodyState 
 MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState &body_state)
 {
 	VERIFY							(m_missile);
-
+	
 	if (body_state == eBodyStateCrouch)
 		slot						= 0;
-
+	CKinematicsAnimated *K = smart_cast<CKinematicsAnimated*>(object().Visual());
+	Msg("! /----------------- Let's see what's wrong with '%s' at [%d]! -------------------/", *object().cName(), Device.dwTimeGlobal);
 	const xr_vector<CAniVector>		&animation = m_data_storage->m_part_animations.A[body_state].m_torso.A[slot].A;
+	Msg("anim size = %d :: missile name and state = %s, %d", animation.size(), m_missile->cName().c_str(), m_missile->GetState());
+	if (!m_debug)
+	{
+		u16 i = 0;		
+		for (xr_vector<CAniVector>::const_iterator it = animation.begin(); it != animation.end(); ++it)
+		{
+			const ANIM_VECTOR &tmp = (*it).A;
+			u16 j = 0;
+			for (ANIM_VECTOR::const_iterator it1 = tmp.begin(); it1 != tmp.end(); ++it1)
+			{
+				std::pair<LPCSTR, LPCSTR> pair = K->LL_MotionDefName_dbg(*it1);
+				Msg("~ (%d/%d) %s = %s", i, j, pair.first, pair.second);
+				j++;
+			}
+			i++;
+		}
+		m_debug = true;
+	}
 //	CKinematicsAnimated *K = smart_cast<CKinematicsAnimated*>(object().Visual());
 	switch (m_missile->GetState()) {
-		case MS_SHOWING	 :
+		case MS_SHOWING	 : Msg("~ MS_SHOWING"); 
 			return					(torso().select(animation[0].A));
-		case MS_HIDING	 :
+		case MS_HIDING	 : Msg("~ MS_HIDING"); 
 			return					(torso().select(animation[3].A));
-		case MS_THREATEN :
+		case MS_THREATEN : Msg("~ MS_THREATEN %s", K->LL_MotionDefName_dbg(animation[1].A[0]).first); 
 			return					(animation[1].A[0]);
-		case MS_READY	 :
+		case MS_READY	 : Msg("~ MS_READY %s", K->LL_MotionDefName_dbg(animation[1].A[1]).first); 
 			return					(animation[1].A[1]);
-		case MS_THROW	 :
+		case MS_THROW	 : Msg("~ MS_THROW %s", K->LL_MotionDefName_dbg(animation[1].A[2]).first); 
 			return					(animation[1].A[2]);
-		case MS_END		 :
+		case MS_END		 : Msg("~ MS_END %s", K->LL_MotionDefName_dbg(animation[6].A[0]).first); 
 			return					(animation[6].A[0]);
-		case MS_PLAYING	 :
+		case MS_PLAYING	 : Msg("~ MS_PLAYING %s", K->LL_MotionDefName_dbg(animation[1].A[1]).first); 
 			return					(animation[1].A[1]);
-		case MS_HIDDEN   : 
+		case MS_HIDDEN   : Msg("~ MS_HIDDEN %s", K->LL_MotionDefName_dbg(animation[6].A[0]).first); 
 			return					(animation[6].A[0]);
 		case MS_EMPTY:
 		case MS_IDLE:
 		default:
 		{
-			if (standing()) {
+			Msg("MS_EMPTY||MS_IDLE||default"); 
+			if (standing()) 
+			{
+				Msg("~ standing %s", K->LL_MotionDefName_dbg(animation[6].A[0]).first);
 				return				(animation[6].A[0]);
 			}
 			if (object().movement().movement_type() == eMovementTypeWalk)
 			{
+				Msg("~ walking %s", K->LL_MotionDefName_dbg(animation[6].A[2]).first);
 				return (animation[6].A[2]);
 			}
+			Msg("~ idle %s", K->LL_MotionDefName_dbg(animation[6].A[3]).first);
 			return (animation[6].A[3]);	
 		}
 	}
+	Msg("! /----------------- END '%s'! -------------------/", *object().cName());
 }
 
 MotionID CStalkerAnimationManager::assign_torso_animation	()

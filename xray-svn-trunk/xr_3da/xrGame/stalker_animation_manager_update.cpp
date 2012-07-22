@@ -177,10 +177,13 @@ void CStalkerAnimationManager::update_impl					()
 	if (play_global())
 		return;
 
+	Msg("* %s %6d play head", *object().cName(), Device.dwTimeGlobal);
 	play_head				();
+	Msg("* %s %6d play torso", *object().cName(), Device.dwTimeGlobal);
 	play_torso				();
+	Msg("* %s %6d play legs", *object().cName(), Device.dwTimeGlobal);
 	play_legs				();
-
+	Msg("* %s %6d sync", *object().cName(), Device.dwTimeGlobal);
 	torso().synchronize		(m_skeleton_animated,m_legs);
 }
 

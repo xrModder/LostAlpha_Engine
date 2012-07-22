@@ -35,6 +35,8 @@ private:
 	const CStalkerAnimationData		*m_data_storage;
 	SCRIPT_ANIMATIONS				m_script_animations;
 
+	bool							m_debug; // LA
+
 private:
 	CStalkerAnimationPair			m_global;
 	CStalkerAnimationPair			m_head;
