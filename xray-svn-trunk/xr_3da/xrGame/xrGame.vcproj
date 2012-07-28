@@ -26946,13 +26946,6 @@
 						RelativePath=".\ui\UIPointerGage.cpp"
 						>
 						<FileConfiguration
-							Name="Mixed|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
 							Name="Debug_Priquel|Win32"
 							ExcludedFromBuild="true"
 							>
@@ -27492,13 +27485,6 @@
 					<File
 						RelativePath=".\ui\UISleepWnd.cpp"
 						>
-						<FileConfiguration
-							Name="Mixed|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 						<FileConfiguration
 							Name="Debug_Priquel|Win32"
 							ExcludedFromBuild="true"
@@ -30003,6 +29989,61 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\dynamic_patrol_path.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_path.h"
+			>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_path_inline.h"
+			>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_path_script.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PrecompiledHeaderThrough="pch_script.h"
+					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Mixed|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PrecompiledHeaderThrough="pch_script.h"
+					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PrecompiledHeaderThrough="pch_script.h"
+					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_point.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_point.h"
+			>
+		</File>
+		<File
+			RelativePath=".\dynamic_patrol_point_inline.h"
+			>
+		</File>
 		<File
 			RelativePath=".\fast_entity_update.cpp"
 			>

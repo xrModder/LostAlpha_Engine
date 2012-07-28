@@ -240,6 +240,7 @@ void CObjectFactory::register_classes	()
 	ADD(CCar					,CSE_ALifeCar					,CLSID_CAR						,"car");
 
 	ADD(CHelicopter				,CSE_ALifeHelicopter			,CLSID_VEHICLE_HELICOPTER		,"helicopter");
+	ADD(CMountedTurret			,CSE_ALifeMountedTurret			,CLSID_OBJECT_W_TURRET			,"wpn_turret");
 
 	// Artefacts
 	ADD(CMercuryBall			,CSE_ALifeItemArtefact			,CLSID_AF_MERCURY_BALL			,"art_mercury_ball");

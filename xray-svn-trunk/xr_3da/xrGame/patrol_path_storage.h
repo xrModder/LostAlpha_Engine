@@ -12,6 +12,7 @@ class CPatrolPath;
 class CLevelGraph;
 class CGameLevelCrossTable;
 class CGameGraph;
+class CDynamicPatrolPath;
 
 #include "object_interfaces.h"
 #include "associative_vector.h"
@@ -26,7 +27,7 @@ public:
 	typedef PATROL_REGISTRY::const_iterator				const_iterator;
 
 protected:
-	PATROL_REGISTRY					m_registry;
+	mutable PATROL_REGISTRY					m_registry;
 
 public:
 	IC								CPatrolPathStorage	();
@@ -38,6 +39,7 @@ public:
 			void					load_raw			(const CLevelGraph *level_graph, const CGameLevelCrossTable *cross, const CGameGraph *game_graph, IReader &stream);
 	IC		const CPatrolPath		*path				(shared_str patrol_name, bool no_assert = false) const;
 	IC		const PATROL_REGISTRY	&patrol_paths		() const;
+			void					add_patrol_path		(CDynamicPatrolPath *patrol) const;
 };
 
 #include "patrol_path_storage_inline.h"

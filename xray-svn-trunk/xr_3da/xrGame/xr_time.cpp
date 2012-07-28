@@ -31,7 +31,7 @@ xrTime convert_time(u32 time)
 
 u32 convert_time(const xrTime &timer) 
 {
-	return (u32) timer.get();
+	return (u32) timer.time_id();
 }
 
 xrTime get_time_struct()

@@ -117,11 +117,13 @@ struct dummy {
 
 void CALifeSpawnRegistry::load				(IReader &file_stream, xrGUID *save_guid)
 {
-	IReader						*chunk;
+	IReader		*chunk;
+	bool		no_check		= strstr(Core.Params, "-nospawncheck") != NULL;
 	chunk						= file_stream.open_chunk(0);
 	m_header.load				(*chunk);
 	chunk->close				();
-	R_ASSERT2					(!save_guid || (*save_guid == header().guid()),"Saved game doesn't correspond to the spawn : DELETE SAVED GAME!");
+	if (!no_check)
+		R_ASSERT2					(!save_guid || (*save_guid == header().guid()),"Saved game doesn't correspond to the spawn : DELETE SAVED GAME!");
 
 	chunk						= file_stream.open_chunk(1);
 	m_spawns.load				(*chunk);

@@ -94,8 +94,8 @@ void game_sv_GameState::script_register(lua_State *L)
 		.def("setHMS"				,&xrTime::setHMS)
 		.def("setHMSms"				,&xrTime::setHMSms)
 		.def("set"					,&xrTime::set)
-//		.def("get"					,&xrTime::get, out_value(_2) + out_value(_3) + out_value(_4) + out_value(_5) + out_value(_6) + out_value(_7) + out_value(_8))
-		.def("get"					,(void (xrTime::*) (u32&,u32&,u32&,u32&,u32&,u32&,u32&))(&xrTime::get), out_value(_2) + out_value(_3) + out_value(_4) + out_value(_5) + out_value(_6) + out_value(_7) + out_value(_8))
+		.def("get"					,&xrTime::get, out_value(_2) + out_value(_3) + out_value(_4) + out_value(_5) + out_value(_6) + out_value(_7) + out_value(_8))
+//		.def("get"					,(void (xrTime::*) (u32&,u32&,u32&,u32&,u32&,u32&,u32&))(&xrTime::get), out_value(_2) + out_value(_3) + out_value(_4) + out_value(_5) + out_value(_6) + out_value(_7) + out_value(_8))
 		.def("dateToString"			,&xrTime::dateToString)
 		.def("timeToString"			,&xrTime::timeToString),
 		// declarations

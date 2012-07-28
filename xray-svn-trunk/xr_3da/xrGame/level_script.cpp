@@ -32,6 +32,7 @@
 
 using namespace luabind;
 
+
 LPCSTR command_line	()
 {
 	return		(Core.Params);
@@ -588,6 +589,11 @@ u32 get_build_id()
 {
 	return Core.BuildId;
 }
+#include "dynamic_patrol_path.h"
+void add_patrol(CDynamicPatrolPath *patrol) 
+{
+	ai().patrol_paths().add_patrol_path(patrol);
+}
 
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
@@ -646,6 +652,8 @@ void CLevel::script_register(lua_State *L)
 		def("map_remove_object_spot",			map_remove_object_spot),
 		def("map_has_object_spot",				map_has_object_spot),
 		def("map_change_spot_hint",				map_change_spot_hint),
+
+		def("add_patrol",						add_patrol),
 
 		def("start_stop_menu",					start_stop_menu),
 		def("add_dialog_to_render",				add_dialog_to_render),

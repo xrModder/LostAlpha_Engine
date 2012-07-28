@@ -41,6 +41,8 @@
 #define CLSID_CAR					MK_CLSID('C','_','N','I','V','A',' ',' ')
 #define CLSID_VEHICLE_HELICOPTER	MK_CLSID('C','_','H','L','C','P','T','R')
 
+#define	CLSID_OBJECT_W_TURRET		MK_CLSID('W','_','T','U','R','R','E','T')
+
 #define CLSID_EVENT					MK_CLSID('E','V','E','N','T',' ',' ',' ')
 #define CLSID_OBJECT_FLYER			MK_CLSID('O','_','F','L','Y','E','R',' ')
 #define CLSID_OBJECT_DOOR			MK_CLSID('O','_','D','O','O','R',' ',' ')

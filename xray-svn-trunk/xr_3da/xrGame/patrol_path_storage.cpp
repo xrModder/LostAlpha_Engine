@@ -10,7 +10,9 @@
 #include "patrol_path_storage.h"
 #include "patrol_path.h"
 #include "patrol_point.h"
+#include "dynamic_patrol_path.h"
 #include "levelgamedef.h"
+#include "ai_space.h"
 
 CPatrolPathStorage::~CPatrolPathStorage		()
 {
@@ -118,4 +120,11 @@ void CPatrolPathStorage::save				(IWriter &stream)
 	}
 
 	stream.close_chunk			();
+}
+
+void CPatrolPathStorage::add_patrol_path(CDynamicPatrolPath *patrol) const
+{
+	m_registry.insert(std::make_pair(patrol->GetName(),
+								&xr_new<CDynamicPatrolPath>(patrol)->load_raw(ai().get_level_graph(), ai().get_cross_table(),
+									ai().get_game_graph(), IReader())));
 }

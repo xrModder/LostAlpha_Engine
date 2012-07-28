@@ -39,7 +39,7 @@ IC	const CPatrolPath::CVertex *CPatrolPath::point	(const Fvector &position, cons
 
 IC	const CPatrolPath::CVertex *CPatrolPath::point	(const Fvector &position) const
 {
-	return						(point(position,CAlwaysTrueEvaluator()));
+	return						(point(position,SAlwaysTrueEvaluator()));
 }
 
 #ifdef DEBUG

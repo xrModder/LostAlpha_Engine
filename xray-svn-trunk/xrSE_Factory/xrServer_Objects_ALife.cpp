@@ -1817,3 +1817,75 @@ float CSE_ALifeSmartZone::detect_probability()
 void CSE_ALifeSmartZone::smart_touch	(CSE_ALifeMonsterAbstract *monster)
 {
 }
+
+
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeMountedTurret
+////////////////////////////////////////////////////////////////////////////
+
+CSE_ALifeMountedTurret::CSE_ALifeMountedTurret(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_PHSkeleton(caSection)
+{
+	if (pSettings->section_exist(caSection) && pSettings->line_exist(caSection, "visual"))
+    	set_visual				(pSettings->r_string(caSection, "visual"));	
+}
+
+CSE_ALifeMountedTurret::~CSE_ALifeMountedTurret	()
+{
+}
+
+void CSE_ALifeMountedTurret::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
+{
+	inherited1::STATE_Read		(tNetPacket,size);
+}
+
+void CSE_ALifeMountedTurret::STATE_Write			(NET_Packet	&tNetPacket)
+{
+	inherited1::STATE_Write		(tNetPacket);
+	inherited2::STATE_Write		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::UPDATE_Read			(NET_Packet	&tNetPacket)
+{
+	inherited1::UPDATE_Read		(tNetPacket);
+	inherited2::UPDATE_Read		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::UPDATE_Write			(NET_Packet	&tNetPacket)
+{
+	inherited1::UPDATE_Write		(tNetPacket);
+	inherited2::UPDATE_Write		(tNetPacket);
+}
+
+bool CSE_ALifeMountedTurret::used_ai_locations() const
+{
+	return						(false);
+}
+
+bool CSE_ALifeMountedTurret::can_save() const
+{
+	return						CSE_PHSkeleton::need_save();
+}
+
+void CSE_ALifeMountedTurret::load(NET_Packet &tNetPacket)
+{
+	inherited1::load(tNetPacket);
+	inherited2::load(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::data_load(NET_Packet	&tNetPacket)
+{
+	//inherited1::data_load(tNetPacket);
+	inherited2::data_load		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::data_save(NET_Packet &tNetPacket)
+{
+	//inherited1::data_save(tNetPacket);
+	inherited2::data_save			(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::FillProps(LPCSTR pref, PropItemVec& values)
+{
+  	inherited1::FillProps			(pref,values);
+	inherited2::FillProps			(pref,values);
+}

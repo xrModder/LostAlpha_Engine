@@ -161,4 +161,5 @@
 #	include "ai/trader/ai_trader.h"
 #	include "space_restrictor.h"
 #	include "physicobject.h"
+#	include "dynamic_patrol_path.h"
 #endif
