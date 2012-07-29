@@ -20,7 +20,7 @@
 #endif
 
 
-#define PLAYING_ANIM_TIME 10000
+#define PLAYING_ANIM_TIME 15000
 
 #include "ui/UIProgressShape.h"
 #include "ui/UIXmlInit.h"
@@ -86,6 +86,9 @@ void CMissile::Load(LPCSTR section)
 	m_sAnimThrowIdle	= pSettings->r_string(*hud_sect, "anim_throw_idle");
 	m_sAnimThrowAct		= pSettings->r_string(*hud_sect, "anim_throw_act");
 	m_sAnimThrowEnd		= pSettings->r_string(*hud_sect, "anim_throw_end");
+
+	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
+	m_sAnimIdle_sprint			= pSettings->r_string(*hud_sect, "anim_idle_sprint");
 
 	if(pSettings->line_exist(section,"snd_playing"))
 		HUD_SOUND::LoadSound(section,"snd_playing",sndPlaying);
@@ -228,6 +231,12 @@ void CMissile::StartIdleAnim()
 	m_pHUD->animDisplay(m_pHUD->animGet(*m_sAnimIdle), TRUE);
 }
 
+void CMissile::onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)
+{
+	if( (cmd == ACTOR_DEFS::mcSprint)&&(GetState()== MS_IDLE)  )
+	State(GetState());
+}
+
 void CMissile::State(u32 state) 
 {
 	switch(GetState()) 
@@ -239,8 +248,18 @@ void CMissile::State(u32 state)
 		} break;
 	case MS_IDLE:
 		{
-			m_bPending = false;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle), TRUE, this, GetState());
+				CActor* pActor = smart_cast<CActor*>(H_Parent());
+				if(pActor)
+				{
+					CEntity::SEntityState st;
+					pActor->g_State(st);
+
+					m_bPending = false;
+					if(st.bSprint && m_sAnimIdle_sprint.size())
+						m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle_sprint), TRUE, this, GetState());
+					else
+						m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle), TRUE, this, GetState());
+				}
 		} break;
 	case MS_HIDING:
 		{

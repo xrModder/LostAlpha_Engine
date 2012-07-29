@@ -15,6 +15,7 @@
 #define VAMPIRE_HIT_IMPULSE		40.f
 #define VAMPIRE_MIN_DIST		0.5f
 #define VAMPIRE_MAX_DIST		1.f
+extern bool g_bDisableAllInput;
 
 TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::initialize()
@@ -32,6 +33,7 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 
 	psHUD_Flags.set(HUD_DRAW, FALSE);
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+
 	object->stop_invisible_predator	();
 
 	m_effector_activated			= false;
@@ -42,6 +44,11 @@ void CStateBloodsuckerVampireExecuteAbstract::execute()
 {
 	if (!object->CControlledActor::is_turning() && !m_effector_activated) {
 		object->ActivateVampireEffector	();
+			////////////////////////////////
+			psHUD_Flags.set(HUD_DRAW, FALSE);
+			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+			g_bDisableAllInput = true;
+			////////////////////////////////
 		m_effector_activated			= true;
 	}
 	
@@ -81,6 +88,7 @@ void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 {
 	psHUD_Flags.set(HUD_DRAW, TRUE);
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	g_bDisableAllInput = false;
 }
 
 TEMPLATE_SPECIALIZATION

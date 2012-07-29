@@ -103,6 +103,7 @@ void CWeaponPistol::PlayAnimIdle	()
 {
 	VERIFY(GetState()==eIdle);
 	if(m_opened){ 
+			if (inherited::TryPlayAnimIdle()) return;
 		CWeaponPistol::WWPMotions& m = wwpm_current();
 		m_pHUD->animPlay(random_anim(m.mhud_empty), TRUE, NULL, GetState());
 	}else{

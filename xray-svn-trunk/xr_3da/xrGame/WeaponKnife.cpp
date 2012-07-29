@@ -44,6 +44,9 @@ void CWeaponKnife::Load	(LPCSTR section)
 	animGet				(mhud_attack2,	pSettings->r_string(*hud_sect,"anim_shoot2_start"));
 	animGet				(mhud_attack_e,	pSettings->r_string(*hud_sect,"anim_shoot1_end"));
 	animGet				(mhud_attack2_e,pSettings->r_string(*hud_sect,"anim_shoot2_end"));
+	
+	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
+		animGet				(mhud_idle_sprint,		pSettings->r_string(*hud_sect,"anim_idle_sprint"));
 
 	HUD_SOUND::LoadSound(section,"snd_shoot"		, m_sndShot		, ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING)		);
 	
@@ -97,7 +100,7 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 			m_eHitType		= m_eHitType_2;
 			//fHitPower		= fHitPower_2;
 			if (ParentIsActor())
-			{
+				{
 				if (GameID() == GAME_SINGLE)
 				{
 					fCurrentHit		= fvHitPower_2[g_SingleGameDifficulty];
@@ -197,19 +200,47 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 	if(m_bPending)	return;
 
 	if(state==eFire)
+	{
 		m_pHUD->animPlay(random_anim(mhud_attack),		FALSE, this, state);
-	else //eFire2
-		m_pHUD->animPlay(random_anim(mhud_attack2),		FALSE, this, state);
+		m_attackStart	= true;
+		m_bPending		= true;
+	}
+	else {//eFire2
+			m_pHUD->animPlay(random_anim(mhud_attack2),		FALSE, this, state);
+			m_attackStart	= true;
+			m_bPending		= true;
+	}
+}
 
-	m_attackStart	= true;
-	m_bPending		= true;
+bool CWeaponKnife::TryPlayAnimIdle()
+{
+	VERIFY(GetState()==eIdle);
+		CActor* pActor = smart_cast<CActor*>(H_Parent());
+		if(pActor)
+		{
+			CEntity::SEntityState st;
+			pActor->g_State(st);
+			if(st.bSprint && mhud_idle_sprint.size())
+			{
+				m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this, GetState());
+				return true;
+			}
+		}
+	return false;
 }
 
 void CWeaponKnife::switch2_Idle	()
 {
-	VERIFY(GetState()==eIdle);
+		MotionSVec* m = NULL;
+		m = &mhud_idle;
+		if (TryPlayAnimIdle()) 
+		{
+			m_bPending = true;
+			return;
+		}
 
-	m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());
+	VERIFY(GetState()==eIdle);
+	m_pHUD->animPlay(random_anim(*m), TRUE, this, GetState());
 	m_bPending = false;
 }
 
@@ -218,7 +249,7 @@ void CWeaponKnife::switch2_Hiding	()
 	FireEnd					();
 	VERIFY(GetState()==eHiding);
 	m_pHUD->animPlay		(random_anim(mhud_hide), TRUE, this, GetState());
-//	m_bPending				= true;
+	m_bPending				= true;
 }
 
 void CWeaponKnife::switch2_Hidden()
@@ -231,7 +262,7 @@ void CWeaponKnife::switch2_Showing	()
 {
 	VERIFY(GetState()==eShowing);
 	m_pHUD->animPlay		(random_anim(mhud_show), FALSE, this, GetState());
-//	m_bPending				= true;
+	m_bPending				= true;
 }
 
 
@@ -241,10 +272,25 @@ void CWeaponKnife::FireStart()
 	SwitchState			(eFire);
 }
 
+void CWeaponKnife::onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)
+{
+	if( (cmd == ACTOR_DEFS::mcSprint)&&(GetState()==eIdle)  )
+		switch2_Idle();
+}
+
 void CWeaponKnife::Fire2Start () 
 {
-	inherited::Fire2Start();
-	SwitchState(eFire2);
+	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	if(pActor)
+	{
+		CEntity::SEntityState st;
+		pActor->g_State(st);
+			if(!st.bSprint)
+			{
+			inherited::Fire2Start();
+			SwitchState(eFire2);
+			}
+	}
 }
 
 

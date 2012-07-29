@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="xrGame"
 	ProjectGUID="{200652A6-043E-4634-8837-87983B3BD5E0}"
 	RootNamespace="xrGame"
@@ -19989,6 +19989,76 @@
 									<File
 										RelativePath=".\WeaponBinocularsVision.h"
 										>
+									</File>
+								</Filter>
+								<Filter
+									Name="Weapon Zoomable"
+									>
+									<File
+										RelativePath="WeaponZoomable.cpp"
+										>
+									</File>
+									<File
+										RelativePath="WeaponZoomable.h"
+										>
+									</File>
+									<File
+										RelativePath=".\WeaponZoomable_script.cpp"
+										>
+										<FileConfiguration
+											Name="Debug|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
+										<FileConfiguration
+											Name="Mixed|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
+										<FileConfiguration
+											Name="Release|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
+										<FileConfiguration
+											Name="Debug_Priquel|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
+										<FileConfiguration
+											Name="Mixed_Priquel|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
+										<FileConfiguration
+											Name="Release_Priquel|Win32"
+											>
+											<Tool
+												Name="VCCLCompilerTool"
+												PrecompiledHeaderThrough="pch_script.h"
+												PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+											/>
+										</FileConfiguration>
 									</File>
 								</Filter>
 								<Filter

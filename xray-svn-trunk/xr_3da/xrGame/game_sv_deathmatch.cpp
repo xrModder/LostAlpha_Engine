@@ -1591,6 +1591,7 @@ void game_sv_Deathmatch::OnDetach(u16 eid_who, u16 eid_what)
 			case CLSID_OBJECT_W_PM			:
 			case CLSID_OBJECT_W_FORT		:
 			case CLSID_OBJECT_W_BINOCULAR	:
+			case CLSID_OBJECT_W_ZOOMABLE	:
 			case CLSID_OBJECT_W_SHOTGUN		:
 			case CLSID_OBJECT_W_SVD			:
 			case CLSID_OBJECT_W_SVU			:

@@ -137,6 +137,7 @@
 #	include "Torch.h"
 #	include "WeaponAK74.h"
 #	include "WeaponBinoculars.h"
+#	include "WeaponZoomable.h"
 #	include "WeaponBM16.h"
 #	include "WeaponFN2000.h"
 #	include "WeaponFORT.h"

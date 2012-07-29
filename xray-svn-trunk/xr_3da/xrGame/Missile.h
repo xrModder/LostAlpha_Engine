@@ -52,7 +52,7 @@ public:
 	virtual void 			Destroy();
 
 	virtual bool 			Action						(s32 cmd, u32 flags);
-
+	virtual void			onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 //.	IC u32		 			State						()				{return m_state;}
 	virtual void 			State						(u32 state);
 	virtual void 			OnStateSwitch				(u32 S);
@@ -104,6 +104,7 @@ protected:
 	shared_str				m_sAnimShow;
 	shared_str				m_sAnimHide;
 	shared_str				m_sAnimIdle;
+	shared_str				m_sAnimIdle_sprint;
 	shared_str				m_sAnimPlaying;
 	shared_str				m_sAnimThrowBegin;
 	shared_str				m_sAnimThrowIdle;
