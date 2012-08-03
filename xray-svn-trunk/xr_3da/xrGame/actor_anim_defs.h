@@ -34,7 +34,7 @@ struct STorsoWpn{
 	void		Create								(CKinematicsAnimated* K, LPCSTR base0, LPCSTR base1);
 };
 
-#define _total_anim_slots_ 13
+#define _total_anim_slots_ 14
 
 struct SActorState
 {

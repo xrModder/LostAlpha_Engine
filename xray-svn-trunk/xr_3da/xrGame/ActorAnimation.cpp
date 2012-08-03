@@ -103,10 +103,22 @@ void  CActor::VehicleHeadCallback(CBoneInstance* B)
 void STorsoWpn::Create(CKinematicsAnimated* K, LPCSTR base0, LPCSTR base1)
 {
 	char			buf[128];
-	moving[eIdle]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_1"));
-	moving[eWalk]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_2"));
-	moving[eRun]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_3"));
-	moving[eSprint]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_escape_0"));
+	if (!xr_strcmp(base1, "_0"))
+		{
+		//для безоружного гг отдельные анимации
+			if (xr_strcmp(base0, "norm"))
+				moving[eIdle]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_1"));
+			else
+				moving[eIdle]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_idle_0"));
+		moving[eWalk]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_2"));
+		moving[eRun]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_3"));
+		moving[eSprint]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_escape_0"));
+	}else{
+		moving[eIdle]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_1"));
+		moving[eWalk]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_2"));
+		moving[eRun]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_3"));
+		moving[eSprint]	= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_escape_0"));
+	}
 	zoom			= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_aim_0"));
 	holster			= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_holster_0"));
 	draw			= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base0,"_torso",base1,"_draw_0"));
@@ -161,6 +173,7 @@ void SActorState::CreateClimb(CKinematicsAnimated* K)
 	m_torso[10].Create(K,base,"_11");
 	m_torso[11].Create(K,base,"_12");
 	m_torso[12].Create(K,base,"_13");
+	m_torso[13].Create(K,base,"_0");
 
 
 	m_head_idle.invalidate();///K->ID_Cycle("head_idle_0");
@@ -197,6 +210,7 @@ void SActorState::Create(CKinematicsAnimated* K, LPCSTR base)
 	m_torso[10].Create(K,base,"_11");
 	m_torso[11].Create(K,base,"_12");
 	m_torso[12].Create(K,base,"_13");
+	m_torso[13].Create(K,base,"_0");
 	
 	m_torso_idle	= K->ID_Cycle(strconcat(sizeof(buf),buf,base,"_torso_0_aim_0"));
 	m_head_idle		= K->ID_Cycle("head_idle_0");
@@ -394,7 +408,8 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 		CWeapon			*W = smart_cast<CWeapon*>(_i);
 		CMissile		*M = smart_cast<CMissile*>(_i);
 		CArtefact		*A = smart_cast<CArtefact*>(_i);
-					
+			
+	if (_i) {
 		if (H) {
 			VERIFY(H->animation_slot() <= _total_anim_slots_);
 			STorsoWpn* TW			= &ST->m_torso[H->animation_slot() - 1];
@@ -474,7 +489,7 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 							case MS_READY	 :		M_torso = M_legs = M_head = TW->all_attack_1;	break;
 							case MS_THROW	 :		M_torso = M_legs = M_head = TW->all_attack_2;	break;
 							case MS_END		 :		M_torso = M_legs = M_head = TW->all_attack_2;	break;
-							default			 :		M_torso	= TW->draw;			break; 
+							default			 :		M_torso	= TW->moving[moving_idx];			break; 
 							}
 						}
 						else
@@ -488,7 +503,7 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 							case MS_READY	 :		M_torso	= TW->fire_idle;				break;
 							case MS_THROW	 :		M_torso	= TW->fire_end;					break;
 							case MS_END		 :		M_torso	= TW->fire_end;					break;
-							default			 :		M_torso	= TW->draw;						break; 
+							default			 :		M_torso	= TW->moving[moving_idx];		break; 
 							}
 						}
 					}
@@ -505,6 +520,21 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 				}
 			}
 		}
+	} else {
+		STorsoWpn* TW			= &ST->m_torso[13];
+			if (!b_DropActivated&&!fis_zero(f_DropPower)){
+				M_torso					= TW->drop;
+				if (!M_torso)	
+				{
+					M_torso = ST->m_torso_idle;
+				};
+				m_bAnimTorsoPlayed		= TRUE;
+			}else{
+				if (!m_bAnimTorsoPlayed) {
+				M_torso	= TW->moving[moving_idx];
+				}
+			}
+	}
 	}
 
 	if (!M_legs)

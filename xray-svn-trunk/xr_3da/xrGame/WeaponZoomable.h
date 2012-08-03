@@ -6,11 +6,6 @@ class CWeaponZoomable :	public CWeaponBinoculars
 {
 private:
 	typedef CWeaponBinoculars inherited;
-protected:
-	bool			m_bIsZoom;
-protected:
-	virtual void	FireEnd				();
-	virtual void	switch2_Fire		();
 public:
 			CWeaponZoomable();
 	virtual	~CWeaponZoomable();
@@ -21,8 +16,6 @@ public:
 	virtual void	OnZoomOut			();
 	virtual	void	ZoomInc				();
 	virtual	void	ZoomDec				();
-
-	virtual	int		GetCurrentFireMode	() { return m_aFireModes[m_iCurFireMode]; };
 
 	virtual bool	Action				(s32 cmd, u32 flags);
 	virtual void	GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);

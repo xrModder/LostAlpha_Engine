@@ -88,58 +88,10 @@ Fvector CCameraLook2::m_cam_offset;
 void CCameraLook2::OnActivate( CCameraBase* old_cam )
 {
 	CCameraLook::OnActivate( old_cam );
-	for(int i=0; i < 2048; ++i)
-	{
-		if(is_binded(kEXT_1, i) )
-		{
-			cam_dik = i;
-			break;
-		}
-	}
 }
 
 void CCameraLook2::Update(Fvector& point, Fvector&)
 {
-	if(!m_locked_enemy)
-	{//autoaim
-		if( pInput->iGetAsyncKeyState(cam_dik) )
-		{
-			const CVisualMemoryManager::VISIBLES& vVisibles = Actor()->memory().visual().objects();
-			CVisualMemoryManager::VISIBLES::const_iterator v_it = vVisibles.begin();
-			float _nearest_dst	= flt_max;
-
-			for (; v_it!=vVisibles.end(); ++v_it)
-			{
-				const CObject*	_object_			= (*v_it).m_object;
-				if (!Actor()->memory().visual().visible_now(smart_cast<const CGameObject*>(_object_)))	continue;
-
-				CObject* object_ = const_cast<CObject*>(_object_);
-				
-
-				CEntityAlive*	EA					= smart_cast<CEntityAlive*>(object_);
-				if(!EA || !EA->g_Alive())			continue;
-				
-				float d = object_->Position().distance_to_xz(Actor()->Position());
-				if( !m_locked_enemy || d<_nearest_dst)
-				{
-					m_locked_enemy	= object_;
-					_nearest_dst	= d;
-				}
-			}
-//.			if(m_locked_enemy) Msg("enemy is %s", *m_locked_enemy->cNameSect() );
-		}
-	}else
-	{
-		if( !pInput->iGetAsyncKeyState(cam_dik) ){
-			m_locked_enemy	= NULL;
-//.			Msg				("enemy is NILL");
-		}
-	}
-
-	if(m_locked_enemy)
-		UpdateAutoAim	();
-
-
 	Fmatrix mR;
 	mR.setHPB						(-yaw,-pitch,-roll);
 

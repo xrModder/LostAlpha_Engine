@@ -121,7 +121,7 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 			s->wnd()->SetHeadingPivot(Fvector2().set(256,512));
 			STOP_PROFILE;
 
-			//SetAttackEffector			();
+			SetAttackEffector			();
 			
 			float time_to_lock		= fDamage * MAX_LOCK_TIME;
 			clamp					(time_to_lock, 0.f, MAX_LOCK_TIME);
@@ -131,7 +131,7 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 			//
 			//////////////////////////////////////////////////////////////////////////
 			
-			CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effBigMonsterHit);
+			/*CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effBigMonsterHit);
 			if(!ce)
 			{
 				const shared_str&	eff_sect = pSettings->r_string(cNameSect(), "actor_hit_effect");	
@@ -182,6 +182,7 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 					AddEffector				(Actor(), effBigMonsterHit, sect_name, fDamage);
 				}
 			}
+			*/
 			//////////////////////////////////////////////////////////////////////////
 			
 

@@ -28,7 +28,8 @@ void CWeaponBinoculars::Load	(LPCSTR section)
 	// Sounds
 	HUD_SOUND::LoadSound(section, "snd_zoomin",  sndZoomIn,		SOUND_TYPE_ITEM_USING);
 	HUD_SOUND::LoadSound(section, "snd_zoomout", sndZoomOut,	SOUND_TYPE_ITEM_USING);
-	m_bVision = !!pSettings->r_bool(section,"vision_present");
+		if(pSettings->line_exist(section,"vision_present"))
+		m_bVision = !!pSettings->r_bool(section,"vision_present");
 }
 
 
