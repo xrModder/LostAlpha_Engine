@@ -9,6 +9,7 @@
 
 #include "pch_script.h"
 #include "UIComboBox.h"
+#include "uilistboxitem.h"
 
 using namespace luabind;
 
@@ -25,6 +26,10 @@ void CUIComboBox::script_register(lua_State *L)
 		.def("SetListLength",		&CUIComboBox::SetListLength)
 		.def("CurrentID",			&CUIComboBox::CurrentID)
 		.def("SetCurrentID",		&CUIComboBox::SetItem)
+		.def("AddItemToBox",		&CUIComboBox::AddItem_script)
+		.def("GetText",				&CUIComboBox::GetText)
+		.def("SetText",				&CUIComboBox::SetText)
+		.def("SetCurrentValueScript",&CUIComboBox::SetCurrentValueScript)
 		
 //		.def("AddItem",				(void (CUIComboBox::*)(LPCSTR, bool)) CUIComboBox::AddItem)
 //		.def("AddItem",				(void (CUIComboBox::*)(LPCSTR)) CUIComboBox::AddItem)

@@ -9,6 +9,8 @@
 class CUISpinText : public CUICustomSpin{
 public:
 	CUISpinText();
+
+	virtual void	Init				(float x, float y, float width, float height);
 	// CUIOptionsItem
 	virtual void	SetCurrentValue();
 	virtual void	SaveValue();
@@ -17,6 +19,11 @@ public:
 	// own
 	virtual void	OnBtnUpClick();
 	virtual void	OnBtnDownClick();
+
+	virtual void	AddItemByScript(const char* item, int id);
+	virtual LPCSTR	GetTokenTextByScript();
+	virtual int		GetCurrentIDByScript();
+	virtual void	SetCurrentIDByScript(int id);
 
 			void	AddItem_(const char* item, int id);
 			LPCSTR	GetTokenText();

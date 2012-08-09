@@ -3,10 +3,9 @@
 #include "object_interfaces.h"
 #include "alife_space.h"
 #include "game_graph_space.h"
+#include "map_spot.h"
 
-class CMapSpot;
-class CMiniMapSpot;
-class CMapSpotPointer;
+
 class CUICustomMap;
 class CInventoryOwner;
 
@@ -31,6 +30,8 @@ protected:
 	CMapSpotPointer*		m_level_spot_pointer;
 	CMiniMapSpot*			m_minimap_spot;
 	CMapSpotPointer*		m_minimap_spot_pointer;
+	bool					m_user_defined;
+	LPCSTR					m_type;
 
 	CMapSpot*				m_level_map_spot_border;
 	CMapSpot*				m_mini_map_spot_border;
@@ -68,6 +69,9 @@ public:
 	bool					PointerEnabled					()					{return SpotEnabled() && !!m_flags.test(ePointerEnabled);};
 	void					EnablePointer					()					{m_flags.set(ePointerEnabled,TRUE);};
 	void					DisablePointer					()					{m_flags.set(ePointerEnabled,FALSE);};
+	LPCSTR					GetType							() const			{return m_type; };
+	
+	Fvector2				SpotSize						()					{return m_level_spot->GetWndSize();};
 
 	bool					SpotEnabled						()					{return !!m_flags.test(eSpotEnabled);};
 	void					EnableSpot						()					{m_flags.set(eSpotEnabled,TRUE);};
@@ -75,6 +79,7 @@ public:
 	bool					IsUserDefined					() const			{return !!m_flags.test(eUserDefined);}
 	virtual void			UpdateMiniMap					(CUICustomMap* map);
 	virtual void			UpdateLevelMap					(CUICustomMap* map);
+	void					HighlightSpot					(bool state);
 
 	virtual Fvector2		Position						();
 	virtual Fvector2		Direction						();
@@ -133,6 +138,7 @@ public:
 							CUserDefinedMapLocation			(LPCSTR type, u16 object_id);
 	virtual					~CUserDefinedMapLocation		();
 	virtual bool			Update							(); //returns actual
+	virtual Fvector			PositionReal					();		
 	virtual Fvector2		Position						();
 	virtual Fvector2		Direction						();
 	virtual shared_str		LevelName						();

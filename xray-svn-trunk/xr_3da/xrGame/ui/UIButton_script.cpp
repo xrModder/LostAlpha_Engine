@@ -56,13 +56,34 @@ void CUIButton::script_register(lua_State *L)
 		.def("GetText",				&CUICustomSpin::GetText),
 
 		class_<CUISpinNum, CUICustomSpin>("CUISpinNum")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinNum::Init)
+		.def("SetValue",				&CUISpinNum::SetValueByScript)
+		.def("GetValue",				&CUISpinNum::GetValueByScript)
+		.def("SetStep",					&CUISpinNum::SetStepByScript)
+		.def("GetStep",					&CUISpinNum::GetStepByScript)
+		.def("SetMaxValue",				&CUISpinNum::SetMaxValueByScript)
+		.def("SetMinValue",				&CUISpinNum::SetMinValueByScript),
 
 		class_<CUISpinFlt, CUICustomSpin>("CUISpinFlt")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinFlt::Init)
+		.def("SetValue",				&CUISpinFlt::SetValueByScript)
+		.def("GetValue",				&CUISpinFlt::GetValueByScript)
+		.def("SetStep",					&CUISpinFlt::SetStepByScript)
+		.def("GetStep",					&CUISpinFlt::GetStepByScript)
+		.def("SetMaxValue",				&CUISpinFlt::SetMaxValueByScript)
+		.def("SetMinValue",				&CUISpinFlt::SetMinValueByScript),
 
 		class_<CUISpinText, CUICustomSpin>("CUISpinText")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinText::Init)
+		.def("AddItem",					&CUISpinText::AddItemByScript)
+		.def("GetTokenText",			&CUISpinText::GetTokenTextByScript)
+		.def("GetCurrentID",			&CUISpinText::GetCurrentIDByScript)
+		.def("SetCurrentID",			&CUISpinText::SetCurrentIDByScript),
+
+
 
 		class_<CUITrackBar, CUIWindow>("CUITrackBar")
 		.def(							constructor<>())

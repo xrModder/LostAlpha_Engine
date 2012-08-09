@@ -18,6 +18,13 @@ public:
 	virtual void	SaveValue			();
 	virtual bool	IsChanged			();
 
+	virtual bool	SetValueByScript	(int value);
+	virtual void	SetStepByScript		(int StepValue);
+	virtual int		GetValueByScript	();
+	virtual int		GetStepByScript		();
+	virtual void	SetMaxValueByScript	(int MaxValue);
+	virtual void	SetMinValueByScript	(int MaxValue);
+
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();
 
@@ -53,6 +60,13 @@ public:
 
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();
+
+	virtual bool	SetValueByScript	(float value);
+	virtual void	SetStepByScript		(float StepValue);
+	virtual int		GetValueByScript	();
+	virtual int		GetStepByScript		();
+	virtual void	SetMaxValueByScript	(float MaxValue);
+	virtual void	SetMinValueByScript	(float MaxValue);
 
 			void	SetMax				(float max);
 			void	SetMin				(float min);

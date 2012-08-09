@@ -71,6 +71,8 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		R_ASSERT3(xml_result, "xml file not found", "map_spots.xml");
 	}
 
+	m_type = type;
+
 	XML_NODE* node = NULL;
 	string512 path_base, path;
 //	strconcat(path_base,"map_spots:",type);
@@ -473,6 +475,21 @@ void CMapLocation::UpdateLevelMap(CUICustomMap* map)
 		UpdateSpot(map, sp);
 }
 
+void CMapLocation::HighlightSpot(bool state)
+{
+	CUIStatic* st = smart_cast<CUIStatic*> (m_level_spot);
+
+	if (state) {
+		u32 color = pSettings->r_color("pda_spot_highlight","color");
+
+		st->SetTextureColor(color);
+	} else {
+		if (st->GetTextureColor()!=0xffffffff) {
+			st->SetTextureColor(0xffffffff);
+		}
+	}
+}
+
 u16	CMapLocation::AddRef() 
 {
 	++m_refCount; 
@@ -686,6 +703,9 @@ void CUserDefinedMapLocation::InitExternal(const shared_str& level_name, const F
 			R_ASSERT(ai().game_graph().vertex(m_graph_id));
 		}
 	}
+
+
+
 }
 
 bool CUserDefinedMapLocation::Update					()
@@ -698,10 +718,16 @@ shared_str CUserDefinedMapLocation::LevelName()
 	return m_level_name;
 }
 
+Fvector CUserDefinedMapLocation::PositionReal()
+{
+	return m_position;
+}
+
 Fvector2 CUserDefinedMapLocation::Position()
 {
 	return Fvector2().set(m_position.x, m_position.z);
 }
+
 
 Fvector2 CUserDefinedMapLocation::Direction()
 {

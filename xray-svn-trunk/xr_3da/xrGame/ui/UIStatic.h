@@ -110,6 +110,9 @@ public:
 			void AdjustWidthToText			();
 			void HighlightText(bool bHighlight) {m_bEnableTextHighlighting = bHighlight;}
 	virtual bool IsHighlightText();
+	
+	virtual bool IsComplexMode					();
+	virtual void SetComplexMode					(bool mode);
 
 	virtual void ClipperOn					();
 	virtual void ClipperOff					();
@@ -175,6 +178,7 @@ protected:
 	u32  m_dwTextColor[4];
 	bool m_bUseTextColor[4]; // note: 0 index will be ignored
 
+	bool m_bComplexMode;
 	bool m_bClipper;
 	bool m_bStretchTexture;
 	bool m_bAvailableTexture;

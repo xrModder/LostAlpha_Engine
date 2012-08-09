@@ -206,6 +206,17 @@ void map_add_object_spot_ser(u16 id, LPCSTR spot_type, LPCSTR text)
 	ml->SetSerializable(true);
 }
 
+u16 map_add_position_spot_ser(Fvector position, LPCSTR levelName, LPCSTR spot_type, LPCSTR text)
+{
+	u16 id = 0;
+	CMapLocation* ml = Level().MapManager().AddUserLocation(spot_type, levelName, position, &id);
+	if( xr_strlen(text) )
+		ml->SetHint(text);
+
+	ml->SetSerializable(true);
+	return id;
+}
+
 void map_change_spot_hint(u16 id, LPCSTR spot_type, LPCSTR text)
 {
 	CMapLocation* ml	= Level().MapManager().GetMapLocation(spot_type, id);
@@ -213,9 +224,23 @@ void map_change_spot_hint(u16 id, LPCSTR spot_type, LPCSTR text)
 	ml->SetHint			(text);
 }
 
+LPCSTR map_get_spot_hint(u16 id, LPCSTR spot_type)
+{
+	CMapLocation* ml	= Level().MapManager().GetMapLocation(spot_type, id);
+	if(!ml)				return "";
+	return				ml->GetHint();
+}
+
 void map_remove_object_spot(u16 id, LPCSTR spot_type)
 {
 	Level().MapManager().RemoveMapLocation(spot_type, id);
+}
+
+void map_highlight_spot(u16 id, LPCSTR spot_type, bool state)
+{
+	CMapLocation* ml	= Level().MapManager().GetMapLocation(spot_type, id);
+	if (ml==NULL) return;
+	ml->HighlightSpot(state);
 }
 
 u16 map_has_object_spot(u16 id, LPCSTR spot_type)
@@ -648,8 +673,11 @@ void CLevel::script_register(lua_State *L)
 		def("client_spawn_manager",				get_client_spawn_manager),
 
 		def("map_add_object_spot_ser",			map_add_object_spot_ser),
+		def("map_add_position_spot_ser",		map_add_position_spot_ser),
 		def("map_add_object_spot",				map_add_object_spot),
 		def("map_remove_object_spot",			map_remove_object_spot),
+		def("map_highlight_spot",				map_highlight_spot),
+		def("map_get_spot_hint",				map_get_spot_hint),
 		def("map_has_object_spot",				map_has_object_spot),
 		def("map_change_spot_hint",				map_change_spot_hint),
 

@@ -11,6 +11,8 @@
 #include "xrServer.h"
 #include "game_object_space.h"
 #include "script_callback_ex.h"
+#include "limits.h"
+
 
 struct FindLocationBySpotID{
 	shared_str	spot_id;
@@ -154,17 +156,17 @@ CMapLocation* CMapManager::AddRelationLocation(CInventoryOwner* pInvOwner)
 	return (*it).location;
 }
 
-/*	
-CMapLocation* CMapManager::AddUserLocation(const shared_str& spot_type, const shared_str& level_name, Fvector position)
+	
+CMapLocation* CMapManager::AddUserLocation(const shared_str& spot_type, const shared_str& level_name, Fvector position, u16 *id)
 {
 	u16 _id	= Level().Server->PerformIDgen(0xffff);
+	(*id) = _id;
 	CUserDefinedMapLocation* l = xr_new<CUserDefinedMapLocation>(*spot_type, _id);
 	l->InitExternal	(level_name, position);
 	Locations().push_back( SLocationKey(spot_type, _id) );
 	Locations().back().location = l;
 	return l;
-}*/
-
+}
 
 void CMapManager::RemoveMapLocation(const shared_str& spot_type, u16 id)
 {

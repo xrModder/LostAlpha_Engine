@@ -15,11 +15,13 @@
 #include "UIMapWndActions.h"
 #include "UIMapWndActionsSpace.h"
 #include "map_hint.h"
+#include "../game_cl_base.h"
 
 #include "../HUDManager.h"
 
 #include <dinput.h>				//remove me !!!
 #include "../../xr_input.h"		//remove me !!!
+class	game_cl_GameState;
 
 const	int			SCROLLBARS_SHIFT			= 5;
 const	int			VSCROLLBAR_STEP				= 20; // В пикселях
@@ -141,36 +143,36 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		Register						(m_ToolBar[btnIndex]);
 		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolZoomOutClicked));
 	}
-/*
+
 	btnIndex		= eAddSpot;
-	strconcat(pth, sToolbar.c_str(), ":add_spot_btn");
+	strconcat(sizeof(pth),pth, sToolbar.c_str(), ":add_spot_btn");
 	if(uiXml.NavigateToNode(pth,0) && IsGameTypeSingle() ){
 		m_ToolBar[btnIndex]				= xr_new<CUI3tButton>(); m_ToolBar[btnIndex]->SetAutoDelete(true);
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolAddSpotClicked,this,_1,_2));
+		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolAddSpotClicked));
 	}
-	btnIndex		= eRemoveSpot;
-	strconcat(pth, sToolbar.c_str(), ":remove_spot_btn");
+	/*btnIndex		= eRemoveSpot;
+	strconcat(sizeof(pth),pth, sToolbar.c_str(), ":remove_spot_btn");
 	if(uiXml.NavigateToNode(pth,0 ) && IsGameTypeSingle() ){
-		m_ToolBar[btnIndex]				= xr_new<CUI3tButton>(); m_ToolBar[btnIndex]->SetAutoDelete(true);
+		m_ToolBar[btnIndex]				= xr_new<CUI3tButton>(); m_ToolBar[btnIndex]->SetAutoDelete(true); m_ToolBar[btnIndex]->Enable(false);
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolRemoveSpotClicked,this,_1,_2));
+		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolRemoveSpotClicked));
 	}
 
 	btnIndex		= eHighlightSpot;
-	strconcat(pth, sToolbar.c_str(), ":highlight_spot_btn");
+	strconcat(sizeof(pth),pth, sToolbar.c_str(), ":highlight_spot_btn");
 	if(uiXml.NavigateToNode(pth,0) && IsGameTypeSingle() ){
 		m_ToolBar[btnIndex]				= xr_new<CUI3tButton>(); m_ToolBar[btnIndex]->SetAutoDelete(true);
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolHighlightSpotClicked,this,_1,_2));
-	}
-*/
+		//AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolHighlightSpotClicked,this,_1,_2));
+	}*/
+
 	m_text_hint							= xr_new<CUIStatic>();
 	strconcat							(sizeof(pth),pth,start_from,":main_wnd:text_hint");
 	xml_init.InitStatic					(uiXml, pth, 0, m_text_hint);
@@ -449,14 +451,6 @@ bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 			bool b_zoom_in =	(mouse_action==WINDOW_LBUTTON_DOWN && m_flags.test(lmZoomIn)) || 
 								(mouse_action==WINDOW_MOUSE_WHEEL_DOWN);
 
-			if(mouse_action==WINDOW_MOUSE_WHEEL_UP)
-			{
-//.				Msg("up");
-			}
-			if(mouse_action==WINDOW_MOUSE_WHEEL_DOWN)
-			{
-//.				Msg("down");
-			}
 			CUIGlobalMap* gm				= GlobalMap();
 			float _prev_zoom				= GetZoom();
 			if(b_zoom_in)					SetZoom(GetZoom()*1.5f);
@@ -472,10 +466,84 @@ bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 				m_hint->SetOwner				(NULL);
 			}
 			return								true;
-		}
+	} else if ((mouse_action==WINDOW_LBUTTON_DOWN)&&(m_flags.is_any(lmUserSpotAdd))) {
+
+			Fvector RealPosition;
+
+			if (ConvertCursorPosToMap(&RealPosition)) {
+
+				CMapLocation* _mapLoc = UnderSpot(RealPosition);
+
+				if (_mapLoc==NULL) {
+					CreateSpotWindow(RealPosition);
+				} else {
+
+					CUserDefinedMapLocation* userML = smart_cast<CUserDefinedMapLocation*>(_mapLoc);
+					ShowSettingsWindow(_mapLoc->GetType(),_mapLoc->ObjectID(), userML->PositionReal(),userML->LevelName());
+				}
+				
+
+			}
+
+	}
 
 
 	return										false;
+}
+
+void CUIMapWnd::ShowSettingsWindow(LPCSTR type, u16 id, Fvector pos, shared_str levelName)
+{
+	luabind::functor<void>	lua_function;
+	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindowSettings",lua_function),"Can't call la_pda_spot.InitWindowSettings");
+	
+	string256 MapName;
+	strcpy_s(MapName, levelName._get()->value);
+	lua_function								(id,type,pos,MapName);
+}
+
+CMapLocation* CUIMapWnd::UnderSpot(Fvector RealPosition)
+{
+	Fvector2 RealPositionXZ;
+	RealPositionXZ.set(RealPosition.x,RealPosition.z);
+
+	Locations Spots = Level().MapManager().Locations();
+	Locations_it it;
+	Fvector2 m_position_on_map;
+	Fvector2 m_position_mouse = m_tgtMap->ConvertRealToLocal(RealPositionXZ);
+	float TargetLocationDistance = 100.0f;
+	CMapLocation* ml = NULL;
+
+	for (it = Spots.begin(); it!=Spots.end(); ++it) {
+		if ( (*it).location->IsUserDefined() ) {
+
+			m_position_on_map = m_tgtMap->ConvertRealToLocal((*it).location->Position());
+
+			float distance = m_position_on_map.distance_to(m_position_mouse);
+
+			Fvector2 FvectorSize = (*it).location->SpotSize();
+			float size = (FvectorSize.x+FvectorSize.y)/2;
+
+			if ((distance < size ) && (distance<TargetLocationDistance)) {
+
+				TargetLocationDistance = distance;
+				ml = (*it).location;
+
+			}
+		}
+	}
+	return ml;
+}
+
+void CUIMapWnd::CreateSpotWindow(Fvector RealPosition)
+{
+
+	string256 MapName;
+	strcpy_s(MapName, m_tgtMap->MapName()._get()->value);
+
+	luabind::functor<void>	lua_function;
+	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindow",lua_function),"Can't call la_pda_spot.InitWindow");
+	lua_function								(MapName, RealPosition);
+
 }
 
 void CUIMapWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -591,8 +659,8 @@ void CUIMapWnd::OnToolZoomOutClicked(CUIWindow* w, void*)
 	m_flags.set						(lmZoomOut,bPushed);
 	ValidateToolBar					();
 }
-/*
-void CUIMapWnd::OnToolAddSpotClicked	(CUIWindow* w, void*)
+
+void CUIMapWnd::OnToolAddSpotClicked(CUIWindow* w, void*)
 {
 	m_flags.zero		();
 	CUI3tButton* btn = smart_cast<CUI3tButton*>(w);
@@ -609,7 +677,7 @@ void CUIMapWnd::OnToolRemoveSpotClicked	(CUIWindow* w, void*)
 	m_flags.set							(lmUserSpotRemove,bPushed);
 	ValidateToolBar						();
 }
-
+/*
 void CUIMapWnd::RemoveSpot			()
 {
 	if(m_selected_location&&m_selected_location->CanBeUserRemoved()){
@@ -619,9 +687,9 @@ void CUIMapWnd::RemoveSpot			()
 		m_ToolBar[eRemoveSpot]->SetButtonMode(CUIButton::BUTTON_NORMAL);
 	}
 }
+*/
 
-
-
+/*
 void CUIMapWnd::OnToolHighlightSpotClicked(CUIWindow* w, void*)
 {
 	m_flags.zero		();
@@ -630,9 +698,9 @@ void CUIMapWnd::OnToolHighlightSpotClicked(CUIWindow* w, void*)
 	m_flags.set							(lmHighlightSpot,bPushed);
 	ValidateToolBar						();
 }
-
-
-void CUIMapWnd::HighlightSpot			()
+*/
+/*
+void CUIMapWnd::HighlightSpot			(CMapLocation* ml, bool state)
 {
 	if(m_selected_location){
 		bool b = m_selected_location->PointerEnabled	();
@@ -645,8 +713,8 @@ void CUIMapWnd::HighlightSpot			()
 		m_ToolBar[eHighlightSpot]->SetButtonMode(CUIButton::BUTTON_NORMAL);
 		m_flags.set						(lmHighlightSpot,FALSE);
 	}
-}
-*/
+}*/
+
 void CUIMapWnd::ValidateToolBar			()
 {
 	CUI3tButton* btn	= NULL;
@@ -657,7 +725,7 @@ void CUIMapWnd::ValidateToolBar			()
 	btn					= m_ToolBar[eZoomOut];
 	if(btn)
 		btn->SetCheck	(!!m_flags.test(lmZoomOut));
-/*
+
 	btn					= m_ToolBar[eAddSpot];
 	if(btn)
 		btn->SetCheck	(!!m_flags.test(lmUserSpotAdd));
@@ -666,7 +734,7 @@ void CUIMapWnd::ValidateToolBar			()
 	if(btn)
 		btn->SetCheck	(!!m_flags.test(lmUserSpotRemove));
 
-	btn					= m_ToolBar[eHighlightSpot];
+/*	btn					= m_ToolBar[eHighlightSpot];
 	if(btn)
 		btn->SetCheck	(!!m_flags.test(lmHighlightSpot));
 */
@@ -690,6 +758,57 @@ void CUIMapWnd::OnToolActorClicked		(CUIWindow*, void*)
 
 	SetTargetMap				(lm, v2, true);
 }
+
+bool CUIMapWnd::ConvertCursorPosToMap(Fvector* return_position)
+{
+	if (fsimilar(GlobalMap()->GetMinZoom(), GetZoom(), EPS_L)) return false;
+
+	if (!m_tgtMap) { Msg("!!Error in ConvertCursorPosToMap! No m_tgtMap"); return false; }
+	CUILevelMap* CurrentMap = smart_cast<CUILevelMap*>(m_tgtMap);										//map = CurrentMap
+	if (!CurrentMap) { Msg("!!Error in ConvertCursorPosToMap! No CurrentMap"); return false; }
+
+	Frect PosOnMap = CurrentMap->GlobalRect();															//v1=PosOnMap
+	Frect PosReal = CurrentMap->BoundRect();
+	Fvector2 Position = m_GlobalMap->GetWndPos();														//v2=Positioin
+
+	Position.div(m_GlobalMap->GetCurrentZoom());
+
+	Position.abs(Position);
+	Position.sub(PosOnMap.lt);
+	
+	//Где находимся от левого верхнего угла
+	//Add cursor position
+	Fvector2 CursorPos = GetUICursor()->GetCursorPosition();
+	CursorPos.sub(ActiveMapRect().lt);
+	CursorPos.div(m_GlobalMap->GetCurrentZoom());
+	Position.add(CursorPos);
+
+	//Ratio: Meters to Pixels
+	Fvector2 Ratio;
+	Ratio.x = PosReal.width() /PosOnMap.width();														//Отношение пикселей к реальным метрам
+	Ratio.y = PosReal.height() /PosOnMap.height();
+
+	//Location center isn't usually in the map location center
+	//Центр локации не всегда там где центр локации на карте
+	Fvector2 OffsetPosition;
+	OffsetPosition.set( PosReal.rb.x + PosReal.lt.x,PosReal.rb.y + PosReal.lt.y);
+	OffsetPosition.div(2.0f);
+
+	//Center on map. In PDA
+	Fvector2 CenterOnMap;
+	CenterOnMap.set( PosOnMap.rb.x-PosOnMap.lt.x, PosOnMap.rb.y-PosOnMap.lt.y );
+	CenterOnMap.div(2.0f);
+
+
+	Position.set(Position.x-CenterOnMap.x,CenterOnMap.y-Position.y);
+	Position.mul(Ratio);
+	Position.add(OffsetPosition);
+
+
+	return_position->set(Position.x,0.0f,Position.y);
+	return true;
+}
+
 /*
 void CUIMapWnd::AddUserSpot			(CUILevelMap* lm)
 {
@@ -769,6 +888,7 @@ void CUIMapWnd::Select				(CMapLocation* ml)
 
 void CUIMapWnd::Hint					(const shared_str& text)
 {
+	m_tgtMap = GetMapByIdx(GetIdxByName(text));
 	m_text_hint->SetTextST				(*text);
 }
 

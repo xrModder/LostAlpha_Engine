@@ -29,6 +29,7 @@ CUIStatic:: CUIStatic()
 	m_bAvailableTexture		= false;
 	m_bTextureEnable		= true;
 	m_bClipper				= false;
+	m_bComplexMode			= false;
 	m_bStretchTexture		= false;
 
 	m_TextureOffset.set		(0.0f,0.0f);
@@ -115,6 +116,7 @@ ref_shader& CUIStatic::GetShader(){
 void CUIStatic::SetTextureColor(u32 color){
 	m_UIStaticItem.SetColor(color);
 }
+
 
 u32 CUIStatic::GetTextureColor() const{
 	return m_UIStaticItem.GetColor();
@@ -296,6 +298,7 @@ void CUIStatic::SetFont(CGameFont* pFont){
 void CUIStatic::SetTextComplexMode(bool md){
 	CREATE_LINES;
 	m_pLines->SetTextComplexMode(md);
+	m_bComplexMode = md;
 }
 
 CGameFont* CUIStatic::GetFont(){
@@ -365,6 +368,16 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 
 		UIStaticItem.SetRect(r);
 	}
+}
+
+bool CUIStatic::IsComplexMode()
+{
+	return m_bComplexMode;
+}
+
+void CUIStatic::SetComplexMode(bool mode)
+{
+	SetTextComplexMode(mode);
 }
 
 void CUIStatic::ClipperOn() 

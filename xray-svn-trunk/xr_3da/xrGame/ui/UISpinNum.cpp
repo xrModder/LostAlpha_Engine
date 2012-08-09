@@ -17,6 +17,42 @@ CUISpinNum::CUISpinNum()
 
 }
 
+void CUISpinNum::SetMaxValueByScript(int MaxValue)
+{
+	R_ASSERT(m_iMin<MaxValue);
+	m_iMax = MaxValue;
+}
+
+void CUISpinNum::SetMinValueByScript(int MinValue)
+{
+	R_ASSERT(m_iMin<MinValue);
+	m_iMin = MinValue;
+}
+
+int CUISpinNum::GetValueByScript()
+{
+	return Value();
+}
+int CUISpinNum::GetStepByScript()
+{
+	return m_iStep;
+}
+
+void CUISpinNum::SetStepByScript(int StepValue)
+{
+	m_iStep = StepValue;
+}
+
+bool CUISpinNum::SetValueByScript(int value)
+{
+	R_ASSERT	(!((value<=m_iMax) && (value>=m_iMin)));
+	
+	m_iVal = value;
+	SetValue();
+	
+	return true;
+}
+
 void CUISpinNum::SetCurrentValue()
 {
 	GetOptIntegerValue(m_iVal, m_iMin, m_iMax);
@@ -163,4 +199,40 @@ bool CUISpinFlt::CanPressUp()
 bool CUISpinFlt::CanPressDown()
 {
 	return (m_fVal - m_fStep > m_fMin) || fsimilar(m_fVal-m_fStep, m_fMin);
+}
+
+void CUISpinFlt::SetMaxValueByScript(float MaxValue)
+{
+	R_ASSERT(MaxValue>m_fMin);
+	m_fMax = MaxValue;
+}
+
+void CUISpinFlt::SetMinValueByScript(float MinValue)
+{
+	R_ASSERT(MinValue<m_fMax);
+	m_fMin = MinValue;
+}
+
+int CUISpinFlt::GetValueByScript()
+{
+	return m_fVal;
+}
+int CUISpinFlt::GetStepByScript()
+{
+	return m_fStep;
+}
+
+void CUISpinFlt::SetStepByScript(float StepValue)
+{
+	m_fStep = StepValue;
+}
+
+bool CUISpinFlt::SetValueByScript(float value)
+{
+	R_ASSERT	(!((value<=m_fMax) && (value>=m_fMin)));
+	
+	m_fVal = value;
+	SetValue();
+	
+	return true;
 }

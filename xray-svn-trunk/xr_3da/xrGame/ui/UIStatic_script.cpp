@@ -22,6 +22,8 @@ void CUIStatic::script_register(lua_State *L)
 		
 		.def("SetColor",			&CUIStatic::SetColor)
 		.def("GetColor",			&CUIStatic::GetColor)
+		.def("SetTextureColor",			&CUIStatic::SetTextureColor)
+		.def("GetTextureColor",			&CUIStatic::GetTextureColor)
 		.def("SetTextColor",		&CUIStatic::SetTextColor_script)
 		.def("Init",				(void(CUIStatic::*)(float,float,float,float))&CUIStatic::Init )
 		.def("Init",				(void(CUIStatic::*)(LPCSTR,float,float,float,float))&CUIStatic::Init )
@@ -42,5 +44,7 @@ void CUIStatic::script_register(lua_State *L)
 		.def("ClipperOn",			&CUIStatic::ClipperOn)
 		.def("ClipperOff",			(void(CUIStatic::*)(void))&CUIStatic::ClipperOff )
 		.def("GetClipperState",		&CUIStatic::GetClipperState)
+		.def("IsComplexMode",		&CUIStatic::IsComplexMode)
+		.def("SetComplexMode",		&CUIStatic::SetComplexMode)
 	];
 }

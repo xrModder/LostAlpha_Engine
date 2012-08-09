@@ -275,7 +275,36 @@ bool CUIInventoryWnd::OnItemStartDrag(CUICellItem* itm)
 bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
+	ColorizeAmmo		(itm);
 	return				false;
+}
+
+void CUIInventoryWnd::ColorizeAmmo(CUICellItem* itm)
+{
+	CInventoryItem* inventoryitem = (CInventoryItem*) itm->m_pData;
+	if (!inventoryitem) {Msg("Can't convert to CInventoryItem"); return; }
+	CWeaponMagazined* weapon = smart_cast<CWeaponMagazined*>(inventoryitem);
+	if (!weapon) {Msg("Can't convert to CWeaponMagazined"); return; }
+
+	xr_vector<shared_str> ammo_types = weapon->m_ammoTypes;
+	
+	u32 color = pSettings->r_color("inventory_color_ammo","color");
+
+	for (size_t id = 0;id<ammo_types.size();++id) {
+
+		u32 item_count = m_pUIBagList->ItemsCount();
+		for (u32 i=0;i<item_count;++i) {
+			CUICellItem* bag_item = m_pUIBagList->GetItemIdx(i);
+			PIItem invitem = (PIItem) bag_item->m_pData;
+			
+
+			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id])==0 && invitem->Useful()) {
+				bag_item->SetTextureColor				(color);
+				break;												//go out from loop, because we can't have 2 CUICellItem's with same section
+			}
+
+		}
+	}
 }
 
 bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)

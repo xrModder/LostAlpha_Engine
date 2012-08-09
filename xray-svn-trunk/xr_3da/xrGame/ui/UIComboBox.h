@@ -35,12 +35,15 @@ public:
 	virtual void 		Undo					();
 
 			LPCSTR		GetText					();
+			void		SetText					(LPCSTR text);
+			void		SetCurrentValueScript	(int value);
 
 	// methods
 	CUIListBox*			GetListWnd				();
 			void		SetListLength			(int length);
 			void		SetVertScroll			(bool bVScroll = true){m_list.SetFixedScrollBar(bVScroll);};
 //.	virtual void		AddItem					(LPCSTR str, bool bSelected);
+	void				AddItem_script			(LPCSTR str, int _data);
 	CUIListBoxItem*		AddItem_				(LPCSTR str, int _data);
 	virtual void		Init					(float x, float y, float width);
 			void		SetItem					(int i);

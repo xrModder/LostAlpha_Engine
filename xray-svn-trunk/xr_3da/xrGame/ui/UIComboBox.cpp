@@ -91,6 +91,14 @@ CUIListBoxItem* CUIComboBox::AddItem_(LPCSTR str, int _data)
 	return				itm;
 }
 
+void CUIComboBox::AddItem_script(LPCSTR str, int _data)
+{
+    R_ASSERT2			(m_bInited, "Can't add item to ComboBox before Initialization");
+	CUIListBoxItem* itm = m_list.AddItem(str);
+	itm->SetData		((void*)(__int64)_data);
+
+}
+
 
 void CUIComboBox::OnListItemSelect()
 {
@@ -156,6 +164,11 @@ bool CUIComboBox::IsChanged()
 LPCSTR CUIComboBox::GetText()
 {
 	return m_text.GetText	();
+}
+
+void CUIComboBox::SetText(LPCSTR text)
+{
+	m_text.SetText	(text);
 }
 
 void CUIComboBox::SetItem(int idx)
@@ -296,4 +309,13 @@ void CUIComboBox::Undo()
 	SaveValue			();
 	SetCurrentValue		();
 }
+
+void CUIComboBox::SetCurrentValueScript(int value)
+{
+	SetItem				(value);
+	SaveValue			();
+	SetCurrentValue		();
+}
+
+
 

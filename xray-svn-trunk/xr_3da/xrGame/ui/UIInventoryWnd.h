@@ -13,6 +13,7 @@ class CInventory;
 #include "UIOutfitInfo.h"
 #include "UIItemInfo.h"
 #include "../inventory_space.h"
+#include "../WeaponMagazined.h"
 
 class CArtefact;
 class CUI3tButton;
@@ -151,6 +152,7 @@ protected:
 	void						DetachAddon					(const char* addon_name);
 
 	void						SetCurrentItem				(CUICellItem* itm);
+	void						ColorizeAmmo				(CUICellItem* itm);
 	CUICellItem*				CurrentItem					();
 	PIItem						CurrentIItem				();
 
