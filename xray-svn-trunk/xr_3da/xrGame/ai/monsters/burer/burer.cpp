@@ -61,7 +61,7 @@ void CBurer::reload(LPCSTR section)
 	// add triple animations
 	com_man().ta_fill_data(anim_triple_gravi,	"stand_gravi_0",	"stand_gravi_1",	"stand_gravi_2",	TA_EXECUTE_ONCE, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 	com_man().ta_fill_data(anim_triple_tele,	"stand_tele_0",		"stand_tele_1",		"stand_tele_2",		TA_EXECUTE_ONCE, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
-	com_man().ta_fill_data(anim_triple_shield,	"stand_tele_0",		"stand_tele_1",		"stand_tele_2",		TA_EXECUTE_LOOPED, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
+	com_man().ta_fill_data(anim_triple_shield,	"idle_to_shield_0",		"shield_0",		"shield_0_idle_0",		TA_EXECUTE_LOOPED, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 }
 
 void CBurer::Load(LPCSTR section)
