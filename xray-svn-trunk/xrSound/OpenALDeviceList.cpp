@@ -80,11 +80,11 @@ void ALDeviceList::Enumerate()
 		// Also we assume that if "Generic Hardware" exists, than "Generic Software" is also exists
 		// Maybe wrong
 		
-		if(0==stricmp(m_defaultDeviceName.c_str(),AL_GENERIC_HARDWARE))
-		{
-			m_defaultDeviceName			= AL_GENERIC_SOFTWARE;
-			Msg("SOUND: OpenAL: default SndDevice name set to %s", m_defaultDeviceName.c_str());
-		}
+		//if(0==stricmp(m_defaultDeviceName.c_str(),AL_GENERIC_HARDWARE))
+		//{
+		//	m_defaultDeviceName			= AL_GENERIC_SOFTWARE;
+		//	Msg("SOUND: OpenAL: default SndDevice name set to %s", m_defaultDeviceName.c_str());
+		//}
 
 		index				= 0;
 		// go through device list (each device terminated with a single NULL, list terminated with double NULL)
@@ -107,8 +107,8 @@ void ALDeviceList::Enumerate()
 						m_devices.push_back				(ALDeviceDesc(actualDeviceName,minor,major));
 						m_devices.back().xram			= (alIsExtensionPresent("EAX-RAM") == TRUE);
 						m_devices.back().eax			= (alIsExtensionPresent("EAX2.0") == TRUE);
-						m_devices.back().eax_unwanted	= ((0==xr_strcmp(actualDeviceName,AL_GENERIC_HARDWARE))||
-														   (0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
+						m_devices.back().eax_unwanted	= false;//((0==xr_strcmp(actualDeviceName,AL_GENERIC_HARDWARE))||
+														   //(0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
 						++index;
 					}
 					alcDestroyContext(context);
