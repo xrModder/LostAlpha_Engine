@@ -486,6 +486,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\buffer_vector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\buffer_vector_inline.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dump_string.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dump_string.h"
+				>
+			</File>
+			<File
 				RelativePath="vector.h"
 				>
 			</File>

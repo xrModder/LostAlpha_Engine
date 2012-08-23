@@ -23,6 +23,7 @@ using std::swap;
 #define xr_set std::set
 #define xr_multiset std::multiset
 #define xr_map std::map
+#define xr_hash_map std::hash_map
 #define xr_multimap std::multimap
 #define xr_string std::string
 
@@ -202,6 +203,7 @@ template	<typename K, class P=std::less<K>, typename allocator = xalloc<K> >				
 template	<typename K, class V, class P=std::less<K>, typename allocator = xalloc<std::pair<K,V> > >	class	xr_map 			: public std::map<K,V,P,allocator>		{ public: u32 size() const {return (u32)__super::size(); } };
 template	<typename K, class V, class P=std::less<K>, typename allocator = xalloc<std::pair<K,V> > >	class	xr_multimap		: public std::multimap<K,V,P,allocator>	{ public: u32 size() const {return (u32)__super::size(); } };
 
+
 #endif
 
 template	<class _Ty1, class _Ty2> inline	std::pair<_Ty1, _Ty2>		mk_pair		(_Ty1 _Val1, _Ty2 _Val2)	{	return (std::pair<_Ty1, _Ty2>(_Val1, _Val2));	}
@@ -211,6 +213,21 @@ struct pred_str		: public std::binary_function<char*, char*, bool>	{
 };
 struct pred_stri	: public std::binary_function<char*, char*, bool>	{	
 	IC bool operator()(const char* x, const char* y) const				{	return stricmp(x,y)<0;	}
+};
+
+namespace std 
+{
+	template <class InputIterator, class Size, class OutputIterator> 
+	OutputIterator copy_n(InputIterator first, Size count, OutputIterator result)
+	{
+		if (count > 0) 
+		{
+			*result++ = *first;
+			for (Size i = 1; i < count; ++i)
+				*result++ = *++first;
+		}
+		return result;
+	}
 };
 
 // STL extensions
@@ -231,6 +248,7 @@ struct pred_stri	: public std::binary_function<char*, char*, bool>	{
 #define DEFINE_STACK(T,N)			typedef xr_stack< T > N;
 
 #include "FixedVector.h"
+#include "buffer_vector.h"
 
 // auxilary definition
 DEFINE_VECTOR(bool,boolVec,boolIt);
@@ -246,7 +264,7 @@ DEFINE_VECTOR(Fcolor,FcolorVec,FcolorIt);
 DEFINE_VECTOR(Fcolor*,LPFcolorVec,LPFcolorIt);
 DEFINE_VECTOR(LPSTR,LPSTRVec,LPSTRIt);
 DEFINE_VECTOR(LPCSTR,LPCSTRVec,LPCSTRIt);
-//DEFINE_VECTOR(string64,string64Vec,string64It);
+DEFINE_VECTOR(string64,string64Vec,string64It);
 DEFINE_VECTOR(xr_string,SStringVec,SStringVecIt);
 
 DEFINE_VECTOR(s8,S8Vec,S8It);

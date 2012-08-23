@@ -93,10 +93,12 @@ public:
 	int								g_type;			//!< Sound type, usually for AI
 	CObject*						g_object;		//!< Game object that emitts ref_sound
 	CSound_UserDataPtr				g_userdata;
+	u32								iTimeTotal;
 public:
 									ref_sound_data	();
 									ref_sound_data	(LPCSTR fName, esound_type sound_type, int game_type);
 	virtual							~ref_sound_data	();
+	u32								get_length_ms		() const {return iTimeTotal;};
 };
 typedef resptr_core<ref_sound_data,resptr_base<ref_sound_data> >	ref_sound_data_ptr;
 /*! \class ref_sound
@@ -173,6 +175,7 @@ public:
 
 	IC const CSound_params*	get_params				( );
     IC void					set_params				( CSound_params* p );
+	IC u32					get_length_ms			() const						{return _p?_p->get_length_ms():0;};
 };
 
 /// definition (Sound Source)
@@ -321,7 +324,7 @@ public:
 extern XRSOUND_API CSound_manager_interface*		Sound;
 
 /// ********* Sound ********* (utils, accessors, helpers)
-IC ref_sound_data::ref_sound_data				()																{	handle=0;feedback=0;g_type=0;g_object=0;s_type=st_Effect;												}
+IC ref_sound_data::ref_sound_data				()																{	handle=0;feedback=0;g_type=0;g_object=0;s_type=st_Effect;iTimeTotal=0;									}
 IC ref_sound_data::ref_sound_data				( LPCSTR fName, 		esound_type sound_type, int	game_type )	{	::Sound->_create_data			(*this,fName, sound_type, game_type);									}
 IC ref_sound_data::~ref_sound_data				()																{	::Sound->_destroy_data			(*this);																}
 

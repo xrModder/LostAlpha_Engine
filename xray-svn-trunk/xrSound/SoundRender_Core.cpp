@@ -294,6 +294,7 @@ void	CSoundRender_Core::clone				( ref_sound& S, const ref_sound& from, esound_t
 	if (!bPresent)		return;
 	S._p				= xr_new<ref_sound_data>();
 	S._p->handle		= from._p->handle;
+	S._p->iTimeTotal	= from._p->iTimeTotal;
 	S._p->g_type		= (game_type==sg_SourceType)?S._p->handle->game_type():game_type;
 	S._p->s_type		= sound_type;
 }
@@ -355,6 +356,7 @@ void CSoundRender_Core::_create_data( ref_sound_data& S, LPCSTR fName, esound_ty
 	S.feedback			= 0; 
     S.g_object			= 0; 
     S.g_userdata		= 0;
+	S.iTimeTotal		= S.handle->length_ms();
 }
 void CSoundRender_Core::_destroy_data( ref_sound_data& S)
 {
