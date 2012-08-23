@@ -333,15 +333,13 @@ public:
 	// returns FALSE if there is no axis (and Axis is set to 0,0,0, and Theta is 0)
 	IC	BOOL	get_axis_angle(Fvector &axis, T &angle)
 	{
-		T OneOverSinTheta;
-
-		T HalfTheta  = acosf( w );
-		if (HalfTheta>QZERO_TOLERANCE) 	{
-			OneOverSinTheta = 1.0f / _sin( HalfTheta );
+		T s = _sqrt(x*x + y*y + z*z);
+		if ( s > EPS_S ) 	{
+			T OneOverSinTheta = 1.f/s;
 			axis.x	= OneOverSinTheta * x;
 			axis.y	= OneOverSinTheta * y;
 			axis.z	= OneOverSinTheta * z;
-			angle	= 2.0f * HalfTheta;
+			angle	= 2.0f * atan2(s,w);
 			return	true;
 		} else 	{
 			axis.x	= axis.y = axis.z = 0.0f;

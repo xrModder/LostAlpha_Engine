@@ -57,6 +57,7 @@ IC int sprintf_s(char* dest, size_t sizeOfBuffer, const char* format, ...)
 	int sz		= _vsnprintf(dest, sizeOfBuffer, format, mark );
     dest		[sizeOfBuffer-1]=0;
     va_end		(mark);
+    return 		sz;
 }
 #endif
 
