@@ -7,6 +7,7 @@
 	#include "IGame_ObjectPool.h"
 #endif
 
+class IRender_Visual;
 class IMainMenu;
 class ENGINE_API CPS_Instance;
 //-----------------------------------------------------------------------------------------------------------

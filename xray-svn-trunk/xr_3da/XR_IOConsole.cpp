@@ -141,7 +141,7 @@ void CConsole::OnRender	()
 	D3DRECT R = { 0,0,Device.dwWidth,Device.dwHeight};
 	if		(bGame) R.y2 /= 2;
 
-	CHK_DX	(HW.pDevice->Clear(1,&R,D3DCLEAR_TARGET,D3DCOLOR_XRGB(32,32,32),1,0));
+	CHK_DX	(HW.pDevice->Clear(1,&R,D3DCLEAR_TARGET,D3DCOLOR_ARGB(200, 20, 20, 20),1,0)); // [255,32,32,32]
 
 	float dwMaxY=float(Device.dwHeight);
 	// float dwMaxX=float(Device.dwWidth/2);

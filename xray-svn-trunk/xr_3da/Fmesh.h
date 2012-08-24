@@ -19,6 +19,8 @@ enum MT {
 	MT_PARTICLE_GROUP		=9,
 	MT_SKELETON_RIGID		=10,
 	MT_TREE_PM				=11,
+
+	MT_3DFLUIDVOLUME		=12,
 };
 
 enum OGF_Chuncks {
@@ -45,12 +47,17 @@ enum OGF_Chuncks {
 	OGF_GCONTAINER			= 21,	// * both VB&IB
 	OGF_FASTPATH			= 22,	// * extended/fast geometry
 	OGF_S_LODS 				= 23,	// * For skeletons only (Ini-file)
+	OGF_S_MOTION_REFS2		= 24,	// * changes in format
+	OGF_COLLISION_VERTICES	= 25,
+	OGF_COLLISION_INDICES	= 26,
     OGF_forcedword			= 0xFFFFFFFF         
 };							
 
 enum OGF_SkeletonVertType	{
 	OGF_VERTEXFORMAT_FVF_1L	= 1*0x12071980,
 	OGF_VERTEXFORMAT_FVF_2L	= 2*0x12071980,
+	OGF_VERTEXFORMAT_FVF_3L	= 4*0x12071980,
+	OGF_VERTEXFORMAT_FVF_4L	= 5*0x12071980,
 	OGF_VERTEXFORMAT_FVF_NL	= 3*0x12071980,
 };
 

@@ -458,13 +458,15 @@ IC bool valid_pos(const Fvector &P,const Fbox &B){
 
 #ifdef DEBUG
 const float				DET_CHECK_EPS =0.15f					;//scale -35%  !? ;)
+const float				DET_CHECK_FATAL_EPS =0.8f					;//scale -35%  !? ;)
 #define	VERIFY_RMATRIX(M)	{\
 	float d=DET(M);\
 	if( !fsimilar(d,1.f,DET_CHECK_EPS) ){\
 		\
-		Log("matrix--- ",M);	\
-		Log("determinant- ",d);	\
-		VERIFY2(0,"Is not valid rotational matrix");\
+		Msg("! matrix: %s ",get_string(M).c_str());	\
+		Msg("! determinant: %f ",d);	\
+		Msg("! Is not valid rotational matrix");\
+		VERIFY(fsimilar(d,1.f,DET_CHECK_FATAL_EPS));\
 	}};
 #else
 #define	VERIFY_RMATRIX(M)	

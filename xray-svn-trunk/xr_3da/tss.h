@@ -66,7 +66,8 @@ class ENGINE_API CSimulatorRS
 public:
 	IC void Set			(SimulatorStates& container, u32 N, u32 V)
 	{
-		R_ASSERT(N<256);
+		//	Igor: XBox has render states 400 and hire
+		//R_ASSERT(N<256);
 		container.set_RS(N,V);
 	}
 };

@@ -9,8 +9,11 @@
 #include "gamefont.h"
 #include "xrLevel.h"
 #include "CameraManager.h"
+#include "xr_object.h"
+#include "feel_sound.h"
 
 ENGINE_API	IGame_Level*	g_pGameLevel	= NULL;
+extern	BOOL g_bLoaded;
 
 IGame_Level::IGame_Level	()
 {
@@ -180,3 +183,24 @@ void CServerInfo::AddItem( shared_str& name_, LPCSTR value_, u32 color_ )
 		data.push_back( it );
 	}
 }
+
+void   IGame_Level::SoundEvent_OnDestDestroy (Feel::Sound* obj)
+{
+	struct rem_pred
+	{
+		rem_pred(Feel::Sound* obj) : m_obj(obj) {}
+
+		bool operator () (const _esound_delegate& d)
+		{
+			return d.dest == m_obj;
+		}
+
+	private:
+		Feel::Sound* m_obj;
+	};
+
+	snd_Events.erase( std::remove_if(snd_Events.begin(), snd_Events.end(), rem_pred(obj)),
+	                  snd_Events.end() );
+}
+
+

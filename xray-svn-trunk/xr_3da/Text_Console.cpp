@@ -142,7 +142,7 @@ void	CTextConsole::CreateLogWnd()
 	m_hPrevFont = (HFONT)SelectObject(m_hDC_LogWnd_BackBuffer, m_hLogWndFont);
 	//------------------------------------------------
 	SetTextColor(m_hDC_LogWnd_BackBuffer, RGB(255, 255, 255));
-	SetBkColor(m_hDC_LogWnd_BackBuffer, RGB(0, 0, 0));
+	SetBkColor(m_hDC_LogWnd_BackBuffer, RGB(1, 1, 1));
 	//------------------------------------------------
 	m_hBackGroundBrush = GetStockBrush(BLACK_BRUSH);
 }

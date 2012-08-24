@@ -16,7 +16,8 @@ class	NET_Packet	;
 class	CSE_Abstract;
 
 //-----------------------------------------------------------------------------------------------------------
-#define CROW_RADIUS	(30.f)
+#define CROW_RADIUS		(30.f)
+#define CROW_RADIUS2	(60.f)
 //-----------------------------------------------------------------------------------------------------------
 //	CObject
 //-----------------------------------------------------------------------------------------------------------
@@ -74,11 +75,14 @@ public:
 	// if (object_is_visible)
 	// if (object_is_near)
 	// if (object_is_crow_always)
-		void							MakeMeCrow_internal	();
+#ifdef	DEBUG
+		void							DBGGetProps			(ObjectProperties &p ) const { p = Props; }
+#endif
 		void							MakeMeCrow			();
 
 	ICF	void							IAmNotACrowAnyMore	()					{ Props.crow = false;	}
 	virtual BOOL						AlwaysTheCrow		()					{ return FALSE; }
+	ICF	bool							AmICrow				() const			{ return !!Props.crow;		}
 
 	// Network
 	ICF BOOL							Local				()			const	{ return Props.net_Local;	}
@@ -90,6 +94,9 @@ public:
 	void								SetTmpPreDestroy	(BOOL b)			{ Props.bPreDestroy = b;}
 	virtual float						shedule_Scale		()					{ return Device.vCameraPosition.distance_to(Position())/200.f; }
 	virtual bool						shedule_Needed		()					{return processing_enabled();};
+
+	virtual	Fvector						get_new_local_point_on_mesh	( u16& bone_id ) const;
+	virtual	Fvector						get_last_local_point_on_mesh( Fvector const& last_point, const u16 bone_id ) const;
 
 	// Parentness
 	IC CObject*							H_Parent			()					{ return Parent;						}
@@ -120,7 +127,7 @@ public:
 	virtual BOOL						renderable_ShadowReceive	()			{ return TRUE;						}
 
 	// Accessors and converters
-	ICF IRender_Visual*					Visual				()					{ return renderable.visual;			}
+	ICF IRender_Visual*					Visual				() const			{ return renderable.visual;			}
 	ICF ICollisionForm*					CFORM				() const			{ return collidable.model;			}
 	virtual		CObject*				dcast_CObject		()					{ return this;						}
 	virtual		IRenderable*			dcast_Renderable	()					{ return this;						}
@@ -130,6 +137,7 @@ public:
 	ICF shared_str						cName				()			const	{ return NameObject;				}
 	void								cName_set			(shared_str N);
 	ICF shared_str						cNameSect			()			const	{ return NameSection;				}
+	ICF LPCSTR							cNameSect_str		()			const	{ return NameSection.c_str();		}
 	void								cNameSect_set		(shared_str N);
 	ICF shared_str						cNameVisual			()			const	{ return NameVisual;				}
 	void								cNameVisual_set		(shared_str N);

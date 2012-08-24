@@ -7,8 +7,18 @@
 #include "xrLevel.h"
 #include "fmesh.h"
 #include "skeletoncustom.h"
+#include "bone.h"
 #include "frustum.h"
+#ifdef	DEBUG
+#include "ObjectDump.h"
+IC float DET(const Fmatrix &a){
+	return
+		(( a._11 * ( a._22 * a._33 - a._23 * a._32 ) -
+		a._12 * ( a._21 * a._33 - a._23 * a._31 ) +
+		a._13 * ( a._21 * a._32 - a._22 * a._31 ) ));
+}
 
+#endif
 using namespace	collide;
 //----------------------------------------------------------------------
 // Class	: CXR_CFObject
@@ -459,3 +469,63 @@ BOOL CCF_Shape::Contact		( CObject* O )
 	}
 	return FALSE;
 }
+
+/*
+BOOL	CCF_DynamicMesh::_RayQuery( const collide::ray_defs& Q, collide::rq_results& R)
+{
+	int s_count = R.r_count();
+	BOOL res = inherited::_RayQuery( Q, R );
+	if( !res )
+		return FALSE;
+
+	VERIFY( owner );
+	VERIFY( owner->Visual() );
+	IKinematics *K = owner->Visual()->dcast_PKinematics();
+	
+	struct spick
+	{
+		 const collide::ray_defs& Q;
+		 const  CObject			& obj;
+		 IKinematics			& K;
+		 
+		 spick(  const collide::ray_defs& Q_, const CObject &obj_, IKinematics &K_ ): Q( Q_ ), obj( obj_ ), K( K_ )
+		 {
+
+		 }
+		 
+		 bool operator() ( collide::rq_result &r )
+		{
+			IKinematics::pick_result br;
+			VERIFY( r.O == &obj );
+			bool  res = K.PickBone( obj.XFORM(), br, Q.range, Q.start, Q.dir, (u16) r.element ) ;
+			if(res)
+			{
+				r.range = br.dist;
+			}
+#if	0
+			if(res)
+			{
+				ph_debug_render->open_cashed_draw();
+				ph_debug_render->draw_tri(  br.tri[0], br.tri[1], br.tri[2], D3DCOLOR_ARGB(50, 255,0,0), 0 );
+				ph_debug_render->close_cashed_draw(50000);
+			}
+#endif
+			return !res;
+		}
+		private:
+			spick& operator = (spick& ){ NODEFAULT;  return *this; }
+	} pick( (collide::ray_defs&) (Q), (const CObject &)(*owner),(IKinematics&) (*K) );
+	
+	R.r_results().erase( std::remove_if( R.r_results().begin() + s_count, R.r_results().end() , pick), R.r_results().end() );
+	/*
+	for( collide::rq_result* i = R.r_begin() + s_count; i < R.r_end(); ++i )
+	{
+		IKinematics::pick_result r;
+		if( K->PickBone( owner->XFORM(), r, Q.range, Q.start, Q.dir, (u16) i->element ) )
+			return TRUE;
+	}
+	*/
+//	VERIFY( R.r_count() >= s_count );
+//	return R.r_count() > s_count;
+//}
+//*/

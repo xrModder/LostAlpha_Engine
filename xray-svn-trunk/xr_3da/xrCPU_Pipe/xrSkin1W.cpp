@@ -5,6 +5,7 @@
 	#include "skeletonX.h"
  	#include "skeletoncustom.h"
 #else
+#include "..\bone.h"
 #include "..\skeletonX.h"
  	#include "..\skeletoncustom.h"
 #endif

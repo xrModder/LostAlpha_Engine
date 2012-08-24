@@ -16,7 +16,7 @@
 
 // gr1ph start
 
-SRainParams::SRainParams()
+SRainParams::SRainParams() : dwReferences(1)
 {
 	max_desired_items		= pSettings->r_s32						(RAIN_MANAGER_LTX, "max_desired_items");	// 2500;
 	source_radius			= pSettings->r_float					(RAIN_MANAGER_LTX, "source_radius");		// 12.5f;
@@ -45,6 +45,8 @@ CEffect_Rain::CEffect_Rain()
 {
 	if (!params)
 		params = xr_new<SRainParams>();
+	else
+		params->dwReferences++;
 	state							= stIdle;
 	
 	snd_Ambient.create				("ambient\\rain",st_Effect,sg_Undefined);
@@ -68,6 +70,9 @@ CEffect_Rain::~CEffect_Rain()
 	// Cleanup
 	p_destroy						();
 	::Render->model_Delete			(DM_Drop);
+	params->dwReferences--;
+	if (!params->dwReferences)
+		xr_free(params);
 }
 
 // Born

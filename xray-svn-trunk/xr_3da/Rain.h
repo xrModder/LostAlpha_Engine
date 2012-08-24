@@ -25,6 +25,7 @@ struct SRainParams
 		float	drop_max_wind_vel, drop_speed_min, drop_speed_max;
 		int		max_particles, particles_cache;
 		float	particles_time;
+		u32		dwReferences;
 	public:
 				SRainParams();
 };
