@@ -2,6 +2,7 @@
 #define xr_efflensflareH
 
 #include "xr_collide_defs.h"
+#include "bone.h"
 
 class ENGINE_API CInifile;
 
@@ -58,8 +59,16 @@ DEFINE_VECTOR(CLensFlareDescriptor,LensFlareDescVec,LensFlareDescIt);
 
 class ENGINE_API CLensFlare
 {
+public:
+	enum
+	{
+		MAX_RAYS	= 5
+	};
 private:
 	collide::rq_results	r_dest;
+#ifndef _EDITOR
+	collide::ray_cache	m_ray_cache[MAX_RAYS];
+#endif
 
 protected:
 	float				fBlend;
@@ -88,10 +97,6 @@ protected:
     LFState				m_State;
     float				m_StateBlend;
 
-public:
-#ifndef _EDITOR
-	collide::ray_cache	m_ray_cache;
-#endif
 public:
 						CLensFlare		();
 	virtual				~CLensFlare		();

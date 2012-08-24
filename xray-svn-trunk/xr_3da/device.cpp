@@ -96,6 +96,7 @@ void CRenderDevice::End		(void)
 			Resources->DestroyNecessaryTextures				();
 			Memory.mem_compact								();
 			Msg												("* MEMORY USAGE: %d K",Memory.mem_usage()/1024);
+			Msg												("* End of synchronization A[%d] R[%d]",b_is_Active, b_is_Ready);
 			CheckPrivilegySlowdown							();
 		}
 	}
@@ -328,25 +329,40 @@ void CRenderDevice::Run			()
 //	DeleteCriticalSection	(&mt_csLeave);
 }
 
+u32 app_inactive_time		= 0;
+u32 app_inactive_time_start = 0;
+
 void ProcessLoading(RP_FUNC *f);
 void CRenderDevice::FrameMove()
 {
 	dwFrame			++;
 
-	dwTimeContinual	= TimerMM.GetElapsed_ms	();
+	dwTimeContinual	= TimerMM.GetElapsed_ms() - app_inactive_time;
+
 	if (psDeviceFlags.test(rsConstantFPS))	{
 		// 20ms = 50fps
-		fTimeDelta		=	0.020f;			
-		fTimeGlobal		+=	0.020f;
-		dwTimeDelta		=	20;
-		dwTimeGlobal	+=	20;
+		//fTimeDelta		=	0.020f;			
+		//fTimeGlobal		+=	0.020f;
+		//dwTimeDelta		=	20;
+		//dwTimeGlobal	+=	20;
+		// 33ms = 30fps
+		fTimeDelta		=	0.033f;			
+		fTimeGlobal		+=	0.033f;
+		dwTimeDelta		=	33;
+		dwTimeGlobal	+=	33;
 	} else {
 		// Timer
 		float fPreviousFrameTime = Timer.GetElapsed_sec(); Timer.Start();	// previous frame
 		fTimeDelta = 0.1f * fTimeDelta + 0.9f*fPreviousFrameTime;			// smooth random system activity - worst case ~7% error
-		if (fTimeDelta>.1f) fTimeDelta=.1f;									// limit to 15fps minimum
+		//fTimeDelta = 0.7f * fTimeDelta + 0.3f*fPreviousFrameTime;			// smooth random system activity
+		if (fTimeDelta>.1f)    
+			fTimeDelta = .1f;							// limit to 15fps minimum
 
-		if(Paused())		fTimeDelta = 0.0f;
+		if (fTimeDelta <= 0.f) 
+			fTimeDelta = EPS_S + EPS_S;					// limit to 15fps minimum
+
+		if(Paused())	
+			fTimeDelta = 0.0f;
 
 //		u64	qTime		= TimerGlobal.GetElapsed_clk();
 		fTimeGlobal		= TimerGlobal.GetElapsed_sec(); //float(qTime)*CPU::cycles2seconds;
@@ -405,7 +421,10 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 	}else
 	{
 		if( bTimer && /*g_pGamePersistent->CanBePaused() &&*/ g_pauseMngr.Paused() )
+		{
+			fTimeDelta						= EPS_S + EPS_S;
 			g_pauseMngr.Pause				(FALSE);
+		}
 		
 		if(bSound)
 		{
@@ -447,13 +466,31 @@ void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 		if (Device.b_is_Active)	
 		{
 			Device.seqAppActivate.Process(rp_AppActivate);
+			app_inactive_time		+= TimerMM.GetElapsed_ms() - app_inactive_time_start;
+
 #ifndef DEDICATED_SERVER
 				ShowCursor			(FALSE);
 #endif
 		}else	
 		{
+			app_inactive_time_start	= TimerMM.GetElapsed_ms();
 			Device.seqAppDeactivate.Process(rp_AppDeactivate);
 			ShowCursor				(TRUE);
 		}
 	}
+}
+
+void	CRenderDevice::AddSeqFrame			( pureFrame* f, bool mt )
+{
+		if ( mt )	
+		seqFrameMT.Add		(f,REG_PRIORITY_HIGH);
+	else								
+		seqFrame.Add		(f,REG_PRIORITY_LOW);
+
+}
+
+void	CRenderDevice::RemoveSeqFrame	( pureFrame* f )
+{
+	seqFrameMT.Remove	( f );
+	seqFrame.Remove		( f );
 }

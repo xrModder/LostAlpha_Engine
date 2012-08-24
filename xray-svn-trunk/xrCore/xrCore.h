@@ -97,6 +97,8 @@
 #	define ICN			__declspec (noinline)	
 #endif
 
+#define	xr_pure_interface	__interface
+
 #ifndef DEBUG
 	#pragma inline_depth	( 254 )
 	#pragma inline_recursion( on )
@@ -183,6 +185,12 @@
 #		define XRCORE_API __declspec(dllimport)
 #	endif
 #endif
+
+//Borland class dll interface
+#define	_BCL			__stdcall	
+
+//Borland global function dll interface
+#define	_BGCL			__stdcall	
 
 #include "xrDebug.h"
 #include "vector.h"

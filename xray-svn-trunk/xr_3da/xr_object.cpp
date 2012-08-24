@@ -10,8 +10,44 @@
 #include "x_ray.h"
 #include "GameFont.h"
 
-void CObject::MakeMeCrow_internal	()
+#pragma warning(push)
+#pragma warning(disable:4995)
+#include <intrin.h>
+#pragma warning(pop)
+
+#pragma intrinsic(_InterlockedCompareExchange)
+
+inline void CObjectList::o_crow		(CObject*	O)
 {
+	Objects& crows				= get_crows();
+	VERIFY						( std::find(crows.begin(),crows.end(),O) == crows.end() );
+	crows.push_back				( O );
+
+	O->dwFrame_AsCrow			= Device.dwFrame;
+}
+
+void CObject::MakeMeCrow			()
+{
+	if ( Props.crow )
+		return;
+
+	if ( !processing_enabled() )
+		return;
+
+	u32 const device_frame_id		= Device.dwFrame;
+	u32 const object_frame_id		= dwFrame_AsCrow;
+	if (
+			(u32)_InterlockedCompareExchange(
+				(long*)&dwFrame_AsCrow,
+				device_frame_id,
+				object_frame_id
+			) == device_frame_id
+		)
+		return;
+
+	VERIFY							( dwFrame_AsCrow == device_frame_id );
+
+	Props.crow						= 1;
 	g_pGameLevel->Objects.o_crow	(this);
 }
 
@@ -96,7 +132,9 @@ const	Fbox&	CObject::BoundingBox	()				const	{ VERIFY2(renderable.visual,*cName(
 // Class	: CXR_Object
 // Purpose	:
 //----------------------------------------------------------------------
-CObject::CObject		( )		: ISpatial(g_SpatialSpace)
+CObject::CObject		( )		:
+	ISpatial					(g_SpatialSpace),
+	dwFrame_AsCrow				(u32(-1))
 {
 	// Transform
 	Props.storage				= 0;
@@ -162,7 +200,7 @@ BOOL CObject::net_Spawn			(CSE_Abstract* data)
 
 	// reinitialize flags
 	processing_activate			();
-	setDestroy					(FALSE);
+	setDestroy					(false);
 
 	MakeMeCrow					();
 
@@ -250,9 +288,19 @@ void CObject::UpdateCL			()
 	spatial_update				(base_spu_epsP*5,base_spu_epsR*5);
 
 	// crow
-	if (Parent == g_pGameLevel->CurrentViewEntity())										MakeMeCrow	();
-	else if (AlwaysTheCrow())																MakeMeCrow	();
-	else if (Device.vCameraPosition.distance_to_sqr(Position()) < CROW_RADIUS*CROW_RADIUS)	MakeMeCrow	();
+	if (Parent == g_pGameLevel->CurrentViewEntity())										
+		MakeMeCrow	();
+	else if (AlwaysTheCrow())																
+		MakeMeCrow	();
+	else
+	{
+		float dist = Device.vCameraPosition.distance_to_sqr(Position());
+		if (dist < CROW_RADIUS*CROW_RADIUS)	
+			MakeMeCrow	();
+		else 
+		if( (Visual() && Visual()->getVisData().hom_frame+2 > Device.dwFrame) && (dist < CROW_RADIUS2*CROW_RADIUS2) )
+			MakeMeCrow	();
+	}
 }
 
 void CObject::shedule_Update	( u32 T )
@@ -336,13 +384,6 @@ void CObject::OnH_A_Independent	()
 void CObject::OnH_B_Independent	(bool just_before_destroy)
 {
 }
-void CObject::MakeMeCrow			()
-{
-		if (Props.crow)					return	;
-		if (!processing_enabled())		return	;
-		Props.crow						= true	;
-		MakeMeCrow_internal				()		;
-}
 
 void CObject::setDestroy			(BOOL _destroy)
 {
@@ -358,4 +399,34 @@ void CObject::setDestroy			(BOOL _destroy)
 #endif
 	}else
 		VERIFY		(!g_pGameLevel->Objects.registered_object_to_destroy(this));
+}
+
+Fvector CObject::get_new_local_point_on_mesh	( u16& bone_id ) const
+{
+	bone_id				= u16(-1);
+	return				Fvector().random_dir().mul(.7f);
+}
+
+Fvector CObject::get_last_local_point_on_mesh	( Fvector const& local_point, const u16 bone_id ) const
+{
+	VERIFY				( bone_id == u16(-1) );
+
+	Fvector				result;
+	// Fetch data
+	Fmatrix				mE;
+	const Fmatrix&		M = XFORM();
+	const Fbox&			B = CFORM()->getBBox();
+
+	// Build OBB + Ellipse and X-form point
+	Fvector				c,r;
+	Fmatrix				T,mR,mS;
+	B.getcenter			(c);
+	B.getradius			(r);
+	T.translate			(c);
+	mR.mul_43			(M,T);
+	mS.scale			(r);
+	mE.mul_43			(mR,mS); 
+	mE.transform_tiny	(result,local_point);
+
+	return				result;
 }

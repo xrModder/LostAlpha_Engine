@@ -108,7 +108,7 @@ public:
 class ENGINE_API	CCF_Skeleton : public ICollisionForm
 {
 public:
-	struct SElement{
+	struct ENGINE_API SElement{
 		union{
 			struct{
 				Fmatrix	b_IM;		// world 2 bone xform
@@ -149,7 +149,16 @@ public:
 	void				_dbg_refresh	(){BuildTopLevel();BuildState();}
 #endif
 };
+/*
+class ENGINE_API	CCF_DynamicMesh: public CCF_Skeleton
+{
+	typedef	 CCF_Skeleton inherited;
+public:
+						CCF_DynamicMesh	( CObject* _owner ) :CCF_Skeleton(_owner){};
 
+	virtual BOOL		_RayQuery		( const collide::ray_defs& Q, collide::rq_results& R);
+};
+*/
 class ENGINE_API	CCF_EventBox : public ICollisionForm
 {
 private:

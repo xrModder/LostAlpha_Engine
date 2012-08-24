@@ -174,6 +174,9 @@ public:
 		if (I != seqParallel.end())
 			seqParallel.erase	(I);
 	}
+public:
+virtual		void			_BCL	AddSeqFrame			( pureFrame* f, bool mt );
+virtual		void			_BCL	RemoveSeqFrame		( pureFrame* f );
 };
 
 extern		ENGINE_API		CRenderDevice		Device;

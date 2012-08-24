@@ -63,6 +63,8 @@ public:
 	virtual	CKinematicsAnimated*dcast_PKinematicsAnimated	()				{ return 0;	}
 	virtual IParticleCustom*	dcast_ParticleCustom		()				{ return 0;	}
 
+	virtual vis_data&	_BCL	getVisData() { return vis;}
+	virtual u32					getType()	 { return Type;}
 	IRender_Visual				();
 	virtual ~IRender_Visual		();
 };

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef XRSHEDULER_H_INCLUDED
+#define XRSHEDULER_H_INCLUDED
 
 #include "ISheduled.h"
 
@@ -27,6 +29,7 @@ private:
 	xr_vector<Item>			Items			;
 	xr_vector<Item>			ItemsProcessed	;
 	xr_vector<ItemReg>		Registration	;
+	ISheduled*				m_current_step_obj;
 	bool					m_processing_now;
 
 	IC void			Push	(Item& I);
@@ -56,3 +59,5 @@ public:
 	void			Initialize	();
 	void			Destroy		();
 };
+
+#endif // XRSHEDULER_H_INCLUDED
