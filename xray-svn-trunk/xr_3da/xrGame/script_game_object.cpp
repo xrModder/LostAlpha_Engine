@@ -312,10 +312,15 @@ Fvector	CScriptGameObject::bone_position	(LPCSTR bone_name) const
 
 u32 CScriptGameObject::GetAmmoElapsed()
 {
-	const CWeapon	*weapon = smart_cast<const CWeapon*>(&object());
-	if (!weapon)
-		return		(0);
-	return			(weapon->GetAmmoElapsed());
+	const CWeapon *weapon = smart_cast<const CWeapon*>(&object());
+	if (weapon)
+		return weapon->GetAmmoElapsed();
+
+	const CWeaponAmmo *ammo = smart_cast<const CWeaponAmmo*>(&object());
+	if (ammo)
+		return ammo->m_boxCurr;
+
+	return 0;
 }
 
 void CScriptGameObject::SetAmmoElapsed(int ammo_elapsed)
