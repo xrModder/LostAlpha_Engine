@@ -34,7 +34,15 @@ IC	void CStalkerAnimationManager::fill_object_info								()
 	CInventoryItem			*item = object().inventory().ActiveItem();
 	VERIFY					(item);
 	m_weapon				= smart_cast<CWeapon*>	(item);
-	m_missile				= smart_cast<CMissile*>	(item);
+
+	//when missile state MS_EMPTY or MS_IDLE then new missile in npc slot now
+	//old missile is throwing
+	//need play animation without missile
+	CMissile * temp = smart_cast<CMissile*> (item);
+	if (temp && (temp->GetState() != MS_EMPTY || temp->GetState() != MS_IDLE))
+		m_missile = 0;
+	else
+		m_missile = temp;
 }
 
 IC	bool CStalkerAnimationManager::strapped										() const
