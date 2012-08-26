@@ -7,7 +7,8 @@
 #include "level.h"
 #include "game_cl_base.h"
 #include "entity_alive.h"
-#include "..\SkeletonCustom.h"
+#include "../KinematicsAnimated.h"
+#include "../Kinematics.h"
 #include "object_broker.h"
 
 #define MAX_HEALTH 1.0f
@@ -21,7 +22,7 @@
 CEntityConditionSimple::CEntityConditionSimple()
 {
 	max_health()		= MAX_HEALTH;
-	health()			= MAX_HEALTH;
+	SetHealth			( MAX_HEALTH );
 }
 
 CEntityConditionSimple::~CEntityConditionSimple()
@@ -114,7 +115,7 @@ void CEntityCondition::reinit	()
 
 	m_fEntityMorale			=  m_fEntityMoraleMax = 1.f;
 
-	health()				= MAX_HEALTH;
+	SetHealth				( MAX_HEALTH );
 	m_fPower				= MAX_POWER;
 	m_fRadiation			= 0;
 	m_fPsyHealth			= MAX_PSY_HEALTH;
@@ -135,41 +136,38 @@ void CEntityCondition::reinit	()
 
 }
 
-void CEntityCondition::ChangeHealth(float value)
+void CEntityCondition::ChangeHealth(const float value)
 {
 	VERIFY(_valid(value));	
 	m_fDeltaHealth += (CanBeHarmed() || (value > 0)) ? value : 0;
 }
 
-void CEntityCondition::ChangePower(float value)
+void CEntityCondition::ChangePower(const float value)
 {
 	m_fDeltaPower += value;
 }
 
-
-
-void CEntityCondition::ChangeRadiation(float value)
+void CEntityCondition::ChangeRadiation(const float value)
 {
 	m_fDeltaRadiation += value;
 }
 
-void CEntityCondition::ChangePsyHealth(float value)
+void CEntityCondition::ChangePsyHealth(const float value)
 {
 	m_fDeltaPsyHealth += value;
 }
 
-
-void CEntityCondition::ChangeCircumspection(float value)
+void CEntityCondition::ChangeCircumspection(const float value)
 {
 	m_fDeltaCircumspection += value;
 }
-void CEntityCondition::ChangeEntityMorale(float value)
+void CEntityCondition::ChangeEntityMorale(const float value)
 {
 	m_fDeltaEntityMorale += value;
 }
 
 
-void CEntityCondition::ChangeBleeding(float percent)
+void CEntityCondition::ChangeBleeding(const float percent)
 {
 	//затянуть раны
 	for(WOUND_VECTOR_IT it = m_WoundVector.begin(); m_WoundVector.end() != it; ++it)
@@ -292,8 +290,9 @@ void CEntityCondition::UpdateCondition()
 
 float CEntityCondition::HitOutfitEffect(float hit_power, ALife::EHitType hit_type, s16 element, float AP)
 {
-    CInventoryOwner* pInvOwner		= smart_cast<CInventoryOwner*>(m_object);
-	if(!pInvOwner)					return hit_power;
+    CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(m_object);
+	if(!pInvOwner)
+		return hit_power;
 
 	CCustomOutfit* pOutfit			= (CCustomOutfit*)pInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	if(!pOutfit)					return hit_power;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="xrGame"
 	ProjectGUID="{200652A6-043E-4634-8837-87983B3BD5E0}"
 	RootNamespace="xrGame"
@@ -30120,6 +30120,54 @@
 		</File>
 		<File
 			RelativePath=".\fast_entity_update.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_box3.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_box3.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_box3_inline.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_minimize_1d.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_minimize_1d.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_minimize_1d_inline.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_minimize_nd.h"
+			>
+		</File>
+		<File
+			RelativePath=".\magic_minimize_nd_inline.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MathUtilsOde.h"
+			>
+		</File>
+		<File
+			RelativePath=".\matrix_utils.h"
+			>
+		</File>
+		<File
+			RelativePath=".\min_obb.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\xrServer_process_event_activate.cpp"
 			>
 		</File>
 		<File

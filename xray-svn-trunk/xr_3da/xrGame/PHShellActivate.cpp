@@ -9,9 +9,8 @@
 #include "Level.h"
 #include "physicsshellholder.h"
 
-#ifdef ANIMATED_PHYSICS_OBJECT_SUPPORT
 	#include "PhysicsShellAnimator.h"
-#endif
+#include "../Kinematics.h"
 
 ///////////////////////////////////////////////////////////////
 ///#pragma warning(disable:4995)
@@ -121,8 +120,11 @@ void CPHShell::Activate(bool disable)
 
 	activate(disable);
 	{		
+		IKinematics* K = m_pKinematics;
+		
 		ELEMENT_I i=elements.begin(),e=elements.end();
 			 for(;i!=e;++i)(*i)->Activate(mXFORM,disable);
+		m_pKinematics = K;
 	}
 
 	{

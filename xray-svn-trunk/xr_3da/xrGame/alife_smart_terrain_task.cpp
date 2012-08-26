@@ -13,10 +13,8 @@
 #include "patrol_path.h"
 #include "patrol_point.h"
 
-#ifdef DEBUG
-#	include "level_graph.h"
-#	include "game_graph.h"
-#endif
+#include "level_graph.h"
+#include "game_graph.h"
 
 void CALifeSmartTerrainTask::setup_patrol_point				(const shared_str &patrol_path_name, const u32 &patrol_point_index)
 {
@@ -31,17 +29,39 @@ void CALifeSmartTerrainTask::setup_patrol_point				(const shared_str &patrol_pat
 
 GameGraph::_GRAPH_ID CALifeSmartTerrainTask::game_vertex_id		() const
 {
-	VERIFY3					(ai().game_graph().valid_vertex_id(patrol_point().game_vertex_id()),*m_patrol_path_name,*m_patrol_point->name());
-	return					(patrol_point().game_vertex_id());
+	if (m_game_vertex_id == GameGraph::_GRAPH_ID(-1))	{
+		VERIFY3					(ai().game_graph().valid_vertex_id(patrol_point().game_vertex_id()),*m_patrol_path_name,*m_patrol_point->name());
+		return					(patrol_point().game_vertex_id());
+	}
+	else {
+		VERIFY(ai().game_graph().valid_vertex_id(m_game_vertex_id));
+		return m_game_vertex_id;
+	}
 }
 
 u32	CALifeSmartTerrainTask::level_vertex_id						() const
 {
-	VERIFY3					(ai().game_graph().valid_vertex_id(patrol_point().game_vertex_id()),*m_patrol_path_name,*m_patrol_point->name());
-	return					(patrol_point().level_vertex_id());
+	if (m_level_vertex_id == u32(-1))	{
+		VERIFY3					(ai().game_graph().valid_vertex_id(patrol_point().game_vertex_id()),*m_patrol_path_name,*m_patrol_point->name());
+		return					(patrol_point().level_vertex_id());
+	}
+	else {
+
+		VERIFY2(ai().game_graph().valid_vertex_id(m_game_vertex_id), make_string("Vertex [%d] is not valid!!!", m_game_vertex_id));
+		return m_level_vertex_id;
+	}
 }
 
 Fvector CALifeSmartTerrainTask::position						() const
 {
-	return					(patrol_point().position());
+	if (m_level_vertex_id == u32(-1))	{
+		return					(patrol_point().position());
+	}
+	else {
+		if (ai().game_graph().vertex(m_game_vertex_id)->level_id() == ai().level_graph().level_id())
+			return (ai().level_graph().vertex_position(m_level_vertex_id));
+		else
+			return ai().game_graph().vertex(m_game_vertex_id)->level_point();
+	}
+	
 }

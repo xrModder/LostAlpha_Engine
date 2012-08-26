@@ -215,7 +215,7 @@ u32	CLevel::Objects_net_Save	(NET_Packet* _Packet, u32 start, u32 max_object_siz
 			Packet.w_chunk_close16	(position);
 //			if (0==(--count))		
 //				break;
-			if (max_object_size > (NET_PacketSizeLimit - Packet.w_tell()))
+			if (max_object_size >= (NET_PacketSizeLimit - Packet.w_tell()))
 				break;
 		}
 	}

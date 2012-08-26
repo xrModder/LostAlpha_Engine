@@ -39,9 +39,8 @@ void CPlanner::initialize			()
 TEMPLATE_SPECIALIZATION
 void CPlanner::finalize				()
 {
-	current_action().finalize			();
 	inherited_action::finalize			();
-	m_initialized						= false;
+	inherited_planner::finalize			();
 }
 
 TEMPLATE_SPECIALIZATION

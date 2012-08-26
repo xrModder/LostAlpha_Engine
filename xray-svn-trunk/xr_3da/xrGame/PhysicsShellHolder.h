@@ -78,7 +78,7 @@ public:
 	virtual	CIKLimbsController			*character_ik_controller	()							{return NULL;}
 	virtual SCollisionHitCallback		*get_collision_hit_callback ()							{return NULL;}
 	virtual bool						set_collision_hit_callback	(SCollisionHitCallback *cc)	{return false;}
-	virtual void						enable_notificate			()							{;}
+	virtual void		__stdcall		enable_notificate			()							{;}
 public:
 
 	virtual void			PHGetLinearVell		(Fvector& velocity);

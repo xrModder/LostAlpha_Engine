@@ -50,7 +50,7 @@ public:
 	shared_str			section;
 public:
     					CLensFlareDescriptor(){m_Flags.zero();section=0;m_StateBlendUpSpeed=m_StateBlendDnSpeed=0.1f;}
-    void				load				(CInifile* pIni, LPCSTR section);
+    void				load				(const CInifile* pIni, LPCSTR section);
 	void 				OnDeviceCreate	();
 	void 				OnDeviceDestroy	();
 };
@@ -106,7 +106,7 @@ public:
 	void 				OnDeviceCreate	();         
 	void 				OnDeviceDestroy	();
 
-    int					AppendDef		(CInifile* pIni, LPCSTR sect);
+    int					AppendDef		(const CInifile* pIni, LPCSTR sect);
 
 	void				Invalidate		(){m_State=lfsNone;}
 };

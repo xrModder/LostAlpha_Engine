@@ -89,8 +89,8 @@ class CMountedTurret :  public CEntity,
 					Fvector3			GetFireDir					() const				{ return m_selected_fire_dir; }
 
 	private:
-		static		void 				BoneCallbackX				(CBoneInstance *B);
-		static		void				BoneCallbackY				(CBoneInstance *B);
+		static		void 		__stdcall	BoneCallbackX				(CBoneInstance *B);
+		static		void		__stdcall	BoneCallbackY				(CBoneInstance *B);
 
 	protected:
 		virtual		void				FireStart					();

@@ -45,7 +45,7 @@ void CSE_ALifeDynamicObject::on_before_register		()
 
 void CSE_ALifeDynamicObject::on_unregister()
 {
-	Level().MapManager().RemoveMapLocationByObjectID(ID);
+	Level().MapManager().OnObjectDestroyNotify(ID);
 }
 
 void CSE_ALifeDynamicObject::switch_online			()
@@ -178,7 +178,9 @@ bool CSE_ALifeDynamicObject::redundant				() const
 	return						(false);
 }
 
-void CSE_InventoryBox::add_online	(const bool &update_registries)
+/// ---------------------------- CSE_ALifeInventoryBox ---------------------------------------------
+
+void CSE_ALifeInventoryBox::add_online	(const bool &update_registries)
 {
 	CSE_ALifeDynamicObjectVisual		*object = (this);
 
@@ -222,7 +224,7 @@ void CSE_InventoryBox::add_online	(const bool &update_registries)
 	CSE_ALifeDynamicObjectVisual::add_online(update_registries);
 }
 
-void CSE_InventoryBox::add_offline	(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries)
+void CSE_ALifeInventoryBox::add_offline	(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries)
 {
 	CSE_ALifeDynamicObjectVisual		*object = (this);
 

@@ -45,6 +45,7 @@ void CStateAbstract::initialize()
 TEMPLATE_SPECIALIZATION
 void CStateAbstract::execute() 
 { 
+	VERIFY(object->g_Alive());
 	// проверить внешние условия изменения состояния
 	check_force_state();
 

@@ -10,7 +10,7 @@
 CMonsterEnemyMemory::CMonsterEnemyMemory()
 {
 	monster			= 0;
-	time_memory		= 10000; 
+	time_memory		= 15000; 
 }
 
 CMonsterEnemyMemory::~CMonsterEnemyMemory()

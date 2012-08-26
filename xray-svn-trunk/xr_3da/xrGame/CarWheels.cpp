@@ -8,7 +8,7 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "car.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "ExtendedGeom.h"
 
 CCar::SWheel::SWheelCollisionParams::SWheelCollisionParams()
@@ -69,7 +69,7 @@ void CCar::SWheel::Init()
 }
 void CCar::SWheel::Load(LPCSTR section)
 {
-	CKinematics		*K			=PKinematics(car->Visual())		;
+	IKinematics		*K			=PKinematics(car->Visual())		;
 	CInifile		*ini		=K->LL_UserData()				;
 	VERIFY						(ini)							;
 	if(ini->section_exist(section))
@@ -224,7 +224,7 @@ float CCar::SWheelDrive::ASpeed()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CCar::SWheelSteer::Init()
 {
-	CKinematics* pKinematics=smart_cast<CKinematics*>(pwheel->car->Visual());
+	IKinematics* pKinematics=smart_cast<IKinematics*>(pwheel->car->Visual());
 	pwheel->Init();
 	(bone_map.find(pwheel->bone_id))->second.joint->GetLimits(lo_limit,hi_limit,0);
 	CBoneData& bone_data= pKinematics->LL_GetData(u16(pwheel->bone_id));

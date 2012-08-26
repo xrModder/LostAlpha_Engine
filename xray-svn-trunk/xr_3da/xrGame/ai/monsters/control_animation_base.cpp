@@ -5,7 +5,7 @@
 #include "BaseMonster/base_monster.h"
 #include "../../PHMovementControl.h"
 #include "anim_triple.h"
-#include "../../../skeletonanimated.h"
+#include "../../../KinematicsAnimated.h"
 #include "../../detail_path_manager.h"
 #include "monster_velocity_space.h"
 #include "monster_event_manager.h"
@@ -225,7 +225,7 @@ void CControlAnimationBase::CheckReplacedAnim()
 SAAParam &CControlAnimationBase::AA_GetParams(LPCSTR anim_name)
 {
 	// искать текущую анимацию в AA_VECTOR
-	MotionID motion = smart_cast<CKinematicsAnimated*>(m_object->Visual())->LL_MotionID(anim_name);
+	MotionID motion = smart_cast<IKinematicsAnimated*>(m_object->Visual())->LL_MotionID(anim_name);
 
 	for (AA_VECTOR_IT it = m_attack_anims.begin(); it != m_attack_anims.end(); it++) {
 		if (it->motion == motion) return (*it);
@@ -466,7 +466,7 @@ MotionID CControlAnimationBase::get_motion_id(EMotionAnim a, u32 index)
 	}
 
 	string128			s1,s2;
-	return				(smart_cast<CKinematicsAnimated*>(m_object->Visual())->ID_Cycle_Safe(strconcat(sizeof(s2),s2,*anim_it->target_name,itoa(index,s1,10))));
+	return				(smart_cast<IKinematicsAnimated*>(m_object->Visual())->ID_Cycle_Safe(strconcat(sizeof(s2),s2,*anim_it->target_name,itoa(index,s1,10))));
 }
 
 void CControlAnimationBase::stop_now()
@@ -557,7 +557,7 @@ void CControlAnimationBase::AA_reload(LPCSTR section)
 	SAAParam			anim;
 	LPCSTR				anim_name,val;
 
-	CKinematicsAnimated	*skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated	*skel_animated = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 
 	for (u32 i=0; pSettings->r_line(section,i,&anim_name,&val); ++i) {
 		

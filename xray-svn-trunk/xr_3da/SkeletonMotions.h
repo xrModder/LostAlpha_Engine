@@ -3,25 +3,22 @@
 #define SkeletonMotionsH
 
 #include		"skeletoncustom.h"
+#include 		"bone.h"
+#include		"KinematicsDefs.h"
 
 // refs
 class CKinematicsAnimated;
 class CBlend;
+class IKinematics;
 
 // callback
 typedef void	( * PlayCallback)		(CBlend*		P);
-
-const	u32		MAX_PARTS			=	4;
-const	u32		MAX_CHANNELS		=	4;
-const	f32		SAMPLE_FPS			=	30.f;
-const	f32		SAMPLE_SPF			=	(1.f/SAMPLE_FPS);
-const	f32		KEY_Quant			=	32767.f;
-const	f32		KEY_QuantI			=	1.f/KEY_Quant;
 
 //*** Key frame definition ************************************************************************
 enum{
     flTKeyPresent 	= (1<<0),
     flRKeyAbsent 	= (1<<1),
+    flTKey16IsBit 	= (1<<2),
 };
 #pragma pack(push,2)
 struct ENGINE_API CKey
@@ -33,10 +30,21 @@ struct ENGINE_API CKeyQR
 {
 	s16			x,y,z,w;	// rotation
 };
-struct ENGINE_API CKeyQT
+struct ENGINE_API CKeyQT8
 {
-	s8			x,y,z;
+	s8			x1,y1,z1;
 };
+struct ENGINE_API CKeyQT16
+{
+	s16			x1,y1,z1;
+};
+/*
+struct  CKeyQT
+{
+//	s8			x,y,z;
+	s16			x1,y1,z1;
+};
+*/
 #pragma pack(pop)
 
 //*** Motion Data *********************************************************************************
@@ -48,7 +56,8 @@ class ENGINE_API		CMotion
     };
 public:
     ref_smem<CKeyQR>	_keysR;
-    ref_smem<CKeyQT>	_keysT;
+    ref_smem<CKeyQT8>	_keysT8;
+    ref_smem<CKeyQT16>	_keysT16;
 	Fvector				_initT;
     Fvector				_sizeT;
 public:    
@@ -57,14 +66,15 @@ public:
     BOOL				test_flag			(u8 mask) const		{return BOOL(_flags&mask);}
 
     void				set_count			(u32 cnt){VERIFY(cnt); _count=cnt;}
-    u32					get_count			() const {return (u32(_count)&0x00FFFFFF);}
+    ICF u32					get_count			() const {return (u32(_count)&0x00FFFFFF);}
 
 	float				GetLength			(){ return float(_count)*SAMPLE_SPF; }
 
 	u32					mem_usage			(){ 
 		u32 sz			= sizeof(*this);
 		if (_keysR.size()) sz += _keysR.size()*sizeof(CKeyQR)/_keysR.ref_count();
-		if (_keysT.size()) sz += _keysT.size()*sizeof(CKeyQT)/_keysT.ref_count();
+		if (_keysT8.size()) sz += _keysT8.size()*sizeof(CKeyQT8)/_keysT8.ref_count();
+		if (_keysT16.size()) sz += _keysT16.size()*sizeof(CKeyQT16)/_keysT16.ref_count();
 		return			sz;
 	}
 };
@@ -85,13 +95,15 @@ private:
 	STORAGE			intervals;	
 public:
 	shared_str		name;
-	void			Load			(IReader*);
-	bool			is_empty		()								{ return (intervals.empty()); }
+	void			Load				(IReader*);
 
 #ifdef _EDITOR
-	void			Save			(IWriter*);
+	void			Save				(IWriter*);
 #endif
-	bool			pick_mark		(const float& t) const;
+	bool			is_empty			() const { return intervals.empty(); }
+	const interval*	pick_mark			(float const &t) const;
+	bool			is_mark_between		(float const &t0, float const &t1) const;
+	float			time_to_next_mark	(float time) const;
 };
 
 
@@ -108,8 +120,8 @@ public:
     u16						flags;
 	xr_vector<motion_marks>	marks;
 
-	IC float				Dequantize			(u16 V)		{	return  float(V)/655.35f; }
-	IC u16					Quantize			(float V)	{	s32		t = iFloor(V*655.35f); clamp(t,0,65535); return u16(t); }
+	IC float				Dequantize			(u16 V)	const	{	return  float(V)/655.35f; }
+	IC u16					Quantize			(float V) const		{	s32		t = iFloor(V*655.35f); clamp(t,0,65535); return u16(t); }
 
 	void					Load				(IReader* MP, u32 fl, u16 vers);
 	u32						mem_usage			(){ return sizeof(*this);}
@@ -144,9 +156,12 @@ class ENGINE_API		CPartition
 {
 	CPartDef			P[MAX_PARTS];
 public:
-	IC CPartDef&		operator[] 			(u16 id){ return P[id]; }
-	IC CPartDef&		part				(u16 id){ return P[id]; }
+	IC CPartDef&		operator[] 			(u16 id)						{ return P[id]; }
+	IC const CPartDef&	part				(u16 id)				const	{ return P[id]; }
+	u16					part_id				(const shared_str& name) const	;
 	u32					mem_usage			()		{ return P[0].mem_usage()*MAX_PARTS;}
+	void				load				(IKinematics* V, LPCSTR model_name);
+    u8					count				() const {u8 ret=0;for(u8 i=0;i<MAX_PARTS;++i) if(P[i].Name.size())ret++; return ret;};
 };
 
 // shared motions
@@ -190,7 +205,7 @@ public:
 	void				clean				(bool force_destroy);
 };
 
-ENGINE_API extern		motions_container*	g_pMotionsContainer;
+ extern	ENGINE_API	motions_container*	g_pMotionsContainer;
 
 class ENGINE_API		shared_motions
 {
@@ -200,8 +215,8 @@ protected:
 	// ref-counting
 	void				destroy			()							{	if (0==p_) return;	p_->m_dwReference--; 	if (0==p_->m_dwReference)	p_=0;	}
 public:
-	void				create			(shared_str key, IReader *data, vecBones* bones){	motions_value* v = g_pMotionsContainer->dock(key,data,bones); if (0!=v) v->m_dwReference++; destroy(); p_ = v;	}
-	void				create			(shared_motions const &rhs)	{	motions_value* v = rhs.p_; if (0!=v) v->m_dwReference++; destroy(); p_ = v;	}
+	bool				create			(shared_str key, IReader *data, vecBones* bones);//{	motions_value* v = g_pMotionsContainer->dock(key,data,bones); if (0!=v) v->m_dwReference++; destroy(); p_ = v;	}
+	bool				create			(shared_motions const &rhs);//	{	motions_value* v = rhs.p_; if (0!=v) v->m_dwReference++; destroy(); p_ = v;	}
 public:
 	// construction
 						shared_motions	()							{	p_ = 0;											}

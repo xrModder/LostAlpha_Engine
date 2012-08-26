@@ -52,11 +52,8 @@ static		void			SetCharacterClass			(CPHObject& obj)										;
 static		void			SetCharacterClassNotCollide	(CPHObject& obj)										;
 static		void			SetRagDollClass				(CPHObject& obj)										;
 static		void			SetRagDollClassNotCollide	(CPHObject& obj)										;
-
-#ifdef ANIMATED_PHYSICS_OBJECT_SUPPORT
-	static		void			SetAnimatedClass			(CPHObject& obj)										;
-	static		void			SetAnimatedClassNotCollide	(CPHObject& obj)										;
-#endif
+static		void			SetAnimatedClass			(CPHObject& obj)										;
+static		void			SetAnimatedClassNotCollide	(CPHObject& obj)										;
 
 static		void			SetClassSmall				(CPHObject& obj)										;
 static		void			SetClassSmallNotCollide		(CPHObject& obj)										;

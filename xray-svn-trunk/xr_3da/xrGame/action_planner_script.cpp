@@ -22,8 +22,13 @@ bool get_actual(const CScriptActionPlanner *action_planner)
 	return	(action_planner->actual());
 }
 
+CScriptActionPlanner *cast_planner(CScriptActionBase *action)
+{
+	return	(smart_cast<CScriptActionPlanner*>(action));
+}
+
 #pragma optimize("s",on)
-void CActionPlanner<CScriptGameObject>::script_register(lua_State *L)
+void CScriptActionPlanner::script_register(lua_State *L)
 {
 	module(L)
 	[

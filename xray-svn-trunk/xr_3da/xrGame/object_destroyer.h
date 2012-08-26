@@ -35,6 +35,15 @@ struct CDestroyer {
 		data.clear					();
 	}
 
+	template <typename T, int n>
+	IC	static void delete_data(T (&array)[n])
+	{
+		T							*I = array;
+		T							*E = array + n;
+		for ( ; I != E; ++I)
+			delete_data				(*I);
+	}
+
 	template <typename T1, typename T2>
 	IC	static void delete_data(std::queue<T1,T2> &data)
 	{

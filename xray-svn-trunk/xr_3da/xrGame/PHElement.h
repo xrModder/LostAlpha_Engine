@@ -52,7 +52,8 @@ class CPHElement	:
 		flUpdate				=	1<<2,
 		flWasEnabledBeforeFreeze=	1<<3,
 		flEnabledOnStep			=	1<<4,
-		flFixed					=	1<<5
+		flFixed					=	1<<5,
+		flAnimated				=	1<<6
 	};
 //	bool						was_enabled_before_freeze;
 //	bool						bUpdate;					//->to shell ??		//st
@@ -136,9 +137,9 @@ public:																																				//
 	virtual void						Disable									()	;																			//
 	virtual	void						ReEnable								()	;																			//
 			void						Enable									()	;																			//aux
-	virtual bool						isEnabled								()	{return isActive()&&dBodyIsEnabled(m_body);}
-	virtual	bool						isFullActive							()	{return isActive()&&!m_flags.test(flActivating);}
-	virtual	bool						isActive								()	{return !!m_flags.test(flActive);}
+	virtual bool						isEnabled								() const	{return isActive()&&dBodyIsEnabled(m_body);}
+	virtual	bool						isFullActive							() const	{return isActive()&&!m_flags.test(flActivating);}
+	virtual	bool						isActive								() const	{return !!m_flags.test(flActive);}
 	virtual void						Freeze									()	;																			//
 	virtual void						UnFreeze								()	;																			//
 	virtual bool						EnabledStateOnStep						()  {return dBodyIsEnabled(m_body)||m_flags.test(flEnabledOnStep);}							//
@@ -149,7 +150,7 @@ public:																																				//
 			void						ToBonePos								(CBoneInstance* B);
 
 			void						SetBoneCallbackOverwrite				(bool v);
-			void						BonesCallBack							(CBoneInstance* B);																//called from updateCL visual influent
+			void		__stdcall			BonesCallBack							(CBoneInstance* B);																//called from updateCL visual influent
 			void						StataticRootBonesCallBack				(CBoneInstance* B);
 			void						PhDataUpdate							(dReal step);																	//ph update
 			void						PhTune									(dReal step);																	//ph update
@@ -179,7 +180,7 @@ public:																																				//
 	virtual void						applyImpulse					(const Fvector& dir, float val);//aux
 	virtual void						applyImpulseVsMC				(const Fvector& pos,const Fvector& dir, float val);										//
 	virtual void						applyImpulseVsGF				(const Fvector& pos,const Fvector& dir, float val);										//
-	virtual void						applyGravityAccel				(const Fvector& accel);
+	virtual void		__stdcall				applyGravityAccel				(const Fvector& accel);
 	virtual void						getForce						(Fvector& force);
 	virtual void						getTorque						(Fvector& torque);
 	virtual void						get_LinearVel					(Fvector& velocity);															//aux
@@ -206,7 +207,7 @@ public:																																				//
 	virtual void						GetGlobalPositionDynamic		(Fvector* v);																	//
 	virtual void						cv2obj_Xfrom					(const Fquaternion& q,const Fvector& pos, Fmatrix& xform);						//
 	virtual void						cv2bone_Xfrom					(const Fquaternion& q,const Fvector& pos, Fmatrix& xform);						//
-	virtual void						InterpolateGlobalTransform		(Fmatrix* m);																	//called UpdateCL vis influent
+	virtual void		__stdcall				InterpolateGlobalTransform		(Fmatrix* m);																	//called UpdateCL vis influent
 	virtual void						InterpolateGlobalPosition		(Fvector* v);																	//aux
 	virtual void						GetGlobalTransformDynamic		(Fmatrix* m);																	//aux
 IC			void						InverceLocalForm				(Fmatrix&)	;

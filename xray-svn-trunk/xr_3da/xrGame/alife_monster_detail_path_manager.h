@@ -71,6 +71,7 @@ public:
 	IC		const float	&speed							() const;
 			bool		completed						() const;
 			bool		actual							() const;
+			void		make_inactual					();
 			bool		failed							() const;
 	IC		const PATH	&path							() const;
 	IC		const float	&walked_distance				() const;

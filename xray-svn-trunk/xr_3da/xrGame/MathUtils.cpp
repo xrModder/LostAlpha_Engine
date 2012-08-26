@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "mathutils.h"
+#include "..\..\xrODE\include\ode\common.h"
 /*
 #include "MathUtils.h"
 enum EBoxSideNearestPointCode

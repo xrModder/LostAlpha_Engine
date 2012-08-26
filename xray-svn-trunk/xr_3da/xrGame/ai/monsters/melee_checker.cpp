@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "melee_checker.h"
 #include "basemonster/base_monster.h"
-#include "../../../skeletonanimated.h"
+#include "../../../KinematicsAnimated.h"
 #include "../../../xr_collide_form.h"
 
 #define MAX_TRACE_ENEMY_RANGE	6.f

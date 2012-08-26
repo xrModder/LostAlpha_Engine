@@ -71,6 +71,7 @@ public:
 	_object_type				*m_object;
 	CPropertyStorage			m_storage;
 	bool						m_loaded;
+	bool						m_solving;
 
 #ifdef LOG_ACTION
 public:
@@ -87,6 +88,7 @@ public:
 	virtual						~CActionPlanner			();
 	virtual	void				setup					(_object_type *object);
 	virtual	void				update					();
+	virtual void				finalize				();
 	IC		COperator			&action					(const _action_id_type &action_id);
 	IC		CConditionEvaluator	&evaluator				(const _condition_type &evaluator_id);
 	IC		_action_id_type		current_action_id		() const;
@@ -95,7 +97,9 @@ public:
 	IC		void				add_condition			(_world_operator *action, _condition_type condition_id, _value_type condition_value);
 	IC		void				add_effect				(_world_operator *action, _condition_type condition_id, _value_type condition_value);
 	IC		virtual void		add_operator			(const _edge_type &operator_id,	_operator_ptr _operator);
+	IC		virtual void		remove_operator			(const _edge_type	&operator_id);
 	IC		virtual void		add_evaluator			(const _condition_type &condition_id, _condition_evaluator_ptr evaluator);
+	IC		virtual void		remove_evaluator		(const _condition_type &condition_id);
 	IC		_object_type		&object					() const;
 	virtual	void				save					(NET_Packet &packet);
 	virtual	void				load					(IReader &packet);

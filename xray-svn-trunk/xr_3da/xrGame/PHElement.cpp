@@ -4,11 +4,13 @@
 #include "tri-colliderknoopc/dTriList.h"
 #include "PHFracture.h"
 #include "PHContactBodyEffector.h"
+#include "MathUtilsOde.h"
 #include "MathUtils.h"
 #include "PhysicsShellHolder.h"
 #include "game_object_space.h"
 //#include "../skeletoncustom.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
+#include "../KinematicsAnimated.h"
 #include <../../xrODE/ode/src/util.h>
 #ifdef DEBUG
 #include	"PHDebug.h"
@@ -219,7 +221,7 @@ void		CPHElement::Deactivate()
 	m_flags.set(flActivating,FALSE);
 	//bActive=false;
 	//bActivating=false;
-	CKinematics* K=m_shell->PKinematics();
+	IKinematics* K=m_shell->PKinematics();
 	if(K)
 	{
 		K->LL_GetBoneInstance(m_SelfID).reset_callback();
@@ -325,7 +327,7 @@ void CPHElement::Activate(const Fmatrix &transform,const Fvector& lin_vel,const 
 	if(disable) dBodyDisable(m_body);
 	m_flags.set(flActive,TRUE);
 	m_flags.set(flActivating,TRUE);
-	CKinematics* K=m_shell->PKinematics();
+	IKinematics* K=m_shell->PKinematics();
 	if(K)
 	{
 		K->LL_GetBoneInstance(m_SelfID).set_callback(bctPhysics,m_shell->GetBonesCallback(),static_cast<CPhysicsElement*>(this));
@@ -611,7 +613,7 @@ void	CPHElement::	applyImpulseTrace		(const Fvector& pos, const Fvector& dir, fl
 		}
 		else
 		{ 
-			CKinematics* K=m_shell->PKinematics();
+			IKinematics* K=m_shell->PKinematics();
 			if(K)
 			{
 				Fmatrix m;m.set(K->LL_GetTransform(m_SelfID));
@@ -767,7 +769,7 @@ void CPHElement::StataticRootBonesCallBack(CBoneInstance* B)
 			m_shell->m_object_in_root.invert();
 			m_shell->SetNotActivating();
 		}
-		B->Callback_overwrite=TRUE;
+		B->set_callback_overwrite(TRUE);
 		//VERIFY2(fsimilar(DET(B->mTransform),1.f,DET_CHECK_EPS),"Bones callback returns 0 matrix");
 		VERIFY_RMATRIX(B->mTransform);
 		VERIFY(valid_pos(B->mTransform.c,phBoundaries));
@@ -814,16 +816,16 @@ void CPHElement::BoneGlPos(Fmatrix &m,CBoneInstance* B)
 void CPHElement::GetAnimBonePos(Fmatrix &bp)
 {
 	VERIFY(m_shell->PKinematics());
-	CKinematicsAnimated *ak = m_shell->PKinematics()->dcast_PKinematicsAnimated();
+	IKinematics *k = m_shell->PKinematics();
 	VERIFY(ak);
-	CBoneInstance *BI = &ak->LL_GetBoneInstance(m_SelfID);
-	if(!BI->Callback)//.
+	CBoneInstance *BI = &k->LL_GetBoneInstance(m_SelfID);
+	if(!BI->callback())//.
 	{
 		bp.set(BI->mTransform);
 		return;
 	}
 
-	ak->Bone_GetAnimPos( bp, m_SelfID, u8(-1), true );
+	k->Bone_GetAnimPos( bp, m_SelfID, u8(-1), true );
 
 }
 
@@ -906,7 +908,7 @@ void	CPHElement::SetBoneCallbackOverwrite				(bool v)
 {
 	VERIFY(m_shell);
 	VERIFY(m_shell->PKinematics());
-	m_shell->PKinematics()->LL_GetBoneInstance(m_SelfID).Callback_overwrite = v;
+	m_shell->PKinematics()->LL_GetBoneInstance(m_SelfID).set_callback_overwrite(v);
 }
 void CPHElement::BonesCallBack(CBoneInstance* B)
 {
@@ -926,7 +928,7 @@ void CPHElement::BonesCallBack(CBoneInstance* B)
 			m_shell->m_object_in_root.invert();
 			m_shell->SetNotActivating();
 		}
-		B->Callback_overwrite=TRUE;
+		B->set_callback_overwrite(TRUE);
 		//VERIFY2(fsimilar(DET(B->mTransform),1.f,DET_CHECK_EPS),"Bones callback returns 0 matrix");
 		VERIFY_RMATRIX(B->mTransform);
 		VERIFY(valid_pos(B->mTransform.c,phBoundaries));
@@ -1136,7 +1138,7 @@ void CPHElement::add_Shape(const SBoneShape& shape)
 	CPHGeometryOwner::add_Shape(shape);
 }
 
-#pragma todo(remake it using Geometry functions)
+#pragma todo("remake it using Geometry functions")
 
 void CPHElement::add_Mass(const SBoneShape& shape,const Fmatrix& offset,const Fvector& mass_center,float mass,CPHFracture* fracture)
 {

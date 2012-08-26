@@ -149,7 +149,7 @@ public:
 	void				_dbg_refresh	(){BuildTopLevel();BuildState();}
 #endif
 };
-/*
+
 class ENGINE_API	CCF_DynamicMesh: public CCF_Skeleton
 {
 	typedef	 CCF_Skeleton inherited;
@@ -158,7 +158,7 @@ public:
 
 	virtual BOOL		_RayQuery		( const collide::ray_defs& Q, collide::rq_results& R);
 };
-*/
+
 class ENGINE_API	CCF_EventBox : public ICollisionForm
 {
 private:

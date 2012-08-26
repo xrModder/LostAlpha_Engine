@@ -940,6 +940,13 @@ void get_translation(const Matrix M, float p[3])
     p[2] = M[3][2];
 }
 
+float get_translation( const Matrix M)
+{
+	float p[3];
+	get_translation( M, p );
+	return norm( p );
+}
+
 void set_translation(Matrix  M, const float p[3])
 {
     M[3][0] = p[0];

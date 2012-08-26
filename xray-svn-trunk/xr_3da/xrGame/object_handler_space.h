@@ -12,6 +12,7 @@ namespace ObjectHandlerSpace {
 	enum EWorldProperties {
 		eWorldPropertyItemID		= u32(0),
 		eWorldPropertyHidden,
+		eWorldPropertyShown,
 		eWorldPropertyStrapped,
 		eWorldPropertyStrapped2Idle,
 		eWorldPropertySwitch1,
@@ -27,6 +28,7 @@ namespace ObjectHandlerSpace {
 		eWorldPropertyReady1,
 		eWorldPropertyReady2,
 		eWorldPropertyFiring1,
+		eWorldPropertyFiringNoReload1,
 		eWorldPropertyFiring2,
 		eWorldPropertyAmmo1,
 		eWorldPropertyAmmo2,
@@ -56,6 +58,7 @@ namespace ObjectHandlerSpace {
 
 	enum EWorldOperators {
 		eWorldOperatorShow			= u32(0),
+		eWorldOperatorDoShow,
 		eWorldOperatorHide,
 		eWorldOperatorDrop,
 		eWorldOperatorStrapping,
@@ -73,6 +76,7 @@ namespace ObjectHandlerSpace {
 		eWorldOperatorForceReload1,
 		eWorldOperatorForceReload2,
 		eWorldOperatorFire1,
+		eWorldOperatorFireNoReload,
 		eWorldOperatorFire2,
 		eWorldOperatorSwitch1,
 		eWorldOperatorSwitch2,

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "control_combase.h"
-#include "../../../SkeletonAnimated.h"
 
+#include "../../../KinematicsAnimated.h"
+#include "../../../animation_motion.h"
 struct SAnimationPart {
 	MotionID		motion;
 	CBlend			*blend;
@@ -97,7 +98,7 @@ public:
 // get motion time, when just MotionID available
 IC float CControlAnimation::motion_time(MotionID motion_id, IRender_Visual *visual)
 {
-	CKinematicsAnimated	*skeleton_animated	= smart_cast<CKinematicsAnimated*>(visual);
+	IKinematicsAnimated	*skeleton_animated	= smart_cast<IKinematicsAnimated*>(visual);
 	VERIFY				(skeleton_animated);
 	CMotionDef			*motion_def			= skeleton_animated->LL_GetMotionDef(motion_id);
 	VERIFY				(motion_def);

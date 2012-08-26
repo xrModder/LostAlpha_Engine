@@ -36,7 +36,7 @@ void CWeaponBobbing::Load()
 
 void CWeaponBobbing::CheckState()
 {
-	dwMState		= Actor()->GetCurrentState();
+	dwMState		= Actor()->MovingState();
 	is_limping		= Actor()->IsLimping();
 	m_bZoomMode		= Actor()->IsZoomAimingMode();
 	fTime			+= Device.fTimeDelta;

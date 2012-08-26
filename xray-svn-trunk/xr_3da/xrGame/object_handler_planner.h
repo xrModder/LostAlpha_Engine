@@ -60,9 +60,9 @@ public:
 public:
 	IC		_condition_type	uid						(const u32 id1, const u32 id0) const;
 	IC		bool			object_action			(_condition_type action_id, CObject *object);
-	IC		u32				current_action_object_id() const;
+	IC		u16				current_action_object_id() const;
 	IC		u32				current_action_state_id	() const;
-	IC		u32				action_object_id		(_condition_type action_id) const;
+	IC		u16				action_object_id		(_condition_type action_id) const;
 	IC		u32				action_state_id			(_condition_type action_id) const;
 	IC		void			add_condition			(CSActionBase *action, u16 id, EWorldProperties property, _value_type value);
 	IC		void			add_effect				(CSActionBase *action, u16 id, EWorldProperties property, _value_type value);

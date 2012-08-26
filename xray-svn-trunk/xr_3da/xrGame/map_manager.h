@@ -25,6 +25,7 @@ public:
 	void					RemoveMapLocation			(CMapLocation* ml);
 	CMapLocation*			GetMapLocation				(const shared_str& spot_type, u16 id);
 	void					DisableAllPointers			();
+	void					OnObjectDestroyNotify		(u16 id);
 #ifdef DEBUG
 	void					Dump						();
 #endif

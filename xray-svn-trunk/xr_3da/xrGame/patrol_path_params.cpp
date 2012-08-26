@@ -30,6 +30,7 @@ CPatrolPathParams::~CPatrolPathParams	()
 
 u32	CPatrolPathParams::count			() const
 {
+	VERIFY				(m_path);
 	return				(m_path->vertices().size());
 }
 

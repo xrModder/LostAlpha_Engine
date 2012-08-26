@@ -9,7 +9,7 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "PHWorld.h"
 extern CPHWorld*	ph_world;
 
@@ -45,7 +45,7 @@ void SCarLight::ParseDefinitions(LPCSTR section)
 	//	time2hide				= 0;
 
 	// set bone id
-	CKinematics*			pKinematics=smart_cast<CKinematics*>(m_holder->PCar()->Visual());
+	IKinematics*			pKinematics=smart_cast<IKinematics*>(m_holder->PCar()->Visual());
 	CInifile* ini		=	pKinematics->LL_UserData();
 	
 	Fcolor					clr;
@@ -80,10 +80,10 @@ void SCarLight::TurnOn()
 {
 	VERIFY(!ph_world->Processing());
 	if(isOn()) return;
-	CKinematics* K=smart_cast<CKinematics*>(m_holder->PCar()->Visual());
+	IKinematics* K=smart_cast<IKinematics*>(m_holder->PCar()->Visual());
 	K->LL_SetBoneVisible(bone_id,TRUE,TRUE);
 	K->CalculateBones_Invalidate	();
-	K->CalculateBones();	
+	K->CalculateBones(TRUE);	
 	glow_render ->set_active(true);
 	light_render->set_active(true);
 	Update();
@@ -95,7 +95,7 @@ void SCarLight::TurnOff()
 	if(!isOn()) return;
  	glow_render ->set_active(false);
 	light_render->set_active(false);
-	smart_cast<CKinematics*>(m_holder->PCar()->Visual())->LL_SetBoneVisible(bone_id,FALSE,TRUE);
+	smart_cast<IKinematics*>(m_holder->PCar()->Visual())->LL_SetBoneVisible(bone_id,FALSE,TRUE);
 }
 
 bool SCarLight::isOn()
@@ -134,7 +134,7 @@ void CCarLights::Init(CCar* pcar)
 
 void CCarLights::ParseDefinitions()
 {
-	CInifile* ini= smart_cast<CKinematics*>(m_pcar->Visual())->LL_UserData();
+	CInifile* ini= smart_cast<IKinematics*>(m_pcar->Visual())->LL_UserData();
 	if(!ini->section_exist("lights")) return;
 	LPCSTR S=  ini->r_string("lights","headlights");
 	string64					S1;

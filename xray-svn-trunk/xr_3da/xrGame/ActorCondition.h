@@ -41,8 +41,8 @@ public:
 	virtual CWound*		ConditionHit				(SHit* pHDS);
 	virtual void		UpdateCondition				();
 
-	virtual void 		ChangeAlcohol				(float value);
-	virtual void 		ChangeSatiety				(float value);
+	virtual void 		ChangeAlcohol				(const float value);
+	virtual void 		ChangeSatiety				(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;

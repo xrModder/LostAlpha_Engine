@@ -43,6 +43,7 @@
 #include "clsid_game.h"
 #include "MainMenu.h"
 #include "..\XR_IOConsole.h"
+#include "actor.h"
 
 #ifdef DEBUG
 #	include "level_debug.h"
@@ -487,8 +488,13 @@ void CLevel::OnFrame	()
 
 	if (m_bNeed_CrPr)					make_NetCorrectionPrediction();
 
-	if(!g_dedicated_server)
-		MapManager().Update		();
+	if(!g_dedicated_server )
+	{
+		if (g_mt_config.test(mtMap)) 
+			Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(m_map_manager,&CMapManager::Update));
+		else								
+			MapManager().Update		();
+	}
 	// Inherited update
 	inherited::OnFrame		();
 
@@ -615,7 +621,10 @@ extern void draw_wnds_rects();
 void CLevel::OnRender()
 {
 	inherited::OnRender	();
-	
+
+	if (!game)
+		return;
+
 	Game().OnRender();
 	//отрисовать трассы пуль
 	//Device.Statistic->TEST1.Begin();
@@ -908,6 +917,7 @@ bool		CLevel::InterpolationDisabled	()
 
 void 		CLevel::PhisStepsCallback		( u32 Time0, u32 Time1 )
 {
+	if (!Level().game)				return;
 	if (GameID() == GAME_SINGLE)	return;
 
 //#pragma todo("Oles to all: highly inefficient and slow!!!")
@@ -997,6 +1007,9 @@ void CLevel::SetGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor
 }
 void CLevel::SetEnvironmentGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor)
 {
+	if (!game)
+		return;
+
 	game->SetEnvironmentGameTimeFactor(GameTime, fTimeFactor);
 //	Server->game->SetGameTimeFactor(fTimeFactor);
 }/*

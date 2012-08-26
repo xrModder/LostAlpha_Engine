@@ -3,8 +3,10 @@
 
 #include "TriPrimitiveCollideClassDef.h"
 #include "../ode_include.h"
-#include "../MathUtils.h"
+#include "../MathUtilsOde.h"
 #include "dcTriListCollider.h"
+#include "../../../xrCore/_vector3d_ext.h"
+
 struct Triangle;
 struct dxBox {
 	dVector3 side;	// side lengths (x,y,z)

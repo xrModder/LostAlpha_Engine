@@ -17,6 +17,7 @@
 #include "eatable_item.h"
 #include "medkit.h"
 #include "weapon.h"
+#include "Grenade.h"
 #include "customdetector.h"
 #include "ef_storage.h"
 #include "ef_primary.h"

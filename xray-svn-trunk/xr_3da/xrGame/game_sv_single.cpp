@@ -10,6 +10,7 @@
 #include "gamepersistent.h"
 #include "xrServer.h"
 #include "..\x_ray.h"
+#include "xrServer_Objects_ALife_Items.h"
 
 game_sv_Single::game_sv_Single			()
 {
@@ -68,8 +69,13 @@ void	game_sv_Single::OnCreate		(u16 id_who)
 			CSE_ALifeTraderAbstract		*trader = smart_cast<CSE_ALifeTraderAbstract*>(parent);
 			if (trader)
 				alife().create			(alife_object);
-			else
-				alife_object->m_bALifeControl	= false;
+			else {
+				CSE_ALifeInventoryBox* const	box = smart_cast<CSE_ALifeInventoryBox*>(parent);
+				if (box)
+					alife().create		(alife_object);
+				else
+					alife_object->m_bALifeControl	= false;
+			}
 		}
 		else
 			alife_object->m_bALifeControl		= false;

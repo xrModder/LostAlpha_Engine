@@ -9,6 +9,7 @@
 
 #include "bone.h"
 
+
 // refs
 class CEnvelope;
 class IWriter;
@@ -65,7 +66,7 @@ public:
     int				FrameStart		()				{return iFrameStart;}
     int				FrameEnd		()				{return iFrameEnd;}
     float			FPS				()				{return fFPS;}
-    int				Length			()				{return iFrameEnd-iFrameStart;}
+    int				Length			()				{return iFrameEnd-iFrameStart+1;}
 
 	void			SetParam		(int s, int e, float fps){iFrameStart=s; iFrameEnd=e; fFPS=fps;}
 
@@ -117,10 +118,14 @@ public:
 //--------------------------------------------------------------------------
 
 enum ESMFlags{
-    esmFX		= 1<<0,
-    esmStopAtEnd= 1<<1,
-    esmNoMix	= 1<<2,
-    esmSyncPart	= 1<<3
+    esmFX				= 1<<0,
+    esmStopAtEnd		= 1<<1,
+    esmNoMix			= 1<<2,
+    esmSyncPart			= 1<<3,
+    esmUseFootSteps    	= 1<<4,
+	esmRootMover     	= 1<<5,
+	esmIdle             = 1<<6,
+	esmUseWeaponBone	= 1<<7,
 };
 
 #ifdef _EDITOR
@@ -151,6 +156,7 @@ public:
     st_BoneMotion*	FindBoneMotion	(shared_str name);
     BoneMotionVec&	BoneMotions		()				{return bone_mots;}
 	Flags8			GetMotionFlags	(int bone_idx)	{return bone_mots[bone_idx].m_Flags;}
+	void			add_empty_motion(shared_str const &bone_id);
 
 	virtual void	Save			(IWriter& F);
 	virtual bool	Load			(IReader& F);
@@ -169,19 +175,20 @@ public:
 #endif
 
 struct ECORE_API SAnimParams		{
-    float			t;
+    float			t_current;
+    float			tmp;
     float			min_t;
     float			max_t;
     BOOL			bPlay;
 	BOOL			bWrapped;
 public:
-					SAnimParams(){bWrapped=false;bPlay=false;t=0.f;min_t=0.f;max_t=0.f;}
+					SAnimParams(){bWrapped=false;bPlay=false;t_current=0.f;min_t=0.f;max_t=0.f;tmp=0.f;}
     void			Set		(CCustomMotion* M);
 	void 			Set		(float start_frame, float end_frame, float fps);
-    float			Frame	()			{ return t;}
+    float			Frame	()			{ return t_current;}
     void			Update	(float dt, float speed, bool loop);
-    void			Play	(){bPlay=true; t=min_t;}
-    void			Stop	(){bPlay=false; t=min_t;}
+    void			Play	(){bPlay=true; t_current=min_t; tmp=min_t;}
+    void			Stop	(){bPlay=false; t_current=min_t; tmp=min_t;}
     void			Pause	(bool val){bPlay=!val;}
 };
 

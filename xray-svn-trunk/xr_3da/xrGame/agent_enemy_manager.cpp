@@ -47,6 +47,10 @@ IC	u32 population(const u32 &b) {
 	return	(a);
 }
 
+IC	u32 population(const u64 &b) {
+	return	( population( (u32)b ) + population(u32(b >> 32)) );
+}
+
 struct CEnemyFiller {
 	typedef CAgentEnemyManager::ENEMIES ENEMIES;
 	ENEMIES			*m_enemies;

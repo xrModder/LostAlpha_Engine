@@ -13,7 +13,9 @@ CPseudogigantStepEffector::CPseudogigantStepEffector(float time, float amp, floa
 
 BOOL CPseudogigantStepEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
 {
-	fLifeTime -= Device.fTimeDelta; if(fLifeTime<0) return FALSE;
+	fLifeTime -= Device.fTimeDelta; 
+	if(fLifeTime<0) 
+		return FALSE;
 
 	// процент оставшегося времени
 	float time_left_perc = fLifeTime / total;

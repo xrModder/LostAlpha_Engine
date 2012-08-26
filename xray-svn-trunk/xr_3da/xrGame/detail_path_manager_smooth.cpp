@@ -361,8 +361,11 @@ bool CDetailPathManager::compute_trajectory(
 )
 {
 	SCirclePoint				start_circles[2], dest_circles[2];
-	compute_circles				(start,start_circles);
-	compute_circles				(dest,dest_circles);
+	if ( !compute_circles(start,start_circles) )
+		return					false;
+
+	if ( !compute_circles(dest,dest_circles) )
+		return					false;
 	
 	u32							tangent_count = 0;
 	SCirclePoint				tangent_points[4][2];

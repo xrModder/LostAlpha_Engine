@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "game_cl_base.h"
 #include "Level.h"
+#include "../Kinematics.h"
 #include "Weapon.h"
 #include "alife_space.h"
 #include "hit.h"
@@ -315,7 +316,7 @@ void WeaponUsageStatistic::OnBullet_Hit(SBullet* pBullet, u16 TargetID, s16 elem
 		NewHit.Pos0 = BD.Bullet.pos;
 		NewHit.Pos1 = HitLocation;
 		NewHit.TargetName = pTarget->cName();
-		NewHit.BoneName = smart_cast<CKinematics*>(pTarget->Visual())->LL_BoneName_dbg(element);
+		NewHit.BoneName = smart_cast<IKinematics*>(pTarget->Visual())->LL_BoneName_dbg(element);
 		//---------------------------
 		WeaponIt->m_Hits.push_back(NewHit);
 	};

@@ -6,6 +6,7 @@
 #include "PHIsland.h"
 typedef u32	CLClassBits;
 typedef u32	CLBits;
+class ISpatial;
 DEFINE_VECTOR(ISpatial*,qResultVec,qResultIt)
 class CPHObject;
 class CPHUpdateObject;
@@ -77,6 +78,7 @@ public:
 	virtual		bool			step_single						(dReal	step)					;
 				void			reinit_single					()								;
 				void			step_prediction					(float time)					;
+				void			step							(float time)					;
 	virtual 	void 			PhDataUpdate					(dReal	step)					=0;
 	virtual 	void 			PhTune							(dReal	step)					=0;
 	virtual		void 			spatial_move					()								;
@@ -96,7 +98,7 @@ public:
 
 							CPHObject						()										;
 			void			activate						()										;
-		IC	bool			is_active						()										{return !!m_flags.test(st_activated)/*b_activated*/;}
+		IC	bool			is_active						() const								{return !!m_flags.test(st_activated)/*b_activated*/;}
 			void			deactivate						()										;
 			void			put_in_recently_deactivated		()										;
 			void			remove_from_recently_deactivated()										;

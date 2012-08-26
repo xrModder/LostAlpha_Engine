@@ -14,9 +14,11 @@
 #include "squad_hierarchy_holder.h"
 #include "group_hierarchy_holder.h"
 #include "clsid_game.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "monster_community.h"
 #include "ai_space.h"
+#include "alife_simulator.h"
+#include "alife_time_manager.h"
 
 #define BODY_REMOVE_TIME		600000
 
@@ -59,10 +61,11 @@ void CEntity::OnEvent		(NET_Packet& P, u16 type)
 			P.r_u16			(id);
 			P.r_u32			(cl);
 			CObject			*who = Level().Objects.net_Find	(id);
-			if (who) {
-				if (this!=who)	if(bDebug) Msg("%s %s %s %s",*cName(),"Killed by ",*(who->cName()), "...");
-				else			if(bDebug) Msg("%s %s",*cName(),"Crashed...");
-			};
+			if (who && !IsGameTypeSingle())
+			{
+				if (this!=who)	/*if(bDebug) */ Msg( "%s killed by %s ...", cName().c_str(), who->cName().c_str() );
+				else			/*if(bDebug) */ Msg( "%s dies himself ...", cName().c_str() );
+			}
 			Die				(who);
 		}
 		break;
@@ -103,7 +106,7 @@ float CEntity::CalcCondition(float hit)
 void	CEntity::Hit		(SHit* pHDS)
 {
 
-	if (bDebug)				Log("Process HIT: ", *cName());
+//	if (bDebug)				Log("Process HIT: ", *cName());
 
 	// *** process hit calculations
 	// Calc impulse
@@ -165,7 +168,9 @@ BOOL CEntity::net_Spawn		(CSE_Abstract* DC)
 	// Initialize variables
 	if (E) {
 		SetfHealth			(E->fHealth);
-		VERIFY				((E->m_killer_id == ALife::_OBJECT_ID(-1)) || !g_Alive());
+	
+		R_ASSERT2(!((E->get_killer_id() != ALife::_OBJECT_ID(-1)) && g_Alive()), make_string("server entity [%s][%d] has an killer [%d] and not dead",
+			E->name_replace(), E->ID, E->get_killer_id()).c_str());
 		m_killer_id			= E->m_killer_id;
 		if (m_killer_id == ID())
 			m_killer_id		= ALife::_OBJECT_ID(-1);
@@ -215,7 +220,7 @@ BOOL CEntity::net_Spawn		(CSE_Abstract* DC)
 		return				(FALSE);
 
 //	SetfHealth			(E->fHealth);
-	CKinematics* pKinematics=smart_cast<CKinematics*>(Visual());
+	IKinematics* pKinematics=smart_cast<IKinematics*>(Visual());
 	CInifile* ini = NULL;
 
 	if(pKinematics) ini = pKinematics->LL_UserData();
@@ -299,7 +304,7 @@ void CEntity::reload			(LPCSTR section)
 void CEntity::set_death_time	()
 {
 	m_level_death_time	= Device.dwTimeGlobal;
-	m_game_death_time	= Level().GetGameTime();
+	m_game_death_time	= ai().get_alife() ? ai().alife().time_manager().game_time() : Level().GetGameTime();
 }
 
 bool CEntity::IsFocused			()const	{ return (smart_cast<const CEntity*>(g_pGameLevel->CurrentEntity())==this);		}

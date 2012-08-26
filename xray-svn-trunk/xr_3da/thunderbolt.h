@@ -31,7 +31,7 @@ struct SThunderboltDesc
     shared_str					name;
 	CLAItem*					color_anim;
 public:
-								SThunderboltDesc	(CInifile* pIni, LPCSTR sect);
+								SThunderboltDesc	(const CInifile* pIni, LPCSTR sect);
 							    ~SThunderboltDesc	();
 };
 
@@ -41,7 +41,7 @@ struct SThunderboltCollection
 	DescVec			  			palette;
 	shared_str					section;
 public:
-								SThunderboltCollection	(CInifile* pIni, LPCSTR sect);
+								SThunderboltCollection	(const CInifile* pIni, LPCSTR sect);
 								~SThunderboltCollection	();
 	SThunderboltDesc*			GetRandomDesc			(){VERIFY(palette.size()>0); return palette[Random.randI(palette.size())];}
 };
@@ -97,7 +97,7 @@ public:
 	void						OnFrame				(int id,float period, float duration);
 	void						Render				();
 
-	int							AppendDef			(CInifile* pIni, LPCSTR sect);
+	int							AppendDef			(const CInifile* pIni, LPCSTR sect);
 };
 
 #endif //ThunderboltH

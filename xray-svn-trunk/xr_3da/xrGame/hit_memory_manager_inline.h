@@ -46,3 +46,8 @@ IC const ALife::_OBJECT_ID &CHitMemoryManager::last_hit_object_id	() const
 {
 	return			(m_last_hit_object_id);
 }
+
+IC	u32 const& CHitMemoryManager::last_hit_time						() const
+{
+	return			(m_last_hit_time);
+}

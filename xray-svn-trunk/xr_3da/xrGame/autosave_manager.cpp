@@ -59,7 +59,7 @@ void CAutosaveManager::shedule_Update		(u32 dt)
 	if (last_autosave_time() + autosave_interval() >= Device.dwTimeGlobal)
 		return;
 
-	if (!g_actor || !ready_for_autosave() || !Actor()->g_Alive()) {
+	if (Device.dwPrecacheFrame || !g_actor || !ready_for_autosave() || !Actor()->g_Alive()) {
 		delay_autosave			();
 		return;
 	}

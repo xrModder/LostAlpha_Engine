@@ -3,13 +3,14 @@
 #include "level.h"
 #include "script_game_object.h"
 #include "game_object_space.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
 #include "../LightAnimLibrary.h"
 #include "PhysicsShell.h"
 #include "clsid_game.h"
 #include "script_callback_ex.h"
 #include "ai/stalker/ai_stalker.h"
 #include "CustomZone.h"
+#include "actor.h"
 #include "MathUtils.h"
 
 bool CHelicopter::isObjectVisible			(CObject* O)
@@ -60,7 +61,7 @@ void CHelicopter::StartFlame ()
 
 void CHelicopter::UpdateHeliParticles	()
 {
-	CKinematics* K		= smart_cast<CKinematics*>(Visual());
+	IKinematics* K		= smart_cast<IKinematics*>(Visual());
 	m_particleXFORM		= K->LL_GetTransform(m_smoke_bone);
 	m_particleXFORM.mulA_43(XFORM());
 
@@ -233,7 +234,7 @@ void	CHelicopter::Hit							(SHit* pHDS)
 #endif
 	};
 	if (pHDS->who&&
-		( pHDS->who->CLS_ID==CLSID_OBJECT_ACTOR	||
+		( smart_cast<CActor*>(pHDS->who)	||
 		smart_cast<CAI_Stalker*>(pHDS->who)		||
 		smart_cast<CCustomZone*>(pHDS->who) )
 		){
@@ -279,7 +280,7 @@ void CHelicopter::DieHelicopter()
 	m_brokenSound.play_at_pos		(0,XFORM().c,sm_Looped);
 
 
-	CKinematics* K		= smart_cast<CKinematics*>(Visual());
+	IKinematics* K		= smart_cast<IKinematics*>(Visual());
 	if(true /*!PPhysicsShell()*/){
 		string256						I;
 		LPCSTR bone;
@@ -309,7 +310,7 @@ void CHelicopter::DieHelicopter()
 	PPhysicsShell()->set_AngularVel	(m_death_ang_vel);
 	PPhysicsShell()->Enable			();
 	K->CalculateBones_Invalidate	();
-	K->CalculateBones				();
+	K->CalculateBones				(TRUE);
 	setState						(CHelicopter::eDead);
 	m_engineSound.stop				();
 	processing_deactivate			();
@@ -326,7 +327,7 @@ void SHeliEnemy::reinit()
 {
 	type					= eEnemyNone;
 	destEnemyPos.set		(0.0f,0.0f,0.0f);
-	destEnemyID				=u32(-1);
+	destEnemyID				=u16(-1);
 	fStartFireTime			=-1.0f;
 }
 
@@ -350,7 +351,7 @@ void SHeliEnemy::save(NET_Packet &output_packet)
 {
 	output_packet.w_s16		((s16)type);
 	output_packet.w_vec3	(destEnemyPos);
-	output_packet.w_u32		(destEnemyID);
+	output_packet.w_u16		(destEnemyID);
 
 	output_packet.w_float	(fire_trail_length_des);
 	output_packet.w_u8		(bUseFireTrail ? 1 : 0);
@@ -360,7 +361,7 @@ void SHeliEnemy::load(IReader &input_packet)
 {
 	type				= (EHeliHuntState)input_packet.r_s16();
 	input_packet.r_fvector3	(destEnemyPos);
-	destEnemyID			= input_packet.r_u32();
+	destEnemyID			= input_packet.r_u16();
 
 	fire_trail_length_des	= input_packet.r_float();
 	bUseFireTrail		= !!input_packet.r_u8();

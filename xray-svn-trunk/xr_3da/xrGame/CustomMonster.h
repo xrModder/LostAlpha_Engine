@@ -9,15 +9,16 @@
 #include "../feel_vision.h"
 #include "../feel_sound.h"
 #include "../feel_touch.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
 #include "associative_vector.h"
+#include "trajectories.h"
 
 namespace MonsterSpace {
 	struct SBoneRotation;
 };
 
 class CMotionDef;
-class CKinematicsAnimated;
+class IKinematicsAnimated;
 class CMemoryManager;
 class CItemManager;
 class CEnemyManager;
@@ -55,7 +56,7 @@ protected:
 		MotionID		ls;
 		MotionID		rs;
 
-		void			Create(CKinematicsAnimated* K, LPCSTR base);
+		void			Create(IKinematicsAnimated* K, LPCSTR base);
 	};
 
 private:
@@ -122,7 +123,7 @@ public:
 	virtual void		Exec_Action				( float dt );
 	virtual void		Exec_Look				( float dt );
 	void	__stdcall	Exec_Visibility			( );
-	void				eye_pp_s0				( );
+	virtual void		eye_pp_s0				( );
 	void				eye_pp_s1				( );
 	void				eye_pp_s2				( );
 
@@ -153,6 +154,8 @@ public:
 	virtual void		net_Relcase				(CObject*	 O);
 
 	virtual void		SelectAnimation			( const Fvector& _view, const Fvector& _move, float speed ) = 0;
+
+	virtual bool		is_base_monster_with_enemy	() { return false; }
 
 	// debug
 #ifdef DEBUG
@@ -254,6 +257,8 @@ public:
 public:
 			void __stdcall			update_sound_player		();
 	virtual	void					on_restrictions_change	();
+
+	virtual bool					should_wait_to_use_corspe_visual () { return true; }
 	virtual	LPCSTR					visual_name				(CSE_Abstract *server_entity);
 
 private:
@@ -261,7 +266,7 @@ private:
 
 public:
 	IC		const bool				&already_dead			() const {return (m_already_dead);};
-	virtual	bool					use_simplified_visual	() const {return (already_dead());};
+	virtual	bool					use_simplified_visual	() const {return false;} //(already_dead());};
 	virtual void					on_enemy_change			(const CEntityAlive *enemy);
 	virtual	CVisualMemoryManager	*visual_memory			() const;
 

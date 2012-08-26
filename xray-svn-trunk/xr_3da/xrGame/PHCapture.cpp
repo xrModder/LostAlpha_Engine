@@ -6,7 +6,11 @@
 #include "PHCapture.h"
 #include "entity_alive.h"
 #include "phmovementcontrol.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
+#include "../bone.h"
+#include "../device.h"
+#include "mathutilsode.h"
+#include "phelement.h"
 #include "characterphysicssupport.h"
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +37,8 @@ void CPHCapture::PhDataUpdate(dReal /**step/**/)
 	if(b_failed) return;
 	switch(e_state) 
 	{
+	case cstFree:  
+		break;
 	case cstPulling:  PullingUpdate();
 		break;
 	case cstCaptured: CapturedUpdate();
@@ -45,7 +51,9 @@ void CPHCapture::PhDataUpdate(dReal /**step/**/)
 
 void CPHCapture::PhTune(dReal /**step/**/)
 {
-	if(b_failed) return;
+	if(e_state == cstFree)
+		return;
+
 	//if(!m_taget_object->PPhysicsShell())	{
 	//	b_failed=true;
 	//	return;			//. hack
@@ -257,7 +265,7 @@ void CPHCapture::ReleasedUpdate()
 	if(b_disabled) return;
 	if(!b_collide) 
 	{
-		b_failed=true;
+		e_state=cstFree;
 		m_taget_element->Enable();
 	}
 	b_collide=false;

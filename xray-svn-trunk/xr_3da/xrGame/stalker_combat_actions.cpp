@@ -36,6 +36,7 @@
 #include "detail_path_manager.h"
 #include "weaponmagazined.h"
 #include "stalker_animation_manager.h"
+#include "level_path_manager.h"
 
 #define DISABLE_COVER_BEFORE_DETOUR
 
@@ -1156,6 +1157,14 @@ void CStalkerActionSuddenAttack::execute					()
 		object().movement().set_level_dest_vertex	(mem_object.m_object_params.m_level_vertex_id);
 	else
 		object().movement().set_nearest_accessible_position	(ai().level_graph().vertex_position(mem_object.m_object_params.m_level_vertex_id),mem_object.m_object_params.m_level_vertex_id);
+
+	if ( !visible_now ) {
+		u32 target_vertex_id			= object().movement().level_path().dest_vertex_id();
+		if ( object().ai_location().level_vertex_id() == target_vertex_id ) {
+			m_storage->set_property		(eWorldPropertyUseSuddenness,false);
+			return;
+		}
+	}
 
 	float								distance = object().Position().distance_to(mem_object.m_object_params.m_position);
 	if (distance >= 15.f) {

@@ -3,7 +3,7 @@
 #include "SpaceUtils.h"
 #include "GameObject.h"
 #include "PhysicsShellHolder.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "PHCollideValidator.h"
 void CPHStaticGeomShell::get_spatial_params()
 {
@@ -38,7 +38,7 @@ CPHStaticGeomShell::CPHStaticGeomShell()
 		spatial.type|=STYPE_PHYSIC;
 }
 
-void cb(CBoneInstance* B)
+void __stdcall cb(CBoneInstance* B)
 {
 
 }
@@ -63,21 +63,25 @@ CPHStaticGeomShell* P_BuildStaticGeomShell(CGameObject* obj,ObjectContactCallbac
 CPHStaticGeomShell* P_BuildStaticGeomShell(CGameObject* obj,ObjectContactCallbackFun* object_contact_callback)
 {
 	Fobb			b;
-	IRender_Visual* V=obj->Visual();
-	R_ASSERT2(V,"need visual to build");
+	//IRenderVisual* V=obj->ObjectVisual();
+	//R_ASSERT2(V,"need visual to build");
+	IKinematics* K		= smart_cast<IKinematics*>(obj->Visual());
+	R_ASSERT2(K,"need visual to build");
+	K->CalculateBones	(TRUE);		//. bForce - was TRUE
 
-	smart_cast<CKinematics*>(V)->CalculateBones	();		//. bForce - was TRUE
-	V->vis.box.getradius	(b.m_halfsize);
+	//V->getVisData().box.getradius	(b.m_halfsize);
+	K->GetBox().getradius	(b.m_halfsize);
 
 	b.xform_set					(Fidentity);
 	CPHStaticGeomShell* pUnbrokenObject =P_BuildStaticGeomShell(obj,object_contact_callback,b);
 
 	
-	CKinematics* K=smart_cast<CKinematics*>(V); VERIFY(K);
-	K->CalculateBones();
+	//IKinematics* K=smart_cast<IKinematics*>(V); VERIFY(K);
+	K->CalculateBones(TRUE);
 	for (u16 k=0; k<K->LL_BoneCount(); k++){
-		K->LL_GetBoneInstance(k).Callback_overwrite = TRUE;
-		K->LL_GetBoneInstance(k).Callback = cb;
+		K->LL_GetBoneInstance(k).set_callback( bctPhysics,cb,K->LL_GetBoneInstance(k).callback_param(), TRUE);
+		//K->LL_GetBoneInstance(k).Callback_overwrite = TRUE;
+		//K->LL_GetBoneInstance(k).Callback = cb;
 	}
 	return pUnbrokenObject;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "control_combase.h"
-#include "../../../SkeletonAnimated.h"
-
+#include "../../../KinematicsAnimated.h"
+#include "../../../animation_motion.h"
 enum EStateAnimTriple {
 	eStatePrepare,
 	eStateExecute,

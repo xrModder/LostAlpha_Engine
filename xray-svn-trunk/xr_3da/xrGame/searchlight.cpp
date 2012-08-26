@@ -4,7 +4,7 @@
 #include "../LightAnimLibrary.h"
 #include "script_entity_action.h"
 #include "xrServer_Objects_ALife.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
@@ -47,7 +47,7 @@ void CProjector::Hit(SHit *pHDS)
 
 void  CProjector::BoneCallbackX(CBoneInstance *B)
 {
-	CProjector	*P = static_cast<CProjector*>(B->Callback_Param);
+	CProjector	*P = static_cast<CProjector*>(B->callback_param());
 
 	Fmatrix M;
 	M.setHPB (0.0f, P->_current.pitch,0.0f);
@@ -56,7 +56,7 @@ void  CProjector::BoneCallbackX(CBoneInstance *B)
 
 void  CProjector::BoneCallbackY(CBoneInstance *B)
 {
-	CProjector	*P = static_cast<CProjector*>(B->Callback_Param);
+	CProjector	*P = static_cast<CProjector*>(B->callback_param());
 
 	float delta_yaw = angle_difference(P->_start.yaw,P->_current.yaw);
 	if (angle_normalize_signed(P->_start.yaw - P->_current.yaw) > 0) delta_yaw = -delta_yaw;
@@ -75,9 +75,9 @@ BOOL CProjector::net_Spawn(CSE_Abstract* DC)
 	if (!inherited::net_Spawn(DC))
 		return			(FALSE);
 	
-	R_ASSERT				(Visual() && smart_cast<CKinematics*>(Visual()));
+	R_ASSERT				(Visual() && smart_cast<IKinematics*>(Visual()));
 
-	CKinematics* K			= smart_cast<CKinematics*>(Visual());
+	IKinematics* K			= smart_cast<IKinematics*>(Visual());
 	CInifile* pUserData		= K->LL_UserData(); 
 	R_ASSERT3				(pUserData,"Empty Projector user data!",slight->get_visual());
 	lanim					= LALib.FindItem(pUserData->r_string("projector_definition","color_animator"));
@@ -101,10 +101,10 @@ BOOL CProjector::net_Spawn(CSE_Abstract* DC)
 	TurnOn		();
 	
 	//////////////////////////////////////////////////////////////////////////
-	CBoneInstance& b_x = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(bone_x.id);	
+	CBoneInstance& b_x = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(bone_x.id);	
 	b_x.set_callback(bctCustom,BoneCallbackX,this);
 
-	CBoneInstance& b_y = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(bone_y.id);	
+	CBoneInstance& b_y = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(bone_y.id);	
 	b_y.set_callback(bctCustom,BoneCallbackY,this);
 	
 	Direction().getHP(_current.yaw,_current.pitch);
@@ -128,11 +128,11 @@ void CProjector::TurnOn()
 	light_render->set_active(true);
 	glow_render->set_active (true);
 
-	CKinematics *visual = smart_cast<CKinematics*>(Visual());
+	IKinematics *visual = smart_cast<IKinematics*>(Visual());
 
 	visual->LL_SetBoneVisible			(guid_bone, TRUE, TRUE);
 	visual->CalculateBones_Invalidate	();
-	visual->CalculateBones				();
+	visual->CalculateBones				(TRUE);
 }
 
 void CProjector::TurnOff()
@@ -142,7 +142,7 @@ void CProjector::TurnOff()
 	light_render->set_active(false);
 	glow_render->set_active (false);
 	
-	smart_cast<CKinematics*>(Visual())->LL_SetBoneVisible(guid_bone, FALSE, TRUE);
+	smart_cast<IKinematics*>(Visual())->LL_SetBoneVisible(guid_bone, FALSE, TRUE);
 }
 
 void CProjector::UpdateCL	()
@@ -164,7 +164,7 @@ void CProjector::UpdateCL	()
 			glow_render->set_color(fclr);
 		}
 
-		CBoneInstance& BI = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
+		CBoneInstance& BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 		Fmatrix M;
 
 		M.mul(XFORM(),BI.mTransform);

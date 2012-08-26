@@ -4,6 +4,7 @@
 #include "../../../actor.h"
 #include "../../../../CameraBase.h"
 #include "../../../../CustomHUD.h"
+#include "../../../../../xrCore/_vector3d_ext.h"
 
 #define TEMPLATE_SPECIALIZATION template <\
 	typename _Object\

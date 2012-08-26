@@ -3,7 +3,8 @@
 #include "PhysicsShell.h"
 #include "PhysicsShellHolder.h"
 #include "game_cl_base.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
+#include "../KinematicsAnimated.h"
 #include "inventory.h"
 #include "level.h"
 #include "ai_object_location.h"
@@ -123,8 +124,9 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 	/////////////////////////////////////////
 	m_CarringBoneID = u16(-1);
 	/////////////////////////////////////////
-	CKinematicsAnimated	*K=smart_cast<CKinematicsAnimated*>(Visual());
-	if(K)K->PlayCycle("idle");
+	IKinematicsAnimated	*K			= smart_cast<IKinematicsAnimated*>(Visual());
+	if(K)
+		K->PlayCycle("idle");
 	
 	o_fastmode					= FALSE	;		// start initially with fast-mode enabled
 	o_render_frame				= 0		;
@@ -320,7 +322,7 @@ void CArtefact::UpdateXForm()
 			return;
 
 		VERIFY				(E);
-		CKinematics*		V		= smart_cast<CKinematics*>	(E->Visual());
+		IKinematics*		V		= smart_cast<IKinematics*>	(E->Visual());
 		VERIFY				(V);
 
 		// Get matrices
@@ -532,8 +534,9 @@ void SArtefactActivation::ChangeEffects()
 	if(m_snd._feedback())
 		m_snd.stop();
 	
-	if(state_def.m_snd.size()){
-		m_snd.create			(*state_def.m_snd,st_Effect,sg_SourceType);
+	if(state_def.m_snd.size())
+	{
+		m_snd.create			(state_def.m_snd.c_str(),st_Effect,sg_SourceType);
 		m_snd.play_at_pos		(m_af,	m_af->Position());
 	};
 
@@ -542,7 +545,8 @@ void SArtefactActivation::ChangeEffects()
 								state_def.m_light_color.g,
 								state_def.m_light_color.b);
 	
-	if(state_def.m_particle.size()){
+	if(state_def.m_particle.size())
+	{
 		Fvector dir;
 		dir.set(0,1,0);
 
@@ -551,9 +555,10 @@ void SArtefactActivation::ChangeEffects()
 												m_af->ID(),
 												iFloor(state_def.m_time*1000) );
 	};
-	if(state_def.m_animation.size()){
-		CKinematicsAnimated	*K=smart_cast<CKinematicsAnimated*>(m_af->Visual());
-		if(K)K->PlayCycle(*state_def.m_animation);
+	if(state_def.m_animation.size())
+	{
+		IKinematicsAnimated	*K=smart_cast<IKinematicsAnimated*>(m_af->Visual());
+		if(K)K->PlayCycle(state_def.m_animation.c_str());
 	}
 
 }

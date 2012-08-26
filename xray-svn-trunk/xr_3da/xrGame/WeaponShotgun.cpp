@@ -267,6 +267,7 @@ void CWeaponShotgun::OnStateSwitch	(u32 S)
 	if( m_magazine.size() == (u32)iMagazineSize || !HaveCartridgeInInventory(1) ){
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
+			return;
 	};
 
 	switch (m_sub_state)

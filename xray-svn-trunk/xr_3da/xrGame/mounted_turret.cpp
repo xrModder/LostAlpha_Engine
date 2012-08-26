@@ -10,7 +10,8 @@
 #include "ai_sounds.h"
 #include "level.h"
 #include "xr_level_controller.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
+#include "../skeletonanimated.h"
 #include "game_object_space.h"
 
 
@@ -69,7 +70,7 @@ BOOL CMountedTurret::net_Spawn(CSE_Abstract* DC)
 	CPHSkeleton::Spawn														((CSE_Abstract*)(DC));
 	setVisible																(TRUE);
 	setEnabled																(TRUE);
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	K->CalculateBones														();
 	CInifile				*data	= K->LL_UserData						();
 	m_rotate_x_bone					= K->LL_BoneID							(data->r_string(MOUNTED_TURRET_DEF_SECT, "wpn_rotate_x_bone"));
@@ -320,7 +321,7 @@ bool CMountedTurret::Use(const Fvector& pos, const Fvector& dir, const Fvector& 
 void CMountedTurret::SetBoneCallbacks()
 {
 //	PPhysicsShell()->EnabledCallbacks(FALSE);
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	CBoneInstance			&biX	= K->LL_GetBoneInstance					(m_rotate_x_bone);		
 	biX.set_callback														(bctCustom, BoneCallbackX, this);
 	CBoneInstance			&biY	= K->LL_GetBoneInstance					(m_rotate_y_bone);		
@@ -512,7 +513,7 @@ void CMountedTurret::RemoveShotEffector	()
 
 void CMountedTurret::BoneCallbackX(CBoneInstance *B)
 {
-	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->Callback_Param);
+	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->callback_param());
 	Fmatrix rX;	
 	rX.rotateX																(P->m_cur_x_rot);
 	B->mTransform.mulB_43													(rX);
@@ -520,7 +521,7 @@ void CMountedTurret::BoneCallbackX(CBoneInstance *B)
 
 void CMountedTurret::BoneCallbackY(CBoneInstance *B)
 {
-	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->Callback_Param);
+	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->callback_param());
 	Fmatrix rY;
 	rY.rotateY																(P->m_cur_y_rot);
 	B->mTransform.mulB_43													(rY);

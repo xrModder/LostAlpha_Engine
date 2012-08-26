@@ -18,8 +18,9 @@ namespace MonsterSpace {
 	};
 
 	enum EBodyState {
-		eBodyStateCrouch = 0,
+		eBodyStateCrouch = u32(0),
 		eBodyStateStand,
+		eBodyStateDummy = u32(-1)
 	};
 
 	enum EMovementType {
@@ -45,6 +46,7 @@ namespace MonsterSpace {
 		eObjectActionAim1,
 		eObjectActionAim2,
 		eObjectActionFire1,
+		eObjectActionFireNoReload,
 		eObjectActionFire2,
 		eObjectActionIdle,
 		eObjectActionStrapped,
@@ -92,7 +94,8 @@ namespace MonsterSpace {
 	};
 
 	enum EScriptMonsterAnimAction {
-		eAA_StandIdle, 
+		eAA_StandIdle,
+		eAA_CapturePrepare,
 		eAA_SitIdle,			
 		eAA_LieIdle,			
 		eAA_Eat,				

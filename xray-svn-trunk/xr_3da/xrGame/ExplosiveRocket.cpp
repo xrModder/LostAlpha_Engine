@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-
+#include "../Kinematics.h"
 #include "ExplosiveRocket.h"
 
 

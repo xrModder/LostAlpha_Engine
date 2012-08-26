@@ -63,12 +63,10 @@ void CStalkerPlanner::setup			(CAI_Stalker *object)
 	clear						();
 	add_evaluators				();
 	add_actions					();
-	
-	m_alive_goal.clear			();
-	m_alive_goal.add_condition	(CWorldProperty(eWorldPropertyPuzzleSolved,true));
 
-	m_dead_goal.clear			();
-	m_dead_goal.add_condition	(CWorldProperty(eWorldPropertyAlreadyDead,true));
+	CWorldState					target;
+	target.add_condition		(CWorldProperty(eWorldPropertyPuzzleSolved,true));
+	set_target_state			(target);
 
 	m_affect_cover				= false;
 }
@@ -80,11 +78,6 @@ void CStalkerPlanner::update			(u32 time_delta)
 		set_use_log			(!!psAI_Flags.test(aiGOAP));
 #endif
 	
-	if (m_object->g_Alive())
-		set_target_state	(m_alive_goal);
-	else
-		set_target_state	(m_dead_goal);
-
 	inherited::update		();
 
 #ifdef GOAP_DEBUG
@@ -146,8 +139,8 @@ void CStalkerPlanner::add_actions			()
 
 	planner					= xr_new<CStalkerDeathPlanner>(m_object,"death_planner");
 	add_condition			(planner,eWorldPropertyAlive,			false);
-	add_condition			(planner,eWorldPropertyAlreadyDead,		false);
-	add_effect				(planner,eWorldPropertyAlreadyDead,		true);
+	add_condition			(planner,eWorldPropertyPuzzleSolved,	false);
+	add_effect				(planner,eWorldPropertyPuzzleSolved,	true);
 	add_operator			(eWorldOperatorDeathPlanner,planner);
 
 	planner					= xr_new<CStalkerALifePlanner>(m_object,"alife_planner");

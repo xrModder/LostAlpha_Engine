@@ -19,14 +19,14 @@ IC	bool CObjectHandlerPlanner::object_action	(u32 action_id, CObject *object)
 	return				((action_id >> 16) == object->ID());
 }
 
-IC	u32	CObjectHandlerPlanner::current_action_object_id	() const
+IC	u16	CObjectHandlerPlanner::current_action_object_id	() const
 {
 	return				(action_object_id(current_action_id()));
 }
 
-IC	u32	CObjectHandlerPlanner::action_object_id		(_condition_type action_id) const
+IC	u16	CObjectHandlerPlanner::action_object_id		(_condition_type action_id) const
 {
-	return				(action_id >> 16);
+	return				u16(action_id >> 16);
 }
 
 IC	void CObjectHandlerPlanner::add_condition			(CActionBase<CAI_Stalker> *action, u16 id, ObjectHandlerSpace::EWorldProperties property, _value_type value)

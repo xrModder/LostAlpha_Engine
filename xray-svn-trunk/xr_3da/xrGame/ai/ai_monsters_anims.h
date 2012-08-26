@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "../../SkeletonAnimated.h"
+#include "../../KinematicsAnimated.h"
+#include "../../animation_motion.h"
 #include "../ai_debug.h"
 
 DEFINE_VECTOR	(MotionID,ANIM_VECTOR, ANIM_IT);
@@ -17,14 +18,14 @@ class CAniVector {
 public:
 	ANIM_VECTOR		A;
 
-			void	Load	(CKinematicsAnimated *tpKinematics, LPCSTR caBaseName);
+			void	Load	(IKinematicsAnimated *tpKinematics, LPCSTR caBaseName);
 };
 
 template <LPCSTR caBaseNames[]> class CAniFVector {
 public:
 	ANIM_VECTOR		A;
 
-	IC	void		Load(CKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
+	IC	void		Load(IKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
 	{
 		A.clear			();
 		string256		S;
@@ -46,9 +47,8 @@ template <class TYPE_NAME, LPCSTR caBaseNames[]> class CAniCollection {
 public:
 	xr_vector<TYPE_NAME>	A;
 
-	IC	void		Load(CKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
+	IC	void		Load(IKinematicsAnimated *tpKinematics, LPCSTR caBaseName)
 	{
-	//	Msg("* CAniCollection::Load %s", caBaseName);
 		A.clear		();
 		string256	S;
 		for (int j=0; caBaseNames[j]; ++j);

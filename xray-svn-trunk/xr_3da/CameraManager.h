@@ -13,6 +13,11 @@ struct ENGINE_API SPPInfo {
 			int		_b	= clampr	(iFloor(b*255.f+.5f),0,255);
 			return color_rgba		(_r,_g,_b,0);
 		}
+
+		IC operator const Fvector&()										{
+			return *((Fvector*)this);
+		}
+
 		IC SColor& operator +=	(const SColor &ppi)				{
 			r += ppi.r; g += ppi.g; b += ppi.b; 
 			return *this;

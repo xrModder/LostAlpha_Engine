@@ -1896,3 +1896,45 @@ float CSE_ALifeSmartZone::detect_probability()
 void CSE_ALifeSmartZone::smart_touch	(CSE_ALifeMonsterAbstract *monster)
 {
 }
+
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeInventoryBox
+////////////////////////////////////////////////////////////////////////////
+
+CSE_ALifeInventoryBox::CSE_ALifeInventoryBox( LPCSTR caSection ) : CSE_ALifeDynamicObjectVisual( caSection )
+{
+	
+}
+
+CSE_ALifeInventoryBox::~CSE_ALifeInventoryBox()
+{
+}
+
+void CSE_ALifeInventoryBox::STATE_Read( NET_Packet &tNetPacket, u16 size )
+{
+	inherited::STATE_Read( tNetPacket, size );
+
+
+}
+
+void CSE_ALifeInventoryBox::STATE_Write( NET_Packet &tNetPacket )
+{
+	inherited::STATE_Write( tNetPacket );
+	
+}
+
+void CSE_ALifeInventoryBox::UPDATE_Read( NET_Packet &tNetPacket )
+{
+	inherited::UPDATE_Read( tNetPacket );
+}
+
+void CSE_ALifeInventoryBox::UPDATE_Write( NET_Packet &tNetPacket )
+{
+	inherited::UPDATE_Write( tNetPacket );
+}
+
+
+void CSE_ALifeInventoryBox::FillProps( LPCSTR pref, PropItemVec& values )
+{
+	inherited::FillProps( pref, values );
+}

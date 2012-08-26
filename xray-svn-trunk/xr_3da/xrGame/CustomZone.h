@@ -45,7 +45,7 @@ public:
 
 public:
 
-						CCustomZone						(void);
+						CCustomZone						();
 	virtual				~CCustomZone					();
 
 	virtual		BOOL	net_Spawn						(CSE_Abstract* DC);
@@ -53,11 +53,14 @@ public:
 	virtual		void	net_Export						(NET_Packet& P);
 	virtual		void	Load							(LPCSTR section);
 	virtual		void	net_Destroy						();
+
+	virtual		void	save							(NET_Packet &output_packet);
+	virtual		void	load							(IReader &input_packet);
 	
 	virtual		void	UpdateCL						();
 	virtual		void	UpdateWorkload					(u32	dt	);				// related to fast-mode optimizations
 	virtual		void	shedule_Update					(u32	dt	);
-	virtual		void	enter_Zone						(SZoneObjectInfo& io)		{}
+	virtual		void	enter_Zone						(SZoneObjectInfo& io);
 	virtual		void	exit_Zone						(SZoneObjectInfo& io);
 	virtual		void	feel_touch_new					(CObject* O	);
 	virtual		void	feel_touch_delete				(CObject* O	);
@@ -152,8 +155,8 @@ protected:
 	virtual		bool		BlowoutState				();
 	virtual		bool		AccumulateState				();
 
-				bool		Enable						();
-				bool		Disable						();
+	virtual		bool		Enable						();
+	virtual		bool		Disable						();
 				void		UpdateOnOffState			();
 	virtual		void		GoEnabledState				();
 	virtual		void		GoDisabledState				();

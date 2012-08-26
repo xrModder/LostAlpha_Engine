@@ -9,8 +9,8 @@
 #define VLOAD_FORCESOFTWARE		(1<<2)
 
 // The class itself
-class	ENGINE_API				CKinematicsAnimated;
-class	ENGINE_API				CKinematics;
+class	ENGINE_API				IKinematicsAnimated;
+class	ENGINE_API				IKinematics;
 class	ENGINE_API				IParticleCustom;
 
 struct	ENGINE_API				IRender_Mesh	
@@ -45,6 +45,7 @@ public:
 #endif
 #ifdef DEBUG
 	shared_str					dbg_name	;
+	virtual shared_str	__stdcall	getDebugName() { return dbg_name; }
 #endif
 public:
 	// Common data for rendering
@@ -59,11 +60,11 @@ public:
 	virtual void				Spawn						()				{};
 	virtual void				Depart						()				{};
 
-	virtual	CKinematics*		dcast_PKinematics			()				{ return 0;	}
-	virtual	CKinematicsAnimated*dcast_PKinematicsAnimated	()				{ return 0;	}
-	virtual IParticleCustom*	dcast_ParticleCustom		()				{ return 0;	}
+	virtual	IKinematics*		 __stdcall	dcast_PKinematics			()				{ return 0;	}
+	virtual	IKinematicsAnimated* __stdcall	dcast_PKinematicsAnimated	()				{ return 0;	}
+	virtual IParticleCustom*			dcast_ParticleCustom		()				{ return 0;	}
 
-	virtual vis_data&	_BCL	getVisData() { return vis;}
+	virtual vis_data&	__stdcall	getVisData() { return vis;}
 	virtual u32					getType()	 { return Type;}
 	IRender_Visual				();
 	virtual ~IRender_Visual		();

@@ -4,26 +4,26 @@
 #include "DisablingParams.h"
 #include "ode_include.h"
 
-extern const dReal	default_l_limit									;
-extern const dReal	default_w_limit									;
-extern const dReal	default_k_l										;
-extern const dReal	default_k_w										;
-extern const dReal	default_l_scale									;
-extern const dReal	default_w_scale									;
+extern		const float	default_l_limit					;
+extern		const float	default_w_limit					;
+extern		const float	default_k_l						;
+extern		const float	default_k_w						;
+extern const float	default_l_scale									;
+extern const float	default_w_scale									;
 
-extern const dReal 		base_fixed_step								;
-extern const dReal 		base_erp									;
-extern const dReal 		base_cfm									;
+extern const float 		base_fixed_step								;
+extern const float 		base_erp									;
+extern const float 		base_cfm									;
 
-extern dReal	fixed_step										;
-extern dReal	world_cfm										;
-extern dReal	world_erp										;
-extern dReal	world_spring									;
-extern dReal	world_damping									;
+extern 	float	fixed_step							;
+extern 					float	world_cfm							;
+extern 					float	world_erp							;
+extern 					float	world_spring						;
+extern 					float	world_damping						;
 
-extern const dReal	mass_limit										;
+extern const float	mass_limit										;
 extern const u16	max_joint_allowed_for_exeact_integration		;
-extern const dReal	default_world_gravity							;
+extern const float	default_world_gravity							;
 extern		 float	phTimefactor									;
 extern	int			phIterations									;
 extern	float		phBreakCommonFactor								;
@@ -59,7 +59,7 @@ typedef void 	ContactCallbackFun(CDB::TRI* T,dContactGeom* c);
 typedef	void	ObjectContactCallbackFun(bool& do_colide,bool bo1,dContact& c,SGameMtl* material_1,SGameMtl* material_2);
 
 
-typedef void	BoneCallbackFun(CBoneInstance* B);
+typedef void __stdcall BoneCallbackFun(CBoneInstance* B);
 
 
 

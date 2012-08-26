@@ -18,7 +18,7 @@
 #include <malloc.h>
 #pragma warning(pop)
 
-void CStalkerAnimationPair::synchronize		(CKinematicsAnimated *skeleton_animated, const CStalkerAnimationPair &stalker_animation) const
+void CStalkerAnimationPair::synchronize		(IKinematicsAnimated *skeleton_animated, const CStalkerAnimationPair &stalker_animation) const
 {
 	if (!blend())
 		return;
@@ -40,9 +40,9 @@ void CStalkerAnimationPair::synchronize		(CKinematicsAnimated *skeleton_animated
 }
 
 #ifndef USE_HEAD_BONE_PART_FAKE
-void CStalkerAnimationPair::play_global_animation	(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control)
+void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control)
 #else
-void CStalkerAnimationPair::play_global_animation	(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const u32 &bone_part, const bool &use_animation_movement_control)
+void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const u32 &bone_part, const bool &use_animation_movement_control)
 #endif
 {
 	m_blend				= 0;

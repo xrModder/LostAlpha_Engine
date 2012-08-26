@@ -25,7 +25,7 @@
 #include "../../xr_level_controller.h"
 #include "../../hudmanager.h"
 #include "../../clsid_game.h"
-#include "../../../skeletoncustom.h"
+#include "../../../Kinematics.h"
 #include "../../character_info.h"
 #include "../../actor.h"
 #include "../../relation_registry.h"
@@ -395,7 +395,7 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 		sound().set_sound_mask(u32(eStalkerSoundMaskDie));
 
 	//загрузить иммунитеты из модельки сталкера
-	CKinematics* pKinematics = smart_cast<CKinematics*>(Visual()); VERIFY(pKinematics);
+	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual()); VERIFY(pKinematics);
 	CInifile* ini = pKinematics->LL_UserData();
 	if(ini)
 	{

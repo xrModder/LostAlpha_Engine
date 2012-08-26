@@ -16,7 +16,8 @@ class CVisualMemoryManager;
 class CBlend;
 class CEntityAlive : public CEntity {
 private:
-	typedef	CEntity			inherited;			
+	typedef	CEntity			inherited;	
+	u32						m_used_time;
 public:
 	virtual CEntityAlive*				cast_entity_alive		()						{return this;}
 public:
@@ -24,6 +25,12 @@ public:
 	bool					m_bMobility;
 	float					m_fAccuracy;
 	float					m_fIntelligence;
+	u32						m_use_timeout;
+	u8						m_squad_index;
+
+private:
+	bool					m_is_agresive;
+	bool					m_is_start_attack;
 	//m_PhysicMovementControl
 	//CPHMovementControl		*m_PhysicMovementControl;
 
@@ -147,6 +154,7 @@ public:
 private:
 	CEntityCondition			*m_entity_condition;
 	CMaterialManager			*m_material_manager;
+	bool						b_eating;
 
 protected:
 	virtual	CEntityConditionSimple	*create_entity_condition	(CEntityConditionSimple* ec);
@@ -174,6 +182,21 @@ public:
 
 	virtual	CVisualMemoryManager*visual_memory				() const {return(0);}
 	virtual	void				net_Relcase					(CObject *O);
+public:
+	virtual	Fvector				get_new_local_point_on_mesh	( u16& bone_id ) const;
+	virtual	Fvector				get_last_local_point_on_mesh( Fvector const& last_point, const u16 bone_id ) const;
+	virtual void				OnChangeVisual				( );
+
+private:
+			void				fill_hit_bone_surface_areas	( ) const;
+
+private:
+	typedef xr_vector< std::pair<u16,float> >	hit_bone_surface_areas_type;
+
+private:
+	mutable hit_bone_surface_areas_type	m_hit_bone_surface_areas;
+	mutable CRandom						m_hit_bones_random;
+	mutable bool						m_hit_bone_surface_areas_actual;
 };
 
 #include "entity_alive_inline.h"

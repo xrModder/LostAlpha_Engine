@@ -8,7 +8,7 @@ class animation_movement_controller : private boost::noncopyable
 	Fmatrix			m_startRootXform;
 	CKinematics*	m_pKinematicsC;
 	CBlend*			m_control_blend;
-	static void		RootBoneCallback				(CBoneInstance* B);
+	static void	__stdcall RootBoneCallback				(CBoneInstance* B);
 	void			deinitialize					();
 public:		
 			animation_movement_controller		( Fmatrix	*_pObjXForm, CKinematics *_pKinematicsC,CBlend *b );

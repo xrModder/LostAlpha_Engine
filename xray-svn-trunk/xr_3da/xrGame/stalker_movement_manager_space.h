@@ -13,16 +13,15 @@ namespace StalkerMovement {
 		eVelocityStanding								= u32(1) <<  0,
 		eVelocityWalk									= u32(1) <<  1,
 		eVelocityRun									= u32(1) <<  2,
-
-		eVelocityMovementType							= eVelocityStanding | eVelocityWalk | eVelocityRun, 
+		eVelocityMovementType							= eVelocityStanding | eVelocityWalk | eVelocityRun,
 
 		eVelocityStand									= u32(1) <<  3,
 		eVelocityCrouch									= u32(1) <<  4,
 		eVelocityBodyState								= eVelocityStand | eVelocityCrouch,
 
-		eVelocityDanger									= u32(1) <<  5,
-		eVelocityFree									= u32(1) <<  6,
-		eVelocityPanic									= u32(1) <<  7,
+		eVelocityDanger									= u32(1) <<  6,
+		eVelocityFree									= u32(1) <<  7,
+		eVelocityPanic									= u32(1) <<  8,
 		eVelocityMentalState							= eVelocityDanger | eVelocityFree | eVelocityPanic,
 
 		eVelocityPositiveVelocity						= u32(1) << 31,

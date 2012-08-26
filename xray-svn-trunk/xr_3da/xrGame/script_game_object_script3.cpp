@@ -69,10 +69,10 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("restore_sound_threshold",		&CScriptGameObject::restore_sound_threshold)
 
 		// sight manager
-		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, const Fvector *vector3d, u32 dwLookOverDelay))(&CScriptGameObject::set_sight))
+		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, Fvector *vector3d, u32 dwLookOverDelay))(&CScriptGameObject::set_sight))
 		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, bool torso_look, bool path))(&CScriptGameObject::set_sight))
-		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, const Fvector &vector3d, bool torso_look))(&CScriptGameObject::set_sight))
-		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, const Fvector *vector3d))(&CScriptGameObject::set_sight))
+		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, Fvector &vector3d, bool torso_look))(&CScriptGameObject::set_sight))
+		.def("set_sight",					(void (CScriptGameObject::*)(SightManager::ESightType sight_type, Fvector *vector3d))(&CScriptGameObject::set_sight))
 		.def("set_sight",					(void (CScriptGameObject::*)(CScriptGameObject *object_to_look))(&CScriptGameObject::set_sight))
 		.def("set_sight",					(void (CScriptGameObject::*)(CScriptGameObject *object_to_look, bool torso_look))(&CScriptGameObject::set_sight))
 		.def("set_sight",					(void (CScriptGameObject::*)(CScriptGameObject *object_to_look, bool torso_look, bool fire_object))(&CScriptGameObject::set_sight))

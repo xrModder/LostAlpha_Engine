@@ -48,7 +48,9 @@ private:
 	{
 	 cstPulling,
 	 cstCaptured,
-	 cstReleased
+	 cstReleased,
+	 cstFree,
+	 cstFailed
 	} e_state;
 
 			void PullingUpdate();

@@ -10,7 +10,8 @@
 #include "stdafx.h"
 #include "damage_manager.h"
 #include "../xr_object.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
+#include "../bone.h"
 
 CDamageManager::CDamageManager			()
 {
@@ -27,7 +28,7 @@ DLL_Pure *CDamageManager::_construct	()
 	return					(m_object);
 }
 
-void CDamageManager::reload				(LPCSTR section,CInifile* ini)
+void CDamageManager::reload				(LPCSTR section, CInifile const * ini)
 {
 	m_default_hit_factor	= 1.f;
 	m_default_wound_factor	= 1.f;
@@ -53,7 +54,7 @@ void CDamageManager::reload				(LPCSTR section,CInifile* ini)
 	}
 }
 
-void CDamageManager::reload(LPCSTR section,LPCSTR line,CInifile* ini)
+void CDamageManager::reload(LPCSTR section, LPCSTR line, CInifile const * ini)
 {
 	if (ini && ini->section_exist(section) && ini->line_exist(section,line)) 
 		reload(ini->r_string(section,line),ini);	
@@ -61,9 +62,9 @@ void CDamageManager::reload(LPCSTR section,LPCSTR line,CInifile* ini)
 		reload(section,0);
 }
 
-void CDamageManager::init_bones(LPCSTR section,CInifile* ini)
+void CDamageManager::init_bones(LPCSTR section, CInifile const * ini)
 {
-	CKinematics				*kinematics = smart_cast<CKinematics*>(m_object->Visual());
+	IKinematics				*kinematics = smart_cast<IKinematics*>(m_object->Visual());
 	VERIFY					(kinematics);
 	for(u16 i = 0; i<kinematics->LL_BoneCount(); i++)
 	{
@@ -73,10 +74,10 @@ void CDamageManager::init_bones(LPCSTR section,CInifile* ini)
 		bone_instance.set_param	(2,m_default_wound_factor);
 	}
 }
-void CDamageManager::load_section(LPCSTR section,CInifile* ini)
+void CDamageManager::load_section(LPCSTR section, CInifile const * ini)
 {
 	string32				buffer;
-	CKinematics				*kinematics = smart_cast<CKinematics*>(m_object->Visual());
+	IKinematics				*kinematics = smart_cast<IKinematics*>(m_object->Visual());
 	CInifile::Sect			&damages = ini->r_section(section);
 	for (CInifile::SectCIt i=damages.Data.begin(); damages.Data.end() != i; ++i) {
 		if (xr_strcmp(*(*i).first,"default")) { // read all except default line
@@ -115,14 +116,17 @@ void  CDamageManager::HitScale			(const int element, float& hit_scale, float& wo
 		return;
 	}
 
-	CKinematics* V		= smart_cast<CKinematics*>(m_object->Visual());			VERIFY(V);
+	IKinematics* V		= smart_cast<IKinematics*>(m_object->Visual());			VERIFY(V);
 	// get hit scale
-	float scale;			
-	if (aim_bullet)
+	float scale = 0.f;	
+
+	if ( aim_bullet )
 	{
 		scale			= V->LL_GetBoneInstance(u16(element)).get_param(3);
 	}
-	else
+
+	// in case when not 1st bullet or 1st bullet has scale unset (== 0)
+	if ( !aim_bullet || !scale )
 	{
 		scale			= V->LL_GetBoneInstance(u16(element)).get_param(0);
 	}

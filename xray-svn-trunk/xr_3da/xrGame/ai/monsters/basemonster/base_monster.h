@@ -19,7 +19,7 @@
 #include "../control_sequencer.h"
 
 #include "../ai_monster_utils.h"
-
+#include "../../../../../xrCore/_vector3d_ext.h"
 #include "../control_manager_custom.h"
 #include "../ai_monster_shared_data.h"
 #include "../monster_sound_defs.h"

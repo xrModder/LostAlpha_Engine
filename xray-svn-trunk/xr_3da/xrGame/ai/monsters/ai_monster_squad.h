@@ -1,10 +1,12 @@
 #pragma once 
 class CEntity;
 class CEntityAlive;
+class CBaseMonster;
 //////////////////////////////////////////////////////////////////////////
 // Member local goal notification
 //////////////////////////////////////////////////////////////////////////
-enum EMemberGoalType {
+enum EMemberGoalType 
+{
 	MG_AttackEnemy,				// entity
 	MG_PanicFromEnemy,			// entity
 	MG_InterestingSound,		// position
@@ -14,7 +16,8 @@ enum EMemberGoalType {
 	MG_None,
 };
 
-struct SMemberGoal {
+struct SMemberGoal 
+{
 	EMemberGoalType		type;
 	CEntity				*entity;
 	Fvector				position;
@@ -29,7 +32,8 @@ struct SMemberGoal {
 //////////////////////////////////////////////////////////////////////////
 // Squad command 
 //////////////////////////////////////////////////////////////////////////
-enum ESquadCommandType { 
+enum ESquadCommandType 
+{ 
 	SC_EXPLORE,
 	SC_ATTACK,
 	SC_THREATEN,
@@ -41,24 +45,28 @@ enum ESquadCommandType {
 	SC_NONE,
 };
 
-struct SSquadCommand {
+struct SSquadCommand
+{
 	ESquadCommandType	type;	// тип команды
 
-	CEntity		*entity;
-	Fvector		position;
-	u32			node;
-	Fvector		direction;
+	const CEntity		*entity;
+	Fvector				position;
+	u32					node;
+	Fvector				direction;
 
 };
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // MonsterSquad Class
-class CMonsterSquad {
-	CEntity				*leader;
+class CMonsterSquad 
+{
+public:
+	DEFINE_MAP		(const CEntity*, SSquadCommand,	MEMBER_COMMAND_MAP, MEMBER_COMMAND_MAP_IT);
 
+private:
+	CEntity				*leader;
 	DEFINE_MAP		(CEntity*, SMemberGoal,		MEMBER_GOAL_MAP,	MEMBER_GOAL_MAP_IT);
-	DEFINE_MAP		(CEntity*, SSquadCommand,	MEMBER_COMMAND_MAP, MEMBER_COMMAND_MAP_IT);
 
 	// карта целей членов группы (обновляется со стороны объекта)
 	MEMBER_GOAL_MAP		m_goals;
@@ -92,7 +100,7 @@ public:
 	// -----------------------------------------------------------------
 	
 	void			UpdateGoal			(CEntity *pE, const SMemberGoal	&goal);
-	void			UpdateCommand		(CEntity *pE, const SSquadCommand &com);
+	void			UpdateCommand		(const CEntity *pE, const SSquadCommand &com);
 
 	
 	void			GetGoal				(CEntity *pE, SMemberGoal &goal);
@@ -122,7 +130,7 @@ public:
 	//  Атака группой монстров
 	//////////////////////////////////////////////////////////////////////////////////////
 	
-	DEFINE_MAP		(CEntity*, ENTITY_VEC,	ENEMY_MAP, ENEMY_MAP_IT);
+	DEFINE_MAP		(const CEntity*, ENTITY_VEC,	ENEMY_MAP, ENEMY_MAP_IT);
 	
 	ENEMY_MAP		m_enemy_map;
 
@@ -138,7 +146,7 @@ public:
 	xr_vector<_elem>	lines;
 	// ------------
 
-	void			Attack_AssignTargetDir			(ENTITY_VEC &members, CEntity *enemy);
+	void			Attack_AssignTargetDir			(ENTITY_VEC&   members  , const CEntity *enemy);
 
 	////////////////////////////////////////////////////////////////////////////////////////
 

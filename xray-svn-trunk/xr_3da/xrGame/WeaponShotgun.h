@@ -7,8 +7,8 @@ class CWeaponShotgun :	public CWeaponCustomPistol
 {
 	typedef CWeaponCustomPistol inherited;
 public:
-	CWeaponShotgun(void);
-	virtual ~CWeaponShotgun(void);
+					CWeaponShotgun		();
+	virtual			~CWeaponShotgun		();
 
 	virtual void	Load			(LPCSTR section);
 	

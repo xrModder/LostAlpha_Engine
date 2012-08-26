@@ -111,12 +111,16 @@ bool CSpaceRestrictionBridge::on_border					(const Fvector &position) const
 	if ((I == E) || (ai().level_graph().vertex(*I)->position().xz() != pos.xz()))
 		return			(false);
 
-	for (I ; I != E; ++I) {
+	u32 const vertex_id	= ai().level_graph().vertex_id(position);
+	if (!ai().level_graph().valid_vertex_id(vertex_id))
+		return			(false);
+
+	for ( ; I != E; ++I) {
 		if (ai().level_graph().vertex(*I)->position().xz() != pos.xz())
 			break;
 
-		if (_abs(ai().level_graph().vertex_plane_y(*I) - position.y) < 2.f)
-			return	(true);
+		if ( *I == vertex_id)
+			return		(true);
 	}	
 
 	return				(false);

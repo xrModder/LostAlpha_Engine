@@ -35,12 +35,12 @@ void animation_movement_controller::OnFrame( )
 {
 	m_pKinematicsC->CalculateBones( );
 	
-	if(CBlend::eFREE_SLOT == m_control_blend->blend)
+	if(CBlend::eFREE_SLOT == m_control_blend->blend_state())
 	{
 		deinitialize();
 		return;
 	}
-	if( m_control_blend->blend == CBlend::eAccrue && m_control_blend->blendPower - EPS_L > m_control_blend->blendAmount )
+	if( m_control_blend->blend_state() == CBlend::eAccrue && m_control_blend->blendPower - EPS_L > m_control_blend->blendAmount )
 			m_control_blend->timeCurrent =0;
 }
 
@@ -49,7 +49,7 @@ void animation_movement_controller::RootBoneCallback( CBoneInstance* B )
 	VERIFY( B );
 	VERIFY( B->Callback_Param );
 	
-	animation_movement_controller* O=( animation_movement_controller* )( B->Callback_Param );
+	animation_movement_controller* O=( animation_movement_controller* )( B->callback_param() );
 
 	if(O->m_control_blend->playing)
 	{

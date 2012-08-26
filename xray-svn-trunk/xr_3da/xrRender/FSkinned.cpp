@@ -14,6 +14,7 @@
 #include "FSkinned.h"
 
 #include	"../EnnumerateVertices.h"
+#include 	"../Kinematics.h"
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -82,11 +83,16 @@ struct	vertHW_1W
 		_tc[0]		= q_tc(tc.x);
 		_tc[1]		= q_tc(tc.y);
 	}
-	u16 get_bone()
+	u16 get_bone() const
 	{
 		return	(u16)color_get_A(_N_I)/3;
 	}
-	void get_pos(Fvector& p)
+	void get_pos_bones( Fvector& p, CKinematics* Parent ) const
+	{
+			const Fmatrix& xform	= Parent->LL_GetBoneInstance( get_bone( ) ).mRenderTransform; 
+			get_pos	( p );	xform.transform_tiny( p );
+	}
+	void get_pos(Fvector& p) const
 	{
 		p.x			= u_P(_P[0]);
 		p.y			= u_P(_P[1]);
@@ -127,21 +133,21 @@ struct	vertHW_2W
 		_tc_i[2]	= s16	(index0);
 		_tc_i[3]	= s16	(index1);
 	}
-	float get_weight()
+	float get_weight() const
 	{
 		return	float(color_get_A(_N_w))/255.f;
 	}
-	u16 get_bone(u16 w)
+	u16 get_bone(u16 w) const
 	{
 		return	(u16)_tc_i[w+2]/3;
 	}
-	void get_pos(Fvector& p)
+	void get_pos(Fvector& p) const
 	{
 		p.x			= u_P(_P[0]);
 		p.y			= u_P(_P[1]);
 		p.z			= u_P(_P[2]);
 	}
-	void get_pos_bones( Fvector& p, CKinematics* Parent )
+	void get_pos_bones( Fvector& p, CKinematics* Parent ) const
 	{
 			Fvector		P0,P1;
 			Fmatrix& xform0			= Parent->LL_GetBoneInstance(get_bone(0)).mRenderTransform; 
@@ -259,7 +265,8 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 			R_CHK				(V.p_rm_Vertices->Lock(0,0,(void**)&bytes,0));
 			vertHW_2W*		dst	= (vertHW_2W*)bytes;
 			vertBoned2W*	src = (vertBoned2W*)_verts_;
-			for (u32 it=0; it<V.vCount; it++)	{
+			for (u32 it=0; it<V.vCount; ++it)	
+			{
 				Fvector2	uv; uv.set(src->u,src->v);
 				dst->set	(src->P,src->N,src->T,src->B,uv,int(src->matrix0)*3,int(src->matrix1)*3,src->w);
 				dst++;		src++;
@@ -347,89 +354,62 @@ void CSkeletonX_PM::AfterLoad(CKinematics* parent, u16 child_idx)
 	inherited2::_CollectBoneFaces	(this,iBase+SW.offset,SW.num_tris*3);
 }
 
-BOOL CSkeletonX_ext::_PickBoneHW1W		(Fvector& normal, float& dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+template<typename T>
+IC void get_pos_bones(const T& v, Fvector& p, CKinematics* Parent )
 {
-	vertHW_1W* vertices;
-	CHK_DX				(V->p_rm_Vertices->Lock(V->vBase,V->vCount,(void**)&vertices,D3DLOCK_READONLY));
-	bool intersect		= FALSE;
-	for (CBoneData::FacesVecIt it=faces.begin(); it!=faces.end(); it++){
-		Fvector			p[3];
-		u32 idx			= (*it)*3;
-		for (u32 k=0; k<3; k++){
-			vertHW_1W& vert			= vertices[indices[idx+k]];
-			const Fmatrix& xform	= Parent->LL_GetBoneInstance(vert.get_bone()).mRenderTransform; 
-			vert.get_pos	(p[k]);	xform.transform_tiny(p[k]);
-		}
-		float u,v,range	= flt_max;
-		if (CDB::TestRayTri(S,D,p,u,v,range,true)&&(range<dist)){
-			normal.mknormal(p[0],p[1],p[2]);
-			dist		= range;
-			intersect	= TRUE;
-		}
-	}
-	CHK_DX				(V->p_rm_Vertices->Unlock());
-	return intersect;
+	v.get_pos_bones( p, Parent );
 }
-BOOL CSkeletonX_ext::_PickBoneHW2W		(Fvector& normal, float& dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+
+template<typename T>
+BOOL pick_bone(CKinematics* Parent, IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
-	vertHW_2W* vertices;
+	T* vertices;
 	CHK_DX				(V->p_rm_Vertices->Lock(V->vBase,V->vCount,(void**)&vertices,D3DLOCK_READONLY));
-	bool intersect		= FALSE;
-	for (CBoneData::FacesVecIt it=faces.begin(); it!=faces.end(); it++){
-		Fvector			p[3];
-		u32 idx			= (*it)*3;
-		for (u32 k=0; k<3; k++){
-			Fvector		P0,P1;
-			vertHW_2W& vert			= vertices[indices[idx+k]];
-			Fmatrix& xform0			= Parent->LL_GetBoneInstance(vert.get_bone(0)).mRenderTransform; 
-			Fmatrix& xform1			= Parent->LL_GetBoneInstance(vert.get_bone(1)).mRenderTransform; 
-			vert.get_pos	(P0);	xform0.transform_tiny(P0);
-			vert.get_pos	(P1);	xform1.transform_tiny(P1);
-			p[k].lerp				(P0,P1,vert.get_weight());
-		}
-		float u,v,range	= flt_max;
-		if (CDB::TestRayTri(S,D,p,u,v,range,true)&&(range<dist)){
-			normal.mknormal(p[0],p[1],p[2]);
-			dist		= range;
-			intersect	= TRUE;
-		}
-	}
+	bool intersect		= !!pick_bone<T,T*>( vertices, Parent, r, dist, S, D, indices, faces);
 	CHK_DX				(V->p_rm_Vertices->Unlock());
 	return intersect;
 }
 
+BOOL CSkeletonX_ext::_PickBoneHW1W		(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+{
+	return pick_bone<vertHW_1W>(Parent,r, dist, S, D, V, indices, faces);
+}
+BOOL CSkeletonX_ext::_PickBoneHW2W		(IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
+{
+	return pick_bone<vertHW_2W>(Parent,r, dist, S, D, V, indices, faces);
+}
 
-BOOL CSkeletonX_ext::_PickBone		(Fvector& normal, float& dist, const Fvector& start, const Fvector& dir, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
+BOOL CSkeletonX_ext::_PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
 {
 	VERIFY							(Parent && (ChildIDX!=u16(-1)));
 	CBoneData& BD					= Parent->LL_GetData(bone_id);
 	CBoneData::FacesVec*	faces	= &BD.child_faces[ChildIDX];
+	BOOL result			= FALSE;
 	u16* indices		= 0;
 	//.	R_CHK				(V->pIndices->Lock(iBase,iCount,		(void**)&indices,	D3DLOCK_READONLY));
 	CHK_DX				(V->p_rm_Indices->Lock(0,V->dwPrimitives*3,(void**)&indices,D3DLOCK_READONLY));
 	// fill vertices
-	BOOL result			= FALSE;
 	switch	(RenderMode){
 case RM_SKINNING_SOFT:
-	if (*Vertices1W)result = _PickBoneSoft1W	(normal,dist,start,dir,indices+iBase,*faces);
-	else			result = _PickBoneSoft2W	(normal,dist,start,dir,indices+iBase,*faces);
+	if (*Vertices1W)result = _PickBoneSoft1W	(r,dist,start,dir,indices+iBase,*faces);
+	else			result = _PickBoneSoft2W	(r,dist,start,dir,indices+iBase,*faces);
 	break;
 case RM_SINGLE:
-case RM_SKINNING_1B:	result = _PickBoneHW1W	(normal,dist,start,dir,V,indices+iBase,*faces); break;
-case RM_SKINNING_2B:	result = _PickBoneHW2W	(normal,dist,start,dir,V,indices+iBase,*faces);	break;
+case RM_SKINNING_1B:	result = _PickBoneHW1W	(r,dist,start,dir,V,indices+iBase,*faces); break;
+case RM_SKINNING_2B:	result = _PickBoneHW2W	(r,dist,start,dir,V,indices+iBase,*faces);	break;
 default: NODEFAULT;
 	}
 	CHK_DX				(V->p_rm_Indices->Unlock());
 	return result;
 }
-BOOL CSkeletonX_ST::PickBone		(Fvector& normal, float& dist, const Fvector& start, const Fvector& dir, u16 bone_id)
+BOOL CSkeletonX_ST::PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
 {
-	return inherited2::_PickBone	(normal,dist,start,dir,this,bone_id,iBase,iCount);
+	return inherited2::_PickBone	(r, dist,start,dir,this,bone_id,iBase,iCount);
 }
-BOOL CSkeletonX_PM::PickBone		(Fvector& normal, float& dist, const Fvector& start, const Fvector& dir, u16 bone_id)
+BOOL CSkeletonX_PM::PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)
 {
 	FSlideWindow& SW				= nSWI.sw[0];
-	return inherited2::_PickBone	(normal,dist,start,dir,this,bone_id,iBase+SW.offset,SW.num_tris*3);
+	return inherited2::_PickBone	(r,dist,start,dir,this,bone_id,iBase+SW.offset,SW.num_tris*3);
 }
 
 

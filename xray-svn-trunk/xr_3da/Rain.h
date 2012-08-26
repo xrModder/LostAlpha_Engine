@@ -27,7 +27,7 @@ struct SRainParams
 		float	particles_time;
 		u32		dwReferences;
 	public:
-				SRainParams();
+				SRainParams();		
 };
 
 //

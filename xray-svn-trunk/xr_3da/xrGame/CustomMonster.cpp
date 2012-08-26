@@ -15,8 +15,7 @@
 #include "squad_hierarchy_holder.h"
 #include "group_hierarchy_holder.h"
 #include "customzone.h"
-#include "clsid_game.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
 #include "detail_path_manager.h"
 #include "memory_manager.h"
 #include "visual_memory_manager.h"
@@ -47,6 +46,8 @@
 #include "alife_object_registry.h"
 #include "client_spawn_manager.h"
 
+#include "../IGame_Level.h"
+#include "../../xrCore/_vector3d_ext.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
@@ -57,7 +58,7 @@ extern int g_AI_inactive_time;
 	Flags32		psAI_Flags	= {0};
 #endif // MASTER_GOLD
 
-void CCustomMonster::SAnimState::Create(CKinematicsAnimated* K, LPCSTR base)
+void CCustomMonster::SAnimState::Create(IKinematicsAnimated* K, LPCSTR base)
 {
 	char	buf[128];
 	fwd		= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base,"_fwd"));
@@ -79,7 +80,10 @@ void CCustomMonster::SAnimState::Create(CKinematicsAnimated* K, LPCSTR base)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CCustomMonster::CCustomMonster()
+CCustomMonster::CCustomMonster() :
+	// this is non-polymorphic call of the virtual function cast_entity_alive
+	// just to remove warning C4355 if we use this instead
+	Feel::Vision				( cast_game_object() ) 
 {
 	m_sound_user_data_visitor	= 0;
 	m_memory_manager			= 0;
@@ -95,6 +99,12 @@ CCustomMonster::~CCustomMonster	()
 	xr_delete					(m_memory_manager);
 	xr_delete					(m_movement_manager);
 	xr_delete					(m_sound_player);
+
+	// Lain: added (asking GameLevel to forget about self)
+	if ( g_pGameLevel )
+	{
+		g_pGameLevel->SoundEvent_OnDestDestroy(this);
+	}
 
 #ifdef DEBUG
 	Msg							("dumping client spawn manager stuff for object with id %d",ID());
@@ -395,7 +405,7 @@ void CCustomMonster::update_sound_player()
 void CCustomMonster::UpdateCL	()
 { 
 	START_PROFILE("CustomMonster/client_update")
-	m_client_update_delta		= Device.dwTimeGlobal - m_last_client_update_time;
+	m_client_update_delta		= (u32)std::min(Device.dwTimeGlobal - m_last_client_update_time, u32(100) );
 	m_last_client_update_time	= Device.dwTimeGlobal;
 	
 	START_PROFILE("CustomMonster/client_update/inherited")
@@ -524,7 +534,7 @@ BOOL CCustomMonster::feel_visible_isRelevant (CObject* O)
 void CCustomMonster::eye_pp_s0			( )
 {
 	// Eye matrix
-	CKinematics* V							= smart_cast<CKinematics*>(Visual());
+	IKinematics* V							= smart_cast<IKinematics*>(Visual());
 	V->CalculateBones						();
 	Fmatrix&	mEye						= V->LL_GetTransform(u16(eye_bone));
 	Fmatrix		X;							X.mul_43	(XFORM(),mEye);
@@ -619,7 +629,7 @@ void CCustomMonster::UpdateCamera()
 	float									new_range = eye_range, new_fov = eye_fov;
 	if (g_Alive())
 		update_range_fov					(new_range, new_fov, memory().visual().current_state().m_max_view_distance*eye_range, eye_fov);
-	g_pGameLevel->Cameras().Update(eye_matrix.c,eye_matrix.k,eye_matrix.j,new_fov,.75f,new_range);
+	g_pGameLevel->Cameras().Update(eye_matrix.c,eye_matrix.k,eye_matrix.j,new_fov,.75f,new_range,0);
 }
 
 void CCustomMonster::HitSignal(float /**perc/**/, Fvector& /**vLocalDir/**/, CObject* /**who/**/)
@@ -690,7 +700,7 @@ BOOL CCustomMonster::net_Spawn	(CSE_Abstract* DC)
 	}
 
 	// Eyes
-	eye_bone					= smart_cast<CKinematics*>(Visual())->LL_BoneID(pSettings->r_string(cNameSect(),"bone_head"));
+	eye_bone					= smart_cast<IKinematics*>(Visual())->LL_BoneID(pSettings->r_string(cNameSect(),"bone_head"));
 
 	// weapons
 	if (Local()) {
@@ -818,7 +828,7 @@ BOOL CCustomMonster::feel_touch_contact		(CObject *O)
 
 	Fsphere		sphere;
 	sphere.P	= Position();
-	sphere.R	= EPS_L;
+	sphere.R	= 0.f;
 	if (custom_zone->inside(sphere))
 		return	(TRUE);
 
@@ -852,8 +862,15 @@ float CCustomMonster::feel_vision_mtl_transp(CObject* O, u32 element)
 
 void CCustomMonster::feel_sound_new	(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector &position, float power)
 {
-	if (getDestroy())
+	// Lain: added
+	if (!g_Alive())
+	{
 		return;
+	}
+	if (getDestroy())
+	{
+		return;
+	}
 	memory().sound().feel_sound_new(who,type,user_data,position,power);
 }
 
@@ -950,30 +967,7 @@ void CCustomMonster::on_restrictions_change	()
 
 LPCSTR CCustomMonster::visual_name	(CSE_Abstract *server_entity) 
 {
-	m_already_dead				= false;
-
-	CSE_ALifeCreatureAbstract	*creature = smart_cast<CSE_ALifeCreatureAbstract*>(server_entity);
-	VERIFY						(creature);
-
-	if (creature->g_Alive())
-		return					(inherited::visual_name(server_entity));
-
-	if (creature->m_story_id != INVALID_STORY_ID)
-		return					(inherited::visual_name(server_entity));
-
-	if (!creature->m_game_death_time)
-		return					(inherited::visual_name(server_entity));
-
-	ALife::_TIME_ID				game_death_time = creature->m_game_death_time;
-	ALife::_TIME_ID				time_interval	= generate_time(1,1,1,pSettings->r_u32("monsters_common","corpse_remove_game_time_interval"),0,0);
-	ALife::_TIME_ID				game_time		= Level().GetGameTime();
-
-	if	((game_death_time + time_interval) >= game_time)
-		return					(inherited::visual_name(server_entity));
-
-	m_already_dead				= true;
-
-	return						(pSettings->r_string(cNameSect(),"corpse_visual"));
+	return						(inherited::visual_name(server_entity));
 }
 
 void CCustomMonster::on_enemy_change(const CEntityAlive *enemy)
@@ -1131,7 +1125,9 @@ void CCustomMonster::OnRender()
 		character_physics_support()->movement()->dbg_Draw();
 	
 	if (bDebug)
-		smart_cast<CKinematics*>(Visual())->DebugRender(XFORM());
+		smart_cast<IKinematics*>(Visual())->DebugRender(XFORM());
+//	if (m_jump_picks.size() < 1)
+//		return;
 }
 #endif // DEBUG
 

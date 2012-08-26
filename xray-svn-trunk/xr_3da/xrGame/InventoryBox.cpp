@@ -6,10 +6,16 @@
 
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "inventory_item.h"
+#include "xrServer_Objects_ALife.h"
 
 CInventoryBox::CInventoryBox()
 {
 	m_in_use = false;
+}
+
+CInventoryBox::~CInventoryBox()
+{
 }
 
 void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
@@ -18,6 +24,7 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 
 	switch (type)
 	{
+	case GE_TRADE_BUY:
 	case GE_OWNERSHIP_TAKE:
 		{
 			u16 id;
@@ -28,6 +35,8 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			itm->setVisible		(FALSE);
 			itm->setEnabled		(FALSE);
 		}break;
+
+	case GE_TRADE_SELL:
 	case GE_OWNERSHIP_REJECT:
 		{
 			u16 id;
@@ -47,6 +56,15 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 	};
 }
 
+void CInventoryBox::UpdateCL()
+{
+	inherited::UpdateCL	();
+}
+
+void CInventoryBox::net_Destroy()
+{
+	inherited::net_Destroy	();
+}
 BOOL CInventoryBox::net_Spawn(CSE_Abstract* DC)
 {
 	inherited::net_Spawn	(DC);

@@ -43,7 +43,6 @@ void SStatSectionData::save(IWriter &stream)
 void SStatSectionData::load(IReader &stream)	
 {
 	load_data			(data,				stream);
-
 	if(ai().get_alife()->header().version()==0x0002)
 	{
 	int tmp;
@@ -72,7 +71,8 @@ void SStatSectionData::load(IReader &stream)
 			key = "foo";
 			break;
 		}
-	load_data		(tmp,				stream);// old total_points
+		s32				tmp2;
+		load_data		(tmp2,				stream);// old total_points
 	}else
 		load_data			(key,				stream);
 };

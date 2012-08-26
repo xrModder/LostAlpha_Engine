@@ -18,7 +18,7 @@
 
 static const float MAX_DIST_FACTOR = 0.95f;
 
-SThunderboltDesc::SThunderboltDesc(CInifile* pIni, LPCSTR sect)
+SThunderboltDesc::SThunderboltDesc(const CInifile* pIni, LPCSTR sect)
 {
 	name						= sect;
 	color_anim					= LALib.FindItem (pIni->r_string ( sect,"color_anim" )); VERIFY(color_anim);
@@ -58,7 +58,7 @@ SThunderboltDesc::~SThunderboltDesc()
 //----------------------------------------------------------------------------------------------
 // collection
 //----------------------------------------------------------------------------------------------
-SThunderboltCollection::SThunderboltCollection(CInifile* pIni, LPCSTR sect)
+SThunderboltCollection::SThunderboltCollection(const CInifile* pIni, LPCSTR sect)
 {
 	section			= sect;
 	int tb_count	= pIni->line_count(sect);
@@ -112,7 +112,7 @@ CEffect_Thunderbolt::~CEffect_Thunderbolt()
 	hGeom_gradient.destroy		();
 }
 
-int CEffect_Thunderbolt::AppendDef(CInifile* pIni, LPCSTR sect)
+int CEffect_Thunderbolt::AppendDef(const CInifile* pIni, LPCSTR sect)
 {
 	if (!sect||(0==sect[0])) return -1;
 	for (CollectionVecIt it=collection.begin(); it!=collection.end(); it++)

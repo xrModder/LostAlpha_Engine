@@ -78,8 +78,9 @@ BOOL CCustomRocket::net_Spawn(CSE_Abstract* DC)
 void CCustomRocket::net_Destroy() 
 {
 //	Msg("---------net_Destroy [%d] frame[%d]",ID(), Device.dwFrame);
-	inherited::net_Destroy();
 	CPHUpdateObject::Deactivate();
+	inherited::net_Destroy();
+	
 
 	StopEngine();
 	StopFlying();
@@ -108,9 +109,11 @@ void CCustomRocket::SetLaunchParams (const Fmatrix& xform,
 
 void CCustomRocket::activate_physic_shell	()
 {
-	VERIFY(H_Parent());
-	VERIFY(!m_pPhysicsShell);
+	R_ASSERT(H_Parent());
+	R_ASSERT(!m_pPhysicsShell);
 	create_physic_shell();
+	
+	R_ASSERT(m_pPhysicsShell);
 	if( m_pPhysicsShell->isActive())
 		return;
 	VERIFY2(_valid(m_LaunchXForm),"CCustomRocket::activate_physic_shell. Invalid m_LaunchXForm!");
@@ -134,9 +137,9 @@ void CCustomRocket::activate_physic_shell	()
 
 void CCustomRocket::create_physic_shell	()
 {
-	VERIFY(!m_pPhysicsShell);
+	R_ASSERT(!m_pPhysicsShell);
 	Fobb								obb;
-	Visual()->vis.box.get_CD			(obb.m_translate,obb.m_halfsize);
+	Visual()->getVisData().box.get_CD			(obb.m_translate,obb.m_halfsize);
 	obb.m_rotate.identity				();
 
 	// Physics (Elements)
@@ -424,7 +427,7 @@ void CCustomRocket::StartEngine				()
 	m_dwEngineTime = m_dwEngineWorkTime;
 
 	StartEngineParticles();
-
+	R_ASSERT(m_pPhysicsShell);
 	CPHUpdateObject::Activate();
 }
 
@@ -453,6 +456,8 @@ void CCustomRocket::UpdateEnginePh			()
 	l_dir.set(XFORM().k);
 
 	l_dir.normalize();
+	
+	R_ASSERT( m_pPhysicsShell );
 	m_pPhysicsShell->applyImpulse(l_dir,(1.f+k_back)*force);
 	m_pPhysicsShell->get_LinearVel(l_dir);
 	l_dir.normalize_safe();
@@ -472,7 +477,7 @@ void CCustomRocket::UpdateEngine				()
 	//	VERIFY( getVisible() );
 	//	VERIFY( m_pPhysicsShell);
 	if( !m_pPhysicsShell )
-		Msg("! CCustomRocket::UpdateEngine called, but 0==m_pPhysicsShell");
+		Msg("! CCustomRocket::UpdateEngine called, but m_pPhysicsShell is NULL");
 
 	if( !getVisible() ){
 		Msg("! CCustomRocket::UpdateEngine called, but false==getVisible() id[%d] frame[%d]",ID(),Device.dwFrame);
@@ -554,10 +559,13 @@ void CCustomRocket::UpdateParticles()
 	particles_xform.identity();
 	particles_xform.k.set(XFORM().k);
 	particles_xform.k.mul(-1.f);
+	Fvector dir = particles_xform.k;
 	Fvector::generate_orthonormal_basis(particles_xform.k, 
 										particles_xform.j, 
 										particles_xform.i);
     particles_xform.c.set	(XFORM().c);
+	dir.normalize_safe		(); //1m offset fake -(
+	particles_xform.c.add	(dir);
 
 	if(m_pEngineParticles)	m_pEngineParticles->UpdateParent(particles_xform, vel);
 	if(m_pFlyParticles)		m_pFlyParticles->UpdateParent(particles_xform, vel);
@@ -573,7 +581,6 @@ void CCustomRocket::StartEngineParticles()
 	m_pEngineParticles->Play();
 
 	VERIFY(m_pEngineParticles);
-	VERIFY3(m_pEngineParticles->IsLooped(), "must be a looped particle system for rocket engine: %s", *m_sEngineParticles);
 }
 void CCustomRocket::StopEngineParticles()
 {

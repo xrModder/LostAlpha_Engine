@@ -14,7 +14,7 @@
 #include "restriction_space.h"
 #include "ai_space.h"
 #include "CustomZone.h"
-
+#include "../xr_collide_form.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
@@ -66,6 +66,8 @@ BOOL CSpaceRestrictor::net_Spawn	(CSE_Abstract* data)
 	
 	if (!result)
 		return						(FALSE);
+
+	spatial.type					&= ~STYPE_VISIBLEFORAI;
 
 	setEnabled						(FALSE);
 	setVisible						(FALSE);

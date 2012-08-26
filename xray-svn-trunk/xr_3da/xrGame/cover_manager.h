@@ -20,11 +20,12 @@ namespace LevelGraph {
 class CCoverManager {
 public:
 	typedef CQuadTree<CCoverPoint> CPointQuadTree;
+	typedef xr_vector<CCoverPoint*> PointVector;
 
 protected:
 	CPointQuadTree					*m_covers;
 	xr_vector<bool>					m_temp;
-	mutable xr_vector<CCoverPoint*>	m_nearest;
+	mutable PointVector				m_nearest;
 
 
 protected:

@@ -175,8 +175,8 @@ public:
 			seqParallel.erase	(I);
 	}
 public:
-virtual		void			_BCL	AddSeqFrame			( pureFrame* f, bool mt );
-virtual		void			_BCL	RemoveSeqFrame		( pureFrame* f );
+virtual		void			__stdcall	AddSeqFrame			( pureFrame* f, bool mt );
+virtual		void			__stdcall	RemoveSeqFrame		( pureFrame* f );
 };
 
 extern		ENGINE_API		CRenderDevice		Device;

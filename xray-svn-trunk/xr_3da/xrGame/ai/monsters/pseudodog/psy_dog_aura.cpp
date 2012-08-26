@@ -87,7 +87,8 @@ void CPsyDogAura::update_schedule()
 			}
 		}
 
-		if (m_time_phantom_saw_actor == time()) break;
+		if (m_time_phantom_saw_actor == time()) 
+			break;
 	}
 
 	bool need_be_active = (m_time_actor_saw_phantom	+ 2000 > time()) || (m_time_phantom_saw_actor != 0);

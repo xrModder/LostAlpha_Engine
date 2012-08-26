@@ -12,6 +12,7 @@ struct HUD_SOUND;
 class CInventoryItem;
 
 #include "actor_defs.h"
+#include "inventory_space.h"
 #include "weaponHUD.h"
 
 class CHudItem {

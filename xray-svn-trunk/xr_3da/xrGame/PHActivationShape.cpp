@@ -6,6 +6,7 @@
 #include "PHActivationShape.h"
 #include "Extendedgeom.h"
 #include "SpaceUtils.h"
+#include "MathUtilsOde.h"
 #include "MathUtils.h"
 #include "GameMtlLib.h"
 #include "Level.h"

@@ -186,11 +186,6 @@
 #	endif
 #endif
 
-//Borland class dll interface
-#define	_BCL			__stdcall	
-
-//Borland global function dll interface
-#define	_BGCL			__stdcall	
 
 #include "xrDebug.h"
 #include "vector.h"
