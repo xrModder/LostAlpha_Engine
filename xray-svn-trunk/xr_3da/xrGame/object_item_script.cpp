@@ -59,9 +59,9 @@ ObjectFactory::SERVER_BASE_CLASS *CObjectItemScript::server_object	(LPCSTR secti
 		return			(0);
 	}
 
-	R_ASSERT			(object);
+	R_ASSERT2			(object, section);
 	SERVER_BASE_CLASS	*o = object->init();
-	R_ASSERT			(o);
+	R_ASSERT2			(o, section);
 	return				(o);
 }
 

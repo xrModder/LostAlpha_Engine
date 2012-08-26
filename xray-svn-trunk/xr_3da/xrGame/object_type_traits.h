@@ -5,7 +5,8 @@
 //	Author		: Dmitriy Iassenev
 //	Description : Object type traits
 ////////////////////////////////////////////////////////////////////////////
-
+#ifndef object_type_traits_h_included
+#define object_type_traits_h_included
 #pragma once
 
 //#define USE_BOOST
@@ -213,3 +214,4 @@
 //		};
 	};
 #endif
+#endif //	object_type_traits_h_included

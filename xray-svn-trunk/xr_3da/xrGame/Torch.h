@@ -100,7 +100,8 @@ public:
 
 	virtual void	afterDetach				();
 	virtual void	renderable_Render		();
-
+	virtual void	save					(NET_Packet &output_packet);
+	virtual void	load					(IReader &input_packet);
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CTorch)

@@ -81,7 +81,8 @@ void CTorch::Load(LPCSTR section)
 	inherited::Load			(section);
 	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
 	HUD_SOUND::LoadSound(section, "snd_flashlight_switch_on", m_FlashlightSwitchSnd, SOUND_TYPE_ITEM_USING);
-	m_bNightVisionEnabled = !!pSettings->r_bool(section,"night_vision");
+	m_battery_duration		= pSettings->r_u16(section, "battery_duration");
+	m_bNightVisionEnabled	= !!pSettings->r_bool(section,"night_vision");
 	if(m_bNightVisionEnabled)
 	{
 		HUD_SOUND::LoadSound(section,"snd_night_vision_on"	, m_NightVisionOnSnd	, SOUND_TYPE_ITEM_USING);
@@ -271,7 +272,8 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	SwitchNightVision		(false);
 
 	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
-	m_current_battery_state = m_battery_duration = pSettings->r_u16(cNameSect(), "battery_duration");
+	
+	m_current_battery_state = torch->m_battery_state;
 
 	return					(TRUE);
 }
@@ -487,7 +489,7 @@ void CTorch::net_Export			(NET_Packet& P)
 			F |= eAttached;
 	}
 	P.w_u8(F);
-	P.w_u16(m_current_battery_state);
+//	P.w_u16(m_current_battery_state);
 //	Msg("CTorch::net_export - NV[%d]", m_bNightVisionOn);
 }
 
@@ -506,7 +508,7 @@ void CTorch::net_Import			(NET_Packet& P)
 
 		SwitchNightVision			(new_m_bNightVisionOn);
 	}
-	m_current_battery_state = P.r_u16();
+//	m_current_battery_state = P.r_u16();
 }
 
 bool  CTorch::can_be_attached		() const
@@ -556,3 +558,14 @@ bool CTorch::IsSwitchedOn()
 	return m_switched_on;
 }
 
+void CTorch::save(NET_Packet &output_packet)
+{
+	inherited::save	(output_packet);
+	save_data		(m_current_battery_state,		output_packet);
+}
+
+void CTorch::load(IReader &input_packet)
+{
+	inherited::load	(input_packet);
+	load_data		(m_current_battery_state,		input_packet);
+}
