@@ -12,6 +12,7 @@
 #include "ai_debug.h"
 #include "ai/stalker/ai_stalker.h"
 #include "ai/ai_monsters_anims.h"
+#include "../animation_blend.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -67,9 +68,9 @@ void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton
 }
 
 #ifndef USE_HEAD_BONE_PART_FAKE
-void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation)
+void CStalkerAnimationPair::play			(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation)
 #else
-void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation, const u32 &bone_part)
+void CStalkerAnimationPair::play			(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation, const u32 &bone_part)
 #endif
 {
 	VERIFY					(animation());
@@ -136,7 +137,7 @@ void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, Play
 }
 
 #ifdef DEBUG
-std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(CKinematicsAnimated *skeleton_animated, std::pair<LPCSTR,LPCSTR> &result) const
+std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(IKinematicsAnimated *skeleton_animated, std::pair<LPCSTR,LPCSTR> &result) const
 {
 	if (!blend())
 		return				(0);

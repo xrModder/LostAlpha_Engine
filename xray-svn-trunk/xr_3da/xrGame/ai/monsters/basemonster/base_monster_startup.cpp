@@ -254,7 +254,7 @@ void CBaseMonster::net_Destroy()
 	else if (ltx->line_exist(section,name)) var = ltx->method(section,name);\
 }
 
-void CBaseMonster::settings_read(CInifile *ini, LPCSTR section, SMonsterSettings &data)
+void CBaseMonster::settings_read(const CInifile *ini, LPCSTR section, SMonsterSettings &data)
 {
 	READ_SETTINGS(data.m_fSoundThreshold, "SoundThreshold", r_float, ini, section);
 

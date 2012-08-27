@@ -46,6 +46,7 @@ private:
 	CHitObject					*m_selected_hit;
 #endif
 	ALife::_OBJECT_ID			m_last_hit_object_id;
+	u32							m_last_hit_time;
 
 public:
 	IC							CHitMemoryManager	(CCustomMonster *object, CAI_Stalker *stalker);

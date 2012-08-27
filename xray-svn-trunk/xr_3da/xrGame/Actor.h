@@ -314,11 +314,11 @@ public:
 	// callback на анимации модели актера
 	void					SetCallbacks		();
 	void					ResetCallbacks		();
-	static void				Spin0Callback		(CBoneInstance*);
-	static void				Spin1Callback		(CBoneInstance*);
-	static void				ShoulderCallback	(CBoneInstance*);
-	static void				HeadCallback		(CBoneInstance*);
-	static void				VehicleHeadCallback	(CBoneInstance*);
+	static void	__stdcall	Spin0Callback		(CBoneInstance*);
+	static void	__stdcall	Spin1Callback		(CBoneInstance*);
+	static void	__stdcall	ShoulderCallback	(CBoneInstance*);
+	static void	__stdcall	HeadCallback		(CBoneInstance*);
+	static void	__stdcall	VehicleHeadCallback	(CBoneInstance*);
 
 	virtual const SRotation	Orientation			()	const	{ return r_torso; };
 	SRotation				&Orientation		()			 { return r_torso; };
@@ -444,9 +444,10 @@ public:
 	void					StopAnyMove				();
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
+	bool					AnyMove					()	{return (mstate_real & mcAnyMove) != 0;};
 
 	bool					is_jump					();	
-	u32						GetCurrentState()		{ return mstate_real; }
+	u32						MovingState				() const {return mstate_real;}
 protected:
 	u32						mstate_wishful;
 	u32						mstate_old;

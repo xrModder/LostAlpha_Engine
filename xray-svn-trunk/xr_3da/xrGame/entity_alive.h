@@ -183,6 +183,9 @@ public:
 	virtual	CVisualMemoryManager*visual_memory				() const {return(0);}
 	virtual	void				net_Relcase					(CObject *O);
 public:
+	virtual	Fvector				predict_position			(const float &time_to_check) const;
+	virtual	Fvector				target_position				() const;
+public:
 	virtual	Fvector				get_new_local_point_on_mesh	( u16& bone_id ) const;
 	virtual	Fvector				get_last_local_point_on_mesh( Fvector const& last_point, const u16 bone_id ) const;
 	virtual void				OnChangeVisual				( );

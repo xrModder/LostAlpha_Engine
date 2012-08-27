@@ -419,10 +419,10 @@ public:
 			u32					add_sound				(LPCSTR prefix, u32 max_count, ESoundTypes type, u32 priority, u32 mask, u32 internal_type, LPCSTR bone_name, LPCSTR head_anim);
 			void				remove_sound			(u32 internal_type);
 			void				set_sound_mask			(u32 sound_mask);
-			void				set_sight				(SightManager::ESightType sight_type, Fvector *vector3d, u32 dwLookOverDelay);
+			void				set_sight				(SightManager::ESightType sight_type, const Fvector *vector3d, u32 dwLookOverDelay);
 			void				set_sight				(SightManager::ESightType sight_type, bool torso_look, bool path);
-			void				set_sight				(SightManager::ESightType sight_type, Fvector &vector3d, bool torso_look);
-			void 				set_sight				(SightManager::ESightType sight_type, Fvector *vector3d);
+			void				set_sight				(SightManager::ESightType sight_type, const Fvector &vector3d, bool torso_look);
+			void 				set_sight				(SightManager::ESightType sight_type, const Fvector *vector3d);
 			void 				set_sight				(CScriptGameObject *object_to_look);
 			void 				set_sight				(CScriptGameObject *object_to_look, bool torso_look);
 			void 				set_sight				(CScriptGameObject *object_to_look, bool torso_look, bool fire_object);

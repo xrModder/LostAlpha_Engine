@@ -29,7 +29,7 @@ protected:
 	Fvector			m_focus;
 	// lost alpha start
 	u16 m_battery_duration;
-	u16 m_current_battery_state;
+	u16 *m_current_battery_state;
 	bool m_actor_item;
 private:
 	inline	bool	can_use_dynamic_lights	();

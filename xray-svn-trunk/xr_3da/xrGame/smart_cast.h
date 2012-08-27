@@ -35,17 +35,33 @@
 
 #	ifdef XRGAME_EXPORTS
 
-		DECLARE_SPECIALIZATION			(CKinematics,		IRender_Visual,		dcast_PKinematics);
+		DECLARE_SPECIALIZATION			(IKinematics,		IRender_Visual,		dcast_PKinematics);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(CKinematics,		IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematics,		IRender_Visual)
 
-		DECLARE_SPECIALIZATION			(CKinematicsAnimated,	IRender_Visual,		dcast_PKinematicsAnimated);
+		DECLARE_SPECIALIZATION			(IKinematicsAnimated,	IRender_Visual,		dcast_PKinematicsAnimated);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(CKinematicsAnimated,	IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematicsAnimated,	IRender_Visual)
 
 		DECLARE_SPECIALIZATION			(IParticleCustom,	IRender_Visual,		dcast_ParticleCustom);
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(IParticleCustom,	IRender_Visual)
+
+		DECLARE_SPECIALIZATION			(IKinematics,		IKinematicsAnimated,		dcast_PKinematics);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IKinematics,		IKinematicsAnimated)
+
+		DECLARE_SPECIALIZATION			(IKinematicsAnimated,	IKinematics,		dcast_PKinematicsAnimated);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IKinematicsAnimated,	IKinematics)
+
+		DECLARE_SPECIALIZATION			(IRender_Visual,		IKinematicsAnimated,		dcast_RenderVisual);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematicsAnimated)
+
+		DECLARE_SPECIALIZATION			(IRender_Visual,		IKinematics,		dcast_RenderVisual);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematics)
 
 #		ifndef DO_NOT_DECLARE_TYPE_LIST
 			class ENGINE_API ISpatial;

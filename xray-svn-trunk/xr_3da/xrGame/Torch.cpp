@@ -28,7 +28,7 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 
 static bool stalker_use_dynamic_lights	= false;
 
-CTorch::CTorch(void) 
+CTorch::CTorch(void) : m_current_battery_state(0)
 {
 	light_render				= ::Render->light_create();
 	light_render->set_type		(IRender_Light::SPOT);
@@ -192,14 +192,14 @@ void CTorch::Switch()
 
 void CTorch::SetBatteryStatus(u16 val)
 {
-	m_current_battery_state = val;
+	*m_current_battery_state = val;
 }
 
 void CTorch::Switch	(bool light_on)
 {
 	CActor *pA = smart_cast<CActor *>(H_Parent());
 	m_actor_item = (pA) ? true : false;
-	if (!m_current_battery_state && m_actor_item)
+	if (!(*m_current_battery_state) && m_actor_item)
 	{
 		light_on = false;
 	}
@@ -273,7 +273,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
 	
-	m_current_battery_state = torch->m_battery_state;
+	m_current_battery_state = &(torch->m_battery_state);
 
 	return					(TRUE);
 }
@@ -309,14 +309,14 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 
 void CTorch::Recharge(void)
 {
-	m_current_battery_state = m_battery_duration;
+	*m_current_battery_state = m_battery_duration;
 }
 
 void CTorch::UpdateBattery(void)
 {
 	if (m_switched_on)
 	{
-		m_current_battery_state--;
+		(*m_current_battery_state)--;
 		if (!m_current_battery_state)
 		{
 			Switch(false);
@@ -550,7 +550,7 @@ u16 CTorch::GetBatteryLifetime()
 
 u16 CTorch::GetBatteryStatus()
 {
-	return m_current_battery_state;
+	return *m_current_battery_state;
 }
 
 bool CTorch::IsSwitchedOn()

@@ -208,6 +208,10 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeCreatureAbstract,CSE_ALifeDynamicObjectVisu
 	virtual u8						g_team					();
 	virtual u8						g_squad					();
 	virtual u8						g_group					();
+	IC		float					get_health				() const								{ return fHealth;}
+	IC		ALife::_OBJECT_ID		get_killer_id			() const								{ return m_killer_id; }
+	IC		void					set_health				(float const health_value);
+	IC		void					set_killer_id			(ALife::_OBJECT_ID const killer_id);
 	IC		float					g_Health				() const								{ return fHealth;}
 	IC		bool					g_Alive					() const								{ return (g_Health() > 0.f);}
 	virtual bool					used_ai_locations		() const;

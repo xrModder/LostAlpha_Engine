@@ -297,9 +297,9 @@ void CWeaponMagazined::ReloadMagazine()
 	
 	if (!m_pCurrentInventory) return;
 
-	if(m_set_next_ammoType_on_reload != u32(-1)){		
+	if(m_set_next_ammoType_on_reload != u8(-1)){		
 		m_ammoType						= m_set_next_ammoType_on_reload;
-		m_set_next_ammoType_on_reload	= u32(-1);
+		m_set_next_ammoType_on_reload	= u8(-1);
 	}
 	
 	if(!unlimited_ammo()) 

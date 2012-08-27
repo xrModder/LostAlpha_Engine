@@ -19,6 +19,7 @@
 CDetailPathManager::CDetailPathManager	(CRestrictedObject *object)
 {
 	m_restricted_object		= object;
+	m_dest_vertex_id		= u32(-1);
 }
 
 CDetailPathManager::~CDetailPathManager	()
@@ -117,11 +118,6 @@ void CDetailPathManager::build_path(const xr_vector<u32> &level_path, u32 interm
 			m_time_path_built		= Device.dwTimeGlobal;
 		}
 	}
-}
-
-bool CDetailPathManager::actual() const
-{
-	return					(m_actuality);
 }
 
 void CDetailPathManager::update_distance_to_target	()

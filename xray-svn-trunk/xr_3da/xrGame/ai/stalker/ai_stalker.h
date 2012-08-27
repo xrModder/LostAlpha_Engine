@@ -346,9 +346,10 @@ protected:
 
 			void						update_sell_info				();
 			bool						tradable_item					(CInventoryItem *inventory_item, const u16 &current_owner_id);
+public:
 			bool						can_sell						(CInventoryItem const * item);
 			bool						can_take						(CInventoryItem const * item);
-
+protected:
 			bool						non_conflicted					(const CInventoryItem *item, const CWeapon *new_weapon) const;
 			bool						enough_ammo						(const CWeapon *new_weapon) const;
 			bool						conflicted						(const CInventoryItem *item, const CWeapon *new_weapon, bool new_wepon_enough_ammo, int new_weapon_rank) const;
@@ -587,6 +588,8 @@ public:
 	IC		void						throw_time_interval							(const u32 &value);
 
 public:
+			bool						too_far_to_kill_enemy						(const Fvector &position);
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CAI_Stalker)

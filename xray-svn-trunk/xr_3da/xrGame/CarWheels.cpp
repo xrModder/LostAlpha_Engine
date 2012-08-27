@@ -10,6 +10,7 @@
 #include "car.h"
 #include "../Kinematics.h"
 #include "ExtendedGeom.h"
+#include "mathutilsode.h"
 
 CCar::SWheel::SWheelCollisionParams::SWheelCollisionParams()
 {
@@ -334,7 +335,7 @@ void CCar::SWheelBreak::Init()
 }
 void CCar::SWheelBreak::Load(LPCSTR section)
 {
-	CKinematics		*K			=PKinematics(pwheel->car->Visual())												;
+	IKinematics		*K			=PKinematics(pwheel->car->Visual())												;
 	CInifile		*ini		=K->LL_UserData()																;
 	VERIFY						(ini)																			;
 	break_torque		=		ini->r_float("car_definition","break_torque")									;

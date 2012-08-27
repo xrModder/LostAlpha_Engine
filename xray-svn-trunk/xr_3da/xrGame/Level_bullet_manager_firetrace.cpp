@@ -221,7 +221,7 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 			Fvector p;
 			p.mad(bullet->pos,bullet->dir,R.range-0.01f);
 			::Render->add_SkeletonWallmark	(&R.O->renderable.xform, 
-							PKinematics(R.O->Visual()), *pWallmarkShader,
+							smart_cast<CKinematics*>(R.O->Visual()), *pWallmarkShader,
 							p, bullet->dir, bullet->wallmark_size);
 
 //Fvector*    pVerts    = Level().ObjectSpace.GetStaticVerts();

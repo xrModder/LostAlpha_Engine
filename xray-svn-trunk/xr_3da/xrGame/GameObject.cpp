@@ -209,7 +209,7 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 	}
 }
 
-void VisualCallback(CKinematics *tpKinematics);
+void VisualCallback(IKinematics *tpKinematics);
 
 BOOL CGameObject::net_Spawn		(CSE_Abstract*	DC)
 {
@@ -742,14 +742,14 @@ void CGameObject::SetKinematicsCallback		(bool set)
 {
 	if(!Visual())	return;
 	if (set)
-		smart_cast<CKinematics*>(Visual())->Callback(VisualCallback,this);
+		smart_cast<IKinematics*>(Visual())->Callback(VisualCallback,this);
 	else
-		smart_cast<CKinematics*>(Visual())->Callback(0,0);
+		smart_cast<IKinematics*>(Visual())->Callback(0,0);
 };
 
-void VisualCallback	(CKinematics *tpKinematics)
+void VisualCallback	(IKinematics *tpKinematics)
 {
-	CGameObject						*game_object = static_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->Update_Callback_Param));
+	CGameObject						*game_object = static_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY							(game_object);
 	
 	CGameObject::CALLBACK_VECTOR_IT	I = game_object->visual_callbacks().begin();
@@ -922,7 +922,7 @@ void	CGameObject::		create_anim_mov_ctrl( CBlend* b )
 		//destroy_anim_mov_ctrl( );
 	VERIFY( !animation_movement() );
 	VERIFY(Visual());
-	CKinematics *K = Visual( )->dcast_PKinematics( );
+	IKinematics *K = Visual( )->dcast_PKinematics( );
 	VERIFY( K );
 	m_anim_mov_ctrl = xr_new<animation_movement_controller>( &XFORM(), K, b ); 
 }

@@ -34,6 +34,8 @@
 #include "stalker_planner.h"
 #include "stalker_kill_wounded_planner.h"
 #include "stalker_movement_manager.h"
+#include "inventory.h"
+#include "weaponmagazined.h"
 
 using namespace StalkerSpace;
 using namespace StalkerDecisionSpace;

@@ -2,6 +2,7 @@
 
 #include	"animation_motion.h"
 #include	"SkeletonDefs.h"
+#include	"SkeletonMotions.h"
 //*** Run-time Blend definition *******************************************************************
 #ifdef	DEBUG
 class	bnon_copy
@@ -15,6 +16,8 @@ protected:
 	const bnon_copy& operator=( const bnon_copy& ){ return *this; }
 };
 #endif
+
+
 class  CBlend 
 {
 public:

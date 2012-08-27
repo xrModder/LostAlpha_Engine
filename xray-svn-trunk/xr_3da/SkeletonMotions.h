@@ -14,6 +14,7 @@ class IKinematics;
 // callback
 typedef void	( * PlayCallback)		(CBlend*		P);
 
+
 //*** Key frame definition ************************************************************************
 enum{
     flTKeyPresent 	= (1<<0),

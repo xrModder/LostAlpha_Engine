@@ -170,7 +170,7 @@ public:
 	virtual	void	reinit						();
 			bool	valid						() const;
 			Fvector direction					() const;
-			bool	actual						() const;
+	IC		bool	actual						() const;
 	IC		void	make_inactual				();
 	IC		bool	failed						() const;
 	IC		bool	completed					(const Fvector &position, bool bRealCompleted, const u32 &travel_point_point_index) const;

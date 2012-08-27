@@ -360,11 +360,13 @@ void CSE_ALifeItemTorch::FillProps			(LPCSTR pref, PropItemVec& values)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
-	a_current					= 90;
-	a_elapsed					= 0;
-	wpn_flags					= 0;
-	wpn_state					= 0;
-	ammo_type					= 0;
+	a_current							=	90;
+	a_elapsed							=	0;
+	wpn_flags							=	0;
+	wpn_state							=	0;
+	ammo_type							=	0;
+	a_elapsed_grenades.grenades_count	=	0;
+	a_elapsed_grenades.grenades_type	=	0;
 
 	m_fHitPower					= pSettings->r_float(caSection,"hit_power");
 	m_tHitType					= ALife::g_tfString2HitType(pSettings->r_string(caSection,"hit_type"));
@@ -435,6 +437,8 @@ void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
 
 	if (m_wVersion > 46)
 		tNetPacket.r_u8			(ammo_type);
+
+	a_elapsed_grenades.unpack_from_byte(tNetPacket.r_u8());
 }
 
 void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
@@ -445,6 +449,7 @@ void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(wpn_state);
 	tNetPacket.w_u8				(m_addon_flags.get());
 	tNetPacket.w_u8				(ammo_type);
+	tNetPacket.w_u8				(a_elapsed_grenades.pack_to_byte());
 }
 
 void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time, ClientID sender )

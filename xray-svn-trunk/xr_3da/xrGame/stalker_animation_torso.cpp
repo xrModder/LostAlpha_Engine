@@ -251,7 +251,7 @@ MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState
 		case MS_IDLE:
 		default					 : {
 			CAI_Stalker				&stalker = object();
-			stalker_movement_manager_obstacles	&movement = stalker.movement();
+			CStalkerMovementManager	&movement = stalker.movement();
 			if (standing()) {
 				if (animation[6].A.empty()) {
 					Msg				("! visual %s", object().cNameVisual().c_str());

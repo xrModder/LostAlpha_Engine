@@ -60,7 +60,7 @@ private:
 	void			CheckHitBreak		(float power,ALife::EHitType hit_type);
 	void			ProcessDamage		();
 	void			SendDestroy			();
-	void			enable_notificate	();
+	void	__stdcall		enable_notificate	();
 	static 	void	ObjectContactCallback(bool& /**do_colide/**/,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/);
 };
 
