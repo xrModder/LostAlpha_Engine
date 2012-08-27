@@ -110,7 +110,7 @@ void SCarLight::Update()
 	VERIFY(!ph_world->Processing());
 	if(!isOn()) return;
 	CCar* pcar=m_holder->PCar();
-	CBoneInstance& BI = smart_cast<CKinematics*>(pcar->Visual())->LL_GetBoneInstance(bone_id);
+	CBoneInstance& BI = smart_cast<IKinematics*>(pcar->Visual())->LL_GetBoneInstance(bone_id);
 	Fmatrix M;
 	M.mul(pcar->XFORM(),BI.mTransform);
 	light_render->set_rotation	(M.k,M.i);

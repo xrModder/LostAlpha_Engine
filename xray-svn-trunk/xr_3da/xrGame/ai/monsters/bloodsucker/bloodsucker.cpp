@@ -421,7 +421,7 @@ void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float imp
 		
 		move_actor_cam();
 		
-		u16 bone_id = smart_cast<CKinematics*>(Actor()->Visual())->LL_BoneID("bip01_head");
+		u16 bone_id = smart_cast<IKinematics*>(Actor()->Visual())->LL_BoneID("bip01_head");
 		Actor()->conditions().AddWound(m_vampire_wound, ALife::eHitTypeWound, bone_id);
 	}
 }

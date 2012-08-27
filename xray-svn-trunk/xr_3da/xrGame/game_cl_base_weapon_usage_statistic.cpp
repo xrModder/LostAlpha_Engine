@@ -479,7 +479,7 @@ void WeaponUsageStatistic::On_Check_Respond(NET_Packet* P)
 			CObject* pObj				= Level().Objects.net_Find(HData.TargetID);
 			
 			if (pObj)
-				HData.BoneName			= smart_cast<CKinematics*>(pObj->Visual())->LL_BoneName_dbg(BoneID);
+				HData.BoneName			= smart_cast<IKinematics*>(pObj->Visual())->LL_BoneName_dbg(BoneID);
 		}
 		//---------------------------------------------------------------
 		RemoveBullet(BulletIt);

@@ -283,9 +283,9 @@ void CActor::steer_Vehicle(float angle)
 	CCar*	car			= smart_cast<CCar*>(m_holder);
 	u16 anim_type       = car->DriverAnimationType();
 	SVehicleAnimCollection& anims=m_vehicle_anims->m_vehicles_type_collections[anim_type];
-	if(angle==0.f) 		smart_cast<CKinematicsAnimated*>	(Visual())->PlayCycle(anims.idles[0]);
-	else if(angle>0.f)	smart_cast<CKinematicsAnimated*>	(Visual())->PlayCycle(anims.steer_right);
-	else				smart_cast<CKinematicsAnimated*>	(Visual())->PlayCycle(anims.steer_left);
+	if(angle==0.f) 		smart_cast<IKinematicsAnimated*>	(Visual())->PlayCycle(anims.idles[0]);
+	else if(angle>0.f)	smart_cast<IKinematicsAnimated*>	(Visual())->PlayCycle(anims.steer_right);
+	else				smart_cast<IKinematicsAnimated*>	(Visual())->PlayCycle(anims.steer_left);
 }
 
 void legs_play_callback		(CBlend *blend)
@@ -554,14 +554,14 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 	
 	// есть анимация для всего - запустим / иначе запустим анимацию по частям
 	if (m_current_torso!=M_torso){
-		if (m_bAnimTorsoPlayed)		m_current_torso_blend = smart_cast<CKinematicsAnimated*>	(Visual())->PlayCycle(M_torso,TRUE,AnimTorsoPlayCallBack,this);
-		else						/**/m_current_torso_blend = /**/smart_cast<CKinematicsAnimated*>	(Visual())->PlayCycle(M_torso);
+		if (m_bAnimTorsoPlayed)		m_current_torso_blend = smart_cast<IKinematicsAnimated*>	(Visual())->PlayCycle(M_torso,TRUE,AnimTorsoPlayCallBack,this);
+		else						/**/m_current_torso_blend = /**/smart_cast<IKinematicsAnimated*>	(Visual())->PlayCycle(M_torso);
 
 		m_current_torso=M_torso;
 	}
 	if(m_current_head!=M_head)
 	{
-		if(M_head)smart_cast<CKinematicsAnimated*>(Visual())->PlayCycle(M_head);
+		if(M_head)smart_cast<IKinematicsAnimated*>(Visual())->PlayCycle(M_head);
 		m_current_head=M_head;
 	}
 	if (m_current_legs!=M_legs){

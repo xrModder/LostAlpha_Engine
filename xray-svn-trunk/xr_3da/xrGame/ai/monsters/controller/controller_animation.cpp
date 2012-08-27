@@ -7,6 +7,7 @@
 #include "../control_path_builder_base.h"
 #include "controller_direction.h"
 #include "../monster_velocity_space.h"
+#include "../../../../KinematicsAnimated.h"
 
 const float	_pmt_psy_attack_time  = 0.5f;
 
@@ -92,7 +93,7 @@ void CControllerAnimation::update_frame()
 
 void CControllerAnimation::load()
 {
-	CKinematicsAnimated *skeleton = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated *skeleton = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 	
 	m_legs[eLegsStand]					= skeleton->ID_Cycle_Safe("new_idle_0");
 	m_legs[eLegsSteal]					= skeleton->ID_Cycle_Safe("new_cr_idle_0");

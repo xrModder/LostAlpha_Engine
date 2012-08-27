@@ -38,7 +38,7 @@ struct SAnimationSignalEventData : public ControlCom::IEventData {
 class CControlAnimation : public CControl_ComPure<SControlAnimationData> {
 	typedef CControl_ComPure<SControlAnimationData> inherited;
 
-	CKinematicsAnimated		*m_skeleton_animated;
+	IKinematicsAnimated		*m_skeleton_animated;
 	
 	// animation events
 	struct SAnimationEvent{

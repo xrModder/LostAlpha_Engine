@@ -417,7 +417,7 @@ void CCustomMonster::UpdateCL	()
 	/*	//. hack just to skip 'CalculateBones'
 	if (sound().need_bone_data()) {
 		// we do this because we know here would be virtual function call
-		CKinematics					*kinematics = smart_cast<CKinematics*>(Visual());
+		CKinematics					*kinematics = smart_cast<IKinematics*>(Visual());
 		VERIFY						(kinematics);
 		kinematics->CalculateBones	();
 	}

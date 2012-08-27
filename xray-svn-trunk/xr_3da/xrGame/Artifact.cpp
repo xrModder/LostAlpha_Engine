@@ -163,7 +163,7 @@ void CArtefact::OnH_A_Chield()
 	}
 	else
 	{
-		CKinematics* K	= smart_cast<CKinematics*>(H_Parent()->Visual());
+		IKinematics* K	= smart_cast<IKinematics*>(H_Parent()->Visual());
 		if (K)
 			m_CarringBoneID			= K->LL_BoneID("bip01_head");
 		else

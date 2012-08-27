@@ -11,7 +11,7 @@
 
 void character_hit_animation_controller::SetupHitMotions(IKinematicsAnimated &ca)
 {
-	//CKinematicsAnimated* ca = smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual());
+	//IKinematicsAnimated* ca = smart_cast<IKinematicsAnimated*>(m_EntityAlife.Visual());
 	/*
 	bkhit_motion= ca.LL_MotionID("hitback");	//hitback2.skl
 	fvhit_motion= ca.LL_MotionID("hitfront");
@@ -142,7 +142,7 @@ void character_hit_animation_controller::PlayHitMotion(const Fvector &dir,const 
 	//const float fade = 0.1f;
 	//for(u16 ii=0;MAX_PARTS>ii;++ii)
 	//CA->LL_FadeCycle(ii,fade,1<<1);
-	//smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual())->LL_MotionID("actor_hit_ani_180_2");
+	//smart_cast<IKinematicsAnimated*>(m_EntityAlife.Visual())->LL_MotionID("actor_hit_ani_180_2");
 }
 
 bool character_hit_animation_controller::IsEffected( u16 bi, IKinematics &ca )const
