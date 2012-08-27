@@ -50,8 +50,6 @@
 
 extern ENGINE_API CInifile *pGameIni;
 
-#define __stdcall __stdcall
-
 #pragma comment( lib, "xrCore.lib"	)
 #pragma comment( lib, "xrCDB.lib"	)
 #pragma comment( lib, "xrSound.lib"	)

@@ -7,7 +7,7 @@
 #else
 #include "..\bone.h"
 #include "..\skeletonX.h"
- 	#include "..\skeletoncustom.h"
+#include "..\skeletoncustom.h"
 #endif
 
 void __stdcall xrSkin1W_x86(	vertRender*		D,
