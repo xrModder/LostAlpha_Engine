@@ -240,9 +240,7 @@ class CPhysicsShell			: public CPhysicsBase
 protected:
 					IKinematics					*m_pKinematics																															;
 public:
-#ifdef DEBUG
-					IPhysicsShellHolder			*dbg_obj																																;
-#endif
+
 public:
 IC					IKinematics					*PKinematics								()																{return m_pKinematics		;}
 ////////////////////////////////////////////////////IPhysicsShell///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
