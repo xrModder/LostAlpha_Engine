@@ -26,6 +26,8 @@ public:
 
 			bool	trace_geometry		(const Fvector &d, float &range);
 
+	virtual bool	ability_can_drag		() {return true;}
+
 	virtual bool	check_start_conditions	(ControlCom::EControlType type);
 	virtual void	on_activate_control		(ControlCom::EControlType);
 

@@ -32,6 +32,7 @@ public:
 	
 	virtual bool			use_center_to_aim		() const {return true;}
 	virtual bool			check_start_conditions	(ControlCom::EControlType);
+	virtual void			on_activate_control		(ControlCom::EControlType);
 	virtual void			HitEntity				(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir);
 	
 	//--------------------------------------------------------------------
@@ -135,6 +136,7 @@ public:
 			void	set_manual_control	(bool value) {}
 			void	manual_activate		();
 			void	manual_deactivate	();
+			bool	start_threaten;
 
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();

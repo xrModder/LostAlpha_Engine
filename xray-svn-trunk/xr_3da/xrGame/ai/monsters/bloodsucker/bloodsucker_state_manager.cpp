@@ -98,6 +98,11 @@ if (enemy) {
 	
 	select_state(state_id); 
 
+	if ((current_substate == eStateAttack) && (current_substate != prev_substate)) {
+		object->predator_stop();
+		object->start_threaten = true;
+	}
+
 	// выполнить текущее состояние
 	get_state_current()->execute();
 

@@ -104,6 +104,20 @@ void CCameraLook2::Update(Fvector& point, Fvector&)
 	Fvector _off					= m_cam_offset;
 	a_xform.transform_tiny			(_off);
 	vPosition.set					(_off);
+
+	//NEED DO COLLIDE
+	Fvector				vDir;
+	collide::rq_result	R;
+
+	float				covariance = VIEWPORT_NEAR*6.f;
+	vDir.invert			(vDirection);
+	g_pGameLevel->ObjectSpace.RayPick( _off, vDir, dist+covariance, collide::rqtBoth, R, parent);
+
+	float d				= psCamSlideInert*prev_d+(1.f-psCamSlideInert)*(R.range-covariance);
+	prev_d = d;
+	
+	vPosition.mul		(vDirection,-d-VIEWPORT_NEAR);
+	vPosition.add		(point);
 }
 
 void CCameraLook2::UpdateAutoAim()
@@ -142,4 +156,5 @@ void CCameraLook2::Load(LPCSTR section)
 	m_cam_offset			= pSettings->r_fvector3	(section,"offset");
 	m_autoaim_inertion_yaw	= pSettings->r_fvector2	(section,"autoaim_speed_y");
 	m_autoaim_inertion_pitch= pSettings->r_fvector2	(section,"autoaim_speed_x");
+	dist				= 1.1f;
 }

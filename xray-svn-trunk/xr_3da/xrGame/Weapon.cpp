@@ -368,6 +368,10 @@ void CWeapon::Load		(LPCSTR section)
 	m_fZoomRotateTime = ROTATION_TIME;
 	if(m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
 
+	m_bCustomZoomEnabled = false;
+	if (pSettings->line_exist(section, "scope_dynamic_zoom"))
+	m_bCustomZoomEnabled = !!pSettings->r_bool(section,"scope_dynamic_zoom");
+
 	if(m_eScopeStatus == ALife::eAddonAttachable)
 	{
 		m_sScopeName = pSettings->r_string(section,"scope_name");
@@ -1613,20 +1617,26 @@ void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoo
 
 void CWeapon::ZoomDec()
 {
+	if (m_bCustomZoomEnabled) 
+	{
 	float delta, min_zoom_factor;
 	if (!IsScopeAttached())
 		return;
 	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
 	m_fZoomFactor -= delta;
 	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
+	}
 }
 
 void CWeapon::ZoomInc()
 {
+	if (m_bCustomZoomEnabled) 
+	{
 	float delta, min_zoom_factor;
 	if (!IsScopeAttached())
 		return;
 	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
 	m_fZoomFactor += delta;
 	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
+	}
 }

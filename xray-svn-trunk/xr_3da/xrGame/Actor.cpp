@@ -94,20 +94,11 @@ CActor::CActor() : CEntityAlive()
 	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this);
 	cameras[eacFirstEye]->Load("actor_firsteye_cam");
 
-	//if(strstr(Core.Params,"-psp"))
-		psActorFlags.set(AF_PSP, TRUE);
-	/*else
-		psActorFlags.set(AF_PSP, FALSE);
+	psActorFlags.set(AF_PSP, TRUE);
 
-	if( psActorFlags.test(AF_PSP) )
-	{*/
-		cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
-		cameras[eacLookAt]->Load("actor_look_cam_psp");
-	/*}else
-	//{
-	//	cameras[eacLookAt]		= xr_new<CCameraLook>				(this);
-	//	cameras[eacLookAt]->Load("actor_look_cam");
-	}*/
+	cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
+	cameras[eacLookAt]->Load("actor_look_cam_psp");
+
 	cameras[eacFreeLook]	= xr_new<CCameraLook>					(this);
 	cameras[eacFreeLook]->Load("actor_free_cam");
 
@@ -772,7 +763,11 @@ void CActor::Die(CObject* who)
 		};
 	};
 
+	if (!IsGameTypeSingle())
 	cam_Set					(eacFreeLook);
+	else
+	cam_Set					(eacFirstEye);
+
 	mstate_wishful	&=		~mcAnyMove;
 	mstate_real		&=		~mcAnyMove;
 
@@ -858,7 +853,7 @@ float CActor::currentFOV()
 {
 	CWeapon* pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());	
 
-	if (eacFirstEye == cam_active && pWeapon &&
+	if (eacFreeLook != cam_active && pWeapon &&
 		pWeapon->IsZoomed() && (!pWeapon->ZoomTexture() ||
 		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture())))
 		return pWeapon->GetZoomFactor() * (0.75f);
@@ -929,8 +924,13 @@ void CActor::UpdateCL	()
 			else
 				HUD().ShowCrosshair(false);
 
-			psHUD_Flags.set( HUD_CROSSHAIR_RT2, pWeapon->show_crosshair() );
-			psHUD_Flags.set( HUD_DRAW_RT,		pWeapon->show_indicators() );
+			if (eacLookAt == cam_active) {
+				psHUD_Flags.set( HUD_CROSSHAIR_RT2, true );
+				psHUD_Flags.set( HUD_DRAW_RT,		true );
+			} else {
+				psHUD_Flags.set( HUD_CROSSHAIR_RT2, pWeapon->show_crosshair() );
+				psHUD_Flags.set( HUD_DRAW_RT,		pWeapon->show_indicators() ); 
+			}
 		}
 
 	}
@@ -972,8 +972,8 @@ void CActor::UpdateCL	()
 	CTorch *flashlight = GetCurrentTorch();
 	if (flashlight)
 		flashlight->UpdateBattery();
-//	if (g_bHudAdjustMode)
-//		StopAnyMove();
+	if (g_bHudAdjustMode)
+		StopAnyMove();
 }
 
 float	NET_Jump = 0;
