@@ -282,25 +282,57 @@ bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 void CUIInventoryWnd::ColorizeAmmo(CUICellItem* itm)
 {
 	CInventoryItem* inventoryitem = (CInventoryItem*) itm->m_pData;
-	if (!inventoryitem) {Msg("Can't convert to CInventoryItem"); return; }
+	if (!inventoryitem) return;
+
+	//clear texture color
+	//for bag
+	u32 item_count = m_pUIBagList->ItemsCount();
+		for (u32 i=0;i<item_count;++i) {
+			CUICellItem* bag_item = m_pUIBagList->GetItemIdx(i);
+			PIItem invitem = (PIItem) bag_item->m_pData;
+
+			bag_item->SetTextureColor				(0xffffffff);
+		}
+	//for belt
+	u32 belt_item_count = m_pUIBeltList->ItemsCount();
+		for (u32 i=0;i<belt_item_count;++i) {
+			CUICellItem* belt_item = m_pUIBeltList->GetItemIdx(i);
+			PIItem invitem = (PIItem) belt_item->m_pData;
+
+			belt_item->SetTextureColor				(0xffffffff);
+		}
+
 	CWeaponMagazined* weapon = smart_cast<CWeaponMagazined*>(inventoryitem);
-	if (!weapon) {Msg("Can't convert to CWeaponMagazined"); return; }
+	if (!weapon) return;
 
 	xr_vector<shared_str> ammo_types = weapon->m_ammoTypes;
 	
 	u32 color = pSettings->r_color("inventory_color_ammo","color");
 
+	//for bag
 	for (size_t id = 0;id<ammo_types.size();++id) {
-
-		u32 item_count = m_pUIBagList->ItemsCount();
+	u32 item_count = m_pUIBagList->ItemsCount();
 		for (u32 i=0;i<item_count;++i) {
 			CUICellItem* bag_item = m_pUIBagList->GetItemIdx(i);
 			PIItem invitem = (PIItem) bag_item->m_pData;
-			
 
 			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id])==0 && invitem->Useful()) {
 				bag_item->SetTextureColor				(color);
-				break;												//go out from loop, because we can't have 2 CUICellItem's with same section
+				break;										//go out from loop, because we can't have 2 CUICellItem's with same section
+			}
+
+		}
+	}
+
+	//for belt
+	for (size_t id = 0;id<ammo_types.size();++id) {
+	u32 belt_item_count = m_pUIBeltList->ItemsCount();
+		for (u32 i=0;i<belt_item_count;++i) {
+			CUICellItem* belt_item = m_pUIBeltList->GetItemIdx(i);
+			PIItem invitem = (PIItem) belt_item->m_pData;
+
+			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id])==0 && invitem->Useful()) {
+				belt_item->SetTextureColor				(color);
 			}
 
 		}
