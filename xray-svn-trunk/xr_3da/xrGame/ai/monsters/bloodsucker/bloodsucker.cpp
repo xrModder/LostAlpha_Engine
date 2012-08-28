@@ -38,6 +38,7 @@ CAI_Bloodsucker::CAI_Bloodsucker()
 	
 	com_man().add_ability			(ControlCom::eControlRunAttack);
 	com_man().add_ability			(ControlCom::eControlRotationJump);
+	com_man().add_ability			(ControlCom::eControlThreaten);
 
 	invisible_vel.set				(0.1f, 0.1f);
 
@@ -164,6 +165,9 @@ void CAI_Bloodsucker::reinit()
 
 	com_man().ta_fill_data(anim_triple_vampire, "vampire_0", "vampire_1", "vampire_2", TA_EXECUTE_LOOPED, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 	
+	start_threaten = false;
+	com_man().set_threaten_data	("stand_threaten_0", 0.63f);
+
 	m_alien_control.reinit();
 	
 	state_invisible				= false;
@@ -291,7 +295,10 @@ void CAI_Bloodsucker::CheckSpecParams(u32 spec_params)
 	}
 
 	if ((spec_params & ASP_STAND_SCARED) == ASP_STAND_SCARED) {
+		if (Random.randI(100) < 60)
 		anim().SetCurAnim(eAnimLookAround);
+		else
+		anim().SetCurAnim(eAnimScared);
 		return;
 	}
 
@@ -352,6 +359,15 @@ bool CAI_Bloodsucker::check_start_conditions(ControlCom::EControlType type)
 
 	if (type == ControlCom::eControlRunAttack)
 		return (!state_invisible);
+
+	if (type == ControlCom::eControlThreaten) {
+		if (!start_threaten) return false;
+		
+		start_threaten = false;
+
+		if (Random.randI(100) < 70) return false;
+			
+	}
 
 	return true;
 }
@@ -447,6 +463,13 @@ void CAI_Bloodsucker::manual_deactivate()
 {
 	state_invisible = false;
 	setVisible		(TRUE);
+}
+
+void CAI_Bloodsucker::on_activate_control(ControlCom::EControlType type)
+{
+	if (type == ControlCom::eControlThreaten) {
+		sound().play			(MonsterSound::eMonsterSoundThreaten);
+	}
 }
 
 

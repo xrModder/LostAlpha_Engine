@@ -175,9 +175,17 @@ void CActor::IR_OnMouseWheel(int direction)
 
 
 	if (direction>0)
-		OnNextWeaponSlot				();
-	else
-		OnPrevWeaponSlot				();
+	{
+		if (eacLookAt==cam_active)
+			cam_Active()->Move(kCAM_ZOOM_IN);
+		else
+			OnNextWeaponSlot();
+	} else {
+		if (eacLookAt==cam_active)
+			cam_Active()->Move(kCAM_ZOOM_OUT);
+		else
+			OnPrevWeaponSlot();
+	}
 }
 void CActor::IR_OnKeyboardRelease(int cmd)
 {

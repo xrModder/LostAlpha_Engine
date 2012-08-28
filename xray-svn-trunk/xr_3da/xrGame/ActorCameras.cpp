@@ -24,6 +24,13 @@
 #include "PHShell.h"
 void CActor::cam_Set	(EActorCameras style)
 {
+	if (style!=cam_active)
+	{
+		if (eacFirstEye==cam_active && eacLookAt==style)
+		m_fPickupInfoRadius += 1;
+		else if (eacLookAt==cam_active && eacFirstEye==style)
+		m_fPickupInfoRadius -= 1;
+	}
 	CCameraBase* old_cam = cam_Active();
 	cam_active = style;
 	old_cam->OnDeactivate();
