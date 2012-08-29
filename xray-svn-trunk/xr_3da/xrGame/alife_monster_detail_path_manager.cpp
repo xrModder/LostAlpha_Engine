@@ -104,11 +104,6 @@ void CALifeMonsterDetailPathManager::update					()
 	m_last_update_time				= ai().alife().time_manager().game_time();
 }
 
-void CALifeMonsterDetailPathManager::make_inactual			()
-{
-	m_path.clear();
-}
-
 void CALifeMonsterDetailPathManager::actualize				()
 {
 	m_path.clear					();

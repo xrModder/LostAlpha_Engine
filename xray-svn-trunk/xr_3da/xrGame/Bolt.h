@@ -21,7 +21,7 @@ public:
 	virtual	u16	 Initiator();
 
 	virtual void Throw();
-	virtual bool Action(s32 cmd, u32 flags);
+	virtual bool Action(u16 cmd, u32 flags);
 	virtual bool Useful() const;
     virtual void Destroy();
     virtual void activate_physic_shell	();

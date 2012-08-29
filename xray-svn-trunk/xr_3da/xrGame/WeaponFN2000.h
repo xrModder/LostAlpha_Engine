@@ -17,7 +17,7 @@ public:
 	virtual void			Fire2Start			();
 	virtual void			Fire2End			();
 
-	virtual bool Action(s32 cmd, u32 flags);*/
+	virtual bool Action(u16 cmd, u32 flags);*/
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

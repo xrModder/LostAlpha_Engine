@@ -528,7 +528,7 @@ void CMissile::Destroy()
 	if (Local())		DestroyObject();
 }
 
-bool CMissile::Action(s32 cmd, u32 flags) 
+bool CMissile::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	/*Msg("CMissile::Action %d %d %u", ID(), cmd, flags);*/

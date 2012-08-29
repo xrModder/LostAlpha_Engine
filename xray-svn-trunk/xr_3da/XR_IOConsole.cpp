@@ -516,7 +516,7 @@ void CConsole::Show			()
 
 void CConsole::Hide()
 {
-	if	(!bVisible)													return;
+	if	(!bVisible)									return;
 	if	(g_pGamePersistent && g_dedicated_server)	return;
 
 	bVisible				= false;

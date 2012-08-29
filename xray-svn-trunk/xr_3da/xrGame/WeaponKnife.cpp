@@ -294,7 +294,7 @@ void CWeaponKnife::Fire2Start ()
 }
 
 
-bool CWeaponKnife::Action(s32 cmd, u32 flags) 
+bool CWeaponKnife::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	switch(cmd) 

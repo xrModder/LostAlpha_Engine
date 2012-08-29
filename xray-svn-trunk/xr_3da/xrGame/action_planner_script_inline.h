@@ -25,11 +25,5 @@ void _CActionPlannerScript::setup					(_object_type *object)
 	m_object			= object;
 }
 
-TEMPLATE_SPECIALIZATION
-IC _object_type &_CActionPlannerScript::object		() const
-{
-	return				(*m_object);
-}
-
 #undef TEMPLATE_SPECIALIZATION
 #undef _CActionPlannerScript

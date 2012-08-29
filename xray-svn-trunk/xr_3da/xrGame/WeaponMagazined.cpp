@@ -689,7 +689,7 @@ void CWeaponMagazined::switch2_Showing()
 	PlayAnimShow();
 }
 
-bool CWeaponMagazined::Action(s32 cmd, u32 flags) 
+bool CWeaponMagazined::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	

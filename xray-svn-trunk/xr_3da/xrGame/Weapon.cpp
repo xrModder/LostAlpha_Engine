@@ -773,7 +773,7 @@ void CWeapon::UpdatePosition(const Fmatrix& trans)
 }
 
 
-bool CWeapon::Action(s32 cmd, u32 flags) 
+bool CWeapon::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 

@@ -41,7 +41,7 @@ public:
 	virtual void	StopHUDSounds		()				{};
 	
 	//для предачи команд владельцем
-	virtual bool	Action				(s32 cmd, u32 flags);
+	virtual bool	Action				(u16 cmd, u32 flags);
 	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)				{};
 
 	virtual void	OnDrawUI			()				{};

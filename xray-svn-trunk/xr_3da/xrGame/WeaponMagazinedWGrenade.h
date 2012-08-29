@@ -46,7 +46,7 @@ public:
 	virtual void	OnEvent			(NET_Packet& P, u16 type);
 	virtual void	ReloadMagazine	();
 
-	virtual bool	Action			(s32 cmd, u32 flags);
+	virtual bool	Action			(u16 cmd, u32 flags);
 
 	virtual void	UpdateSounds	();
 	virtual void	StopHUDSounds	();

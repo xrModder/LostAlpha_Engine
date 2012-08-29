@@ -32,7 +32,7 @@ public:
 	virtual void	save				(NET_Packet &output_packet);
 	virtual void	load				(IReader &input_packet);
 
-	virtual bool	Action				(s32 cmd, u32 flags);
+	virtual bool	Action				(u16 cmd, u32 flags);
 	virtual void	UpdateCL			();
 	virtual void	OnDrawUI			();
 	virtual bool	use_crosshair		()	const {return false;}

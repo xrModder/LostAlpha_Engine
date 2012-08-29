@@ -281,7 +281,7 @@ void CObjectFactory::register_classes	()
 	ADD(CWeaponPM				,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_PM				,"wpn_pm");
 	ADD(CWeaponFORT				,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_FORT			,"wpn_fort");
 	ADD(CWeaponBinoculars		,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_BINOCULAR		,"wpn_binocular");
-	ADD(CWeaponZoomable		,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_ZOOMABLE		,"wpn_zoomable");
+	ADD(CWeaponZoomable			,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_ZOOMABLE		,"wpn_zoomable");
 	ADD(CWeaponShotgun			,CSE_ALifeItemWeaponShotGun		,CLSID_OBJECT_W_SHOTGUN			,"wpn_shotgun");
 	ADD(CWeaponSVD				,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_SVD				,"wpn_svd");
 	ADD(CWeaponSVU				,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_SVU				,"wpn_svu");
@@ -402,7 +402,7 @@ void CObjectFactory::register_classes	()
 	ADD(CWeaponAK74				,CSE_ALifeItemWeaponMagazinedWGL,TEXT2CLSID("WP_AK74")			,"wpn_ak74_s");
 	ADD(CWeaponLR300			,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_LR300")			,"wpn_lr300_s");
 	ADD(CWeaponBinoculars		,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_BINOC")			,"wpn_binocular_s");
-	ADD(CWeaponZoomable		,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_ZOOM")			,"wpn_zoomable_s");
+	ADD(CWeaponZoomable			,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_ZOOM")			,"wpn_zoomable_s");
 	ADD(CWeaponBM16				,CSE_ALifeItemWeaponShotGun		,TEXT2CLSID("WP_BM16")			,"wpn_bm16_s");
 	ADD(CWeaponGroza			,CSE_ALifeItemWeaponMagazinedWGL,TEXT2CLSID("WP_GROZA")			,"wpn_groza_s");
 	ADD(CWeaponSVD				,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_SVD")			,"wpn_svd_s");

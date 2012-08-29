@@ -32,7 +32,7 @@ void CLevel::remove_objects	()
 		VERIFY					(Server);
 		Server->SLS_Clear		();
 	}
-	
+/*	
 	snd_Events.clear			();
 	for (int i=0; i<6; ++i) {
 		psNET_Flags.set			(NETFLAG_MINIMIZEUPDATES,FALSE);
@@ -48,7 +48,26 @@ void CLevel::remove_objects	()
 
 	if (OnClient())
 		ClearAllObjects			();
+*/
+	if (OnClient())
+		ClearAllObjects			();
 
+	snd_Events.clear			();
+
+	for (int i=0; i<20; ++i) {
+		psNET_Flags.set			(NETFLAG_MINIMIZEUPDATES,FALSE);
+		// ugly hack for checks that update is twice on frame
+		// we need it since we do updates for checking network messages
+		++(Device.dwFrame);
+		psDeviceFlags.set		(rsDisableObjectsAsCrows,TRUE);
+		ClientReceive			();
+		ProcessGameEvents		();
+		Objects.Update			(false);
+#ifdef DEBUG
+		Msg						("Update objects list...");
+#endif // #ifdef DEBUG
+//		Objects.dump_all_objects();
+	}
 	BulletManager().Clear		();
 	ph_commander().clear		();
 	ph_commander_scripts().clear();
@@ -78,13 +97,13 @@ void CLevel::remove_objects	()
 		VERIFY										(client_spawn_manager().registry().empty());
 		client_spawn_manager().clear			();
 	}
-
+/*
 	for (int i=0; i<6; i++)
 	{
 		++(Device.dwFrame);
 		Objects.Update(true);
 	}
-
+*/
 	g_pGamePersistent->destroy_particles		(false);
 
 //.	xr_delete									(m_seniority_hierarchy_holder);
@@ -108,7 +127,8 @@ void CLevel::net_Stop		()
 	IGame_Level::net_Stop		();
 	IPureClient::Disconnect		();
 
-	if (Server) {
+	if (Server) 
+	{
 		Server->Disconnect		();
 		xr_delete				(Server);
 	}
@@ -426,42 +446,38 @@ void			CLevel::OnConnectResult				(NET_Packet*	P)
 
 void			CLevel::ClearAllObjects				()
 {
+	u32 CLObjNum = Level().Objects.o_count();
 
 	bool ParentFound = true;
 	
 	while (ParentFound)
 	{	
-		ProcessGameEvents				();
-
-		u32 CLObjNum					= Level().Objects.o_count();
-		ParentFound						= false;
-
+		ParentFound = false;
 		for (u32 i=0; i<CLObjNum; i++)
 		{
-			CObject* pObj				= Level().Objects.o_get_by_iterator(i);
-			if (!pObj->H_Parent()) 
-				continue;
+			CObject* pObj = Level().Objects.o_get_by_iterator(i);
+			if (!pObj->H_Parent()) continue;
 			//-----------------------------------------------------------
-			NET_Packet					GEN;
-			GEN.w_begin					(M_EVENT);
-			//------------------		---------------------------		
-			GEN.w_u32					(Level().timeServer());
-			GEN.w_u16					(GE_OWNERSHIP_REJECT);
-			GEN.w_u16					(pObj->H_Parent()->ID());
-			GEN.w_u16					(u16(pObj->ID()));
-			game_events->insert			(GEN);
-			if (g_bDebugEvents)	
-				ProcessGameEvents		();
+			NET_Packet			GEN;
+			GEN.w_begin			(M_EVENT);
+			//---------------------------------------------		
+			GEN.w_u32			(Level().timeServer());
+			GEN.w_u16			(GE_OWNERSHIP_REJECT);
+			GEN.w_u16			(pObj->H_Parent()->ID());
+			GEN.w_u16			(u16(pObj->ID()));
+			game_events->insert	(GEN);
+			if (g_bDebugEvents)	ProcessGameEvents();
 			//-------------------------------------------------------------
-			ParentFound					= true;
+			ParentFound = true;
 			//-------------------------------------------------------------
 #ifdef DEBUG
 			Msg ("Rejection of %s[%d] from %s[%d]", *(pObj->cNameSect()), pObj->ID(), *(pObj->H_Parent()->cNameSect()), pObj->H_Parent()->ID());
 #endif
 		};
+		ProcessGameEvents();
 	};
 
-	u32 CLObjNum = Level().Objects.o_count();
+	CLObjNum = Level().Objects.o_count();
 
 	for (u32 i=0; i<CLObjNum; i++)
 	{

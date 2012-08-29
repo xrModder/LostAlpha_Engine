@@ -187,7 +187,7 @@ void CWeaponShotgun::UpdateSounds	()
 	if (sndShotBoth.playing())		sndShotBoth.set_position		(get_LastFP());
 }
 
-bool CWeaponShotgun::Action			(s32 cmd, u32 flags) 
+bool CWeaponShotgun::Action			(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 

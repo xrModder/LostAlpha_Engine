@@ -10,7 +10,7 @@
 
 IC	u32	CScriptSound::Length				()
 {
-	VERIFY					(m_sound._handle());
+	VERIFY2					(m_sound._handle(), *m_caSoundToPlay);
 	return					(m_sound._handle()->length_ms());
 }
 
@@ -36,84 +36,84 @@ IC	void CScriptSound::PlayAtPos			(CScriptGameObject *object, const Fvector &pos
 
 IC	void CScriptSound::SetMinDistance		(const float fMinDistance)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2					(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_range(fMinDistance,GetMaxDistance());
 }
 
 IC	void CScriptSound::SetMaxDistance		(const float fMaxDistance)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_range(GetMinDistance(),fMaxDistance);
 }
 
 IC	const float	CScriptSound::GetFrequency	() const
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(m_sound.get_params()->freq);
 }
 
 IC	const float CScriptSound::GetMinDistance() const
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(m_sound.get_params()->min_distance);
 }
 
 IC	const float CScriptSound::GetMaxDistance() const
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(m_sound.get_params()->max_distance);
 }
 
 IC	const float	CScriptSound::GetVolume		() const
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(m_sound.get_params()->volume);
 }
 
 IC	bool CScriptSound::IsPlaying			() const
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(!!m_sound._feedback());
 }
 
 IC	void CScriptSound::Stop					()
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.stop		();
 }
 
 IC	void CScriptSound::StopDeffered			()
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.stop_deffered();
 }
 
 IC	void CScriptSound::SetPosition			(const Fvector &position)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_position(position);
 }
 
 IC	void CScriptSound::SetFrequency			(float frequency)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_frequency(frequency);
 }
 
 IC	void CScriptSound::SetVolume			(float volume)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_volume	(volume);
 }
 
 IC	const CSound_params *CScriptSound::GetParams	()
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	return				(m_sound.get_params());
 }
 
 IC	void CScriptSound::SetParams			(CSound_params *sound_params)
 {
-	VERIFY				(m_sound._handle());
+	VERIFY2				(m_sound._handle(), *m_caSoundToPlay);
 	m_sound.set_params	(sound_params);
 }

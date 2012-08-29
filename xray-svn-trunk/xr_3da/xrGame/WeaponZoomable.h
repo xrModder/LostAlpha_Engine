@@ -17,7 +17,7 @@ public:
 	virtual	void	ZoomInc				();
 	virtual	void	ZoomDec				();
 
-	virtual bool	Action				(s32 cmd, u32 flags);
+	virtual bool	Action				(u16 cmd, u32 flags);
 	virtual void	GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

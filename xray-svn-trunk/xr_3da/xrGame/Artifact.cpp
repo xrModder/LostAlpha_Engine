@@ -348,7 +348,7 @@ void CArtefact::UpdateXForm()
 	}
 }
 #include "xr_level_controller.h"
-bool CArtefact::Action(s32 cmd, u32 flags) 
+bool CArtefact::Action(u16 cmd, u32 flags) 
 {
 	switch (cmd)
 	{

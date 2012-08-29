@@ -51,7 +51,7 @@ public:
 	virtual void 			Throw();
 	virtual void 			Destroy();
 
-	virtual bool 			Action						(s32 cmd, u32 flags);
+	virtual bool 			Action						(u16 cmd, u32 flags);
 	virtual void			onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 //.	IC u32		 			State						()				{return m_state;}
 	virtual void 			State						(u32 state);

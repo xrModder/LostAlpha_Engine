@@ -33,7 +33,7 @@ void CWeaponBinoculars::Load	(LPCSTR section)
 }
 
 
-bool CWeaponBinoculars::Action(s32 cmd, u32 flags) 
+bool CWeaponBinoculars::Action(u16 cmd, u32 flags) 
 {
 	switch(cmd) 
 	{
