@@ -1638,7 +1638,9 @@ void CWeapon::ZoomInc()
 	m_fZoomFactor += delta;
 	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
 	}
-}u32 CWeapon::Cost() const
+}
+
+u32 CWeapon::Cost() const
 {
 	u32 res = CInventoryItem::Cost();
 	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
@@ -1659,5 +1661,4 @@ void CWeapon::ZoomInc()
 		res			+= iFloor(w*(iAmmoElapsed/bs));
 	}
 	return res;
-
 }
