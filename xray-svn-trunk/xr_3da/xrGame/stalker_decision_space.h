@@ -47,6 +47,7 @@ namespace StalkerDecisionSpace {
 		eWorldPropertyWoundedEnemyAimed,
 		eWorldPropertyPausedAfterKill,
 		eWorldPropertyKilledWounded,
+		eWorldPropertyTooFarToKillEnemy,
 		eWorldPropertyStartedToThrowGrenade,
 
 		eWorldPropertyDangerUnknown,

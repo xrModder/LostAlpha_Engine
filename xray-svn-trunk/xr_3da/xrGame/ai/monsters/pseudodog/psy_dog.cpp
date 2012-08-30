@@ -231,7 +231,8 @@ void CPsyDogPhantom::Think()
 
 	CParticlesPlayer::StartParticles(m_particles_appear,Fvector().set(0.0f,0.1f,0.0f),ID());
 
-	if (EnemyMan.get_enemy() != Actor()) return;
+	if (EnemyMan.get_enemy() != Actor()) 
+		return;
 
 	Actor()->Cameras().AddCamEffector(xr_new<CMonsterEffectorHit>(m_appear_effector.ce_time,m_appear_effector.ce_amplitude,m_appear_effector.ce_period_number,m_appear_effector.ce_power));
 	Actor()->Cameras().AddPPEffector(xr_new<CMonsterEffector>(m_appear_effector.ppi, m_appear_effector.time, m_appear_effector.time_attack, m_appear_effector.time_release));
@@ -277,6 +278,9 @@ void CPsyDogPhantom::try_to_register_to_parent()
 		
 		m_parent = dog;
 		m_parent->register_phantom	(this);
+
+		movement().restrictions().add_restrictions( m_parent->movement().restrictions().out_restrictions(), 
+													m_parent->movement().restrictions().in_restrictions() );
 
 		m_state						= eWaitToAppear;
 	}

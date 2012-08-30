@@ -28,7 +28,7 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 
 static bool stalker_use_dynamic_lights	= false;
 
-CTorch::CTorch(void) 
+CTorch::CTorch(void) : m_current_battery_state(0)
 {
 	light_render				= ::Render->light_create();
 	light_render->set_type		(IRender_Light::SPOT);
@@ -213,7 +213,7 @@ void CTorch::Switch	(bool light_on)
 
 	if (*light_trace_bone) 
 	{
-		CKinematics* pVisual				= smart_cast<CKinematics*>(Visual()); VERIFY(pVisual);
+		IKinematics* pVisual				= smart_cast<IKinematics*>(Visual()); VERIFY(pVisual);
 		u16 bi								= pVisual->LL_BoneID(light_trace_bone);
 
 		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE);
@@ -233,7 +233,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	cNameVisual_set			(torch->get_visual());
 
 	R_ASSERT				(!CFORM());
-	R_ASSERT				(smart_cast<CKinematics*>(Visual()));
+	R_ASSERT				(smart_cast<IKinematics*>(Visual()));
 	collidable.model		= xr_new<CCF_Skeleton>	(this);
 
 	if (!inherited::net_Spawn(DC))
@@ -241,7 +241,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	
 	bool b_r2				= !!psDeviceFlags.test(rsR2);
 
-	CKinematics* K			= smart_cast<CKinematics*>(Visual());
+	IKinematics* K			= smart_cast<IKinematics*>(Visual());
 	CInifile* pUserData		= K->LL_UserData(); 
 	R_ASSERT3				(pUserData,"Empty Torch user data!",torch->get_visual());
 	lanim					= LALib.FindItem(pUserData->r_string("torch_definition","color_animator"));
@@ -333,17 +333,17 @@ void CTorch::UpdateCL()
 
 	if (!m_switched_on)		return;
 
-	CBoneInstance			&BI = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
+	CBoneInstance			&BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 	Fmatrix					M;
 
 	if (H_Parent()) 
 	{
 		CActor*			actor = smart_cast<CActor*>(H_Parent());
-		if (actor)		smart_cast<CKinematics*>(H_Parent()->Visual())->CalculateBones_Invalidate	();
+		if (actor)		smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones_Invalidate	();
 
 		if (H_Parent()->XFORM().c.distance_to_sqr(Device.vCameraPosition)<_sqr(OPTIMIZATION_DISTANCE) || GameID() != GAME_SINGLE) {
 			// near camera
-			smart_cast<CKinematics*>(H_Parent()->Visual())->CalculateBones	();
+			smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones	();
 			M.mul_43				(XFORM(),BI.mTransform);
 		} else {
 			// approximately the same

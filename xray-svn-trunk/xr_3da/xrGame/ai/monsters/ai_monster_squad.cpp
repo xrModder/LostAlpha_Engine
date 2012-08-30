@@ -75,7 +75,7 @@ void CMonsterSquad::UpdateGoal(CEntity *pE, const SMemberGoal &goal)
 	it->second = goal;
 }
 
-void CMonsterSquad::UpdateCommand(CEntity *pE, const SSquadCommand &com)
+void CMonsterSquad::UpdateCommand(const CEntity *pE, const SSquadCommand &com)
 {
 	MEMBER_COMMAND_MAP_IT it = m_commands.find(pE);
 	VERIFY(it != m_commands.end());

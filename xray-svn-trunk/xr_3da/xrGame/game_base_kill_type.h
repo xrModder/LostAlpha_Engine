@@ -19,6 +19,7 @@ enum SPECIAL_KILL_TYPE
 	SKT_KIR,	//Kill in Row
 
 	SKT_NEWRANK,
+	SKT_EYESHOT,
 
 	SKT_FORCEDWORD = u32(-1)
 };

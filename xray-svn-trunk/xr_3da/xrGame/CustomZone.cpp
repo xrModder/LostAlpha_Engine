@@ -13,7 +13,7 @@
 #include "../igame_persistent.h"
 #include "artifact.h"
 #include "ai_object_location.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "zone_effector.h"
 #include "breakableobject.h"
 
@@ -648,7 +648,7 @@ BOOL CCustomZone::feel_touch_contact(CObject* O)
 {
 	if (smart_cast<CCustomZone*>(O))				return FALSE;
 	if (smart_cast<CBreakableObject*>(O))			return FALSE;
-	if (0==smart_cast<CKinematics*>(O->Visual()))	return FALSE;
+	if (0==smart_cast<IKinematics*>(O->Visual()))	return FALSE;
 
 	if (O->ID() == ID())
 		return		(FALSE);
@@ -1355,6 +1355,11 @@ void CCustomZone::net_Relcase(CObject* O)
 	inherited::net_Relcase(O);
 }
 
+void CCustomZone::enter_Zone(SZoneObjectInfo& io)
+{
+	
+}
+
 void CCustomZone::exit_Zone	(SZoneObjectInfo& io)
 {
 	StopObjectIdleParticles(io.object);
@@ -1451,4 +1456,21 @@ BOOL CCustomZone::AlwaysTheCrow()
 		return TRUE;
 	else
 		return inherited::AlwaysTheCrow();
+}
+void CCustomZone::save							(NET_Packet &output_packet)
+{
+	inherited::save			(output_packet);
+	output_packet.w_u8		(static_cast<u8>(m_eZoneState));
+}
+
+void CCustomZone::load							(IReader &input_packet)
+{
+	inherited::load			(input_packet);	
+
+	CCustomZone::EZoneState temp = static_cast<CCustomZone::EZoneState>(input_packet.r_u8());
+
+	if (temp == eZoneStateDisabled)
+		m_eZoneState = eZoneStateDisabled;
+	else
+		m_eZoneState = eZoneStateIdle;
 }

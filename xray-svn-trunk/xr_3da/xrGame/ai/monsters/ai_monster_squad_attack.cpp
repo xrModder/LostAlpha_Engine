@@ -33,19 +33,19 @@ void CMonsterSquad::ProcessAttack()
 
 
 struct sort_predicate {
-	CEntity *enemy;
+	const CEntity *enemy;
 
 			
-			sort_predicate	(CEntity *pEnemy) : enemy(pEnemy) {}
+			sort_predicate	(const CEntity *pEnemy) : enemy(pEnemy) {}
 
-	bool	operator()		(CEntity *pE1, CEntity *pE2) const
+	bool	operator()		(const CEntity *pE1, const CEntity *pE2) const
 	{
 		return	(pE1->Position().distance_to(enemy->Position()) > 
 			pE2->Position().distance_to(enemy->Position()));
 	};
 };
 
-void CMonsterSquad::Attack_AssignTargetDir(ENTITY_VEC &members, CEntity *enemy)
+void CMonsterSquad::Attack_AssignTargetDir(ENTITY_VEC &members, const CEntity *enemy)
 {
 	_elem					first;
 	_elem					last;

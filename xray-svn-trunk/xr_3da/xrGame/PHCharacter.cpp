@@ -7,6 +7,7 @@
 #include "../cl_intersect.h"
 #include "tri-colliderKNoOPC\__aabb_tri.h"
 #include "../../xrODE/ode/src/util.h"
+#include "mathutilsode.h"
 
 CPHCharacter::CPHCharacter(void):
   CPHDisablingTranslational()
@@ -148,3 +149,14 @@ void CPHCharacter::CutVelocity(float l_limit,float /*a_limit*/)
 	}
 }
 
+void	CPHCharacter::	fix_body_rotation					()
+{
+		dBodyID b= get_body();//GetBody();
+		if(b)
+		{
+			dMatrix3 R;
+			dRSetIdentity (R);
+			dBodySetAngularVel(b,0.f,0.f,0.f);
+			dBodySetRotation(b,R);
+		}
+}

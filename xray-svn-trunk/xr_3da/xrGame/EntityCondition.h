@@ -17,10 +17,11 @@ public:
 							CEntityConditionSimple	();
 	virtual					~CEntityConditionSimple	();
 
-	IC float				GetHealth				() const			{return m_fHealth;}
-	IC float 				GetMaxHealth			() const			{return m_fHealthMax;}
-	IC float&				health					()					{return	m_fHealth;}
-	IC float&				max_health				()					{return	m_fHealthMax;}
+	IC		float				GetHealth				() const				{return m_fHealth;}
+	IC		void				SetHealth				( const float value ) 	{ m_fHealth = value; }
+	IC 		float 				GetMaxHealth			() const				{return m_fHealthMax;}
+	IC 		float&				health					()						{return	m_fHealth;}
+	IC 		float&				max_health				()						{return	m_fHealthMax;}
 };
 
 class CEntityCondition: public CEntityConditionSimple, public CHitImmunity
@@ -31,7 +32,7 @@ private:
 
 public:
 							CEntityCondition		(CEntityAlive *object);
-	virtual					~CEntityCondition		(void);
+	virtual					~CEntityCondition		();
 
 	virtual void			LoadCondition			(LPCSTR section);
 	virtual void			remove_links			(const CObject *object);
@@ -49,21 +50,21 @@ public:
 
 	virtual bool 			IsLimping				() const;
 
-	virtual void			ChangeSatiety			(float value)		{};
-	void 					ChangeHealth			(float value);
-	void 					ChangePower				(float value);
-	void 					ChangeRadiation			(float value);
-	void 					ChangePsyHealth			(float value);
-	virtual void 			ChangeAlcohol			(float value){};
+	virtual void			ChangeSatiety			(const float value)		{};
+	virtual void 					ChangeHealth			(const float value);
+	virtual void 					ChangePower				(const float value);
+	virtual void 					ChangeRadiation			(const float value);
+	virtual void 					ChangePsyHealth			(const float value);
+	virtual void 			ChangeAlcohol			(const float value){};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
-	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
+	IC void					SetMaxPower				(const float val)	{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
 	IC float				GetMaxPower				() const			{return m_fPowerMax;};
 
-	void 					ChangeBleeding			(float percent);
+	void 					ChangeBleeding			(const float percent);
 
-	void 					ChangeCircumspection	(float value);
-	void 					ChangeEntityMorale		(float value);
+	void 					ChangeCircumspection	(const float value);
+	void 					ChangeEntityMorale		(const float value);
 
 	virtual CWound*			ConditionHit			(SHit* pHDS);
 	//обновления состояния с течением времени
@@ -113,7 +114,6 @@ protected:
 	float m_fPower;					//сила
 	float m_fRadiation;				//доза радиактивного облучения
 	float m_fPsyHealth;				//здоровье
-
 	float m_fEntityMorale;			//мораль
 
 	//максимальные величины

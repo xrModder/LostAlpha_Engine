@@ -5,8 +5,11 @@
 #include "CharacterPhysicsSupport.h"
 #include "PHMovementControl.h"
 #include "CustomMonster.h"
+
+#include "../KinematicsAnimated.h"
+
 #include "PhysicsShell.h"
-#include "../skeletonanimated.h"
+//#include "../skeletonanimated.h"
 #include "Actor.h"
 #include "CustomZone.h"
 #include "Extendedgeom.h"
@@ -172,20 +175,22 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 	
 	if(m_EntityAlife.use_simplified_visual	())
 	{
-		m_flags.set(fl_death_anim_on,TRUE);
-		CKinematics*	ka=smart_cast<CKinematics*>(m_EntityAlife.Visual());
-		VERIFY(ka);
-		ka->CalculateBones_Invalidate();
-		ka->CalculateBones();
-		CollisionCorrectObjPos(m_EntityAlife.Position());
-		m_pPhysicsShell		= P_build_Shell(&m_EntityAlife,false);
-		ka->CalculateBones_Invalidate();
-		ka->CalculateBones();
+		m_flags.set( fl_death_anim_on, TRUE );
+		IKinematics*	ka = smart_cast<IKinematics*>( m_EntityAlife.Visual( ) );
+		VERIFY( ka );
+		ka->CalculateBones_Invalidate( );
+		ka->CalculateBones( TRUE );
+		CollisionCorrectObjPos( m_EntityAlife.Position( ) );
+		m_pPhysicsShell		= P_build_Shell( &m_EntityAlife, false );
+		ka->CalculateBones_Invalidate( );
+		ka->CalculateBones( TRUE );
 		return;
 	}
 
 	CPHDestroyable::Init();//this zerows colbacks !!;
-	CKinematicsAnimated*ka= smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual());
+	IRender_Visual *pVisual = m_EntityAlife.Visual();
+	IKinematicsAnimated*ka= smart_cast<IKinematicsAnimated*>( pVisual );
+	IKinematics*pK= smart_cast<IKinematics*>( pVisual );
 	if(!m_EntityAlife.g_Alive())
 	{
 		
@@ -201,8 +206,8 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 									  ///этот хак нужен, потому что некоторым монстрам 
 									  ///анимация после спона, может быть вообще не назначена
 	}
-	ka->CalculateBones_Invalidate();
-	ka->CalculateBones();
+	pK->CalculateBones_Invalidate( );
+	pK->CalculateBones( TRUE );
 	
 	CPHSkeleton::Spawn(e);
 	movement()->EnableCharacter();
@@ -215,7 +220,7 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 	}
 	if(Type() == etStalker)
 	{
-		m_hit_animations.SetupHitMotions(*smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual()));
+		m_hit_animations.SetupHitMotions( *smart_cast<IKinematicsAnimated*>( m_EntityAlife.Visual( ) ) );
 	}
 	anim_mov_state.init();
 
@@ -246,7 +251,7 @@ void CCharacterPhysicsSupport::SpawnInitPhysics(CSE_Abstract* e)
 		}
 #endif
 #ifdef	USE_IK
-		if( etStalker == m_eType || etActor == m_eType )
+		if( etStalker == m_eType || etActor == m_eType || (m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData() && m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData()->section_exist("ik")) )
 				CreateIKController( );
 #endif
 		if( !m_EntityAlife.animation_movement_controlled( ) )
@@ -453,7 +458,7 @@ IC		void	CCharacterPhysicsSupport::						UpdateDeathAnims				()
 
 	if(!m_flags.test(fl_death_anim_on) && !is_imotion(m_interactive_motion))//!m_flags.test(fl_use_death_motion)//!b_death_anim_on&&m_pPhysicsShell->isFullActive()
 	{
-		smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual())->PlayCycle("death_init");
+		smart_cast<IKinematicsAnimated*>(m_EntityAlife.Visual())->PlayCycle("death_init");
 		m_flags.set(fl_death_anim_on,TRUE);
 	}
 }
@@ -493,7 +498,7 @@ void CCharacterPhysicsSupport::in_UpdateCL( )
 		m_hit_animations.GetBaseMatrix(m,m_EntityAlife);
 		DBG_DrawMatrix(m,1.5f);
 /*
-		CKinematicsAnimated	*K = smart_cast<CKinematicsAnimated*>(m_EntityAlife.Visual());
+		IKinematicsAnimated	*K = smart_cast<IKinematicsAnimated*>(m_EntityAlife.Visual());
 		u16 hb = K->LL_BoneID("bip01_head");
 		u16 pb = K->LL_GetBoneRoot();
 		u16 nb = K->LL_BoneID("bip01_neck");
@@ -525,13 +530,13 @@ void CCharacterPhysicsSupport::CreateSkeleton(CPhysicsShell* &pShell)
 	CTimer t;t.Start();
 #endif	
 	pShell		= P_create_Shell();
-	pShell->preBuild_FromKinematics(smart_cast<CKinematics*>(m_EntityAlife.Visual()));
+	pShell->preBuild_FromKinematics(smart_cast<IKinematics*>(m_EntityAlife.Visual()));
 	pShell->mXFORM.set(mXFORM);
 	pShell->SetAirResistance(skel_airr_lin_factor,skel_airr_ang_factor);
 	pShell->SmoothElementsInertia(0.3f);
 	pShell->set_PhysicsRefObject(&m_EntityAlife);
 	SAllDDOParams disable_params;
-	disable_params.Load(smart_cast<CKinematics*>(m_EntityAlife.Visual())->LL_UserData());
+	disable_params.Load(smart_cast<IKinematics*>(m_EntityAlife.Visual())->LL_UserData());
 	pShell->set_DisableParams(disable_params);
 
 	pShell->Build();
@@ -549,19 +554,19 @@ void CCharacterPhysicsSupport::CreateSkeleton()
 	if (!m_EntityAlife.Visual())
 		return;
 	m_pPhysicsShell		= P_create_Shell();
-	m_pPhysicsShell->build_FromKinematics(smart_cast<CKinematics*>(m_EntityAlife.Visual()));
+	m_pPhysicsShell->build_FromKinematics(smart_cast<IKinematics*>(m_EntityAlife.Visual()));
 	m_pPhysicsShell->mXFORM.set(mXFORM);
 	m_pPhysicsShell->SetAirResistance(skel_airr_lin_factor,
 		skel_airr_ang_factor);
 	m_pPhysicsShell->set_PhysicsRefObject(&m_EntityAlife);
 	SAllDDOParams disable_params;
-	disable_params.Load(smart_cast<CKinematics*>(m_EntityAlife.Visual())->LL_UserData());
+	disable_params.Load(smart_cast<IKinematics*>(m_EntityAlife.Visual())->LL_UserData());
 	m_pPhysicsShell->set_DisableParams(disable_params);
 	m_pPhysicsShell->set_JointResistance(0.f);
 	m_pPhysicsShell->Activate(true);
 	velocity.mul(1.25f*m_after_death_velocity_factor);
 	m_pPhysicsShell->set_LinearVel(velocity);
-	smart_cast<CKinematics*>(m_EntityAlife.Visual())->CalculateBones();
+	smart_cast<IKinematics*>(m_EntityAlife.Visual())->CalculateBones();
 	//b_death_anim_on=false;
 	m_flags.set(fl_death_anim_on,FALSE);
 	m_eState=esDead;
@@ -609,7 +614,7 @@ void CCharacterPhysicsSupport::set_movement_position( const Fvector &pos )
 void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 {
 	DestroyIKController( );
-	CKinematics* K=smart_cast<CKinematics*>( m_EntityAlife.Visual( ) );
+	IKinematics* K=smart_cast<IKinematics*>( m_EntityAlife.Visual( ) );
 
 	//animation movement controller issues
 	bool	anim_mov_ctrl =m_EntityAlife.animation_movement_controlled( );
@@ -632,7 +637,7 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 		anim_mov_blend->playing = false;
 		*/
 		m_EntityAlife.destroy_anim_mov_ctrl( );
-		BR.Callback_overwrite = TRUE;
+		BR.set_callback_overwrite(TRUE);
 	}
 	//
 
@@ -652,7 +657,7 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 				K->LL_GetBoneInstance( I ).reset_callback( );
 
 	if( anim_mov_ctrl )	//we do not whant to move by long animation in root 
-			BR.Callback_overwrite = TRUE;
+			BR.set_callback_overwrite(TRUE);
 
 	K->CalculateBones_Invalidate();
 	K->CalculateBones	();
@@ -680,7 +685,7 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	//
 
 	if(anim_mov_ctrl) //we do not whant to move by long animation in root 
-			BR.Callback_overwrite = TRUE;
+			BR.set_callback_overwrite(TRUE);
 
 	//set shell params
 	if(!smart_cast<CCustomZone*>(who))
@@ -724,7 +729,7 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	m_pPhysicsShell->set_CallbackData((void*)this);
 //
 
-	if(anim_mov_ctrl && anim_mov_blend && anim_mov_blend->blend != CBlend::eFREE_SLOT &&  anim_mov_blend->timeCurrent + Device.fTimeDelta*anim_mov_blend->speed < anim_mov_blend->timeTotal-SAMPLE_SPF-EPS)//.
+	if(anim_mov_ctrl && anim_mov_blend && anim_mov_blend->blend_state() != CBlend::eFREE_SLOT &&  anim_mov_blend->timeCurrent + Device.fTimeDelta*anim_mov_blend->speed < anim_mov_blend->timeTotal-SAMPLE_SPF-EPS)//.
 	{
 		const Fmatrix sv_xform = mXFORM;
 		mXFORM.set( start_xform );
@@ -882,7 +887,7 @@ void CCharacterPhysicsSupport::TestForWounded()
 		return;
 	}
 	
-	CKinematics* CKA=smart_cast<CKinematics*>(m_EntityAlife.Visual());
+	IKinematics* CKA=smart_cast<IKinematics*>(m_EntityAlife.Visual());
 	CKA->CalculateBones();
 	CBoneInstance CBI=CKA->LL_GetBoneInstance(0);
 	Fmatrix position_matrix;

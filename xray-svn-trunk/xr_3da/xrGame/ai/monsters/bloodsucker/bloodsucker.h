@@ -44,7 +44,7 @@ public:
 	// Bones
 	//--------------------------------------------------------------------
 private:
-	static	void			BoneCallback			(CBoneInstance *B);
+	static	void __stdcall	BoneCallback			(CBoneInstance *B);
 			void			vfAssignBones			();
 			void			LookDirection			(Fvector to_dir, float bone_turn_speed);
 
@@ -147,6 +147,9 @@ public:
 
 #endif
 
+public:
+	virtual bool	can_be_seen				() const { return !state_invisible; }
+	
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

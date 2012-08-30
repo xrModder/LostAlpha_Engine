@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include "ai_space.h"
+#include "game_graph.h"
 
 IC	CALifeSmartTerrainTask::CALifeSmartTerrainTask				(LPCSTR patrol_path_name)
 {
@@ -28,6 +30,13 @@ IC	CALifeSmartTerrainTask::CALifeSmartTerrainTask				(const shared_str &patrol_p
 	init					(patrol_path_name,patrol_point_index);
 }
 
+IC	CALifeSmartTerrainTask::CALifeSmartTerrainTask				(const GameGraph::_GRAPH_ID &game_vertex_id,	const u32 &level_vertex_id)
+{
+	VERIFY2(ai().game_graph().valid_vertex_id(game_vertex_id), make_string("Vertex [%d] is not valid!!!", game_vertex_id));
+	m_game_vertex_id = game_vertex_id;
+	m_level_vertex_id = level_vertex_id;
+}
+
 IC	void CALifeSmartTerrainTask::init							(const shared_str &patrol_path_name, const u32 &patrol_point_index)
 {
 #ifdef DEBUG
@@ -35,6 +44,8 @@ IC	void CALifeSmartTerrainTask::init							(const shared_str &patrol_path_name, 
 	m_patrol_point_index	= patrol_point_index;
 #endif
 	m_patrol_point			= 0;
+	m_game_vertex_id		= GameGraph::_GRAPH_ID(-1);
+	m_level_vertex_id		= u32(-1);
 	setup_patrol_point		(patrol_path_name,patrol_point_index);
 }
 

@@ -22,6 +22,7 @@
 #include "client_spawn_manager.h"
 #include "memory_manager.h"
 #include "../IGame_Persistent.h"
+#include "actor.h"
 
 #ifndef MASTER_GOLD
 #	include "clsid_game.h"
@@ -80,6 +81,7 @@ void CHitMemoryManager::reinit				()
 {
 	m_hits					= 0;
 	m_last_hit_object_id	= ALife::_OBJECT_ID(-1);
+	m_last_hit_time			= 0;
 }
 
 void CHitMemoryManager::reload				(LPCSTR section)
@@ -93,7 +95,8 @@ void CHitMemoryManager::reload				(LPCSTR section)
 void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const CObject *who, s16 element)
 {
 #ifndef MASTER_GOLD
-	if (who && (who->CLS_ID == CLSID_OBJECT_ACTOR) && psAI_Flags.test(aiIgnoreActor))
+	CObject **who_obj = (CObject**)(&who);
+	if (who && smart_cast<CActor*>(*who_obj) && psAI_Flags.test(aiIgnoreActor))
 		return;
 #endif // MASTER_GOLD
 
@@ -104,8 +107,10 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 	if (who && (m_object->ID() == who->ID()))
 		return;
 
-	if (who && !fis_zero(amount))
+	if (who && !fis_zero(amount)) {
 		m_last_hit_object_id	= who->ID();
+		m_last_hit_time			= Device.dwTimeGlobal;
+	}
 
 	object().callback(GameObject::eHit)(
 		m_object->lua_game_object(), 
@@ -153,7 +158,8 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 void CHitMemoryManager::add					(const CHitObject &_hit_object)
 {
 #ifndef MASTER_GOLD
-	if (_hit_object.m_object && (_hit_object.m_object->CLS_ID == CLSID_OBJECT_ACTOR) && psAI_Flags.test(aiIgnoreActor))
+	CEntityAlive **hitted_entity = (CEntityAlive**)(&_hit_object.m_object);
+	if (_hit_object.m_object && smart_cast<CActor*>(*hitted_entity) && psAI_Flags.test(aiIgnoreActor))
 		return;
 #endif // MASTER_GOLD
 
@@ -185,7 +191,7 @@ struct CRemoveOfflinePredicate {
 	bool		operator()						(const CHitObject &object) const
 	{
 		VERIFY	(object.m_object);
-		return	(!!object.m_object->getDestroy() || object.m_object->H_Parent());
+		return	( !object.m_object || !!object.m_object->getDestroy() || object.m_object->H_Parent() );
 	}
 };
 
@@ -232,8 +238,13 @@ void CHitMemoryManager::enable			(const CObject *object, bool enable)
 
 void CHitMemoryManager::remove_links	(CObject *object)
 {
-	VERIFY				(m_hits);
-	HITS::iterator		I = std::find_if(m_hits->begin(),m_hits->end(),CHitObjectPredicate(object));
+	if (m_last_hit_object_id == object->ID()) {
+		m_last_hit_object_id	= ALife::_OBJECT_ID(-1);
+		m_last_hit_time			= 0;
+	}
+
+	VERIFY						(m_hits);
+	HITS::iterator				I = std::find_if(m_hits->begin(),m_hits->end(),CHitObjectPredicate(object));
 	if (I != m_hits->end())
 		m_hits->erase	(I);
 

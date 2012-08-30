@@ -7,41 +7,13 @@
 #pragma once
 
 #include "SkeletonCustom.h"
+#include "SkeletonXVertRender.h"
 
 // refs
 class ENGINE_API	CKinematics;
 class Fvisual		;
 
-#pragma pack(push,4)
-struct vertBoned1W			// (3+3+3+3+2+1)*4 = 15*4 = 60 bytes
-{
-	Fvector	P;
-	Fvector	N;
-	Fvector	T;
-	Fvector	B;
-	float	u,v;
-	u32		matrix;
-	void	get_pos( Fvector& p ) { p.set(P); }
-};
-struct vertBoned2W			// (1+3+3 + 1+3+3 + 2)*4 = 16*4 = 64 bytes
-{
-	u16		matrix0;
-	u16		matrix1;
-	Fvector	P;
-	Fvector	N;
-	Fvector	T;
-	Fvector	B;
-	float	w;
-	float	u,v;
-	void	get_pos( Fvector& p ) { p.set(P); }
-};
-struct vertRender			// T&B are not skinned, because in R2 skinning occurs always in hardware
-{
-	Fvector	P;
-	Fvector	N;
-	float	u,v;
-};
-#pragma pack(pop)
+//.#pragma pack(push,4)
 
 struct SEnumVerticesCallback;
 class ENGINE_API	CSkeletonX
@@ -83,11 +55,11 @@ protected:
 	virtual void			_FillVerticesHW2W	(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)	=0;
 	virtual void			_FillVertices		(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)			=0;
 
-	BOOL					_PickBoneSoft1W		(Fvector& normal, float& range, const Fvector& S, const Fvector& D, u16* indices, CBoneData::FacesVec& faces);
-	BOOL					_PickBoneSoft2W		(Fvector& normal, float& range, const Fvector& S, const Fvector& D,	u16* indices, CBoneData::FacesVec& faces);
-	virtual BOOL			_PickBoneHW1W		(Fvector& normal, float& range, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)				=0;
-	virtual BOOL			_PickBoneHW2W		(Fvector& normal, float& range, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)				=0;
-	virtual BOOL			_PickBone			(Fvector& normal, float& range, const Fvector& S, const Fvector& D, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)						=0;
+	BOOL					_PickBoneSoft1W		(IKinematics::pick_result &r, float range, const Fvector& S, const Fvector& D, u16* indices, CBoneData::FacesVec& faces);
+	BOOL					_PickBoneSoft2W		(IKinematics::pick_result &r, float range, const Fvector& S, const Fvector& D,	u16* indices, CBoneData::FacesVec& faces);
+	virtual BOOL			_PickBoneHW1W		(IKinematics::pick_result &r, float range, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)				=0;
+	virtual BOOL			_PickBoneHW2W		(IKinematics::pick_result &r, float range, const Fvector& S, const Fvector& D, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)				=0;
+	virtual BOOL			_PickBone			(IKinematics::pick_result &r, float range, const Fvector& S, const Fvector& D, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)						=0;
 public:
 	BOOL					has_visible_bones	();
 							CSkeletonX		()	{ Parent = 0; ChildIDX = u16(-1); }
@@ -95,8 +67,29 @@ public:
 	virtual void			SetParent		(CKinematics* K)					{ Parent = K; }
 	virtual void			AfterLoad		(CKinematics* parent, u16 child_idx)=0;
 	virtual void			EnumBoneVertices(SEnumVerticesCallback &C, u16 bone_id)=0;
-	virtual BOOL			PickBone		(Fvector& normal, float& dist, const Fvector& start, const Fvector& dir, u16 bone_id)=0;
+	virtual BOOL			PickBone		(IKinematics::pick_result &r, float dist, const Fvector& start, const Fvector& dir, u16 bone_id)=0;
 	virtual void			FillVertices	(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, u16 bone_id)=0;
 };
 
+template<typename T_vertex, typename T_buffer >
+BOOL pick_bone(T_buffer vertices, CKinematics* Parent, IKinematics::pick_result &r, float dist, const Fvector& S, const Fvector& D, u16* indices, CBoneData::FacesVec& faces)
+{
+
+	
+	for (CBoneData::FacesVecIt it=faces.begin(); it!=faces.end(); it++){
+	
+		u32 idx			= (*it)*3;
+		for (u32 k=0; k<3; k++){
+			T_vertex& vert			= vertices[indices[idx+k]];
+			get_pos_bones(vert, r.tri[k], Parent );
+		}
+		float u,v;
+		r.dist = flt_max;
+		if (CDB::TestRayTri(S,D,r.tri,u,v,r.dist,true)&&(r.dist<dist)){
+			r.normal.mknormal(r.tri[0],r.tri[1],r.tri[2]);
+			return TRUE;
+		};
+	}
+	return FALSE;
+}
 #endif // SkeletonXH

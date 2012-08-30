@@ -46,6 +46,7 @@ private:
 	CHitObject					*m_selected_hit;
 #endif
 	ALife::_OBJECT_ID			m_last_hit_object_id;
+	u32							m_last_hit_time;
 
 public:
 	IC							CHitMemoryManager	(CCustomMonster *object, CAI_Stalker *stalker);
@@ -69,6 +70,7 @@ public:
 			const CHitObject	*hit				(const CEntityAlive *object) const;
 	IC		void				set_squad_objects	(HITS *squad_objects);
 	IC		const ALife::_OBJECT_ID	&last_hit_object_id	() const;
+	IC		u32 const &			last_hit_time			() const;
 
 public:
 			void				enable				(const CObject *object, bool enable);

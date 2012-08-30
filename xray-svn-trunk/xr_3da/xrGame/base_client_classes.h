@@ -19,8 +19,8 @@ class CObject;
 class IRender_Visual;
 class FHierrarhyVisual;
 class CBlend;
-class CKinematics;
-class CKinematicsAnimated;
+class IKinematics;
+class IKinematicsAnimated;
 
 typedef class_exporter<DLL_Pure>	DLL_PureScript;
 add_to_type_list(DLL_PureScript)
@@ -67,14 +67,14 @@ add_to_type_list(FHierrarhyVisualScript)
 #undef script_type_list
 #define script_type_list save_type_list(FHierrarhyVisualScript)
 
-typedef class_exporter<CKinematics>	CKinematicsScript;
-add_to_type_list(CKinematicsScript)
+typedef class_exporter<IKinematics>	IKinematicsScript;
+add_to_type_list(IKinematicsScript)
 #undef script_type_list
-#define script_type_list save_type_list(CKinematicsScript)
+#define script_type_list save_type_list(IKinematicsScript)
 */
 
-typedef class_exporter<CKinematicsAnimated>	CKinematicsAnimatedScript;
-add_to_type_list(CKinematicsAnimatedScript)
+typedef class_exporter<IKinematicsAnimated>	IKinematicsAnimatedScript;
+add_to_type_list(IKinematicsAnimatedScript)
 #undef script_type_list
-#define script_type_list save_type_list(CKinematicsAnimatedScript)
+#define script_type_list save_type_list(IKinematicsAnimatedScript)
 

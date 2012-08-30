@@ -7,7 +7,7 @@
 #include "../ai_monster_effector.h"
 #include "../../../hudmanager.h"
 #include "../../../ui.h"
-#include "../../../../skeletonanimated.h"
+#include "../../../../KinematicsAnimated.h"
 #include "../../../level.h"
 #include "../../../sound_player.h"
 #include "../../../ai_monster_space.h"

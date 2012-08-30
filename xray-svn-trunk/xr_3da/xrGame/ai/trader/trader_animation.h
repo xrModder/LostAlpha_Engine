@@ -1,6 +1,9 @@
 #pragma once
 
-#include "../../../SkeletonAnimated.h"
+#include "../../../KinematicsAnimated.h"
+#include "../../../animation_motion.h"
+#include "../../../animation_blend.h"
+
 
 class CAI_Trader;
 

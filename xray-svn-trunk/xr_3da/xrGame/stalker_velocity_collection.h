@@ -12,7 +12,6 @@
 
 class CStalkerVelocityCollection {
 private:
-
 	float				m_danger[2][2][4];
 	float				m_free[2];
 	float				m_panic;

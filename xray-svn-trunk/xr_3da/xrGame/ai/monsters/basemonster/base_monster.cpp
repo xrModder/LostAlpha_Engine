@@ -16,7 +16,7 @@
 #include "../../../squad_hierarchy_holder.h"
 #include "../../../group_hierarchy_holder.h"
 #include "../../../phdestroyable.h"
-#include "../../../../skeletoncustom.h"
+#include "../../../../KinematicsAnimated.h"
 #include "../../../detail_path_manager.h"
 #include "../../../hudmanager.h"
 #include "../../../memory_manager.h"
@@ -41,8 +41,11 @@
 #include "../../../actor.h"
 #include "../../../ai_object_location.h"
 #include "../../../ai_space.h"
+#include "../../../level_graph.h"
 #include "../../../script_engine.h"
 
+#pragma warning (disable:4355)
+#pragma warning (push)
 CBaseMonster::CBaseMonster()
 {
 	m_pPhysics_support=xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etBitting,this);

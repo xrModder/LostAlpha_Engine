@@ -1176,6 +1176,10 @@
 				Name="Animator"
 				>
 				<File
+					RelativePath=".\bone.cpp"
+					>
+				</File>
+				<File
 					RelativePath="bone.h"
 					>
 				</File>
@@ -1252,6 +1256,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Debug"
+				>
+				<File
+					RelativePath=".\ObjectDump.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ObjectDump.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Render"
@@ -1295,7 +1311,31 @@
 					Name="Skeleton"
 					>
 					<File
+						RelativePath=".\Animation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Animation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\animation_blend.h"
+						>
+					</File>
+					<File
+						RelativePath=".\animation_motion.h"
+						>
+					</File>
+					<File
+						RelativePath=".\AnimationKeyCalculate.h"
+						>
+					</File>
+					<File
 						RelativePath=".\EnnumerateVertices.h"
+						>
+					</File>
+					<File
+						RelativePath=".\KinematicsDefs.h"
 						>
 					</File>
 					<File
@@ -1312,6 +1352,10 @@
 					</File>
 					<File
 						RelativePath=".\SkeletonCustom.h"
+						>
+					</File>
+					<File
+						RelativePath=".\SkeletonDefs.h"
 						>
 					</File>
 					<File
@@ -1364,6 +1408,22 @@
 					</File>
 					<File
 						RelativePath=".\SkeletonX.h"
+						>
+					</File>
+					<File
+						RelativePath=".\SkeletonXVertRender.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Interfaces"
+					>
+					<File
+						RelativePath=".\Kinematics.h"
+						>
+					</File>
+					<File
+						RelativePath=".\KinematicsAnimated.h"
 						>
 					</File>
 				</Filter>

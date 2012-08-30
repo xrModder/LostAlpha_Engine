@@ -28,18 +28,19 @@ void CScriptGameObject::script_register(lua_State *L)
 		class_<CSightParams>("CSightParams")
 			.enum_("bla-bla")
 			[
-				value("eSightTypeCurrentDirection",	int(SightManager::eSightTypeCurrentDirection)),
-				value("eSightTypePathDirection",	int(SightManager::eSightTypePathDirection	)),
-				value("eSightTypeDirection",		int(SightManager::eSightTypeDirection		)),
-				value("eSightTypePosition",			int(SightManager::eSightTypePosition		)),
-				value("eSightTypeObject",			int(SightManager::eSightTypeObject			)),
-				value("eSightTypeCover",			int(SightManager::eSightTypeCover			)),
-				value("eSightTypeSearch",			int(SightManager::eSightTypeSearch			)),
-				value("eSightTypeLookOver",			int(SightManager::eSightTypeLookOver		)),
-				value("eSightTypeCoverLookOver",	int(SightManager::eSightTypeCoverLookOver	)),
-				value("eSightTypeFireObject",		int(SightManager::eSightTypeFireObject		)),
-				value("eSightTypeFirePosition",		int(SightManager::eSightTypeFirePosition	)),
-				value("eSightTypeDummy",			int(SightManager::eSightTypeDummy			))
+				value("eSightTypeCurrentDirection",		int(SightManager::eSightTypeCurrentDirection	)),
+				value("eSightTypePathDirection",		int(SightManager::eSightTypePathDirection		)),
+				value("eSightTypeDirection",			int(SightManager::eSightTypeDirection			)),
+				value("eSightTypePosition",				int(SightManager::eSightTypePosition			)),
+				value("eSightTypeObject",				int(SightManager::eSightTypeObject				)),
+				value("eSightTypeCover",				int(SightManager::eSightTypeCover				)),
+				value("eSightTypeSearch",				int(SightManager::eSightTypeSearch				)),
+				value("eSightTypeLookOver",				int(SightManager::eSightTypeLookOver			)),
+				value("eSightTypeCoverLookOver",		int(SightManager::eSightTypeCoverLookOver		)),
+				value("eSightTypeFireObject",			int(SightManager::eSightTypeFireObject			)),
+				value("eSightTypeFirePosition",			int(SightManager::eSightTypeFirePosition		)),
+				value("eSightTypeAnimationDirection",	int(SightManager::eSightTypeAnimationDirection	)),
+				value("eSightTypeDummy",				int(SightManager::eSightTypeDummy				))
 			]
 			.def(							constructor<>())
 			.def_readonly("m_object",		&CSightParams::m_object)

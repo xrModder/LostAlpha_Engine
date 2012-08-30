@@ -54,7 +54,7 @@ bool CBolt::Useful() const
 	return false;
 }
 
-bool CBolt::Action(s32 cmd, u32 flags) 
+bool CBolt::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 /*

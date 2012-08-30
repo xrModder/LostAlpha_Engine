@@ -36,7 +36,7 @@ public:
 	virtual void 			Destroy();
 
 	
-	virtual bool			Action								(s32 cmd, u32 flags);
+	virtual bool			Action								(u16 cmd, u32 flags);
 	virtual bool			Useful								() const;
 	virtual void			State								(u32 state);
 

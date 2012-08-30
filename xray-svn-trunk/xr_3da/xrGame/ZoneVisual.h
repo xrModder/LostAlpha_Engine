@@ -1,5 +1,5 @@
 #pragma once
-
+#include "..\animation_motion.h"
 class CVisualZone :
 	public CCustomZone
 {

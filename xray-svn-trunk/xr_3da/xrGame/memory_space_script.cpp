@@ -58,10 +58,10 @@ void CMemoryInfo::script_register(lua_State *L)
 {
 	module(L)
 	[
-#ifdef USE_ORIENTATION
+#if 1//def USE_ORIENTATION
 		class_<SRotation>("rotation")
-			.def_readonly("yaw",			&SRotation::yaw)
-			.def_readonly("pitch",			&SRotation::pitch),
+			.def_readwrite("yaw",			&SRotation::yaw)
+			.def_readwrite("pitch",			&SRotation::pitch),
 #endif
 			
 		class_<MemorySpace::SObjectParams>("object_params")

@@ -12,6 +12,7 @@
 #include "ai/stalker/ai_stalker_space.h"
 #include "sound_player.h"
 #include "stalker_animation_data.h"
+#include "..\animation_blend.h"
 
 void CStalkerAnimationManager::head_play_callback		(CBlend *blend)
 {

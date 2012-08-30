@@ -26,13 +26,7 @@ struct CDangerPredicate {
 
 	IC	bool	operator()			(const CDangerObject &object) const
 	{
-		if (!m_object)
-			return			(!object.object());
-
-		if (!object.object())
-			return			(false);
-
-		return				(object.object()->ID() == m_object->ID());
+		return				(m_object == object.object());
 	}
 };
 
@@ -137,13 +131,17 @@ void CDangerManager::update			()
 
 void CDangerManager::remove_links	(const CObject *object)
 {
-	if (m_selected && m_selected->object() && (m_selected->object()->ID() == object->ID()))
+	if (m_selected && (m_selected->object() == object))
 		m_selected			= 0;
 
-	{
-		OBJECTS::iterator	I = std::remove_if(m_objects.begin(),m_objects.end(),CDangerPredicate(object));
-		m_objects.erase		(I,m_objects.end());
-	}
+	m_objects.erase			(
+		std::remove_if(
+			m_objects.begin(),
+			m_objects.end(),
+			CDangerPredicate(object)
+		),
+		m_objects.end()
+	);
 
 	{
 		OBJECTS::iterator	I = m_objects.begin();
@@ -152,7 +150,7 @@ void CDangerManager::remove_links	(const CObject *object)
 			if (!(*I).dependent_object())
 				continue;
 
-			if ((*I).dependent_object()->ID() != object->ID())
+			if ((*I).dependent_object() != object)
 				continue;
 
 			(*I).clear_dependent_object();

@@ -65,6 +65,7 @@ COMotion::COMotion():CCustomMotion()
 COMotion::COMotion(COMotion* source):CCustomMotion(source)
 {
 	// bone motions
+	mtype = source->mtype;
 	for (int ch=0; ch<ctMaxChannel; ch++)
 		envs[ch]	= xr_new<CEnvelope> (source->envs[ch]);
 }
@@ -288,6 +289,24 @@ st_BoneMotion* CSMotion::FindBoneMotion(shared_str name)
     return 0;
 }
 
+void CSMotion::add_empty_motion	(shared_str const &bone_id)
+{
+	VERIFY					(!FindBoneMotion(bone_id));
+
+    st_BoneMotion			motion;
+
+	motion.SetName			(bone_id.c_str());
+	// flRKeyAbsent = (1<<1),
+	motion.m_Flags.assign	( 1 << 1);
+
+	for (int ch=0; ch<ctMaxChannel; ch++){
+		motion.envs[ch] = xr_new<CEnvelope> ();
+//		motion.envs[ch];
+	}
+
+	bone_mots.push_back		(motion);
+}
+
 void CSMotion::CopyMotion(CSMotion* source){
 	Clear();
 
@@ -460,8 +479,31 @@ void CSMotion::Optimize()
 void CSMotion::SortBonesBySkeleton(BoneVec& bones)
 {
 	BoneMotionVec new_bone_mots;
-	for (BoneIt b_it=bones.begin(); b_it!=bones.end(); b_it++){
-    	st_BoneMotion* BM = FindBoneMotion((*b_it)->Name()); R_ASSERT(BM);
+	for (BoneIt b_it=bones.begin(); b_it!=bones.end(); ++b_it)
+    {
+    	st_BoneMotion* BM 		= FindBoneMotion((*b_it)->Name());
+        if(!BM)
+        {
+        	CBone* B 				= *(b_it);
+        	bone_mots.push_back		(st_BoneMotion());
+            st_BoneMotion& bm0 		= bone_mots[0];
+            st_BoneMotion& bm 		= bone_mots.back();
+            bm.SetName				(B->Name().c_str());
+            bm.m_Flags.assign		(bm0.m_Flags);
+            
+            for (int ch=0; ch<ctMaxChannel; ++ch)
+            {
+                bm.envs[ch] = xr_new<CEnvelope> ();
+//.                bm.envs[ch]->Load_2(F);
+            }
+            bm.envs[ctPositionX]->InsertKey(0.0f,B->_Offset().x);
+            bm.envs[ctPositionY]->InsertKey(0.0f,B->_Offset().y);
+            bm.envs[ctPositionZ]->InsertKey(0.0f,B->_Offset().z);
+            bm.envs[ctRotationH]->InsertKey(0.0f,B->_Rotate().x);
+            bm.envs[ctRotationP]->InsertKey(0.0f,B->_Rotate().y);
+            bm.envs[ctRotationB]->InsertKey(0.0f,B->_Rotate().z);
+          BM			= &bm;
+        };
 		new_bone_mots.push_back(*BM);
     }
     bone_mots.clear	();
@@ -478,26 +520,32 @@ void SAnimParams::Set(float start_frame, float end_frame, float fps)
 void SAnimParams::Set(CCustomMotion* M)
 {
     Set((float)M->FrameStart(),(float)M->FrameEnd(),M->FPS());
-	t=min_t;
+	t_current	= min_t;
+    tmp 		= t_current;
 //    bPlay=true;
 }
 void SAnimParams::Update(float dt, float speed, bool loop)
 {
 	if (!bPlay) return;
 	bWrapped	= false;
-	t			+=speed*dt;
-    if (t>max_t){
+
+	t_current	+=speed*dt;
+    tmp 		= t_current;
+
+    if (t_current>max_t)
+    {
 		bWrapped= true;
 		if (loop)
         {
         	float len = max_t-min_t;
-        	float k = float(iFloor((t-min_t)/len));
-        	t	= t-k*len;
+        	float k = float(iFloor((t_current-min_t)/len));
+        	t_current	= t_current-k*len;
         }else
-            t   = max_t;
+            t_current   = max_t;
+
+    tmp 		= t_current;
 	}
 }
-
 //------------------------------------------------------------------------------
 // Clip
 //------------------------------------------------------------------------------

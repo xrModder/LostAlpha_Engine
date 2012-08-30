@@ -166,9 +166,6 @@ int CScriptStorage::vscript_log		(ScriptStorage::ELuaMessageType tLuaMessageType
 #	endif
 #endif
 
-#ifndef DEBUG
-	return		(0);
-#else // DEBUG
 
 	LPCSTR		S = "", SS = "";
 	LPSTR		S1;
@@ -221,20 +218,20 @@ int CScriptStorage::vscript_log		(ScriptStorage::ELuaMessageType tLuaMessageType
 	S1		= S2 + xr_strlen(S);
 	int		l_iResult = vsprintf(S1,caFormat,marker);
 	Msg		("%s",S2);
-	
+
+#ifndef ENGINE_BUILD
+#	ifdef DEBUG	
 	strcpy	(S2,SS);
 	S1		= S2 + xr_strlen(SS);
 	vsprintf(S1,caFormat,marker);
 	strcat	(S2,"\r\n");
 
-#ifndef ENGINE_BUILD
-#	ifdef DEBUG
 		ai().script_engine().m_output.w(S2,xr_strlen(S2)*sizeof(char));
 #	endif // DEBUG
 #endif // DEBUG
 
 	return	(l_iResult);
-#endif
+
 }
 
 #ifdef DEBUG

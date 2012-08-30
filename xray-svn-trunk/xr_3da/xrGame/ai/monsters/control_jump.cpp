@@ -3,7 +3,7 @@
 #include "BaseMonster/base_monster.h"
 #include "control_manager.h"
 #include "../../PHMovementControl.h"
-#include "../../../skeletonanimated.h"
+#include "../../../KinematicsAnimated.h"
 #include "../../detail_path_manager.h"
 #include "../../level.h"
 #include "control_animation_base.h"
@@ -18,6 +18,7 @@
 #ifdef DEBUG
 #include "../../level_debug.h"
 #endif
+#include "../../../../xrCore/_vector3d_ext.h"
 
 void CControlJump::reinit()
 {
@@ -302,8 +303,8 @@ void CControlJump::stop()
 // Get target point in world space
 Fvector CControlJump::get_target(CObject *obj)
 {
-	u16 bone_id			= smart_cast<CKinematics*>(obj->Visual())->LL_GetBoneRoot			();
-	CBoneInstance &bone = smart_cast<CKinematics*>(obj->Visual())->LL_GetBoneInstance		(bone_id);
+	u16 bone_id			= smart_cast<IKinematics*>(obj->Visual())->LL_GetBoneRoot			();
+	CBoneInstance &bone = smart_cast<IKinematics*>(obj->Visual())->LL_GetBoneInstance		(bone_id);
 
 	Fmatrix	global_transform;
 	global_transform.mul	(obj->XFORM(),bone.mTransform);

@@ -328,12 +328,12 @@ void CActorCondition::reinit	()
 	m_fSatiety					= 1.f;
 }
 
-void CActorCondition::ChangeAlcohol	(float value)
+void CActorCondition::ChangeAlcohol	(const float value)
 {
 	m_fAlcohol += value;
 }
 
-void CActorCondition::ChangeSatiety(float value)
+void CActorCondition::ChangeSatiety(const float value)
 {
 	m_fSatiety += value;
 	clamp		(m_fSatiety, 0.0f, 1.0f);

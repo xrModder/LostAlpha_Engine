@@ -3,6 +3,7 @@
 #include "xrmessages.h"
 #include "hudmanager.h"
 #include "xrserver_objects.h"
+#include "xrserver_objects_alife.h"
 #include "Level.h"
 
 xr_vector<u16> g_perform_spawn_ids;
@@ -39,6 +40,11 @@ void xrServer::Perform_connect_spawn(CSE_Abstract* E, xrClientData* CL, NET_Pack
 		E->owner		= CL;
 		E->Spawn_Write	(P,TRUE	);
 		E->UPDATE_Write	(P);
+
+		CSE_ALifeObject*	object = smart_cast<CSE_ALifeObject*>(E);
+		VERIFY				(object);
+		if (!object->keep_saved_data_anyway())
+			object->client_data.clear	();
 	}
 	else				
 	{

@@ -60,7 +60,7 @@ ref_shader CLensFlareDescriptor::CreateShader(LPCSTR tex_name, LPCSTR sh_name)
 	return		R;
 }
 
-void CLensFlareDescriptor::load(CInifile* pIni, LPCSTR sect)
+void CLensFlareDescriptor::load(const CInifile* pIni, LPCSTR sect)
 {
 	section		= sect;
 	m_Flags.set	(flSource,pIni->r_bool(sect,"source" ));
@@ -171,7 +171,8 @@ IC BOOL material_callback(collide::rq_result& result, LPVOID params)
 	float vis		= 1.f;
 	if (result.O){
 		vis			= 0.f;
-		CKinematics*K=PKinematics(result.O->renderable.visual);
+		//CKinematics*K=PKinematics(result.O->renderable.visual);
+		IKinematics *K=PKinematics(result.O->renderable.visual);
 		if (K&&(result.element>0))
 			vis		= g_pGamePersistent->MtlTransparent(K->LL_GetData(u16(result.element)).game_mtl_idx);
 	}else{
@@ -514,7 +515,7 @@ void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 	}
 }
 
-int	CLensFlare::AppendDef(CInifile* pIni, LPCSTR sect)
+int	CLensFlare::AppendDef(const CInifile *pIni, LPCSTR sect)
 {
 	if (!sect||(0==sect[0])) return -1;
     for (LensFlareDescIt it=m_Palette.begin(); it!=m_Palette.end(); it++)

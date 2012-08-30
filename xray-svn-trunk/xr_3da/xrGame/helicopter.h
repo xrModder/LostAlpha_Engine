@@ -23,7 +23,7 @@ enum EHeliHuntState{eEnemyNone,eEnemyPoint,eEnemyEntity};
 struct SHeliEnemy{
 	EHeliHuntState					type;
 	Fvector							destEnemyPos;
-	u32								destEnemyID;
+	u16								destEnemyID;
 	float							fire_trail_length_curr;
 	float							fire_trail_length_des;
 	bool							bUseFireTrail;
@@ -181,8 +181,8 @@ public:
 	float							flag_by_fire;
 	Fmatrix							m_left_rocket_bone_xform, m_right_rocket_bone_xform;
 
-	static void 					BoneMGunCallbackX		(CBoneInstance *B);
-	static void						BoneMGunCallbackY		(CBoneInstance *B);
+	static void 		__stdcall		BoneMGunCallbackX		(CBoneInstance *B);
+	static void			__stdcall		BoneMGunCallbackY		(CBoneInstance *B);
 	void							startRocket(u16 idx);
 
 	//CShootingObject

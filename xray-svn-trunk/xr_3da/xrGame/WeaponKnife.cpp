@@ -7,7 +7,7 @@
 #include "level.h"
 #include "xr_level_controller.h"
 #include "game_cl_base.h"
-#include "../skeletonanimated.h"
+#include "../Kinematics.h"
 #include "gamemtllib.h"
 #include "level_bullet_manager.h"
 #include "ai_sounds.h"
@@ -294,7 +294,7 @@ void CWeaponKnife::Fire2Start ()
 }
 
 
-bool CWeaponKnife::Action(s32 cmd, u32 flags) 
+bool CWeaponKnife::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	switch(cmd) 

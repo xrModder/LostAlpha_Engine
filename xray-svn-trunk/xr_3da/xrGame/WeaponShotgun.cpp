@@ -187,7 +187,7 @@ void CWeaponShotgun::UpdateSounds	()
 	if (sndShotBoth.playing())		sndShotBoth.set_position		(get_LastFP());
 }
 
-bool CWeaponShotgun::Action			(s32 cmd, u32 flags) 
+bool CWeaponShotgun::Action			(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 
@@ -267,6 +267,7 @@ void CWeaponShotgun::OnStateSwitch	(u32 S)
 	if( m_magazine.size() == (u32)iMagazineSize || !HaveCartridgeInInventory(1) ){
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
+			return;
 	};
 
 	switch (m_sub_state)
@@ -352,9 +353,9 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 {
 	if(IsMisfire())	bMisfire = false;
 
-	if(m_set_next_ammoType_on_reload != u32(-1)){
+	if(m_set_next_ammoType_on_reload != u8(-1)){
 		m_ammoType						= m_set_next_ammoType_on_reload;
-		m_set_next_ammoType_on_reload	= u32(-1);
+		m_set_next_ammoType_on_reload	= u8(-1);
 
 	}
 

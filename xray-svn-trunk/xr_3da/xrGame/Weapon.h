@@ -106,7 +106,7 @@ public:
 //  InventoryItem methods
 //////////////////////////////////////////////////////////////////////////
 public:
-	virtual bool			Action(s32 cmd, u32 flags);
+	virtual bool			Action(u16 cmd, u32 flags);
 
 //////////////////////////////////////////////////////////////////////////
 //  Weapon state
@@ -187,9 +187,10 @@ public:
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
 
-	const shared_str& GetGrenadeLauncherName	()		{return m_sGrenadeLauncherName;}
-	const shared_str& GetScopeName				()		{return m_sScopeName;}
-	const shared_str& GetSilencerName			()		{return m_sSilencerName;}
+	const shared_str& GetGrenadeLauncherName	() const		{return m_sGrenadeLauncherName;}
+	const shared_str& GetScopeName				() const		{return m_sScopeName;}
+	const shared_str& GetSilencerName			() const		{return m_sSilencerName;}
+	
 
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
 	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}//dont use!!! for buy menu only!!!
@@ -254,7 +255,8 @@ public:
 
 			void			LoadZoomOffset		(LPCSTR section, LPCSTR prefix);
 
-	virtual float			Weight				();		
+	virtual float				Weight			() const;		
+	virtual	u32					Cost			() const;
 //gr1ph:
 protected:
 	virtual void			GetZoomData			(const float scope_factor, float& delta, float& min_zoom_factor);
@@ -449,11 +451,11 @@ public:
 	xr_vector<shared_str>	m_ammoTypes;
 
 	CWeaponAmmo*			m_pAmmo;
-	u32						m_ammoType;
+	u8						m_ammoType;
 	shared_str				m_ammoName;
 	BOOL					m_bHasTracers;
 	u8						m_u8TracerColorID;
-	u32						m_set_next_ammoType_on_reload;
+	u8						m_set_next_ammoType_on_reload;
 	// Multitype ammo support
 	xr_vector<CCartridge>	m_magazine;
 	CCartridge				m_DefaultCartridge;

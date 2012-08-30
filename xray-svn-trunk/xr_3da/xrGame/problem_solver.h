@@ -116,7 +116,7 @@ public:
 
 	// operator interface
 	IC		virtual void				add_operator			(const _edge_type	&operator_id,	_operator_ptr _operator);
-	IC		void						remove_operator			(const _edge_type	&operator_id);
+	IC		virtual void				remove_operator			(const _edge_type	&operator_id);
 	IC		_operator_ptr				get_operator			(const _operator_id_type &operator_id);
 	IC		const OPERATOR_VECTOR		&operators				() const;
 
@@ -127,7 +127,7 @@ public:
 
 	// evaluator interface
 	IC		virtual void				add_evaluator			(const _condition_type &condition_id, _condition_evaluator_ptr evaluator);
-	IC		void						remove_evaluator		(const _condition_type &condition_id);
+	IC		virtual void				remove_evaluator		(const _condition_type &condition_id);
 	IC		_condition_evaluator_ptr	evaluator				(const _condition_type &condition_id) const;
 	IC		const EVALUATORS			&evaluators				() const;
 	IC		void						evaluate_condition		(typename xr_vector<COperatorCondition>::const_iterator &I, typename xr_vector<COperatorCondition>::const_iterator &E, const _condition_type &condition_id) const;

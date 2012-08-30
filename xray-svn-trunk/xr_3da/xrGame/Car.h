@@ -80,8 +80,8 @@ static	const u16				cAsCallsnum						=3;
 ////////////////////////////////////////////////////////////////////////
 	static	BONE_P_MAP					bone_map;					//interface for PhysicsShell
 	static	void 						ActorObstacleCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl* material_1,SGameMtl* material_2);
-	virtual void						PhDataUpdate				(dReal step)			;
-	virtual void						PhTune						(dReal step)			;
+	virtual void						PhDataUpdate				(float step)			;
+	virtual void						PhTune						(float step)			;
 /////////////////////////////////////////////////////////////////////////
 	virtual void						ApplyDamage					(u16 level)				;
 	virtual	float						Health						()						{return GetfHealth();}
@@ -511,7 +511,7 @@ IC	size_t				CurrentTransmission					(){return m_current_transmission_num;}
 
 	bool					HUDview						( ) { return IsFocused(); }
 
-	static void				cb_Steer					(CBoneInstance* B);
+	static void	__stdcall		cb_Steer					(CBoneInstance* B);
 	virtual	void			Hit							(SHit* pHDS);
 	virtual void			Die							(CObject* who);
 	virtual void PHHit									(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type/* =ALife::eHitTypeWound */);

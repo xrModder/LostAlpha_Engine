@@ -93,7 +93,7 @@ public:
 	virtual void					Hide				();
 	virtual void					Show				();
 	virtual	void					UpdateXForm			();
-	virtual bool					Action				(s32 cmd, u32 flags);
+	virtual bool					Action				(u16 cmd, u32 flags);
 	virtual void					onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 	virtual void					OnStateSwitch		(u32 S);
 	virtual void					OnAnimationEnd		(u32 state);

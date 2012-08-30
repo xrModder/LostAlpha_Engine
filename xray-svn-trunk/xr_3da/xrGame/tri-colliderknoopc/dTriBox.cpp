@@ -172,6 +172,17 @@ contact->depth = outDepth;
 
 }
 
+IC bool normalize_if_possible( dReal *v )
+{
+	dReal sqr_magnitude = dDOT(v,v);
+	if( sqr_magnitude < EPS_S )
+		return false;
+	dReal	l	=	dRecipSqrt(sqr_magnitude);
+		v[0]		*=	l;
+		v[1]		*=	l;
+		v[2]		*=	l;
+	return true;
+}
 int dcTriListCollider::dTriBox (
 						const dReal* v0,const dReal* v1,const dReal* v2,
 						Triangle* T,
@@ -361,7 +372,7 @@ dVector3 pos;
 #define TEST(ax,ox,c) \
 for(i=0;i<3;++i){\
 	dCROSS114(axis,=,triSideAx##ax,R+i);\
-	accurate_normalize(axis);\
+	if(!normalize_if_possible(axis)) continue;\
 	int ix1=(i+1)%3;\
 	int ix2=(i+2)%3;\
 	sidePr=\

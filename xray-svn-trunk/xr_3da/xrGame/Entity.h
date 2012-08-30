@@ -8,7 +8,7 @@
 class	ENGINE_API CCameraBase;
 class	ENGINE_API C3DSound;
 class	ENGINE_API CMotionDef;
-class	ENGINE_API CKinematics;
+class	ENGINE_API IKinematics;
 class	ENGINE_API CBoneInstance;
 class	CWeaponList;
 class   CPHMovementControl;
@@ -84,6 +84,9 @@ public:
 	
 	virtual float			CalcCondition		(float hit);
 
+	// if false - hits go through and dont hit
+	virtual bool            in_solid_state      () { return true; }
+
 	int						g_Team				()const	{ return id_Team;	}
 	int						g_Squad				()const	{ return id_Squad;	}
 	int						g_Group				()const	{ return id_Group;	}
@@ -102,7 +105,7 @@ public:
 
 	virtual BOOL			IsVisibleForHUD		()	{return g_Alive();	}
 	virtual void			g_fireParams		(const CHudItem*, Fvector &, Fvector &){}; 
-
+	virtual bool			g_stateFire			() {return true;}
 	//time of entity death
 	u32						m_level_death_time;
 	ALife::_TIME_ID			m_game_death_time;

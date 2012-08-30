@@ -19,7 +19,7 @@ void CWeaponZoomable::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_nam
 		CWeaponCustomPistol::GetBriefInfo		(str_name, icon_sect_name, str_count);
 }
 
-bool CWeaponZoomable::Action(s32 cmd, u32 flags) 
+bool CWeaponZoomable::Action(u16 cmd, u32 flags) 
 {
 	return CWeaponCustomPistol::Action(cmd, flags);
 }

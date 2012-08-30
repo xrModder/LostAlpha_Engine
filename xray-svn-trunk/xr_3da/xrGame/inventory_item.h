@@ -11,6 +11,8 @@
 #include "inventory_space.h"
 #include "hit_immunity.h"
 #include "attachable_item.h"
+#include "xrserver_objects_alife.h"
+#include "xrserver_objects_alife_items.h"
 
 enum EHandDependence{
 	hdNone	= 0,
@@ -88,7 +90,7 @@ public:
 	virtual bool				IsSingleHanded		()	const	{return true;};	
 	virtual bool				Activate			();									// !!! ѕереопределить. (см. в Inventory.cpp)
 	virtual void				Deactivate			();								// !!! ѕереопределить. (см. в Inventory.cpp)
-	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true если известна€ команда, иначе false
+	virtual bool				Action				(u16 cmd, u32 flags) {return false;}	// true если известна€ команда, иначе false
 
 	virtual bool				IsHidden			()	const	{return true;}
 	virtual bool				IsHiding			()	const	{return false;}
@@ -115,7 +117,7 @@ public:
 
 			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
 			u32					Cost				() const	{ return m_cost; }
-	virtual float				Weight				() 			{ return m_weight;}		
+	virtual float				Weight				() const	{ return m_weight;}		
 
 public:
 	CInventory*					m_pCurrentInventory;

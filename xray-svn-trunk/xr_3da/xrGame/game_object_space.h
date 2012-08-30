@@ -49,6 +49,8 @@ namespace GameObject {
 		eTraderSoundEnd,
 
 		eInvBoxItemTake,
+		eActionTypeRemoved,
+
 		eDummy = u32(-1),
 	};
 };

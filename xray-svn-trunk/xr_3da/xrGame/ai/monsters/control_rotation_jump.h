@@ -1,7 +1,7 @@
 #pragma once
 #include "control_combase.h"
-#include "../../../SkeletonAnimated.h"
-
+#include "../../../KinematicsAnimated.h"
+#include "../../../animation_motion.h"
 struct SControlRotationJumpData : public ControlCom::IComData {
 	MotionID		anim_stop_ls,anim_run_ls;
 	MotionID		anim_stop_rs,anim_run_rs;
@@ -33,7 +33,7 @@ class CControlRotationJump : public CControl_ComCustom<SControlRotationJumpData>
 		eNone
 	} m_stage;
 
-	CKinematicsAnimated	*m_skeleton_animated;
+	IKinematicsAnimated	*m_skeleton_animated;
 
 public:
 	virtual void	reinit					();

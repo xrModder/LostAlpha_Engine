@@ -15,7 +15,7 @@
 #include "../../stalker_decision_space.h"
 #include "../../script_game_object.h"
 #include "../../customzone.h"
-#include "../../../skeletonanimated.h"
+#include "../../../KinematicsAnimated.h"
 #include "../../agent_manager.h"
 #include "../../stalker_animation_manager.h"
 #include "../../stalker_planner.h"
@@ -249,7 +249,8 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 				float					power_factor = m_power_fx_factor*pHDS->damage()/100.f;
 				clamp					(power_factor,0.f,1.f);
 
-				CKinematicsAnimated		*tpKinematics = smart_cast<CKinematicsAnimated*>(Visual());
+				//IKinematicsAnimated		*tpKinematics = smart_cast<IKinematicsAnimated*>(Visual());
+				IKinematics *tpKinematics = smart_cast<IKinematics*>(Visual());
 	#ifdef DEBUG
 				tpKinematics->LL_GetBoneInstance	(pHDS->bone());
 				if (pHDS->bone() >= tpKinematics->LL_BoneCount()) {
@@ -1133,4 +1134,28 @@ bool CAI_Stalker::can_kill_enemy							()
 	VERIFY					(inventory().ActiveItem());
 	update_can_kill_info	();
 	return					(m_can_kill_enemy);
+}
+
+bool CAI_Stalker::too_far_to_kill_enemy						(const Fvector &position)
+{
+#if 1
+	return					(false);
+#else
+	VERIFY					(memory().enemy().selected());
+	VERIFY					(best_weapon());
+
+	int						weapon_type = best_weapon()->object().ef_weapon_type();
+	float					distance = position.distance_to(Position());
+	switch (weapon_type) {
+		// pistols
+		case 5 : return		(distance > 10.f);
+		// shotguns
+		case 9 : return		(distance > 5.f);
+		// sniper rifles
+		case 11 :
+		case 12 :
+			return			(distance > 70.f);
+		default: return		(distance > 5.f);
+	}
+#endif
 }

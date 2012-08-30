@@ -255,6 +255,12 @@ Locations&	CMapManager::Locations	()
 {
 	return m_locations->registry().objects();
 }
+
+void CMapManager::OnObjectDestroyNotify(u16 id)
+{
+	RemoveMapLocationByObjectID(id);
+}
+
 /*
 void CheckUserLocation		(CMapLocation* ml)
 {

@@ -19,6 +19,7 @@
 #ifdef DEBUG
 #include "PHWorld.h"
 #endif
+#include "../Kinematics.h"
 /*
 [impulse_transition_to_parts]
 random_min              =1       ; х массу объекта = величина случайно направленного импульса 
@@ -211,8 +212,8 @@ void CPHDestroyable::NotificatePart(CPHDestroyableNotificate *dn)
 {
 	CPhysicsShell	*own_shell=PPhysicsShellHolder()->PPhysicsShell()			;
 	CPhysicsShell	*new_shell=dn->PPhysicsShellHolder()->PPhysicsShell()		;
-	CKinematics		*own_K	  =PKinematics(PPhysicsShellHolder()->Visual())		;
-	CKinematics		*new_K	  =PKinematics(dn->PPhysicsShellHolder()->Visual())	;
+	IKinematics		*own_K =smart_cast<IKinematics*>(PPhysicsShellHolder()->Visual());
+	IKinematics		*new_K =smart_cast<IKinematics*>(dn->PPhysicsShellHolder()->Visual())	;
 	VERIFY			(own_K&&new_K&&own_shell&&new_shell)						;
 	CInifile		*own_ini  =own_K->LL_UserData()								;
 	CInifile		*new_ini  =new_K->LL_UserData()								;

@@ -12,6 +12,7 @@
 #include "stalker_animation_data_storage.h"
 #include "stalker_animation_data.h"
 #include "stalker_movement_manager.h"
+#include "../KinematicsAnimated.h"
 
 // TODO:
 // stalker animation manager consists of 5 independent managers,
@@ -67,7 +68,7 @@ void CStalkerAnimationManager::reload				(CAI_Stalker *_object)
 	if (object().already_dead())
 		return;
 
-	m_skeleton_animated			= smart_cast<CKinematicsAnimated*>(m_visual);
+	m_skeleton_animated			= smart_cast<IKinematicsAnimated*>(m_visual);
 	VERIFY						(m_skeleton_animated);
 
 	m_data_storage				= stalker_animation_data_storage().object(m_skeleton_animated);

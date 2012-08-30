@@ -27,7 +27,7 @@ public:
 	virtual						~CExplosive(void);
 
 	virtual void 				Load(LPCSTR section);
-	virtual void				Load(CInifile *ini,LPCSTR section);
+	virtual void				Load(CInifile const * ini,LPCSTR section);
 
 	virtual void 				net_Destroy		();
 	virtual void				net_Relcase		(CObject* O);
@@ -67,6 +67,8 @@ public:
 protected:
 			bool				IsSoundPlaying			(){return !!sndExplode._feedback();}
 			bool				IsExploded				(){return !!m_explosion_flags.test(flExploded);}
+public:
+			bool				IsExploding				(){return !!m_explosion_flags.test(flExploding);}
 private:
 			void				PositionUpdate			();
 static		void				GetRaySourcePos			(CExplosive	*exp_obj,const Fvector &expl_centre,Fvector	&p);

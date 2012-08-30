@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../../entity.h"
-#include "../../fastdelegate.h"
-#include "../../../SkeletonAnimated.h"
+#include "../../../KinematicsAnimated.h"
+#include "../../../animation_motion.h"
+
 
 class CParticlesObject;
 

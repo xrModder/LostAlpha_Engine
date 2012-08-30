@@ -3,6 +3,9 @@
 #include "PHDynamicData.h"
 #include "ExtendedGeom.h"
 #include "dcylinder//dCylinder.h"
+
+#include "../bone.h"
+
 //global
 
 

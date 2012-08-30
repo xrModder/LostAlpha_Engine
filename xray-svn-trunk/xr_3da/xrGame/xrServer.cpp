@@ -709,16 +709,16 @@ bool xrServer::CheckAdminRights(const shared_str& user, const shared_str& pass, 
 		{
 			if (ini.r_string ("radmins",user.c_str()) == pass)
 			{
-				strcpy			(reason,"Access permitted.");
+				strcpy_s			(reason, sizeof(reason),"Access permitted.");
 				res				= true;
 			}else
 			{
-				strcpy			(reason,"Access denied. Wrong password.");
+				strcpy_s			(reason, sizeof(reason),"Access denied. Wrong password.");
 			}
 		}else
-			strcpy			(reason,"Access denied. No such user.");
+			strcpy_s			(reason, sizeof(reason),"Access denied. No such user.");
 	}else
-		strcpy				(reason,"Access denied.");
+		strcpy_s				(reason, sizeof(reason),"Access denied.");
 
 	return				res;
 }

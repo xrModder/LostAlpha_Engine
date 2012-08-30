@@ -100,10 +100,7 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 			_GetItem				(S,it,_ammoItem);
 			m_ammoTypes2.push_back	(_ammoItem);
 		}
-		m_ammoName2 = pSettings->r_string(*m_ammoTypes2[0],"inv_name_short");
 	}
-	else
-		m_ammoName2 = 0;
 
 	iMagazineSize2 = iMagazineSize;
 }
@@ -116,16 +113,21 @@ void CWeaponMagazinedWGrenade::net_Destroy()
 
 BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC) 
 {
+	CSE_ALifeItemWeapon* const weapon		= smart_cast<CSE_ALifeItemWeapon*>(DC);
+	R_ASSERT								(weapon);
 	BOOL l_res = inherited::net_Spawn(DC);
 	 
 	UpdateGrenadeVisibility(!!iAmmoElapsed);
 	m_bPending = false;
 
-	m_DefaultCartridge2.Load(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
+	iAmmoElapsed2	= weapon->a_elapsed_grenades.grenades_count;
+	m_ammoType2		= weapon->a_elapsed_grenades.grenades_type;
 
-	if (GameID() != GAME_SINGLE)
+	m_DefaultCartridge2.Load(m_ammoTypes2[m_ammoType2].c_str(), m_ammoType2);
+
+	if (!IsGameTypeSingle())
 	{
-		if (!m_bGrenadeMode && IsGrenadeLauncherAttached() && !getRocketCount())
+		if (!m_bGrenadeMode && IsGrenadeLauncherAttached() && !getRocketCount() && iAmmoElapsed2)
 		{
 			m_magazine2.push_back(m_DefaultCartridge2);
 
@@ -134,24 +136,24 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 
 			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
 		}
-	};
-	
-	xr_vector<CCartridge>* pM = NULL;
-	bool b_if_grenade_mode	= (m_bGrenadeMode && iAmmoElapsed && !getRocketCount());
-	if(b_if_grenade_mode)
-		pM = &m_magazine;
-		
-	bool b_if_simple_mode	= (!m_bGrenadeMode && m_magazine2.size() && !getRocketCount());
-	if(b_if_simple_mode)
-		pM = &m_magazine2;
-
-	if(b_if_grenade_mode || b_if_simple_mode) 
+	}else
 	{
-		shared_str fake_grenade_name = pSettings->r_string(pM->back().m_ammoSect, "fake_grenade_name");
-		
-		CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
-	}
+		xr_vector<CCartridge>* pM = NULL;
+		bool b_if_grenade_mode	= (m_bGrenadeMode && iAmmoElapsed && !getRocketCount());
+		if(b_if_grenade_mode)
+			pM = &m_magazine;
+			
+		bool b_if_simple_mode	= (!m_bGrenadeMode && m_magazine2.size() && !getRocketCount());
+		if(b_if_simple_mode)
+			pM = &m_magazine2;
 
+		if(b_if_grenade_mode || b_if_simple_mode) 
+		{
+			shared_str fake_grenade_name = pSettings->r_string(pM->back().m_ammoSect, "fake_grenade_name");
+			
+			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
+		}
+	}
 	return l_res;
 }
 
@@ -222,8 +224,6 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	m_ammoTypes.swap	(m_ammoTypes2);
 
 	swap				(m_ammoType,m_ammoType2);
-	swap				(m_ammoName,m_ammoName2);
-	
 	swap				(m_DefaultCartridge, m_DefaultCartridge2);
 
 	xr_vector<CCartridge> l_magazine;
@@ -246,7 +246,7 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	}
 }
 
-bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags) 
+bool CWeaponMagazinedWGrenade::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	
@@ -264,6 +264,7 @@ bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags)
 }
 
 #include "inventory.h"
+#include "actor.h"
 #include "inventoryOwner.h"
 void CWeaponMagazinedWGrenade::state_Fire(float dt) 
 {
@@ -337,11 +338,10 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 			CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
 			if(NULL == io->inventory().ActiveItem())
 			{
-			Log("current_state", GetState() );
-			Log("next_state", GetNextState());
-			Log("state_time", m_dwStateTime);
-			Log("item_sect", cNameSect().c_str());
-			Log("H_Parent", H_Parent()->cNameSect().c_str());
+				Log("current_state", GetState() );
+				Log("next_state", GetNextState());
+				Log("item_sect", cNameSect().c_str());
+				Log("H_Parent", H_Parent()->cNameSect().c_str());
 			}
 			E->g_fireParams		(this, p1,d);
 		}
@@ -352,10 +352,12 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 		launch_matrix.identity();
 		launch_matrix.k.set(d);
 		Fvector::generate_orthonormal_basis(launch_matrix.k,
-											launch_matrix.j, launch_matrix.i);
-		launch_matrix.c.set(p1);
+											launch_matrix.j, 
+											launch_matrix.i);
 
-		if (IsZoomed() && H_Parent()->CLS_ID == CLSID_OBJECT_ACTOR)
+		launch_matrix.c.set				(p1);
+
+		if(IsZoomed() && smart_cast<CActor*>(H_Parent()))
 		{
 			H_Parent()->setEnabled(FALSE);
 			setEnabled(FALSE);
@@ -375,7 +377,10 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 //.				DBG_OpenCashedDraw();
 //.				DBG_DrawLine(p1,Fvector().add(p1,d),D3DCOLOR_XRGB(255,0,0));
 #endif
-				u8 canfire0 = TransferenceAndThrowVelToThrowDir(Transference, CRocketLauncher::m_fLaunchSpeed, EffectiveGravity(), res);
+				u8 canfire0 = TransferenceAndThrowVelToThrowDir(Transference, 
+																CRocketLauncher::m_fLaunchSpeed, 
+																EffectiveGravity(), 
+																res);
 #ifdef DEBUG
 //.				if(canfire0>0)DBG_DrawLine(p1,Fvector().add(p1,res[0]),D3DCOLOR_XRGB(0,255,0));
 //.				if(canfire0>1)DBG_DrawLine(p1,Fvector().add(p1,res[1]),D3DCOLOR_XRGB(0,0,255));
@@ -401,10 +406,15 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 		
 		if (Local() && OnServer())
 		{
-			NET_Packet P;
-			u_EventGen(P,GE_LAUNCH_ROCKET,ID());
-			P.w_u16(getCurrentRocket()->ID());
-			u_EventSend(P);
+			VERIFY				(m_magazine.size());
+			m_magazine.pop_back	();
+			--iAmmoElapsed;
+			VERIFY((u32)iAmmoElapsed == m_magazine.size());
+
+			NET_Packet					P;
+			u_EventGen					(P,GE_LAUNCH_ROCKET,ID());
+			P.w_u16						(getCurrentRocket()->ID());
+			u_EventSend					(P);
 		};
 
 	}
@@ -474,6 +484,11 @@ void CWeaponMagazinedWGrenade::OnAnimationEnd(u32 state)
 	case eSwitch:
 		{
 			SwitchState(eIdle);
+		}break;
+	case eFire:
+		{
+			if(m_bGrenadeMode)
+				Reload();
 		}break;
 	}
 	inherited::OnAnimationEnd(state);
@@ -703,7 +718,7 @@ void CWeaponMagazinedWGrenade::UpdateSounds	()
 void CWeaponMagazinedWGrenade::UpdateGrenadeVisibility(bool visibility)
 {
 	if (H_Parent() != Level().CurrentEntity())	return;
-	CKinematics* pHudVisual						= smart_cast<CKinematics*>(m_pHUD->Visual());
+	IKinematics* pHudVisual						= smart_cast<IKinematics*>(m_pHUD->Visual());
 	VERIFY										(pHudVisual);
 	pHudVisual->LL_SetBoneVisible				(pHudVisual->LL_BoneID(*grenade_bone_name),visibility,TRUE);
 	pHudVisual->CalculateBones_Invalidate		();

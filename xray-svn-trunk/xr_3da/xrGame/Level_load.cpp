@@ -36,6 +36,7 @@ BOOL CLevel::Load_GameSpecific_Before()
 
 BOOL CLevel::Load_GameSpecific_After()
 {
+	R_ASSERT(m_StaticParticles.empty());
 	// loading static particles
 	string_path		fn_game;
 	if (FS.exist(fn_game, "$level$", "level.ps_static")) {

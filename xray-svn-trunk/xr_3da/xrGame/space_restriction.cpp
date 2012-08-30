@@ -137,8 +137,6 @@ IC	bool CSpaceRestriction::intersects			(SpaceRestrictionHolder::CBaseRestrictio
 void CSpaceRestriction::merge_in_out_restrictions	()
 {
 	START_PROFILE("Restricted Object/Merge In-Out");
-	xr_vector<u32>					temp_border;
-
 	m_border						= m_out_space_restriction->border();
 	m_border.erase					(
 		std::remove_if(
@@ -153,7 +151,12 @@ void CSpaceRestriction::merge_in_out_restrictions	()
 	);
 
 	if (m_in_space_restriction) {
-		temp_border					= m_in_space_restriction->border();
+		buffer_vector<u32>			temp_border(
+			_alloca(m_in_space_restriction->border().size()*sizeof(u32)),
+			m_in_space_restriction->border().size(),
+			m_in_space_restriction->border().begin(),
+			m_in_space_restriction->border().end()
+		);
 		temp_border.erase			(
 			std::remove_if(
 				temp_border.begin(),

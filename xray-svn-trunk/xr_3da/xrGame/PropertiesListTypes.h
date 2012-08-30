@@ -7,6 +7,9 @@
 #ifdef __BORLANDC__            
 #	include "ElTree.hpp"
 #endif
+
+#pragma pack( push,1 )
+
 //---------------------------------------------------------------------------
 enum EPropType{
 	PROP_UNDEF		= -1,
@@ -670,6 +673,7 @@ public:
     }
 };
 //------------------------------------------------------------------------------
+#pragma pack( pop )
 
 #endif
 

@@ -51,8 +51,8 @@ private:
 			void	TurnOff			();
 	
 	// Rotation routines
-	static void		BoneCallbackX(CBoneInstance *B);
-	static void		BoneCallbackY(CBoneInstance *B);
+	static void	__stdcall	BoneCallbackX(CBoneInstance *B);
+	static void	__stdcall	BoneCallbackY(CBoneInstance *B);
 
 	void			SetTarget		(const Fvector &target_pos);
 	

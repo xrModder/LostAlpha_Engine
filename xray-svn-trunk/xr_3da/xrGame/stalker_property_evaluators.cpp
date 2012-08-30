@@ -30,6 +30,8 @@
 #include "agent_manager.h"
 #include "agent_enemy_manager.h"
 #include "agent_member_manager.h"
+#include "level_graph.h"
+#include "weapon.h"
 
 using namespace StalkerDecisionSpace;
 
@@ -304,7 +306,10 @@ _value_type CStalkerPropertyEvaluatorSmartTerrainTask::evaluate	()
 	if (!ai().get_alife())
 		return			(false);
 
-	CSE_ALifeHumanAbstract		*stalker = smart_cast<CSE_ALifeHumanAbstract*>(ai().alife().objects().object(m_object->ID()));
+	CSE_ALifeHumanAbstract		*stalker = smart_cast<CSE_ALifeHumanAbstract*>(ai().alife().objects().object(m_object->ID(), true));
+	if (!stalker)
+		return					(false);
+
 	VERIFY						(stalker);
 	stalker->brain().select_task();
 	return						(stalker->m_smart_terrain_id != 0xffff);
@@ -449,4 +454,25 @@ _value_type CStalkerPropertyEvaluatorShouldThrowGrenade::evaluate	()
 	// do throw grenade
 	return						(true);
 #endif // #if 1
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CStalkerPropertyEvaluatorTooFarToKillEnemy
+//////////////////////////////////////////////////////////////////////////
+
+CStalkerPropertyEvaluatorTooFarToKillEnemy::CStalkerPropertyEvaluatorTooFarToKillEnemy	(CAI_Stalker *object, LPCSTR evaluator_name) :
+	inherited					(object ? object->lua_game_object() : 0,evaluator_name)
+{
+}
+
+_value_type CStalkerPropertyEvaluatorTooFarToKillEnemy::evaluate	()
+{
+	if (!object().memory().enemy().selected())
+		return					(false);
+
+	if (!object().best_weapon())
+		return					(false);
+
+	CMemoryInfo					mem_object = object().memory().memory(object().memory().enemy().selected());
+	return						(object().too_far_to_kill_enemy(mem_object.m_object_params.m_position));
 }

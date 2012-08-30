@@ -12,6 +12,7 @@
 #include "UsableScriptObject.h"
 #include "script_binder.h"
 #include "Hit.h"
+#include "game_object_space.h"
 
 class CPhysicsShell;
 class CSE_Abstract;
@@ -41,6 +42,7 @@ class CSpaceRestrictor;
 class CAttachableItem;
 class animation_movement_controller;
 class CBlend;
+class IKinematics;
 namespace GameObject {
 	enum ECallbackType;
 };
@@ -202,7 +204,7 @@ public:
 	}
 
 public:
-	typedef void __stdcall visual_callback(CKinematics *);
+	typedef void __stdcall visual_callback(IKinematics *);
 	typedef svector<visual_callback*,6>			CALLBACK_VECTOR;
 	typedef CALLBACK_VECTOR::iterator			CALLBACK_VECTOR_IT;
 

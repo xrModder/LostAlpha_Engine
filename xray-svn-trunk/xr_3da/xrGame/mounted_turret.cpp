@@ -10,7 +10,8 @@
 #include "ai_sounds.h"
 #include "level.h"
 #include "xr_level_controller.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
+#include "../skeletonanimated.h"
 #include "game_object_space.h"
 
 
@@ -64,12 +65,12 @@ BOOL CMountedTurret::net_Spawn(CSE_Abstract* DC)
 	if (!CEntity::net_Spawn(DC))
 		return FALSE;
 
-	R_ASSERT																(Visual() && smart_cast<CKinematics*>(Visual()));
+	R_ASSERT																(Visual() && smart_cast<IKinematics*>(Visual()));
 
 	CPHSkeleton::Spawn														((CSE_Abstract*)(DC));
 	setVisible																(TRUE);
 	setEnabled																(TRUE);
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	K->CalculateBones														();
 	CInifile				*data	= K->LL_UserData						();
 	m_rotate_x_bone					= K->LL_BoneID							(data->r_string(MOUNTED_TURRET_DEF_SECT, "wpn_rotate_x_bone"));
@@ -101,11 +102,11 @@ BOOL CMountedTurret::net_Spawn(CSE_Abstract* DC)
 
 	SetBoneCallbacks														();
 
-	CKinematicsAnimated		*A		= smart_cast<CKinematicsAnimated*>		(Visual());
+	IKinematicsAnimated		*A		= smart_cast<IKinematicsAnimated*>		(Visual());
 	if (A) 
 	{
 		A->PlayCycle														("idle");
-		A->CalculateBones													();
+		K->CalculateBones													();
 	}
 
 	CShootingObject::Light_Create											();
@@ -160,7 +161,7 @@ void ContactCbAlife(CDB::TRI *T, dContactGeom *c)
 
 void CMountedTurret::SpawnInitPhysics(CSE_Abstract *D)	
 {
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());	
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());	
 	PPhysicsShell()					= P_build_Shell							(this, false);
 	if (g_Alive())
 	{
@@ -179,7 +180,7 @@ void CMountedTurret::SpawnInitPhysics(CSE_Abstract *D)
 
 void CMountedTurret::UpdateCL()
 {
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	CEntity::UpdateCL														();
 	UpdateBarrelDir															();
 //	K->CalculateBones_Invalidate											();
@@ -283,7 +284,7 @@ void CMountedTurret::cam_Update(float dt, float fov)
 	Fvector			P, Da;
 	Da.set																	(0, 0, 0);
 
-	CKinematics* K					= smart_cast<CKinematics*>				(Visual());
+	IKinematics* K					= smart_cast<IKinematics*>				(Visual());
 	K->CalculateBones_Invalidate											();
 	K->CalculateBones														(TRUE);
 	const Fmatrix& C				= K->LL_GetTransform					(m_camera_bone);
@@ -320,7 +321,7 @@ bool CMountedTurret::Use(const Fvector& pos, const Fvector& dir, const Fvector& 
 void CMountedTurret::SetBoneCallbacks()
 {
 //	PPhysicsShell()->EnabledCallbacks(FALSE);
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	CBoneInstance			&biX	= K->LL_GetBoneInstance					(m_rotate_x_bone);		
 	biX.set_callback														(bctCustom, BoneCallbackX, this);
 	CBoneInstance			&biY	= K->LL_GetBoneInstance					(m_rotate_y_bone);		
@@ -329,7 +330,7 @@ void CMountedTurret::SetBoneCallbacks()
 
 void CMountedTurret::ResetBoneCallbacks()
 {
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	CBoneInstance			&biX	= K->LL_GetBoneInstance					(m_rotate_x_bone);	
 	biX.reset_callback														();
 	CBoneInstance			&biY	= K->LL_GetBoneInstance					(m_rotate_y_bone);	
@@ -362,7 +363,7 @@ Fvector	CMountedTurret::ExitPosition()
 	Fvector					pos, dir_from_car, add, add1;;
 	Fmatrix					pf;
 	Fobb					bb;
-	CKinematics				*K		= smart_cast<CKinematics*>				(Visual());
+	IKinematics				*K		= smart_cast<IKinematics*>				(Visual());
 	CBoneData				&bd		= K->LL_GetData							(m_actor_bone);
 	xr_vector<Fmatrix>		bones_bind_forms;
 	K->LL_GetBindTransform													(bones_bind_forms);
@@ -512,7 +513,7 @@ void CMountedTurret::RemoveShotEffector	()
 
 void CMountedTurret::BoneCallbackX(CBoneInstance *B)
 {
-	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->Callback_Param);
+	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->callback_param());
 	Fmatrix rX;	
 	rX.rotateX																(P->m_cur_x_rot);
 	B->mTransform.mulB_43													(rX);
@@ -520,7 +521,7 @@ void CMountedTurret::BoneCallbackX(CBoneInstance *B)
 
 void CMountedTurret::BoneCallbackY(CBoneInstance *B)
 {
-	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->Callback_Param);
+	CMountedTurret				*P	= static_cast<CMountedTurret*>			(B->callback_param());
 	Fmatrix rY;
 	rY.rotateY																(P->m_cur_y_rot);
 	B->mTransform.mulB_43													(rY);
@@ -543,7 +544,7 @@ void CMountedTurret::SetDesiredEnemyPos(Fvector3 pos)
 
 void CMountedTurret::UpdateBarrelDir()
 {
-	CKinematics					*K	= smart_cast<CKinematics*>				(Visual());
+	IKinematics					*K	= smart_cast<IKinematics*>				(Visual());
 	m_fire_bone_xform				= K->LL_GetTransform					(m_fire_bone);
 
 	m_fire_bone_xform.mulA_43												(XFORM());

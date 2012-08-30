@@ -26,29 +26,29 @@ extern CPHWorld *ph_world;
 //union dInfBytes dInfinityValue = {{0,0,0x80,0x7f}};
 PhysicsStepTimeCallback		*physics_step_time_callback				= 0;
 
-const dReal 		default_w_limit									= 9.8174770f;//(M_PI/16.f/(fixed_step=0.02f));
-const dReal 		default_l_limit									= 150.f;//(3.f/fixed_step=0.02f);
-const dReal 		default_l_scale									= 1.01f;
-const dReal 		default_w_scale									= 1.01f;
-const dReal			default_k_l										= 0.0002f;//square resistance !!
-const dReal			default_k_w										= 0.05f;
+const float 		default_w_limit									= 9.8174770f;//(M_PI/16.f/(fixed_step=0.02f));
+const float 		default_l_limit									= 150.f;//(3.f/fixed_step=0.02f);
+const float 		default_l_scale									= 1.01f;
+const float 		default_w_scale									= 1.01f;
+const float			default_k_l										= 0.0002f;//square resistance !!
+const float			default_k_w										= 0.05f;
 
-const dReal			mass_limit										= 10000.f;//some conventional value used as evaluative param (there is no code restriction on mass)
+const float			mass_limit										= 10000.f;//some conventional value used as evaluative param (there is no code restriction on mass)
 extern const u16	max_joint_allowed_for_exeact_integration		= 30;
 
 //base	params
-const dReal base_fixed_step											=	0.02f				;
-const dReal base_erp												=	0.54545456f			;
-const dReal base_cfm												=	1.1363636e-006f		;
+const float base_fixed_step											=	0.02f				;
+const float base_erp												=	0.54545456f			;
+const float base_cfm												=	1.1363636e-006f		;
 //base params
-dReal 			fixed_step											=	0.01f;
-dReal 			world_cfm											=	CFM(SPRING_S(base_cfm,base_erp,base_fixed_step),DAMPING(base_cfm,base_erp));
-dReal 			world_erp											=	ERP(SPRING_S(base_cfm,base_erp,base_fixed_step),DAMPING(base_cfm,base_erp));
-dReal			world_spring										=	1.0f*SPRING	(world_cfm,world_erp);
-dReal			world_damping										=	1.0f*DAMPING(world_cfm,world_erp);
+float 			fixed_step											=	0.01f;
+float 			world_cfm											=	CFM(SPRING_S(base_cfm,base_erp,base_fixed_step),DAMPING(base_cfm,base_erp));
+float 			world_erp											=	ERP(SPRING_S(base_cfm,base_erp,base_fixed_step),DAMPING(base_cfm,base_erp));
+float			world_spring										=	1.0f*SPRING	(world_cfm,world_erp);
+float			world_damping										=	1.0f*DAMPING(world_cfm,world_erp);
 
 
-const dReal			default_world_gravity							=	2*9.81f;
+const float			default_world_gravity							=	2*9.81f;
 
 
 /////////////////////////////////////////////////////

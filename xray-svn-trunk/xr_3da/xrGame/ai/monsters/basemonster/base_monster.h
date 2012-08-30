@@ -19,7 +19,7 @@
 #include "../control_sequencer.h"
 
 #include "../ai_monster_utils.h"
-
+#include "../../../../../xrCore/_vector3d_ext.h"
 #include "../control_manager_custom.h"
 #include "../ai_monster_shared_data.h"
 #include "../monster_sound_defs.h"
@@ -228,7 +228,7 @@ public:
 	ref_smem<SMonsterSettings>	m_base_settings;
 	ref_smem<SMonsterSettings>	m_current_settings;
 	
-	void						settings_read			(CInifile *ini, LPCSTR section, SMonsterSettings &data);
+	void						settings_read			(const CInifile *ini, LPCSTR section, SMonsterSettings &data);
 	void						settings_load			(LPCSTR section);
 	void						settings_overrides		();
 
@@ -456,6 +456,8 @@ public:
 #endif
 //////////////////////////////////////////////////////////////////////////
 
+public:
+	virtual bool					can_be_seen		() const { return true; }
 };
 
 #include "base_monster_inline.h"

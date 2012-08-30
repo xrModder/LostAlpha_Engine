@@ -329,7 +329,7 @@ overload_rep(R(*f)(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), A)), Policies*)
 #undef LUABIND_ARITY
 
 #elif BOOST_PP_ITERATION_FLAGS() == 2
-
+#pragma optimize("", off)
 template<class Policies BOOST_PP_COMMA_IF(BOOST_PP_ITERATION()) BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), class A)>
 static int call(T(*f)(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), A)), lua_State* L, const Policies*)
 {
@@ -364,7 +364,7 @@ static int call(T(*f)(BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), A)), lua_State*
 
 	return maybe_yield<Policies>::apply(L, nret);
 }
-
+#pragma optimize("", on)
 
 
 #elif BOOST_PP_ITERATION_FLAGS() == 3

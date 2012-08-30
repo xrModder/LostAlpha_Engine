@@ -36,6 +36,7 @@
 #include "detail_path_manager.h"
 #include "weaponmagazined.h"
 #include "stalker_animation_manager.h"
+#include "level_path_manager.h"
 
 #define DISABLE_COVER_BEFORE_DETOUR
 

@@ -23,23 +23,25 @@ namespace Feel
 		xr_vector<CObject*>			diff;
 		collide::rq_results			RQR;
 		xr_vector<ISpatial*>		r_spatial;
+		CObject const*				m_owner;
 
 		void						o_new		(CObject* E);
 		void						o_delete	(CObject* E);
 		void						o_trace		(Fvector& P, float dt, float vis_threshold);
 	public:
-									Vision		();
+									Vision		(CObject const* owner);
 		virtual					~	Vision		();
 		struct	 feel_visible_Item 
 		{
-			float				fuzzy;		// note range: (-1[no]..1[yes])
-			CObject*			O;
 			collide::ray_cache	Cache;
-			float				Cache_vis;
 			Fvector				cp_LP;
 			Fvector				cp_LR_src;
 			Fvector				cp_LR_dst;
 			Fvector				cp_LAST;	// last point found to be visible
+			CObject*			O;
+			float				fuzzy;		// note range: (-1[no]..1[yes])
+			float				Cache_vis;
+			u16					bone_id;
 		};
 		xr_vector<feel_visible_Item>	feel_visible;
 	public:

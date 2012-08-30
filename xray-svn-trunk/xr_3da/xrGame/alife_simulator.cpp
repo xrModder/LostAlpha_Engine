@@ -14,6 +14,7 @@
 #include "script_engine.h"
 #include "mainmenu.h"
 #include "object_factory.h"
+#include "alife_object_registry.h"
 
 LPCSTR alife_section = "alife";
 
@@ -90,3 +91,16 @@ void CALifeSimulator::reload			(LPCSTR section)
 {
 	CALifeUpdateManager::reload	(section);
 }
+namespace detail
+{
+
+bool object_exists_in_alife_registry (u32 id)
+{
+	if ( ai().get_alife() )
+	{
+		return ai().alife().objects().object((ALife::_OBJECT_ID)id, true) != 0;
+	}
+	return false;
+}
+
+} // detail

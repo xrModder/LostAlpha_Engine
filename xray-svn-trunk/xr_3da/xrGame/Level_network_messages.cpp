@@ -125,7 +125,7 @@ void CLevel::ClientReceive()
 				UpdateDeltaUpd(timeServer());
 				if (pObjects4CrPr.empty() && pActors4CrPr.empty())
 					break;
-				if (O->CLS_ID != CLSID_OBJECT_ACTOR)
+				if (!smart_cast<CActor*>(O))
 					break;
 
 				u32 dTime = 0;

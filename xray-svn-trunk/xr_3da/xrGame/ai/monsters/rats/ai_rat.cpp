@@ -12,10 +12,10 @@
 #include "../../../PhysicsShell.h"
 #include "../../../game_graph.h"
 #include "../../../game_level_cross_table.h"
-#include "../../../../skeletonanimated.h"
 #include "../../../xrserver_objects_alife_monsters.h"
 
 #include "ai_rat_space.h"
+#include "../../../../KinematicsAnimated.h"
 #include "../../../detail_path_manager.h"
 #include "../../../ai_object_location.h"
 #include "../../../movement_manager.h"
@@ -417,7 +417,7 @@ void CAI_Rat::CreateSkeleton(){
 	//sphere.R=0.25;
 	//element->add_Sphere(sphere);
 	element->setDensity(m_phMass);
-	element->SetMaterial(smart_cast<ÑKinematics*>(Visual())->LL_GetData(smart_cast<CKinematics*>(Visual())->LL_GetBoneRoot()).game_mtl_idx);
+	element->SetMaterial(smart_cast<IKinematics*>(Visual())->LL_GetData(smart_cast<IKinematics*>(Visual())->LL_GetBoneRoot()).game_mtl_idx);
 	m_pPhysicsShell=P_create_Shell();
 	m_pPhysicsShell->add_Element(element);
 	m_pPhysicsShell->Activate(XFORM(),0,XFORM());

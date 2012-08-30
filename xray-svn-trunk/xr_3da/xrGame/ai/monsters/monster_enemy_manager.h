@@ -7,6 +7,7 @@ class CMonsterEnemyManager {
 	CBaseMonster		*monster;
 
 	const CEntityAlive	*enemy;
+	
 	Fvector				position;
 	u32					vertex;
 	u32					time_last_seen;

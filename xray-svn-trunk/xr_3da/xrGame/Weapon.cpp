@@ -20,7 +20,7 @@
 
 #include "xr_level_controller.h"
 #include "game_cl_base.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "ai_object_location.h"
 #include "clsid_game.h"
 #include "mathutils.h"
@@ -45,7 +45,7 @@ CWeapon::CWeapon(LPCSTR name)
 	m_Offset.identity		();
 	m_StrapOffset.identity	();
 
-	iAmmoCurrent			= -1;
+	iAmmoCurrent			= 0;
 	m_dwAmmoCurrentCalcFrame= 0;
 
 	iAmmoElapsed			= -1;
@@ -76,7 +76,7 @@ CWeapon::CWeapon(LPCSTR name)
 	m_ef_main_weapon_type	= u32(-1);
 	m_ef_weapon_type		= u32(-1);
 	m_UIScope				= NULL;
-	m_set_next_ammoType_on_reload = u32(-1);
+	m_set_next_ammoType_on_reload = u8(-1);
 }
 
 CWeapon::~CWeapon		()
@@ -99,56 +99,60 @@ void CWeapon::Hit					(SHit* pHDS)
 
 void CWeapon::UpdateXForm	()
 {
-	if (Device.dwFrame!=dwXF_Frame)
-	{
-		dwXF_Frame = Device.dwFrame;
+	if (Device.dwFrame == dwXF_Frame)
+		return;
 
-		if (0==H_Parent())	return;
+	dwXF_Frame				= Device.dwFrame;
 
-		// Get access to entity and its visual
-		CEntityAlive*	E		= smart_cast<CEntityAlive*>(H_Parent());
-		
-		if(!E) 
-		{
-			if (!IsGameTypeSingle())
-				UpdatePosition(H_Parent()->XFORM());
-			return;
-		}
+	if (!H_Parent())
+		return;
 
-		const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
-		if (parent && parent->use_simplified_visual())
-			return;
+	// Get access to entity and its visual
+	CEntityAlive*			E = smart_cast<CEntityAlive*>(H_Parent());
+	
+	if (!E) {
+		if (!IsGameTypeSingle())
+			UpdatePosition	(H_Parent()->XFORM());
 
-		if (parent->attached(this))
-			return;
+		return;
+	}
 
-		R_ASSERT		(E);
-		CKinematics*	V		= smart_cast<CKinematics*>	(E->Visual());
-		VERIFY			(V);
+	const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
+	if (parent && parent->use_simplified_visual())
+		return;
 
-		// Get matrices
-		int				boneL,boneR,boneR2;
-		E->g_WeaponBones(boneL,boneR,boneR2);
-		if ((HandDependence() == hd1Hand) || (GetState() == eReload) || (!E->g_Alive()))
-			boneL = boneR2;
-#pragma todo("TO ALL: serious performance problem")
-		V->CalculateBones	();
-		Fmatrix& mL			= V->LL_GetTransform(u16(boneL));
-		Fmatrix& mR			= V->LL_GetTransform(u16(boneR));
-		// Calculate
-		Fmatrix				mRes;
-		Fvector				R,D,N;
-		D.sub				(mL.c,mR.c);	
+	if (parent->attached(this))
+		return;
 
-		if(fis_zero(D.magnitude()))
-		{
-			mRes.set(E->XFORM());
-			mRes.c.set(mR.c);
-		}
-		else
-		{		
-			D.normalize();
-			R.crossproduct	(mR.j,D);
+	IKinematics*			V = smart_cast<IKinematics*>	(E->Visual());
+	VERIFY					(V);
+
+	// Get matrices
+	int						boneL = -1, boneR = -1, boneR2 = -1;
+
+	// this ugly case is possible in case of a CustomMonster, not a Stalker, nor an Actor
+	E->g_WeaponBones		(boneL,boneR,boneR2);
+
+	if (boneR == -1)		return;
+
+	if ((HandDependence() == hd1Hand) || (GetState() == eReload) || (!E->g_Alive()))
+		boneL				= boneR2;
+
+	V->CalculateBones		();
+	Fmatrix& mL				= V->LL_GetTransform(u16(boneL));
+	Fmatrix& mR				= V->LL_GetTransform(u16(boneR));
+	// Calculate
+	Fmatrix					mRes;
+	Fvector					R,D,N;
+	D.sub					(mL.c,mR.c);	
+
+	if(fis_zero(D.magnitude())) {
+		mRes.set			(E->XFORM());
+		mRes.c.set			(mR.c);
+	}
+	else {		
+		D.normalize			();
+		R.crossproduct		(mR.j,D);
 
 			N.crossproduct	(D,R);			
 			N.normalize();
@@ -157,8 +161,7 @@ void CWeapon::UpdateXForm	()
 			mRes.mulA_43	(E->XFORM());
 		}
 
-		UpdatePosition	(mRes);
-	}
+	UpdatePosition			(mRes);
 }
 
 void CWeapon::UpdateFireDependencies_internal()
@@ -172,7 +175,7 @@ void CWeapon::UpdateFireDependencies_internal()
 		if (GetHUDmode() && (0!=H_Parent()) )
 		{
 			// 1st person view - skeletoned
-			CKinematics* V			= smart_cast<CKinematics*>(m_pHUD->Visual());
+			IKinematics* V			= smart_cast<IKinematics*>(m_pHUD->Visual());
 			VERIFY					(V);
 			V->CalculateBones		();
 
@@ -224,16 +227,6 @@ void CWeapon::ForceUpdateFireParticles()
 	{//update particlesXFORM real bullet direction
 
 		if (!H_Parent())		return;
-
-		CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
-		if(NULL == io->inventory().ActiveItem())
-		{
-				Log("current_state", GetState() );
-				Log("next_state", GetNextState());
-				Log("state_time", m_dwStateTime);
-				Log("item_sect", cNameSect().c_str());
-				Log("H_Parent", H_Parent()->cNameSect().c_str());
-		}
 
 		Fvector					p, d; 
 		smart_cast<CEntity*>(H_Parent())->g_fireParams	(this, p,d);
@@ -396,9 +389,6 @@ void CWeapon::Load		(LPCSTR section)
 	}
 
 	InitAddons();
-
-	//////////////////////////////////////
-	//время убирания оружия с уровня
 	if(pSettings->line_exist(section,"weapon_remove_time"))
 		m_dwWeaponRemoveTime = pSettings->r_u32(section,"weapon_remove_time");
 	else
@@ -417,7 +407,7 @@ void CWeapon::Load		(LPCSTR section)
 
 	//////////////////////////////////////////////////////////
 
-	m_bHasTracers = READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
+	m_bHasTracers			= !!READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
 	m_u8TracerColorID = READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
 
 	string256						temp;
@@ -637,7 +627,7 @@ void CWeapon::OnEvent(NET_Packet& P, u16 type)
 			u8 AmmoElapsed = P.r_u8();
 			u8 NextAmmo = P.r_u8();
 			if (NextAmmo == u8(-1))
-				m_set_next_ammoType_on_reload = u32(-1);
+				m_set_next_ammoType_on_reload = u8(-1);
 			else
 				m_set_next_ammoType_on_reload = u8(NextAmmo);
 
@@ -712,7 +702,7 @@ void CWeapon::OnHiddenItem ()
 	if (m_pHUD)	m_pHUD->Hide ();
 	SetState					(eHidden);
 	SetNextState				(eHidden);
-	m_set_next_ammoType_on_reload	= u32(-1);
+	m_set_next_ammoType_on_reload	= u8(-1);
 }
 
 
@@ -722,7 +712,7 @@ void CWeapon::OnH_B_Chield		()
 	inherited::OnH_B_Chield		();
 
 	OnZoomOut					();
-	m_set_next_ammoType_on_reload	= u32(-1);
+	m_set_next_ammoType_on_reload	= u8(-1);
 }
 
 
@@ -740,7 +730,7 @@ void CWeapon::UpdateCL		()
 	if(!IsGameTypeSingle())
 		make_Interpolation		();
 	
-	VERIFY(smart_cast<CKinematics*>(Visual()));
+//	VERIFY(smart_cast<IKinematics*>(Visual()));
 }
 
 
@@ -787,7 +777,7 @@ void CWeapon::UpdatePosition(const Fmatrix& trans)
 }
 
 
-bool CWeapon::Action(s32 cmd, u32 flags) 
+bool CWeapon::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 
@@ -936,7 +926,7 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
  	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
 	iAmmoCurrent = 0;
 
-	for(int i = 0; i < (int)m_ammoTypes.size(); ++i) 
+	for ( u8 i = 0; i < u8(m_ammoTypes.size()); ++i ) 
 	{
 		LPCSTR l_ammoType = *m_ammoTypes[i];
 
@@ -1063,7 +1053,7 @@ void CWeapon::UpdateHUDAddonsVisibility()
 //	if(IsZoomed() && )
 
 
-	CKinematics* pHudVisual									= smart_cast<CKinematics*>(m_pHUD->Visual());
+	IKinematics* pHudVisual									= smart_cast<IKinematics*>(m_pHUD->Visual());
 	VERIFY(pHudVisual);
 	if (H_Parent() != Level().CurrentEntity()) pHudVisual	= NULL;
 
@@ -1144,17 +1134,19 @@ void CWeapon::UpdateHUDAddonsVisibility()
 
 void CWeapon::UpdateAddonsVisibility()
 {
-	CKinematics* pWeaponVisual = smart_cast<CKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
+	IKinematics* pWeaponVisual = smart_cast<IKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
 
 	u16  bone_id;
 	UpdateHUDAddonsVisibility								();	
+
+	pWeaponVisual->CalculateBones_Invalidate				();
 
 	bone_id = pWeaponVisual->LL_BoneID					(wpn_scope);
 	if(ScopeAttachable())
 	{
 		if(IsScopeAttached())
 		{
-			if(FALSE==pWeaponVisual->LL_GetBoneVisible		(bone_id))
+			if(!pWeaponVisual->LL_GetBoneVisible		(bone_id))
 			pWeaponVisual->LL_SetBoneVisible				(bone_id,TRUE,TRUE);
 		}else{
 			if(pWeaponVisual->LL_GetBoneVisible				(bone_id))
@@ -1163,14 +1155,15 @@ void CWeapon::UpdateAddonsVisibility()
 	}
 	if(m_eScopeStatus==CSE_ALifeItemWeapon::eAddonDisabled && bone_id!=BI_NONE && 
 		pWeaponVisual->LL_GetBoneVisible(bone_id) )
-
-		pWeaponVisual->LL_SetBoneVisible			(bone_id,FALSE,TRUE);
-
-	bone_id = pWeaponVisual->LL_BoneID					(wpn_silencer);
+	{
+		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
+//		Log("scope", pWeaponVisual->LL_GetBoneVisible		(bone_id));
+	}
+	bone_id = pWeaponVisual->LL_BoneID						(wpn_silencer);
 	if(SilencerAttachable())
 	{
 		if(IsSilencerAttached()){
-			if(FALSE==pWeaponVisual->LL_GetBoneVisible		(bone_id))
+			if(!pWeaponVisual->LL_GetBoneVisible		(bone_id))
 				pWeaponVisual->LL_SetBoneVisible			(bone_id,TRUE,TRUE);
 		}else{
 			if( pWeaponVisual->LL_GetBoneVisible				(bone_id))
@@ -1179,15 +1172,17 @@ void CWeapon::UpdateAddonsVisibility()
 	}
 	if(m_eSilencerStatus==CSE_ALifeItemWeapon::eAddonDisabled && bone_id!=BI_NONE && 
 		pWeaponVisual->LL_GetBoneVisible(bone_id) )
-
-		pWeaponVisual->LL_SetBoneVisible			(bone_id,FALSE,TRUE);
+	{
+		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
+//		Log("silencer", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
 
 	bone_id = pWeaponVisual->LL_BoneID					(wpn_launcher);
 	if(GrenadeLauncherAttachable())
 	{
 		if(IsGrenadeLauncherAttached())
 		{
-			if(FALSE==pWeaponVisual->LL_GetBoneVisible		(bone_id))
+			if(!pWeaponVisual->LL_GetBoneVisible		(bone_id))
 				pWeaponVisual->LL_SetBoneVisible			(bone_id,TRUE,TRUE);
 		}else{
 			if(pWeaponVisual->LL_GetBoneVisible				(bone_id))
@@ -1196,12 +1191,14 @@ void CWeapon::UpdateAddonsVisibility()
 	}
 	if(m_eGrenadeLauncherStatus==CSE_ALifeItemWeapon::eAddonDisabled && bone_id!=BI_NONE && 
 		pWeaponVisual->LL_GetBoneVisible(bone_id) )
-
-		pWeaponVisual->LL_SetBoneVisible			(bone_id,FALSE,TRUE);
+	{
+		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
+//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
+	}
 	
 
 	pWeaponVisual->CalculateBones_Invalidate				();
-	pWeaponVisual->CalculateBones							();
+	pWeaponVisual->CalculateBones							(TRUE);
 }
 
 bool CWeapon::Activate() 
@@ -1255,9 +1252,9 @@ void CWeapon::SwitchState(u32 S)
 		CHudItem::object().u_EventGen		(P,GE_WPN_STATE_CHANGE,CHudItem::object().ID());
 		P.w_u8			(u8(S));
 		P.w_u8			(u8(m_sub_state));
-		P.w_u8			(u8(m_ammoType& 0xff));
+		P.w_u8			(m_ammoType);
 		P.w_u8			(u8(iAmmoElapsed & 0xff));
-		P.w_u8			(u8(m_set_next_ammoType_on_reload & 0xff));
+		P.w_u8			(m_set_next_ammoType_on_reload);
 		CHudItem::object().u_EventSend		(P, net_flags(TRUE, TRUE, FALSE, TRUE));
 	}
 }
@@ -1348,6 +1345,8 @@ int		g_iWeaponRemove = 1;
 
 bool CWeapon::NeedToDestroyObject()	const
 {
+	if (GameID() == GAME_SINGLE) return false;
+	if (Remote()) return false;
 	if (H_Parent()) return false;
 	if (g_iWeaponRemove == -1) return false;
 	if (g_iWeaponRemove == 0) return true;
@@ -1531,7 +1530,7 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 	return *(l_cartridge.m_InvShortName);
 }
 
-float CWeapon::Weight()
+float CWeapon::Weight() const
 {
 	float res = CInventoryItemObject::Weight();
 	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
@@ -1639,4 +1638,27 @@ void CWeapon::ZoomInc()
 	m_fZoomFactor += delta;
 	clamp(m_fZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
 	}
+}
+
+u32 CWeapon::Cost() const
+{
+	u32 res = CInventoryItem::Cost();
+	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
+		res += pSettings->r_u32(GetGrenadeLauncherName(),"cost");
+	}
+	if(IsScopeAttached() && CSE_ALifeItemWeapon::eAddonPermanent != m_eScopeStatus) { //m_scopes.size()){
+		res += pSettings->r_u32(GetScopeName(),"cost");
+	}
+	if(IsSilencerAttached()&&GetSilencerName().size()){
+		res += pSettings->r_u32(GetSilencerName(),"cost");
+	}
+	
+	if(iAmmoElapsed)
+	{
+		float w		= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"cost");
+		float bs	= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"box_size");
+
+		res			+= iFloor(w*(iAmmoElapsed/bs));
+	}
+	return res;
 }

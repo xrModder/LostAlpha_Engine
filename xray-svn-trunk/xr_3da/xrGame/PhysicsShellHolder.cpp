@@ -3,7 +3,7 @@
 #include "PhysicsShell.h"
 #include "xrMessages.h"
 #include "ph_shell_interface.h"
-#include "../skeletoncustom.h"
+#include "../Kinematics.h"
 #include "script_callback_ex.h"
 #include "Level.h"
 #include "PHCommander.h"
@@ -48,6 +48,7 @@ BOOL CPhysicsShellHolder::net_Spawn				(CSE_Abstract*	DC)
 	if(PPhysicsShell()&&PPhysicsShell()->isFullActive())
 	{
 		PPhysicsShell()->GetGlobalTransformDynamic(&XFORM());
+		PPhysicsShell()->mXFORM = XFORM();
 		switch (EEnableState(st_enable_state))
 		{
 		case stEnable		:	PPhysicsShell()->Enable()	;break;
@@ -149,11 +150,11 @@ void CPhysicsShellHolder::activate_physic_shell()
 	m_pPhysicsShell->Activate	(l_p1, 0, l_p2);
 	if(H_Parent()&&H_Parent()->Visual())
 	{
-		smart_cast<CKinematics*>(H_Parent()->Visual())->CalculateBones_Invalidate	();
-		smart_cast<CKinematics*>(H_Parent()->Visual())->CalculateBones	();
+		smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones_Invalidate	();
+		smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones	(TRUE);
 	}
-	smart_cast<CKinematics*>(Visual())->CalculateBones_Invalidate	();
-	smart_cast<CKinematics*>(Visual())->CalculateBones();
+	smart_cast<IKinematics*>(Visual())->CalculateBones_Invalidate	();
+	smart_cast<IKinematics*>(Visual())->CalculateBones(TRUE);
 	if(!IsGameTypeSingle())
 	{
 		if(!smart_cast<CCustomRocket*>(this)&&!smart_cast<CGrenade*>(this)) PPhysicsShell()->SetIgnoreDynamic();
@@ -163,6 +164,11 @@ void CPhysicsShellHolder::activate_physic_shell()
 
 m_pPhysicsShell->set_LinearVel(l_fw);
 	m_pPhysicsShell->GetGlobalTransformDynamic(&XFORM());
+	if(H_Parent()&&H_Parent()->Visual())
+	{
+		smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones_Invalidate	();
+		smart_cast<IKinematics*>(H_Parent()->Visual())->CalculateBones	(TRUE);
+	}
 }
 
 void CPhysicsShellHolder::setup_physic_shell	()
@@ -170,8 +176,8 @@ void CPhysicsShellHolder::setup_physic_shell	()
 	VERIFY						(!m_pPhysicsShell);
 	create_physic_shell			();
 	m_pPhysicsShell->Activate	(XFORM(),0,XFORM());
-	smart_cast<CKinematics*>(Visual())->CalculateBones_Invalidate	();
-	smart_cast<CKinematics*>(Visual())->CalculateBones();
+	smart_cast<IKinematics*>(Visual())->CalculateBones_Invalidate	();
+	smart_cast<IKinematics*>(Visual())->CalculateBones(TRUE);
 	m_pPhysicsShell->GetGlobalTransformDynamic(&XFORM());
 }
 
@@ -285,7 +291,7 @@ void CPhysicsShellHolder::PHSaveState(NET_Packet &P)
 {
 
 	//CPhysicsShell* pPhysicsShell=PPhysicsShell();
-	CKinematics* K	=smart_cast<CKinematics*>(Visual());
+	IKinematics* K	=smart_cast<IKinematics*>(Visual());
 	//Flags8 lflags;
 	//if(pPhysicsShell&&pPhysicsShell->isActive())			lflags.set(CSE_PHSkeleton::flActive,pPhysicsShell->isEnabled());
 
@@ -343,7 +349,7 @@ CPhysicsShellHolder::PHLoadState(IReader &P)
 {
 	
 //	Flags8 lflags;
-	CKinematics* K=smart_cast<CKinematics*>(Visual());
+	IKinematics* K=smart_cast<IKinematics*>(Visual());
 //	P.r_u8 (lflags.flags);
 	if(K)
 	{

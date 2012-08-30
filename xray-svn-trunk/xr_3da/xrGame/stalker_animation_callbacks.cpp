@@ -13,6 +13,100 @@
 #include "stalker_movement_manager.h"
 #include "game_object_space.h"
 #include "effectorshot.h"
+#include "../animation_blend.h"
+
+#if 0
+
+static void	_stdcall callback_rotation		(CBoneInstance* bone)
+{
+	R_ASSERT						( _valid( bone->mTransform ) );
+	callback_params*				parameter = static_cast<callback_params*>( bone->callback_param() );
+	VERIFY							(parameter);
+	VERIFY							(parameter->m_rotation);
+	VERIFY							(parameter->m_object);
+
+	CAI_Stalker const*				object = parameter->m_object;
+	if (!object->sight().enabled())
+		return;
+
+	Fvector	position				= bone->mTransform.c;
+	R_ASSERT						( _valid( *parameter->m_rotation ) );
+	bone->mTransform.mulA_43		(*parameter->m_rotation);
+	CWeaponShotEffector&			effector = object->weapon_shot_effector();
+	if (!effector.IsActive()) {
+		bone->mTransform.c			= position;
+		R_ASSERT					( _valid( bone->mTransform ) );
+		return;
+	}
+
+	Fvector							angles;
+	effector.GetDeltaAngle			(angles);
+	angles.x						= angle_normalize_signed(angles.x);
+	angles.y						= angle_normalize_signed(angles.y);
+	angles.z						= angle_normalize_signed(angles.z);
+
+	// cover check!?
+	angles.mul					(.1f);
+
+	Fmatrix							effector_transform;
+	effector_transform.setXYZ		(angles);
+	R_ASSERT						( _valid( effector_transform ) );
+	bone->mTransform.mulA_43		(effector_transform);
+	bone->mTransform.c				= position;
+	R_ASSERT						( _valid( bone->mTransform ) );
+}
+
+static void	_stdcall callback_rotation_blend	(CBoneInstance* const bone)
+{
+	R_ASSERT						( _valid( bone->mTransform ) );
+
+	callback_params*				parameter = static_cast<callback_params*>( bone->callback_param() );
+	VERIFY							(parameter);
+	VERIFY							(parameter->m_rotation);
+	VERIFY							(parameter->m_object);
+	VERIFY							(parameter->m_blend);
+//	VERIFY2							( *parameter->m_blend, make_string( "%d %s[%s]", Device.dwTimeGlobal, parameter->m_object->cName().c_str(), parameter->m_object->g_Alive() ? "+" : "-") );
+
+	float multiplier				= 1.f;
+	if ( *parameter->m_blend ) {
+		CBlend const&				blend = **parameter->m_blend;
+		multiplier					= blend.timeCurrent/blend.timeTotal;
+	}
+
+	VERIFY							(multiplier >= 0.f);
+	VERIFY							(multiplier <= 1.f);
+	multiplier						= parameter->m_forward ? multiplier : (1.f - multiplier);
+
+#if 0
+	Fmatrix rotation				= *parameter->m_rotation;
+	Fvector							angles;
+	rotation.getXYZ					(angles);
+	angles.mul						(multiplier);
+	rotation.setXYZ					(angles);
+#else // #if 0
+	Fquaternion						left;
+	left.set						( Fidentity );
+
+	Fquaternion						right;
+	right.set						( *parameter->m_rotation );
+
+	Fquaternion						result;
+	result.slerp					( left, right, multiplier );
+
+	Fmatrix							rotation;
+	rotation.rotation				( result );
+#endif // #if 0
+
+	Fvector	position				= bone->mTransform.c;
+	R_ASSERT						( _valid( rotation ) );
+	bone->mTransform.mulA_43		(rotation);
+	bone->mTransform.c				= position;
+	R_ASSERT						( _valid( bone->mTransform ) );
+}
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #define TEMPLATE_SPECIALIZATION\
 	template <\
@@ -32,7 +126,7 @@
 
 TEMPLATE_SPECIALIZATION
 struct detail {
-	static void callback	(CBoneInstance *B);
+	static void __stdcall callback	(CBoneInstance *B);
 };
 
 typedef detail	<  25,   0,  50,  50>	spine;
@@ -42,7 +136,7 @@ typedef detail	<  50, 100,   0,   0>	head;
 TEMPLATE_SPECIALIZATION
 void _detail::callback		(CBoneInstance *B)
 {
-	CAI_Stalker*			A = static_cast<CAI_Stalker*>(B->Callback_Param);
+	CAI_Stalker*			A = static_cast<CAI_Stalker*>(B->callback_param());
 	VERIFY					(_valid(B->mTransform));
 	Fvector c				= B->mTransform.c;
 	Fmatrix					spin;
@@ -86,14 +180,14 @@ void _detail::callback		(CBoneInstance *B)
 
 void CStalkerAnimationManager::assign_bone_callbacks	()
 {
-	CKinematics						*kinematics = smart_cast<CKinematicsAnimated*>(m_visual);
+	IKinematics						*kinematics = smart_cast<IKinematics*>(m_visual);
 	VERIFY							(kinematics);
 
 	LPCSTR							section = *object().cNameSect();
 	
 	int								head_bone = kinematics->LL_BoneID(pSettings->r_string(section,"bone_head"));
 	kinematics->LL_GetBoneInstance	(u16(head_bone)).set_callback(bctCustom,&head::callback,&object());
-
+	
 	int								shoulder_bone = kinematics->LL_BoneID(pSettings->r_string(section,"bone_shoulder"));
 	kinematics->LL_GetBoneInstance	(u16(shoulder_bone)).set_callback(bctCustom,&shoulder::callback,&object());
 

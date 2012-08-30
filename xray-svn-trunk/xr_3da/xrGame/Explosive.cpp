@@ -31,6 +31,8 @@
 #include "PHActivationShape.h"
 #include "game_base_space.h"
 #include "profiler.h"
+
+#include "../Kinematics.h"
 #define EFFECTOR_RADIUS 30.f
 const u16	TEST_RAYS_PER_OBJECT=5;
 const u16	BLASTED_OBJ_PROCESSED_PER_FRAME=3;
@@ -38,11 +40,11 @@ const float	exp_dist_extinction_factor=3.f;//(>1.f, 1.f -means no dist change of
 
 CExplosive::CExplosive(void) 
 {
-	m_fBlastHit				= 50.f;
-	m_fBlastRadius			= 10.f;
+	m_fBlastHit				= 50.0f;
+	m_fBlastRadius			= 10.0f;
 	m_iFragsNum				= 20;
-	m_fFragsRadius			= 30.f;
-	m_fFragHit				= 50;
+	m_fFragsRadius			= 30.0f;
+	m_fFragHit				= 50.0f;
 	m_fUpThrowFactor		= 0.f;
 
 
@@ -88,7 +90,7 @@ void CExplosive::Load(LPCSTR section)
 	Load				(pSettings,section);
 }
 
-void CExplosive::Load(CInifile *ini,LPCSTR section)
+void CExplosive::Load(CInifile const *ini,LPCSTR section)
 {
 	m_fBlastHit			= ini->r_float(section,"blast");
 	m_fBlastRadius		= ini->r_float(section,"blast_r");
@@ -180,8 +182,8 @@ ICF static BOOL grenade_hit_callback(collide::rq_result& result, LPVOID params)
 	SExpQParams& ep	= *(SExpQParams*)params;
 	u16 mtl_idx			= GAMEMTL_NONE_IDX;
 	if(result.O){
-		CKinematics* V  = 0;
-		if (0!=(V=smart_cast<CKinematics*>(result.O->Visual()))){
+		IKinematics* V  = 0;
+		if (0!=(V=smart_cast<IKinematics*>(result.O->Visual()))){
 			CBoneData& B= V->LL_GetData((u16)result.element);
 			mtl_idx		= B.game_mtl_idx;
 		}
@@ -191,12 +193,14 @@ ICF static BOOL grenade_hit_callback(collide::rq_result& result, LPVOID params)
 		mtl_idx			= T->material;
 	}	
 	SGameMtl* mtl		= GMLib.GetMaterialByIdx(mtl_idx);
-	ep.shoot_factor		*=mtl->fShootFactor;
+	float shoot_factor = 1.f - mtl->fShootFactor;
+	ep.shoot_factor		*=shoot_factor;
+//	ep.shoot_factor		*=mtl->fShootFactor;
 #ifdef DEBUG
 	if(ph_dbg_draw_mask.test(phDbgDrawExplosions))
 	{
 		Fvector p;p.set(ep.l_dir);p.mul(result.range);p.add(ep.source_p);
-		u8 c	=u8(mtl->fShootFactor*255.f);
+		u8 c	=u8(shoot_factor*255.f);
 		DBG_DrawPoint(p,0.1f,D3DCOLOR_XRGB(255-c,0,c));
 	}
 #endif

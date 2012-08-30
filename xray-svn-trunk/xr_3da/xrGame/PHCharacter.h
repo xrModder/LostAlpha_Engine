@@ -84,6 +84,7 @@ public:
 	virtual void		FreezeContent						()															;
 	virtual void		UnFreezeContent						()															;
 	virtual	dBodyID		get_body							()															{return m_body;}
+	virtual void		fix_body_rotation					()															;
 	virtual	dSpaceID	dSpace								()															=0;		
 	virtual	void		Disable								()															;																		
 	virtual	void		ReEnable							()															{;}																				

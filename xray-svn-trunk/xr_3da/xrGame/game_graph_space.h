@@ -175,4 +175,4 @@ namespace GameGraph {
 	};
 
 	DEFINE_VECTOR	(STerrainPlace,				TERRAIN_VECTOR,					TERRAIN_IT);
-};
+}

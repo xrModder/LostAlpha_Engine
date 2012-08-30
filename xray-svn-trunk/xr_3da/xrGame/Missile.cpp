@@ -389,7 +389,7 @@ void CMissile::UpdateXForm	()
 			return;
 
 		VERIFY				(E);
-		CKinematics*		V		= smart_cast<CKinematics*>	(E->Visual());
+		IKinematics*		V		= smart_cast<IKinematics*>	(E->Visual());
 		VERIFY				(V);
 
 		// Get matrices
@@ -528,7 +528,7 @@ void CMissile::Destroy()
 	if (Local())		DestroyObject();
 }
 
-bool CMissile::Action(s32 cmd, u32 flags) 
+bool CMissile::Action(u16 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
 	/*Msg("CMissile::Action %d %d %u", ID(), cmd, flags);*/
@@ -589,7 +589,7 @@ void  CMissile::UpdateFireDependencies_internal	()
 		
 		if (GetHUDmode() && !IsHidden()){
 			// 1st person view - skeletoned
-			CKinematics* V			= smart_cast<CKinematics*>(m_pHUD->Visual());
+			IKinematics* V			= smart_cast<IKinematics*>(m_pHUD->Visual());
 			VERIFY					(V);
 			V->CalculateBones		();
 
@@ -656,7 +656,7 @@ void CMissile::activate_physic_shell()
 	m_pPhysicsShell->SetAirResistance	(0.f,0.f);
 	m_pPhysicsShell->set_DynamicScales	(1.f,1.f);
 
-	CKinematics							*kinematics = smart_cast<CKinematics*>(Visual());
+	IKinematics							*kinematics = smart_cast<IKinematics*>(Visual());
 	VERIFY								(kinematics);
 	kinematics->CalculateBones_Invalidate();
 	kinematics->CalculateBones			();
@@ -685,7 +685,7 @@ void CMissile::setup_physic_shell	()
 	VERIFY(!m_pPhysicsShell);
 	create_physic_shell();
 	m_pPhysicsShell->Activate	(XFORM(),0,XFORM());//,true 
-	CKinematics					*kinematics = smart_cast<CKinematics*>(Visual());
+	IKinematics					*kinematics = smart_cast<IKinematics*>(Visual());
 	VERIFY						(kinematics);
 	kinematics->CalculateBones_Invalidate();
 	kinematics->CalculateBones			();
