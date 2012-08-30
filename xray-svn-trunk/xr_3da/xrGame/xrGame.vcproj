@@ -7301,6 +7301,22 @@
 						<File
 							RelativePath=".\ai\Monsters\Poltergeist\poltergeist.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									GeneratePreprocessedFile="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Mixed|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									AdditionalOptions="/P"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath=".\ai\Monsters\Poltergeist\poltergeist.h"
@@ -10851,6 +10867,49 @@
 						Name="PatrolPath"
 						>
 						<File
+							RelativePath=".\dynamic_patrol_path.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\dynamic_patrol_path.h"
+							>
+						</File>
+						<File
+							RelativePath=".\dynamic_patrol_path_inline.h"
+							>
+						</File>
+						<File
+							RelativePath=".\dynamic_patrol_path_script.cpp"
+							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									PrecompiledHeaderThrough="pch_script.h"
+									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Mixed|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									PrecompiledHeaderThrough="pch_script.h"
+									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									PrecompiledHeaderThrough="pch_script.h"
+									PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
 							RelativePath=".\patrol_path.cpp"
 							>
 						</File>
@@ -10882,6 +10941,18 @@
 					<Filter
 						Name="PatrolPoint"
 						>
+						<File
+							RelativePath=".\dynamic_patrol_point.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\dynamic_patrol_point.h"
+							>
+						</File>
+						<File
+							RelativePath=".\dynamic_patrol_point_inline.h"
+							>
+						</File>
 						<File
 							RelativePath=".\patrol_point.cpp"
 							>
@@ -16255,6 +16326,18 @@
 						</File>
 						<File
 							RelativePath=".\debug_renderer_inline.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Fast Entity Updater"
+						>
+						<File
+							RelativePath=".\fast_entity_update.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\fast_entity_update.h"
 							>
 						</File>
 					</Filter>
@@ -21999,6 +22082,42 @@
 								>
 							</File>
 						</Filter>
+						<Filter
+							Name="ZoneMine"
+							>
+							<File
+								RelativePath=".\ZoneMine.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ZoneMine.h"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="ZoneCampfire"
+							>
+							<File
+								RelativePath=".\ZoneCampfire.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ZoneCampfire.h"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="ZoneGalantine"
+							>
+							<File
+								RelativePath=".\ZoneGalantine.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ZoneGalantine.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="map"
@@ -25135,6 +25254,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\xrServer_process_event_activate.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\xrServer_process_event_destroy.cpp"
 						>
 					</File>
@@ -25344,11 +25467,55 @@
 							>
 						</File>
 						<File
+							RelativePath=".\magic_box3.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_box3.h"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_box3_inline.h"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_minimize_1d.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_minimize_1d.h"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_minimize_1d_inline.h"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_minimize_nd.h"
+							>
+						</File>
+						<File
+							RelativePath=".\magic_minimize_nd_inline.h"
+							>
+						</File>
+						<File
 							RelativePath=".\MathUtils.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\MathUtils.h"
+							>
+						</File>
+						<File
+							RelativePath=".\MathUtilsOde.h"
+							>
+						</File>
+						<File
+							RelativePath=".\matrix_utils.h"
+							>
+						</File>
+						<File
+							RelativePath=".\min_obb.cpp"
 							>
 						</File>
 						<File
@@ -30059,141 +30226,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath=".\dynamic_patrol_path.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_path.h"
-			>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_path_inline.h"
-			>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_path_script.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="pch_script.h"
-					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Mixed|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="pch_script.h"
-					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="pch_script.h"
-					PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_point.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_point.h"
-			>
-		</File>
-		<File
-			RelativePath=".\dynamic_patrol_point_inline.h"
-			>
-		</File>
-		<File
-			RelativePath=".\fast_entity_update.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\fast_entity_update.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_box3.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_box3.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_box3_inline.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_minimize_1d.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_minimize_1d.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_minimize_1d_inline.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_minimize_nd.h"
-			>
-		</File>
-		<File
-			RelativePath=".\magic_minimize_nd_inline.h"
-			>
-		</File>
-		<File
-			RelativePath=".\MathUtilsOde.h"
-			>
-		</File>
-		<File
-			RelativePath=".\matrix_utils.h"
-			>
-		</File>
-		<File
-			RelativePath=".\min_obb.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\xrServer_process_event_activate.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneCampfire.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneCampfire.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneGalantine.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneGalantine.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneMine.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ZoneMine.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

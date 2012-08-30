@@ -13,6 +13,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "ai/ai_monsters_anims.h"
 #include "../animation_blend.h"
+#include "../SkeletonAnimated.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -146,7 +147,7 @@ std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(IKinematicsAnimated *
 	if (!global_animation())
 		bone_part_id		= blend()->bone_or_part;
 
-	const BlendSVec			&blends = skeleton_animated->blend_cycle(bone_part_id);
+	const BlendSVec			&blends = PKinematicsAnimated(skeleton_animated->dcast_RenderVisual())->blend_cycle(bone_part_id);
 	if (blends.size() < 2)
 		return				(0);
 

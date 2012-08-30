@@ -316,10 +316,10 @@ void CSpaceRestriction::remove_border			()
 #pragma todo("gr1ph: assert can be removed once solved")
 u32	CSpaceRestriction::accessible_nearest		(const Fvector &position, Fvector &result)
 {
-	R_ASSERT2(m_out_space_restriction && m_in_space_restriction, name());
+	R_ASSERT2(m_out_space_restriction, name().c_str());
 	if (m_out_space_restriction)
 		return						(m_out_space_restriction->accessible_nearest(this,position,result,true));
-
+	R_ASSERT2(m_in_space_restriction, name().c_str());
 	VERIFY							(m_in_space_restriction);
 	return							(m_in_space_restriction->accessible_nearest(m_in_space_restriction,position,result,false));
 }

@@ -213,17 +213,16 @@ void	CIKLimb::Solve(SCalculateData& cd)
 #ifdef DEBUG
 		else
 		{
-			Msg( "ik not solved" );
+			Msg( "! ik not solved" );
 			if( repeat )
 			{
 				sv_state = sv_state_DBR;
 			}
 		}
-
 		if( ph_dbg_draw_mask.test( phDbgDrawIKGoal ) )
 		{
 			Fvector dbg_pos;
-			cd.m_K->LL_GetBoneInstance(m_bones[2]).mTransform.transform_tiny( dbg_pos, m_toe_position );
+			cd.m_K->dcast_PKinematics()->LL_GetBoneInstance(m_bones[2]).mTransform.transform_tiny( dbg_pos, m_toe_position );
 			cd.m_obj.transform_tiny( dbg_pos );
 			DBG_DrawPoint( dbg_pos, 0.02f, D3DCOLOR_XRGB( 255, 255 , 0 ) );
 		}

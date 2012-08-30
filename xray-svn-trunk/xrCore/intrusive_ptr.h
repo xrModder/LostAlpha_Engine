@@ -9,8 +9,8 @@
 #pragma once
 
 #ifdef XRGAME_EXPORTS
-#	include "../xr_3da/xrGame/object_type_traits.h"
-#endif //XRGAME_EXPORTS
+#include "../xr_3da/xrGame/object_type_traits.h"
+#endif
 
 #pragma pack(push,4)
 

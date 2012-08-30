@@ -50,9 +50,7 @@ CPhysicsShell*				P_build_Shell			(CGameObject* obj,bool not_active_state,BONE_P
 	IKinematics* pKinematics=smart_cast<IKinematics*>(obj->Visual());
 
 	CPhysicsShell* pPhysicsShell		= P_create_Shell();
-#ifdef DEBUG
-	pPhysicsShell->dbg_obj=smart_cast<CPhysicsShellHolder*>(obj);
-#endif
+
 	pPhysicsShell->build_FromKinematics(pKinematics,bone_map);
 
 	pPhysicsShell->set_PhysicsRefObject(smart_cast<CPhysicsShellHolder*>(obj));
@@ -161,9 +159,7 @@ CPhysicsShell*				P_build_Shell			(CGameObject* obj,bool not_active_state,U16Vec
 CPhysicsShell*	P_build_SimpleShell(CGameObject* obj,float mass,bool not_active_state)
 {
 	CPhysicsShell* pPhysicsShell		= P_create_Shell();
-#ifdef DEBUG
-	pPhysicsShell->dbg_obj=smart_cast<CPhysicsShellHolder*>(obj);
-#endif
+
 	Fobb obb; 
 	smart_cast<IKinematics*>(obj->Visual())->GetBox().get_CD( obb.m_translate, obb.m_halfsize );
 	obb.m_rotate.identity();
