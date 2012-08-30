@@ -1,8 +1,12 @@
 #pragma once
 
-enum EMonsterState {
-	eGlobalState					= u32(1) << 15,
-
+enum EMonsterState 
+{
+#ifndef DEBUG
+ 	eGlobalState					= u32(1) << 15,
+#else
+	eGlobalState					= 1 << 15,
+#endif
 	// -------------------------------------------------------------
 	
 	eStateRest						= eGlobalState << 1,
