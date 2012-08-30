@@ -9,7 +9,7 @@
 #pragma once
 
 #ifdef XRGAME_EXPORTS
-#	include "object_type_traits.h"
+#	include "../xr_3da/xrGame/object_type_traits.h"
 #endif //XRGAME_EXPORTS
 
 #pragma pack(push,4)
