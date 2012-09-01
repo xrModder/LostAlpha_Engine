@@ -557,7 +557,7 @@ bool CTorch::IsSwitchedOn()
 {
 	return m_switched_on;
 }
-
+/*
 void CTorch::save(NET_Packet &output_packet)
 {
 	inherited::save	(output_packet);
@@ -569,3 +569,4 @@ void CTorch::load(IReader &input_packet)
 	inherited::load	(input_packet);
 	load_data		(m_current_battery_state,		input_packet);
 }
+*/
