@@ -298,12 +298,13 @@ void CTexture::Unload	()
 		seqDATA.clear();
 		pSurface	= 0;
 	}
-
+	else
+	{
 #ifdef DEBUG
-	_SHOW_REF		(msg_buff, pSurface);
+		_SHOW_REF		(msg_buff, pSurface);
 #endif // DEBUG
-	_RELEASE		(pSurface);
-
+		_RELEASE		(pSurface);
+	}
 	xr_delete		(pAVI);
 	xr_delete		(pTheora);
 
