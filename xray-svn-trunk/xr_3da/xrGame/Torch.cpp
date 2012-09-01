@@ -489,7 +489,7 @@ void CTorch::net_Export			(NET_Packet& P)
 			F |= eAttached;
 	}
 	P.w_u8(F);
-//	P.w_u16(m_current_battery_state);
+	P.w_u16(m_current_battery_state);
 //	Msg("CTorch::net_export - NV[%d]", m_bNightVisionOn);
 }
 
@@ -508,7 +508,7 @@ void CTorch::net_Import			(NET_Packet& P)
 
 		SwitchNightVision			(new_m_bNightVisionOn);
 	}
-//	m_current_battery_state = P.r_u16();
+	m_current_battery_state = P.r_u16();
 }
 
 bool  CTorch::can_be_attached		() const

@@ -107,6 +107,11 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("see",							&CScriptGameObject::CheckObjectVisibility)
 		.def("see",							&CScriptGameObject::CheckTypeVisibility)
 
+		.def("has_silencer_installed",		&CScriptGameObject::has_silencer_installed)
+		.def("has_scope_installed",			&CScriptGameObject::has_scope_installed)
+		.def("has_grenade_launcher_installed",&CScriptGameObject::has_grenade_launcher_installed)
+		.def("attach_addon",				&CScriptGameObject::attach_addon)
+
 		.def("who_hit_name",				&CScriptGameObject::WhoHitName)
 		.def("who_hit_section_name",		&CScriptGameObject::WhoHitSectionName)
 		

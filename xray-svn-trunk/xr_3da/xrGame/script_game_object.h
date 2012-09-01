@@ -196,6 +196,12 @@ public:
 	_DECLARE_FUNCTION10	(GetEnemyStrength, int);
 	_DECLARE_FUNCTION10	(can_script_capture, bool);
 	
+
+	bool has_silencer_installed() const;
+	bool has_scope_installed() const;
+	bool has_grenade_launcher_installed() const;
+	void attach_addon(ALife::_OBJECT_ID addon_id);
+
 	void RemoveFastUpdate(void);
 	void SetFastUpdate(const luabind::functor<void> &functor, const luabind::object &object);
 	

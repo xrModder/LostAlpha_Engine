@@ -35,7 +35,7 @@
 #include "actor.h"
 #include "actor_memory.h"
 #include "visual_memory_manager.h"
-
+#include "inventory_item.h"
 
 class CScriptBinderObject;
 
@@ -407,6 +407,55 @@ void CScriptGameObject::eat				(CScriptGameObject *item)
 	}
 	
 	inventory_owner->inventory().Eat(inventory_item);
+}
+
+bool CScriptGameObject::has_silencer_installed			() const
+{
+	CWeapon				*wpn			= smart_cast<CWeapon*>(&object());
+	if (!wpn) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member has_silencer_installed!");
+		return false;
+	}
+	return wpn->IsSilencerAttached() && wpn->SilencerAttachable();
+}
+
+
+bool CScriptGameObject::has_scope_installed				() const
+{
+	CWeapon				*wpn			= smart_cast<CWeapon*>(&object());
+	if (!wpn) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member has_scope_installed!");
+		return false;
+	}
+	return wpn->IsScopeAttached() && wpn->ScopeAttachable();
+}
+
+
+bool CScriptGameObject::has_grenade_launcher_installed	() const
+{
+	CWeapon				*wpn			= smart_cast<CWeapon*>(&object());
+	if (!wpn) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member has_grenade_launcher_installed!");
+		return false;
+	}
+	return wpn->IsGrenadeLauncherAttached() && wpn->GrenadeLauncherAttachable();
+}
+
+void CScriptGameObject::attach_addon(ALife::_OBJECT_ID addon_id)
+{
+	NET_Packet			P;
+	CWeapon				*wpn			= smart_cast<CWeapon*>(&object());
+	CInventoryItem		*addon			= NULL;
+	if (!wpn) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member attach_addon!");
+		return;
+	}
+	addon								= smart_cast<CInventoryItem*>(Level().Objects.net_Find(addon_id));
+	R_ASSERT							(addon);
+	wpn->u_EventGen						(P, GE_ADDON_ATTACH, wpn->ID());
+	P.w_u32								(addon_id);
+	wpn->u_EventSend					(P);
+	wpn->Attach							(addon, true);
 }
 
 bool CScriptGameObject::inside					(const Fvector &position, float epsilon) const
