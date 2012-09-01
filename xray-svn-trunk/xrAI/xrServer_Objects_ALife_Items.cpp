@@ -300,6 +300,8 @@ CSE_ALifeItemTorch::CSE_ALifeItemTorch		(LPCSTR caSection) : CSE_ALifeItem(caSec
 {
 	m_active					= false;
 	m_nightvision_active		= false;
+	m_attached					= false;
+	m_battery_state				= pSettings->r_u16(caSection, "battery_duration");
 }
 
 CSE_ALifeItemTorch::~CSE_ALifeItemTorch		()
@@ -325,6 +327,8 @@ void CSE_ALifeItemTorch::UPDATE_Read		(NET_Packet	&tNetPacket)
 	BYTE F = tNetPacket.r_u8();
 	m_active					= !!(F & eTorchActive);
 	m_nightvision_active		= !!(F & eNightVisionActive);
+	m_attached					= !!(F & eAttached);
+	m_battery_state				= tNetPacket.r_u16();
 }
 
 void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
@@ -334,7 +338,9 @@ void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
 	BYTE F = 0;
 	F |= (m_active ? eTorchActive : 0);
 	F |= (m_nightvision_active ? eNightVisionActive : 0);
+	F |= (m_attached ? eAttached : 0);
 	tNetPacket.w_u8(F);
+	tNetPacket.w_u16(m_battery_state);
 }
 
 void CSE_ALifeItemTorch::FillProps			(LPCSTR pref, PropItemVec& values)
@@ -352,7 +358,8 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	wpn_flags					= 0;
 	wpn_state					= 0;
 	ammo_type					= 0;
-
+	a_elapsed_grenades.grenades_count	=	0;
+	a_elapsed_grenades.grenades_type	=	0;
 	m_fHitPower					= pSettings->r_float(caSection,"hit_power");
 	m_tHitType					= ALife::g_tfString2HitType(pSettings->r_string(caSection,"hit_type"));
 	m_caAmmoSections			= pSettings->r_string(caSection,"ammo_class");
@@ -422,6 +429,8 @@ void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
 
 	if (m_wVersion > 46)
 		tNetPacket.r_u8			(ammo_type);
+
+	a_elapsed_grenades.unpack_from_byte(tNetPacket.r_u8());
 }
 
 void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
@@ -432,6 +441,7 @@ void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(wpn_state);
 	tNetPacket.w_u8				(m_addon_flags.get());
 	tNetPacket.w_u8				(ammo_type);
+	tNetPacket.w_u8				(a_elapsed_grenades.pack_to_byte());
 }
 
 void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time, ClientID sender )

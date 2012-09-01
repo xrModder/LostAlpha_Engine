@@ -92,10 +92,13 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemTorch,CSE_ALifeItem)
 //флаги
 	enum EStats{
 		eTorchActive				= (1<<0),
-		eNightVisionActive			= (1<<1)	
+		eNightVisionActive			= (1<<1),
+		eAttached					= (1<<2)
 	};
 	bool							m_active;
 	bool							m_nightvision_active;
+	bool							m_attached;
+	u16								m_battery_state;
 									CSE_ALifeItemTorch	(LPCSTR caSection);
     virtual							~CSE_ALifeItemTorch	();
 SERVER_ENTITY_DECLARE_END
@@ -131,6 +134,26 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 		eWeaponAddonGrenadeLauncher = 0x02,
 		eWeaponAddonSilencer = 0x04
 	};
+
+	//count of grenades to spawn in grenade launcher [ttcccccc]
+	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
+
+	struct grenade_count_t
+	{
+		u8	grenades_count	:	6;
+		u8	grenades_type	:	2;
+		u8	pack_to_byte() const
+		{
+			return (grenades_type << 6) | grenades_count;
+		}
+		void unpack_from_byte(u8 const b)
+		{
+			grenades_type	=	(b >> 6);
+			grenades_count	=	b & 0x3f; //111111
+		}
+	}; 
+
+	grenade_count_t					a_elapsed_grenades;
 
 	EWeaponAddonStatus				m_scope_status;
 	EWeaponAddonStatus				m_silencer_status;				

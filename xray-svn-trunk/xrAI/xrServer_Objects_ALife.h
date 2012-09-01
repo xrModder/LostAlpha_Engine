@@ -454,6 +454,24 @@ SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeHelicopter)
 #define script_type_list save_type_list(CSE_ALifeHelicopter)
 
+
+SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeMountedTurret, CSE_ALifeDynamicObjectVisual, CSE_PHSkeleton)
+	public:
+										CSE_ALifeMountedTurret		(LPCSTR caSection);
+		virtual							~CSE_ALifeMountedTurret		();
+		virtual bool					used_ai_locations			() const;
+		virtual	void					load						(NET_Packet &tNetPacket);
+		virtual bool					can_save					() const;
+		virtual CSE_Abstract			*cast_abstract				() {return this;}
+		
+	protected:
+		virtual void					data_load					(NET_Packet &tNetPacket);
+		virtual void					data_save					(NET_Packet &tNetPacket);
+SERVER_ENTITY_DECLARE_END
+add_to_type_list(CSE_ALifeMountedTurret)
+#define script_type_list save_type_list(CSE_ALifeMountedTurret)
+
+
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSkeleton)
 	struct SDoorState				
 	{

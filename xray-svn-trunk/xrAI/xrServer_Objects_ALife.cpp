@@ -1392,14 +1392,6 @@ CSE_ALifeMountedTurret::~CSE_ALifeMountedTurret	()
 {
 }
 
-void CSE_ALifeMountedTurret::on_spawn			()
-{
-	m_flags.set					(flUseSwitches,		FALSE);
-	m_flags.set					(flSwitchOnline,	TRUE);
-	m_flags.set					(flSwitchOffline,	TRUE);
-	inherited1::on_spawn		();
-}
-
 void CSE_ALifeMountedTurret::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
 {
 	inherited1::STATE_Read		(tNetPacket,size);

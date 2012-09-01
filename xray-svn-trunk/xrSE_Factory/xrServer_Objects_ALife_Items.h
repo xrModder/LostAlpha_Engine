@@ -137,6 +137,26 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 		eWeaponAddonSilencer = 0x04
 	};
 
+	//count of grenades to spawn in grenade launcher [ttcccccc]
+	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
+
+	struct grenade_count_t
+	{
+		u8	grenades_count	:	6;
+		u8	grenades_type	:	2;
+		u8	pack_to_byte() const
+		{
+			return (grenades_type << 6) | grenades_count;
+		}
+		void unpack_from_byte(u8 const b)
+		{
+			grenades_type	=	(b >> 6);
+			grenades_count	=	b & 0x3f; //111111
+		}
+	}; 
+
+	grenade_count_t					a_elapsed_grenades;
+
 	EWeaponAddonStatus				m_scope_status;
 	EWeaponAddonStatus				m_silencer_status;				
 	EWeaponAddonStatus				m_grenade_launcher_status;
