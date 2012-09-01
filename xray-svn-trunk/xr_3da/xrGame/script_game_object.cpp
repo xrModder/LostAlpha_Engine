@@ -452,9 +452,9 @@ void CScriptGameObject::attach_addon(ALife::_OBJECT_ID addon_id)
 	}
 	addon								= smart_cast<CInventoryItem*>(Level().Objects.net_Find(addon_id));
 	R_ASSERT							(addon);
-	wpn->u_EventGen						(P, GE_ADDON_ATTACH, wpn->ID());
+	CGameObject::u_EventGen				(P, GE_ADDON_ATTACH, wpn->ID());
 	P.w_u32								(addon_id);
-	wpn->u_EventSend					(P);
+	CGameObject::u_EventSend			(P);
 	wpn->Attach							(addon, true);
 }
 
