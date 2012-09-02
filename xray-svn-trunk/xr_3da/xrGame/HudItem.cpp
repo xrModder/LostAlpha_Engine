@@ -292,5 +292,13 @@ void CHudItem::animGet	(MotionSVec& lst, LPCSTR prefix)
 		const MotionID	&M = m_pHUD->animGet(sh_anim);
 		if (M)			lst.push_back(M);
 	}
+<<<<<<< HEAD
 	R_ASSERT2			(!lst.empty(), make_string("[%s] for [%s]", prefix, object().cName().c_str()));
+=======
+	if (lst.empty())
+	{
+		CInventoryItem	*I = smart_cast<CInventoryItem*>(this);
+		Debug.fatal(DEBUG_INFO,"%s animation not found in the weapon, which has a section %s", prefix, *I->object().cName());
+	}
+>>>>>>> 1a505d3c1cafa14ee60eebf145d34fcc9825e25f
 }
