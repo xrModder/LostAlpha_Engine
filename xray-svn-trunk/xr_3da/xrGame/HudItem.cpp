@@ -292,5 +292,5 @@ void CHudItem::animGet	(MotionSVec& lst, LPCSTR prefix)
 		const MotionID	&M = m_pHUD->animGet(sh_anim);
 		if (M)			lst.push_back(M);
 	}
-	R_ASSERT2			(!lst.empty(),prefix);
+	R_ASSERT2			(!lst.empty(), make_string("[%s] for [%s]", prefix, object().cName().c_str()));
 }
