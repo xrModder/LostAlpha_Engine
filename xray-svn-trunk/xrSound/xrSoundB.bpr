@@ -140,10 +140,8 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
-C:\Program Files\Borland\CBuilder6\Bin\bcbsmp60.bpl=Borland C++ Sample Components
-C:\Program Files\Borland\CBuilder6\Bin\indy60.bpl=Internet Direct (Indy) for D6
-G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dceldbB6.bpl=EldoS DB-Aware Controls (Design-time)
-G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visual Components (Design-time)
+c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
+c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
 Count=30
@@ -278,11 +276,6 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 
 [Linker]
 LibPrefix=
