@@ -34,10 +34,17 @@ template <bool expression, typename T1, typename T2>
 			typedef T2 result;
 		};
 
+#ifdef M_BORLAND
 		template <bool>
 		struct selector<true> {
 			typedef T1 result;
 		};
+#else
+		template <>
+		struct selector<true> {
+			typedef T1 result;
+		};
+#endif
 
 		typedef typename selector<expression>::result result;
 	};
