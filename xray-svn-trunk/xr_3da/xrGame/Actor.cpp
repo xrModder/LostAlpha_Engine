@@ -386,6 +386,12 @@ if(!g_dedicated_server)
 
 	LPCSTR							default_outfit = READ_IF_EXISTS(pSettings,r_string,section,"default_outfit",0);
 	SetDefaultVisualOutfit			(default_outfit);
+	LPCSTR							default_outfit_legs = pSettings->r_string(section, "default_outfit_legs");
+	SetDefaultVisualOutfit_legs		(default_outfit_legs);
+	if (IsGameTypeSingle())
+		m_bDrawLegs						= true;
+	else
+		m_bDrawLegs						= false;
 
 	invincibility_fire_shield_1st	= READ_IF_EXISTS(pSettings,r_string,section,"Invincibility_Shield_1st",0);
 	invincibility_fire_shield_3rd	= READ_IF_EXISTS(pSettings,r_string,section,"Invincibility_Shield_3rd",0);
@@ -1155,7 +1161,10 @@ void CActor::shedule_Update	(u32 DT)
 	
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-										setVisible				(!HUDview	());
+		if (m_bDrawLegs && IsGameTypeSingle()) 
+			setVisible				(TRUE);
+		else
+			setVisible				(!HUDview	());
 	//что актер видит перед собой
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	

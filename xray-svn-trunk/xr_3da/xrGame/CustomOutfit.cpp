@@ -60,6 +60,11 @@ void CCustomOutfit::Load(LPCSTR section)
 	else
 		m_ActorVisual = NULL;
 
+	if (pSettings->line_exist(section, "actor_visual_legs"))
+		m_ActorVisual_legs = pSettings->r_string(section, "actor_visual_legs");
+	else
+		m_ActorVisual_legs = NULL;
+
 	m_ef_equipment_type		= pSettings->r_u32(section,"ef_equipment_type");
 	if (pSettings->line_exist(section, "power_loss"))
 		m_fPowerLoss = pSettings->r_float(section, "power_loss");
@@ -116,32 +121,55 @@ void	CCustomOutfit::OnMoveToSlot		()
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)
 		{
-			if (m_ActorVisual.size())
+			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+			if(pTorch)
 			{
-				shared_str NewVisual = NULL;
-				char* TeamSection = Game().getTeamSection(pActor->g_Team());
-				if (TeamSection)
-				{
-					if (pSettings->line_exist(TeamSection, *cNameSect()))
-					{
-						NewVisual = pSettings->r_string(TeamSection, *cNameSect());
-						string256 SkinName;
-						strcpy_s(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
-						strcat_s(SkinName, *NewVisual);
-						strcat_s(SkinName, ".ogf");
-						NewVisual._set(SkinName);
-					}
-				}
-				
-				if (!NewVisual.size())
-					NewVisual = m_ActorVisual;
-
-				pActor->ChangeVisual(NewVisual);
+				pTorch->SwitchNightVision(false);
 			}
-			if(pSettings->line_exist(cNameSect(),"bones_koeff_protection")){
-				m_boneProtection->reload( pSettings->r_string(cNameSect(),"bones_koeff_protection"), smart_cast<IKinematics*>(pActor->Visual()) );
 
-			};
+			if (pActor->IsFirstEye() && IsGameTypeSingle())
+			{
+				if (m_ActorVisual_legs.size())
+				{
+						shared_str NewVisual = m_ActorVisual_legs;
+						pActor->ChangeVisual(NewVisual);
+				} else {
+						shared_str NewVisual = pActor->GetDefaultVisualOutfit_legs();
+						pActor->ChangeVisual(NewVisual);
+				}
+				if(pSettings->line_exist(cNameSect(),"bones_koeff_protection")){
+					m_boneProtection->reload( pSettings->r_string(cNameSect(),"bones_koeff_protection"), smart_cast<IKinematics*>(pActor->Visual()) );
+				};
+			} else {
+				if (m_ActorVisual.size())
+				{
+					shared_str NewVisual = NULL;
+					char* TeamSection = Game().getTeamSection(pActor->g_Team());
+					if (TeamSection)
+					{
+						if (pSettings->line_exist(TeamSection, *cNameSect()))
+						{
+							NewVisual = pSettings->r_string(TeamSection, *cNameSect());
+							string256 SkinName;
+							strcpy_s(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
+							strcat_s(SkinName, *NewVisual);
+							strcat_s(SkinName, ".ogf");
+							NewVisual._set(SkinName);
+						}
+					}
+				
+					if (!NewVisual.size())
+						NewVisual = m_ActorVisual;
+	
+					pActor->ChangeVisual(NewVisual);
+				} else {
+					shared_str NewVisual = pActor->GetDefaultVisualOutfit();
+					pActor->ChangeVisual(NewVisual);
+				}
+				if(pSettings->line_exist(cNameSect(),"bones_koeff_protection")){
+					m_boneProtection->reload( pSettings->r_string(cNameSect(),"bones_koeff_protection"), smart_cast<IKinematics*>(pActor->Visual()) );
+				};
+			}
 		}
 	}
 };
@@ -153,18 +181,28 @@ void	CCustomOutfit::OnMoveToRuck		()
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
-			if(pTorch)
+			CCustomOutfit* outfit	= pActor->GetOutfit();
+			if (!outfit)
 			{
-				pTorch->SwitchNightVision(false);
-			}
-			if (m_ActorVisual.size())
-			{
-				shared_str DefVisual = pActor->GetDefaultVisualOutfit();
-				if (DefVisual.size())
+				CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+				if(pTorch)
 				{
-					pActor->ChangeVisual(DefVisual);
-				};
+					pTorch->SwitchNightVision(false);
+				}
+				if (pActor->IsFirstEye() && IsGameTypeSingle())
+				{
+					shared_str DefVisual = pActor->GetDefaultVisualOutfit_legs();
+					if (DefVisual.size())
+					{
+						pActor->ChangeVisual(DefVisual);
+					}
+				} else {
+					shared_str DefVisual = pActor->GetDefaultVisualOutfit();
+					if (DefVisual.size())
+					{
+						pActor->ChangeVisual(DefVisual);
+					}
+				}
 			}
 		}
 	}

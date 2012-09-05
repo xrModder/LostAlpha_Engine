@@ -36,6 +36,7 @@ protected:
 	float							m_fPowerLoss;
 
 	shared_str						m_ActorVisual;
+	shared_str						m_ActorVisual_legs;
 	shared_str						m_full_icon_name;
 	SBoneProtections*				m_boneProtection;	
 protected:
