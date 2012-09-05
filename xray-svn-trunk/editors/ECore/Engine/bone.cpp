@@ -19,6 +19,7 @@
 
 CBone::CBone()
 {
+	construct		();
 	flags.zero		();
     rest_length		= 0;
 	SelfID			= -1;
@@ -26,6 +27,8 @@ CBone::CBone()
 
     ResetData		();
 }
+
+
 
 void CBone::ResetData()
 {
@@ -183,3 +186,4 @@ void CBone::CopyData(CBone* bone)
     center_of_mass	= bone->center_of_mass;
 }
 
+#include "../../xr_3da/bone.cpp"

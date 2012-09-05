@@ -1,5 +1,6 @@
 #pragma once
-
+#ifndef __ANIMATION_H__
+#define __ANIMATION_H__
 #include	"KinematicsDefs.h"
 
 namespace	animation
@@ -50,3 +51,4 @@ namespace	animation
 		
 	};
 };
+#endif

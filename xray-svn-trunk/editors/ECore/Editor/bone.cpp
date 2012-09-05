@@ -17,8 +17,34 @@
 #define BONE_CHUNK_IK_JOINT_BREAK		0x0009
 #define BONE_CHUNK_IK_JOINT_FRICTION	0x0010
 
+u16	CBone::get_game_mtl_idx	( )			const	
+{
+	return -1;
+//	return GMLib.GetMaterialIdx(game_mtl.c_str());
+}
+
+static const Fobb	dummy = Fobb().identity();
+const	Fobb&		CBone::	get_obb				( )			const
+{
+	return dummy;
+}
+const IBoneData&	CBoneData::GetChild		( u16 id )const
+{
+	return *children[id];
+}
+IBoneData&	CBoneData::GetChild		( u16 id )
+{
+	return *children[id];
+}
+
+u16	CBoneData::GetNumChildren	( )const
+{
+	return (u16)children.size();
+}
+
 CBone::CBone()
 {
+    construct		();
 	flags.zero		();
     rest_length		= 0;
 	SelfID			= -1;
@@ -27,9 +53,7 @@ CBone::CBone()
     ResetData		();
 }
 
-CBone::~CBone()
-{
-}
+
 
 void CBone::ResetData()
 {

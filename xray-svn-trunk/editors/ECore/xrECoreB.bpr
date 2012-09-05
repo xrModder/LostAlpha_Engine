@@ -160,7 +160,8 @@
       x:\intermediate_ed\ecore\Image.obj x:\intermediate_ed\ecore\MinimapEditor.obj 
       x:\intermediate_ed\ecore\tga.obj 
       x:\intermediate_ed\ecore\TextureDescrManager.obj 
-      x:\intermediate_ed\ecore\ETextureParams.obj"/>
+      x:\intermediate_ed\ecore\ETextureParams.obj 
+      x:\intermediate_ed\ecore\Animation.obj"/>
     <RESFILES value="resource.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -394,6 +395,7 @@
       <FILE FILENAME="..\..\xr_3da\xrRender\tga.cpp" FORMNAME="" UNITNAME="tga" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\xr_3da\TextureDescrManager.cpp" FORMNAME="" UNITNAME="TextureDescrManager" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\xr_3da\ETextureParams.cpp" FORMNAME="" UNITNAME="ETextureParams" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\xr_3da\Animation.cpp" FORMNAME="" UNITNAME="Animation" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

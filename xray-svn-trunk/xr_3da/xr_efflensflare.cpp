@@ -146,12 +146,15 @@ CLensFlare::CLensFlare()
 
 	OnDeviceCreate				();	
 }
-
+#ifndef _EDITOR
 #include "xrGame\object_broker.h"
+#endif
 CLensFlare::~CLensFlare()
 {
 	OnDeviceDestroy				();
+#ifndef _EDITOR
 	delete_data(m_Palette);	
+#endif
 }
 
 #ifndef _EDITOR
