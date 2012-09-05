@@ -15,6 +15,7 @@
 #include "UICellItem.h"
 #include "UIListBoxItem.h"
 #include "../CustomOutfit.h"
+#include "../script_callback_ex.h"
 
 
 void CUIInventoryWnd::EatItem(PIItem itm)
@@ -81,6 +82,13 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	//отсоединение аддонов от вещи
 	if(pWeapon)
 	{
+		
+		luabind::functor<bool>	lua_function;
+		R_ASSERT2							(ai().script_engine().functor<bool>("ui_repair_kit.isRepairable",lua_function),"Can't call ui_repair_kit.isRepairable");
+	
+		if (lua_function(CurrentIItem()->object().ID())) {				//isRepairable?
+			UIPropertiesBox.AddItem("st_repair_weapon",  NULL, INVENTORY_REPAIR);
+		}
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			UIPropertiesBox.AddItem("st_detach_gl",  NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
@@ -254,6 +262,13 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 		case INVENTORY_RELOAD_MAGAZINE:
 			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
 			break;
+		case INVENTORY_REPAIR:
+			{
+				luabind::functor<void>	repair;
+				R_ASSERT2(ai().script_engine().functor<void>("ui_repair_kit.repair",repair),"Can't call ui_repair_kit.repair");
+
+				repair(CurrentIItem()->object().ID());																			//Repair
+			}break;
 		case INVENTORY_UNLOAD_MAGAZINE:
 			{
 				CUICellItem * itm = CurrentItem();

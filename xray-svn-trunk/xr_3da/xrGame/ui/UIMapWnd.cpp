@@ -888,7 +888,9 @@ void CUIMapWnd::Select				(CMapLocation* ml)
 
 void CUIMapWnd::Hint					(const shared_str& text)
 {
-	m_tgtMap = GetMapByIdx(GetIdxByName(text));
+	u16 __id = GetIdxByName(text);
+	if (__id!=u16(-1)) m_tgtMap = GetMapByIdx(__id);
+	else m_tgtMap = NULL;
 	m_text_hint->SetTextST				(*text);
 }
 
