@@ -499,7 +499,11 @@ BOOL	CInifile::r_bool( LPCSTR S, LPCSTR L )const
 {
 	LPCSTR		C = r_string(S,L);
 	char		B[8];
+#ifndef M_BORLAND
 	strncpy_s		(B,C,7);
+#else
+	strncpy		(B,C,7);
+#endif
 	B[7]		= 0;
 	strlwr		(B);
     return 		IsBOOL(B);

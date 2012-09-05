@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 #ifndef object_type_traits_h_included
 #define object_type_traits_h_included
+
 #pragma once
 
 //#define USE_BOOST
@@ -26,14 +27,14 @@
 			enum { value = sizeof(detail::yes) == sizeof(select<T>(0)) };\
 		};
 
-	template <bool expression, typename T1, typename T2>
+template <bool expression, typename T1, typename T2>
 	struct _if {
 		template <bool>
 		struct selector {
 			typedef T2 result;
 		};
 
-		template <>
+		template <bool>
 		struct selector<true> {
 			typedef T1 result;
 		};
