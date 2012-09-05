@@ -133,7 +133,7 @@ bool CCustomObject::Load(IReader& F)
     }
 
     if (F.find_chunk(CUSTOMOBJECT_CHUNK_MOTION_PARAM)){
-    	m_MotionParams->t = F.r_float();
+    	m_MotionParams->t_current = F.r_float();
         AnimationUpdate(m_MotionParams->Frame());
     }
 
@@ -168,7 +168,7 @@ void CCustomObject::Save(IWriter& F)
 		F.close_chunk	();
 
         F.open_chunk	(CUSTOMOBJECT_CHUNK_MOTION_PARAM);
-        F.w_float		(m_MotionParams->t);
+        F.w_float		(m_MotionParams->t_current);
         F.close_chunk	();
     }
 }
