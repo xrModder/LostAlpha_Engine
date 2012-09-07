@@ -45,8 +45,14 @@ void SLocationKey::save(IWriter &stream)
 	stream.w		(&object_id,sizeof(object_id));
 
 	stream.w_stringZ(spot_type);
-//.	stream.w_u8		(location->IsUserDefined()?1:0);
-	stream.w_u8		(0);
+	stream.w_u8		(location->IsUserDefined()?1:0);
+	if (location->IsUserDefined()) {
+		CUserDefinedMapLocation* userDefLocation = smart_cast<CUserDefinedMapLocation*>(location);
+		if (userDefLocation) {
+			userDefLocation->save(stream);
+			return;
+		}
+	}
 	location->save	(stream);
 }
 	
@@ -55,15 +61,13 @@ void SLocationKey::load(IReader &stream)
 	stream.r		(&object_id,sizeof(object_id));
 
 	stream.r_stringZ(spot_type);
-	stream.r_u8		();
-/*
 	u8	bUserDefined = stream.r_u8	();
 	if(bUserDefined){
 		Level().Server->PerformIDgen(object_id);
 		location  = xr_new<CUserDefinedMapLocation>(*spot_type, object_id);
-	}else
-*/
-	location  = xr_new<CMapLocation>(*spot_type, object_id);
+	} else {
+		location  = xr_new<CMapLocation>(*spot_type, object_id);
+	}
 
 	location->load	(stream);
 }
