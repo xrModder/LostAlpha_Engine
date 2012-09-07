@@ -763,9 +763,9 @@ bool CUIMapWnd::ConvertCursorPosToMap(Fvector* return_position)
 {
 	if (fsimilar(GlobalMap()->GetMinZoom(), GetZoom(), EPS_L)) return false;
 
-	if (!m_tgtMap) { Msg("!!Error in ConvertCursorPosToMap! No m_tgtMap"); return false; }
+	if (!m_tgtMap) return false;
 	CUILevelMap* CurrentMap = smart_cast<CUILevelMap*>(m_tgtMap);										//map = CurrentMap
-	if (!CurrentMap) { Msg("!!Error in ConvertCursorPosToMap! No CurrentMap"); return false; }
+	if (!CurrentMap) return false;
 
 	Frect PosOnMap = CurrentMap->GlobalRect();															//v1=PosOnMap
 	Frect PosReal = CurrentMap->BoundRect();
@@ -888,9 +888,10 @@ void CUIMapWnd::Select				(CMapLocation* ml)
 
 void CUIMapWnd::Hint					(const shared_str& text)
 {
-	u16 __id = GetIdxByName(text);
-	if (__id!=u16(-1)) m_tgtMap = GetMapByIdx(__id);
-	else m_tgtMap = NULL;
+	if (!xr_strcmp(text,"global_map")) {
+		u16 __id = GetIdxByName(text);
+		if (__id!=u16(-1)) m_tgtMap = GetMapByIdx(__id);
+	}
 	m_text_hint->SetTextST				(*text);
 }
 
