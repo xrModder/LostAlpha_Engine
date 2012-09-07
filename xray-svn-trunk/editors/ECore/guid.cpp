@@ -3,4 +3,3 @@
 #define INITGUID
 #include <dinput.h>
 
-

@@ -19,22 +19,26 @@ struct SOGFVert{
     Fvector2	UV;
     Fvector		T;
     Fvector		B;
-	SOGFVert(){
+	SOGFVert()
+	{
 		P.set	(0,0,0);
 		N.set	(0,1,0);
         UV.set	(0.f,0.f);
 		T.set	(0,0,0);
 		B.set	(0,0,0);
 	}
-	void set(Fvector& p, Fvector& n, Fvector2& uv){
+	void set(Fvector const& p, Fvector const& n, Fvector2 const& uv)
+	{
 		P.set	(p);
   		N.set	(n);
         UV.set	(uv);
 	}
-	BOOL	similar_pos(SOGFVert& V){
+	BOOL	similar_pos(SOGFVert& V)
+	{
         return P.similar(V.P,EPS_L);
     }
-	BOOL	similar(SOGFVert& V){
+	BOOL	similar(SOGFVert& V)
+	{
         if (!P.similar	(V.P,EPS_L))	return FALSE;
         if (!UV.similar	(V.UV,EPS_S))	return FALSE;
 		if (!N.similar	(V.N,EPS_L))	return FALSE;

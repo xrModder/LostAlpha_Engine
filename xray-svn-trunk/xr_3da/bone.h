@@ -411,7 +411,7 @@ private:
 		const	Fobb&			__stdcall	get_obb				( )			const	;
 		const	Fvector&		__stdcall	get_center_of_mass	( )			const	{return center_of_mass;}
 				float			__stdcall	get_mass			( )			const	{return mass;}
-				//u16				__stdcall	get_game_mtl_idx	( )			const	;
+				u16				__stdcall	get_game_mtl_idx	( )			const	;
 				u16				__stdcall	GetParentID			( )			const	{if(parent) return u16(parent->SelfID); else return u16(-1);};
 				float			__stdcall	lo_limit			( u8 k )	const	{ return engine_lo_limit(k); }
 				float			__stdcall	hi_limit			( u8 k )	const	{ return engine_hi_limit(k); }
