@@ -381,6 +381,18 @@ void force_entity_update(const CALifeSimulator *self, u16 id)
 
 }
 
+void change_actor_level(CALifeSimulator *self, Fvector3 position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_graph_id, Fvector3 dir)
+{
+	NET_Packet P;
+	VERIFY																(self);
+	P.w_begin															(M_CHANGE_LEVEL);
+	P.w_u16																(game_graph_id);
+	P.w_u32																(level_vertex_id);
+	P.w_vec3															(position);
+	P.w_vec3															(dir);
+	Level().Send														(P, net_flags(TRUE));
+}
+
 //void disable_info_portion						(const CALifeSimulator *self, const ALife::_OBJECT_ID &id)
 //{
 //	THROW								(self);
@@ -428,6 +440,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("switch_distance",			&CALifeSimulator::set_switch_distance)
 			// lost alpha start
 			.def("teleport_entity",			&teleport_entity)
+			.def("change_actor_level",		&change_actor_level)
 			.def("switch_offline",			&script_switch_to_offline)
 			.def("switch_online",			&script_switch_to_online)
 			.def("force_entity_update",		&force_entity_update)

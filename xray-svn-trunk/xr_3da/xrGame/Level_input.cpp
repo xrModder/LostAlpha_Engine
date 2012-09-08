@@ -178,11 +178,11 @@ case DIK_MULTIPLY:
 
 	if(_curr == kQUICK_SAVE && IsGameTypeSingle())
 	{
-		Console->Execute			("save");
+//		Console->Execute			("save");
 		return;
 	}
 	if(_curr == kQUICK_LOAD && IsGameTypeSingle())
-	{
+	{/*
 #ifdef DEBUG
 		FS.get_path					("$game_config$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
 		FS.get_path					("$game_scripts$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
@@ -195,7 +195,7 @@ case DIK_MULTIPLY:
 
 		strconcat					(sizeof(command),command,"load ",saved_game);
 		Console->Execute			(command);
-		return;
+*/		return;
 	}
 
 #ifndef MASTER_GOLD
