@@ -105,7 +105,6 @@ void CCameraLook2::Update(Fvector& point, Fvector&)
 	a_xform.transform_tiny			(_off);
 	vPosition.set					(_off);
 
-	//NEED DO COLLIDE
 	Fvector				vDir;
 	collide::rq_result	R;
 
@@ -117,7 +116,7 @@ void CCameraLook2::Update(Fvector& point, Fvector&)
 	prev_d = d;
 	
 	vPosition.mul		(vDirection,-d-VIEWPORT_NEAR);
-	vPosition.add		(point);
+	vPosition.add		(_off);
 }
 
 void CCameraLook2::UpdateAutoAim()

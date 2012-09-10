@@ -453,18 +453,34 @@ void CActor::g_cl_Orientate	(u32 mstate_rl, float dt)
 		r_model_yaw		= angle_normalize(r_torso.yaw);
 		mstate_real		&=~mcTurn;
 	} else {
-		// if camera rotated more than 45 degrees - align model with it
-		float ty = angle_normalize(r_torso.yaw);
-		if (_abs(r_model_yaw-ty)>PI_DIV_4)	{
-			r_model_yaw_dest = ty;
-			// 
-			mstate_real	|= mcTurn;
-		}
-		if (_abs(r_model_yaw-r_model_yaw_dest)<EPS_L){
-			mstate_real	&=~mcTurn;
-		}
-		if (mstate_rl&mcTurn){
-			angle_lerp	(r_model_yaw,r_model_yaw_dest,PI_MUL_2,dt);
+		if (eacFirstEye!=cam_active)
+		{
+			// if camera rotated more than 45 degrees - align model with it
+			float ty = angle_normalize(r_torso.yaw);
+			if (_abs(r_model_yaw-ty)>PI_DIV_4)	{
+				r_model_yaw_dest = ty;
+				// 
+				mstate_real	|= mcTurn;
+			}
+			if (_abs(r_model_yaw-r_model_yaw_dest)<EPS_L){
+				mstate_real	&=~mcTurn;
+			}
+			if (mstate_rl&mcTurn){
+				angle_lerp	(r_model_yaw,r_model_yaw_dest,PI_MUL_2,dt);
+			}
+		} else {
+			// if camera rotated more than ~25 degrees - align model with it
+			float ty = angle_normalize(r_torso.yaw);
+			if (_abs(r_model_yaw-ty)>PI_DIV_8)	{
+				r_model_yaw		= angle_normalize(r_torso.yaw);
+				mstate_real		&=~mcTurn;
+			}
+			if (_abs(r_model_yaw-r_model_yaw_dest)<EPS_L){
+				mstate_real	&=~mcTurn;
+			}
+			if (mstate_rl&mcTurn){
+				angle_lerp	(r_model_yaw,r_model_yaw_dest,PI_MUL_2,dt);
+			}
 		}
 	}
 }
