@@ -230,7 +230,8 @@ void CSE_ALifeInventoryBox::add_offline	(const xr_vector<ALife::_OBJECT_ID> &sav
 
 	for (u32 i=0, n=saved_children.size(); i<n; ++i) {
 		CSE_ALifeDynamicObject	*child = smart_cast<CSE_ALifeDynamicObject*>(ai().alife().objects().object(saved_children[i],true));
-		R_ASSERT				(child);
+		R_ASSERT2				(child, make_string("parent [%d][%s][%s] has not valid child [%d]", 
+														ID, name(), name_replace(), saved_children[i]));
 		child->m_bOnline		= false;
 
 		CSE_ALifeInventoryItem	*inventory_item = smart_cast<CSE_ALifeInventoryItem*>(child);

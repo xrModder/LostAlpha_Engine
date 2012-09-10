@@ -43,15 +43,15 @@ public:
 	}
 	IC void	w		( const void* p, u32 count )
 	{
-		VERIFY		(p && count);
-		VERIFY		(B.count + count < NET_PacketSizeLimit);
+		VERIFY2		(p && count, make_string("p=0x%x count=%d", p, count));
+		VERIFY2		(B.count + count < NET_PacketSizeLimit, make_string("B.count=%d count=%d", B.count, count));
 		CopyMemory(&B.data[B.count],p,count);
 		B.count		+= count;
-		VERIFY		(B.count<NET_PacketSizeLimit);
+		VERIFY2		(B.count<NET_PacketSizeLimit, make_string("B.count=%d", B.count));
 	}
 	IC void w_seek	(u32 pos, const void* p, u32 count)	// random write (only inside allocated region)
 	{
-		VERIFY		(p && count && (pos+count<=B.count));
+		VERIFY2		(p && count && (pos+count<=B.count), make_string("p=0x%x count=%d B.count=%d pos=%d", p, count, B.count, pos));
 		CopyMemory(&B.data[pos],p,count);
 	}
 	IC u32	w_tell	()	{ return B.count; }
@@ -166,17 +166,18 @@ public:
 
 	IC void r_seek	(u32 pos)
 	{
-		VERIFY		(pos < B.count);
+//		it was pos < B.count
+		VERIFY2		(pos <= B.count, make_string("pos=%d B.count=%d", pos, B.count));
 		r_pos		= pos;
 	}
 	IC u32		r_tell			()	{ return r_pos; }
 
 	IC void		r				( void* p, u32 count)
 	{
-		VERIFY		(p && count);
+		VERIFY2		(p && count, make_string("p=0x%x count=%d", p, count));
 		CopyMemory(p,&B.data[r_pos],count);
 		r_pos		+= count;
-		VERIFY		(r_pos<=B.count);
+		VERIFY2		(r_pos<=B.count, make_string("r_pos=%d B.count=%d", r_pos, B.count));
 	}
 	IC BOOL		r_eof			()
 	{
@@ -189,7 +190,7 @@ public:
 	IC void		r_advance		(u32 size)
 	{
 		r_pos		+= size;
-		VERIFY		(r_pos<=B.count);
+		VERIFY2		(r_pos<=B.count, make_string("r_pos=%d size=%d B.count=%d", r_pos, size, B.count));
 	}
 
 	// reading - utilities

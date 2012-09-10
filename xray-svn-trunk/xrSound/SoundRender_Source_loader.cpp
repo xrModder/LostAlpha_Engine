@@ -106,10 +106,14 @@ void CSoundRender_Source::LoadWave	(LPCSTR pName)
 			m_uGameType		= F.r_u32	();
 			m_fMaxAIDist	= F.r_float	();
 		}else{
+#ifdef DEBUG
 			Log				("! Invalid ogg-comment version, file: ",pName);
+#endif
 		}
 	}else{
+#ifdef DEBUG
 		Log					("! Missing ogg-comment, file: ",pName);
+#endif
 	}
 	R_ASSERT3((m_fMaxAIDist>=0.1f)&&(m_fMaxDist>=0.1f),"Invalid max distance.",pName);
 

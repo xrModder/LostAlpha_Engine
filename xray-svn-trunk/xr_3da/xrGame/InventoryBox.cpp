@@ -24,7 +24,7 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 
 	switch (type)
 	{
-	case GE_TRADE_BUY:
+	//case GE_TRADE_BUY:
 	case GE_OWNERSHIP_TAKE:
 		{
 			u16 id;
@@ -36,7 +36,7 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			itm->setEnabled		(FALSE);
 		}break;
 
-	case GE_TRADE_SELL:
+	//case GE_TRADE_SELL:
 	case GE_OWNERSHIP_REJECT:
 		{
 			u16 id;

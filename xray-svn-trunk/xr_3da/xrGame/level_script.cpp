@@ -278,7 +278,7 @@ void lua_debug_print(LPCSTR str)
 {
 	if (!xr_strlen(str))
 		return;
-	Msg("$ LA_DBG: %s", str);
+	Msg("$ LA_DBG:[%lu] %s", Device.dwTimeGlobal, str);
 	FlushLog();
 }
 

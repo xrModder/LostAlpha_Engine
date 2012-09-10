@@ -817,7 +817,7 @@ void CPHElement::GetAnimBonePos(Fmatrix &bp)
 {
 	VERIFY(m_shell->PKinematics());
 	IKinematics *k = m_shell->PKinematics();
-	VERIFY(ak);
+	VERIFY(k);
 	CBoneInstance *BI = &k->LL_GetBoneInstance(m_SelfID);
 	if(!BI->callback())//.
 	{
