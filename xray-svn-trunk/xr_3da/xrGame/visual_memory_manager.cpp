@@ -796,7 +796,7 @@ void CVisualMemoryManager::save	(NET_Packet &packet) const
 #ifdef USE_FIRST_LEVEL_TIME
 		packet.w_u32			((Device.dwTimeGlobal >= (*I).m_level_time) ? (Device.dwTimeGlobal - (*I).m_first_level_time) : 0);
 #endif // USE_FIRST_LEVEL_TIME
-		packet.w_u64			((*I).m_visible.flags);
+		packet.w_u32			((*I).m_visible.flags);
 	}
 }
 
