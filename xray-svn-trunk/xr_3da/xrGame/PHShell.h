@@ -265,7 +265,7 @@ private:
 IC				CPHElement			&root_element					() { VERIFY( !elements.empty() ); return *(*elements.begin()); }
 
 				// lost alpha start
-				virtual void ElementsForEach(const luabind::functor<void> &functor);
-				virtual u32	ElementsCount() { return Elements().size(); }
+//				virtual void ElementsForEach(const luabind::functor<void> &functor);
+//				virtual u32	ElementsCount() { return Elements().size(); }
 };
 #endif

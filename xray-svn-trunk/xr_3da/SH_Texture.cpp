@@ -192,7 +192,7 @@ void CTexture::Load		()
 				_w, _h, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pTexture, NULL );
 
 			pSurface = pTexture;
-			if (FAILED(hrr))
+			if (FAILED(hrr) || !pSurface)
 			{
 				R_ASSERT3	(0, "Invalid video stream", *cName);
 				R_CHK		(hrr);

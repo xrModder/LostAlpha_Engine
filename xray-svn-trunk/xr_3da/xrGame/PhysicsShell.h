@@ -336,8 +336,8 @@ virtual				void						GetGlobalTransformDynamic					(Fmatrix* m) 																
 	virtual			void						SetPrefereExactIntegration					()																							= 0;
 	virtual										~CPhysicsShell								()	;
 	//lost alpha start
-	virtual void ElementsForEach(const luabind::functor<void> &functor) = 0;
-	virtual u32	ElementsCount() = 0;
+	//virtual void ElementsForEach(const luabind::functor<void> &functor) = 0;
+	//virtual u32	ElementsCount() = 0;
 	//build_FromKinematics		in returns elements  & joint pointers according bone IDs;
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 	};

@@ -113,8 +113,8 @@ void CUIInventoryWnd::Init()
 	UIProgressBack.AttachChild (&UIProgressBarHealth);
 	xml_init.InitProgressBar (uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
 	
-	UIProgressBack.AttachChild	(&UIProgressBarPsyHealth);
-	xml_init.InitProgressBar (uiXml, "progress_bar_psy", 0, &UIProgressBarPsyHealth);
+	UIProgressBack.AttachChild	(&UIProgressBarStamina);
+	xml_init.InitProgressBar (uiXml, "progress_bar_stamina", 0, &UIProgressBarStamina);
 
 	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
 	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
@@ -179,8 +179,8 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIStaticTime);
 	xml_init.InitStatic					(uiXml, "time_static", 0, &UIStaticTime);
 
-//	UIStaticTime.AttachChild			(&UIStaticTimeString);
-//	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
+	UIStaticTime.AttachChild			(&UIStaticTimeString);
+	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
 
 	UIExitButton						= xr_new<CUI3tButton>();UIExitButton->SetAutoDelete(true);
 	AttachChild							(UIExitButton);
@@ -287,8 +287,8 @@ void CUIInventoryWnd::Update()
 		float v = pEntityAlive->conditions().GetHealth()*100.0f;
 		UIProgressBarHealth.SetProgressPos		(v);
 
-		v = pEntityAlive->conditions().GetPsyHealth()*100.0f;
-		UIProgressBarPsyHealth.SetProgressPos	(v);
+		v = pEntityAlive->conditions().GetPower()*100.0f;
+		UIProgressBarStamina.SetProgressPos		(v);
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		UIProgressBarRadiation.SetProgressPos	(v);

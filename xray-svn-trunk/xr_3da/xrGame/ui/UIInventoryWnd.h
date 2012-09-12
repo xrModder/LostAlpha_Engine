@@ -110,7 +110,7 @@ protected:
 	CUIStatic					UIProgressBack;
 	CUIStatic					UIProgressBack_rank;
 	CUIProgressBar				UIProgressBarHealth;	
-	CUIProgressBar				UIProgressBarPsyHealth;
+	CUIProgressBar				UIProgressBarStamina;
 	CUIProgressBar				UIProgressBarRadiation;
 	CUIProgressBar              UIProgressBarHunger;
 	CUIProgressBar				UIProgressBarRank;
