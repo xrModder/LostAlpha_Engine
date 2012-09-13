@@ -54,6 +54,7 @@
 
 #include "debug_renderer.h"
 #include "ai/stalker/ai_stalker.h"
+#include <functional>
 
 ENGINE_API bool g_dedicated_server;
 

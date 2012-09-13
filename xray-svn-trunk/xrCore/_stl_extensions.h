@@ -215,6 +215,7 @@ struct pred_stri	: public std::binary_function<char*, char*, bool>	{
 	IC bool operator()(const char* x, const char* y) const				{	return stricmp(x,y)<0;	}
 };
 
+#if _MSC_VER < 1700
 namespace std 
 {
 	template <class InputIterator, class Size, class OutputIterator> 
@@ -229,6 +230,7 @@ namespace std
 		return result;
 	}
 };
+#endif
 
 // STL extensions
 #define DEF_VECTOR(N,T)				typedef xr_vector< T > N;		typedef N::iterator N##_it;
