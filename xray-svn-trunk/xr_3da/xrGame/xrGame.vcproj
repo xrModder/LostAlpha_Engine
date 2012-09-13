@@ -26893,6 +26893,15 @@
 								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								PrecompiledHeaderThrough="pch_script.h"
+								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIOutfitSlot.cpp"
