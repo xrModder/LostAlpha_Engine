@@ -213,6 +213,8 @@ public:
 			void				SetActorPosition	(Fvector pos);
 			void				SetActorDirection	(float dir);
 			void				SetActorLegsVisible	(bool val);
+			void				SetActorCamSet		(u32 val);
+			bool				IsFirstEyeCam		();
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
 			bool				CheckTypeVisibility	(const char *section_name);
