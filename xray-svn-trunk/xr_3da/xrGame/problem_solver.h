@@ -84,10 +84,12 @@ private:
 	IC		bool						is_goal_reached_impl	(const _index_type	&vertex_index) const;
 	IC		bool						is_goal_reached_impl	(const _index_type	&vertex_index, bool) const;
 	
-	template <bool>
-	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type	&vertex_index) const {return estimate_edge_weight_impl(vertex_index);}
-	template <>
-	IC		_edge_value_type			estimate_edge_weight_impl<true>(const _index_type	&vertex_index) const {return estimate_edge_weight_impl(vertex_index,true);}
+	template<bool> struct type { };
+	template <bool b>
+	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type	&vertex_index) const {return estimate_edge_weight_impl(vertex_index, type<b>());}
+	template <bool b>
+	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type	&vertex_index, type<b>) const {return estimate_edge_weight_impl(vertex_index);}
+	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type &vertex_index, type<true>) const {return estimate_edge_weight_impl(vertex_index,true);}
 
 	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type	&vertex_index) const;
 	IC		_edge_value_type			estimate_edge_weight_impl(const _index_type	&vertex_index, bool) const;

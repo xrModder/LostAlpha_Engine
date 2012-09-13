@@ -359,16 +359,7 @@ CPhysicsElement* CPHShell::get_Element(u16 bone_id)
 			return (CPhysicsElement*)(*i);
 	return NULL;
 }
-/*
-// lost alpha start
-void CPHShell::ElementsForEach(const luabind::functor<void> &functor)
-{
-	for (ELEMENT_I it = elements.begin(), last = elements.end(); it != last; ++it)
-	{
-		functor((CPhysicsElement*)(*it), this);
-	}
-}
-*/
+
 CPhysicsJoint* CPHShell::get_Joint(u16 bone_id)
 {
 	JOINT_I i= joints.begin(),e=joints.end();
