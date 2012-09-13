@@ -129,6 +129,7 @@ public:
 	void				AddAvailableItems			(TIItemContainer& items_container, bool for_trade) const;
 
 	float				GetTakeDist					() const				{return m_fTakeDist;}
+	void				SetTakeDist					(float dist)			{m_fTakeDist = dist;}
 	
 	float				GetMaxWeight				() const				{return m_fMaxWeight;}
 	void				SetMaxWeight				(float weight)			{m_fMaxWeight = weight;}

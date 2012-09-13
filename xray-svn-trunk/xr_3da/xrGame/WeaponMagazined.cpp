@@ -159,11 +159,14 @@ void CWeaponMagazined::FireStart		()
 
 void CWeaponMagazined::FireEnd() 
 {
-	inherited::FireEnd();
+	if (!IsPending())
+	{
+		inherited::FireEnd();
 
-	CActor	*actor = smart_cast<CActor*>(H_Parent());
-	if(!iAmmoElapsed && actor && GetState()!=eReload) 
-		Reload();
+		CActor	*actor = smart_cast<CActor*>(H_Parent());
+		if(!iAmmoElapsed && actor && GetState()!=eReload) 
+			Reload();
+	}
 }
 
 void CWeaponMagazined::Reload() 

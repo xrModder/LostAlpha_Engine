@@ -433,16 +433,16 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 							case CWeapon::eIdle:		M_torso	= TW->moving[moving_idx];		break;
 							
 							case CWeapon::eFire:	
-								if(is_standing)
+								/*if(is_standing)
 														M_torso = M_legs = M_head = TW->all_attack_0;
-								else
+								else*/
 														M_torso	= TW->attack_zoom;
 								break;
 
 							case CWeapon::eFire2:
-								if(is_standing)
+								/*if(is_standing)
 														M_torso = M_legs = M_head = TW->all_attack_1;
-								else
+								else*/
 														M_torso	= TW->fire_idle;
 								break;
 

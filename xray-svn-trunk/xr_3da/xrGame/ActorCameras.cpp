@@ -29,9 +29,14 @@ void CActor::cam_Set	(EActorCameras style)
 	if (style!=cam_active)
 	{
 		if (eacFirstEye==cam_active && eacLookAt==style)
-		m_fPickupInfoRadius += 1;
-		else if (eacLookAt==cam_active && eacFirstEye==style)
-		m_fPickupInfoRadius -= 1;
+		{
+			m_fPickupInfoRadius += 1;
+			inventory().SetTakeDist(inventory().GetTakeDist() + 1.0f);
+		} else if (eacLookAt==cam_active && eacFirstEye==style)
+		{
+			m_fPickupInfoRadius -= 1;
+			inventory().SetTakeDist(inventory().GetTakeDist() - 1.0f);
+		}
 
 		if (eacFirstEye==cam_active)
 		{
