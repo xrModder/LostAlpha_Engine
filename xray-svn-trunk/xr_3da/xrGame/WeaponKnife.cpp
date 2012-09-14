@@ -152,7 +152,7 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 										H_Parent()->ID(), 
 										ID(), 
 										m_eHitType, 
-										(fireDistance+2.0f), 
+										(fireDistance), 
 										cartridge, 
 										SendHit);
 	else
@@ -164,7 +164,7 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 										H_Parent()->ID(), 
 										ID(), 
 										m_eHitType, 
-										fireDistance, 
+										fireDistance+1.2f, 
 										cartridge, 
 										SendHit);
 }
