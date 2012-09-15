@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch_script.h"
 #include "UIMapWnd.h"
 #include "UIMap.h"
 #include "UIXmlInit.h"
@@ -18,6 +18,7 @@
 #include "../game_cl_base.h"
 
 #include "../HUDManager.h"
+#include "../script_engine.h"
 
 #include <dinput.h>				//remove me !!!
 #include "../../xr_input.h"		//remove me !!!

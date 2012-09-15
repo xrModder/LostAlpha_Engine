@@ -2,11 +2,8 @@
 
 #include "UIWindow.h"
 #include "UIWndCallback.h"
-#include "../pch_script.h"
-#include "../script_callback_ex.h"
 #include "../map_spot.h"
 #include "UIXmlInit.h"
-using namespace luabind;
 
 class CUICustomMap;
 class CUIGlobalMap;
