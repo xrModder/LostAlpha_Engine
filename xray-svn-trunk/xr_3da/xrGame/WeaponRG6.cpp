@@ -52,7 +52,7 @@ void CWeaponRG6::Load(LPCSTR section)
 void CWeaponRG6::FireStart ()
 {
 
-	if(GetState() == eIdle	&& getRocketCount() ) 
+	if(GetState() == eIdle	&& getRocketCount() && iAmmoElapsed > 0) 
 	{
 		inheritedSG::FireStart ();
 	

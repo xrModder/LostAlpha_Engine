@@ -271,6 +271,7 @@ public:
 	void					attach_Vehicle			(CHolderCustom* vehicle);
 
 	virtual bool			can_attach				(const CInventoryItem *inventory_item) const;
+	void					cam_Set					(EActorCameras style);
 protected:
 	CHolderCustom*			m_holder;
 	u16						m_holderID;
@@ -346,7 +347,6 @@ public:
 	IC CCameraBase*			cam_FirstEye		()	{return cameras[eacFirstEye];}
 
 protected:
-	void					cam_Set					(EActorCameras style);
 	void					cam_Update				(float dt, float fFOV);
 	void					camUpdateLadder		(float dt);
 	void					cam_SetLadder			();

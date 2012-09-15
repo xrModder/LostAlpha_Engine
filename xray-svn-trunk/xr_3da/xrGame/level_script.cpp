@@ -97,6 +97,23 @@ void set_weather	(LPCSTR weather_name, bool forced)
 	return			(g_pGamePersistent->Environment().SetWeather(weather_name,forced));
 }
 
+void set_game_time	(u32 hour_new, u32 min_new, u32 days_new)
+{
+/*
+//SkyLoader: fix it please
+	float time = Level().GetEnvironmentGameDayTimeSec();
+
+	if (days_new)
+	day = days_new;
+
+	mins = min_new;
+	hours = hour_new;
+
+	float new_time = generate_time(year, month, day, hours, mins, secs, milisecs)
+	g_pGamePersistent->Environment().SetGameTime(new_time,Level().GetGameTimeFactor());
+*/
+}
+
 bool set_weather_fx	(LPCSTR weather_name)
 {
 	return			(g_pGamePersistent->Environment().SetWeatherFX(weather_name));
@@ -311,6 +328,10 @@ void show_indicators()
 	HUD().GetUI()->ShowCrosshair();
 }
 
+bool indicators_shown()
+{
+	return (HUD().GetUI()->GameIndicatorsShown());
+}
 
 bool is_level_present()
 {
@@ -644,6 +665,7 @@ void CLevel::script_register(lua_State *L)
 		def("get_weather",						get_weather),
 		def("set_weather",						set_weather),
 		def("set_weather_fx",					set_weather_fx),
+		def("set_game_time",						set_game_time),
 		def("is_wfx_playing",					is_wfx_playing),
 		def("level_sound_enabled",				level_sound_enabled),
 		def("set_level_sound_enabled",			set_level_sound_enabled),
@@ -689,6 +711,7 @@ void CLevel::script_register(lua_State *L)
 		def("main_input_receiver",				main_input_receiver),
 		def("hide_indicators",					hide_indicators),
 		def("show_indicators",					show_indicators),
+		def("indicators_shown",					indicators_shown),
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),

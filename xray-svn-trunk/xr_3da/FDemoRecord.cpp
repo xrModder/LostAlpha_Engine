@@ -20,7 +20,7 @@ CDemoRecord * xrDemoRecord = 0;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CDemoRecord::CDemoRecord(const char *name,float life_time) : CEffectorCam(cefDemo,life_time/*,FALSE*/)
+CDemoRecord::CDemoRecord(const char *name, ON_TERM_CALLBACK func, float life_time) : CEffectorCam(cefDemo,life_time/*,FALSE*/)
 {
 	_unlink	(name);
 	file	= FS.w_open	(name);
@@ -60,6 +60,8 @@ CDemoRecord::CDemoRecord(const char *name,float life_time) : CEffectorCam(cefDem
 		m_fAngSpeed1	= pSettings->r_float("demo_record","ang_speed1");
 		m_fAngSpeed2	= pSettings->r_float("demo_record","ang_speed2");
 		m_fAngSpeed3	= pSettings->r_float("demo_record","ang_speed3");
+		VERIFY			(func);
+		m_callback      = func;
 	} else {
 		fLifeTime = -1;
 	}
@@ -72,6 +74,8 @@ CDemoRecord::~CDemoRecord()
 		IR_Release	();	// release input
 		FS.w_close	(file);
 	}
+	m_callback		();
+	m_callback		= NULL;
 }
 
 //								+X,				-X,				+Y,				-Y,			+Z,				-Z

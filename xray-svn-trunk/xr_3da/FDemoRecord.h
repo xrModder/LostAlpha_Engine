@@ -7,6 +7,8 @@
 
 #pragma once
 
+typedef void (*ON_TERM_CALLBACK)(void);
+
 #include "iinputreceiver.h"
 #include "effector.h"
 
@@ -48,8 +50,11 @@ private:
 	void		MakeCubemap				();
 	void		MakeScreenshot			();
 	void		MakeLevelMapScreenshot	();
+
+	ON_TERM_CALLBACK m_callback;
+
 public:
-				CDemoRecord				(const char *name, float life_time=60*60*1000);
+				CDemoRecord				(const char *name, ON_TERM_CALLBACK func, float life_time=60*60*1000);
 	virtual		~CDemoRecord();
 
 	virtual void IR_OnKeyboardPress		(int dik);

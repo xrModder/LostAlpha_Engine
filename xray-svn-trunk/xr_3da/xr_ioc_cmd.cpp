@@ -627,7 +627,7 @@ void CCC_Register()
 	CMD4(CCC_Integer,	"net_dbg_dump_export_obj",	&g_Dump_Export_Obj, 0, 1);
 	CMD4(CCC_Integer,	"net_dbg_dump_import_obj",	&g_Dump_Import_Obj, 0, 1);
 
-if(strstr(Core.Params,"designer"))	
+if(strstr(Core.Params,"-designer"))	
 {
 	CMD1(CCC_DR_TakePoint,		"demo_record_take_point");
 	CMD1(CCC_DR_ClearPoint,		"demo_record_clear_points");

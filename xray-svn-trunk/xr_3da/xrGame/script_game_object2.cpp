@@ -351,6 +351,26 @@ void CScriptGameObject::SetActorLegsVisible			(bool val)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorLegsVisible method for non-actor object");
 }
 
+void CScriptGameObject::SetActorCamSet			(u32 val)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor){
+		switch (val)
+		{
+		case 1: actor->cam_Set(eacFirstEye); break;
+		case 2: actor->cam_Set(eacLookAt); break;
+		case 3: actor->cam_Set(eacFreeLook); break;
+		}
+	}else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorCamSet method for non-actor object");
+}
+
+bool CScriptGameObject::IsFirstEyeCam			()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	return			(actor && actor->IsFirstEye());
+}
+
 CHolderCustom* CScriptGameObject::get_current_holder()
 {
 	CActor* actor = smart_cast<CActor*>(&object());

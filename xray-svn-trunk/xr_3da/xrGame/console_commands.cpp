@@ -356,6 +356,20 @@ public:
 //#endif // MASTER_GOLD
 
 //-----------------------------------------------------------------------
+
+void DemoRecordCallback()
+{
+#pragma todo("gr1ph to Skyloader: it works, it just waits you're legs fix :)")
+#if 0
+	CActor *actor = Actor();
+	if (actor)
+	{
+		actor->setVisible					(true);
+		actor->SetDrawLegs					(true);
+	}
+#endif
+}
+
 class CCC_DemoRecord : public IConsole_Command
 {
 public:
@@ -369,13 +383,18 @@ public:
 			return;
 		};
 		#endif
+		CActor			*actor = Actor();
 		Console->Hide	();
 		string_path		fn_; 
 		strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
 		string_path		fn;
 		FS.update_path	(fn, "$game_saves$", fn_);
-
-		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord> (fn));
+		if (actor)
+		{
+			actor->setVisible					(false);
+			actor->SetDrawLegs					(false);
+		}
+		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord> (fn, &DemoRecordCallback));
 	}
 };
 class CCC_DemoPlay : public IConsole_Command
