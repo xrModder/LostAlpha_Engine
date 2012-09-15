@@ -113,6 +113,7 @@ void CImageManager::CreateTextureThumbnail(ETextureThumbnail* THM, const AnsiStr
         }
     }
     THM->SetValid();
+//	THM->Save();
 /*
     xr_string _message = "THM for "+ xr_string(src_name.c_str()) +" not found. Create new?";
     if( mrYes == ELog.DlgMsg(mtConfirmation,TMsgDlgButtons() << mbYes << mbNo, _message.c_str() ) )
@@ -210,8 +211,7 @@ bool CImageManager::MakeGameTexture(ETextureThumbnail* THM, LPCSTR game_name, u3
         xr_delete			(NM_THM);
         if (false==e_res)	return false;
     }
-    // compress
-    
+	// compress
     int res 	= DXTCompress(game_name, (u8*)load_data, (u8*)(ext_data.empty()?0:ext_data.begin()), w, h, w4, &THM->m_TexParams, 4);
     if (1!=res){
     	if (-1000!=res){ //. Special for Oles (glos<10%) 
@@ -333,10 +333,10 @@ void CImageManager::SynchronizeTextures(bool sync_thm, bool sync_game, bool bFor
         BOOL bFailed 	= FALSE;
     	// check thumbnail
     	if (sync_thm&&bThm){
-        	THM = xr_new<ETextureThumbnail>(it->name.c_str());
-		bool bRes = Surface_Load(fn,data,w,h,a); R_ASSERT(bRes);
-//.             MakeThumbnailImage(THM,data.begin(),w,h,a);
-            THM->Save	(it->time_write);
+           THM = xr_new<ETextureThumbnail>(it->name.c_str());
+	   bool bRes = Surface_Load(fn,data,w,h,a); R_ASSERT(bRes);
+//.        MakeThumbnailImage(THM,data.begin(),w,h,a);
+           THM->Save	(it->time_write);
             bUpdated = TRUE;
         }
         // check game textures

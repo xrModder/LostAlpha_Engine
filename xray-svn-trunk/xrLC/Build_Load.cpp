@@ -105,7 +105,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 			} catch (...)
 			{
 				err_save	();
-				Debug.fatal	(DEBUG_INFO,"* ERROR: Can't process face #%d",i);
+				if (b_noinvalidfaces) Debug.fatal	(DEBUG_INFO,"* ERROR: Can't process face #%d",i);
 			}
 		}
 		Progress			(p_total+=p_cost);

@@ -37,7 +37,7 @@ WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int)
 //    try{
         if (!Application->Handle){ 
             Application->CreateHandle	(); 
-            Application->Icon->Handle 	= LoadIcon(MainInstance, "MAINICON"); 
+            Application->Icon->Handle 	= LoadIcon(MainInstance, "MAINICON");
 			Application->Title 			= "Loading...";
         } 
         frmSplash 				= xr_new<TfrmSplash>((TComponent*)0);
@@ -48,8 +48,8 @@ WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int)
     	Core._initialize		("level",ELogCallback);
 
         Application->Initialize	();
-                                       
-        frmSplash->SetStatus	("Loading...");
+
+        frmSplash->SetStatus	("Loading Lost Alpha Level Editor...");  // :)
 
 // startup create
         Tools					= xr_new<CLevelTools>();

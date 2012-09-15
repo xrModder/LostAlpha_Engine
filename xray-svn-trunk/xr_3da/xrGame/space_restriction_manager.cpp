@@ -115,9 +115,10 @@ IC	void CSpaceRestrictionManager::collect_garbage				()
 			++I;
 	}
 }
-
+ 
 void CSpaceRestrictionManager::restrict							(ALife::_OBJECT_ID id, shared_str out_restrictors, shared_str in_restrictors)
 {
+	//Msg("~ adding out=[%s] in=[%s] to [%d]", *out_restrictors, *in_restrictors, id);
 	shared_str									merged_out_restrictions = out_restrictors;
 	shared_str									merged_in_restrictions = in_restrictors;
 	shared_str									_default_out_restrictions = default_out_restrictions();

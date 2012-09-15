@@ -293,6 +293,8 @@ public:
 	CAnomalyDetector		&anomaly_detector	() {return (*m_anomaly_detector);}
 	// -----------------------------------------------------------------------------
 
+	void					anomaly_detector_enable	(bool state);
+	bool					anomaly_detector_enabled();		
 
 //	//-----------------------------------------------------------------
 //	// Spawn Inventory Item

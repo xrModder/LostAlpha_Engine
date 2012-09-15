@@ -191,6 +191,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("set_home",					&CScriptGameObject::set_home)
 		.def("remove_home",					&CScriptGameObject::remove_home)
 		.def("berserk",						&CScriptGameObject::berserk)
+		.def("anomaly_detector_enable",		&CScriptGameObject::anomaly_detector_enable)
+		.def("anomaly_detector_enabled",	&CScriptGameObject::anomaly_detector_enabled)
 		.def("can_script_capture",			&CScriptGameObject::can_script_capture)
 		.def("set_custom_panic_threshold",	&CScriptGameObject::set_custom_panic_threshold)
 		.def("set_default_panic_threshold",	&CScriptGameObject::set_default_panic_threshold)

@@ -121,7 +121,29 @@ void CScriptGameObject::fake_death_stand_up()
 void CScriptGameObject::berserk()
 {
 	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->set_berserk();
+	if (monster)
+		monster->set_berserk();
+	else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CBaseMonster : cannot access class member berserk!");
+}
+
+void CScriptGameObject::anomaly_detector_enable(bool state)
+{
+	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
+	if (monster) 
+		monster->anomaly_detector_enable(state);
+	else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CBaseMonster : cannot access class member anomaly_detector_enable!");
+}
+
+bool CScriptGameObject::anomaly_detector_enabled() 
+{
+	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
+	if (monster) 
+		return monster->anomaly_detector_enabled();
+	else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CBaseMonster : cannot access class member anomaly_detector_enabled!");
+	return false;
 }
 
 void CScriptGameObject::set_custom_panic_threshold(float value)

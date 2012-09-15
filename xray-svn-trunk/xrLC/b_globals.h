@@ -49,3 +49,4 @@ extern const int				idx2edge	[3][3];
 extern BOOL						b_radiosity;
 extern BOOL						b_noise;
 extern BOOL						b_nosun;
+extern BOOL						b_noinvalidfaces;

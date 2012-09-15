@@ -93,15 +93,14 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	LPCSTR				S = pSettings->r_string(section,"grenade_class");
 	if (S && S[0]) 
 	{
-		string128		_ammoItem;
 		int				count		= _GetItemCount	(S);
 		for (int it=0; it<count; ++it)	
 		{
+			string128		_ammoItem;
 			_GetItem				(S,it,_ammoItem);
 			m_ammoTypes2.push_back	(_ammoItem);
 		}
 	}
-
 	iMagazineSize2 = iMagazineSize;
 }
 
@@ -122,7 +121,13 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 
 	iAmmoElapsed2	= weapon->a_elapsed_grenades.grenades_count;
 	m_ammoType2		= weapon->a_elapsed_grenades.grenades_type;
-
+#pragma fixme("gr1ph: assertion d be better, but who cares :D")
+	if (m_ammoType2 >= m_ammoTypes2.size())
+	{
+		m_ammoType2 = 0;
+		Msg("! m_ammoType2(%d)[%d] is wrong for '%s'",  m_ammoType2, m_ammoTypes2.size(), *cName()); 
+		VERIFY(0);
+	}
 	m_DefaultCartridge2.Load(m_ammoTypes2[m_ammoType2].c_str(), m_ammoType2);
 
 	if (!IsGameTypeSingle())

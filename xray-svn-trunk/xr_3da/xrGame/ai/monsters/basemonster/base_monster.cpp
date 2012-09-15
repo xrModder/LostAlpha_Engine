@@ -138,6 +138,18 @@ void CBaseMonster::shedule_Update(u32 dt)
 #endif
 }
 
+void CBaseMonster::anomaly_detector_enable(bool state)
+{ 
+	if (state)
+		anomaly_detector().activate();
+	else
+		anomaly_detector().deactivate();
+}
+
+bool CBaseMonster::anomaly_detector_enabled()
+{ 
+	return anomaly_detector().active(); 
+}
 
 //////////////////////////////////////////////////////////////////////
 // Other functions

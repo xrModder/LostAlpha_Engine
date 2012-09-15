@@ -43,4 +43,5 @@ public:
 	
 	void		activate			(){m_active = true;}
 	void		deactivate			(){m_active = false;}
+	bool		active				() const { return m_active; }
 };

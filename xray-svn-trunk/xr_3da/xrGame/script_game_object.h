@@ -246,6 +246,8 @@ public:
 			void				berserk					();
 			void				set_custom_panic_threshold	(float value);
 			void				set_default_panic_threshold	();
+			void				anomaly_detector_enable	(bool state);
+			bool				anomaly_detector_enabled();
 
 	// CAI_Trader
 			void				set_trader_global_anim	(LPCSTR anim);

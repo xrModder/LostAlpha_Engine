@@ -152,7 +152,7 @@ void CSpaceRestrictionComposition::initialize	()
 	}
 #endif
 }
-
+ 
 #ifdef DEBUG
 void CSpaceRestrictionComposition::test_correctness()
 {

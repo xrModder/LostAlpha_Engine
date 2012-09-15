@@ -32,10 +32,11 @@ extern volatile BOOL bClose;
 
 static const char* h_str = 
 	"The following keys are supported / required:\n"
-	"-? or -h	== this help\n"
-	"-o			== modify build options\n"
-	"-nosun		== disable sun-lighting\n"
-	"-f<NAME>	== compile level in GameData\\Levels\\<NAME>\\\n"
+	"-? or -h		== this help\n"
+	"-o				== modify build options\n"
+	"-nosun			== disable sun-lighting\n"
+	"-f<NAME>		== compile level in GameData\\Levels\\<NAME>\\\n"
+	"-noinvalidfaces== invalid faces detection\n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 
@@ -59,6 +60,7 @@ void Startup(LPSTR     lpCmdLine)
 	if (strstr(cmd,"-gi"))								b_radiosity		= TRUE;
 	if (strstr(cmd,"-noise"))							b_noise			= TRUE;
 	if (strstr(cmd,"-nosun"))							b_nosun			= TRUE;
+	if (strstr(cmd,"-noinvalidfaces"))					b_noinvalidfaces= TRUE;
 	
 	// Give a LOG-thread a chance to startup
 	//_set_sbh_threshold(1920);
