@@ -2,6 +2,7 @@
 #include "MosquitoBald.h"
 #include "ZoneMine.h"
 #include "ZoneCampfire.h"
+#include "NoGravityZone.h"
 
 using namespace luabind;
 
@@ -13,6 +14,8 @@ void CMosquitoBald::script_register	(lua_State *L)
 		class_<CMosquitoBald,CGameObject>("CMosquitoBald")
 			.def(constructor<>()),
 		class_<CZoneMine,CGameObject>("CZoneMine")
+			.def(constructor<>()),
+		class_<CNoGravityZone,CGameObject>("CNoGravityZone")
 			.def(constructor<>()),
 		class_<CZoneCampfire,CGameObject>("CZoneCampfire")
 			.def(constructor<>())

@@ -163,4 +163,5 @@
 #	include "space_restrictor.h"
 #	include "physicobject.h"
 #	include "dynamic_patrol_path.h"
+#	include "inventory_item_object.h"
 #endif
