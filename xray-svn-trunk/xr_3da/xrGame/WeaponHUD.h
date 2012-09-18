@@ -53,6 +53,8 @@ class CWeaponHUD
 	//флаг, если hud спрятан не показывается
 	bool				m_bHidden;
 	bool				m_bVisible;
+	//if need to collide weapon hud
+	bool				m_bCollideHud;
 
 	Fmatrix				m_Transform;
 
