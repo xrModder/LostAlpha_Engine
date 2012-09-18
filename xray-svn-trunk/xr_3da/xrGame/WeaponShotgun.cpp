@@ -80,8 +80,8 @@ void CWeaponShotgun::Fire2Start ()
 
 			if (!iAmmoElapsed)	
 			{
-				//CWeapon::FireStart			();
-				//SwitchState					(eMagEmpty);
+				CWeapon::FireStart			();
+				SwitchState					(eMagEmpty);
 			}
 			else					
 			{
@@ -90,8 +90,8 @@ void CWeaponShotgun::Fire2Start ()
 			}
 		}
 	}else{
-		//if (!iAmmoElapsed)	
-			//SwitchState						(eMagEmpty);
+		if (!iAmmoElapsed)	
+			SwitchState						(eMagEmpty);
 	}
 }
 
