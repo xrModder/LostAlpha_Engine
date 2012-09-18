@@ -1161,6 +1161,16 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 	}
 }
 
+bool CInventory::AreSlotsBlocked()
+{
+	for (int i =0; i < SLOTS_TOTAL; ++i)
+	{
+		if (!m_slots[i].IsBlocked())
+			return false;
+	}
+	return true;
+}
+
 bool CInventory::SBeltItemPred::operator ()(PIItem &item)
 { 
 	return item->object().ID() == m_id; 

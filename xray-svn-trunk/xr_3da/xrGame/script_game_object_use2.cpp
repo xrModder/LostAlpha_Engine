@@ -141,8 +141,7 @@ bool CScriptGameObject::anomaly_detector_enabled()
 	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
 	if (monster) 
 		return monster->anomaly_detector_enabled();
-	else
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CBaseMonster : cannot access class member anomaly_detector_enabled!");
+	ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CBaseMonster : cannot access class member anomaly_detector_enabled!");
 	return false;
 }
 

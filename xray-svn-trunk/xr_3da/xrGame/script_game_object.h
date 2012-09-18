@@ -322,7 +322,7 @@ public:
 
 			void				HideWeapon			();
 			void				RestoreWeapon		();
-
+			bool				IsWeaponHidden		();
 
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();

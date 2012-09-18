@@ -121,6 +121,7 @@ public:
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
 
 	void					SetSlotsBlocked		(u16 mask, bool bBlock);
+	bool					AreSlotsBlocked		();
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TISlotArr				m_slots;

@@ -285,3 +285,20 @@ bool CObjectHandler::can_use_dynamic_lights	()
 	// flAiUseTorchDynamicLights == 1
 	return						(!!g_uCommonFlags.test(1));
 }
+
+bool CObjectHandler::is_weapon_going_to_be_strapped	(CGameObject const *object) const
+{
+	CObjectHandlerPlanner const&					planner			= this->planner			();
+	typedef xr_vector<typename GraphEngineSpace::CWorldProperty>	properties_type;
+	CWorldProperty const							strap_property							(planner.uid(object->ID(),
+																							 ObjectHandlerSpace::eWorldPropertyIdleStrap),
+																							 true);
+	properties_type const&							properties		= planner.target_state	().conditions	();
+	properties_type::const_iterator const			properties_end	= properties.end		();
+	properties_type::const_iterator const			found			= std::lower_bound		(properties.begin(), properties_end, strap_property);
+	
+	if (found == properties_end)
+		return					false;
+
+	return						*found == strap_property;
+}
