@@ -52,6 +52,7 @@ public:
 			void	UpdateBattery		(void);
 			void	Switch				();
 			void	Switch				(bool light_on);
+			void	Broke				();
 
 			void	Recharge(void);
 			u16		GetBatteryStatus(void);
@@ -75,6 +76,7 @@ protected:
 	HUD_SOUND				m_NightVisionIdleSnd;
 	HUD_SOUND				m_NightVisionBrokenSnd;
 	HUD_SOUND				m_FlashlightSwitchSnd;
+	HUD_SOUND				m_FlashlightBrokeSnd;
 
 	/*float					m_NightVisionRechargeTime;
 	float					m_NightVisionRechargeTimeMin;
