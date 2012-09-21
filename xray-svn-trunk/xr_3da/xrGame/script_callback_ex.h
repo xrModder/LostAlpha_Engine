@@ -92,6 +92,7 @@ public:
 	IC			CScriptCallbackEx_	&operator=				(const CScriptCallbackEx_ &callback);
 	IC			bool				operator==				(const CScriptCallbackEx_ &callback)const{return compare_safe(m_object,(callback.m_object))&&m_functor==(callback.m_functor);}
 	IC			bool				operator==				(const object_type	&object)		const{return compare_safe(m_object,object);}
+	IC			bool				operator==				(const functor_type &functor)		const{return m_functor==functor;}
 	IC			void				set						(const functor_type &functor);
 	IC			void				set						(const functor_type &functor, const object_type &object);
 	IC			void				clear					();

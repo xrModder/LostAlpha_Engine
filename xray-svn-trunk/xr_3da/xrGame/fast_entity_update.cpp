@@ -41,7 +41,12 @@ void CFastEntityUpdater::AddCall(SEntityCall *call)
 
 void CFastEntityUpdater::RemoveCall(u16 id)
 {
-	m_calls.erase(std::remove_if(m_calls.begin(), m_calls.end(), SEntityCallPred(id)), m_calls.end());
+//	m_calls.erase(std::remove_if(m_calls.begin(), m_calls.end(), SEntityCallPred(id)), m_calls.end());
+	ENTITIES_CALLS_IT it = std::find_if(m_calls.begin(), m_calls.end(), SEntityCallPred(id));
+	if (it == m_calls.end())
+		return;
+	xr_delete(*it);
+	m_calls.erase(it);
 }
 // Theta(N)
 void CFastEntityUpdater::Update()

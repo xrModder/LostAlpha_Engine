@@ -359,7 +359,7 @@ public:
 
 void DemoRecordCallback()
 {
-#pragma todo("gr1ph to Skyloader: it works, it just waits you're legs fix :)")
+#pragma todo("gr1ph to Skyloader: it works, it just waits your legs fix :)")
 #if 0
 	CActor *actor = Actor();
 	if (actor)
