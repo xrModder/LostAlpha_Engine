@@ -258,6 +258,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("set_actor_legs_visible",		&CScriptGameObject::SetActorLegsVisible)
 		.def("set_actor_camera",			&CScriptGameObject::SetActorCamSet)
 		.def("is_first_eye",				&CScriptGameObject::IsFirstEyeCam)
+		.def("block_slots_and_inventory",				&CScriptGameObject::SetHandsOnly)
+		.def("is_blocked_slots_and_inventory",		&CScriptGameObject::IsHandsOnly)
 
 		.def("vertex_in_direction",			&CScriptGameObject::vertex_in_direction)
 

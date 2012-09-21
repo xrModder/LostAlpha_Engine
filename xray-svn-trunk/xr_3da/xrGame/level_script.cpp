@@ -99,8 +99,8 @@ void set_weather	(LPCSTR weather_name, bool forced)
 
 void set_game_time	(u32 hour_new, u32 min_new, u32 days_new)
 {
-/*
-//SkyLoader: fix it please
+#pragma todo("SkyLoader: fix it please")
+#if 0
 	float time = Level().GetEnvironmentGameDayTimeSec();
 
 	if (days_new)
@@ -111,7 +111,7 @@ void set_game_time	(u32 hour_new, u32 min_new, u32 days_new)
 
 	float new_time = generate_time(year, month, day, hours, mins, secs, milisecs)
 	g_pGamePersistent->Environment().SetGameTime(new_time,Level().GetGameTimeFactor());
-*/
+#endif
 }
 
 bool set_weather_fx	(LPCSTR weather_name)
