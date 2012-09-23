@@ -170,6 +170,21 @@ CInifile &CSE_Abstract::spawn_ini			()
 #pragma warning(pop)
 	return						(*m_ini_file);
 }
+
+void CSE_Abstract::set_custom_data(LPCSTR data)
+{
+	m_ini_string = data;
+	if (m_ini_file && xr_strlen(m_ini_string)) {
+		delete_data(m_ini_file);
+		m_ini_file			= xr_new<CInifile>(
+			&IReader			(
+				(void*)(*(m_ini_string)),
+				m_ini_string.size()
+			),
+			FS.get_path("$game_config$")->m_Path
+		);
+	}
+}
 	
 void CSE_Abstract::Spawn_Write				(NET_Packet	&tNetPacket, BOOL bLocal)
 {

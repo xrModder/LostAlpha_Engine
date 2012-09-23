@@ -30,12 +30,12 @@ void CActor::cam_Set	(EActorCameras style)
 	{
 		if (eacFirstEye==cam_active && eacLookAt==style)
 		{
-			m_fPickupInfoRadius += 1;
-			inventory().SetTakeDist(inventory().GetTakeDist() + 1.0f);
+			m_fPickupInfoRadius = pSettings->r_float(*cNameSect(),"pickup_info_radius") + 1.0f;
+			inventory().SetTakeDist(pSettings->r_float("inventory","take_dist") + 1.0f);
 		} else if (eacLookAt==cam_active && eacFirstEye==style)
 		{
-			m_fPickupInfoRadius -= 1;
-			inventory().SetTakeDist(inventory().GetTakeDist() - 1.0f);
+			m_fPickupInfoRadius = pSettings->r_float(*cNameSect(),"pickup_info_radius");
+			inventory().SetTakeDist(pSettings->r_float("inventory","take_dist"));
 		}
 
 		if (eacFirstEye==cam_active)
@@ -84,6 +84,7 @@ void CActor::cam_SetLadder()
 		C->bClampYaw		= true;
 	}
 }
+
 void CActor::camUpdateLadder(float dt)
 {
 	if(!character_physics_support()->movement()->ElevatorState())

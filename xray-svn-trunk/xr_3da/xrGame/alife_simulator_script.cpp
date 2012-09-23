@@ -19,6 +19,7 @@
 #include "alife_registry_container.h"
 #include "xrServer.h"
 #include "level.h"
+#include "restriction_space.h"
 
 using namespace luabind;
 
@@ -224,6 +225,49 @@ CSE_Abstract *CALifeSimulator__spawn_item4		(CALifeSimulator *self, LPCSTR secti
 	object->m_story_id					= sid;
 	object->o_Angle						= direction;
 	self->register_object														(object, true);
+	return entity;
+}
+
+CSE_Abstract *CALifeSimulator__spawn_anom		(CALifeSimulator *self, LPCSTR section, const Fvector &position,
+													 u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, float zone_radius, u8 restr_type)
+{
+	THROW								 (self);
+	CSE_Abstract			*entity		=(self->spawn_item(section,position,level_vertex_id,game_vertex_id,ALife::_OBJECT_ID(-1)));
+
+	CSE_ALifeAnomalousZone		*anomaly = smart_cast<CSE_ALifeAnomalousZone*>(entity);
+	THROW							  										  (anomaly);
+
+	CShapeData::shape_def		_shape;
+	_shape.data.sphere.P.set	(0.0f,0.0f,0.0f);
+	_shape.data.sphere.R		= zone_radius;
+	_shape.type					= CShapeData::cfSphere;
+	anomaly->assign_shapes	(&_shape,1);
+	anomaly->m_artefact_spawn_count = 0;//true
+	anomaly->m_space_restrictor_type	= RestrictionSpace::ERestrictorTypes(restr_type);
+
+	return entity;
+}
+
+CSE_Abstract *CALifeSimulator__spawn_anom_sid		(CALifeSimulator *self, LPCSTR section, const Fvector &position,
+													 u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, float zone_radius, u8 restr_type, ALife::_STORY_ID sid = INVALID_STORY_ID)
+{
+	THROW								 (self);
+	R_ASSERT							(!self->story_objects().object(sid, false));
+	CSE_Abstract			*entity		=(self->spawn_item(section,position,level_vertex_id,game_vertex_id,ALife::_OBJECT_ID(-1)));
+
+	CSE_ALifeAnomalousZone		*anomaly = smart_cast<CSE_ALifeAnomalousZone*>(entity);
+	THROW							  										  (anomaly);
+
+	CShapeData::shape_def		_shape;
+	_shape.data.sphere.P.set	(0.0f,0.0f,0.0f);
+	_shape.data.sphere.R		= zone_radius;
+	_shape.type					= CShapeData::cfSphere;
+	anomaly->assign_shapes	(&_shape,1);
+	anomaly->m_artefact_spawn_count = 0;//true
+	anomaly->m_space_restrictor_type	= RestrictionSpace::ERestrictorTypes(restr_type);
+
+	anomaly->m_story_id					= sid;
+
 	return entity;
 }
 
@@ -441,6 +485,8 @@ void CALifeSimulator::script_register			(lua_State *L)
 			// lost alpha start
 			.def("teleport_entity",			&teleport_entity)
 			.def("change_actor_level",		&change_actor_level)
+			.def("create_anomaly",			&CALifeSimulator__spawn_anom)
+			.def("create_anomaly",			&CALifeSimulator__spawn_anom_sid)
 			.def("switch_offline",			&script_switch_to_offline)
 			.def("switch_online",			&script_switch_to_online)
 			.def("force_entity_update",		&force_entity_update)

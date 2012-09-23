@@ -45,7 +45,7 @@ bool CStalkerActionDead::fire			() const
 	if (!object().hammer_is_clutched())
 		return							(false);
 
-	if (Device.dwTimeGlobal - object().GetLevelDeathTime() > 500)
+	if (Device.dwTimeGlobal - object().GetLevelDeathTime() > 1500)
 		return							(false);
 
 	return								(true);
@@ -99,8 +99,11 @@ void CStalkerActionDead::execute		()
 			continue;
 
 		if ((I - B) == (int)object().inventory().GetActiveSlot()) {
+			CWeapon	*weapon = smart_cast<CWeapon*>(object().inventory().ActiveItem());
+			if ((weapon && !weapon->strapped_mode()) || !weapon) {
 			(*I).m_pIItem->SetDropManual	(TRUE);
 			continue;
+			}
 		}
 
 		object().inventory().Ruck		((*I).m_pIItem);

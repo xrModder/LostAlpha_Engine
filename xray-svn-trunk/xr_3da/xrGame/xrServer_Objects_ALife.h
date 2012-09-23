@@ -317,6 +317,8 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeSpaceRestrictor,CSE_ALifeDynamicObject,CSE
 	virtual ISE_Shape*  __stdcall	shape						();
 	virtual bool					can_switch_offline			() const;
 	virtual bool					used_ai_locations			() const;
+			u8						get_space_restrictor_type	() const;
+			void					set_space_restrictor_type	(u8);
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeSpaceRestrictor)
 #define script_type_list save_type_list(CSE_ALifeSpaceRestrictor)
@@ -448,6 +450,8 @@ SERVER_ENTITY_DECLARE_BEGIN3(CSE_ALifeHelicopter,CSE_ALifeDynamicObjectVisual,CS
 	virtual bool					can_save					() const;
 	virtual bool					used_ai_locations			() const;
 	virtual CSE_Motion*	__stdcall	motion						();
+			void					set_engine_sound			(LPCSTR);
+			LPCSTR					get_engine_sound			();
 	virtual CSE_Abstract			*cast_abstract			() {return this;}
 
 SERVER_ENTITY_DECLARE_END

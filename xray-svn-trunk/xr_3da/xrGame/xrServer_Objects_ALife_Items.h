@@ -116,6 +116,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemAmmo,CSE_ALifeItem)
 	virtual CSE_ALifeItemAmmo		*cast_item_ammo		()  {return this;};
 	virtual bool					can_switch_online	() const;
 	virtual bool					can_switch_offline	() const;
+			u16						get_ammo_left		() const;
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemAmmo)
 #define script_type_list save_type_list(CSE_ALifeItemAmmo)
@@ -186,7 +187,9 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u16								get_ammo_limit		();
 	u16								get_ammo_total		();
 	u16								get_ammo_elapsed	();
+	void							set_ammo_elapsed	(u16);
 	u16								get_ammo_magsize	();
+	u8								get_addon_flags		();
 
 	virtual BOOL					Net_Relevant		();
 

@@ -26,6 +26,7 @@ void CSE_ALifeTraderAbstract::script_register(lua_State *L)
 //			.def(		constructor<LPCSTR>())
 #ifdef XRGAME_EXPORTS
 			.def("community",		&CommunityName)
+			.def("character_name",	&character_name)
 			.def("profile_name",	&profile_name_script)
 			.def("rank",			&Rank)
 			.def("reputation",		&Reputation)
@@ -65,6 +66,7 @@ void CSE_ALifeAnomalousZone::script_register(lua_State *L)
 			"cse_anomalous_zone",
 			CSE_ALifeCustomZone
 		)
+		.def("add_shape_size",	&CSE_ALifeAnomalousZone::add_shape_size)
 #ifdef XRGAME_EXPORTS
 		.def("spawn_artefacts",	&CSE_ALifeAnomalousZone::spawn_artefacts)
 #endif

@@ -36,6 +36,7 @@ SERVER_ENTITY_DECLARE_BEGIN0(CSE_ALifeTraderAbstract)
 	//character profile info
 #ifndef  AI_COMPILER
 	shared_str						character_profile		();
+	LPCSTR							character_name			();
 	void							set_character_profile	(shared_str);
 	shared_str			specific_character		();
 	void							set_specific_character	(shared_str);
@@ -147,6 +148,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeAnomalousZone,CSE_ALifeCustomZone)
 	virtual u32						ef_creature_type		() const;
 #ifdef XRGAME_EXPORTS
 			void					spawn_artefacts			();
+			void					add_shape_size			(float);
 	virtual void					on_spawn				();
 	virtual	CSE_ALifeItemWeapon		*tpfGetBestWeapon		(ALife::EHitType		&tHitType,				float &fHitPower);
 	virtual	ALife::EMeetActionType	tfGetActionType			(CSE_ALifeSchedulable	*tpALifeSchedulable,	int iGroupIndex, bool bMutualDetection);
@@ -214,6 +216,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeCreatureAbstract,CSE_ALifeDynamicObjectVisu
 	IC		void					set_killer_id			(ALife::_OBJECT_ID const killer_id);
 	IC		float					g_Health				() const								{ return fHealth;}
 	IC		bool					g_Alive					() const								{ return (g_Health() > 0.f);}
+	virtual LPCSTR					get_visual_script		() const;
+	virtual void					set_visual_script		(LPCSTR);
 	virtual bool					used_ai_locations		() const;
 	virtual bool					can_switch_online		() const;
 	virtual bool					can_switch_offline		() const;

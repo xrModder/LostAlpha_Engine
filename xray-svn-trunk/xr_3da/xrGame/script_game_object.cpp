@@ -323,6 +323,16 @@ u32 CScriptGameObject::GetAmmoElapsed()
 	return 0;
 }
 
+LPCSTR CScriptGameObject::GetAmmoSection()
+{
+	CWeaponMagazined *weapon = smart_cast<CWeaponMagazined*>(&object());
+	if (!weapon) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CWeaponMagazined : cannot access class member GetAmmoSection!");
+		return "";
+	}
+	return weapon->getAmmoName();
+}
+
 void CScriptGameObject::SetAmmoElapsed(int ammo_elapsed)
 {
 	CWeapon	*weapon = smart_cast<CWeapon*>(&object());
@@ -350,6 +360,16 @@ void CScriptGameObject::SetQueueSize(u32 queue_size)
 		return;
 	}
 	weapon->SetQueueSize	(queue_size);
+}
+
+int CScriptGameObject::GetAmmoMagSize()
+{
+	CWeaponMagazined		*weapon = smart_cast<CWeaponMagazined*>(&object());
+	if (!weapon) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CWeaponMagazined : cannot access class member GetAmmoMagSize!");
+		return 0;
+	}
+	return weapon->GetAmmoMagSize	();
 }
 
 ////////////////////////////////////////////////////////////////////////////

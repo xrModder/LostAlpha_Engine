@@ -46,6 +46,15 @@ CSE_ALifeDynamicObject *CSE_ALifeAnomalousZone::tpfGetBestDetector()
 	return						(0);
 #endif
 }
+#pragma todo("need to update that function for ability to create many shapes with different sizes")
+void CSE_ALifeAnomalousZone::add_shape_size		(float zone_radius)
+{
+	CShapeData::shape_def _shapes;
+	_shapes.data.sphere.P.set	(0.0f,0.0f,0.0f);
+	_shapes.data.sphere.R		= zone_radius;
+	_shapes.type				= CShapeData::cfSphere;
+	assign_shapes		(&_shapes, u32(1));
+}
 
 void CSE_ALifeAnomalousZone::spawn_artefacts				()
 {

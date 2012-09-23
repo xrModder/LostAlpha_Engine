@@ -113,6 +113,7 @@ public:
 
 	virtual bool	Action			(u16 cmd, u32 flags);
 	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
+	virtual LPCSTR	getAmmoName		();
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
 
