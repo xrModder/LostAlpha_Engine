@@ -11,7 +11,7 @@
 #include "object_broker.h"
 #include "GameTaskManager.h"
 #include "GameTask.h"
-
+#include "inventory.h"
 #include "ui/UIInventoryWnd.h"
 #include "ui/UITradeWnd.h"
 #include "ui/UIPdaWnd.h"
@@ -84,7 +84,8 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	switch ( get_binded_action(dik) )
 	{
 	case kINVENTORY: 
-		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu){
+		if((!MainInputReceiver() || MainInputReceiver()==InventoryMenu) && !pActor->inventory().IsHandsOnly()){
+			
 			m_game->StartStopMenu(InventoryMenu,true);
 			return true;
 		}break;

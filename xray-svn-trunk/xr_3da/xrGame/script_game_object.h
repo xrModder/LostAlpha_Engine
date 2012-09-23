@@ -214,6 +214,8 @@ public:
 			void				SetActorDirection	(float dir);
 			void				SetActorLegsVisible	(bool val);
 			void				SetActorCamSet		(u32 val);
+			void				SetHandsOnly		(bool val);
+			bool				IsHandsOnly		();
 			bool				IsFirstEyeCam		();
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
@@ -322,7 +324,7 @@ public:
 
 			void				HideWeapon			();
 			void				RestoreWeapon		();
-
+			bool				IsWeaponHidden		();
 
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();

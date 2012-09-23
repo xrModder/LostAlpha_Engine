@@ -808,6 +808,11 @@ void  CScriptGameObject::HideWeapon			()
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL,true);
 }
 
+bool CScriptGameObject::IsWeaponHidden()
+{
+	return Actor()->inventory().AreSlotsBlocked();
+}
+
 int	CScriptGameObject::animation_slot			() const
 {
 	CHudItem		*hud_item = smart_cast<CHudItem*>(&object());

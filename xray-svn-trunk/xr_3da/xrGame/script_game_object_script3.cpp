@@ -162,6 +162,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		
 		.def("hide_weapon",					&CScriptGameObject::HideWeapon)
 		.def("restore_weapon",				&CScriptGameObject::RestoreWeapon)
+		.def("is_weapon_hidden",			&CScriptGameObject::IsWeaponHidden)
 		
 		.def("set_start_dialog",			&CScriptGameObject::SetStartDialog)
 		.def("get_start_dialog",			&CScriptGameObject::GetStartDialog)

@@ -10,6 +10,7 @@
 
 #include "physic_item.h"
 #include "inventory_item.h"
+#include "script_export_space.h"
 
 class CInventoryItemObject : 
 			public CInventoryItem, 
@@ -78,6 +79,15 @@ public:
 
 public:
 	virtual u32		ef_weapon_type			() const;
+
+	DECLARE_SCRIPT_REGISTER_FUNCTION;
+
 };
+
+add_to_type_list(CInventoryItemObject)
+#undef script_type_list
+#define script_type_list save_type_list(CInventoryItemObject)
+
+
 
 #include "inventory_item_inline.h"

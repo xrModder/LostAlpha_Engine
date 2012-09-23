@@ -63,6 +63,7 @@ CInventory::CInventory()
 	m_iLoadActiveSlot							= NO_ACTIVE_SLOT;
 	m_ActivationSlotReason						= eGeneral;
 	m_pTarget									= NULL;
+	m_bHandsOnly								= false;
 
 	string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i ) 
@@ -609,7 +610,7 @@ bool CInventory::Action(u16 cmd, u32 flags)
        {
 		   if (cmd == kWPN_6 && !IsGameTypeSingle()) return false;
 
-			if(flags&CMD_START)
+			if(flags&CMD_START && !m_bHandsOnly)
 			{
                 if((int)m_iActiveSlot == cmd - kWPN_1 &&
 					m_slots[m_iActiveSlot].m_pIItem )
@@ -1159,6 +1160,16 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 					SetPrevActiveSlot(ActiveSlot);
 		}
 	}
+}
+
+bool CInventory::AreSlotsBlocked()
+{
+	for (int i =0; i < SLOTS_TOTAL; ++i)
+	{
+		if (!m_slots[i].IsBlocked())
+			return false;
+	}
+	return true;
 }
 
 bool CInventory::SBeltItemPred::operator ()(PIItem &item)

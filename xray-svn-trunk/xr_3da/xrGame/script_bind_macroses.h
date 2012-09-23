@@ -21,7 +21,7 @@
 #define CAST_OBJECT(Z,A,B)\
 		B				*l_tpEntity = smart_cast<B*>(Z);\
 		if (!l_tpEntity) {\
-			ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"%s : cannot access class member %s!",#B,#A);
+			ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"%s : cannot access class member %s for '%s'!",#B,#A,(Z)->Name());
 
 #define CAST_OBJECT0(Z,A,B)\
 		CAST_OBJECT(Z,A,B)\

@@ -119,8 +119,11 @@ public:
 	void 					SetSlotsUseful		(bool slots_useful) {m_bSlotsUseful = slots_useful;}
 	bool 					IsBeltUseful		() const			{return m_bBeltUseful;}
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
+	bool 					IsHandsOnly		() const			{return m_bHandsOnly;}	 
+	void 					SetHandsOnly		(bool hands_only) {m_bHandsOnly = hands_only;}
 
 	void					SetSlotsBlocked		(u16 mask, bool bBlock);
+	bool					AreSlotsBlocked		();
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TISlotArr				m_slots;
@@ -168,6 +171,8 @@ protected:
 	bool				m_bBeltUseful;
 	//флаг, допускающий использование слотов
 	bool				m_bSlotsUseful;
+	//if need to block all slots and inventory
+	bool				m_bHandsOnly;
 
 	// максимальный вес инвентаря
 	float				m_fMaxWeight;

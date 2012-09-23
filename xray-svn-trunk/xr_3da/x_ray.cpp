@@ -860,6 +860,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 {
 	if (E==eQuit)
 	{
+		FlushLog		();
 		PostQuitMessage	(0);
 		
 		for (u32 i=0; i<Levels.size(); i++)
@@ -883,9 +884,10 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 				strstr(op_server, "/artefacthunt")
 			)
 #endif	
-		{		
-			Console->Execute("main_menu off");
-			Console->Hide();
+		{	
+			FlushLog						();
+			Console->Execute				("main_menu off");
+			Console->Hide					();
 			Device.Reset					(false);
 			//-----------------------------------------------------------
 			g_pGamePersistent->PreStart		(op_server);
@@ -914,6 +916,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 				Console->Execute("main_menu on");
 			}
 		}
+		FlushLog			();
 		R_ASSERT			(0!=g_pGamePersistent);
 		g_pGamePersistent->Disconnect();
 	}

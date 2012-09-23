@@ -39,6 +39,7 @@
 #include "mounted_turret.h"
 #include "movement_manager.h"
 #include "detail_path_manager.h"
+#include "inventory.h"
 
 void CScriptGameObject::explode	(u32 level_time)
 {
@@ -369,6 +370,21 @@ bool CScriptGameObject::IsFirstEyeCam			()
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	return			(actor && actor->IsFirstEye());
+}
+
+void CScriptGameObject::SetHandsOnly			(bool val)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor){
+		actor->inventory().SetHandsOnly(val);
+	}else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorLegsVisible method for non-actor object");
+}
+
+bool CScriptGameObject::IsHandsOnly			()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	return			(actor && actor->inventory().IsHandsOnly());
 }
 
 CHolderCustom* CScriptGameObject::get_current_holder()

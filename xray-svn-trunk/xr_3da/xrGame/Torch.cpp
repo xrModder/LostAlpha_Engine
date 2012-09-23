@@ -190,6 +190,14 @@ void CTorch::Switch()
 	Switch					(bActive);
 }
 
+void CTorch::Broke()
+{
+	if (OnClient()) return;
+	//SkyLoader: need to play this sound
+	//m_FlashlightBrokeSnd.play_at_pos(const_cast<CEntityAlive*>(H_Parent()),pos);
+	Switch					(false);
+}
+
 void CTorch::SetBatteryStatus(u16 val)
 {
 	m_current_battery_state = val;
@@ -221,7 +229,7 @@ void CTorch::Switch	(bool light_on)
 
 		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE); //hack
 	}
-	if (m_switched_on)
+	if (m_switched_on && m_actor_item)
 		HUD_SOUND::PlaySound(m_FlashlightSwitchSnd, pA->Position(), pA, true, false);
 }
 
