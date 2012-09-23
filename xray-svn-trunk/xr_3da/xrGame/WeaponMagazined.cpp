@@ -1088,6 +1088,11 @@ void CWeaponMagazined::StartIdleAnim			()
 	else			m_pHUD->animDisplay(mhud.mhud_idle[Random.randI(mhud.mhud_idle.size())], TRUE);
 }
 
+LPCSTR CWeaponMagazined::getAmmoName()
+{
+	return m_ammoTypes[m_ammoType].c_str();
+}
+
 void CWeaponMagazined::onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)
 {
 	if( (cmd == ACTOR_DEFS::mcSprint)&&(GetState()==eIdle)  )
