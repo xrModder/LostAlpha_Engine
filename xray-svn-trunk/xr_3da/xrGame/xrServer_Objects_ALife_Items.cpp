@@ -469,6 +469,11 @@ void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time,
 	}
 }
 
+u8 CSE_ALifeItemWeapon::get_addon_flags		()
+{
+	return (m_addon_flags.get());
+}
+
 u8	 CSE_ALifeItemWeapon::get_slot			()
 {
 	return						((u8)pSettings->r_u8(s_name,"slot"));
@@ -487,6 +492,11 @@ u16	 CSE_ALifeItemWeapon::get_ammo_total	()
 u16	 CSE_ALifeItemWeapon::get_ammo_elapsed	()
 {
 	return						((u16)a_elapsed);
+}
+
+void CSE_ALifeItemWeapon::set_ammo_elapsed	(u16 val)
+{
+	a_elapsed = val;
 }
 
 u16	 CSE_ALifeItemWeapon::get_ammo_magsize	()
@@ -679,6 +689,11 @@ void CSE_ALifeItemAmmo::UPDATE_Write		(NET_Packet	&tNetPacket)
 	inherited::UPDATE_Write		(tNetPacket);
 
 	tNetPacket.w_u16			(a_elapsed);
+}
+
+u16 CSE_ALifeItemAmmo::get_ammo_left		() const
+{
+	return a_elapsed;
 }
 
 void CSE_ALifeItemAmmo::FillProps			(LPCSTR pref, PropItemVec& values) {

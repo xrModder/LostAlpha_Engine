@@ -453,6 +453,10 @@ shared_str CSE_ALifeTraderAbstract::character_profile()
 {
 	return	m_sCharacterProfile;
 }
+LPCSTR	CSE_ALifeTraderAbstract::character_name()
+{
+	return m_character_name.c_str();
+}
 
 #endif
 
@@ -1080,6 +1084,16 @@ void CSE_ALifeCreatureAbstract::FillProps	(LPCSTR pref, PropItemVec& items)
 bool CSE_ALifeCreatureAbstract::used_ai_locations	() const
 {
 	return						(true);
+}
+
+LPCSTR CSE_ALifeCreatureAbstract::get_visual_script			() const
+{
+	//return visual()->get_visual();
+	return visual_name.c_str();
+}
+void CSE_ALifeCreatureAbstract::set_visual_script			(LPCSTR visual_name)
+{
+	visual()->set_visual(visual_name,true);
 }
 
 bool CSE_ALifeCreatureAbstract::can_switch_online	() const

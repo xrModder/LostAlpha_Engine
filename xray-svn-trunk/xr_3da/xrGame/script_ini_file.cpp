@@ -63,6 +63,11 @@ LPCSTR CScriptIniFile::r_string_wb	(LPCSTR S, LPCSTR L)
 	return		(*inherited::r_string_wb(S,L));
 }
 
+u32 CScriptIniFile::section_count	()
+{
+	return (inherited::section_count());
+}
+
 u32	 CScriptIniFile::line_count			(LPCSTR S)
 {
 	THROW3		(inherited::section_exist(S),"Cannot find section",S);

@@ -34,6 +34,8 @@ void CSE_ALifeHelicopter::script_register(lua_State *L)
 			CSE_Motion,
 			CSE_PHSkeleton
 		)
+		.def("set_engine_sound",		&CSE_ALifeHelicopter::set_engine_sound)
+		.def("get_engine_sound",		&CSE_ALifeHelicopter::get_engine_sound)
 	];
 }
 

@@ -718,6 +718,16 @@ void CSE_ALifeSpaceRestrictor::STATE_Read		(NET_Packet	&tNetPacket, u16 size)
 		m_space_restrictor_type = tNetPacket.r_u8();
 }
 
+u8 CSE_ALifeSpaceRestrictor::get_space_restrictor_type() const
+{
+	return m_space_restrictor_type;
+}
+
+void CSE_ALifeSpaceRestrictor::set_space_restrictor_type(u8 _type)
+{
+	m_space_restrictor_type = _type;
+}
+
 void CSE_ALifeSpaceRestrictor::STATE_Write	(NET_Packet	&tNetPacket)
 {
 	inherited1::STATE_Write		(tNetPacket);
@@ -1376,6 +1386,16 @@ void CSE_ALifeHelicopter::FillProps(LPCSTR pref, PropItemVec& values)
 bool CSE_ALifeHelicopter::used_ai_locations	() const
 {
 	return						(false);
+}
+
+void CSE_ALifeHelicopter::set_engine_sound(LPCSTR sound)
+{
+	engine_sound = sound;
+}
+
+LPCSTR CSE_ALifeHelicopter::get_engine_sound()
+{
+	return engine_sound.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////

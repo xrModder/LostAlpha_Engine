@@ -374,9 +374,11 @@ public:
 
 			LPCSTR				GetPatrolPathName	();
 			u32					GetAmmoElapsed		();
+			LPCSTR				GetAmmoSection		();
 			void				SetAmmoElapsed		(int ammo_elapsed);
 			u32					GetAmmoCurrent		() const;
 			void				SetQueueSize		(u32 queue_size);
+			int					GetAmmoMagSize		();
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();

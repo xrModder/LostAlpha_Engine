@@ -9,6 +9,7 @@
 #include "pch_script.h"
 #include "xrServer_Objects_ALife.h"
 #include "xrServer_script_macroses.h"
+#include "restriction_space.h"
 
 using namespace luabind;
 
@@ -111,6 +112,18 @@ void CSE_ALifeSpaceRestrictor::script_register(lua_State *L)
 			CSE_ALifeDynamicObject,
 			CSE_Shape
 		)
+		.def("get_space_restrictor_type",	&CSE_ALifeSpaceRestrictor::get_space_restrictor_type)
+		.def("set_space_restrictor_type",	&CSE_ALifeSpaceRestrictor::set_space_restrictor_type)
+		.enum_("messages")
+		[
+			value("DEFAULT_RESTRICTOR_TYPE_NONE",					int(RestrictionSpace::eDefaultRestrictorTypeNone)),
+			value("DEFAULT_RESTRICTOR_TYPE_OUT",					int(RestrictionSpace::eDefaultRestrictorTypeOut)),
+			value("DEFAULT_RESTRICTOR_TYPE_IN",						int(RestrictionSpace::eDefaultRestrictorTypeIn)),
+			value("RESTRICTOR_TYPE_NONE",							int(RestrictionSpace::eRestrictorTypeNone)),
+			value("RESTRICTOR_TYPE_OUT",							int(RestrictionSpace::eRestrictorTypeOut)),
+			value("RESTRICTOR_TYPE_IN",								int(RestrictionSpace::eRestrictorTypeIn))
+		]
+
 	];
 }
 
