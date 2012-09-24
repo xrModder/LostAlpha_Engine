@@ -65,6 +65,10 @@ void CSE_ALifeItemWeapon::script_register(lua_State *L)
 			"cse_alife_item_weapon",
 			CSE_ALifeItem
 		)
+		.def					("get_addon_flags",						&CSE_ALifeItemWeapon::get_addon_flags)
+		.def					("set_ammo_in_magazine",				&CSE_ALifeItemWeapon::set_ammo_elapsed)
+		.def					("get_ammo_in_magazine",				&CSE_ALifeItemWeapon::get_ammo_elapsed)
+		.def					("get_ammo_magsize",					&CSE_ALifeItemWeapon::get_ammo_magsize)
 		.enum_					("EWeaponAddonStatus")
 		[
 			value				("eAddonDisabled",						int(CSE_ALifeItemWeapon::eAddonDisabled)),

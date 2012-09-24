@@ -115,7 +115,7 @@ void CScriptGameObject::ResetActionQueue()
 {
 	CScriptEntity		*l_tpScriptMonster = smart_cast<CScriptEntity*>(&object());
 	if (!l_tpScriptMonster)
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member ResetActionQueue!");
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member ResetActionQueue!");
 	else
 		l_tpScriptMonster->ClearActionQueue();
 }
@@ -124,7 +124,7 @@ CScriptEntityAction	*CScriptGameObject::GetCurrentAction	() const
 {
 	CScriptEntity		*l_tpScriptMonster = smart_cast<CScriptEntity*>(&object());
 	if (!l_tpScriptMonster)
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member GetCurrentAction!");
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member GetCurrentAction!");
 	else
 		if (l_tpScriptMonster->GetCurrentAction())
 			return		(xr_new<CScriptEntityAction>(l_tpScriptMonster->GetCurrentAction()));
@@ -135,7 +135,7 @@ void CScriptGameObject::AddAction	(const CScriptEntityAction *tpEntityAction, bo
 {
 	CScriptEntity		*l_tpScriptMonster = smart_cast<CScriptEntity*>(&object());
 	if (!l_tpScriptMonster)
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member AddAction!");
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member AddAction!");
 	else
 		l_tpScriptMonster->AddAction(tpEntityAction, bHighPriority);
 }
@@ -323,6 +323,16 @@ u32 CScriptGameObject::GetAmmoElapsed()
 	return 0;
 }
 
+LPCSTR CScriptGameObject::GetAmmoSection()
+{
+	CWeaponMagazined *weapon = smart_cast<CWeaponMagazined*>(&object());
+	if (!weapon) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CWeaponMagazined : cannot access class member GetAmmoSection!");
+		return "";
+	}
+	return weapon->getAmmoName();
+}
+
 void CScriptGameObject::SetAmmoElapsed(int ammo_elapsed)
 {
 	CWeapon	*weapon = smart_cast<CWeapon*>(&object());
@@ -352,6 +362,16 @@ void CScriptGameObject::SetQueueSize(u32 queue_size)
 	weapon->SetQueueSize	(queue_size);
 }
 
+int CScriptGameObject::GetAmmoMagSize()
+{
+	CWeaponMagazined		*weapon = smart_cast<CWeaponMagazined*>(&object());
+	if (!weapon) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CWeaponMagazined : cannot access class member GetAmmoMagSize!");
+		return 0;
+	}
+	return weapon->GetAmmoMagSize	();
+}
+
 ////////////////////////////////////////////////////////////////////////////
 //// Inventory Owner
 ////////////////////////////////////////////////////////////////////////////
@@ -360,7 +380,7 @@ u32	CScriptGameObject::Cost			() const
 {
 	CInventoryItem		*inventory_item = smart_cast<CInventoryItem*>(&object());
 	if (!inventory_item) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member Cost!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member Cost!");
 		return			(false);
 	}
 	return				(inventory_item->Cost());
@@ -370,7 +390,7 @@ float CScriptGameObject::GetCondition	() const
 {
 	CInventoryItem		*inventory_item = smart_cast<CInventoryItem*>(&object());
 	if (!inventory_item) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member GetCondition!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member GetCondition!");
 		return			(false);
 	}
 	return				(inventory_item->GetCondition());
@@ -380,7 +400,7 @@ void CScriptGameObject::SetCondition	(float val)
 {
 	CInventoryItem		*inventory_item = smart_cast<CInventoryItem*>(&object());
 	if (!inventory_item) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member SetCondition!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member SetCondition!");
 		return;
 	}
 	val					-= inventory_item->GetCondition();
@@ -390,19 +410,21 @@ void CScriptGameObject::SetCondition	(float val)
 void CScriptGameObject::eat				(CScriptGameObject *item)
 {
 	if(!item) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member eat!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member eat, no item passed!");
 		return;
 	}
 
 	CInventoryItem		*inventory_item = smart_cast<CInventoryItem*>(&item->object());
 	if (!inventory_item) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member eat!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member eat, wrong item passed [%s]!",
+																								item->Name());
 		return;
 	}
 
 	CInventoryOwner		*inventory_owner = smart_cast<CInventoryOwner*>(&object());
 	if (!inventory_owner) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member eat!");
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CScriptEntity : cannot access class member eat, wrong object [%s]!",
+																						object().Name());
 		return;
 	}
 	
