@@ -126,6 +126,9 @@ void CWeaponPistol::PlayAnimReload	()
 		CWeaponMagazined::SWMmotions& m = swm_current();
 		m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
 	}
+
+	LPCSTR AnimName = "_reload";
+	CWeapon::WeaponCamEffector(AnimName);
 	
 	m_opened = false;		
 }

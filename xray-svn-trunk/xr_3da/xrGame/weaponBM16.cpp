@@ -42,10 +42,15 @@ void CWeaponBM16::PlayAnimReload()
 	bool b_both = HaveCartridgeInInventory(2);
 
 	VERIFY(GetState()==eReload);
-	if(m_magazine.size()==1 || !b_both)
+	if(m_magazine.size()==1 || !b_both) {
 		m_pHUD->animPlay(random_anim(mhud_reload1),TRUE,this,GetState());
-	else
+		LPCSTR AnimName = "_reload_l";
+		CWeapon::WeaponCamEffector(AnimName);
+	} else {
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
+		LPCSTR AnimName = "_reload_lr";
+		CWeapon::WeaponCamEffector(AnimName);
+	}
 
 }
 

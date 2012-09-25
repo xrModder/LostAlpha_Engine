@@ -68,6 +68,9 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	animGet				(mhud_show_g,	pSettings->r_string(*hud_sect, "anim_draw_g"));
 	animGet				(mhud_hide_g,	pSettings->r_string(*hud_sect, "anim_holster_g"));
 
+	if (pSettings->line_exist(*hud_sect,"anim_idle_sprint_g"))
+		animGet				(mhud_idle_sprint_g,	pSettings->r_string(*hud_sect, "anim_idle_sprint_g"));
+
 	animGet				(mhud_idle_w_gl,	pSettings->r_string(*hud_sect, "anim_idle_gl"));
 	animGet				(mhud_reload_w_gl,	pSettings->r_string(*hud_sect, "anim_reload_gl"));
 	animGet				(mhud_show_w_gl,	pSettings->r_string(*hud_sect, "anim_draw_gl"));
@@ -176,6 +179,8 @@ void CWeaponMagazinedWGrenade::switch2_Reload()
 
 		m_pHUD->animPlay(random_anim(mhud_reload_g),FALSE,this,GetState());
 		m_bPending = true;
+		LPCSTR AnimName = "_reload_grenade";
+		CWeapon::WeaponCamEffector(AnimName);
 	}
 	else 
 	     inherited::switch2_Reload();
@@ -654,18 +659,21 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 {
 	VERIFY(GetState()==eReload);
 
-	if(IsGrenadeLauncherAttached())
+	if(IsGrenadeLauncherAttached()) {
 		m_pHUD->animPlay(random_anim(mhud_reload_w_gl),TRUE,this, GetState());
-	else
+		LPCSTR AnimName = "_reload_w_gl";
+		CWeapon::WeaponCamEffector(AnimName);
+	} else
 		inherited::PlayAnimReload();
 }
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
 {
-	if(TryPlayAnimIdle())	return;
 	VERIFY(GetState()==eIdle);
 	if(IsGrenadeLauncherAttached())
 	{
+		if(TryPlayAnimIdleWG())	return;
+		if(TryPlayAnimIdle())	return;
 		if(m_bGrenadeMode)
 		{
 			if(IsZoomed())
@@ -685,6 +693,26 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 	else
 		inherited::PlayAnimIdle();
 }
+
+bool CWeaponMagazinedWGrenade::TryPlayAnimIdleWG()
+{
+	VERIFY(GetState()==eIdle);
+	if(!IsZoomed()){
+		CActor* pActor = smart_cast<CActor*>(H_Parent());
+		if(pActor)
+		{
+			CEntity::SEntityState st;
+			pActor->g_State(st);
+			if(st.bSprint && mhud_idle_sprint_g.size())
+			{
+				m_pHUD->animPlay(random_anim(mhud_idle_sprint_g), TRUE, NULL,GetState());
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
 	VERIFY(GetState()==eFire || GetState()==eFire2);
@@ -704,10 +732,15 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 
 void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 {
-	if(m_bGrenadeMode)
+	if(m_bGrenadeMode) {
 		m_pHUD->animPlay(random_anim(mhud_switch_g), FALSE, this, eSwitch); //fake
-	else 
+		LPCSTR AnimName = "_switch_on";
+		CWeapon::WeaponCamEffector(AnimName);
+	} else {
 		m_pHUD->animPlay(random_anim(mhud_switch), FALSE, this, eSwitch); //fake
+		LPCSTR AnimName = "_switch_off";
+		CWeapon::WeaponCamEffector(AnimName);
+	}
 }
 
 

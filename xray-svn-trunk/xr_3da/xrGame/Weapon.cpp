@@ -1662,3 +1662,28 @@ u32 CWeapon::Cost() const
 	}
 	return res;
 }
+
+void CWeapon::WeaponCamEffector(LPCSTR name)
+{
+	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	if(pActor)
+	{
+		string256 fname;
+		strcpy(fname, "camera_effects\\weapon\\");
+		strcat(fname, cNameSect().c_str());
+		strcat(fname, name);
+		strcat(fname, ".anm");
+
+		string_path	full_path;
+		if (!FS.exist( full_path, "$game_anims$", fname))
+			return;
+
+		int id = 2012;
+		LPCSTR cb_func = "";
+		CAnimatorCamEffectorScriptCB* e		= xr_new<CAnimatorCamEffectorScriptCB>(cb_func);
+		e->SetType				((ECamEffectorType)id);
+		e->SetCyclic				(FALSE);
+		e->Start				(fname);
+		Actor()->Cameras().AddCamEffector(e);
+	}
+}
