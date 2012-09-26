@@ -862,7 +862,7 @@ float CActor::currentFOV()
 
 	if (eacFreeLook != cam_active && pWeapon &&
 		pWeapon->IsZoomed() && (!pWeapon->ZoomTexture() ||
-		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture())))
+		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture() && eacFirstEye == cam_active) || (pWeapon->ZoomTexture() && eacLookAt == cam_active)))
 		return pWeapon->GetZoomFactor() * (0.75f);
 	else
 		return g_fov;

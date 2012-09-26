@@ -76,7 +76,7 @@ protected:
 	HUD_SOUND				m_NightVisionIdleSnd;
 	HUD_SOUND				m_NightVisionBrokenSnd;
 	HUD_SOUND				m_FlashlightSwitchSnd;
-	HUD_SOUND				m_FlashlightBrokeSnd;
+	ref_sound				sndBreaking;
 
 	/*float					m_NightVisionRechargeTime;
 	float					m_NightVisionRechargeTimeMin;

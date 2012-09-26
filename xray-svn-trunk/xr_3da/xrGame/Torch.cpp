@@ -62,6 +62,7 @@ CTorch::~CTorch(void)
 	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
 	HUD_SOUND::DestroySound (m_FlashlightSwitchSnd);
+	sndBreaking.destroy();
 }
 
 inline bool CTorch::can_use_dynamic_lights	()
@@ -94,6 +95,8 @@ void CTorch::Load(LPCSTR section)
 		m_NightVisionRechargeTimeMin	= pSettings->r_float(section,"night_vision_recharge_time_min");
 		m_NightVisionDischargeTime		= pSettings->r_float(section,"night_vision_discharge_time");
 		m_NightVisionChargeTime			= m_NightVisionRechargeTime;*/
+		if(pSettings->line_exist(section, "break_sound"))
+			sndBreaking.create(pSettings->r_string(section, "break_sound"),st_Effect,sg_SourceType);
 	}
 }
 
@@ -193,9 +196,11 @@ void CTorch::Switch()
 void CTorch::Broke()
 {
 	if (OnClient()) return;
-	//SkyLoader: need to play this sound
-	//m_FlashlightBrokeSnd.play_at_pos(const_cast<CEntityAlive*>(H_Parent()),pos);
-	Switch					(false);
+	if (m_switched_on) 
+	{
+		sndBreaking.play_at_pos(0, Position(), false);
+		Switch(false);
+	}
 }
 
 void CTorch::SetBatteryStatus(u16 val)
