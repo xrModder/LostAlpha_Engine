@@ -218,11 +218,15 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 		m_pHUD->animPlay(random_anim(mhud_attack),		FALSE, this, state);
 		m_attackStart	= true;
 		m_bPending		= true;
+		LPCSTR AnimName = "_kick_start1";
+		inherited::WeaponCamEffector(AnimName);
 	}
 	else {//eFire2
 			m_pHUD->animPlay(random_anim(mhud_attack2),		FALSE, this, state);
 			m_attackStart	= true;
 			m_bPending		= true;
+			LPCSTR AnimName = "_kick_start2";
+			inherited::WeaponCamEffector(AnimName);
 	}
 }
 

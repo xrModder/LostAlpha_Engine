@@ -988,6 +988,8 @@ void CWeaponMagazined::PlayAnimReload()
 {
 	VERIFY(GetState()==eReload);
 	m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
+	LPCSTR AnimName = "_reload";
+	inherited::WeaponCamEffector(AnimName);
 }
 
 bool CWeaponMagazined::TryPlayAnimIdle()

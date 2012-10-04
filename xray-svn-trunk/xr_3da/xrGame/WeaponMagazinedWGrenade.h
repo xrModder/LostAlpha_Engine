@@ -40,6 +40,7 @@ public:
 	
 	virtual void	switch2_Idle	();
 	virtual void	switch2_Reload	();
+	virtual bool	TryPlayAnimIdleWG ();
 	virtual void	state_Fire		(float dt);
 	virtual void	OnShot			();
 	virtual void	SwitchState		(u32 S);
@@ -74,6 +75,7 @@ public:
 	//анимации с подключенным подствольником
 	//(режим обычной стрельбы)
 	MotionSVec			mhud_idle_g;
+	MotionSVec			mhud_idle_sprint_g;
 	MotionSVec			mhud_idle_g_aim;
 	MotionSVec			mhud_reload_g;
 	MotionSVec			mhud_shots_g;
