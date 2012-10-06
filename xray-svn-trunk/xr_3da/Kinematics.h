@@ -65,7 +65,9 @@ virtual	const IBoneData&		__stdcall	GetBoneData(u16 bone_id) const = 0;
 	virtual void						LL_SetBoneRoot(u16 bone_id) = 0;
 
 	virtual BOOL				__stdcall	LL_GetBoneVisible(u16 bone_id) = 0;
+	virtual BOOL				__stdcall	LL_IsNotBoneHidden(u16 bone_id) = 0;
 	virtual void						LL_SetBoneVisible(u16 bone_id, BOOL val, BOOL bRecursive) = 0;
+	virtual void						LL_HideBoneVisible(u16 bone_id, BOOL bRecursive) = 0;
 	virtual u64					__stdcall	LL_GetBonesVisible() = 0;
 	virtual void						LL_SetBonesVisible(u64 mask) = 0;
 

@@ -125,6 +125,7 @@ protected:
 	s32							UCalc_Visibox			;
 
     Flags64						visimask;
+    	Flags64						hidden_bones;
     
 	CSkeletonX*					LL_GetChild				(u32 idx);
 
@@ -203,7 +204,9 @@ public:
 	void							LL_SetBoneRoot		(u16 bone_id)		{	VERIFY(bone_id<LL_BoneCount());	iRoot=bone_id;					}
 
     BOOL					__stdcall	LL_GetBoneVisible	(u16 bone_id)		{	VERIFY(bone_id<LL_BoneCount()); return visimask.is(u64(1)<<bone_id);	}
+    BOOL					__stdcall	LL_IsNotBoneHidden	(u16 bone_id)		{	VERIFY(bone_id<LL_BoneCount()); return hidden_bones.is(u64(1)<<bone_id);	}
 	void							LL_SetBoneVisible	(u16 bone_id, BOOL val, BOOL bRecursive);
+	void							LL_HideBoneVisible	(u16 bone_id, BOOL bRecursive);
 	u64						__stdcall	LL_GetBonesVisible	()					{	return visimask.get();	}
 	void							LL_SetBonesVisible	(u64 mask);
 

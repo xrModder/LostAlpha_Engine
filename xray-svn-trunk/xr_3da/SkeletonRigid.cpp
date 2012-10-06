@@ -127,7 +127,18 @@ void CKinematics::CLBone( const CBoneData* bd, CBoneInstance &bi, const Fmatrix 
 	
 	u16							SelfID				= bd->GetSelfID();
 
-	if ( LL_GetBoneVisible(SelfID) ){
+	if (!LL_IsNotBoneHidden(SelfID)) {
+		if ( bi.callback_overwrite() ){
+			if ( bi.callback() )	bi.callback()( &bi );
+		} else {
+			bi.mTransform.c = (*parent).c;
+			if (bi.callback())
+			{
+				bi.callback()(&bi);
+			}
+		}
+		bi.mRenderTransform.mul_43(bi.mTransform,bd->m2b_transform);
+	} else if ( LL_GetBoneVisible(SelfID) ){
 		if ( bi.callback_overwrite() ){
 			if ( bi.callback() )	bi.callback()( &bi );
 		} else {
