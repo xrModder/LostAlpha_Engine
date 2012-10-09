@@ -675,6 +675,16 @@ void CWeaponMagazined::switch2_Hiding()
 	m_bPending = true;
 }
 
+void CWeaponMagazined::switch2_HidingClose()
+{
+	CWeapon::FireEnd();
+	
+	PlaySound	(sndHide,get_LastFP());
+
+	m_pHUD->animPlay (random_anim(mhud.mhud_hide),TRUE,this,GetState());
+	m_bPending = true;
+}
+
 void CWeaponMagazined::switch2_Hidden()
 {
 	CWeapon::FireEnd();

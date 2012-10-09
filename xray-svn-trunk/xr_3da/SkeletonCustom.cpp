@@ -202,8 +202,8 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 	xr_vector<shared_str>	L_parents;
 
 	R_ASSERT		(data->find_chunk(OGF_S_BONE_NAMES));
-
-    visimask.zero	();
+	hidden_bones.zero();
+    	visimask.zero();
 	int dwCount 	= data->r_u32();
 	// Msg				("!!! %d bones",dwCount);
 	// if (dwCount >= 64)	Msg			("!!! More than 64 bones is a crazy thing! (%d), %s",dwCount,N);
@@ -227,6 +227,7 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 
 		data->r						(&pBone->obb,sizeof(Fobb));
         visimask.set				(u64(1)<<ID,TRUE);
+        hidden_bones.set				(u64(1)<<ID,TRUE);
 	}
 	std::sort	(bone_map_N->begin(),bone_map_N->end(),pred_sort_N);
 	std::sort	(bone_map_P->begin(),bone_map_P->end(),pred_sort_P);
@@ -361,7 +362,6 @@ void CKinematics::LL_Validate()
 void CKinematics::Copy(IRender_Visual *P) 
 {
 	inherited::Copy	(P);
-
 	CKinematics* pFrom = dynamic_cast<CKinematics*>(P);
 	VERIFY(pFrom);
 	pUserData  = pFrom->pUserData;
@@ -370,6 +370,7 @@ void CKinematics::Copy(IRender_Visual *P)
 	bone_map_N = pFrom->bone_map_N;
 	bone_map_P = pFrom->bone_map_P;
 	visimask   = pFrom->visimask;
+	hidden_bones = pFrom->hidden_bones;
 
 	IBoneInstances_Create	();
 
@@ -408,7 +409,9 @@ void CKinematics::Depart		()
 	ClearWallmarks				();
 
 	// unmask all bones
+	hidden_bones.zero			();
 	visimask.zero				();
+
 	if(bones)
 	{
 		u32 count = bones->size();
@@ -416,7 +419,7 @@ void CKinematics::Depart		()
     	if (count > 64)
         	Msg("ahtung !!! %d", count);
 #endif // #ifdef DEBUG
-		for (u32 b=0; b<count; b++) visimask.set((u64(1)<<b),TRUE);
+		for (u32 b=0; b<count; b++) {visimask.set((u64(1)<<b),TRUE); hidden_bones.set((u64(1)<<b),TRUE);}
 	}
 	// visibility
 	children.insert				(children.end(),children_invisible.begin(),children_invisible.end());
@@ -457,6 +460,30 @@ void CKinematics::LL_SetBoneVisible(u16 bone_id, BOOL val, BOOL bRecursive)
     if (bRecursive)		{
         for (xr_vector<CBoneData*>::iterator C=(*bones)[bone_id]->children.begin(); C!=(*bones)[bone_id]->children.end(); C++)
             LL_SetBoneVisible((*C)->GetSelfID(),val,bRecursive);
+    }
+	Visibility_Invalidate			();
+}
+
+//lost alpha
+//skyloader: need for dismemberment of limbs
+void CKinematics::LL_HideBoneVisible(u16 bone_id, BOOL bRecursive)
+{
+	VERIFY				(bone_id<LL_BoneCount());      
+    	u64 mask 			= u64(1)<<bone_id;
+  	hidden_bones.set		(mask,FALSE);
+
+        bone_instances[bone_id].mTransform.scale(0.f,0.f,0.f);
+
+	u16 ParentID		= LL_GetData(bone_id).GetParentID();
+
+	CBoneInstance 	&BI	= LL_GetBoneInstance(ParentID);
+        bone_instances[bone_id].mTransform.c = BI.mTransform.c;
+
+	bone_instances[bone_id].mRenderTransform.mul_43(bone_instances[bone_id].mTransform,(*bones)[bone_id]->m2b_transform);
+
+    if (bRecursive)		{
+        for (xr_vector<CBoneData*>::iterator C=(*bones)[bone_id]->children.begin(); C!=(*bones)[bone_id]->children.end(); C++)
+            LL_HideBoneVisible((*C)->GetSelfID(),bRecursive);
     }
 	Visibility_Invalidate			();
 }
