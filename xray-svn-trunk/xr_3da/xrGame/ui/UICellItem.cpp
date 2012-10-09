@@ -207,6 +207,6 @@ void CUIDragItem::SetBackList(CUIDragDropListEx*l)
 
 Fvector2 CUIDragItem::GetPosition()
 {
-	return Fvector2().add(m_pos_offset, GetUICursor()->GetCursorPosition());
+	return Fvector2().add(m_pos_offset, GetUICursor()->GetCursorPosition()) .add(m_static.GetWndSize().div(2.0f));
 }
 

@@ -93,6 +93,7 @@ public:
 			virtual void	SetItem				(CUICellItem* itm); //auto
 			virtual void	SetItem				(CUICellItem* itm, Fvector2 abs_pos);  // start at cursor pos
 			virtual void	SetItem				(CUICellItem* itm, Ivector2 cell_pos); // start at cell
+			u32				GetItemIdx			(Fvector2 abs_pos);
 					bool	CanSetItem			(CUICellItem* itm);
 
 			u32				ItemsCount			();

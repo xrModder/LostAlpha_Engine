@@ -49,6 +49,7 @@ public:
 	virtual void			Hide						();
 
 	void					AddItemToBag				(PIItem pItem);
+	void					DeleteFromInventory			(PIItem PIItem);
 
 protected:
 //	  CUISleepWnd				UISleepWnd;
@@ -106,6 +107,9 @@ protected:
 	bool		xr_stdcall		OnItemSelected				(CUICellItem* itm);
 	bool		xr_stdcall		OnItemRButtonClick			(CUICellItem* itm);
 
+	
+	//void						SumAmmo						(CUICellItem* itm, CUIDragDropListEx* old_owner, CUIDragDropListEx* new_owner);
+
 
 	CUIStatic					UIProgressBack;
 	CUIStatic					UIProgressBack_rank;
@@ -141,6 +145,7 @@ protected:
 	void						ActivatePropertiesBox		();
 
 	void						DropCurrentItem				(bool b_all);
+	void						SumAmmoByDrop				(CInventoryItem* itm, CUIDragDropListEx* old_owner);
 	void						EatItem						(PIItem itm);
 	
 	bool						ToSlot						(CUICellItem* itm, bool force_place);

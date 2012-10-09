@@ -110,6 +110,51 @@ void CInventory::Clear()
 	InvalidateState						();
 }
 
+bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
+{
+	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
+
+	if (!ammo) {
+		Msg("!! Can't convert to weapon ammo class obj with section '%s' Can't repack ammo!!!",pIItem->object().cNameSect_str());
+		return false;
+	}
+
+	TIItemContainer::const_iterator it_b	= m_ruck.begin();
+	TIItemContainer::const_iterator it		= m_ruck.end();
+
+	for(--it; it>=it_b; --it) {
+		CInventoryItem* invAmmoObj = (*it);
+		if (invAmmoObj->object().cNameSect()==pIItem->object().cNameSect()) {
+			CWeaponAmmo* invAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj);
+			R_ASSERT(invAmmo);
+
+			if (invAmmo->WillBeDeleted()) continue;
+
+			u16 freeSpace = invAmmo->m_boxSize - invAmmo->m_boxCurr;
+			if (!freeSpace) break;
+
+			if (freeSpace>=ammo->m_boxCurr) {
+				invAmmo->m_boxCurr+=ammo->m_boxCurr;
+
+				NET_Packet					P;
+				pIItem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, pIItem->object().H_Parent()->ID());
+				P.w_u16						(u16(pIItem->object().ID()));
+				pIItem->object().u_EventSend(P);
+				pIItem->object().u_EventGen(P, GE_DESTROY, u16(pIItem->object().ID()));
+				pIItem->object().u_EventSend(P);
+				ammo->WillBeDeleted(true);
+
+				return true;			//We are going to delete
+			} else {
+				invAmmo->m_boxCurr=invAmmo->m_boxSize;
+				ammo->m_boxCurr-=freeSpace;
+			}
+			break;
+		}
+	}
+	return false;
+}
+
 void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placement)
 {
 	CInventoryItem *pIItem				= smart_cast<CInventoryItem*>(pObj);
@@ -331,9 +376,9 @@ bool CInventory::Belt(PIItem pIItem)
 	return true;
 }
 
-bool CInventory::Ruck(PIItem pIItem) 
+bool CInventory::Ruck(PIItem pIItem)
 {
-	if(!CanPutInRuck(pIItem)) return false;
+	if(!CanPutInRuck(pIItem)) return true;
 	
 	bool in_slot = InSlot(pIItem);
 	//גושü בûכא ג סכמעו
@@ -348,6 +393,11 @@ bool CInventory::Ruck(PIItem pIItem)
 		TIItemContainer::iterator it = std::find(m_belt.begin(), m_belt.end(), pIItem); 
 		if(m_belt.end() != it) m_belt.erase(it);
 	}
+
+	bool result = true;
+	if (GetOwner()->object_id()==Level().CurrentEntity()->ID())		//actors inventory
+		if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
+			if (repackAmmo(pIItem)) result = false; //do not send event about item to ruck
 	
 	m_ruck.insert									(m_ruck.end(), pIItem); 
 	
@@ -360,8 +410,7 @@ bool CInventory::Ruck(PIItem pIItem)
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
-
-	return true;
+	return result;
 }
 
 void CInventory::Activate_deffered	(u32 slot, u32 _frame)

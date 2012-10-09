@@ -387,6 +387,16 @@ void CUIInventoryWnd::Hide()
 	}
 }
 
+void CUIInventoryWnd::DeleteFromInventory(PIItem pIItem)
+{
+	NET_Packet					P;
+	pIItem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, pIItem->object().H_Parent()->ID());
+	P.w_u16						(u16(pIItem->object().ID()));
+	pIItem->object().u_EventSend(P);
+	pIItem->object().u_EventGen(P, GE_DESTROY, u16(pIItem->object().ID()));
+	pIItem->object().u_EventSend(P);
+}
+
 void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 {
 	PlaySnd										(eInvAttachAddon);

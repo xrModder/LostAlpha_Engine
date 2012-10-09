@@ -51,6 +51,7 @@ public:
 	float 					CalcTotalWeight		();
 
 	void					Take				(CGameObject *pObj, bool bNotActivate, bool strict_placement);
+	bool					repackAmmo			(PIItem pObj);
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
 
@@ -68,6 +69,7 @@ public:
 	bool 					CanPutInRuck		(PIItem pIItem) const;
 
 	bool					CanTakeItem			(CInventoryItem *inventory_item) const;
+	
 
 
 	bool					Activate			(u32 slot, EActivationReason reason=eGeneral, bool bForce=false);

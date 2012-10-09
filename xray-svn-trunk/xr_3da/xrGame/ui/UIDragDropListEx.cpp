@@ -354,6 +354,15 @@ void CUIDragDropListEx::SetItem(CUICellItem* itm, Fvector2 abs_pos) // start at 
 		SetItem						(itm);
 }
 
+u32 CUIDragDropListEx::GetItemIdx(Fvector2 abs_pos)
+{
+	const Ivector2 dest_cell_pos =	 m_container->PickCell		(abs_pos);
+	if (!m_container->ValidCell(dest_cell_pos)) return u32(-1);
+
+	return m_container->CellsCapacity().x*dest_cell_pos.y+dest_cell_pos.x;
+
+}
+
 void CUIDragDropListEx::SetItem(CUICellItem* itm, Ivector2 cell_pos) // start at cell
 {
 	if(m_container->AddSimilar(itm))	return;
