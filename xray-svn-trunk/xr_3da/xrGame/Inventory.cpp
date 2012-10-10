@@ -119,6 +119,8 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 		return false;
 	}
 
+
+	if (!m_ruck.size()) return false;
 	TIItemContainer::const_iterator it_b	= m_ruck.begin();
 	TIItemContainer::const_iterator it		= m_ruck.end();
 
@@ -219,7 +221,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		}
 		else
 		{
-			result						= Ruck(pIItem); VERIFY(result);
+			result						= Ruck(pIItem); //VERIFY(result);
 		}
 	}
 	
