@@ -312,6 +312,8 @@ public:
 	MotionID				m_current_torso;
 	MotionID				m_current_head;
 
+	bool					b_saveAllowed;
+
 	// callback на анимации модели актера
 	void					SetCallbacks		();
 	void					ResetCallbacks		();
