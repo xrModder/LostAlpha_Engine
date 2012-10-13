@@ -7,6 +7,8 @@ class CHudItem;
 #include "weapon_bobbing.h"
 #endif
 
+#include "weapon_collision.h"
+
 struct weapon_hud_value: public shared_value
 {
 	//IKinematicsAnimated*	m_animations;
@@ -136,6 +138,8 @@ public:
 	private:
 		CWeaponBobbing *m_bobbing;
 #endif
+	private:
+		CWeaponCollision *m_collision;
 };
 
 #define		MAX_ANIM_COUNT							8

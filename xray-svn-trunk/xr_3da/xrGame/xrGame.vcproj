@@ -20491,6 +20491,14 @@
 									>
 								</File>
 								<File
+									RelativePath=".\weapon_collision.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\weapon_collision.h"
+									>
+								</File>
+								<File
 									RelativePath=".\WeaponHUD.cpp"
 									>
 								</File>
