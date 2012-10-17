@@ -459,6 +459,7 @@ public:
 			return;
 		}
 #endif
+
 		if(!IsGameTypeSingle()){
 			Msg("for single-mode only");
 			return;
@@ -466,6 +467,11 @@ public:
 		if(!g_actor || !Actor()->g_Alive())
 		{
 			Msg("cannot make saved game because actor is dead :(");
+			return;
+		}
+		if(!Actor()->b_saveAllowed)
+		{
+			Msg("cannot make saved game because thats is not allowed now. Please wait...");
 			return;
 		}
 

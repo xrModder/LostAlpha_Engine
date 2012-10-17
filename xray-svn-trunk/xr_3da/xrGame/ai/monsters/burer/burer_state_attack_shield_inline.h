@@ -58,7 +58,13 @@ void CStateBurerShieldAbstract::execute()
 		break;
 	}
 
-	object->dir().face_target(object->EnemyMan.get_enemy(), 500);
+	if (object->EnemyMan.get_enemy())
+		object->dir().face_target(object->EnemyMan.get_enemy(), 500);
+	else {
+		Fvector pos;
+		pos.mad(object->Position(), Fvector().set(0.1f,0.0f,0.0f));
+		object->dir().face_target(pos, 500);
+	}
 	object->set_action(ACT_STAND_IDLE);
 }
 
@@ -89,7 +95,7 @@ bool CStateBurerShieldAbstract::check_start_conditions()
 {
 	if (Device.dwTimeGlobal > m_last_shield_started + object->m_shield_time + object->m_shield_cooldown)
 	{
-		if (!object->EnemyMan.enemy_see_me_now()) return false; 
+		if (object->EnemyMan.get_enemy() && !object->EnemyMan.enemy_see_me_now()) return false; 
 	}
 	else 
 		return false;

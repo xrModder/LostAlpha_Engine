@@ -225,6 +225,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		else
 			new_owner->SetItem				(i);
 
+		if (!result) return true;
 		SendEvent_Item2Ruck					(iitem);
 		return true;
 	}
@@ -339,16 +340,50 @@ void CUIInventoryWnd::ColorizeAmmo(CUICellItem* itm)
 	}
 }
 
+void CUIInventoryWnd::SumAmmoByDrop(CInventoryItem* itm, CUIDragDropListEx* owner)
+{
+	u32 idx = owner->GetItemIdx				(owner->GetDragItemPosition());
+	if (idx==u32(-1)) return;
+	if (!(idx<owner->ItemsCount())) return;
+
+	CUICellItem* itemTo = owner->GetItemIdx(idx);
+
+	if (!itemTo) return;
+
+	CWeaponAmmo* ammoCurrent =	 smart_cast<CWeaponAmmo*>(itm);
+	CWeaponAmmo* ammoTo		 =	 smart_cast<CWeaponAmmo*>((CInventoryItem*)itemTo->m_pData);
+
+	if (!ammoCurrent || !ammoTo) return;
+
+	u16 freeSpaceTo = ammoTo->m_boxSize - ammoTo->m_boxCurr;
+
+	if (freeSpaceTo>=ammoCurrent->m_boxCurr) {
+		ammoTo->m_boxCurr+=ammoCurrent->m_boxCurr;
+		DeleteFromInventory(itm);
+	} else {
+		ammoCurrent->m_boxCurr-=freeSpaceTo;
+		ammoTo->m_boxCurr=ammoTo->m_boxSize;
+	}
+
+}
+
 bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 {
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
-	if(old_owner==new_owner || !old_owner || !new_owner)
-					return false;
-
+	
 	EListType t_new		= GetType(new_owner);
 	EListType t_old		= GetType(old_owner);
-	if(t_new == t_old)	return true;
+
+	if(!old_owner || !new_owner)
+					return false;
+	
+	if (old_owner==new_owner) {
+		if (t_new==iwBelt) SumAmmoByDrop((CInventoryItem*)itm->m_pData, old_owner);
+		return false;
+	}
+
+	if(t_new == t_old) return true;
 
 	switch(t_new){
 		case iwSlot:{

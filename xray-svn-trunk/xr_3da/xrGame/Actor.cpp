@@ -130,6 +130,7 @@ CActor::CActor() : CEntityAlive()
 
 	m_fFallTime				=	s_fFallTime;
 	m_bAnimTorsoPlayed		=	false;
+	b_saveAllowed			=	true;
 
 	m_pPhysicsShell			=	NULL;
 

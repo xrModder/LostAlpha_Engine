@@ -37,6 +37,14 @@ LPCSTR command_line	()
 {
 	return		(Core.Params);
 }
+void save_allowed	(bool b)
+{
+	Actor()->b_saveAllowed = b;
+}
+bool is_save_allowed	()
+{
+	return Actor()->b_saveAllowed;
+}
 
 #ifdef DEBUG
 void check_object(CScriptGameObject *object)
@@ -759,6 +767,8 @@ void CLevel::script_register(lua_State *L)
 
 	module(L)
 	[
+		def("save_allowed",						&save_allowed),
+		def("is_save_allowed",					&is_save_allowed),
 		def("command_line",						&command_line),
 		def("IsGameTypeSingle",					&IsGameTypeSingle),
 		def("debug_print",						&lua_debug_print),

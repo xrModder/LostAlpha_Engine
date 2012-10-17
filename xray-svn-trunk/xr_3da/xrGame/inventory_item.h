@@ -60,6 +60,7 @@ protected:
 								FInInterpolation	=(1<<9),
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
+								FWillBeDeleted		=(1<<12),
 	};
 
 	Flags16						m_flags;
@@ -155,6 +156,9 @@ public:
 			bool				Ruck				()							{return !!m_flags.test(Fruck);}
 			void				Ruck				(bool on_ruck)				{m_flags.set(Fruck,on_ruck);}
 			bool				RuckDefault			()							{return !!m_flags.test(FRuckDefault);}
+			
+			bool				WillBeDeleted		()							{return !!m_flags.test(FWillBeDeleted);}
+			void				WillBeDeleted		(bool deleted)				{m_flags.set(FWillBeDeleted,deleted);}
 			
 	virtual bool				CanTake				() const					{return !!m_flags.test(FCanTake);}
 			bool				CanTrade			() const;

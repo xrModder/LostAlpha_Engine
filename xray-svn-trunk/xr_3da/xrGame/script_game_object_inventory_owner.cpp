@@ -285,7 +285,6 @@ void CScriptGameObject::UnloadMagazine		()
 
 	weapon_magazined->UnloadMagazine	(false);
 }
-//
 
 void CScriptGameObject::DropItem			(CScriptGameObject* pItem)
 {
@@ -864,32 +863,19 @@ u32	CScriptGameObject::active_slot()
 	}
 	return inventory_owner->inventory().GetActiveSlot();
 }
-/*
-void CScriptGameObject::PlayHandAnim(u32 obj_id, LPCSTR anim)
+
+void CScriptGameObject::PlayAnim(LPCSTR anim, u32 slot)
 {
+	R_ASSERT2(slot<SLOTS_TOTAL,"invalid slot in function PlayAnim");
 	CActor *actor = smart_cast<CActor*>(&object());
 	R_ASSERT2(actor, "actor is null");
-	PIItem bolt = actor->inventory().m_slots[BOLT_SLOT].m_pIItem;
-	actor->inventory().Ruck(bolt);
-	PIItem item = actor->inventory().get_object_by_id(obj_id);
-	R_ASSERT2(item, "item is null");
-	actor->inventory().Slot(item);
-	actor->inventory().Activate(BOLT_SLOT);
+	PIItem item = actor->inventory().m_slots[slot].m_pIItem;
+
 	CHudItem *hud = smart_cast<CHudItem*>(item);
 	R_ASSERT2(hud, "hud is null");
 	hud->GetHUD()->animPlay(hud->GetHUD()->animGet(anim), true, hud, hud->GetState());
-	actor->inventory().Activate(NO_ACTIVE_SLOT);
-	actor->inventory().Ruck(item);
-	actor->inventory().Slot(bolt);
-	NET_Packet P;
-	CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, actor->ID());
-	P.w_u16(item->object().ID());
-	CGameObject::u_EventSend(P);
-	CGameObject::u_EventGen(P, GE_DESTROY, item->object().ID());
-	CGameObject::u_EventSend(P);
-
 }
-*/
+
 
 bool CScriptGameObject::MoveToSlot(CScriptGameObject *obj, bool not_activate)
 {

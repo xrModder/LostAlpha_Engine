@@ -62,6 +62,7 @@ protected:
 	virtual void	switch2_Empty	();
 	virtual void	switch2_Reload	();
 	virtual void	switch2_Hiding	();
+	virtual void	switch2_HidingClose ();
 	virtual void	switch2_Hidden	();
 	virtual void	switch2_Showing	();
 	
