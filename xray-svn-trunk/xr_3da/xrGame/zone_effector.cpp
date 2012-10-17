@@ -33,7 +33,7 @@ void CZoneEffector::Load(LPCSTR section)
 void CZoneEffector::Activate()
 {
 	m_pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if(!m_pActor) return;
+	if(!m_pActor || (m_pActor && !m_pActor->g_Alive())) return;
 	m_pp_effector						= xr_new<CPostprocessAnimatorLerp>();
 	m_pp_effector->SetType				(EEffectorPPType( u32(u64(this) & u32(-1)) ));
 	m_pp_effector->SetCyclic			(true);

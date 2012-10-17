@@ -26,7 +26,7 @@ void CWeaponCollision::Load()
 	bFirstUpdate		= false;
 }
 
-static const float SPEED_REMINDER = 3.f;
+static const float SPEED_REMINDER = 1.f;
 
 void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 {
