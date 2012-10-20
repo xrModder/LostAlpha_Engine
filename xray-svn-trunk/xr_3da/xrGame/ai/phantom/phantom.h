@@ -4,6 +4,8 @@
 #include "../../../KinematicsAnimated.h"
 #include "../../../animation_motion.h"
 
+#include "../../actor.h"
+
 
 class CParticlesObject;
 
@@ -47,6 +49,7 @@ private:
 
 	float				fSpeed;	
 	float				fASpeed;
+	float				fPsyHit;
 	Fvector2			vHP;
 
 	float				fContactHit;

@@ -20478,6 +20478,18 @@
 										</FileConfiguration>
 									</File>
 								</Filter>
+								<Filter
+									Name="Fireball"
+									>
+									<File
+										RelativePath=".\Fireball.cpp"
+										>
+									</File>
+									<File
+										RelativePath=".\Fireball.h"
+										>
+									</File>
+								</Filter>
 							</Filter>
 							<Filter
 								Name="HUD"
