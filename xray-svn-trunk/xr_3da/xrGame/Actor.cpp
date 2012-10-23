@@ -792,6 +792,7 @@ void CActor::Die(CObject* who)
 		start_tutorial		("game_over");
 	}
 	xr_delete				(m_sndShockEffector);
+	xr_delete				(m_ScriptCameraDirection);
 }
 
 void	CActor::SwitchOutBorder(bool new_border_state)
@@ -976,6 +977,18 @@ void CActor::UpdateCL	()
 		}
 		else
 			xr_delete(m_sndShockEffector);
+	}
+	if (m_ScriptCameraDirection)
+	{
+		if (this == Level().CurrentViewEntity())
+		{
+			m_ScriptCameraDirection->Update();
+
+			if(!m_ScriptCameraDirection->InWork() || !g_Alive())
+				xr_delete(m_ScriptCameraDirection);
+		}
+		else
+			xr_delete(m_ScriptCameraDirection);
 	}
 	CTorch *flashlight = GetCurrentTorch();
 	if (flashlight)
@@ -1783,4 +1796,12 @@ u16 CActor::GetTurretTemp()
 	CMountedTurret *turret = smart_cast<CMountedTurret*>(m_holder);
 	R_ASSERT(turret);
 	return turret->GetTemperature();
+}
+
+void CActor::SetDirectionSlowly(Fvector pos, float time)
+{
+	if(!m_ScriptCameraDirection){
+		m_ScriptCameraDirection = xr_new<CScriptCameraDirection>();
+		m_ScriptCameraDirection->Start(this, pos, time);
+	}
 }

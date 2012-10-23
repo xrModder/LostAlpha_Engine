@@ -48,6 +48,7 @@ struct SActorMotions;
 struct SActorVehicleAnims;
 class  CActorCondition;
 class SndShockEffector;
+class CScriptCameraDirection;
 class CActorFollowerMngr;
 class CGameTaskManager;
 
@@ -228,6 +229,7 @@ protected:
 
 	// media
 	SndShockEffector*		m_sndShockEffector;
+	CScriptCameraDirection*		m_ScriptCameraDirection;
 	xr_vector<ref_sound>	sndHit[ALife::eHitTypeMax];
 	ref_sound				sndDie[SND_DIE_COUNT];
 
@@ -777,6 +779,7 @@ public:
 	bool IsLimping();
 	bool UsingTurret();
 	u16 GetTurretTemp();
+	void SetDirectionSlowly(Fvector pos, float time);
 private:
 	CTorch *m_current_torch;
 //	u16 m_torch_battery_duration;
