@@ -128,3 +128,28 @@ public:
 	virtual	BOOL		Process							(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect);
 };
 //////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// Script Camera Direction
+//////////////////////////////////////////////////////////////////////////
+class CScriptCameraDirection:public CEffectorController
+{
+	typedef CEffectorController inherited;
+public:
+	Fvector m_target_point;
+	
+	bool	m_turned_yaw;
+	bool	m_turned_pitch;
+	float	m_speed;
+	CActor*	m_actor;
+	bool	m_need_turn;
+
+public:
+	CScriptCameraDirection();
+	virtual				~CScriptCameraDirection();
+	void				Start(CActor* A, const Fvector &tgt, float time);
+	void				Update();
+	bool				InWork();
+	virtual	float xr_stdcall	GetFactor();
+};
+

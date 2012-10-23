@@ -6,6 +6,8 @@
 #include "../ObjectAnimator.h"
 #include "object_broker.h"
 #include "actor.h"
+#include "../CameraBase.h"
+#include "xr_level_controller.h"
 
 void AddEffector		(CActor* A, int type, const shared_str& sect_name)
 {
@@ -379,3 +381,78 @@ BOOL CControllerPsyHitCamEffector::Process(Fvector &p, Fvector &d, Fvector &n, f
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+// Slowly set direction of the camera
+//////////////////////////////////////////////////////////////////////////
+
+#define EPS_ANGLE		1 * PI / 180
+
+CScriptCameraDirection::CScriptCameraDirection()
+{
+	m_target_point.set(0.f,0.f,0.f);
+	m_speed 	= 0.0f;
+	m_need_turn 	= false;
+	m_actor		= NULL;
+	m_turned_yaw 	= false;
+	m_turned_pitch 	= false;
+}
+
+CScriptCameraDirection::~CScriptCameraDirection()
+{
+}
+
+void CScriptCameraDirection::Start(CActor* A, const Fvector &tgt, float time)
+{
+	m_target_point	= tgt;
+	m_speed 	= time;
+	m_need_turn 	= true;
+	m_actor		= A;
+	m_turned_yaw 	= false;
+	m_turned_pitch 	= false;
+}
+
+void CScriptCameraDirection::Update()
+{
+	// get yaw and pitch to target
+	float cam_target_yaw, cam_target_pitch;
+	
+	Fvector	P,D,N;
+	m_actor->cam_Active()->Get				(P,D,N);
+	Fvector().sub(m_target_point, P).getHP	(cam_target_yaw, cam_target_pitch);
+
+	// get yaw and pitch of current cam direction
+	float								cam_current_yaw, cam_current_pitch;
+	D.getHP								(cam_current_yaw, cam_current_pitch);	
+
+	// YAW
+	if (fsimilar(cam_current_yaw, cam_target_yaw, EPS_ANGLE)) {
+		m_turned_yaw	= true;
+	} else {
+		if (angle_normalize_signed(cam_target_yaw - cam_current_yaw) > 0) 
+			m_actor->cam_Active()->Move	(kLEFT,		m_speed * Device.fTimeDelta);
+		else 
+			m_actor->cam_Active()->Move	(kRIGHT,	m_speed * Device.fTimeDelta);
+	}
+
+	// PITCH
+	if (fsimilar(cam_current_pitch, cam_target_pitch, EPS_ANGLE)) {
+		m_turned_pitch	= true;
+	} else {
+		if (angle_normalize_signed(cam_current_pitch - cam_current_pitch) > 0)
+			m_actor->cam_Active()->Move	(kDOWN,	m_speed * Device.fTimeDelta);
+		else 
+			m_actor->cam_Active()->Move	(kUP, m_speed * Device.fTimeDelta);
+	}
+
+	if (m_turned_yaw&&m_turned_pitch) m_need_turn 	= false;
+}
+
+bool CScriptCameraDirection::InWork()
+{
+	return (m_need_turn);
+}
+
+float CScriptCameraDirection::GetFactor()
+{
+	return 0.0f;
+}
