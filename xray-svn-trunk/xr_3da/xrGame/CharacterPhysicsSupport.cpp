@@ -145,6 +145,14 @@ void CCharacterPhysicsSupport::in_Load(LPCSTR section)
 	skel_ddelay						= pSettings->r_float(section,"ph_skeleton_ddelay");
 	skel_remain_time				= skel_ddelay;
 	skel_fatal_impulse_factor		= pSettings->r_float(section,"ph_skel_fatal_impulse_factor");
+
+	//lost alpha start
+	//collision of dead bodies after death
+	skel_collision_enable = false;
+	if (pSettings->line_exist(section,"ph_skel_collision_enable"))
+		skel_collision_enable = !!pSettings->r_bool(section,"ph_skel_collision_enable");
+	//lost alpha end
+
 	//gray_wolf>„итаем из ltx параметры дл€ поддержки измен€ющегос€ трени€ у персонажей во врем€ смерти
 	skeleton_skin_ddelay			= pSettings->r_float(section,"ph_skeleton_skin_ddelay");
 	skeleton_skin_remain_time		= skeleton_skin_ddelay;
@@ -705,8 +713,11 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	
 	if(IsGameTypeSingle())
 	{
-		m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
-		m_pPhysicsShell->SetRemoveCharacterCollLADisable();
+		if (!skel_collision_enable)
+		{
+			m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
+			m_pPhysicsShell->SetRemoveCharacterCollLADisable();
+		}
 	}
 	else
 	{
