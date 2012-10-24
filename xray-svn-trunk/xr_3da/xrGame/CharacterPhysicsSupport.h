@@ -72,7 +72,7 @@ private:
 	float								hinge_force_factor1																																	;
 	float								skel_fatal_impulse_factor																															;
 	float								skel_ddelay																																			;
-	float								skel_remain_time																																	;	
+	float								skel_remain_time																														;	
 /////////////////////////////////////////////////
 	//bool								b_death_anim_on																																		;
 	//bool								b_skeleton_in_shell																																	;
@@ -88,6 +88,7 @@ private:
 	float								skeleton_skin_ddelay_after_wound;
 	float								skeleton_skin_remain_time_after_wound;
 	bool								m_was_wounded;
+	bool								skel_collision_enable;
 	float								m_Pred_Time;//Для вычисления дельта времени между пересчётами сопротивления в джоинтах и коэффициента NPC
 	float								m_time_delta;
 	float								pelvis_factor_low_pose_detect;
