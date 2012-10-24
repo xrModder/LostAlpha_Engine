@@ -159,6 +159,9 @@ enum EMonsterState
 
 	eStateBurerAttack_Shield			= eStateCustom | 7,
 
+	eStateGhostBossScanning				= eStateCustom | 9,
+	eStateGhostBossAttack_Shield		= eStateCustom | 10,
+
 	// -------------------------------------------------------------
 	// custom attack states
 
@@ -182,6 +185,13 @@ enum EMonsterState
 	eStatePredator					= eStateCustom | eStateAttack | 14,
 
 	eStateCustom_Tubeman			= eStateCustom | eStateAttack | 15,
+	
+	eStateGhostBossAttack_Tele		= eStateCustom | eStateAttack | 16,
+	eStateGhostBossAttack_Gravi		= eStateCustom | eStateAttack | 17,
+	eStateGhostBossAttack_RunAround	= eStateCustom | eStateAttack | 18,
+	eStateGhostBossAttack_FaceEnemy	= eStateCustom | eStateAttack | 19,
+	eStateGhostBossAttack_Melee		= eStateCustom | eStateAttack | 20,
+	eStateGhostBossAttack_Teleport	= eStateCustom | eStateAttack | 21,
 
 	// -------------------------------------------------------------
 

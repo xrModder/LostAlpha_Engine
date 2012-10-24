@@ -251,6 +251,12 @@ void CBaseMonster::debug_fsm()
 		case eStateBurerAttack_FaceEnemy:				sprintf_s(st,"Attack :: Face Enemy");			break;
 		case eStateBurerAttack_Melee:					sprintf_s(st,"Attack :: Melee");				break;
 		case eStateBurerScanning:						sprintf_s(st,"Attack :: Scanning");			break;
+		case eStateGhostBossAttack_Tele:				sprintf_s(st,"GhostBoss::Attack :: Telekinesis");			break;
+		case eStateGhostBossAttack_Gravi:				sprintf_s(st,"GhostBoss::Attack :: Gravi Wave");				break;
+		case eStateGhostBossAttack_RunAround:			sprintf_s(st,"GhostBoss::Attack :: Run Around");			break;
+		case eStateGhostBossAttack_FaceEnemy:			sprintf_s(st,"GhostBoss::Attack :: Face Enemy");			break;
+		case eStateGhostBossAttack_Melee:				sprintf_s(st,"GhostBoss::Attack :: Melee");				break;
+		case eStateGhostBossScanning:					sprintf_s(st,"GhostBoss::Attack :: Scanning");			break;
 		case eStateCustomMoveToRestrictor:				sprintf_s(st,"Moving To Restrictor :: Position not accessible");	break;
 		case eStateSmartTerrainTask:					sprintf_s(st,"ALIFE");	break;
 		case eStateSmartTerrainTaskGamePathWalk:		sprintf_s(st,"ALIFE :: Game Path Walk");	break;
