@@ -438,7 +438,7 @@ void CScriptCameraDirection::Update()
 	if (fsimilar(cam_current_pitch, cam_target_pitch, EPS_ANGLE)) {
 		m_turned_pitch	= true;
 	} else {
-		if (angle_normalize_signed(cam_current_pitch - cam_current_pitch) > 0)
+		if (angle_normalize_signed(cam_target_pitch - cam_current_pitch) > 0)
 			m_actor->cam_Active()->Move	(kDOWN,	m_speed * Device.fTimeDelta);
 		else 
 			m_actor->cam_Active()->Move	(kUP, m_speed * Device.fTimeDelta);
