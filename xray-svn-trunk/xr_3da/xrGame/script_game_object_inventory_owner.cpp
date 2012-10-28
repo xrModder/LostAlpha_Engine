@@ -35,6 +35,13 @@
 #include "weaponmagazined.h"
 #include "ai/stalker/ai_stalker.h"
 #include "torch.h"
+#include "character_info.h"
+#include "alife_object_registry.h"
+#include "alife_simulator.h"
+#include "ai_space.h"
+#include "xrServer.h"
+#include "xrServer_Objects_ALife_Monsters.h"
+#include "ui/UICharacterInfo.h"
 
 bool CScriptGameObject::GiveInfoPortion(LPCSTR info_id)
 {
@@ -50,6 +57,37 @@ bool CScriptGameObject::DisableInfoPortion(LPCSTR info_id)
 	if(!pInventoryOwner) return false;
 	pInventoryOwner->TransferInfo(info_id, false);
 	return true;
+}
+
+
+/*CSE_ALifeTraderAbstract* ch_info_get_from_id (u16 id)
+{
+	if( ai().get_alife() && ai().get_game_graph() )
+	{
+		return	smart_cast<CSE_ALifeTraderAbstract*>(ai().alife().objects().object(id));
+	}else{
+		return	smart_cast<CSE_ALifeTraderAbstract*>(Level().Server->game->get_entity_from_eid(id));
+	}
+}*/
+
+
+LPCSTR CScriptGameObject::GetNpcIcon()
+{
+	CBaseMonster* monster = smart_cast<CBaseMonster*>(&object());
+	if (monster) {
+		shared_str icon_name = pSettings->r_string(monster->cNameSect(),"icon");
+		return icon_name.c_str();
+	}
+	CAI_Stalker	*stalker = smart_cast<CAI_Stalker*>(&object());
+	CActor		*actor = smart_cast<CActor*>(&object());
+	if (stalker || actor) {
+		CCharacterInfo				chInfo;
+		CSE_ALifeTraderAbstract*	T = ch_info_get_from_id(object().ID());
+
+		chInfo.Init					(T);
+		return chInfo.IconName().c_str();
+	}
+	return "";
 }
 
 void _AddIconedTalkMessage(LPCSTR text, LPCSTR texture_name, const Frect& tex_rect, LPCSTR templ_name);

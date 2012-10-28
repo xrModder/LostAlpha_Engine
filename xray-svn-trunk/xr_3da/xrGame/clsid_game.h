@@ -38,6 +38,7 @@
 #define CLSID_AI_CAT				MK_CLSID('A','I','_','C','A','T',' ',' ')
 #define CLSID_AI_TUSHKANO			MK_CLSID('A','I','_','T','U','S','H',' ')
 #define CLSID_AI_RAT				MK_CLSID('A','I','_','R','A','T',' ',' ')
+#define CLSID_AI_KARLIK				MK_CLSID('A','I','_','K','A','R','L','K')
 
 // vehicles
 #define CLSID_CAR					MK_CLSID('C','_','N','I','V','A',' ',' ')

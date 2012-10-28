@@ -8531,6 +8531,34 @@
 							</File>
 						</Filter>
 					</Filter>
+					<Filter
+						Name="Karlik"
+						>
+						<File
+							RelativePath=".\ai\monsters\karlik\karlik.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\karlik\karlik.h"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\karlik\karlik_state_manager.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\karlik\karlik_state_manager.h"
+							>
+						</File>
+						<Filter
+							Name="Script"
+							>
+							<File
+								RelativePath=".\ai\monsters\karlik\karlik_script.cpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="humans"

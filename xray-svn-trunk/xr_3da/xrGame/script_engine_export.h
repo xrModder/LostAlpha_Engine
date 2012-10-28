@@ -105,6 +105,7 @@
 #	include "ai/monsters/burer/burer.h"
 #	include "ai/monsters/ghostboss/ghostboss.h"
 #	include "ai/monsters/chimera/chimera.h"
+#	include "ai/monsters/karlik/karlik.h"
 #	include "ai/monsters/pseudogigant/pseudo_gigant.h"
 #	include "ai/monsters/poltergeist/poltergeist.h"
 #	include "ai/monsters/zombie/zombie.h"

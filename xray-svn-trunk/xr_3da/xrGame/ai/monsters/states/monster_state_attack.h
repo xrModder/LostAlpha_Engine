@@ -14,6 +14,7 @@ protected:
 	u32		m_time_start_behinder;
 
 public:
+						CStateMonsterAttack		(_Object *obj, bool);
 						CStateMonsterAttack		(_Object *obj);
 						CStateMonsterAttack		(_Object *obj, state_ptr state_run, state_ptr state_melee);
 	virtual				~CStateMonsterAttack	();

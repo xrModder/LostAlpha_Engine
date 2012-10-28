@@ -21,6 +21,11 @@
 #define CStateMonsterAttackAbstract CStateMonsterAttack<_Object>
 
 TEMPLATE_SPECIALIZATION
+CStateMonsterAttackAbstract::CStateMonsterAttack(_Object *obj, bool) : inherited(obj)
+{
+}
+
+TEMPLATE_SPECIALIZATION
 CStateMonsterAttackAbstract::CStateMonsterAttack(_Object *obj) : inherited(obj)
 {
 	add_state	(eStateAttack_Run,				xr_new<CStateMonsterAttackRun<_Object> >		(obj));

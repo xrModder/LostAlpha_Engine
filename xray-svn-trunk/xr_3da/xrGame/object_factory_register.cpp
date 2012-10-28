@@ -24,6 +24,7 @@
 #	include "actor.h"
 #	include "spectator.h"
 
+#	include "ai/monsters/karlik/karlik.h"
 #	include "ai/monsters/flesh/flesh.h"
 #	include "ai/monsters/chimera/chimera.h"
 #	include "ai/monsters/dog/dog.h"
@@ -227,6 +228,7 @@ void CObjectFactory::register_classes	()
 
 	ADD(CAI_Flesh				,CSE_ALifeMonsterBase			,CLSID_AI_FLESH					,"flesh");
 	ADD(CChimera				,CSE_ALifeMonsterBase			,CLSID_AI_CHIMERA				,"chimera");
+	ADD(CKarlik					,CSE_ALifeMonsterBase			,CLSID_AI_KARLIK				,"karlik");
 	ADD(CAI_Dog					,CSE_ALifeMonsterBase			,CLSID_AI_DOG_RED				,"dog_red");
 	ADD(CAI_Stalker				,CSE_ALifeHumanStalker			,CLSID_AI_STALKER				,"stalker");
 	ADD(CAI_Bloodsucker			,CSE_ALifeMonsterBase			,CLSID_AI_BLOODSUCKER			,"bloodsucker");

@@ -163,8 +163,6 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("action_by_index",				&CScriptGameObject::GetActionByIndex)
 		 
 		
-		#pragma todo("do that")
-		//.def("get_icon",					&CScriptGameObject::GetAmmoMagSize)
 		//.def("set_hear_callback",			(void (CScriptGameObject::*)(const luabind::object &, LPCSTR))(&CScriptGameObject::SetSoundCallback))
 		//.def("set_hear_callback",			(void (CScriptGameObject::*)(const luabind::functor<void> &))(&CScriptGameObject::SetSoundCallback))
 		//.def("clear_hear_callback",		&CScriptGameObject::ClearSoundCallback)
