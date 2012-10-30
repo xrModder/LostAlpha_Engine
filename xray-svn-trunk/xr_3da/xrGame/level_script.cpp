@@ -95,6 +95,31 @@ CScriptGameObject *get_object_by_id(u32 id)
 	return pGameObject->lua_game_object();
 }
 
+void send_event_key_pressed(int id)
+{
+	Level().IR_OnKeyboardPress(id);
+}
+
+void send_event_key_release(int id)
+{
+	Level().IR_OnKeyboardRelease(id);
+}
+
+void send_event_key_hold(int id)
+{
+	Level().IR_OnKeyboardHold(id);
+}
+
+void send_event_mouse_move(int x,int y)
+{
+	Level().IR_OnMouseMove(x,y);
+}
+void send_event_mouse_wheel(int direction)
+{
+	Level().IR_OnMouseWheel(direction);
+}
+
+
 LPCSTR get_weather	()
 {
 	return			(*g_pGamePersistent->Environment().GetWeather());
@@ -663,6 +688,11 @@ void CLevel::script_register(lua_State *L)
 	[
 		// obsolete\deprecated
 		def("object_by_id",						get_object_by_id),
+		def("SendFakeEventKeyPressed",			send_event_key_pressed),
+		def("SendFakeEventKeyRelease",			send_event_key_release),
+		def("SendFakeEventKeyHold",				send_event_key_hold),
+		def("SendFakeEventMouseMove",			send_event_mouse_move),
+		def("SendFakeEventMouseWheel",			send_event_mouse_wheel),
 		
 #ifdef DEBUG
 		def("debug_object",						get_object_by_name),
