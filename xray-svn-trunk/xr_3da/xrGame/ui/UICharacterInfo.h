@@ -6,6 +6,9 @@
 #include "uiwindow.h"
 #include "../alife_space.h"
 #include "../character_info_defs.h"
+#include "../xrServer_Objects_ALife_Monsters.h"
+
+CSE_ALifeTraderAbstract* ch_info_get_from_id(u16);
 
 class CUIStatic;
 class CCharacterInfo;

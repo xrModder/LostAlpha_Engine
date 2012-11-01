@@ -126,6 +126,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 
 		.def("give_talk_message",			(void (CScriptGameObject::*)(LPCSTR,LPCSTR,Frect,LPCSTR))(&CScriptGameObject::AddIconedTalkMessage))
 		
+		.def("get_icon",					&CScriptGameObject::GetNpcIcon)
 
 		.def("has_info",					&CScriptGameObject::HasInfo)
 		.def("dont_has_info",				&CScriptGameObject::DontHasInfo)

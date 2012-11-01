@@ -52,6 +52,9 @@ void CPhantom::Load( LPCSTR section )
 	m_state_data[stShoot].particles	= pSettings->r_string(section,"particles_shoot");
 	snd_name						= pSettings->r_string(section,"sound_shoot");
 	if (snd_name&&snd_name[0])		m_state_data[stShoot].sound.create(snd_name,st_Effect,sg_SourceType);
+
+	fPsyHit							= pSettings->r_float(section,"psy_hit");
+
 }
 BOOL CPhantom::net_Spawn(CSE_Abstract* DC)
 {
@@ -177,6 +180,22 @@ void CPhantom::SwitchToState_internal(EState new_state)
 			SStateData& sdata	= m_state_data[new_state];
 			sdata.sound.play_at_pos(0,xform.c);
 			K->PlayCycle		(sdata.motion, TRUE, animation_end_callback, this);
+			if (fPsyHit>EPS_L) {
+				//Hit Actor
+				NET_Packet		P;
+				SHit			HS;
+				HS.GenHeader		(GE_HIT, Actor()->ID());
+				HS.whoID			= (ID());
+				HS.weaponID			= (ID());
+				HS.dir				= (Fvector().set(0.f,1.f,0.f));			// direction
+				HS.power			= (fPsyHit);								// hit value
+				HS.boneID			= (BI_NONE);							// bone
+				HS.p_in_bone_space	= (Fvector().set(0.f,0.f,0.f));
+				HS.impulse			= (0.f);
+				HS.hit_type			= (ALife::eHitTypeTelepatic);
+				HS.Write_Packet	(P);
+				u_EventSend		(P);
+			}
 		}break;
 		case stShoot:{
 			UpdateEvent.bind	(this,&CPhantom::OnDeadState);	

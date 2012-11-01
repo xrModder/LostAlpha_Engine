@@ -123,6 +123,7 @@ public:
 		eMisfire,
 		eMagEmpty,
 		eSwitch,
+		ePreFire,
 	};
 	enum EWeaponSubStates{
 		eSubstateReloadBegin		=0,

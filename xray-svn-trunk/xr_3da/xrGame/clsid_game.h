@@ -24,6 +24,7 @@
 #define CLSID_AI_BLOODSUCKER		MK_CLSID('A','I','_','B','L','O','O','D')
 #define CLSID_AI_STALKER			MK_CLSID('A','I','_','S','T','L',' ',' ')
 #define CLSID_AI_BURER				MK_CLSID('A','I','_','B','U','R','E','R')
+#define CLSID_AI_GHOSTBOSS			MK_CLSID('A','I','_','G','H','O','S','T')
 #define CLSID_AI_GIANT				MK_CLSID('A','I','_','G','I','A','N','T')
 #define CLSID_AI_CHIMERA			MK_CLSID('A','I','_','H','I','M','E','R')
 #define CLSID_AI_FRACTURE			MK_CLSID('A','I','_','F','R','A','C','T')
@@ -37,6 +38,7 @@
 #define CLSID_AI_CAT				MK_CLSID('A','I','_','C','A','T',' ',' ')
 #define CLSID_AI_TUSHKANO			MK_CLSID('A','I','_','T','U','S','H',' ')
 #define CLSID_AI_RAT				MK_CLSID('A','I','_','R','A','T',' ',' ')
+#define CLSID_AI_KARLIK				MK_CLSID('A','I','_','K','A','R','L','K')
 
 // vehicles
 #define CLSID_CAR					MK_CLSID('C','_','N','I','V','A',' ',' ')
@@ -90,6 +92,7 @@
 #define CLSID_OBJECT_W_USP45		MK_CLSID('W','_','U','S','P','4','5',' ')
 #define CLSID_OBJECT_W_GROZA		MK_CLSID('W','_','G','R','O','Z','A',' ')
 #define CLSID_OBJECT_W_KNIFE		MK_CLSID('W','_','K','N','I','F','E',' ')
+#define CLSID_OBJECT_W_FIRE			MK_CLSID('W','_','F','I','R','E','B','L')
 #define CLSID_OBJECT_W_BM16			MK_CLSID('W','_','B','M','1','6',' ',' ')
 #define CLSID_OBJECT_W_RG6			MK_CLSID('W','_','R','G','6',' ',' ',' ')
 

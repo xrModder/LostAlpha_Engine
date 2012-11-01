@@ -24,6 +24,7 @@
 #	include "actor.h"
 #	include "spectator.h"
 
+#	include "ai/monsters/karlik/karlik.h"
 #	include "ai/monsters/flesh/flesh.h"
 #	include "ai/monsters/chimera/chimera.h"
 #	include "ai/monsters/dog/dog.h"
@@ -33,6 +34,7 @@
 #	include "ai/monsters/pseudodog/pseudodog.h"
 #	include "ai/monsters/pseudodog/psy_dog.h"
 #	include "ai/monsters/Burer/burer.h"
+#	include "ai/monsters/GhostBoss/ghostboss.h"
 #	include "ai/monsters/PseudoGigant/pseudo_gigant.h"
 #	include "ai/monsters/controller/controller.h"
 #	include "ai/monsters/poltergeist/poltergeist.h"
@@ -95,6 +97,7 @@
 #	include "weaponRG6.h"
 #	include "WeaponMounted.h"
 #	include "WeaponStatMgun.h"
+#	include "Fireball.h"
 
 #	include "scope.h"
 #	include "silencer.h"
@@ -225,6 +228,7 @@ void CObjectFactory::register_classes	()
 
 	ADD(CAI_Flesh				,CSE_ALifeMonsterBase			,CLSID_AI_FLESH					,"flesh");
 	ADD(CChimera				,CSE_ALifeMonsterBase			,CLSID_AI_CHIMERA				,"chimera");
+	ADD(CKarlik					,CSE_ALifeMonsterBase			,CLSID_AI_KARLIK				,"karlik");
 	ADD(CAI_Dog					,CSE_ALifeMonsterBase			,CLSID_AI_DOG_RED				,"dog_red");
 	ADD(CAI_Stalker				,CSE_ALifeHumanStalker			,CLSID_AI_STALKER				,"stalker");
 	ADD(CAI_Bloodsucker			,CSE_ALifeMonsterBase			,CLSID_AI_BLOODSUCKER			,"bloodsucker");
@@ -233,6 +237,7 @@ void CObjectFactory::register_classes	()
 	ADD(CPsyDog					,CSE_ALifeMonsterBase			,CLSID_AI_DOG_PSY				,"psy_dog");
 	ADD(CPsyDogPhantom			,CSE_ALifePsyDogPhantom			,CLSID_AI_DOG_PSY_PHANTOM		,"psy_dog_phantom");
 	ADD(CBurer					,CSE_ALifeMonsterBase			,CLSID_AI_BURER					,"burer");
+	ADD(CGhostBoss				,CSE_ALifeMonsterBase			,CLSID_AI_GHOSTBOSS				,"ghost_boss");
 	ADD(CPseudoGigant			,CSE_ALifeMonsterBase			,CLSID_AI_GIANT					,"pseudo_gigant");
 	ADD(CController				,CSE_ALifeMonsterBase			,CLSID_AI_CONTROLLER			,"controller");
 	ADD(CPoltergeist			,CSE_ALifeMonsterBase			,CLSID_AI_POLTERGEIST			,"poltergeist");
@@ -292,6 +297,7 @@ void CObjectFactory::register_classes	()
 	ADD(CWeaponUSP45			,CSE_ALifeItemWeaponMagazined	,CLSID_OBJECT_W_USP45			,"wpn_usp45");
 	ADD(CWeaponGroza			,CSE_ALifeItemWeaponMagazinedWGL,CLSID_OBJECT_W_GROZA			,"wpn_groza");
 	ADD(CWeaponKnife			,CSE_ALifeItemWeapon			,CLSID_OBJECT_W_KNIFE			,"wpn_knife");
+	ADD(CFireball				,CSE_ALifeItemWeapon			,CLSID_OBJECT_W_FIRE			,"wpn_fireball");
 	ADD(CWeaponBM16				,CSE_ALifeItemWeaponShotGun		,CLSID_OBJECT_W_BM16			,"wpn_bm16");
 	ADD(CWeaponRG6				,CSE_ALifeItemWeaponShotGun		,CLSID_OBJECT_W_RG6				,"wpn_rg6");
 	//-----------------------------------------------------------------------------------------------------
@@ -408,6 +414,7 @@ void CObjectFactory::register_classes	()
 	ADD(CWeaponSVD				,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_SVD")			,"wpn_svd_s");
 	ADD(CWeaponHPSA				,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_HPSA")			,"wpn_hpsa_s");
 	ADD(CWeaponKnife			,CSE_ALifeItemWeapon			,TEXT2CLSID("WP_KNIFE")			,"wpn_knife_s");
+	ADD(CFireball				,CSE_ALifeItemWeapon			,TEXT2CLSID("WP_FIRE")			,"wpn_fireball_s");
 	ADD(CWeaponPM				,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_PM")			,"wpn_pm_s");
 	ADD(CWeaponRG6				,CSE_ALifeItemWeaponShotGun		,TEXT2CLSID("WP_RG6")			,"wpn_rg6_s");
 	ADD(CWeaponRPG7				,CSE_ALifeItemWeaponMagazined	,TEXT2CLSID("WP_RPG7")			,"wpn_rpg7_s");
