@@ -148,7 +148,10 @@ void CHUDTarget::Render()
 
 	if (psHUD_Flags.test(HUD_CROSSHAIR_DIST)){
 		F->SetColor		(C);
-		F->OutNext		("%4.1f",RQ.range);
+		if (RQ.range >= 360.0f)
+			F->OutNext		("~");
+		else
+			F->OutNext		("%4.1f",RQ.range);
 	}
 
 	if (psHUD_Flags.test(HUD_INFO)){ 
