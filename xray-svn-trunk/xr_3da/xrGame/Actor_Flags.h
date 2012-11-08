@@ -11,6 +11,7 @@ enum
 		AF_PSP					= (1<<6),
 		AF_USE_CROSSHAIR		= (1<<7),
 		AF_WPN_BOBBING			= (1<<8),
+		AF_COLLISION			= (1<<9),
 };
 
 extern Flags32 psActorFlags;

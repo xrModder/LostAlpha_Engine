@@ -619,6 +619,7 @@ void CCharacterPhysicsSupport::set_movement_position( const Fvector &pos )
 	movement()->SetPosition( m_EntityAlife.Position() );
 }
 
+extern Flags32 psActorFlags;
 void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 {
 	DestroyIKController( );
@@ -713,7 +714,7 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	
 	if(IsGameTypeSingle())
 	{
-		if (!skel_collision_enable)
+		if (!psActorFlags.test(AF_COLLISION) || !skel_collision_enable)
 		{
 			m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
 			m_pPhysicsShell->SetRemoveCharacterCollLADisable();
