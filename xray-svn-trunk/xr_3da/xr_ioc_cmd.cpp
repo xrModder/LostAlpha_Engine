@@ -562,7 +562,9 @@ void CCC_Register()
 
 #ifdef DEBUG
    //CMD3(CCC_Mask,		"rs_debug_msg",			&psDeviceFlags,		rsDebugMsg		);
+#endif
 	CMD3(CCC_Mask,		"rs_cam_pos",			&psDeviceFlags,		rsCameraPos				);
+#ifdef DEBUG
 	CMD3(CCC_Mask,		"rs_occ_draw",			&psDeviceFlags,		rsOcclusionDraw			);
 	CMD3(CCC_Mask,		"rs_occ_stats",			&psDeviceFlags,		rsOcclusionStats		);
 #endif // DEBUG
@@ -610,7 +612,8 @@ void CCC_Register()
 #endif // DEBUG
 
 	// Mouse
-	CMD3(CCC_Mask,		"mouse_invert",			&psMouseInvert,1);
+	CMD3(CCC_Mask,		"weapon_hold_zoom",			&psHoldZoom, 1);
+	CMD3(CCC_Mask,		"mouse_invert",			&psMouseInvert, 1);
 	psMouseSens			= 0.12f;
 	CMD4(CCC_Float,		"mouse_sens",			&psMouseSens,		0.05f, 0.6f);
 

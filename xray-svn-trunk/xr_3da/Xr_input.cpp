@@ -10,6 +10,7 @@ IInputReceiver		dummyController;
 ENGINE_API float	psMouseSens			= 1.f;
 ENGINE_API float	psMouseSensScale	= 1.f;
 ENGINE_API Flags32	psMouseInvert		= {FALSE};
+ENGINE_API Flags32	psHoldZoom		= {FALSE};
 
 #define MOUSEBUFFERSIZE			64
 #define KEYBOARDBUFFERSIZE		64

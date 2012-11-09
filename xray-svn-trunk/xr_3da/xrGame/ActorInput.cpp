@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dinput.h>
+#include "pch_script.h"
 #include "Actor.h"
 #include "Torch.h"
 #include "trade.h"
@@ -24,6 +25,10 @@
 #include "UI/UIStatic.h"
 #include "CharacterPhysicsSupport.h"
 #include "InventoryBox.h"
+#include "WeaponMagazined.h"
+#include "game_object_space.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 bool g_bAutoClearCrouch = true;
 
@@ -33,6 +38,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	if (Remote())		return;
 
 //	if (conditions().IsSleeping())	return;
+
+	callback(GameObject::eOnButtonPress)(lua_game_object(), cmd);
+
 	if (IsTalking())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	
@@ -62,8 +70,30 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		m_holder->OnKeyboardPress			(cmd);
 		if(m_holder->allowWeapon() && inventory().Action(cmd, CMD_START))		return;
 		return;
-	}else
-		if(inventory().Action(cmd, CMD_START))					return;
+	} else {
+		if (cmd==kWPN_ZOOM&&!psHoldZoom.test(1)) 
+		{
+			if(inventory().ActiveItem())
+			{
+				CWeaponMagazined* pWM = smart_cast<CWeaponMagazined*>(inventory().ActiveItem());
+				if (pWM)
+				{
+					if (IsZoomAimingMode())
+					{
+						if(inventory().Action(cmd, CMD_STOP))					return;
+					}else{
+						if(inventory().Action(cmd, CMD_START))					return;
+					}
+				}else{
+					if(inventory().Action(cmd, CMD_START))					return;
+				}
+			}else{
+				if(inventory().Action(cmd, CMD_START))					return;
+			}
+		} else {
+			if(inventory().Action(cmd, CMD_START))					return;
+		}
+	}
 
 	switch(cmd){
 	case kJUMP:		
@@ -192,6 +222,9 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 	if (Remote())		return;
 
 //	if (conditions().IsSleeping())	return;
+
+	callback(GameObject::eOnButtonRelease)(lua_game_object(), cmd);
+
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 
 	if (g_Alive())	
@@ -205,8 +238,23 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 			
 			if(m_holder->allowWeapon() && inventory().Action(cmd, CMD_STOP))		return;
 			return;
-		}else
-			if(inventory().Action(cmd, CMD_STOP))		return;
+		}else{
+			if (cmd==kWPN_ZOOM&&!psHoldZoom.test(1))
+			{
+				if(inventory().ActiveItem())
+				{
+					CWeaponMagazined* pWM = smart_cast<CWeaponMagazined*>(inventory().ActiveItem());
+					if (!pWM || (pWM&&!pWM->IsZoomEnabled()))
+					{
+						if(inventory().Action(cmd, CMD_STOP))		return;
+					}
+				} else {
+					if(inventory().Action(cmd, CMD_STOP))		return;
+				}
+			} else {
+				if(inventory().Action(cmd, CMD_STOP))		return;
+			}
+		}
 
 
 
@@ -223,6 +271,9 @@ void CActor::IR_OnKeyboardHold(int cmd)
 {
 	if (Remote() || !g_Alive())					return;
 //	if (conditions().IsSleeping())				return;
+
+	callback(GameObject::eOnButtonHold)(cmd);
+
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	if (IsTalking())							return;
 

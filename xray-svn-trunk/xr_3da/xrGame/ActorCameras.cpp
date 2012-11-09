@@ -120,8 +120,9 @@ void CActor::camUpdateLadder(float dt)
 
 void CActor::cam_UnsetLadder()
 {
-	setVisible(TRUE);
-	m_bDrawLegs				= true;
+	//SkyLoader: i've temporarily disabled it
+	//setVisible(TRUE);
+	//m_bDrawLegs				= true;
 
 	CCameraBase* C			= cameras[eacFirstEye];
 	C->lim_yaw[0]			= 0;

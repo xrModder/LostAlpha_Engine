@@ -42,6 +42,12 @@ namespace GameObject {
 		eOnItemTake,
 		eOnItemDrop,
 
+		//lost alpha
+		eOnButtonPress,
+		eOnButtonRelease,
+		eOnButtonHold,
+		//
+
 		eScriptAnimation,
 		
 		eTraderGlobalAnimationRequest,
