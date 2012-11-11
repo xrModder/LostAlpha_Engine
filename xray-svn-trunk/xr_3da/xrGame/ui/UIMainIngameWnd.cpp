@@ -585,85 +585,169 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 
 		if (1 == g_bHudAdjustMode) //zoom offset
 		{
-			if (!pWpnHud) return false;
-			tmpV = pWpnHud->ZoomOffset();
+			CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
-			switch (dik)
+			R_ASSERT(pActor);
+
+			if (pActor->IsZoomAimingMode())
 			{
-				// Rotate +y
-			case DIK_K:
-				pWpnHud->SetZoomRotateX(pWpnHud->ZoomRotateX() + g_fHudAdjustValue);
-				flag = true;
-				break;
-				// Rotate -y
-			case DIK_I:
-				pWpnHud->SetZoomRotateX(pWpnHud->ZoomRotateX() - g_fHudAdjustValue);
-				flag = true;
-				break;
+				if (!pWpnHud) return false;
+				tmpV = pWpnHud->ZoomOffset();
+
+				switch (dik)
+				{
 				// Rotate +x
-			case DIK_L:
-				pWpnHud->SetZoomRotateY(pWpnHud->ZoomRotateY() + g_fHudAdjustValue);
-				flag = true;
-				break;
+				case DIK_K:
+					pWpnHud->SetZoomRotateX(pWpnHud->ZoomRotateX() + g_fHudAdjustValue);
+					flag = true;
+					break;
 				// Rotate -x
-			case DIK_J:
-				pWpnHud->SetZoomRotateY(pWpnHud->ZoomRotateY() - g_fHudAdjustValue);
-				flag = true;
-				break;
+				case DIK_I:
+					pWpnHud->SetZoomRotateX(pWpnHud->ZoomRotateX() - g_fHudAdjustValue);
+					flag = true;
+					break;
+				// Rotate +y
+				case DIK_L:
+					pWpnHud->SetZoomRotateY(pWpnHud->ZoomRotateY() + g_fHudAdjustValue);
+					flag = true;
+					break;
+				// Rotate -y
+				case DIK_J:
+					pWpnHud->SetZoomRotateY(pWpnHud->ZoomRotateY() - g_fHudAdjustValue);
+					flag = true;
+					break;
 				// Shift +x
-			case DIK_W:
-				tmpV.y += g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_W:
+					tmpV.y += g_fHudAdjustValue;
+					flag = true;
+					break;
 				// Shift -y
-			case DIK_S:
-				tmpV.y -= g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_S:
+					tmpV.y -= g_fHudAdjustValue;
+					flag = true;
+					break;
 				// Shift +x
-			case DIK_D:
-				tmpV.x += g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_D:
+					tmpV.x += g_fHudAdjustValue;
+					flag = true;
+					break;
 				// Shift -x
-			case DIK_A:
-				tmpV.x -= g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_A:
+					tmpV.x -= g_fHudAdjustValue;
+					flag = true;
+					break;
 				// Shift +z
-			case DIK_Q:
-				tmpV.z += g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_Q:
+					tmpV.z += g_fHudAdjustValue;
+					flag = true;
+					break;
 				// Shift -z
-			case DIK_E:
-				tmpV.z -= g_fHudAdjustValue;
-				flag = true;
-				break;
+				case DIK_E:
+					tmpV.z -= g_fHudAdjustValue;
+					flag = true;
+					break;
 				// output coordinate info to the console
-			case DIK_P:
-				string256 tmpStr;
-				sprintf_s(tmpStr, "%s",
-					*m_pWeapon->cNameSect());
-				Log(tmpStr);
+				case DIK_P:
+					string256 tmpStr;
+					sprintf_s(tmpStr, "%s",
+						*m_pWeapon->cNameSect());
+					Log(tmpStr);
 
-					sprintf_s(tmpStr, "zoom_offset\t\t\t= %f,%f,%f",
-						pWpnHud->ZoomOffset().x,
-						pWpnHud->ZoomOffset().y,
-						pWpnHud->ZoomOffset().z);
-				Log(tmpStr);
-				sprintf_s(tmpStr, "zoom_rotate_x\t\t= %f",
-					pWpnHud->ZoomRotateX());
-				Log(tmpStr);
-				sprintf_s(tmpStr, "zoom_rotate_y\t\t= %f",
-					pWpnHud->ZoomRotateY());
-				Log(tmpStr);
-				flag = true;
-				break;
+						sprintf_s(tmpStr, "zoom_offset\t\t\t= %f,%f,%f",
+							pWpnHud->ZoomOffset().x,
+							pWpnHud->ZoomOffset().y,
+							pWpnHud->ZoomOffset().z);
+					Log(tmpStr);
+					sprintf_s(tmpStr, "zoom_rotate_x\t\t= %f",
+						pWpnHud->ZoomRotateX());
+					Log(tmpStr);
+					sprintf_s(tmpStr, "zoom_rotate_y\t\t= %f",
+						pWpnHud->ZoomRotateY());
+					Log(tmpStr);
+					flag = true;
+					break;
+				}
+
+				if (tmpV.x || tmpV.y || tmpV.z)
+					pWpnHud->SetZoomOffset(tmpV);
+			} else {
+				if (!pWpnHud) return false;
+
+				Fmatrix m_offset = pWpnHud->HudOffsetMatrix();
+
+				switch (dik)
+				{
+				// Rotate +x
+				case DIK_K:
+					m_offset.k.x += g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Rotate -x
+				case DIK_I:
+					m_offset.k.x -= g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Rotate +y
+				case DIK_L:
+					m_offset.k.y += g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Rotate -y
+				case DIK_J:
+					m_offset.k.y -= g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift +x
+				case DIK_W:
+					m_offset.c.y += g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift -y
+				case DIK_S:
+					m_offset.c.y -= g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift +x
+				case DIK_D:
+					m_offset.c.x += g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift -x
+				case DIK_A:
+					m_offset.c.x -= g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift +z
+				case DIK_Q:
+					m_offset.c.z += g_fHudAdjustValue;
+					flag = true;
+					break;
+				// Shift -z
+				case DIK_E:
+					m_offset.c.z -= g_fHudAdjustValue;
+					flag = true;
+					break;
+				// output coordinate info to the console
+				case DIK_P:
+					string256 tmpStr;
+					sprintf_s(tmpStr, "%s",
+						*m_pWeapon->cNameSect());
+					Log(tmpStr);
+						sprintf_s(tmpStr, "position\t\t\t= %f,%f,%f",
+							m_offset.c.x,
+							m_offset.c.y,
+							m_offset.c.z);
+					Log(tmpStr);
+					sprintf_s(tmpStr, "orientation\t\t\t= %f,%f,0",
+							m_offset.k.x,
+							m_offset.k.y);
+					Log(tmpStr);
+					flag = true;
+					break;
+				}
+
+				pWpnHud->SetHudOffsetMatrix(m_offset);
 			}
-
-			if (tmpV.x || tmpV.y || tmpV.z)
-				pWpnHud->SetZoomOffset(tmpV);
 		}
 		else if (2 == g_bHudAdjustMode || 5 == g_bHudAdjustMode) //firePoints
 		{
@@ -961,11 +1045,13 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		case DIK_NUMPADMINUS:
 			//.HideAll();
 			HUD().GetUI()->HideGameIndicators();
+			HUD().GetUI()->HideCrosshair();
 			return true;
 			break;
 		case DIK_NUMPADPLUS:
 			//.ShowAll();
 			HUD().GetUI()->ShowGameIndicators();
+			HUD().GetUI()->ShowCrosshair();
 			return true;
 			break;
 		}
