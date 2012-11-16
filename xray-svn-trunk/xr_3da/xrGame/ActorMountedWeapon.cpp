@@ -9,6 +9,8 @@
 #include "CharacterPhysicsSupport.h"
 bool CActor::use_MountedWeapon(CHolderCustom* object)
 {
+	cam_Set(eacFirstEye);
+
 //	CHolderCustom* wpn	=smart_cast<CHolderCustom*>(object);
 	CHolderCustom* wpn	=object;
 	if(m_holder){
