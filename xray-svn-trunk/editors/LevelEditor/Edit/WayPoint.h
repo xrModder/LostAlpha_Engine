@@ -33,7 +33,7 @@ class CWayPoint{
 public:
                 CWayPoint		(LPCSTR name);
                 ~CWayPoint		();
-    void    	Render      	(LPCSTR parent_name, bool bParentSelect);
+    void    	Render      	(LPCSTR parent_name, bool bParentSelect, bool SpawnEnabled);
     bool    	RayPick	    	(float& distance, const Fvector& S, const Fvector& D);
     bool 		FrustumPick		(const CFrustum& frustum);
     bool 		FrustumSelect	(int flag, const CFrustum& frustum);
@@ -47,6 +47,7 @@ public:
     void		Convert2Link	(CWayPoint* P);
     WPLIt		FindLink		(CWayPoint* P);
     void		GetBox			(Fbox& bb);
+    virtual void 	NumSetPosition	(const Fvector& pos)	{ MoveTo(pos); }
 };
 
 DEFINE_VECTOR(CWayPoint*,WPVec,WPIt);
@@ -56,6 +57,7 @@ protected:
     friend class TfrmPropertiesWayPoint;
 	EWayType		m_Type;
     WPVec			m_WayPoints;
+    BOOL		m_bSpawnEnabled;
     typedef CCustomObject inherited;
     CWayPoint*		FindWayPoint	(const shared_str& nm);
 	void __stdcall  FindWPByName	(LPCSTR new_name,bool& res){res=!!FindWayPoint(new_name);}
@@ -84,6 +86,7 @@ public:
     bool			Add1Link		();
     bool			Add2Link		();
     // change position/orientation methods
+    	void __stdcall 	OnNumChangePosition	(PropValue* sender);
 	virtual void 	MoveTo			(const Fvector& pos, const Fvector& up);
 	virtual void 	Move			(Fvector& amount);
 	virtual void 	RotateParent	(Fvector& axis, float angle ){;}
