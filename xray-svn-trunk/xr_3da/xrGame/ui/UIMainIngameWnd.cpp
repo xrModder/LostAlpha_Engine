@@ -674,57 +674,64 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				if (!pWpnHud) return false;
 
 				Fmatrix m_offset = pWpnHud->HudOffsetMatrix();
+				tmpV = pWpnHud->ZoomOffset();
 
 				switch (dik)
 				{
 				// Rotate +x
-				case DIK_K:
+				case DIK_L:
 					m_offset.k.x += g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Rotate -x
-				case DIK_I:
+				case DIK_J:
 					m_offset.k.x -= g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Rotate +y
-				case DIK_L:
+				case DIK_I:
 					m_offset.k.y += g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Rotate -y
-				case DIK_J:
+				case DIK_K:
 					m_offset.k.y -= g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift +x
 				case DIK_W:
 					m_offset.c.y += g_fHudAdjustValue;
+					tmpV.y -= g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift -y
 				case DIK_S:
 					m_offset.c.y -= g_fHudAdjustValue;
+					tmpV.y += g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift +x
 				case DIK_D:
 					m_offset.c.x += g_fHudAdjustValue;
+					tmpV.x -= g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift -x
 				case DIK_A:
 					m_offset.c.x -= g_fHudAdjustValue;
+					tmpV.x += g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift +z
 				case DIK_Q:
 					m_offset.c.z += g_fHudAdjustValue;
+					tmpV.z -= g_fHudAdjustValue;
 					flag = true;
 					break;
 				// Shift -z
 				case DIK_E:
 					m_offset.c.z -= g_fHudAdjustValue;
+					tmpV.z += g_fHudAdjustValue;
 					flag = true;
 					break;
 				// output coordinate info to the console
@@ -747,6 +754,8 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				}
 
 				pWpnHud->SetHudOffsetMatrix(m_offset);
+				if (tmpV.x || tmpV.y || tmpV.z)
+					pWpnHud->SetZoomOffset(tmpV);
 			}
 		}
 		else if (2 == g_bHudAdjustMode || 5 == g_bHudAdjustMode) //firePoints
@@ -1473,10 +1482,10 @@ void CUIMainIngameWnd::draw_adjust_mode()
 //.		F->SetSizeI			(0.02f);
 		F->OutSetI			(0.f,-0.8f);
 		F->SetColor			(D3DCOLOR_XRGB(255, 0, 0));//(0xffffffff);
-		F->OutNext			("wpn_name=%s", wpn_name);
-		F->OutNext			("Hud_adjust_mode=%d",g_bHudAdjustMode);
+		F->OutNext			("weapon section = %s", wpn_name);
+		F->OutNext			("Hud_adjust_mode = %d",g_bHudAdjustMode);
 		if(g_bHudAdjustMode==1)
-			F->OutNext			("adjusting zoom offset");
+			F->OutNext			("adjusting hud offset and zoom offset");
 		else if(g_bHudAdjustMode==2)
 			F->OutNext			("adjusting fire point for %s",bCamFirstEye?hud_view:_3rd_person_view);
 		else if(g_bHudAdjustMode==3)

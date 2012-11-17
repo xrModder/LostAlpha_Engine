@@ -477,7 +477,7 @@ void CController::net_Destroy()
 {
 	inherited::net_Destroy();
 
-	m_aura->on_death	();
+	m_aura->on_destroy	();
 	FreeFromControl		();
 }
 
