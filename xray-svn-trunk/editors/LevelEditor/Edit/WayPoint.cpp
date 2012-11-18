@@ -601,8 +601,10 @@ void CWayObject::Save(IWriter& F)
 
 bool CWayObject::ExportGame(SExportStreams* F)
 {
-	F->patrolpath.stream.open_chunk		(F->patrolpath.chunk++);
-	{
+  if (!m_bSpawnEnabled) { Msg("WayObject: '%s' is disabled.", Name); return TRUE;}
+
+      F->patrolpath.stream.open_chunk		(F->patrolpath.chunk++);
+      {
         F->patrolpath.stream.open_chunk	(WAYOBJECT_CHUNK_VERSION);
         F->patrolpath.stream.w_u16		(WAYOBJECT_VERSION);
         F->patrolpath.stream.close_chunk	();
@@ -636,9 +638,9 @@ bool CWayObject::ExportGame(SExportStreams* F)
             }
         }
         F->patrolpath.stream.close_chunk	();
-    }
-    F->patrolpath.stream.close_chunk		();
-    return true;
+      }
+      F->patrolpath.stream.close_chunk		();
+      return true;
 }
 //----------------------------------------------------
 

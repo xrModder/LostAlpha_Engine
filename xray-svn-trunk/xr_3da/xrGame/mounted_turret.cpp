@@ -341,6 +341,12 @@ void CMountedTurret::ResetBoneCallbacks()
 
 bool CMountedTurret::attach_Actor(CGameObject *actor)
 {
+	CActor *pA = smart_cast<CActor*>(actor);
+	if (pA)
+	{
+		pA->cam_Set(eacFirstEye);
+		pA->setVisible(FALSE);
+	}
 	m_initial_pos.set														(actor->Position());
 	CHolderCustom::attach_Actor												(actor);
 	processing_activate														();
@@ -351,8 +357,10 @@ bool CMountedTurret::attach_Actor(CGameObject *actor)
 
 void CMountedTurret::detach_Actor()
 {
-	CHolderCustom::detach_Actor												();
+	if (OwnerActor())
+		OwnerActor()->setVisible(TRUE);
 	FireEnd																	();
+	CHolderCustom::detach_Actor												();
 	m_temp_incr						= 0;
 	processing_deactivate													();
 }
@@ -577,9 +585,9 @@ void CMountedTurret::UpdateBarrelDir()
 	m_cur_x_rot						= angle_inertion_var					(m_cur_x_rot, m_tgt_x_rot, 0.5f, 3.5f, PI, Device.fTimeDelta);
 	m_cur_y_rot						= angle_inertion_var					(m_cur_y_rot, m_tgt_y_rot, 0.5f, 3.5f, PI, Device.fTimeDelta);
 	
-	if(!fsimilar(m_cur_x_rot, m_tgt_x_rot, dir_eps) || 
-		!fsimilar(m_cur_y_rot, m_tgt_y_rot, dir_eps))
-		m_allow_fire = false;
+	//if(!fsimilar(m_cur_x_rot, m_tgt_x_rot, dir_eps) || 
+	//	!fsimilar(m_cur_y_rot, m_tgt_y_rot, dir_eps))
+	//	m_allow_fire = false;
 }
 
 
