@@ -148,7 +148,7 @@ void ETextureThumbnail::Save(int age, LPCSTR path)
     if (path)
         FS.update_path(fn, path, m_Name.c_str());
     else
-    	FS.update_path(fn, _game_textures_, m_Name.c_str());
+    	FS.update_path(fn, _textures_, m_Name.c_str());
 
     if (F.save_to(fn))
     {
