@@ -119,41 +119,9 @@ void CCameraLook2::Update(Fvector& point, Fvector&)
 	vPosition.add		(_off);
 }
 
-void CCameraLook2::UpdateAutoAim()
-{
-	Fvector								_dest_point;
-	m_locked_enemy->Center				(_dest_point);
-	_dest_point.y						+= 0.2f;
-
-	Fvector								_dest_dir;
-	_dest_dir.sub						(_dest_point, vPosition);
-	
-	Fmatrix								_m;
-	_m.identity							();
-	_m.k.normalize_safe					(_dest_dir);
-	Fvector::generate_orthonormal_basis	(_m.k, _m.j, _m.i);
-
-	Fvector								xyz;
-	_m.getXYZi							(xyz);
-
-	yaw				= angle_inertion_var(	yaw,xyz.y,
-											m_autoaim_inertion_yaw.x,
-											m_autoaim_inertion_yaw.y,
-											PI,
-											Device.fTimeDelta);
-
-	pitch			= angle_inertion_var(	pitch,xyz.x,
-											m_autoaim_inertion_pitch.x,
-											m_autoaim_inertion_pitch.y,
-											PI,
-											Device.fTimeDelta);
-}
-
 void CCameraLook2::Load(LPCSTR section)
 {
 	CCameraLook::Load		(section);
 	m_cam_offset			= pSettings->r_fvector3	(section,"offset");
-	m_autoaim_inertion_yaw	= pSettings->r_fvector2	(section,"autoaim_speed_y");
-	m_autoaim_inertion_pitch= pSettings->r_fvector2	(section,"autoaim_speed_x");
 	dist				= 1.1f;
 }
