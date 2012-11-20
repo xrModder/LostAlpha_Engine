@@ -97,7 +97,7 @@ CActor::CActor() : CEntityAlive()
 	psActorFlags.set(AF_PSP, TRUE);
 
 	cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
-	cameras[eacLookAt]->Load("actor_look_cam_psp");
+	cameras[eacLookAt]->Load("actor_look_cam");
 
 	cameras[eacFreeLook]	= xr_new<CCameraLook>					(this);
 	cameras[eacFreeLook]->Load("actor_free_cam");

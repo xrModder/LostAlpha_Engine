@@ -314,6 +314,7 @@ public:
 	bool 			LoadBoneData			(IReader& F);
 	void 			SaveBoneData			(IWriter& F);
     void			ResetBones				();
+    void			AntirevertBones				();
 	CSMotion*		ResetSAnimation			(bool bGotoBindPose=true);
     void			CalculateAnimation		(CSMotion* motion);
     void			CalculateBindPose		();

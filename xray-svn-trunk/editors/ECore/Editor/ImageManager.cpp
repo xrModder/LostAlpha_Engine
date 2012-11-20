@@ -372,7 +372,7 @@ void CImageManager::SynchronizeTextures(bool sync_thm, bool sync_game, bool bFor
         if (bUpdated){
             string_path             tga_fn,thm_fn,dds_fn;
             FS.update_path			(tga_fn,_textures_,		EFS.ChangeFileExt(base_name,".tga").c_str());
-            FS.update_path			(thm_fn,_game_textures_,	EFS.ChangeFileExt(base_name,".thm").c_str());
+            FS.update_path			(thm_fn,_textures_,		EFS.ChangeFileExt(base_name,".thm").c_str());
             FS.update_path			(dds_fn,_game_textures_,        EFS.ChangeFileExt(base_name,".dds").c_str());
             if (bForceBaseAge){
             	int age 			= it->time_write;

@@ -139,6 +139,7 @@ class CActorTools: public CToolsCustom
     void __stdcall 		OnBoneShapeClick  		(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneEditClick			(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneFileClick			(ButtonValue* sender, bool& bModif, bool& bSafe);
+    void __stdcall 		OnBoneSkeletonClick		(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneLimitsChange		(PropValue* sender);
     
 	void __stdcall  	OnJointTypeChange		(PropValue* sender);

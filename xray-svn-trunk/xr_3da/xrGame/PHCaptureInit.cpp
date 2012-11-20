@@ -26,7 +26,7 @@ CPHCapture::CPHCapture	(CPHCharacter   *a_character, CPhysicsShellHolder	*a_tage
 	b_failed				=false;
 	b_disabled				=false;	
 	b_character_feedback	=false;
-	e_state					=cstFree;
+	e_state					=cstPulling;
 	
 	if(!a_taget_object							||
 	   !a_taget_object->m_pPhysicsShell			||
@@ -103,7 +103,7 @@ CPHCapture::CPHCapture(CPHCharacter   *a_character,CPhysicsShellHolder	*a_taget_
 	m_body					=NULL;
 	b_failed				=false;
 	b_disabled				=false;
-	e_state					=cstFree;
+	e_state					=cstPulling;
 	b_character_feedback	=false;
 	m_taget_object			=NULL;
 	m_character				=NULL;
@@ -264,8 +264,7 @@ void CPHCapture::Init(CInifile* ini)
 void CPHCapture::Release()
 {
 	if(b_failed) return;
-	if( e_state==cstReleased || e_state== cstFree ) 
-		return;
+	if( e_state==cstReleased) return;
 	if(m_joint) 
 	{
 		m_island.RemoveJoint(m_joint);
@@ -292,6 +291,8 @@ void CPHCapture::Release()
 		m_taget_element->set_DynamicLimits();
 	}
 
+
+	e_state=cstReleased;
 	b_collide=true;
 	CActor* A=smart_cast<CActor*>(m_character->PhysicsRefObject());
 	if(A)
@@ -299,8 +300,6 @@ void CPHCapture::Release()
 		A->SetWeaponHideState(INV_STATE_BLOCK_ALL,false);
 //.		A->inventory().setSlotsBlocked(false);
 	}
-
-	e_state=cstReleased;
 }
 
 void CPHCapture::Deactivate()
@@ -313,7 +312,6 @@ void CPHCapture::Deactivate()
 	//}
 	if(m_character)m_character->SetObjectContactCallback(0);
 	CPHUpdateObject::Deactivate();
-	e_state			=cstFree;
 	m_character		=NULL;
 	m_taget_object	=NULL;
 	m_taget_element	=NULL;

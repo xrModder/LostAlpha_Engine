@@ -262,3 +262,10 @@ bool CBone::ExportOGF(IWriter& F)
     F.w_fvector3(center_of_mass);
     return true;
 }
+
+void CBone::AntirevertBones()
+{
+	Fvector2 limit_bone = IK_data.limits[1].limit;
+	IK_data.limits[1].limit.x = limit_bone.y * -1.0f;
+	IK_data.limits[1].limit.y = limit_bone.x * -1.0f;
+}
