@@ -402,6 +402,15 @@ void  CActorTools::OnBoneFileClick(ButtonValue* V, bool& bModif, bool& bSafe)
 	}
 }
 
+void  CActorTools::OnBoneSkeletonClick(ButtonValue* V, bool& bModif, bool& bSafe)
+{
+	R_ASSERT(m_pEditObject);
+    	if (ELog.DlgMsg(mtConfirmation,"Are you sure to antirevert all bone joints?")==mrYes)
+			m_pEditObject->AntirevertBones(); 
+	bModif = true;
+
+}
+
 void  CActorTools::OnBoneLimitsChange(PropValue* sender)
 {
 	m_pEditObject->ClampByLimits(true);
@@ -420,6 +429,8 @@ void CActorTools::FillBoneProperties(PropItemVec& items, LPCSTR pref, ListItem* 
     B->OnBtnClickEvent.bind		(this,&CActorTools::OnBoneEditClick);
     B=PHelper().CreateButton	(items, PrepareKey(pref,"Global\\Generate Shape"),"All, Selected",ButtonValue::flFirstOnly);
     B->OnBtnClickEvent.bind		(this,&CActorTools::OnBoneShapeClick);
+    B=PHelper().CreateButton	(items, PrepareKey(pref,"Global\\Skeleton"),"Antirevert bone joints",ButtonValue::flFirstOnly);
+    B->OnBtnClickEvent.bind		(this,&CActorTools::OnBoneSkeletonClick);
     if (BONE){
     	PropValue* V;
         PHelper().CreateCaption		(items, PrepareKey(pref,"Bone\\Name"),						BONE->Name());

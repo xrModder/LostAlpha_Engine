@@ -390,6 +390,7 @@ IC	float	__stdcall		editor_hi_limit ( u8 k ) const	{ return IK_data.limits[k].li
     void			    Select			(BOOL flag)	{ flags.set(flSelected,flag); }
     bool			    Selected		(){return !!flags.is(flSelected);}
 
+    void			    AntirevertBones	();
     void			    ClampByLimits	();
 
     bool 			    ExportOGF		(IWriter& F);

@@ -24,6 +24,13 @@ void CEditableObject::ResetBones()
     	(*b_it)->ResetData();
 }
 
+void CEditableObject::AntirevertBones()
+{
+    BoneVec& lst = m_Bones;
+    for(BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
+    	(*b_it)->AntirevertBones();
+}
+
 class fBoneNameEQ {
 	shared_str	name;
 public:
