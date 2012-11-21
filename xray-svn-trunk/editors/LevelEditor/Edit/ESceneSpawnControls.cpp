@@ -18,8 +18,12 @@ bool __fastcall TUI_ControlSpawnAdd::AppendCallback(SBeforeAppendCallbackParams*
     	ELog.DlgMsg(mtInformation,"Nothing selected.");
     	return false;
     }
-	p->name_prefix 	= 	Scene->LevelPrefix().c_str();
-    p->name_prefix 	+= 	"_";
+
+    	if(Scene->LevelPrefix().c_str())
+	{
+		p->name_prefix 	= 	Scene->LevelPrefix().c_str();
+		p->name_prefix 	+= 	"_";
+	}
 	p->name_prefix 	+= 	ref_name;
 	p->data 		= (void*)ref_name;
     return (0!=p->name_prefix.length());

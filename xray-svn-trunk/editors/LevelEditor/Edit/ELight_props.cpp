@@ -106,6 +106,7 @@ void  CLight::OnAttenuationDraw(CanvasValue* sender, void* _canvas, const Irect&
         for (int d=1; d<w; d++){
             float R = d*d_cost;
             float b = m_Brightness/(m_Attenuation0+m_Attenuation1*R+m_Attenuation2*R*R);
+            b -= m_Brightness*R/(m_Range*(m_Attenuation0+m_Attenuation1*m_Range+m_Attenuation2*m_Range*m_Range));
             float bb = h-((h/(/*br_max*/3.f*2))*b + h/2);
             int y = iFloor(y0+bb); clamp(y,int(rect.Top),int(rect.Bottom));
             if (1==d)	canvas->MoveTo(x0+d,y);

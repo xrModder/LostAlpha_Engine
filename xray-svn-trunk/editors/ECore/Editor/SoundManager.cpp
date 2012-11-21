@@ -345,7 +345,7 @@ void CSoundManager::CleanupSounds()
 
     SPBItem* pb = UI->ProgressStart(M_GAME_DEL.size()+M_THM_DEL.size(),"Cleanup sounds...");
     // mark game del sounds
-    it	     = M_GAME_DEL.begin();
+    /*it	     = M_GAME_DEL.begin();
 	it_e     = M_GAME_DEL.end();
 	
 	for (; it!=it_e; ++it)
@@ -356,7 +356,7 @@ void CSoundManager::CleanupSounds()
         FS.update_path			(fn,_game_sounds_,EFS.ChangeFileExt(base_name,".ogg").c_str());
         EFS.MarkFile			(fn,true);
         pb->Inc					();
-    }
+    }*/
     // mark thm sounds
     it	    = M_THM_DEL.begin();
 	it_e 	= M_THM_DEL.end();
@@ -370,6 +370,7 @@ void CSoundManager::CleanupSounds()
         pb->Inc					();
     }
     UI->ProgressEnd				(pb);
+
 }
 
 /*
