@@ -276,11 +276,11 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				BT.pSurface	= 0;
 			} else {
 				string_path			th_name;
-#ifdef PRIQUEL
-				FS.update_path	(th_name,"$game_textures$",strconcat(sizeof(th_name),th_name,N,".thm"));
-#else // PRIQUEL
+//#ifdef PRIQUEL
+//				FS.update_path	(th_name,"$game_textures$",strconcat(sizeof(th_name),th_name,N,".thm"));
+//#else // PRIQUEL
 				FS.update_path	(th_name,"$textures$",strconcat(sizeof(th_name),th_name,N,".thm"));
-#endif // PRIQUEL
+//#endif // PRIQUEL
 				clMsg			("processing: %s",th_name);
 				IReader* THM	= FS.r_open(th_name);
 				R_ASSERT2		(THM,th_name);

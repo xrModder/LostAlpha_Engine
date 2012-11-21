@@ -132,11 +132,11 @@ void xrLoad(LPCSTR name, bool draft_mode)
 						BT.pSurface	= 0;
 					} else {
 						strcat			(N,".thm");
-#ifdef PRIQUEL
-						IReader* THM	= FS.r_open("$game_textures$",N);
-#else // PRIQUEL
+//#ifdef PRIQUEL
+//						IReader* THM	= FS.r_open("$game_textures$",N);
+//#else // PRIQUEL
 						IReader* THM	= FS.r_open("$textures$",N);
-#endif // PRIQUEL
+//#endif // PRIQUEL
 //						if (!THM)		continue;
 						
 						R_ASSERT2		(THM,	N);

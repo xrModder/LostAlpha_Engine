@@ -314,7 +314,6 @@ public:
 	bool 			LoadBoneData			(IReader& F);
 	void 			SaveBoneData			(IWriter& F);
     void			ResetBones				();
-    void			AntirevertBones				();
 	CSMotion*		ResetSAnimation			(bool bGotoBindPose=true);
     void			CalculateAnimation		(CSMotion* motion);
     void			CalculateBindPose		();
@@ -356,6 +355,7 @@ public:
 	CBone* 			PickBone				(const Fvector& S, const Fvector& D, const Fmatrix& parent);
 	void 			SelectBones				(bool bVal);
 	void 			SelectBone				(CBone* b, bool bVal);
+    void			AntirevertBones				();
     void			ClampByLimits			(bool bSelOnly);
 #endif
     // change position/orientation methods
