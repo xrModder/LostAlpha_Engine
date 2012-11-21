@@ -279,6 +279,7 @@ void CSpawnPoint::Construct(LPVOID data)
 {
 	ClassID			= OBJCLASS_SPAWNPOINT;
     m_AttachedObject= 0;
+	m_bSpawnEnabled = true;
     if (data){
         if (strcmp(LPSTR(data),RPOINT_CHOOSE_NAME)==0){
             m_Type 		= ptRPoint;
@@ -709,6 +710,8 @@ Fvector3 u32_3f(u32 clr)
 
 bool CSpawnPoint::ExportGame(SExportStreams* F)
 {
+	if (!m_bSpawnEnabled) {Msg("SpawnPoint: '%s' is disabled.", Name); return true;}
+
 	// spawn
 	if (m_SpawnData.Valid()){
     	if (m_SpawnData.m_Data->validate()){
@@ -798,6 +801,8 @@ void CSpawnPoint::OnProfileChange(PropValue* prop)
 void CSpawnPoint::FillProp(LPCSTR pref, PropItemVec& items)
 {
 	inherited::FillProp(pref,items);
+
+	PHelper().CreateBOOL	(items,PrepareKey(pref,"Spawn\\enabled"), &m_bSpawnEnabled);
 
     if (m_SpawnData.Valid()){
 	    shared_str pref1			= PrepareKey(pref,m_SpawnData.m_Data->name());

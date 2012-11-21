@@ -73,6 +73,7 @@ public:
 		virtual void get_bone_xform	(LPCSTR name, Fmatrix& xform);
 	};
 
+	BOOL		m_bSpawnEnabled;
 	SSpawnData    	m_SpawnData;
 	CCustomObject*	m_AttachedObject;
 
