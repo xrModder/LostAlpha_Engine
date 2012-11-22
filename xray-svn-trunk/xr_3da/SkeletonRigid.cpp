@@ -142,11 +142,14 @@ void CKinematics::CLBone( const CBoneData* bd, CBoneInstance &bi, const Fmatrix 
 		if ( bi.callback_overwrite() ){
 			if ( bi.callback() )	bi.callback()( &bi );
 		} else {
-
+			Fmatrix XFORM = bi.mTransform;
 			BuildBoneMatrix( bd, bi, parent, channel_mask );
-#ifndef MASTER_GOLD
-			R_ASSERT2( _valid( bi.mTransform ), "anim kils bone matrix" ); 
-#endif // #ifndef MASTER_GOLD
+			if (!_valid( bi.mTransform ))
+			{
+				//Msg			("*FATAL* anim kils bone matrix [%s]",  bd->name.c_str());
+				bi.mTransform 		= XFORM;
+				bi.mTransform.mul_43	(*parent,bd->bind_transform);
+			}
 			if (bi.callback())
 			{
 				bi.callback()(&bi);
