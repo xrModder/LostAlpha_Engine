@@ -86,7 +86,7 @@ void EngineModel::PlayFX(LPCSTR name, float power, u16 slot)
 
 void EngineModel::StopAnimation()
 {
-    if (m_pVisual){
+    if (m_pVisual &&  PKinematicsAnimated(m_pVisual) ){
         PKinematicsAnimated(m_pVisual)->LL_CloseCycle(0);
         PKinematicsAnimated(m_pVisual)->LL_CloseCycle(1);
         PKinematicsAnimated(m_pVisual)->LL_CloseCycle(2);
@@ -151,14 +151,22 @@ bool EngineModel::UpdateVisual(CEditableObject* source, bool bUpdGeom, bool bUpd
 
 void EngineModel::PlayMotion(LPCSTR name, u16 slot)
 {
+    for (int k=0; k<MAX_PARTS; k++)
+       m_BPPlayItems[k].name = "";
+
+    StopAnimation();
+	
     CKinematicsAnimated* SA 	= PKinematicsAnimated(m_pVisual);
 	if (IsRenderable()&&SA){
         MotionID motion_ID 		= FindMotionID(name, slot);
         if (motion_ID.valid()){
             CMotionDef* mdef 	= SA->LL_GetMotionDef(motion_ID); VERIFY(mdef);
-            if (mdef->flags&esmFX){
-                for (int k=0; k<MAX_PARTS; k++){
-                    if (!m_BPPlayItems[k].name.IsEmpty()){
+            if (mdef->flags&esmFX)
+			{
+                for (int k=0; k<MAX_PARTS; k++)
+				{
+                    if (!m_BPPlayItems[k].name.IsEmpty())
+					{
                         MotionID D 		= SA->ID_Motion(m_BPPlayItems[k].name.c_str(),m_BPPlayItems[k].slot);
                         if (D.valid()) 	SA->LL_PlayCycle((u16)k,D,false,0,0);
                     }
@@ -167,7 +175,8 @@ void EngineModel::PlayMotion(LPCSTR name, u16 slot)
             }else{	
                 u16 idx 		= mdef->bone_or_part;
                 R_ASSERT((idx==BI_NONE)||(idx<MAX_PARTS));
-                if (BI_NONE==idx){
+                if (BI_NONE==idx)
+				{
                 	for (int k=0; k<MAX_PARTS; k++){ 
                 		m_BPPlayItems[k].name 	= name;
 	                    m_BPPlayItems[k].slot	= slot;
@@ -178,13 +187,17 @@ void EngineModel::PlayMotion(LPCSTR name, u16 slot)
                 }
                 m_pBlend		= 0;
 
-                for (int k=0; k<MAX_PARTS; k++){
-                    if (!m_BPPlayItems[k].name.IsEmpty()){
+                for (int k=0; k<MAX_PARTS; k++)
+				{
+                    if (!m_BPPlayItems[k].name.IsEmpty())
+					{
                         MotionID D 	= SA->ID_Motion(m_BPPlayItems[k].name.c_str(),m_BPPlayItems[k].slot);
                         CBlend* B	= 0;
-                        if (D.valid()){ 
+                        if (D.valid())
+						{ 
                             B = SA->LL_PlayCycle((u16)k,D,false,0,0);
-                            if (idx==k) m_pBlend = B;
+                            if(B && (idx==k || idx==BI_NONE) ) 
+                            	m_pBlend = B;
                         }
                     }
                 }        

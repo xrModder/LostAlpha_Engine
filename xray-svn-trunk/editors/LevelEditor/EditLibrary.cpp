@@ -96,6 +96,7 @@ void __fastcall TfrmEditLibrary::OnRender()
 void __fastcall TfrmEditLibrary::ZoomObject()
 {
 	if (!form) return;
+	if (!form->cbPreview->Checked) return;
 	if (form->cbPreview->Checked){
         // get bbox&transform
 		Fbox bb;

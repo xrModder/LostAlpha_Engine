@@ -51,8 +51,9 @@ void EScene::DestroySceneTools()
 {
     SceneToolsMapPairIt _I = m_SceneTools.begin();
     SceneToolsMapPairIt _E = m_SceneTools.end();
-    for (; _I!=_E; _I++){	
-    	_I->second->OnDestroy();
+    for (; _I!=_E; _I++){
+	if (_I->second)	
+    		_I->second->OnDestroy();
     	xr_delete(_I->second);
     }
     m_SceneTools.clear		();

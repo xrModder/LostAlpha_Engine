@@ -270,7 +270,7 @@ void xrLoad(LPCSTR name)
 					BT.pSurface	= 0;
 				} else {
 					strcat			(N,".thm");
-					IReader* THM	= FS.r_open("$game_textures$",N);
+					IReader* THM	= FS.r_open("$textures$",N);
 					R_ASSERT2		(THM,	N);
 
 					// version
