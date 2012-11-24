@@ -94,7 +94,12 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 		IKinematics* K		= smart_cast<IKinematics*>(Visual());
 		R_ASSERT			(Visual()&&smart_cast<IKinematics*>(Visual()));
 		light_bone			= K->LL_BoneID	(*lamp->light_main_bone);	VERIFY(light_bone!=BI_NONE);
-		ambient_bone		= K->LL_BoneID	(*lamp->light_ambient_bone);Msg("VERIFY(ambient_bone!=BI_NONE name='%s')",lamp->name());//VERIFY3(ambient_bone!=BI_NONE,"Object name :",lamp->name());
+		ambient_bone		= K->LL_BoneID	(*lamp->light_ambient_bone);
+#ifdef DEBUG
+		if (!(ambient_bone!=BI_NONE)) {
+			Msg("ERROR: verify(ambient_bone!=BI_NONE name='%s')",lamp->name());//VERIFY3(ambient_bone!=BI_NONE,"Object name :",lamp->name());
+		}
+#endif
 		collidable.model	= xr_new<CCF_Skeleton>				(this);
 	}
 	fBrightness				= lamp->brightness;

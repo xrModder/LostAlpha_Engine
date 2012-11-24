@@ -20,6 +20,7 @@
 #include "xrServer.h"
 #include "level.h"
 #include "restriction_space.h"
+#include "Store.h"
 
 using namespace luabind;
 
@@ -196,6 +197,12 @@ CSE_Abstract *CALifeSimulator__spawn_item2		(CALifeSimulator *self, LPCSTR secti
 	packet.r_begin						(dummy);
 	VERIFY								(dummy == M_SPAWN);
 	return								(self->server().Process_spawn(packet,clientID));
+}
+
+CStoreHouse *get_store(CALifeSimulator *self)
+{
+	return &(self->store_house());
+	//return NULL;
 }
 
 CSE_Abstract *CALifeSimulator__spawn_item3		(CALifeSimulator *self, LPCSTR section, ALife::_STORY_ID sid, const Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id)
@@ -492,7 +499,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("force_entity_update",		&force_entity_update)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
-
+			.def("store",					&get_store)
 		,def("alife",						&alife)
 	];
 

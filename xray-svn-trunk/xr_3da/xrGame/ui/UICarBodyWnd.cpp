@@ -25,6 +25,7 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../BottleItem.h"
+#include "../Car.h"
 
 #define				CAR_BODY_XML		"carbody_new.xml"
 #define				CARBODY_ITEM_XML	"carbody_item.xml"
@@ -164,15 +165,21 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	m_pUIOthersIcon->Show							(true);
 	
 	CBaseMonster *monster = NULL;
+	CCar *car = NULL;
 	if(m_pOthersObject) {
 		monster										= smart_cast<CBaseMonster *>(m_pOthersObject);
-		if (monster || m_pOthersObject->use_simplified_visual() ) 
+		car											= smart_cast<CCar *>(m_pOthersObject);
+		if (monster || car || m_pOthersObject->use_simplified_visual() ) 
 		{
 			m_pUICharacterInfoRight->ClearInfo		();
 			if(monster)
 			{
 				shared_str monster_tex_name = pSettings->r_string(monster->cNameSect(),"icon");
 				m_pUICharacterInfoRight->UIIcon().InitTexture(monster_tex_name.c_str());
+				m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
+			} else {
+				shared_str car_tex_name = pSettings->r_string(car->cNameSect(),"icon");
+				m_pUICharacterInfoRight->UIIcon().InitTexture(car_tex_name.c_str());
 				m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
 			}
 		}else 
@@ -185,7 +192,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	EnableAll										();
 	UpdateLists										();
 
-	if(!monster){
+	if(!monster && !car){
 		CInfoPortionWrapper	*known_info_registry	= xr_new<CInfoPortionWrapper>();
 		known_info_registry->registry().init		(other_id);
 		KNOWN_INFO_VECTOR& known_info				= known_info_registry->registry().objects();

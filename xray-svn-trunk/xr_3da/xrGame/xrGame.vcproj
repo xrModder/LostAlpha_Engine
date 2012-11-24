@@ -23480,6 +23480,22 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Store"
+					>
+					<File
+						RelativePath=".\Store.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Store.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Store_script.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Server"

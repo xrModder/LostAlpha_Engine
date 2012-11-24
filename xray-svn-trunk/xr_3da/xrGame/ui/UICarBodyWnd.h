@@ -32,6 +32,7 @@ public:
 
 	void					InitCarBody					(CInventoryOwner* pOurInv, CInventoryOwner* pOthersInv);
 	void					InitCarBody					(CInventoryOwner* pOur, CInventoryBox* pInvBox);
+	//void					InitCarBody					(CInventoryOwner* pOur, CInventory* pInv);
 	virtual void			Draw						();
 	virtual void			Update						();
 		
@@ -49,6 +50,7 @@ protected:
 
 	CInventoryOwner*		m_pOthersObject;
 	CInventoryBox*			m_pInventoryBox;
+	CInventory*				m_pInventory;
 
 	CUIDragDropListEx*		m_pUIOurBagList;
 	CUIDragDropListEx*		m_pUIOthersBagList;
@@ -97,5 +99,7 @@ protected:
 
 	bool					TransferItem				(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
 	void					BindDragDropListEnents		(CUIDragDropListEx* lst);
+
+
 
 };

@@ -146,6 +146,21 @@ IC	CALifeRegistryContainer		&CALifeSimulatorBase::registry						() const
 	return						(*m_registry_container);
 }
 
+IC	CStoreHouse					&CALifeSimulatorBase::store_house						() 
+{
+	VERIFY						(initialized());
+	VERIFY						(m_store_house);
+	return						(*m_store_house);
+}
+
+/*
+	CStoreHouse					*CALifeSimulatorBase::get_store_house_script						() 
+{
+	VERIFY						(initialized());
+	VERIFY						(m_store_house);
+	return						(m_store_house);
+}*/
+
 IC	CRandom32							&CALifeSimulatorBase::random				()
 {
 	return						(m_random);

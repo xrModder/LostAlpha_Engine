@@ -86,7 +86,6 @@ CInventoryItem::CInventoryItem()
 	m_flags.set			(FCanTake,TRUE);
 	m_flags.set			(FCanTrade,TRUE);
 	m_flags.set			(FUsingCondition,FALSE);
-	m_flags.set			(FWillBeDeleted,FALSE);
 	m_fCondition		= 1.0f;
 
 	m_name = m_nameShort = NULL;
