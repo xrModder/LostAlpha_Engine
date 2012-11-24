@@ -278,6 +278,7 @@ object fraBottomBar: TfraBottomBar
       'miRenderFillSolid.Checked'
       'miRenderFillWireframe.Checked'
       'miRenderHWTransform.Checked'
+      'miRenderFlagshtock.Checked'
       'miRenderShadeFlat.Checked'
       'miRenderShadeGouraud.Checked'
       'miRenderWithTextures.Checked')
@@ -394,6 +395,12 @@ object fraBottomBar: TfraBottomBar
       end
       object miRenderHWTransform: TMenuItem
         Caption = 'HW Render'
+        Checked = True
+        GroupIndex = 4
+        OnClick = ClickOptionsMenuItem
+      end
+      object miRenderFlagshtock: TMenuItem
+        Caption = 'Draw flagshtoks'
         Checked = True
         GroupIndex = 4
         OnClick = ClickOptionsMenuItem

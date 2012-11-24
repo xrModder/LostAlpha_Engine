@@ -43,6 +43,7 @@ void __fastcall TfraBottomBar::ClickOptionsMenuItem(TObject *Sender)
         else if (mi==miRenderShadeFlat)		Device.dwShadeMode	= D3DSHADE_FLAT;
         else if (mi==miRenderShadeGouraud)	Device.dwShadeMode	= D3DSHADE_GOURAUD;
         else if (mi==miRenderHWTransform){	HW.Caps.bForceGPU_SW = !mi->Checked; UI->Resize(); }
+        else if (mi==miRenderFlagshtock)	psDeviceFlags.set(rsDrawFlashtok, mi->Checked);
     }
     UI->RedrawScene();
     ExecCommand(COMMAND_UPDATE_TOOLBAR);
@@ -162,6 +163,7 @@ void __fastcall TfraBottomBar::pmOptionsPopup(TObject *Sender)
     miFog->Checked					= psDeviceFlags.is(rsFog);
     miDrawGrid->Checked				= psDeviceFlags.is(rsDrawGrid);
     miDrawSafeRect->Checked			= psDeviceFlags.is(rsDrawSafeRect);
+    miRenderFlagshtock->Checked			= psDeviceFlags.is(rsDrawFlashtok);
 
     for(int i=0; i < miWeather->Count; ++i)
     {

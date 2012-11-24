@@ -332,23 +332,27 @@ void CDrawUtilities::DrawEntity(u32 clr, ref_shader s)
     pv->set			(0.f,.5f,.5f,clr); pv++;
     pv->set			(0.f,.5f,0.f,clr); pv++;
 	Stream->Unlock	(5,vs_L->vb_stride);
-	// render flagshtok
-    DU_DRAW_SH		(Device.m_WireShader);
-    DU_DRAW_DP		(D3DPT_LINESTRIP,vs_L,vBase,4);
 
-    if (s) DU_DRAW_SH(s);
+    // render flagshtok
+    if (psDeviceFlags.is(rsDrawFlashtok))
     {
-        // fill VB
-        FVF::LIT*	pv	 = (FVF::LIT*)Stream->Lock(6,vs_LIT->vb_stride,vBase);
-        pv->set		(0.f,1.f,0.f,clr,0.f,0.f);	pv++;
-        pv->set		(0.f,1.f,.5f,clr,1.f,0.f);	pv++;
-        pv->set		(0.f,.5f,.5f,clr,1.f,1.f);	pv++;
-        pv->set		(0.f,.5f,0.f,clr,0.f,1.f);	pv++;
-        pv->set		(0.f,.5f,.5f,clr,1.f,1.f);	pv++;
-        pv->set		(0.f,1.f,.5f,clr,1.f,0.f);	pv++;
-        Stream->Unlock	(6,vs_LIT->vb_stride);
-        // and Render it as line list
-        DU_DRAW_DP		(D3DPT_TRIANGLEFAN,vs_LIT,vBase,4);
+    	DU_DRAW_SH		(Device.m_WireShader);
+    	DU_DRAW_DP		(D3DPT_LINESTRIP,vs_L,vBase,4);
+
+	if (s) DU_DRAW_SH(s);
+	{
+		// fill VB
+		FVF::LIT*	pv	 = (FVF::LIT*)Stream->Lock(6,vs_LIT->vb_stride,vBase);
+		pv->set		(0.f,1.f,0.f,clr,0.f,0.f);	pv++;
+		pv->set		(0.f,1.f,.5f,clr,1.f,0.f);	pv++;
+		pv->set		(0.f,.5f,.5f,clr,1.f,1.f);	pv++;
+		pv->set		(0.f,.5f,0.f,clr,0.f,1.f);	pv++;
+		pv->set		(0.f,.5f,.5f,clr,1.f,1.f);	pv++;
+		pv->set		(0.f,1.f,.5f,clr,1.f,0.f);	pv++;
+		Stream->Unlock	(6,vs_LIT->vb_stride);
+		// and Render it as line list
+		DU_DRAW_DP		(D3DPT_TRIANGLEFAN,vs_LIT,vBase,4);
+	}
     }
 }
 

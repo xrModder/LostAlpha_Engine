@@ -40,6 +40,7 @@ __published:	// IDE-managed Components
 	TMenuItem *miRenderShadeFlat;
 	TMenuItem *miRenderEdgedFaces;
 	TMenuItem *miRenderHWTransform;
+	TMenuItem *miRenderFlagshtock;
 	TMenuItem *miRenderLinearFilter;
 	TMenuItem *miRenderWithTextures;
 	TMenuItem *N7;
