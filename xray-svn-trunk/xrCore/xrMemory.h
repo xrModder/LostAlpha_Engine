@@ -9,7 +9,7 @@
 #endif // USE_MEMORY_MONITOR
 
 #ifndef M_BORLAND
-#	ifdef DEBUG
+#	if 0 // DEBUG
 #		define DEBUG_MEMORY_MANAGER
 #	endif // DEBUG
 #endif // M_BORLAND
@@ -102,7 +102,7 @@ extern XRCORE_API	xrMemory	Memory;
 	IC void		xr_free		(T* &P)					{	if (P) { Memory.mem_free((void*)P); P=NULL;	};	}
 	IC void*	xr_malloc	(size_t size)			{	return	Memory.mem_alloc(size,"xr_malloc");				}
 	IC void*	xr_realloc	(void* P, size_t size)	{	return Memory.mem_realloc(P,size,"xr_realloc");			}
-	IC void		xr_memcpy	(void* dst, const void *src, u32 size) { Memory.mem_copy(dst, src, size); }	
+	IC void*	xr_memcpy	(void* dst, const void *src, u32 size) { Memory.mem_copy(dst, src, size); return dst; }	
 #else // DEBUG_MEMORY_NAME
 	template <class T>
 	IC T*		xr_alloc	(u32 count)				{	return  (T*)Memory.mem_alloc(count*sizeof(T));	}
@@ -110,7 +110,7 @@ extern XRCORE_API	xrMemory	Memory;
 	IC void		xr_free		(T* &P)					{	if (P) { Memory.mem_free((void*)P); P=NULL;	};	}
 	IC void*	xr_malloc	(size_t size)			{	return	Memory.mem_alloc(size);					}
 	IC void*	xr_realloc	(void* P, size_t size)	{	return Memory.mem_realloc(P,size);				}
-	IC void		xr_memcpy	(void* dst, const void *src, u32 size) { Memory.mem_copy(dst, src, size); }	
+	IC void*	xr_memcpy	(void* dst, const void *src, u32 size) { Memory.mem_copy(dst, src, size); return dst; }	
 #endif // DEBUG_MEMORY_NAME
 
 XRCORE_API	char* 	xr_strdup	(const char* string);

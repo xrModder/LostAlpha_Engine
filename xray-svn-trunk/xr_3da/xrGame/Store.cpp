@@ -65,7 +65,7 @@ bool CStoreHouse::update(shared_str name, void *ptr_data, size_t size, TypeOfDat
 	xr_map<shared_str,StoreData>::iterator it = data.find(name);
 	if (it == data.end()) 
 		return false;
-	it->second.type = _type;
+//	it->second.type = _type;
 	xr_delete(it->second.data);
 	it->second.data = xr_malloc(size);
 	xr_memcpy(it->second.data,ptr_data,size);
@@ -180,10 +180,11 @@ u32 CStoreHouse::type_to_size(StoreData d)
 
 void CStoreHouse::save(IWriter &memory_stream)
 {
-	xr_map<shared_str,StoreData>::iterator it;
+	xr_map<shared_str,StoreData>::iterator it, last;
 
 	memory_stream.w_u64(m_size);
-	for (it=data.begin();it!=data.end();++it){
+	for (it=data.begin(),last=data.end();it!=last;++it)
+	{
 		memory_stream.w_stringZ(it->first);
 		memory_stream.w_u8(it->second.type);
 		memory_stream.w(it->second.data, type_to_size(it->second));
@@ -203,12 +204,12 @@ void CStoreHouse::load(IReader &file_stream)
 			file_stream.r_stringZ(s_data);
 			
 			u32 size = sizeof(char)*(s_data.size()+1);
-			void* ptr = malloc(size);
-			CopyMemory(ptr,s_data.c_str(),size);
+			void* ptr = xr_malloc(size);
+			xr_memcpy(ptr,s_data.c_str(),size);
 
 			d.data = ptr;
 		} else {
-			void* ptr = malloc(type_to_size(d));
+			void* ptr = xr_malloc(type_to_size(d));
 			//CopyMemory(ptr,ptr_data,size);
 			file_stream.r(ptr, type_to_size(d));
 			d.data = ptr;
