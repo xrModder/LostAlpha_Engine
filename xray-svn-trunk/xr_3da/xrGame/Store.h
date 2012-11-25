@@ -51,6 +51,7 @@ private:
 	void get(shared_str name, void* ptr,u32 size);
 	void add_data_exist(shared_str name);
 	void get_data_exist(shared_str name);
+	bool update(shared_str name, void* ptr_data, size_t size, TypeOfData _type);
 	u32 type_to_size(StoreData d);
 
 	size_t m_size;
