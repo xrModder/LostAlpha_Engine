@@ -552,8 +552,11 @@ bool CWayObject::Load(IReader& F)
         m_WayPoints[idx0]->CreateLink(m_WayPoints[idx1],pb);
     }
 
-	R_ASSERT(F.find_chunk(WAYOBJECT_CHUNK_TYPE));
+    R_ASSERT(F.find_chunk(WAYOBJECT_CHUNK_TYPE));
     m_Type			= EWayType(F.r_u32());
+
+    if (F.find_chunk(WAYOBJECT_CHUNK_ENABLED))
+        m_bSpawnEnabled			= F.r_u16();
 
     return true;
 }
@@ -596,6 +599,10 @@ void CWayObject::Save(IWriter& F)
 
     F.open_chunk	(WAYOBJECT_CHUNK_TYPE);
     F.w_u32		(m_Type);
+    F.close_chunk	();
+
+    F.open_chunk	(WAYOBJECT_CHUNK_ENABLED);
+    F.w_u16		((u16)m_bSpawnEnabled);
     F.close_chunk	();
 }
 

@@ -33,6 +33,7 @@
 
 #define SPAWNPOINT_CHUNK_ENVMOD			0xE422
 #define SPAWNPOINT_CHUNK_ENVMOD2		0xE423
+#define SPAWNPOINT_CHUNK_ENABLED		0xE424
 
 //----------------------------------------------------
 #define RPOINT_SIZE 0.5f
@@ -640,6 +641,9 @@ bool CSpawnPoint::Load(IReader& F){
         }
     }
 
+    if (F.find_chunk(SPAWNPOINT_CHUNK_ENABLED))
+        m_bSpawnEnabled			= F.r_u16();
+
 	// objects
     Scene->ReadObjects(F,SPAWNPOINT_CHUNK_ATTACHED_OBJ,OnAppendObject,0);
 
@@ -695,6 +699,9 @@ void CSpawnPoint::Save(IWriter& F){
         default: THROW;
         }
     }
+    F.open_chunk	(SPAWNPOINT_CHUNK_ENABLED);
+    F.w_u16		((u16)m_bSpawnEnabled);
+    F.close_chunk	();
 }
 //----------------------------------------------------
 
