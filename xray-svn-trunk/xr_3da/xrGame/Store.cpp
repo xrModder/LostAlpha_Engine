@@ -11,14 +11,21 @@ CStoreHouse::CStoreHouse(void)
 
 CStoreHouse::~CStoreHouse(void) 
 {
+	while (data.size())
+	{
+		xr_delete(data.begin()->second.data);
+		data.erase(data.begin());
+	}
+	Memory.mem_compact();
 }
 
 void CStoreHouse::add(shared_str name, void* ptr_data, size_t size, TypeOfData _type)
 {
-	add_data_exist(name);
+	//add_data_exist(name);
+	if (update(name, ptr_data, size, _type)) return;
 
-	void* ptr = malloc(size);
-	CopyMemory(ptr,ptr_data,size);
+	void* ptr = xr_malloc(size);
+	xr_memcpy(ptr,ptr_data,size);
 
 	StoreData d;
 	d.data = ptr;
@@ -27,12 +34,6 @@ void CStoreHouse::add(shared_str name, void* ptr_data, size_t size, TypeOfData _
 
 	++m_size;
 }
-
-
-
-
-
-
 
 void CStoreHouse::add_boolean(LPCSTR name,bool b)
 {
@@ -59,16 +60,21 @@ void CStoreHouse::add_table(LPCSTR name, LPCSTR string)
 	add(name,(void*)string,xr_strlen(string)+1,lua_table);
 }
 
-
-
-
-
+bool CStoreHouse::update(shared_str name, void *ptr_data, size_t size, TypeOfData _type)
+{
+	xr_map<shared_str,StoreData>::iterator it = data.find(name);
+	if (it == data.end()) 
+		return false;
+	it->second.type = _type;
+	xr_delete(it->second.data);
+	it->second.data = xr_malloc(size);
+	xr_memcpy(it->second.data,ptr_data,size);
+	return true;
+}
 
 void CStoreHouse::add_data_exist(shared_str name)
 {
 	xr_map<shared_str,StoreData>::iterator it = data.find(name);
-	xr_map<shared_str,StoreData>::iterator it_end = data.end();
-
 	R_ASSERT3(data.find(name)==data.end(),"Can't save data with the same name ",name.c_str());
 }
 
@@ -85,14 +91,9 @@ void CStoreHouse::delete_data(LPCSTR c_name)
 	shared_str name(c_name);
 	xr_map<shared_str,StoreData>::iterator it = data.find(name);
 	R_ASSERT3(it!=data.end(),"Data doesn't exist! ",name.c_str());
-	free(it->second.data);
+	xr_delete(it->second.data);
 	data.erase(it);
 }
-
-
-
-
-
 
 void CStoreHouse::get(shared_str name,void* p,u32 size)
 {
@@ -134,12 +135,6 @@ LPCSTR CStoreHouse::get_table(LPCSTR name)
 	get_data_exist(name);
 	return LPCSTR(data[name].data);
 }
-
-
-
-
-
-
 
 bool CStoreHouse::data_exist(LPCSTR name)
 {
