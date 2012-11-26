@@ -6,6 +6,7 @@
 
 #include "spawnpoint.h"
 #include "ESceneSpawnTools.h"
+#include "ui_leveltools.h"
 #include "eshape.h"
 #include "../../xr_3da/xrGame/xrServer_Objects_Abstract.h"
 #include "../ECore/Editor/ui_main.h"
@@ -302,7 +303,9 @@ void CSpawnPoint::Construct(LPVOID data)
             if (!m_SpawnData.Valid()){
             	SetValid(false);
             }else{
-	        	m_Type			= ptSpawnPoint;
+		m_Type			= ptSpawnPoint;
+		if (Tools->GetSettings(etfRandomRot))
+			SetRotation(Fvector().set(0.0f,Random.randI(0.0f,360.0f),0.0f));
             }
         }
     }else{
@@ -484,7 +487,10 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                 // render icon
                 ESceneSpawnTools* st= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
-                DU.DrawEntity		(0xffffffff,s);
+		if (m_bSpawnEnabled)
+                	DU.DrawEntity		(0xffffffff,s);
+		else
+			DU.DrawEntity		(0x00FF0000,s);
             }else{
                 switch (m_Type){
                 case ptRPoint:{

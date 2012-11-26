@@ -25,6 +25,7 @@ __fastcall TfraTopBar::TfraTopBar(TComponent* Owner)
     ebAxisZ->Tag			= etAxisZ;
     ebAxisZX->Tag			= etAxisZX;
     
+	ebRandomRot->Tag		= etfRandomRot;
 	ebCSParent->Tag			= etfCSParent;
 	ebNUScale->Tag			= etfNUScale;
 	ebNormalAlign->Tag		= etfNormalAlign;
@@ -123,6 +124,7 @@ void __fastcall TfraTopBar::RefreshBar()
     }
 	btn->Down 			= true;
     // settings
+	ebRandomRot->Down	= Tools->GetSettings(etfRandomRot);
 	ebCSParent->Down	= Tools->GetSettings(etfCSParent);
 	ebNUScale->Down		= Tools->GetSettings(etfNUScale);
 	ebNormalAlign->Down	= Tools->GetSettings(etfNormalAlign);
