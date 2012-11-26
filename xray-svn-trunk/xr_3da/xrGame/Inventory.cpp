@@ -115,7 +115,7 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
 
 	if (!ammo) {
-		Msg("!! Can't convert to weapon ammo class obj with section '%s' Can't repack ammo!!!",pIItem->object().cNameSect_str());
+		Msg("!! Can't convert to weapon ammo class obj with section '%s'!!!",pIItem->object().cNameSect_str());
 		return false;
 	}
 
@@ -130,7 +130,7 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 			CWeaponAmmo* invAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj);
 			R_ASSERT(invAmmo);
 
-			if (invAmmo->WillBeDeleted()) continue;
+			//if (invAmmo->WillBeDeleted()) continue;
 
 			u16 freeSpace = invAmmo->m_boxSize - invAmmo->m_boxCurr;
 			if (!freeSpace) break;
@@ -144,7 +144,7 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 				pIItem->object().u_EventSend(P);
 				pIItem->object().u_EventGen(P, GE_DESTROY, u16(pIItem->object().ID()));
 				pIItem->object().u_EventSend(P);
-				ammo->WillBeDeleted(true);
+				//ammo->WillBeDeleted(true);
 
 				return true;			//We are going to delete
 			} else {
@@ -172,6 +172,10 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		if(p)
 			Msg("! object parent is [%s] [%d]", p->cName().c_str(), p->ID());
 	}
+
+	if (GetOwner()->object_id()==Level().CurrentEntity()->ID())		//actors inventory
+		if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
+			if (repackAmmo(pIItem)) return;//result = false; //do not send event about item to ruck
 
 	R_ASSERT							(CanTakeItem(pIItem));
 	

@@ -54,6 +54,7 @@ extern ECORE_API xr_token rpoint_game_type[];
 #define WAYOBJECT_CHUNK_LINKS		0x0003
 #define WAYOBJECT_CHUNK_TYPE		0x0004
 #define WAYOBJECT_CHUNK_NAME		0x0005
+#define WAYOBJECT_CHUNK_ENABLED		0x0006
 
 #define NPC_POINT_VERSION			0x0001
 //----------------------------------------------------

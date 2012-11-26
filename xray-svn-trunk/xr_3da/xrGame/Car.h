@@ -16,6 +16,7 @@
 #include "Explosive.h"
 #include "PHDestroyable.h"
 #include "DelayedActionFuse.h"
+#include "InventoryOwner.h"
 // refs
 class ENGINE_API			CBoneInstance;
 class						CActor;
@@ -45,6 +46,7 @@ class CCar :
 	public CPHCollisionDamageReceiver,
 	public CHitImmunity,
 	public CExplosive,
+	public CInventoryOwner,
 	public CDelayedActionFuse
 {
 private:
@@ -449,6 +451,7 @@ private:
 	void				 UpdatePower						()	;
 	void				 ReleasePedals						()	;
 	void				 ResetKeys							()	;
+	void				 ShowTrunk							()	;
 
 	////////////////////////////////////////////////////////////////////////////
 	float				RefWheelMaxSpeed					()	;
@@ -591,7 +594,7 @@ public:
 	void					SetExplodeTime				(u32 et)	;
 			u32				ExplodeTime					()			;
 	// Inventory for the car	
-	CInventory*						GetInventory						(){return inventory;}
+	CInventory*						GetInventory						(){return NULL;}
 		  void						VisualUpdate						(float fov=90.0f);
 protected:
 	virtual void					SpawnInitPhysics					(CSE_Abstract	*D)																;
@@ -615,7 +618,7 @@ private:
 	IC void fill_doors_map(LPCSTR S,xr_map<u16,SDoor>& doors);
 
 	//Inventory for the car
-	CInventory	*inventory;
+	//CInventory	*inventory;
 	
 	virtual	void reinit			();
 	virtual	void reload			(LPCSTR section);

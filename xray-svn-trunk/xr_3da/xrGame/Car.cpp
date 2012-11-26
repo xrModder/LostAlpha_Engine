@@ -28,6 +28,8 @@
 #include "PHActivationShape.h"
 #include "CharacterPhysicsSupport.h"
 #include "car_memory.h"
+#include "HudManager.h"
+#include "UIGameSP.h"
 
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
@@ -70,8 +72,8 @@ CCar::CCar()
 	m_car_sound			=xr_new<SCarSound>	(this);
 
 	//у машины слотов в инвентаре нет
-	inventory			= xr_new<CInventory>();
-	inventory->SetSlotsUseful(false);
+	//inventory			= xr_new<CInventory>();
+	//inventory->SetSlotsUseful(false);
 	m_doors_torque_factor = 2.f;
 	m_power_increment_factor=0.5f;
 	m_rpm_increment_factor=0.5f;
@@ -97,8 +99,9 @@ CCar::~CCar(void)
 	xr_delete			(camera[1]);
 	xr_delete			(camera[2]);
 	xr_delete			(m_car_sound);
+	//xr_delete			(inventoryBox);
 	ClearExhausts		();
-	xr_delete			(inventory);
+//	xr_delete			(inventory);
 	xr_delete			(m_car_weapon);
 	xr_delete			(m_memory);
  //	xr_delete			(l_tpEntityAction);
@@ -108,6 +111,7 @@ void CCar::reinit		()
 {
 	CEntity::reinit			();
 	CScriptEntity::reinit	();
+	CInventoryOwner::reinit ();
 	if(m_memory)
 		m_memory->reinit	();
 }
@@ -115,6 +119,7 @@ void CCar::reinit		()
 void CCar::reload		(LPCSTR section)
 {
 	CEntity::reload			(section);
+	CInventoryOwner::reload (section);
 	if(m_memory)
 		m_memory->reload	(section);
 }
@@ -185,6 +190,8 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 		m_memory->reload	(pUserData->r_string("visual_memory_definition", "section"));
 	}
 
+	CInventoryOwner::net_Spawn(DC);
+
 	return							(CScriptEntity::net_Spawn(DC) && R);
 	
 }
@@ -228,6 +235,7 @@ void	CCar::net_Destroy()
 	CScriptEntity::net_Destroy();
 	inherited::net_Destroy();
 	CExplosive::net_Destroy();
+	CInventoryOwner::net_Destroy();
 	if(m_pPhysicsShell)
 	{
 		m_pPhysicsShell->Deactivate();
@@ -1699,6 +1707,7 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 {
 	inherited::OnEvent		(P,type);
 	CExplosive::OnEvent		(P,type);
+	//inventory->OnEvent(P,type);
 
 	//обработка сообщений, нужных для работы с багажником машины
 	u16 id;
@@ -1708,10 +1717,15 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 		{
 			P.r_u16		(id);
 			CObject* O	= Level().Objects.net_Find	(id);
-			if( GetInventory()->CanTakeItem(smart_cast<CInventoryItem*>(O)) ) 
+			if (!O)
+			{
+				Msg("! Error: No object to take/buy [%d]", id);
+				break;
+			}
+			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(O)) ) 
 			{
 				O->H_SetParent(this);
-				GetInventory()->Take(smart_cast<CGameObject*>(O), false, false);
+				inventory().Take(smart_cast<CGameObject*>(O), false, false);
 			}
 			else 
 			{
@@ -1726,10 +1740,15 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 		{
 			P.r_u16		(id);
 			CObject* O	= Level().Objects.net_Find	(id);
+			if (!O)
+			{
+				Msg("! Error: No object to take/buy [%d]", id);
+				break;
+			}
 
 			bool just_before_destroy		= !P.r_eof() && P.r_u8();
 			O->SetTmpPreDestroy				(just_before_destroy);
-			if(GetInventory()->DropItem(smart_cast<CGameObject*>(O))) 
+			if(inventory().DropItem(smart_cast<CGameObject*>(O))) 
 			{
 				O->H_SetParent(0, just_before_destroy);
 			}
@@ -1955,6 +1974,7 @@ DLL_Pure *CCar::_construct			()
 {
 	inherited::_construct		();
 	CScriptEntity::_construct	();
+	CInventoryOwner::_construct		();
 	return						(this);
 }
 
@@ -2052,3 +2072,8 @@ Fvector	CCar::		ExitVelocity				()
 	return v;
 }
 
+void CCar::ShowTrunk()
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(pGameSP)pGameSP->StartCarBody(Actor(), this );
+}

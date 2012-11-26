@@ -30,6 +30,7 @@ class CSE_ALifeObject;
 class CSE_ALifeDynamicObject;
 class CSE_ALifeGroupAbstract;
 class CSE_ALifeCreatureAbstract;
+class CStoreHouse;
 
 class CALifeSimulatorBase : public IPureDestroyableObject {
 protected:
@@ -44,6 +45,7 @@ protected:
 	CALifeSmartTerrainRegistry					*m_smart_terrains;
 	CALifeGroupRegistry							*m_groups;
 	CALifeRegistryContainer						*m_registry_container;
+	CStoreHouse									*m_store_house;
 	CRandom32									m_random;
 	bool										m_initialized;
 	shared_str									*m_server_command_line;
@@ -55,6 +57,8 @@ public:
 	IC		CALifeSimulatorHeader				&header						();
 	IC		CALifeTimeManager					&time						();
 	IC		CALifeSpawnRegistry					&spawns						();
+	IC		CStoreHouse							&store_house				();
+	//		CStoreHouse*						store_house_script			();
 	IC		CALifeObjectRegistry				&objects					();
 	IC		CALifeStoryRegistry					&story_objects				();
 	IC		CALifeSmartTerrainRegistry			&smart_terrains				();

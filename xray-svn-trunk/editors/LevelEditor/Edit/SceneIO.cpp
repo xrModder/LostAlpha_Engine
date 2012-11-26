@@ -428,6 +428,7 @@ bool EScene::Load(LPCSTR map_name, bool bUndo)
     full_name 		= map_name;
     
 	ELog.Msg( mtInformation, "EScene: loading '%s'", map_name);
+    	psDeviceFlags.set(rsSkipAllObjects, FALSE);
     if (FS.exist(full_name.c_str())){
         CTimer T; T.Start();
         // lock main level

@@ -6,6 +6,7 @@
 
 #include "spawnpoint.h"
 #include "ESceneSpawnTools.h"
+#include "ui_leveltools.h"
 #include "eshape.h"
 #include "../../xr_3da/xrGame/xrServer_Objects_Abstract.h"
 #include "../ECore/Editor/ui_main.h"
@@ -33,6 +34,7 @@
 
 #define SPAWNPOINT_CHUNK_ENVMOD			0xE422
 #define SPAWNPOINT_CHUNK_ENVMOD2		0xE423
+#define SPAWNPOINT_CHUNK_ENABLED		0xE424
 
 //----------------------------------------------------
 #define RPOINT_SIZE 0.5f
@@ -301,7 +303,9 @@ void CSpawnPoint::Construct(LPVOID data)
             if (!m_SpawnData.Valid()){
             	SetValid(false);
             }else{
-	        	m_Type			= ptSpawnPoint;
+		m_Type			= ptSpawnPoint;
+		if (Tools->GetSettings(etfRandomRot))
+			SetRotation(Fvector().set(0.0f,Random.randI(0.0f,360.0f),0.0f));
             }
         }
     }else{
@@ -483,7 +487,10 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                 // render icon
                 ESceneSpawnTools* st= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
-                DU.DrawEntity		(0xffffffff,s);
+		if (m_bSpawnEnabled)
+                	DU.DrawEntity		(0xffffffff,s);
+		else
+			DU.DrawEntity		(0x00FF0000,s);
             }else{
                 switch (m_Type){
                 case ptRPoint:{
@@ -640,6 +647,9 @@ bool CSpawnPoint::Load(IReader& F){
         }
     }
 
+    if (F.find_chunk(SPAWNPOINT_CHUNK_ENABLED))
+        m_bSpawnEnabled			= F.r_u16();
+
 	// objects
     Scene->ReadObjects(F,SPAWNPOINT_CHUNK_ATTACHED_OBJ,OnAppendObject,0);
 
@@ -695,6 +705,9 @@ void CSpawnPoint::Save(IWriter& F){
         default: THROW;
         }
     }
+    F.open_chunk	(SPAWNPOINT_CHUNK_ENABLED);
+    F.w_u16		((u16)m_bSpawnEnabled);
+    F.close_chunk	();
 }
 //----------------------------------------------------
 

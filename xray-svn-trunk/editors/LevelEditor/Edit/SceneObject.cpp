@@ -7,6 +7,7 @@
 
 #include "SceneObject.h"
 #include "bottombar.h"
+#include "ui_leveltools.h"
 #include "../ECore/Editor/library.h"
 #include "../ECore/Editor/EditMesh.h"
 #include "../ECore/Editor/ui_main.h"
@@ -38,6 +39,9 @@ void CSceneObject::Construct(LPVOID data)
     m_BlinkSurf		= 0;
 
     m_Flags.zero	();
+
+    if (Tools->GetSettings(etfRandomRot))
+    	FRotation.set	(0.0f,Random.randI(0.0f,360.0f),0.0f);
 }
 
 CSceneObject::~CSceneObject()

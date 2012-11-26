@@ -182,7 +182,7 @@ void __fastcall TfraBottomBar::miWeatherClick(TObject *Sender)
     if (mi){
     	if (mi->Tag==0){
 		    psDeviceFlags.set	(rsEnvironment,TRUE);
-    	    g_pGamePersistent->Environment().SetWeather(mi->Caption.c_str());
+    	    g_pGamePersistent->Environment().SetWeather(mi->Caption.c_str(), true);
             EPrefs->sWeather = mi->Caption.c_str();
         	mi->Checked = !mi->Checked;
         }else if (mi->Tag==-1){

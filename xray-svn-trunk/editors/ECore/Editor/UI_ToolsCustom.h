@@ -41,6 +41,7 @@ enum ETFlags{
 	etfVSnap      	= (1<<6),
 	etfASnap      	= (1<<7),
 	etfMSnap      	= (1<<8),
+	etfRandomRot	= (1<<9),
 };
 
 class ECORE_API CToolsCustom//: public pureDeviceCreate, public pureDeviceDestroy
