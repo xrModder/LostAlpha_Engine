@@ -19,6 +19,7 @@ enum{
     epoDiscardInstance	= (1<<8),
     epoDeffLoadRB		= (1<<9),
     epoDeffLoadCF		= (1<<10),
+    epoCheckVerObj		= (1<<11),
 };
 class ECORE_API CCustomPreferences
 {

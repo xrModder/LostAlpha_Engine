@@ -74,7 +74,7 @@ bool CSceneObject::Load(IReader& F)
 			if(mr == mrNoToAll)
 			{
 				psDeviceFlags.set(rsSkipAllObjects, TRUE);
-				mr = mbNo;
+				mr = mrNo;
 			}
 		} else 
 			mr = mrNo;
@@ -90,8 +90,11 @@ bool CSceneObject::Load(IReader& F)
 
             Scene->Modified();
         }
-        if(!CheckVersion())
-            ELog.Msg( mtError, "CSceneObject: '%s' different file version!", buf );
+	if (EPrefs->object_flags.is(epoCheckVerObj))
+	{
+        	if(!CheckVersion())
+			ELog.Msg( mtError, "CSceneObject: '%s' different file version!", buf );
+	}
 
         // flags
         if (F.find_chunk(SCENEOBJ_CHUNK_FLAGS)){
