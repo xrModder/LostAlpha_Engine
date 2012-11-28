@@ -60,6 +60,7 @@ protected:
 								FInInterpolation	=(1<<9),
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
+								FdeleteManual		=(1<<12),
 	};
 
 	Flags16						m_flags;
@@ -112,6 +113,8 @@ public:
 
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
 			void				SetDropManual		(BOOL val)	{ m_flags.set(FdropManual, val);}
+			BOOL				GetDeleteManual		() const	{ return m_flags.test(FdeleteManual);}
+			void				SetDeleteManual		(BOOL val)	{ m_flags.set(FdeleteManual, val); m_flags.set(FdropManual, val);}
 
 			BOOL				IsInvalid			() const;
 
