@@ -176,7 +176,8 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 		
-		new_owner->SetItem					(i);
+		if (!new_owner) return false;
+		else new_owner->SetItem					(i);
 	
 		SendEvent_Item2Slot					(iitem);
 

@@ -51,7 +51,7 @@ public:
 	float 					CalcTotalWeight		();
 
 	void					Take				(CGameObject *pObj, bool bNotActivate, bool strict_placement);
-	bool					repackAmmo			(PIItem pObj);
+	void					repackAmmo			(PIItem pObj);
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
 
