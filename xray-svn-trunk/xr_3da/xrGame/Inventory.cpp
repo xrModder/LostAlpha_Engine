@@ -130,21 +130,19 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 			CWeaponAmmo* invAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj);
 			R_ASSERT(invAmmo);
 
-			//if (invAmmo->WillBeDeleted()) continue;
-
 			u16 freeSpace = invAmmo->m_boxSize - invAmmo->m_boxCurr;
 			if (!freeSpace) break;
 
 			if (freeSpace>=ammo->m_boxCurr) {
 				invAmmo->m_boxCurr+=ammo->m_boxCurr;
 
+				pIItem->m_pCurrentInventory			= this;
 				NET_Packet					P;
 				pIItem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, pIItem->object().H_Parent()->ID());
 				P.w_u16						(u16(pIItem->object().ID()));
 				pIItem->object().u_EventSend(P);
 				pIItem->object().u_EventGen(P, GE_DESTROY, u16(pIItem->object().ID()));
 				pIItem->object().u_EventSend(P);
-				//ammo->WillBeDeleted(true);
 
 				return true;			//We are going to delete
 			} else {

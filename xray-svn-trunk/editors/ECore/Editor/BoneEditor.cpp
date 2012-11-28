@@ -268,4 +268,9 @@ void CBone::AntirevertBones()
 	Fvector2 limit_bone = IK_data.limits[1].limit;
 	IK_data.limits[1].limit.x = limit_bone.y * -1.0f;
 	IK_data.limits[1].limit.y = limit_bone.x * -1.0f;
+
+	if (IK_data.limits[1].limit.x > 0)
+		IK_data.limits[1].limit.x *= -1.0f;
+	if (IK_data.limits[1].limit.y < 0)
+		IK_data.limits[1].limit.y *= -1.0f;
 }
