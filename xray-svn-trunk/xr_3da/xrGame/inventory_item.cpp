@@ -82,6 +82,7 @@ CInventoryItem::CInventoryItem()
 	m_pCurrentInventory	= NULL;
 
 	SetDropManual		(FALSE);
+	SetDeleteManual		(FALSE);
 
 	m_flags.set			(FCanTake,TRUE);
 	m_flags.set			(FCanTrade,TRUE);

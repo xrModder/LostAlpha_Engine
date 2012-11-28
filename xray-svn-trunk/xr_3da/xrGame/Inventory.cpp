@@ -136,13 +136,14 @@ bool CInventory::repackAmmo(PIItem pIItem) //(CGameObject *pObj)
 			if (freeSpace>=ammo->m_boxCurr) {
 				invAmmo->m_boxCurr+=ammo->m_boxCurr;
 
-				pIItem->m_pCurrentInventory			= this;
-				NET_Packet					P;
+				//pIItem->m_pCurrentInventory			= this;
+				/*NET_Packet					P;
 				pIItem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, pIItem->object().H_Parent()->ID());
 				P.w_u16						(u16(pIItem->object().ID()));
 				pIItem->object().u_EventSend(P);
 				pIItem->object().u_EventGen(P, GE_DESTROY, u16(pIItem->object().ID()));
-				pIItem->object().u_EventSend(P);
+				pIItem->object().u_EventSend(P);*/
+				pIItem->SetDeleteManual(TRUE);
 
 				return true;			//We are going to delete
 			} else {
@@ -173,7 +174,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	if (GetOwner()->object_id()==Level().CurrentEntity()->ID())		//actors inventory
 		if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
-			if (repackAmmo(pIItem)) return;//result = false; //do not send event about item to ruck
+			if (repackAmmo(pIItem)) //return;//result = false; //do not send event about item to ruck
 
 	R_ASSERT							(CanTakeItem(pIItem));
 	
@@ -398,10 +399,10 @@ bool CInventory::Ruck(PIItem pIItem)
 		if(m_belt.end() != it) m_belt.erase(it);
 	}
 
-	bool result = true;
-	if (GetOwner()->object_id()==Level().CurrentEntity()->ID())		//actors inventory
-		if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
-			if (repackAmmo(pIItem)) result = false; //do not send event about item to ruck
+	//bool result = true;
+	//if (GetOwner()->object_id()==Level().CurrentEntity()->ID())		//actors inventory
+	//	if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
+	//		if (repackAmmo(pIItem)) result = false; //do not send event about item to ruck
 	
 	m_ruck.insert									(m_ruck.end(), pIItem); 
 	
@@ -414,7 +415,7 @@ bool CInventory::Ruck(PIItem pIItem)
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
-	return result;
+	return true; //result;
 }
 
 void CInventory::Activate_deffered	(u32 slot, u32 _frame)
@@ -770,6 +771,15 @@ void CInventory::UpdateDropItem(PIItem pIItem)
 			pIItem->object().u_EventSend(P);
 		}
 	}// dropManual
+	if ( pIItem->GetDeleteManual() ) {
+		pIItem->SetDeleteManual(FALSE);
+		if ( OnServer() ) 
+		{
+			NET_Packet					P;
+			pIItem->object().u_EventGen	(P, GE_DESTROY, u16(pIItem->object().ID()));
+			pIItem->object().u_EventSend(P);
+		}
+	}
 }
 
 //ищем на поясе гранату такоже типа
