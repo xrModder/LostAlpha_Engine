@@ -421,9 +421,7 @@ void CActor::ActorUse()
 			CEntityAlive* pEntityAliveWeLookingAt = 
 				smart_cast<CEntityAlive*>(m_pPersonWeLookingAt);
 
-			VERIFY(pEntityAliveWeLookingAt);
-
-			if (GameID()==GAME_SINGLE)
+			if (pEntityAliveWeLookingAt && GameID()==GAME_SINGLE)
 			{			
 				if(pEntityAliveWeLookingAt->g_Alive())
 				{

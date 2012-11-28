@@ -1203,7 +1203,7 @@ void CActor::shedule_Update	(u32 DT)
 			}
 			else
 			{
-				if (m_pPersonWeLookingAt && pEntityAlive->g_Alive())
+				if (m_pPersonWeLookingAt && pEntityAlive && pEntityAlive->g_Alive())
 					m_sDefaultObjAction = m_sCharacterUseAction;
 
 				else if (pEntityAlive && !pEntityAlive->g_Alive())
