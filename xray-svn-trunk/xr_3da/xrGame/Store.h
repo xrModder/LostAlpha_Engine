@@ -54,7 +54,7 @@ private:
 	bool update(shared_str name, void* ptr_data, size_t size, TypeOfData _type);
 	u32 type_to_size(StoreData d);
 
-	size_t m_size;
+	//size_t m_size;//m_size is not need. it equal data.size()
 
 	xr_map<shared_str,StoreData> data;
 

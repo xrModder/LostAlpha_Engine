@@ -6,7 +6,6 @@
 
 CStoreHouse::CStoreHouse(void) 
 {
-	m_size = 0;
 }
 
 CStoreHouse::~CStoreHouse(void) 
@@ -31,8 +30,6 @@ void CStoreHouse::add(shared_str name, void* ptr_data, size_t size, TypeOfData _
 	d.data = ptr;
 	d.type = _type;
 	data[name] = d;
-
-	++m_size;
 }
 
 void CStoreHouse::add_boolean(LPCSTR name,bool b)
@@ -182,7 +179,7 @@ void CStoreHouse::save(IWriter &memory_stream)
 {
 	xr_map<shared_str,StoreData>::iterator it, last;
 
-	memory_stream.w_u64(m_size);
+	memory_stream.w_u64(data.size());
 	for (it=data.begin(),last=data.end();it!=last;++it)
 	{
 		memory_stream.w_stringZ(it->first);
@@ -193,6 +190,7 @@ void CStoreHouse::save(IWriter &memory_stream)
 
 void CStoreHouse::load(IReader &file_stream)
 {
+	//maybe you think m_size member value, not local :)
 	size_t m_size = file_stream.r_u64();
 	for (size_t i=0;i<m_size;i++) {
 		StoreData d;
