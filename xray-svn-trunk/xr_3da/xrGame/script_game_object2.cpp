@@ -342,6 +342,15 @@ void CScriptGameObject::SetActorDirection		(float dir)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirection method for non-actor object");
 }
 
+void CScriptGameObject::SetActorDirectionVector		(Fvector dir)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor){
+		actor->cam_Active()->Set(dir.x,dir.y,dir.z);
+	}else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirectionVector method for non-actor object");
+}
+
 void CScriptGameObject::SetActorDirectionSlowly		(Fvector pos, float time)
 {
 	CActor* actor = smart_cast<CActor*>(&object());

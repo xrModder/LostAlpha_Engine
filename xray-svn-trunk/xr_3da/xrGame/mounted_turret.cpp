@@ -13,6 +13,8 @@
 #include "../Kinematics.h"
 #include "../skeletonanimated.h"
 #include "game_object_space.h"
+#include "PhysicsShell.h"
+#include "Physics.h"
 
 
 #define MOUNTED_TURRET_DEF_SECT			"mounted_weapon_definition"
@@ -147,7 +149,7 @@ void CMountedTurret::RestoreNetState(CSE_PHSkeleton *ph)
 	if (!ph->_flags.test(CSE_PHSkeleton::flSavedData))
 		return;
 	CPHSkeleton::RestoreNetState											(ph);
-	PPhysicsShell()->DisableCollision										();
+	//PPhysicsShell()->DisableCollision										();
 }
 
 void CollisionCbAlife(bool &do_colide, bool bo1, dContact &c, SGameMtl *material_1, SGameMtl *material_2)
@@ -165,17 +167,25 @@ void CMountedTurret::SpawnInitPhysics(CSE_Abstract *D)
 	PPhysicsShell()					= P_build_Shell							(this, false);
 	if (g_Alive())
 	{
-		PPhysicsShell()->EnabledCallbacks									(FALSE);
-		PPhysicsShell()->set_ObjectContactCallback							(CollisionCbAlife);
-		PPhysicsShell()->set_ContactCallback								(ContactCbAlife);
-		PPhysicsShell()->SetIgnoreStatic									();
+		//PPhysicsShell()->set_ObjectContactCallback							(CollisionCbAlife);
+		//PPhysicsShell()->set_ContactCallback								(ContactCbAlife);
+		PPhysicsShell()->set_PhysicsRefObject(this);
 		PPhysicsShell()->mXFORM.set											(XFORM());
 		PPhysicsShell()->SetAirResistance									(0.001f, 0.02f);
 		PPhysicsShell()->setMass1											(MOUNTED_TURRET_MASS);
 		PPhysicsShell()->SetPrefereExactIntegration							();
-		PPhysicsShell()->Disable											();
+		PPhysicsShell()->Activate(true);
 	}
-	K->CalculateBones														(FALSE);
+	//#+# skyloader: need to fix bones
+	CInifile	*data	= K->LL_UserData ();
+	if (data->line_exist("physics_common", "fixed_bones"))
+	{
+		LPCSTR	bones = data->r_string("physics_common", "fixed_bones");
+		ApplySpawnIniToPhysicShell(K->LL_UserData(),m_pPhysicsShell,bones[0]!='\0');
+	}
+	//###
+
+	K->CalculateBones														(TRUE);
 }
 
 void CMountedTurret::UpdateCL()
