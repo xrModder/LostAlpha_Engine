@@ -522,18 +522,8 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 		}
 	} else {
 		STorsoWpn* TW			= &ST->m_torso[13];
-			if (!b_DropActivated&&!fis_zero(f_DropPower)){
-				M_torso					= TW->drop;
-				if (!M_torso)	
-				{
-					M_torso = ST->m_torso_idle;
-				};
-				m_bAnimTorsoPlayed		= TRUE;
-			}else{
-				if (!m_bAnimTorsoPlayed) {
-				M_torso	= TW->moving[moving_idx];
-				}
-			}
+		if (!m_bAnimTorsoPlayed)
+			M_torso	= TW->moving[moving_idx];
 	}
 	}
 

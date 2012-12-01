@@ -29,9 +29,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 	PickupModeOff		();
 	m_holder=vehicle;
 
-	CActor *pA = smart_cast<CActor*>(this);
-		if (pA)
-		pA->cam_Set(eacLookAt);
+	cam_Set(eacLookAt);
 
 	IKinematics*		 V		= smart_cast<IKinematics*>(Visual()); R_ASSERT(V);
 	IKinematicsAnimated* VA		= smart_cast<IKinematicsAnimated*>(Visual()); R_ASSERT(VA);
@@ -90,9 +88,7 @@ void CActor::detach_Vehicle()
 //.	SetWeaponHideState(whs_CAR, FALSE);
 	SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
-	CActor *pA = smart_cast<CActor*>(this);
-		if (pA)
-		pA->cam_Set(eacFirstEye);
+	cam_Set(eacFirstEye);
 }
 
 bool CActor::use_Vehicle(CHolderCustom* object)
@@ -131,5 +127,7 @@ bool CActor::use_Vehicle(CHolderCustom* object)
 void CActor::on_requested_spawn(CObject *object)
 {
 	CCar * car= smart_cast<CCar*>(object);
+	Fvector dir = car->XFORM().k;
+	cam_Active()->Set(dir.x,dir.y,dir.z);
 	attach_Vehicle(car);
 }
