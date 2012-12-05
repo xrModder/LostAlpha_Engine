@@ -131,13 +131,26 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 
 		}
 
-		R_ASSERT2	(
-			!phrase_dialog->m_PhraseVector.empty(),
-			make_string(
-				"No available phrase to say, dialog[%s]",
-				*phrase_dialog->m_DialogId
-			)
-		);
+		if (phrase_dialog->m_PhraseVector.empty()) {
+			Msg("!! Error: No available phrase to say");
+			Msg("!! [%s]:phrase stack:",phrase_id);
+			for(xr_vector<CPhraseGraph::CEdge>::const_iterator it = phrase_vertex->edges().begin();
+					it != phrase_vertex->edges().end();
+					it++) {
+					const CPhraseGraph::CEdge& edge = *it;
+					CPhraseGraph::CVertex* next_phrase_vertex = phrase_dialog->data()->m_PhraseGraph.vertex(edge.vertex_id());
+					THROW						(next_phrase_vertex);
+					shared_str next_phrase_id	= next_phrase_vertex->vertex_id();
+					Msg("	- %s:%s",next_phrase_vertex->data()->GetID(),next_phrase_id.c_str());
+			}
+			R_ASSERT2	(
+				0,
+				make_string(
+					"No available phrase to say, dialog[%s]",
+					*phrase_dialog->m_DialogId
+				)
+			);
+		}
 
 		//упорядочить списко по убыванию благосклонности
 		std::sort(phrase_dialog->m_PhraseVector.begin(),
