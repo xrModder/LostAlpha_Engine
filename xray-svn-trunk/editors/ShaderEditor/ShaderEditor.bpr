@@ -25,8 +25,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) BottomBar.dfm LeftBar.dfm main.dfm Splash.dfm TopBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="elpackB6.lib editor.lib vclx.lib bcbsmp.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib"/>
+    <LIBRARIES value="editorB.lib elpackB6.lib editor.lib vclx.lib bcbsmp.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
@@ -41,7 +41,7 @@
     <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)\Include"/>
     <LIBPATH value="..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
-      -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
+      -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
@@ -227,10 +227,5 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

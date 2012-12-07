@@ -23,8 +23,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Splash.dfm main.dfm BottomBar.dfm TopBar.dfm LeftBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="elpackB6.lib editor.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib"/>
+    <LIBRARIES value="editorB.lib elpackB6.lib editor.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi"/>
     <PATHCPP value=".;..\..\xr_3da;..\ECore\Editor"/>
     <PATHPAS value=".;"/>
@@ -39,7 +39,7 @@
     <INCLUDEPATH value="..\ECore\Editor;$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;..\..\xr_3da;$(CORESOC_DIR);..\..\xr_3da\xrRender"/>
     <LIBPATH value="..\..\..\SDK\components\ElPack\Code;..\ECore\Editor;..\..\xr_3da;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8091 -w8090 -w8089 -w8087 -wprc -wuse -wucp -wstv -wstu -wsig 
-      -wpin -w-par -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
+      -wpin -w-par -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>

@@ -26,9 +26,9 @@
     <RESDEPEN value="$(RESFILES) ItemList.dfm PropertiesList.dfm NumericVector.dfm 
       ShaderFunction.dfm TextForm.dfm ChoseForm.dfm ItemDialog.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editor.lib elpackB6.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib elpackB6.lib editor.lib bcbsmp.lib vclx.lib"/>
-    <PACKAGES value="vcl.bpi vclx.bpi bcbsmp.bpi rtl.bpi"/>
+    <LIBRARIES value="editorB.lib editor.lib elpackB6.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib elpackB6.lib editor.lib bcbsmp.lib vclx.lib editorB.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi bcbsmp.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -36,12 +36,12 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_EDITOR;XR_EPROPS_EXPORTS;_DEBUG;"/>
+    <USERDEFINES value="_EDITOR;XR_EPROPS_EXPORTS;_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrEPropsB.bpf"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORESOC_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source"/>
     <LIBPATH value="x:\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res"/>
-    <WARNINGS value="-w-par"/>
+    <WARNINGS value="-w-par -w-8027 -w-8026"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
@@ -117,14 +117,13 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
-C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6\CExceptionExpert6.bpl=EurekaLog
 c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
 c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
 Count=15
 Item0=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORESOC_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source
-Item1=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORESOC_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source
+Item1=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORESOC_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source
 Item2=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORE_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source
 Item3=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORE_DIR);$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code
 Item4=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc;$(CORE_DIR);$(COMPONENTS_SOC)\alexmx
@@ -142,10 +141,10 @@ Item14=R:\SDK\DirectX9.0\include;$(BCB)\include;$(BCB)\include\vcl;P:\MagicFM_Bo
 [HistoryLists\hlLibraryPath]
 Count=17
 Item0=x:\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
-Item1=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;x:\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
+Item1=x:\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
 Item2=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
-Item3=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
-Item4=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;C:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\res
+Item3=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\res
+Item4=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;C:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\res
 Item5=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;C:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\res
 Item6=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx
 Item7=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;x:\libraries;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\res
@@ -165,8 +164,8 @@ Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
 Count=7
-Item0=_EDITOR;XR_EPROPS_EXPORTS;_DEBUG;
-Item1=_EDITOR;XR_EPROPS_EXPORTS;_DEBUG;EUREKALOG;EUREKALOG_VER6
+Item0=_EDITOR;XR_EPROPS_EXPORTS;_DEBUG
+Item1=_EDITOR;XR_EPROPS_EXPORTS;_DEBUG
 Item2=_EDITOR;XR_EPROPS_EXPORTS;_DEBUG
 Item3=_EDITOR;XR_EPROPS_EXPORTS
 Item4=_EDITOR;_XR_EPROPSB;_DEBUG

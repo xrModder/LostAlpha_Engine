@@ -909,7 +909,7 @@ LPCSTR CActorTools::ExtractMotionName(LPCSTR full_name, LPCSTR prefix)
 
 xr_string CActorTools::BuildMotionPref(u16 slot, LPCSTR prefix)
 {
-	VERIFY						(slot<4);
+	VERIFY						(slot<MAX_ANIM_SLOT);
 	string32 slot_nm; 			sprintf(slot_nm,"Slot %1d",slot+1);
 	return PrepareKey			(prefix,slot_nm).c_str();
 }
