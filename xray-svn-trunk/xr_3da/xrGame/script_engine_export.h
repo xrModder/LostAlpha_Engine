@@ -133,6 +133,8 @@
 #	include "game_graph.h"
 #	include "smart_zone.h"
 #	include "Store.h"
+#	include "CustomTimersManager.h"
+#	include "CustomTimer.h"
 #	include "F1.h"
 #	include "RGD5.h"
 #	include "Scope.h"

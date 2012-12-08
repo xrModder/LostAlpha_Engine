@@ -121,6 +121,9 @@
 #	include "f1.h"
 #	include "rgd5.h"
 
+#	include "CustomTimersManager.h"
+#	include "CustomTimer.h"
+
 #	include "explosiverocket.h"
 
 #	include "MPPlayersBag.h"

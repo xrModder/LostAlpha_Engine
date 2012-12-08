@@ -41,6 +41,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 #endif
 		// Init COM so we can use CoCreateInstance
 //		HRESULT co_res = 
+		if (!strstr(GetCommandLine(),"-editor"))
 			CoInitializeEx (NULL, COINIT_MULTITHREADED);
 
 		strcpy_s			(Params,sizeof(Params),GetCommandLine());
@@ -56,14 +57,16 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 		strcpy_s		(g_application_path,sizeof(g_application_path),ApplicationPath);
 #endif
 
+#ifdef _EDITOR
 		// working path
         if( strstr(Params,"-wf") )
         {
             string_path				c_name;
             sscanf					(strstr(Core.Params,"-wf ")+4,"%[^ ] ",c_name);
             SetCurrentDirectory     (c_name);
-
         }
+#endif
+
 		GetCurrentDirectory(sizeof(WorkingPath),WorkingPath);
 
 #ifdef DEBUG
@@ -178,7 +181,8 @@ void xrCore::_destroy		()
 //.		LogFile.reserve		(256);
 		break;
 	case DLL_THREAD_ATTACH:
-		CoInitializeEx	(NULL, COINIT_MULTITHREADED);
+		if (!strstr(GetCommandLine(),"-editor"))
+		    CoInitializeEx	(NULL, COINIT_MULTITHREADED);
 		timeBeginPeriod	(1);
 		break;
 	case DLL_THREAD_DETACH:

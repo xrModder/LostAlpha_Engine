@@ -18,7 +18,7 @@ CStoreHouse::~CStoreHouse(void)
 	Memory.mem_compact();
 }
 
-void CStoreHouse::add(shared_str name, void* ptr_data, size_t size, TypeOfData _type)
+void CStoreHouse::add(shared_str name, void* ptr_data, u32 size, TypeOfData _type)
 {
 	//add_data_exist(name);
 	if (update(name, ptr_data, size, _type)) return;
@@ -57,7 +57,7 @@ void CStoreHouse::add_table(LPCSTR name, LPCSTR string)
 	add(name,(void*)string,xr_strlen(string)+1,lua_table);
 }
 
-bool CStoreHouse::update(shared_str name, void *ptr_data, size_t size, TypeOfData _type)
+bool CStoreHouse::update(shared_str name, void *ptr_data, u32 size, TypeOfData _type)
 {
 	xr_map<shared_str,StoreData>::iterator it = data.find(name);
 	if (it == data.end()) 
@@ -177,6 +177,7 @@ u32 CStoreHouse::type_to_size(StoreData d)
 
 void CStoreHouse::save(IWriter &memory_stream)
 {
+	memory_stream.open_chunk	(STORE_CHUNK_DATA);
 	xr_map<shared_str,StoreData>::iterator it, last;
 
 	memory_stream.w_u64(data.size());
@@ -186,11 +187,12 @@ void CStoreHouse::save(IWriter &memory_stream)
 		memory_stream.w_u8(it->second.type);
 		memory_stream.w(it->second.data, type_to_size(it->second));
 	}
+	memory_stream.close_chunk	();
 }
 
 void CStoreHouse::load(IReader &file_stream)
 {
-	//maybe you think m_size member value, not local :)
+	R_ASSERT2					(file_stream.find_chunk(STORE_CHUNK_DATA),"Can't find chunk STORE_CHUNK_DATA!");
 	size_t m_size = file_stream.r_u64();
 	for (size_t i=0;i<m_size;i++) {
 		StoreData d;

@@ -18,6 +18,7 @@
 #include "alife_spawn_registry.h"
 #include "alife_registry_container.h"
 #include "xrServer.h"
+#include "CustomTimersManager.h"
 #include "level.h"
 #include "restriction_space.h"
 #include "Store.h"
@@ -203,6 +204,11 @@ CStoreHouse *get_store(CALifeSimulator *self)
 {
 	return &(self->store_house());
 	//return NULL;
+}
+
+CTimersManager *get_timers_manager(CALifeSimulator *self)
+{
+	return &(self->timers());
 }
 
 CSE_Abstract *CALifeSimulator__spawn_item3		(CALifeSimulator *self, LPCSTR section, ALife::_STORY_ID sid, const Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id)
@@ -500,6 +506,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
 			.def("store",					&get_store)
+			.def("timers_manager",			&get_timers_manager)
 		,def("alife",						&alife)
 	];
 
