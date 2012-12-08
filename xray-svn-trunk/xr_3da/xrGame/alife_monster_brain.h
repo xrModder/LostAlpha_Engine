@@ -35,7 +35,7 @@ public:
 
 // sad, but true
 public:
-			void						select_task				();
+			void						select_task				(bool force = false);
 
 private:
 			void						process_task			();
@@ -56,7 +56,7 @@ public:
 			void						on_switch_offline		();
 
 public:
-			void						update					();
+			void						update					(bool force = false);
 			bool						perform_attack			();
 			ALife::EMeetActionType		action_type				(CSE_ALifeSchedulable *tpALifeSchedulable, const int &iGroupIndex, const bool &bMutualDetection);
 

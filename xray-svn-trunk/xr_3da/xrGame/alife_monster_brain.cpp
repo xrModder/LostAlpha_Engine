@@ -113,19 +113,23 @@ void CALifeMonsterBrain::process_task			()
 	movement().detail().target		(*task);
 }
 
-void CALifeMonsterBrain::select_task			()
+void CALifeMonsterBrain::select_task			(bool force)
 {
-	if (object().m_smart_terrain_id != 0xffff)
-		return;
-
+	if (!force)
+	{
+		if (object().m_smart_terrain_id != 0xffff)
+			return;
+	}
 	if (!can_choose_alife_tasks())
 		return;
 
 	ALife::_TIME_ID					current_time = ai().alife().time_manager().game_time();
-
-	if (m_last_search_time + m_time_interval > current_time)
-		return;
-
+	
+	if (!force)
+	{
+		if (m_last_search_time + m_time_interval > current_time)
+			return;
+	}
 	m_last_search_time				= current_time;
 
 	float							best_value = flt_min;
@@ -148,7 +152,7 @@ void CALifeMonsterBrain::select_task			()
 	}
 }
 
-void CALifeMonsterBrain::update				()
+void CALifeMonsterBrain::update				(bool force)
 {
 #if 0//def DEBUG
 	if (!Level().MapManager().HasMapLocation("debug_stalker",object().ID)) {
@@ -162,7 +166,7 @@ void CALifeMonsterBrain::update				()
 	}
 #endif
 
-	select_task						();
+	select_task						(force);
 	
 	if (object().m_smart_terrain_id != 0xffff)
 		process_task				();

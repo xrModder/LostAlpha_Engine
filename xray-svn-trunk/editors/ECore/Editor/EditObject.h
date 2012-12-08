@@ -474,6 +474,7 @@ public:
 #define EOBJ_CHUNK_BONEPARTS2		0x0923
 #define EOBJ_CHUNK_SMOTIONS2		0x0924
 #define EOBJ_CHUNK_LODS				0x0925
+#define EOBJ_CHUNK_SMOTIONS3		0x0926
 //----------------------------------------------------
 
 

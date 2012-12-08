@@ -29,8 +29,9 @@ void CEditableMesh::Transform(const Fmatrix& parent)
 int CEditableMesh::FindSimilarUV(st_VMap* vmap, Fvector2& _uv)
 {
 	int sz			= vmap->size();
-	for (int k=0; k<sz; k++){
-		Fvector2& uv = vmap->getUV(k);
+	for (int k=0; k<sz; ++k)
+	{
+		const Fvector2& uv = vmap->getUV(k);
 		if (uv.similar(_uv)) 
 			return k;
 	}
@@ -40,7 +41,8 @@ int CEditableMesh::FindSimilarUV(st_VMap* vmap, Fvector2& _uv)
 int CEditableMesh::FindSimilarWeight(st_VMap* vmap, float _w)
 {
 	int sz			= vmap->size();
-	for (int k=0; k<sz; k++){
+	for (int k=0; k<sz; ++k)
+	{
 		float w		= vmap->getW(k);
 		if (fsimilar(w,_w)) return k;
 	}
@@ -271,21 +273,23 @@ void CEditableMesh::Optimize(BOOL NoOpt)
             m_SGs		= xr_alloc<u32>		(m_FaceCount-i_del_face);
             
             u32 new_dk	= 0;
-            for (u32 dk=0; dk<m_FaceCount; dk++)
-            {
-            	if (faces_mark[dk]){
-                    for (SurfFacesPairIt plp_it=m_SurfFaces.begin(); plp_it!=m_SurfFaces.end(); plp_it++){
+            for (u32 dk=0; dk<m_FaceCount; ++dk)
+			{
+            	if (faces_mark[dk])
+				{
+                    for (SurfFacesPairIt plp_it=m_SurfFaces.begin(); plp_it!=m_SurfFaces.end(); ++plp_it)
+					{
                         IntVec& 	pol_lst = plp_it->second;
-                        for (int k=0; k<int(pol_lst.size()); k++)
-                        {
+                        for (int k=0; k<int(pol_lst.size()); ++k)
+						{
                             int& f = pol_lst[k];
                             if (f>(int)dk)
-                            { 
-                            f--;
+							{ 
+								--f;
                             }else if (f==(int)dk)
-                            {
+							{
                                 pol_lst.erase(pol_lst.begin()+k);
-                                k--;
+                                --k;
                             }
                         }
                     }
@@ -293,7 +297,7 @@ void CEditableMesh::Optimize(BOOL NoOpt)
                 } 
             	m_Faces[new_dk]	= old_faces[dk];
             	m_SGs[new_dk]	= old_sg[dk];
-				new_dk++;
+				++new_dk;
             }
             m_FaceCount	= m_FaceCount-i_del_face;
             xr_free		(old_faces);
