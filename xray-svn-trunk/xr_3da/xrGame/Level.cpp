@@ -44,6 +44,8 @@
 #include "MainMenu.h"
 #include "..\XR_IOConsole.h"
 #include "actor.h"
+#include "alife_simulator.h"
+#include "CustomTimersManager.h"
 
 #ifdef DEBUG
 #	include "level_debug.h"
@@ -577,6 +579,11 @@ void CLevel::OnFrame	()
 	Device.Statistic->TEST0.Begin		();
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
+
+	CALifeSimulator* alife = ai().get_alife_nonconst();
+	if (alife->initialized()) {
+		alife->timers().Update();
+	}
 
 	// update static sounds
 	if(!g_dedicated_server)

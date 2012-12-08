@@ -1,7 +1,7 @@
 #pragma once
 #include "object_interfaces.h"
 #include "script_export_space.h"
-//#include <luabind/object.hpp>
+#include "alife_space.h"
 
 enum TypeOfData {
 	lua_nil,
@@ -47,11 +47,11 @@ public:
 	void load(IReader &file_stream);
 
 private:
-	void add(shared_str name, void* ptr_data, size_t size, TypeOfData _type);
+	void add(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
 	void get(shared_str name, void* ptr,u32 size);
 	void add_data_exist(shared_str name);
 	void get_data_exist(shared_str name);
-	bool update(shared_str name, void* ptr_data, size_t size, TypeOfData _type);
+	bool update(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
 	u32 type_to_size(StoreData d);
 
 	//size_t m_size;//m_size is not need. it equal data.size()

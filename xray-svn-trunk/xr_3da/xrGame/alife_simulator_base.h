@@ -31,6 +31,7 @@ class CSE_ALifeDynamicObject;
 class CSE_ALifeGroupAbstract;
 class CSE_ALifeCreatureAbstract;
 class CStoreHouse;
+class CTimersManager;
 
 class CALifeSimulatorBase : public IPureDestroyableObject {
 protected:
@@ -46,6 +47,7 @@ protected:
 	CALifeGroupRegistry							*m_groups;
 	CALifeRegistryContainer						*m_registry_container;
 	CStoreHouse									*m_store_house;
+	CTimersManager								*m_timers_manager;
 	CRandom32									m_random;
 	bool										m_initialized;
 	shared_str									*m_server_command_line;
@@ -58,7 +60,7 @@ public:
 	IC		CALifeTimeManager					&time						();
 	IC		CALifeSpawnRegistry					&spawns						();
 	IC		CStoreHouse							&store_house				();
-	//		CStoreHouse*						store_house_script			();
+	IC		CTimersManager						&timers						();
 	IC		CALifeObjectRegistry				&objects					();
 	IC		CALifeStoryRegistry					&story_objects				();
 	IC		CALifeSmartTerrainRegistry			&smart_terrains				();
