@@ -60,20 +60,20 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG;"/>
+    <USERDEFINES value="_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrCoreB.bpf"/>
     <INCLUDEPATH value="blackbox;$(ETOOLSSOC_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc"/>
     <LIBPATH value="X:\STALKER\SDK\components\ElPack\Code;blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk"/>
     <WARNINGS value="-w8092 -w8091 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin 
-      -w-par -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
+      -w-par -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-Iblackbox -I$(ETOOLSSOC_DIR) -I$(DXSDK_DIR)\Include -I$(BCB)\include 
       -I$(BCB)\include\vcl -I$(BCB)\Include\Mfc -src_suffix cpp -D_EDITOR 
       -D_XRCOREB -DXRCORE_EXPORTS -D_DEBUG = 0x560 -boa"/>
-    <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Q -Vx -Ve -xf -xp -VF -ff -X- -r- -ps -a4 
+    <CFLAG1 value="-WD -Od -H=x:\intermediate_ed\core\pch.csm -Q -Vx -Ve -xf -xp -VF -ff -X- -r- -ps -a4 
       -6 -b- -k -y -v -vi- -tWD -tWM -c"/>
     <PFLAGS value="-N2X:\intermediate_ed\core -N0X:\intermediate_ed\core -$Y+ -$W -$O- -$A8 
       -v -JPHNE -M"/>
@@ -240,7 +240,7 @@ G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visua
 [HistoryLists\hlIncludePath]
 Count=30
 Item0=blackbox;$(ETOOLSSOC_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
-Item1=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;blackbox;$(ETOOLSSOC_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
+Item1=blackbox;$(ETOOLSSOC_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
 Item2=blackbox;$(ETOOLS_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
 Item3=$(ETOOLS_DIR);$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
 Item4=$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Include\Mfc
@@ -273,9 +273,9 @@ Item29=$(BCB)\include;shared;$(BCB)\include\vcl;edit;edit\Shader;Import\LWO;Coll
 [HistoryLists\hlLibraryPath]
 Count=27
 Item0=X:\STALKER\SDK\components\ElPack\Code;blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
-Item1=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;X:\STALKER\SDK\components\ElPack\Code;blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
+Item1=X:\STALKER\SDK\components\ElPack\Code;blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
 Item2=blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
-Item3=C:\Program Files (x86)\EurekaLab\EurekaLog 6\CBuilder6;blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
+Item3=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(MAIN_DIR)\libraries;$(BCB)\lib\psdk
 Item4=blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;X:\libraries;$(BCB)\lib\psdk
 Item5=blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;X:\STALKER\xray-svn-trunk\libraries;$(BCB)\lib\psdk
 Item6=blackbox;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;D:\Games\STALKER_SRC\trunk\libraries;$(BCB)\lib\psdk
@@ -306,8 +306,8 @@ Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
 Count=12
-Item0=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG;
-Item1=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG;EUREKALOG;EUREKALOG_VER6
+Item0=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG
+Item1=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG
 Item2=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG
 Item3=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG;__BORLANDC__ = 0x560
 Item4=_EDITOR;_XRCOREB;XRCORE_EXPORTS;_DEBUG;__BORLANDC__
@@ -388,11 +388,6 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 
 [Linker]
 LibPrefix=

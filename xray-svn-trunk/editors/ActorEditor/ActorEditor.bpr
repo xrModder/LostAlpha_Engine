@@ -21,8 +21,8 @@
     <RESDEPEN value="$(RESFILES) BonePart.dfm ClipEditor.dfm KeyBar.dfm LeftBar.dfm Splash.dfm 
       main.dfm TopBar.dfm BottomBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editor.lib elpackB6.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editor.lib"/>
+    <LIBRARIES value="editorB.lib editor.lib elpackB6.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editor.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
@@ -37,7 +37,7 @@
     <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);..\..\xr_3da;..\..\xr_3da\xrCPU_Pipe;..\..\xr_3da\xrRender"/>
     <LIBPATH value="..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
-      -wnod -wnak -wdef -wcln -wbbf -wasm -wamp -wamb"/>
+      -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
@@ -235,7 +235,7 @@ Item0=x:\libraries
 DebugSourceDirs=$(COMPONENTS_SOC)\AlexMX\
 
 [Parameters]
-RunParams=-wf x:\stalker_adn
+RunParams=
 Launcher=
 UseLauncher=0
 DebugCWD=

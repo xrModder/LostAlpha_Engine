@@ -38,7 +38,7 @@ void __stdcall  CloseSoundSource()
 void __stdcall  FillSoundSource(ChooseItemVec& items, void* param)
 {
     FS_FileSet lst;
-    if (SndLib->GetSounds(lst))
+    if (SndLib->GetGameSounds(lst))
     {
 	    FS_FileSetIt  it			= lst.begin();
     	FS_FileSetIt	_E			= lst.end();

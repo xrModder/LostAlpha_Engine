@@ -28,12 +28,12 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_EDITOR;XR_PARTICLES_EXPORTS;_DEBUG;"/>
+    <USERDEFINES value="_EDITOR;XR_PARTICLES_EXPORTS;_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrParticlesB.bpf"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(CORESOC_DIR)"/>
     <LIBPATH value="$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\Lib\Psdk;X:\libraries"/>
-    <WARNINGS value="-w-par -w-8027"/>
+    <WARNINGS value="-w-par -w-8027 -w-8026"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
@@ -219,3 +219,4 @@ LibPrefix=
 LibSuffix=
 LibVersion=
   </IDEOPTIONS>
+</PROJECT>
