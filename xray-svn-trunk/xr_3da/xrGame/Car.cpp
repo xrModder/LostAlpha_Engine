@@ -674,6 +674,7 @@ bool CCar::attach_Actor(CGameObject* actor)
 //	VisualUpdate();
 	processing_activate();
 	ReleaseHandBreak();
+	ReleaseBreaks();
 //	HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(true);
 //	HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(fEntityHealth/100.f);
 	//HUD().GetUI()->UIMainIngameWnd.ShowBattery(true);
