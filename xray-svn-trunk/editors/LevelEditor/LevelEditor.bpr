@@ -122,7 +122,8 @@
       Splash.dfm FrmDBXpacker.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value="editorB.lib editor.lib bcbsmp.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib elpproB6.lib editorB.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib elpproB6.lib 
+      editorB.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi elpackB6.bpi elpkdbB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;Edit;..\..\xr_3da;..\..\xr_3da\xrRender"/>
     <PATHPAS value=".;"/>
@@ -152,7 +153,7 @@
       -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\le -D&quot;&quot; -aa -Tpe -GD -s -v"/>
+    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\le -D&quot;&quot; -aa -Tpe -GD -s -Gn -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -311,7 +312,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=2
-Build=141
+Build=144
 Debug=1
 PreRelease=0
 Special=0
@@ -323,7 +324,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.2.141
+FileVersion=1.0.2.144
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -333,10 +334,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
-C:\Program Files\Borland\CBuilder6\Bin\bcbsmp60.bpl=Borland C++ Sample Components
-C:\Program Files\Borland\CBuilder6\Bin\indy60.bpl=Internet Direct (Indy) for D6
-G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dceldbB6.bpl=EldoS DB-Aware Controls (Design-time)
-G:\STALKER_GAMES_SRC\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visual Components (Design-time)
+c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
 Count=9

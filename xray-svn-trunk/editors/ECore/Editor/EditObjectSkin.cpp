@@ -43,9 +43,12 @@ bool CEditableObject::LoadBoneData(IReader& F)
 	BoneVec	load_bones;
     int count=0;
 	IReader* R;
-    while(0!=(R=F.open_chunk(count++))){
-    	load_bones.push_back(xr_new<CBone>());
-        load_bones.back()->LoadData(*R);
+    while(0!=(R=F.open_chunk(count++)))
+    {
+    	CBone* nBone = xr_new<CBone>();
+    	load_bones.push_back(nBone);
+        nBone->LoadData(*R);
+        Msg("loaded bone [%s]", nBone->Name().c_str());
     }
 	bool bRes = true;
     // load bones
@@ -53,12 +56,13 @@ bool CEditableObject::LoadBoneData(IReader& F)
 		for (BoneIt b_it=m_Bones.begin(); b_it!=m_Bones.end(); b_it++){
         	CBone* B	= *b_it;
             BoneIt n_it = std::find_if(load_bones.begin(),load_bones.end(),fBoneNameEQ(B->Name()));
-            if (n_it!=m_Bones.end()){
+            if (n_it!=load_bones.end())
+            {
                 B->CopyData	(*n_it);
             }else{
 	            ELog.Msg	(mtError,"Can't find bone: '%s'.",*(*b_it)->Name());
             	bRes		= false; 
-                break;
+//                break;
             }
         }
     

@@ -290,7 +290,7 @@ IC void q_scale(Fquaternion &q, float v)
 	float angl;Fvector ax;
 	q.get_axis_angle(ax,angl);
 	q.rotation(ax,angl*v);
-	//q.normalize();
+	q.normalize();
 }
 IC void key_scale(CKey &res, const CKey &k, float v)
 {

@@ -367,7 +367,8 @@ bool CEditableObject::Load(IReader& F)
             }
         }
 
-        if (bRes){
+        if (bRes)
+        {
             if (F.find_chunk	(EOBJ_CHUNK_ACTORTRANSFORM))
             {
                 F.r_fvector3	(a_vPosition);
@@ -395,8 +396,11 @@ bool CEditableObject::Load(IReader& F)
 
 bool CEditableObject::ExportOGF(LPCSTR fn, u8 infl)
 {
-	CMemoryWriter F;
-    if (PrepareOGF(F,infl,true,NULL)){
+	UpdateBox		();
+	CMemoryWriter	F;
+
+    if (PrepareOGF(F,infl,true,NULL))
+	{
     	return F.save_to(fn);
     }
     return false;
@@ -404,8 +408,10 @@ bool CEditableObject::ExportOGF(LPCSTR fn, u8 infl)
 //------------------------------------------------------------------------------
 bool CEditableObject::ExportOMF(LPCSTR fn)
 {
-	CMemoryWriter F;
-    if (PrepareOMF(F)){
+	UpdateBox		();
+	CMemoryWriter	F;
+    if (PrepareOMF(F))
+	{
     	return F.save_to(fn);
     }
     return false;
@@ -413,9 +419,11 @@ bool CEditableObject::ExportOMF(LPCSTR fn)
 //------------------------------------------------------------------------------
 bool CEditableObject::ExportOBJ(LPCSTR fn)
 {
+	UpdateBox			();
     CExportObjectOGF E(this);
 	CMemoryWriter F;
-    if (E.ExportAsWavefrontOBJ(F,fn)){
+    if (E.ExportAsWavefrontOBJ(F,fn))
+	{
     	return F.save_to(fn);
     }
     return false;

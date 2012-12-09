@@ -556,7 +556,7 @@ void CExportSkeleton::SSplit::MakeStripify()
         HRESULT		rhr		= D3DXOptimizeFaces		(&m_Faces.front(),m_Faces.size(),m_Verts.size(),FALSE,remap);
         R_CHK		(rhr);
         SkelFaceVec	_source	= m_Faces;
-        for (u32 it=0; it<_source.size(); it++)		m_Faces[it] = _source[remap[it]];  
+        for (u32 it=0; it<_source.size(); it++)		m_Faces[it] = _source[remap[it]];
         xr_free		(remap);
         
 //	    int ccc 	= xrSimulate	((u16*)&m_Faces.front(),m_Faces.size()*3,24);
@@ -1146,10 +1146,15 @@ bool CExportSkeleton::ExportMotionKeys(IWriter& F)
             CKeyQR& R		= BM._keysQR[0];
 
             bool bTransform16Bit = false;
-            if(g_force16BitTransformQuant || St.magnitude()>1.5f)
+            float norm = St.magnitude();
+            if(g_force16BitTransformQuant || (_finite(norm) && norm > 1.5f))
             {
             	bTransform16Bit = true;
                 Msg("animation [%s] is 16bit-transform (%f)m", motion->Name(), St.magnitude());
+            }
+            else
+            {
+               Msg("animation [%s] is 8bit-transform (%f)m", motion->Name(), St.magnitude());
             }
             
             for (t_idx=0; t_idx<dwLen; ++t_idx)
