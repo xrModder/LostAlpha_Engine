@@ -167,8 +167,6 @@ void CMountedTurret::SpawnInitPhysics(CSE_Abstract *D)
 	PPhysicsShell()					= P_build_Shell							(this, false);
 	if (g_Alive())
 	{
-		//PPhysicsShell()->set_ObjectContactCallback							(CollisionCbAlife);
-		//PPhysicsShell()->set_ContactCallback								(ContactCbAlife);
 		PPhysicsShell()->set_PhysicsRefObject(this);
 		PPhysicsShell()->mXFORM.set											(XFORM());
 		PPhysicsShell()->SetAirResistance									(0.001f, 0.02f);
@@ -176,7 +174,7 @@ void CMountedTurret::SpawnInitPhysics(CSE_Abstract *D)
 		PPhysicsShell()->SetPrefereExactIntegration							();
 		PPhysicsShell()->Activate(true);
 	}
-	//#+# skyloader: need to fix bones
+	//#+# skyloader: fix bones
 	CInifile	*data	= K->LL_UserData ();
 	if (data->line_exist("physics_common", "fixed_bones"))
 	{
@@ -195,6 +193,9 @@ void CMountedTurret::UpdateCL()
 	UpdateBarrelDir															();
 //	K->CalculateBones_Invalidate											();
 	K->CalculateBones														(TRUE);
+
+	m_temperature					+=	m_temp_incr;
+
 	if (m_temperature >= MAX_FIRE_TEMP)
 	{
 		m_allow_fire				= false;
@@ -206,7 +207,6 @@ void CMountedTurret::UpdateCL()
 		cam_Update															(Device.fTimeDelta, g_fov);
 		OwnerActor()->Cameras().Update										(Camera());
 		OwnerActor()->Cameras().ApplyDevice									(VIEWPORT_NEAR);
-		m_temperature					+=	m_temp_incr;
 	}
 	m_pPhysicsShell->InterpolateGlobalTransform								(&XFORM());
 	if (m_temperature <= 0)
@@ -297,7 +297,8 @@ void CMountedTurret::cam_Update(float dt, float fov)
 	IKinematics* K					= smart_cast<IKinematics*>				(Visual());
 	K->CalculateBones_Invalidate											();
 	K->CalculateBones														(TRUE);
-	const Fmatrix& C				= K->LL_GetTransform					(m_camera_bone);
+	Fmatrix		C				= K->LL_GetTransform					(m_camera_bone);
+	C.c.y						+= 0.2f;
 	XFORM().transform_tiny													(P, C.c);
 
 	Fvector			d				= C.k;
@@ -361,7 +362,6 @@ bool CMountedTurret::attach_Actor(CGameObject *actor)
 	CHolderCustom::attach_Actor												(actor);
 	processing_activate														();
 	FireEnd																	();
-	m_temp_incr	= m_temperature		= 0;
 	return true;
 }
 
@@ -369,9 +369,11 @@ void CMountedTurret::detach_Actor()
 {
 	if (OwnerActor())
 		OwnerActor()->setVisible(TRUE);
+	StopLight														();
 	FireEnd																	();
+	CShootingObject::StopLight												();
 	CHolderCustom::detach_Actor												();
-	m_temp_incr						= 0;
+	m_temp_incr										= -1;
 	processing_deactivate													();
 }
 
@@ -594,10 +596,6 @@ void CMountedTurret::UpdateBarrelDir()
 
 	m_cur_x_rot						= angle_inertion_var					(m_cur_x_rot, m_tgt_x_rot, 0.5f, 3.5f, PI, Device.fTimeDelta);
 	m_cur_y_rot						= angle_inertion_var					(m_cur_y_rot, m_tgt_y_rot, 0.5f, 3.5f, PI, Device.fTimeDelta);
-	
-	//if(!fsimilar(m_cur_x_rot, m_tgt_x_rot, dir_eps) || 
-	//	!fsimilar(m_cur_y_rot, m_tgt_y_rot, dir_eps))
-	//	m_allow_fire = false;
 }
 
 
@@ -646,7 +644,8 @@ void CMountedTurret::Action(int id, u32 flags)
 		case eDeactivate:
 		{
 			processing_deactivate													();
-			CHolderCustom::detach_Actor												();
+			if (OwnerActor())
+				OwnerActor()->use_MountedWeapon											(0);
 			CHolderCustom::SetNpcOwner												(NULL);
 			break;
 		}
@@ -666,8 +665,8 @@ void CMountedTurret::Action(int id, u32 flags)
 
 void CMountedTurret::SetNpcOwner(CGameObject *obj)
 {
-	if (Owner() || OwnerActor())
-		detach_Actor														();
+	if (OwnerActor())
+		OwnerActor()->use_MountedWeapon (0);
 	CHolderCustom::SetNpcOwner												(obj);
 }
 

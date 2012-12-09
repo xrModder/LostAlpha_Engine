@@ -547,10 +547,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 
 	m_pPhysics_support->in_NetSpawn	(e);
 	character_physics_support()->movement()->ActivateBox	(0);
-	if(E->m_holderID!=u16(-1))
-	{ 
-		character_physics_support()->movement()->DestroyCharacter();
-	}
+
 	if(m_bOutBorder)character_physics_support()->movement()->setOutBorder();
 	r_torso_tgt_roll		= 0;
 
@@ -563,10 +560,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	unaffected_r_torso.pitch= r_torso.pitch;
 	unaffected_r_torso.roll	= r_torso.roll;
 
-	/*if( psActorFlags.test(AF_PSP) )
-		cam_Set					(eacLookAt);
-	else*/
-		cam_Set					(eacFirstEye);
+	cam_Set					(eacFirstEye);
 
 	cam_Active()->Set		(-E->o_torso.yaw,E->o_torso.pitch,0);//E->o_Angle.z);
 
@@ -704,7 +698,6 @@ void CActor::net_Destroy	()
 	if(!g_dedicated_server)
 		Level().MapManager		().RemoveMapLocationByObjectID(ID());
 
-#pragma todo("Dima to MadMax : do not comment inventory owner net_Destroy!!!")
 	CInventoryOwner::net_Destroy();
 	cam_UnsetLadder();	
 	character_physics_support()->movement()->DestroyCharacter();
