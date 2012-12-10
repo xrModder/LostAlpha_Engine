@@ -33,7 +33,12 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	time_vampire_started	= 0;
 
 	psHUD_Flags.set(HUD_DRAW, FALSE);
+	g_bDisableAllInput = true;
+
+#pragma todo("SkyLoader: SetWeaponHideState() doesn't work properly in this scheme, need to fix it")
+#if 0
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+#endif
 
 	object->stop_invisible_predator	();
 
@@ -45,11 +50,6 @@ void CStateBloodsuckerVampireExecuteAbstract::execute()
 {
 	if (!object->CControlledActor::is_turning() && !m_effector_activated) {
 		object->ActivateVampireEffector	();
-			////////////////////////////////
-			psHUD_Flags.set(HUD_DRAW, FALSE);
-			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-			g_bDisableAllInput = true;
-			////////////////////////////////
 		m_effector_activated			= true;
 	}
 	
@@ -88,7 +88,8 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 {
 	psHUD_Flags.set(HUD_DRAW, TRUE);
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	//skyloader: need to fix
+	//Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 	g_bDisableAllInput = false;
 }
 

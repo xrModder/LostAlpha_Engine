@@ -179,6 +179,7 @@ void CAI_Bloodsucker::reinit()
 	m_visual_default			= cNameVisual();
 
 	m_vampire_want_value		= 1.f;
+	m_threaten_time 		= 0;
 	m_predator					= false;
 }
 
@@ -322,6 +323,8 @@ void CAI_Bloodsucker::UpdateCL()
 	// update vampire need
 	m_vampire_want_value += m_vampire_want_speed * client_update_fdelta();
 	clamp(m_vampire_want_value,1.f,1.f);
+	if (m_threaten_time + 1670 < Device.dwTimeGlobal)
+		m_threaten_time = 0;
 }
 
 
@@ -364,6 +367,8 @@ bool CAI_Bloodsucker::check_start_conditions(ControlCom::EControlType type)
 		if (!start_threaten) return false;
 		
 		start_threaten = false;
+
+		m_threaten_time = Device.dwTimeGlobal;
 
 		if (Random.randI(100) < 70) return false;
 			
