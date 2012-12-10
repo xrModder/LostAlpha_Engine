@@ -145,7 +145,7 @@ void CController::Load(LPCSTR section)
 //	anim().AddAnim(eAnimRun,			"stand_walk_fwd_",		-1,	&velocity_walk,		PS_STAND);
 //	anim().AddAnim(eAnimRunDamaged,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
 	anim().AddAnim(eAnimAttack,			"stand_attack_",		-1, &velocity_turn,		PS_STAND);
-	anim().AddAnim(eAnimAttackRun,		"stand_attack_",		-1, &velocity_run,		PS_STAND);
+//	anim().AddAnim(eAnimAttackRun,		"stand_attack_",		-1, &velocity_run,		PS_STAND);
 	anim().AddAnim(eAnimSteal,			"stand_steal_",			-1, &velocity_steal,	PS_STAND);
 	anim().AddAnim(eAnimCheckCorpse,	"stand_check_corpse_",	-1,	&velocity_none,		PS_STAND);
 	anim().AddAnim(eAnimDie,			"stand_die_",			-1, &velocity_none,		PS_STAND);
@@ -182,8 +182,8 @@ void CController::Load(LPCSTR section)
 	//anim().AddAnim(eAnimEat,			"sit_eat_",				-1, &velocity_none,		PS_SIT);
 	//anim().AddAnim(eAnimWalkFwd,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
 	//anim().AddAnim(eAnimWalkDamaged,	"stand_walk_dmg_",		-1, &velocity_walk_dmg,	PS_STAND);
-	anim().AddAnim(eAnimRun,			"run_scared_",			-1,	&velocity_run,		PS_STAND);
-	anim().AddAnim(eAnimRunDamaged,		"stand_run_dmg_",		-1, &velocity_run_dmg,	PS_STAND);
+	anim().AddAnim(eAnimRun,			"psy_walk_",			-1,	&velocity_run,		PS_STAND);
+	anim().AddAnim(eAnimRunDamaged,		"stand_walk_dmg_",		-1, &velocity_run_dmg,	PS_STAND);
 	//anim().AddAnim(eAnimAttack,			"stand_attack_",		-1, &velocity_turn,		PS_STAND);
 	//anim().AddAnim(eAnimSteal,			"stand_steal_",			-1, &velocity_steal,	PS_STAND);
 	//anim().AddAnim(eAnimCheckCorpse,	"stand_check_corpse_",	-1,	&velocity_none,		PS_STAND);
@@ -659,60 +659,19 @@ void CController::create_base_controls()
 
 void CController::TranslateActionToPathParams()
 {
-	
-//	if (m_mental_state == eStateIdle) 
-//	{
-//		inherited::TranslateActionToPathParams();
-//		return;
-//	}
-//	custom_anim().set_path_params();
-	inherited::TranslateActionToPathParams();
-/*
 	if ((anim().m_tAction != ACT_RUN) && (anim().m_tAction != ACT_WALK_FWD)) {
 		inherited::TranslateActionToPathParams();
 		return;
 	}
-	
-	u32 vel_mask = u32(-1);
-	u32 des_mask = u32(-1);
-	switch (anim().m_tAction)
-	{
-		case ACT_RUN:
-		{	
-			if (m_bDamaged)
-			{
-				vel_mask = MonsterMovement::eVelocityParamsRunDamaged;
-				des_mask = MonsterMovement::eVelocityParameterRunDamaged;
-			}
-			else
-			{
-				vel_mask = MonsterMovement::eVelocityParamsRun;
-				des_mask = MonsterMovement::eVelocityParameterRunNormal;
-			}
-			break;
-		}
-		case ACT_WALK_FWD:
-		{
-			if (m_bDamaged) 
-			{
-				vel_mask = MonsterMovement::eVelocityParamsWalkDamaged;
-				des_mask = MonsterMovement::eVelocityParameterWalkDamaged;
-			}
-			else
-			{
-				vel_mask = MonsterMovement::eVelocityParamsWalk;
-				des_mask = MonsterMovement::eVelocityParameterWalkNormal;
-			}
-			break;
-		}
-		default: NODEFAULT;
-	}
+
+	u32 vel_mask = (m_bDamaged ? MonsterMovement::eVelocityParamsWalkDamaged : MonsterMovement::eVelocityParamsWalk);
+	u32 des_mask = (m_bDamaged ? MonsterMovement::eVelocityParameterWalkDamaged : MonsterMovement::eVelocityParameterWalkNormal);
+
 	if (m_force_real_speed) vel_mask = des_mask;
 
 	path().set_velocity_mask	(vel_mask);
 	path().set_desirable_mask	(des_mask);
 	path().enable_path			();
-*/
 }
 
 bool CController::is_relation_enemy(const CEntityAlive *tpEntityAlive) const

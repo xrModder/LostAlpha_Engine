@@ -16,6 +16,7 @@
 #include "alife_group_registry.h"
 #include "alife_registry_container.h"
 #include "store.h"
+#include "CustomTimersManager.h"
 #include "xrserver.h"
 #include "level.h"
 #include "../x_ray.h"
@@ -58,6 +59,7 @@ void CALifeStorageManager::save	(LPCSTR save_name, bool update_name)
 		objects().save			(stream);
 		registry().save			(stream);
 		store_house().save		(stream);
+		timers().save			(stream);
 
 		source_count			= stream.tell();
 		void					*source_data = stream.pointer();
@@ -113,6 +115,7 @@ void CALifeStorageManager::load	(void *buffer, const u32 &buffer_size, LPCSTR fi
 
 	registry().load				(source);
 	store_house().load			(source);
+	timers().load				(source);
 
 	can_register_objects		(true);
 

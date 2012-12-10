@@ -23496,6 +23496,34 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Timer"
+					>
+					<File
+						RelativePath=".\CustomTimer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CustomTimer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\CustomTimer_script.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CustomTimersManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CustomTimersManager.h"
+						>
+					</File>
+					<File
+						RelativePath=".\CustomTimersManager_script.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Server"

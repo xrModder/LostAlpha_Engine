@@ -122,6 +122,12 @@ void CBloodsuckerStateAttackAbstract::execute()
 TEMPLATE_SPECIALIZATION
 void CBloodsuckerStateAttackAbstract::update_invisibility()
 {
+	if (object->threaten_time() > 0) 
+	{
+		object->stop_invisible_predator	();
+		return;
+	}
+
 	if (object->state_invisible) {
 		// check conditions to stop invis
 		if (current_substate == eStateAttack_Melee) {

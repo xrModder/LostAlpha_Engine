@@ -17,7 +17,6 @@
 #include "../skeletoncustom.h"
 #include "level.h"
 #include "CarWeapon.h"
-#include "HudManager.h"
 
 void	CCar::OnMouseMove(int dx, int dy)
 {
@@ -32,11 +31,6 @@ void	CCar::OnMouseMove(int dx, int dy)
 	if (dy){
 		float d		= ((psMouseInvert.test(1))?-1:1)*float(dy)*scale*3.f/4.f;
 		C->Move		((d>0)?kUP:kDOWN, _abs(d));
-	}
-	if (HasWeapon() && m_car_weapon->IsActive())
-	{
-		collide::rq_result& rq = HUD().GetCurrentRayQuery();
-		m_car_weapon->SetParam(CCarWeapon::eWpnDesiredPos, C->vPosition.add(C->vDirection.mul(rq.range)));
 	}
 }
 

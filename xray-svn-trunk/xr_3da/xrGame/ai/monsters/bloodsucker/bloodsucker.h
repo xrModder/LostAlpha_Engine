@@ -64,6 +64,7 @@ private:
 public:
 			void			start_invisible_predator	();
 			void			stop_invisible_predator		();
+			u32			threaten_time				() {return m_threaten_time;}
 
 	//--------------------------------------------------------------------
 	// Vampire
@@ -85,7 +86,12 @@ private:
 //	float					m_vampire_want_speed;		// load from ltx
 	float					m_vampire_wound;
 
-			void			LoadVampirePPEffector	(LPCSTR section);	
+			void			LoadVampirePPEffector	(LPCSTR section);
+	//--------------------------------------------------------------------
+	// Threaten
+	//--------------------------------------------------------------------
+
+	u32					m_threaten_time;	
 
 	//--------------------------------------------------------------------
 	// Alien
