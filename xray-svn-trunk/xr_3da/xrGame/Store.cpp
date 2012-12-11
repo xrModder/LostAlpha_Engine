@@ -193,6 +193,7 @@ void CStoreHouse::save(IWriter &memory_stream)
 void CStoreHouse::load(IReader &file_stream)
 {
 	R_ASSERT2					(file_stream.find_chunk(STORE_CHUNK_DATA),"Can't find chunk STORE_CHUNK_DATA!");
+	Msg("Loading Store...");
 	size_t m_size = file_stream.r_u64();
 	for (size_t i=0;i<m_size;i++) {
 		StoreData d;
@@ -216,5 +217,6 @@ void CStoreHouse::load(IReader &file_stream)
 		}
 		data[name.c_str()]=d;
 	}
+	Msg("Store successfully loaded");
 }
 #pragma warning(pop)
