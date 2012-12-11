@@ -18,7 +18,7 @@ void CStateControllerTubeAbstract::execute()
 	object->m_time_last_tube	= time();
 
 	// missed
-	if (!object->tube_at_once() && (Random.randI(100) > TUBE_PROBABILITY)) return;
+	//if (!object->tube_at_once() && (Random.randI(100) > TUBE_PROBABILITY)) return;
 
 	object->control().activate	(ControlCom::eComCustom1);
 }

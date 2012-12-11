@@ -59,28 +59,7 @@ if (enemy) {
 		if (can_eat())	state_id = eStateEat;
 		else			state_id = eStateRest;
 	}
-	
-/*
-	if (enemy) {
-		if (check_state(eStateCustom_Vampire)) {
-			state_id = eStateCustom_Vampire;
-		} else {
 
-			switch (object->EnemyMan.get_danger_type()) {
-			case eStrong:	state_id = eStatePanic; break;
-			case eWeak:		state_id = eStateAttack; break;
-			}
-		}
-
-	} else if (object->HitMemory.is_hit()) {
-		state_id = eStateHitted;
-	} else if (object->hear_dangerous_sound || object->hear_interesting_sound) {
-		state_id = eStateHearInterestingSound;
-	} else {
-		if (can_eat())	state_id = eStateEat;
-		else			state_id = eStateRest;
-	}
-*/
 	///////////////////////////////////////////////////////////////////////////////
 	// Additional
 	///////////////////////////////////////////////////////////////////////////////
