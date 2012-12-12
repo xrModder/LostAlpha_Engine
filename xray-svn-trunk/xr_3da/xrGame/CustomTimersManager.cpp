@@ -136,6 +136,7 @@ void CTimersManager::Update ()
 			//(*it).StartAction();
 			objects_to_call.push_back((*it));
 			objects.erase(it);
+			break;
 		}
 	}
 	
