@@ -1678,10 +1678,9 @@ void CWeapon::WeaponCamEffector(LPCSTR name)
 		if (!FS.exist( full_path, "$game_anims$", fname))
 			return;
 
-		int id = 2012;
-		LPCSTR cb_func = "";
-		CAnimatorCamEffectorScriptCB* e		= xr_new<CAnimatorCamEffectorScriptCB>(cb_func);
-		e->SetType				((ECamEffectorType)id);
+		CAnimatorCamEffector* e		= xr_new<CAnimatorCamEffector>();
+		int n 				= 1337;
+		e->SetType				((ECamEffectorType)n);
 		e->SetCyclic				(FALSE);
 		e->Start				(fname);
 		Actor()->Cameras().AddCamEffector(e);
