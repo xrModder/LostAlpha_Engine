@@ -44,7 +44,7 @@ struct ENGINE_API CKeyQT
 {
 //	s8			x,y,z;
 #if 1
-	s8			x1,y1,z1;
+	s8			x,y,z;
 #else
 	s16			x1,y1,z1;
 #endif

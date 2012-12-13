@@ -14,16 +14,6 @@
 #include "bone.h"
 #include "EditMesh.h"
 
-
-#ifdef _EDITOR
-	#include "SkeletonAnimated.h"
-	#include "AnimationKeyCalculate.h"
-#endif
-
-#ifndef _EDITOR
-	bool check_scale( Fmatrix F ){ return true;}
-#endif
-
 //----------------------------------------------------
 class fBoneNameEQ {
 	shared_str	name;
@@ -97,31 +87,21 @@ static void CalculateAnim(CBone* bone, CSMotion* motion, Fmatrix& parent)
     Fmatrix& L 		= bone->_LTransform();
     
     const Fvector& r = bone->_Rotate();
-    if( ! bone->callback_overwrite()  )
-    {
-        if ( flags.is(st_BoneMotion::flWorldOrient)){
-            M.setXYZi	(r.x,r.y,r.z);
-            M.c.set		(bone->_Offset());
-            L.mul		(parent,M);
-            L.i.set		(M.i);
-            L.j.set		(M.j);
-            L.k.set		(M.k);
+    if (flags.is(st_BoneMotion::flWorldOrient)){
+        M.setXYZi	(r.x,r.y,r.z);
+        M.c.set		(bone->_Offset());
+        L.mul		(parent,M);
+        L.i.set		(M.i);
+        L.j.set		(M.j);
+        L.k.set		(M.k);
 
-            Fmatrix		 LI; LI.invert(parent);
-            M.mulA_43	(LI);
-        }else{
-            M.setXYZi	(r.x,r.y,r.z);
-            M.c.set		(bone->_Offset());
-            L.mul		(parent,M);
-        }
-     }
-    if( bone->callback() )
-    {
-    	bone->callback()( bone );
-        M.mul_43( Fmatrix().invert(parent), L );
-       // bone->_Offset().set( M.c );
+        Fmatrix		 LI; LI.invert(parent);
+        M.mulA_43	(LI);
+    }else{
+        M.setXYZi	(r.x,r.y,r.z);
+        M.c.set		(bone->_Offset());
+        L.mul		(parent,M);
     }
-
 	bone->_RenderTransform().mul_43(bone->_LTransform(),bone->_RITransform());
     
     // Calculate children
@@ -133,7 +113,6 @@ static void CalculateRest(CBone* bone, Fmatrix& parent)
     Fmatrix& R	= bone->_RTransform();
     R.setXYZi	(bone->_RestRotate());
     R.c.set		(bone->_RestOffset());
-    bone->_LRTransform() = R;
     R.mulA_43	(parent);
     bone->_RITransform().invert(bone->_RTransform());
 
@@ -333,20 +312,15 @@ void CEditableObject::PrepareBones()
 	if (m_Bones.empty())return;
 	CBone* PARENT		= 0;
     // clear empty parent
-	BoneIt b_it;
-    for (b_it=m_Bones.begin(); b_it!=m_Bones.end(); b_it++)
-    {
-    	(*b_it)->children.clear	();
-        (*b_it)->parent			= NULL;
+    for (BoneIt b_it=m_Bones.begin(); b_it!=m_Bones.end(); b_it++){
         BoneIt parent	= std::find_if(m_Bones.begin(),m_Bones.end(),fBoneNameEQ((*b_it)->ParentName()));
-        if (parent==m_Bones.end()){
+        if (parent==m_Bones.end()){ 
         	(*b_it)->SetParentName("");
             VERIFY2		(0==PARENT,"Invalid object. Have more than 1 parent.");
             PARENT		= *b_it;
         }else{
             BoneIt parent	= std::find_if(m_Bones.begin(),m_Bones.end(),fBoneNameEQ((*b_it)->ParentName()));
-            CBone* tmp = (parent==m_Bones.end())?0:*parent;
-            (*b_it)->parent	= tmp;
+            (*b_it)->parent	= (parent==m_Bones.end())?0:*parent;
         }
     }
     // sort by name
@@ -360,9 +334,7 @@ void CEditableObject::PrepareBones()
     u32 b_cnt			= m_Bones.size();
     m_Bones.clear		();
     fill_bones_by_parent(m_Bones,PARENT);
-
-	u32 cnt_new 		= m_Bones.size();
-    VERIFY				(b_cnt==cnt_new);
+    VERIFY				(b_cnt==m_Bones.size());
     // update SelfID
     for (b_it=m_Bones.begin(); b_it!=m_Bones.end(); b_it++)
         (*b_it)->SelfID		= b_it-m_Bones.begin();

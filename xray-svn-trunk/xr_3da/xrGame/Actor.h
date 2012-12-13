@@ -280,9 +280,9 @@ protected:
 	bool					use_Holder				(CHolderCustom* holder);
 
 	bool					use_Vehicle				(CHolderCustom* object);
-	bool					use_MountedWeapon		(CHolderCustom* object);
 	void					ActorUse				();
-
+public:
+	bool					use_MountedWeapon		(CHolderCustom* object);
 
 	/////////////////////////////////////////////////////////
 	// actor model & animations

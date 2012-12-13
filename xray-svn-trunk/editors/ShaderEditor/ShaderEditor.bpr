@@ -38,7 +38,7 @@
     <USERDEFINES value="_EDITOR;_SHADER_EDITOR;_DEBUG"/>
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="ShaderEditor.cpp"/>
-    <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)\Include"/>
+    <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender;$(EAX_DIR)\Include"/>
     <LIBPATH value="..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
       -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
@@ -47,8 +47,8 @@
   <OPTIONS>
     <IDLCFLAGS value="-I$(DXSDK_DIR)\Include -I$(COMPONENTS_SOC)\alexmx -I$(BCB)\include 
       -I$(BCB)\include\vcl -I$(COMPONENTS_SOC)\ElPack\Code 
-      -I$(COMPONENTS_SOC)\ElPack\Code\Source -I$(CORESOC_DIR) -I../../xr_3da 
-      -I../../xr_3da/xrRender -I$(EAX_DIR)\Include -src_suffix cpp -D_EDITOR 
+      -I$(COMPONENTS_SOC)\ElPack\Code\Source -I$(CORESOC_DIR) -I../../xr_3daSDK 
+      -I../../xr_3daSDK/xrRender -I$(EAX_DIR)\Include -src_suffix cpp -D_EDITOR 
       -D_SHADER_EDITOR -D_DEBUG -no_tie -boa"/>
     <CFLAG1 value="-Od -H=x:\intermediate_ed\se\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp -VF -ff 
       -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -He -c -tW -tWM"/>
@@ -124,12 +124,12 @@ c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Tra
 
 [HistoryLists\hlIncludePath]
 Count=24
-Item0=$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)\Include
-Item1=$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)
-Item2=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)
-Item3=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)\Include
-Item4=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da;../../xr_3da/xrRender
-Item5=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3da
+Item0=$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender;$(EAX_DIR)\Include
+Item1=$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender;$(EAX_DIR)
+Item2=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender;$(EAX_DIR)
+Item3=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender;$(EAX_DIR)\Include
+Item4=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3daSDK;../../xr_3daSDK/xrRender
+Item5=$(DXSDK_DIR)\Include;$(COMPONENTS)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;$(CORE_DIR);../../xr_3daSDK
 Item6=R:\SDK\Microsoft DirectX 9.0 SDK (April 2005)\Include;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;P:\xrSound;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;R:\SDK\eax20\Include;..\xrEProps
 Item7=R:\SDK\Microsoft DirectX 9.0 SDK (February 2005)\Include;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;P:\xrSound;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;R:\SDK\eax20\Include;..\xrEProps
 Item8=R:\SDK\Microsoft DirectX 9.0 SDK (February 2005)\Include;r:\borland\components6\alexmx;$(BCB)\include;$(BCB)\include\vcl;R:\SDK\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;P:\xrCore;P:\xrCDB;P:\xrSound;..\ECore;..\ECore\Editor;..\ECore\Engine;..\ECore\Engine\blenders;..\ECore\Engine\visuals;R:\SDK\eax20\Include;..\xrEProps;R:\SDK\DirectX9.0_beta3\Include;P:\Tools\ETools

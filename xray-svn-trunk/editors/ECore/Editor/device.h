@@ -2,14 +2,14 @@
 #define DeviceH
 
 #include "ui_camera.h"
-#include "../../../xr_3da/hwcaps.h"
-#include "../../../xr_3da/hw.h"
-#include "../../../xr_3da/pure.h"
+#include "../../../xr_3daSDK/hwcaps.h"
+#include "../../../xr_3daSDK/hw.h"
+#include "../../../xr_3daSDK/pure.h"
 #include "../../../xrCore/ftimer.h"
 #include "estats.h"
-#include "../../../xr_3da/shader_xrlc.h"
-#include "../../../xr_3da/shader.h"
-#include "../../../xr_3da/R_Backend.h"
+#include "../../../xr_3daSDK/shader_xrlc.h"
+#include "../../../xr_3daSDK/shader.h"
+#include "../../../xr_3daSDK/R_Backend.h"
 //---------------------------------------------------------------------------
 // refs
 class CGameFont;

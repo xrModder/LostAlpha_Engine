@@ -8,11 +8,11 @@
 #include "ESceneSpawnTools.h"
 #include "ui_leveltools.h"
 #include "eshape.h"
-#include "../../xr_3da/xrGame/xrServer_Objects_Abstract.h"
+#include "../../xr_3daSDK/xrGame/xrServer_Objects_Abstract.h"
 #include "../ECore/Editor/ui_main.h"
 #include "SkeletonAnimated.h"
 #include "ObjectAnimator.h"
-#include "../../xr_3da/xrGame/xrMessages.h"
+#include "../../xr_3daSDK/xrGame/xrMessages.h"
 #include "scene.h"
 #include "d3dutils.h"
 
@@ -166,7 +166,11 @@ void CSpawnPoint::SSpawnData::get_bone_xform	(LPCSTR name, Fmatrix& xform)
 {
 	xform.identity		();
 	if (name&&name[0]&&m_Visual&&m_Visual->visual){
+#ifndef _EDITOR
     	IKinematics* P 	= PKinematics(m_Visual->visual);
+#else
+        CKinematics* P 	= PKinematics(m_Visual->visual);
+#endif
     	if (P){
         	u16 id 		= P->LL_BoneID(name);
             if (id!=BI_NONE)
