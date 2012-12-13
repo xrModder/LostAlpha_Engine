@@ -145,7 +145,7 @@ void CController::Load(LPCSTR section)
 //	anim().AddAnim(eAnimRun,			"stand_walk_fwd_",		-1,	&velocity_walk,		PS_STAND);
 //	anim().AddAnim(eAnimRunDamaged,		"stand_walk_fwd_",		-1, &velocity_walk,		PS_STAND);
 	anim().AddAnim(eAnimAttack,			"stand_attack_",		-1, &velocity_turn,		PS_STAND);
-//	anim().AddAnim(eAnimAttackRun,		"stand_attack_",		-1, &velocity_run,		PS_STAND);
+	anim().AddAnim(eAnimAttackRun,		"stand_attack_",		-1, &velocity_run,		PS_STAND);
 	anim().AddAnim(eAnimSteal,			"stand_steal_",			-1, &velocity_steal,	PS_STAND);
 	anim().AddAnim(eAnimCheckCorpse,	"stand_check_corpse_",	-1,	&velocity_none,		PS_STAND);
 	anim().AddAnim(eAnimDie,			"stand_die_",			-1, &velocity_none,		PS_STAND);
@@ -543,8 +543,8 @@ void CController::psy_fire()
 {
 	if (!EnemyMan.get_enemy())	return;
 	
-	draw_fire_particles			();
-/*	
+	draw_fire_particles			();	
+/*
 	active_control_fx			= true;
 	time_control_hit_started	= Device.dwTimeGlobal;
 */
@@ -581,7 +581,7 @@ void CController::set_psy_fire_delay_default()
 
 #define SEE_ENEMY_DURATION	1000
 #define MIN_DELAY			10000
-#define TUBE_PROBABILITY	20
+#define TUBE_PROBABILITY	70
 
 void CController::tube_fire()
 {
@@ -659,10 +659,10 @@ void CController::create_base_controls()
 
 void CController::TranslateActionToPathParams()
 {
-	if ((anim().m_tAction != ACT_RUN) && (anim().m_tAction != ACT_WALK_FWD)) {
+//	if ((anim().m_tAction != ACT_RUN) && (anim().m_tAction != ACT_WALK_FWD)) {
 		inherited::TranslateActionToPathParams();
 		return;
-	}
+/*	}
 
 	u32 vel_mask = (m_bDamaged ? MonsterMovement::eVelocityParamsWalkDamaged : MonsterMovement::eVelocityParamsWalk);
 	u32 des_mask = (m_bDamaged ? MonsterMovement::eVelocityParameterWalkDamaged : MonsterMovement::eVelocityParameterWalkNormal);
@@ -672,6 +672,7 @@ void CController::TranslateActionToPathParams()
 	path().set_velocity_mask	(vel_mask);
 	path().set_desirable_mask	(des_mask);
 	path().enable_path			();
+*/
 }
 
 bool CController::is_relation_enemy(const CEntityAlive *tpEntityAlive) const

@@ -30,6 +30,7 @@ public:
 
 private:
 	xr_vector<CTimerCustom> objects;
+	xr_vector<CTimerCustom> objects_to_call;
 	CTimerCustom			*hud_timer;
 	CUIStatic				*ui_hud_timer;
 	bool					b_HUDTimerActive;

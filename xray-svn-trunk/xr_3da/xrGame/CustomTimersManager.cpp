@@ -35,11 +35,7 @@ void CTimersManager::OnHud(CTimerCustom *t,bool b)
 
 bool CTimersManager::AddTimer (CTimerCustom timer)
 {
-	if (!timer.valide()) {
-		Msg("Trying to add invalide timer");
-		return false;
-	}
-	if (!xr_strcmp(timer.Name(),"@")) {
+	if (xr_strcmp(timer.Name(),"@")) {
 		if (TimerExist(timer.Name())) {
 			Msg("Trying to add timer with the same timer name");
 			return false;
@@ -47,9 +43,9 @@ bool CTimersManager::AddTimer (CTimerCustom timer)
 	}
 
 	timer.PrepareTime();
-	objects.push_back(timer);
 	timer.SetParent(this);
 	if (timer.isHUD()) OnHud(&objects.back(),true);
+	objects.push_back(timer);
 	return true;
 }
 
@@ -98,7 +94,7 @@ bool CTimersManager::TimerExist(LPCSTR name)
 
 void CTimersManager::save(IWriter &memory_stream)
 {
-	memory_stream.open_chunk	(STORE_CHUNK_DATA);
+	memory_stream.open_chunk	(TIMERS_CHUNK_DATA);
 	memory_stream.w_u32(objects.size());
 	for (u32 idx=0;idx<objects.size();idx++) {
 		objects[idx].save(memory_stream);
@@ -109,6 +105,8 @@ void CTimersManager::save(IWriter &memory_stream)
 
 void CTimersManager::load(IReader &file_stream)
 {
+	Msg							("* Loading timers...");
+	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk OBJECT_CHUNK_DATA!");
 	u32 size = file_stream.r_u32();
 	for (u32 idx=0;idx<size;idx++) {
 		CTimerCustom* timer = xr_new<CTimerCustom>();
@@ -117,6 +115,7 @@ void CTimersManager::load(IReader &file_stream)
 		objects.push_back((*timer));
 		//objects[idx].save(memory_stream);
 	}
+	Msg							("%d timers successfully loaded",size);
 }
 
 
@@ -126,15 +125,25 @@ void CTimersManager::Update ()
 	TIMER_CUSTOM_IT it_end = objects.end();
 
 	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
+
+	objects_to_call.clear();
+
 	for (;it!=it_end;++it) {
 		if ((*it).CheckTime(time_now)) {
 			if ((*it).isHUD()) {
 				OnHud(NULL,false);
 			}
-			(*it).StartAction();
+			//(*it).StartAction();
+			objects_to_call.push_back((*it));
 			objects.erase(it);
+			break;
 		}
 	}
+	
+	for (it=objects_to_call.begin();it!=objects_to_call.end();++it) {
+		(*it).StartAction();
+	}
+
 	if (hud_timer) {
 		string64 str;
 

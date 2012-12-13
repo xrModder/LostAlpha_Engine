@@ -274,12 +274,17 @@ public:
 
 	virtual bool			can_attach				(const CInventoryItem *inventory_item) const;
 	void					cam_Set					(EActorCameras style);
+	bool					use_Vehicle				(CHolderCustom* object);
+	bool					use_MountedWeapon		(CHolderCustom* object);
 protected:
 	CHolderCustom*			m_holder;
 	u16						m_holderID;
 	bool					use_Holder				(CHolderCustom* holder);
 
+<<<<<<< HEAD
 	bool					use_Vehicle				(CHolderCustom* object);
+=======
+>>>>>>> c044e1e34db847c17b67b1188aa68fb13cc50cfe
 	void					ActorUse				();
 public:
 	bool					use_MountedWeapon		(CHolderCustom* object);

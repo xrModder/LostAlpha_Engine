@@ -44,7 +44,7 @@ xrTime CTimerCustom::Time()
 
 bool CTimerCustom::valide()
 {
-	return m_time!=0;
+	return (m_time!=0 || m_day!=0 || m_hour!=0 || m_min!=0 || m_sec!=0 || m_ms!=0);
 }
 
 xrTime CTimerCustom::TimeElapsed()

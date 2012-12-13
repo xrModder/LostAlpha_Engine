@@ -124,12 +124,11 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 
 	iAmmoElapsed2	= weapon->a_elapsed_grenades.grenades_count;
 	m_ammoType2		= weapon->a_elapsed_grenades.grenades_type;
-#pragma fixme("gr1ph: assertion d be better, but who cares :D")
-	if (m_ammoType2 >= m_ammoTypes2.size())
+
+	if (m_ammoType2 > m_ammoTypes2.size())
 	{
-		m_ammoType2 = 0;
 		Msg("! m_ammoType2(%d)[%d] is wrong for '%s'",  m_ammoType2, m_ammoTypes2.size(), *cName()); 
-		VERIFY(0);
+		m_ammoType2 = 0;
 	}
 	m_DefaultCartridge2.Load(m_ammoTypes2[m_ammoType2].c_str(), m_ammoType2);
 
@@ -144,8 +143,7 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 
 			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
 		}
-	}else
-	{
+	} else {
 		xr_vector<CCartridge>* pM = NULL;
 		bool b_if_grenade_mode	= (m_bGrenadeMode && iAmmoElapsed && !getRocketCount());
 		if(b_if_grenade_mode)
