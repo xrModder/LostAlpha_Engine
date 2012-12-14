@@ -520,8 +520,7 @@ void SAnimParams::Set(float start_frame, float end_frame, float fps)
 void SAnimParams::Set(CCustomMotion* M)
 {
     Set((float)M->FrameStart(),(float)M->FrameEnd(),M->FPS());
-	t_current	= min_t;
-    tmp 		= t_current;
+	t_current=min_t;
 //    bPlay=true;
 }
 void SAnimParams::Update(float dt, float speed, bool loop)

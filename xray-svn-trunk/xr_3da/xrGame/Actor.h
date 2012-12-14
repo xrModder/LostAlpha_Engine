@@ -280,7 +280,6 @@ protected:
 	CHolderCustom*			m_holder;
 	u16						m_holderID;
 	bool					use_Holder				(CHolderCustom* holder);
-
 	void					ActorUse				();
 
 

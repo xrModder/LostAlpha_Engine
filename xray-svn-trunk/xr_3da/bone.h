@@ -470,7 +470,9 @@ public:
 		child_faces[child_idx].push_back(idx);
 	}
 	// Calculation
+
 	void				CalculateM2B	(const Fmatrix& Parent);
+
 private:
 				IBoneData&		__stdcall	GetChild			( u16 id )			;
 		const	IBoneData&		__stdcall	GetChild			( u16 id )	const	;

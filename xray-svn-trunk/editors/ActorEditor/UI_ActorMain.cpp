@@ -473,5 +473,3 @@ void CActorMain::RealQuit()
 }
 //---------------------------------------------------------------------------
 
-extern ECORE_API BOOL g_force16BitTransformQuant;
-

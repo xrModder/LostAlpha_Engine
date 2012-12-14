@@ -39,13 +39,17 @@ struct ENGINE_API CKeyQT16
 {
 	s16			x1,y1,z1;
 };
-/*
-struct  CKeyQT
+
+struct ENGINE_API CKeyQT
 {
 //	s8			x,y,z;
+#if 1
+	s8			x,y,z;
+#else
 	s16			x1,y1,z1;
+#endif
 };
-*/
+
 #pragma pack(pop)
 
 //*** Motion Data *********************************************************************************
@@ -67,7 +71,7 @@ public:
     BOOL				test_flag			(u8 mask) const		{return BOOL(_flags&mask);}
 
     void				set_count			(u32 cnt){VERIFY(cnt); _count=cnt;}
-    ICF u32					get_count			() const {return (u32(_count)&0x00FFFFFF);}
+    ICF u32				get_count			() const {return (u32(_count)&0x00FFFFFF);}
 
 	float				GetLength			(){ return float(_count)*SAMPLE_SPF; }
 
@@ -121,8 +125,8 @@ public:
     u16						flags;
 	xr_vector<motion_marks>	marks;
 
-	IC float				Dequantize			(u16 V)	const	{	return  float(V)/655.35f; }
-	IC u16					Quantize			(float V) const		{	s32		t = iFloor(V*655.35f); clamp(t,0,65535); return u16(t); }
+	IC float				Dequantize			(u16 V)		const	{	return  float(V)/655.35f; }
+	IC u16					Quantize			(float V)   const	{	s32		t = iFloor(V*655.35f); clamp(t,0,65535); return u16(t); }
 
 	void					Load				(IReader* MP, u32 fl, u16 vers);
 	u32						mem_usage			(){ return sizeof(*this);}

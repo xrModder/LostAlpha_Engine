@@ -13,8 +13,6 @@ const int clpSMX = 28, clpSMY=16, clpSMZ=28;
 class CEditableObject;
 class CSurface;
 class CInifile;
-extern ECORE_API BOOL g_force16BitTransformQuant;
-extern ECORE_API float g_EpsSkelPositionDelta;
 
 struct ECORE_API SSkelVert: public st_SVert{
     Fvector		tang;
@@ -33,10 +31,7 @@ struct ECORE_API SSkelVert: public st_SVert{
         uv.set		(_uv);
         VERIFY		(_w_cnt>0 && _w_cnt<4);
         bones.resize(_w_cnt);
-        for (u8 k=0; k<_w_cnt; k++)	
-        {
-        bones[k]=b[k];
-        }
+        for (u8 k=0; k<_w_cnt; k++)	{bones[k]=b[k];}
         sort_by_bone(); // need to similar 
     }
 	BOOL	similar_pos(SSkelVert& V)
@@ -46,10 +41,7 @@ struct ECORE_API SSkelVert: public st_SVert{
 	BOOL	similar(SSkelVert& V)
     {
     	if (bones.size()!=V.bones.size())	return FALSE;
-        for (u8 k=0; k<(u8)bones.size(); k++)	
-        { 
-        if (!bones[k].similar(V.bones[k])) return FALSE; 
-        }
+        for (u8 k=0; k<(u8)bones.size(); k++)	{ if (!bones[k].similar(V.bones[k])) return FALSE; }
         if (!uv.similar	(V.uv,EPS_S))		return FALSE;
 		if (!offs.similar(V.offs,EPS_L))	return FALSE;
 		if (!norm.similar(V.norm,EPS_L))	return FALSE;
@@ -114,7 +106,7 @@ public:
     }
     SkelVertVec& 	getV_Verts()	{return m_Verts;}
     SkelFaceVec& 	getV_Faces()	{return m_Faces;}
-    SSkelVert*		getVert()		{ return &m_Verts[0];/*.begin();*/	}
+    SSkelVert*		getVert()		{ return m_Verts.begin();	}
     int				getVS()			{ return m_Verts.size();	}
 //    SSkelFace&		getFace(int id)	{ return VERIFY(id<m_Faces.size()); m_Faces[id];	}
     int				getTS() 		{ return m_Faces.size();	}
