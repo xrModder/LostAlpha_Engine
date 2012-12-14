@@ -59,7 +59,7 @@ void CStateControllerHideAbstract::execute()
 TEMPLATE_SPECIALIZATION
 bool CStateControllerHideAbstract::check_start_conditions()
 {
-	return true;
+	return (target.position.distance_to(object->Position()) < 5.f);
 }
 
 TEMPLATE_SPECIALIZATION
@@ -79,7 +79,7 @@ void CStateControllerHideAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateControllerHideAbstract::check_completion()
 {
-	return ((object->ai_location().level_vertex_id() == target.node) && !object->control().path_builder().is_moving_on_path());
+	return ((object->ai_location().level_vertex_id() == target.node) && !object->control().path_builder().is_moving_on_path() && (target.position.distance_to(object->Position()) > 5.f));
 }
 
 TEMPLATE_SPECIALIZATION

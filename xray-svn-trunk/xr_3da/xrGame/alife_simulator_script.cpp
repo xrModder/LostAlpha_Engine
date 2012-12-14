@@ -506,7 +506,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
 			.def("store",					&get_store)
-			.def("timers_manager",			&get_timers_manager)
+			.def("timer_manager",			&get_timers_manager)
 		,def("alife",						&alife)
 	];
 

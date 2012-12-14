@@ -33,7 +33,12 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	time_vampire_started	= 0;
 
 	psHUD_Flags.set(HUD_DRAW, FALSE);
+	g_bDisableAllInput = true;
+
+#pragma todo("SkyLoader: SetWeaponHideState() doesn't work properly in this scheme, need to fix it")
+#if 0
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+#endif
 
 	object->stop_invisible_predator	();
 
@@ -45,11 +50,6 @@ void CStateBloodsuckerVampireExecuteAbstract::execute()
 {
 	if (!object->CControlledActor::is_turning() && !m_effector_activated) {
 		object->ActivateVampireEffector	();
-			////////////////////////////////
-			psHUD_Flags.set(HUD_DRAW, FALSE);
-			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-			g_bDisableAllInput = true;
-			////////////////////////////////
 		m_effector_activated			= true;
 	}
 	
@@ -88,7 +88,8 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 {
 	psHUD_Flags.set(HUD_DRAW, TRUE);
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	//skyloader: need to fix
+	//Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 	g_bDisableAllInput = false;
 }
 
@@ -124,13 +125,25 @@ TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 {
 	const CEntityAlive	*enemy = object->EnemyMan.get_enemy();
+
+	if (enemy->CLS_ID != CLSID_OBJECT_ACTOR)							return false;
 	
 	// проверить дистанцию
-	float dist		= object->MeleeChecker.distance_to_enemy	(enemy);
-	if ((dist > VAMPIRE_MAX_DIST) || (dist < VAMPIRE_MIN_DIST))	return false;
+	float dist		= object->MeleeChecker.distance_to_enemy(enemy);
+	if ((dist > VAMPIRE_MAX_DIST) || (dist < VAMPIRE_MIN_DIST))					return false;
+
+	if (object->CControlledActor::is_controlling())							return false;
+	if (current_substate == eStateAttack_RunAttack)							return false;
+	if (object->threaten_time() > 0)								return false;
+
+	const CActor *m_actor = smart_cast<const CActor*>(enemy);
+	VERIFY(m_actor);
+	if (m_actor->input_external_handler_installed())						return false;
+
+	if (controlling_value == 1)									return false;
 
 	// проверить направление на врага
-	if (!object->control().direction().is_face_target(enemy, PI_DIV_6)) return false;
+	if (!object->control().direction().is_face_target(enemy, PI_DIV_6))				return false;
 
 	return true;
 }

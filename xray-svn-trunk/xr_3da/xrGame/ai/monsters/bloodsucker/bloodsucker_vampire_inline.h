@@ -25,7 +25,6 @@ CStateBloodsuckerVampireAbstract::CStateBloodsuckerVampire(_Object *obj) : inher
 	add_state	(eStateVampire_Execute,			xr_new<CStateBloodsuckerVampireExecute<_Object> >	(obj));
 	add_state	(eStateVampire_RunAway,			xr_new<CStateMonsterHideFromPoint<_Object> >		(obj));
 	add_state	(eStateVampire_Hide,			xr_new<CStateBloodsuckerVampireHide<_Object> >		(obj));
-//	add_state	(eStatePredator_LookOpenPlace,	xr_new<CStateMonsterLookToPoint<_Object> >	(obj));
 }
 
 TEMPLATE_SPECIALIZATION
@@ -54,41 +53,17 @@ void CStateBloodsuckerVampireAbstract::reselect_state()
 
 	// check if we executed 
 	if (prev_substate == eStateVampire_ApproachEnemy) {
-		if (get_state(eStateVampire_Execute)->check_start_conditions())		state_id = eStateVampire_Execute;
+		if (get_state(eStateVampire_Execute)->check_start_conditions())
+			state_id = eStateVampire_Execute;
 	}
 
-    // check if reach time in vampire state is out - then hide
-		if (prev_substate == eStateVampire_Execute)
-		state_id = eStateVampire_Hide;
-/*
-	// check if we hiding - then run away
-	if ( prev_substate == eStateVampire_Hide) 
-		state_id = eStateVampire_RunAway;
-
-	if (prev_substate == eStateVampire_RunAway)
-		state_id = 	eStatePredator_LookOpenPlace;
-*/
-
-/*
-	// check if we can start execute
-	if (prev_substate == eStateVampire_ApproachEnemy) {
-		if (get_state(eStateVampire_Execute)->check_start_conditions())		state_id = eStateVampire_Execute;
-	}
-
-	// check if we executed 
+	// check if reach time in vampire state is out - then hide
 	if (prev_substate == eStateVampire_Execute)
 		state_id = eStateVampire_Hide;
-	
-	// check if reach time in vampire state is out - then hide
-	if (prev_substate == eStateVampire_ApproachEnemy) 
-		state_id = eStateVampire_Hide;
 
-	// check if we hiding - then hide again
-	if ( prev_substate == eStateVampire_Hide) 
-		state_id = eStateVampire_Hide;
-*/
 	// else just 
-	if (state_id == u32(-1)) state_id = eStateVampire_ApproachEnemy;
+	if (state_id == u32(-1))
+		state_id = eStateVampire_ApproachEnemy;
 
 	select_state(state_id);	
 }
@@ -127,50 +102,23 @@ bool CStateBloodsuckerVampireAbstract::check_start_conditions()
 {
 
 	const CEntityAlive *m_enemy = object->EnemyMan.get_enemy();
-	if  (m_enemy->CLS_ID != CLSID_OBJECT_ACTOR) 
-	{
-		return false;
-	}
+	if (m_enemy->CLS_ID != CLSID_OBJECT_ACTOR)							return false;
+	if (!object->EnemyMan.see_enemy_now())								return false;
+	if (object->CControlledActor::is_installed() && object->CControlledActor::is_controlling())	return false;
+	if (current_substate == eStateAttack_RunAttack)							return false;
+	if (object->threaten_time() > 0)								return false;
 
-	if (object->CControlledActor::is_controlling())	return false;
+	const CActor *m_actor = smart_cast<const CActor*>(m_enemy);
+	VERIFY(m_actor);
+	if (m_actor->input_external_handler_installed())						return false;
 
 	float dist_to_enemy = object->EnemyMan.get_enemy_position().distance_to(object->Position());
-	if (dist_to_enemy > MAX_DISTANCE_TO_ENEMY) return false; 
+	if (dist_to_enemy > MAX_DISTANCE_TO_ENEMY)							return false;
 
-if (controlling_value == 1) return false;
+	if (controlling_value == 1)									return false;
 
 	return true;
-
   }
-
-/*
-b_max_reach_distance = 1.5;
-&& bl_entity_alive->human_being()
-if	(m_enemy->CLS_ID == CLSID_OBJECT_ACTOR && (m_enemy->Position().distance_to(monster->Position()) > b_max_reach_distance))
-
-
-if	((m_enemy->Position().distance_to(monster->Position()) > b_max_reach_distance)) 
-    {
-		return	false;
-    }
-*/
-
-//	if (!object->WantVampire()) return false;
-//	if (object->berserk_always) return false;
-	
-	// является ли враг актером
-//	const CEntityAlive *enemy = object->EnemyMan.get_enemy();
-//	if (enemy->CLS_ID != CLSID_OBJECT_ACTOR)		return false;
-//	if (!object->EnemyMan.see_enemy_now())			return false;
-//	if (object->CControlledActor::is_controlling())	return false;
-
-//	const CActor *actor = smart_cast<const CActor *>(enemy);
-//	VERIFY(actor);
-//	if (actor->input_external_handler_installed()) return false;
-
-//	if (m_time_last_vampire + object->m_vampire_min_delay > Device.dwTimeGlobal) return false;
-
-
 
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireAbstract::check_completion()

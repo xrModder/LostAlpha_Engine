@@ -69,11 +69,7 @@ void CStateManagerController::execute()
 		} 
 		else
 		{	
-			switch (object->EnemyMan.get_danger_type()) 
-			{
-				case eStrong:	state_id = eStateAttack; break; // was eStatePanic
-				case eWeak:		state_id = eStateAttack; break;
-			}
+			state_id = eStateAttack;
 		}
 	} else if (object->HitMemory.is_hit()) {
 		state_id = eStateHitted;
