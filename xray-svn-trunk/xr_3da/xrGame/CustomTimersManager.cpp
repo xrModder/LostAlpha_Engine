@@ -42,7 +42,10 @@ bool CTimersManager::AddTimer (CTimerCustom timer)
 		}
 	}
 
-	timer.PrepareTime();
+	if (timer.isGameTimer() && !timer.isHUD())
+		timer.PrepareGameTime();
+	else
+		timer.PrepareTime();
 	timer.SetParent(this);
 	if (timer.isHUD()) OnHud(&objects.back(),true);
 	objects.push_back(timer);
@@ -106,7 +109,7 @@ void CTimersManager::save(IWriter &memory_stream)
 void CTimersManager::load(IReader &file_stream)
 {
 	Msg							("* Loading timers...");
-	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk OBJECT_CHUNK_DATA!");
+	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk TIMERS_CHUNK_DATA!");
 	u32 size = file_stream.r_u32();
 	for (u32 idx=0;idx<size;idx++) {
 		CTimerCustom* timer = xr_new<CTimerCustom>();
@@ -124,25 +127,37 @@ void CTimersManager::Update ()
 	TIMER_CUSTOM_IT it = objects.begin();
 	TIMER_CUSTOM_IT it_end = objects.end();
 
-	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
-
 	objects_to_call.clear();
 
-	for (;it!=it_end;++it) {
-		if ((*it).CheckTime(time_now)) {
-			if ((*it).isHUD()) {
-				OnHud(NULL,false);
+	for (;it!=it_end;++it) 
+	{
+		//skyloader to ghost: i added GAME_TIMER but i thought need to optimize this code
+		if ((*it).isGameTimer() && !(*it).isHUD())
+		{
+			if ((*it).CheckGameTime())
+			{
+				objects_to_call.push_back((*it));
+				objects.erase(it);
+				break;
 			}
-			//(*it).StartAction();
-			objects_to_call.push_back((*it));
-			objects.erase(it);
-			break;
+		} else {
+			ALife::_TIME_ID timer_time = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
+
+			if ((*it).CheckTime(timer_time)) 
+			{
+				if ((*it).isHUD())
+					OnHud(NULL,false);
+				objects_to_call.push_back((*it));
+				objects.erase(it);
+				break;
+			}
 		}
 	}
 	
-	for (it=objects_to_call.begin();it!=objects_to_call.end();++it) {
+	for (it=objects_to_call.begin();it!=objects_to_call.end();++it)
 		(*it).StartAction();
-	}
+
+	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
 	if (hud_timer) {
 		string64 str;

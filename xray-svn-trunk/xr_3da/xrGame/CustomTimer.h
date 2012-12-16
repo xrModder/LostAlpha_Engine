@@ -27,20 +27,20 @@ public:
 
 	//Name
 	void				SetName				(LPCSTR _name ) {m_name = _name;}
-	LPCSTR				Name				(){return m_name.c_str();}
+	LPCSTR				Name				() {return m_name.c_str();}
 
 	//Time
 	void				SetGameTime			();
 	void				SetRealTime			();
 	xrTime				Time				();
-	ALife::_TIME_ID		TimeNumber			() {return m_time;};
+	ALife::_TIME_ID			TimeNumber			() {return m_time;};
 	xrTime				TimeElapsed			();
-	bool				isGameTimer			() {return m_flags.test(lmGameTimer)==1?true:false;};
+	bool				isGameTimer			() {return (m_flags.test(lmGameTimer)==1)?true:false;};
 
 	//Action
 	void				SetAction			(LPCSTR _action) { m_action = _action;}
 	shared_str			Action				() { return m_action;}
-	LPCSTR				ActionScript		() { return m_action.c_str();}
+	LPCSTR				ActionScript			() { return m_action.c_str();}
 
 	//Info
 	void				SetInfo				(LPCSTR _info) { m_info = _info;};
@@ -50,7 +50,7 @@ public:
 
 	//Hud
 	void				SetHUD				(bool b);
-	bool				isHUD				() {return m_flags.test(lmHUD)==1?true:false;}
+	bool				isHUD				() {return (m_flags.test(lmHUD)==1)?true:false;}
 
 	void				StartAction			();
 
@@ -58,10 +58,12 @@ public:
 	//valide
 	bool				valide				();
 	bool				CheckTime			(ALife::_TIME_ID time);
+	bool				CheckGameTime			();
 
 	void				SetParent			(CTimersManager *_parent) { m_parent = _parent;};
 
 	void				PrepareTime			();
+	void				PrepareGameTime			();
 	
 	bool operator == (const CTimerCustom& timer){
 		return (m_name==timer.m_name);
@@ -74,6 +76,7 @@ private:
 	shared_str			m_name;
 	shared_str			m_action;
 	shared_str			m_info;
+	u32				m_game_time;
 	ALife::_TIME_ID		m_time;
 
 	enum lm_flags	{	

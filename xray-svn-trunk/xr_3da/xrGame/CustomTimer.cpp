@@ -21,6 +21,7 @@ u64	generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
 CTimerCustom::CTimerCustom(void) 
  {
 	m_time = 0;
+	m_game_time = 0;
 	m_day = 0;
 	m_hour = 0;
 	m_min = 0;
@@ -44,7 +45,10 @@ xrTime CTimerCustom::Time()
 
 bool CTimerCustom::valide()
 {
-	return (m_time!=0 || m_day!=0 || m_hour!=0 || m_min!=0 || m_sec!=0 || m_ms!=0);
+	if (isGameTimer() && !isHUD())
+		return (m_game_time!=0);
+	else
+		return (m_time!=0 || m_day!=0 || m_hour!=0 || m_min!=0 || m_sec!=0 || m_ms!=0);
 }
 
 xrTime CTimerCustom::TimeElapsed()
@@ -76,9 +80,13 @@ bool CTimerCustom::CheckTime(ALife::_TIME_ID time)
 	return false;
 }
 
+bool CTimerCustom::CheckGameTime()
+{
+	return (Device.dwTimeGlobal > m_game_time);
+}
+
 void CTimerCustom::PrepareTime()
 {
-
 	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
 	ALife::_TIME_ID time_plus = generate_add_time(m_day,m_hour,m_min,m_sec) + m_ms;
@@ -86,6 +94,12 @@ void CTimerCustom::PrepareTime()
 	time_now+=time_plus;
 
 	m_time = time_now;
+}
+
+void CTimerCustom::PrepareGameTime()
+{
+	m_game_time += Device.dwTimeGlobal;
+	return;
 }
 
 #include "CustomTimersManager.h"
@@ -102,6 +116,7 @@ void CTimerCustom::save (IWriter& stream)
 	save_data(m_action,	stream);
 	save_data(m_info,	stream);
 	save_data(m_time,	stream);
+	save_data(m_game_time,	stream);
 	save_data(m_flags,	stream);
 }
 
@@ -111,6 +126,7 @@ void CTimerCustom::load (IReader& stream)
 	load_data(m_action,	stream);
 	load_data(m_info,	stream);
 	load_data(m_time,	stream);
+	load_data(m_game_time,	stream);
 	load_data(m_flags,	stream);
 	if (isHUD()) m_parent->OnHud(this,true);
 }

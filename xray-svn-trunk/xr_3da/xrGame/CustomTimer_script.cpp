@@ -29,6 +29,7 @@ void CTimerCustom::script_register(lua_State *L)
 				.def_readwrite("min",				&CTimerCustom::m_min)
 				.def_readwrite("sec",				&CTimerCustom::m_sec)
 				.def_readwrite("ms",				&CTimerCustom::m_ms)
+				.def_readwrite("game_time",				&CTimerCustom::m_game_time)
 
 				.def("SetHUD",						&CTimerCustom::SetHUD)
 				.def("isHUD",						&CTimerCustom::isHUD)
