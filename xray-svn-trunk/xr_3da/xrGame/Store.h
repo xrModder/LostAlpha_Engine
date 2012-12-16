@@ -17,11 +17,11 @@ struct StoreData {
 	TypeOfData type;
 };
 
-class CStoreHouse
+class CStoreHouse : public IPureSerializeObject<IReader, IWriter>
 {
 public:
-	CStoreHouse(void);
-	virtual ~CStoreHouse(void);
+					CStoreHouse		(void);
+	virtual			~CStoreHouse	(void);
 
 	void			add_boolean		(LPCSTR name, bool b);
 	void			add_float		(LPCSTR name, float number);
@@ -43,8 +43,8 @@ public:
 	void			delete_data		(LPCSTR name);
 
 
-	void save(IWriter &memory_stream);
-	void load(IReader &file_stream);
+	virtual void	save			(IWriter &memory_stream);
+	virtual void	load			(IReader &file_stream);
 
 private:
 	void add(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
@@ -54,7 +54,6 @@ private:
 	bool update(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
 	u32 type_to_size(StoreData d);
 
-	//size_t m_size;//m_size is not need. it equal data.size()
 
 	xr_map<shared_str,StoreData> data;
 

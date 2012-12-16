@@ -7,7 +7,7 @@
 #include "HudManager.h"
 #include "UIGameSP.h"
 
-class CTimersManager
+class CTimersManager : public IPureSerializeObject<IReader, IWriter>
 {
 	typedef xr_vector<CTimerCustom>::iterator VECTOR_TIMERS_ITERATOR;
 public:
@@ -16,8 +16,8 @@ public:
 
 	void			Update					();
 
-	void			save					(IWriter &memory_stream);
-	void			load					(IReader &file_stream);
+	virtual void	save					(IWriter &memory_stream);
+	virtual void	load					(IReader &file_stream);
 
 	bool			AddTimer				(CTimerCustom timer);
 	void			RemoveTimer				(LPCSTR name);

@@ -15,7 +15,7 @@
 
 
 
-class CTimerCustom 
+class CTimerCustom : public IPureSerializeObject<IReader, IWriter>
 { //: public IPureSerializeObject<IReader,IWriter> {
 public:
 						CTimerCustom();
