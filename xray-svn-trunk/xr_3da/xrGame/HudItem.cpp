@@ -25,6 +25,8 @@ CHudItem::CHudItem(void)
 
 	m_bInertionEnable	= true;
 	m_bInertionAllow	= true;
+	m_bInertionAllowZoom	= true;
+	m_bIsZoomed		= false;
 }
 
 CHudItem::~CHudItem(void)
@@ -54,6 +56,8 @@ void CHudItem::Load(LPCSTR section)
 		m_pHUD->Load	(*hud_sect);
 		if(pSettings->line_exist(*hud_sect, "allow_inertion")) 
 			m_bInertionAllow = !!pSettings->r_bool(*hud_sect, "allow_inertion");
+		if(pSettings->line_exist(*hud_sect, "allow_inertion_zoom")) 
+			m_bInertionAllowZoom = !!pSettings->r_bool(*hud_sect, "allow_inertion_zoom");
 	}else{
 		m_pHUD = NULL;
 		//если hud не задан, но задан слот, то ошибка
@@ -101,8 +105,11 @@ void CHudItem::renderable_Render()
 				CInventoryOwner	*owner = smart_cast<CInventoryOwner*>(object().H_Parent());
 				VERIFY			(owner);
 				CInventoryItem	*self = smart_cast<CInventoryItem*>(this);
-				if (owner->attached(self))
-					on_renderable_Render();
+				if (item().GetSlot() != RIFLE_SLOT)
+				{
+					if (owner->attached(self))
+						on_renderable_Render();
+				} else on_renderable_Render();
 			}
 	}
 }
@@ -189,13 +196,13 @@ void CHudItem::UpdateHudAdditonal		(Fmatrix& hud_trans)
 {
 }
 
-void CHudItem::StartHudInertion()
+void CHudItem::StartHudInertion(bool value)
 {
+	if (!m_bInertionAllowZoom && value)
+		return;
+
 	m_bInertionEnable = true;
-}
-void CHudItem::StopHudInertion()
-{
-	m_bInertionEnable = false;
+	m_bIsZoomed	= value;
 }
 
 static const float PITCH_OFFSET_R	= 0.017f;
@@ -231,12 +238,14 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 		m_last_dir.mad	(diff_dir,TENDTO_SPEED*Device.fTimeDelta);
 		origin.mad		(diff_dir,ORIGIN_OFFSET);
 
-		// pitch compensation
-		float pitch		= angle_normalize_signed(xform.k.getP());
-		origin.mad		(xform.k,	-pitch * PITCH_OFFSET_D);
-		origin.mad		(xform.i,	-pitch * PITCH_OFFSET_R);
-		origin.mad		(xform.j,	-pitch * PITCH_OFFSET_N);
-
+		if (!m_bIsZoomed)
+		{
+			// pitch compensation
+			float pitch		= angle_normalize_signed(xform.k.getP());
+			origin.mad		(xform.k,	-pitch * PITCH_OFFSET_D);
+			origin.mad		(xform.i,	-pitch * PITCH_OFFSET_R);
+			origin.mad		(xform.j,	-pitch * PITCH_OFFSET_N);
+		}
 		// calc moving inertion
 	}
 }

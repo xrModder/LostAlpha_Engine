@@ -70,8 +70,12 @@ CWeapon::CWeapon(LPCSTR name)
 
 	m_strap_bone0			= 0;
 	m_strap_bone1			= 0;
+	m_strap_bone0_id			= -1;
+	m_strap_bone1_id			= -1;
 	m_StrapOffset.identity	();
 	m_strapped_mode			= false;
+	m_strapped_mode_rifle		= false;
+	m_can_be_strapped_rifle		= false;
 	m_can_be_strapped		= false;
 	m_ef_main_weapon_type	= u32(-1);
 	m_ef_weapon_type		= u32(-1);
@@ -118,11 +122,14 @@ void CWeapon::UpdateXForm	()
 	}
 
 	const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
-	if (parent && parent->use_simplified_visual())
+	if (!parent || (parent && parent->use_simplified_visual()))
 		return;
 
-	if (parent->attached(this))
-		return;
+	if (!m_can_be_strapped_rifle)
+	{
+		if (parent->attached(this))
+			return;
+	}
 
 	IKinematics*			V = smart_cast<IKinematics*>	(E->Visual());
 	VERIFY					(V);
@@ -130,10 +137,26 @@ void CWeapon::UpdateXForm	()
 	// Get matrices
 	int						boneL = -1, boneR = -1, boneR2 = -1;
 
-	// this ugly case is possible in case of a CustomMonster, not a Stalker, nor an Actor
-	E->g_WeaponBones		(boneL,boneR,boneR2);
+	if ((m_strap_bone0_id == -1 || m_strap_bone1_id == -1) && m_can_be_strapped_rifle)
+	{
+		m_strap_bone0_id = V->LL_BoneID(m_strap_bone0);
+		m_strap_bone1_id = V->LL_BoneID(m_strap_bone1);
+	}
 
-	if (boneR == -1)		return;
+	if(parent->inventory().GetActiveSlot() != RIFLE_SLOT && m_can_be_strapped_rifle && parent->inventory().InSlot(this))
+	{
+		boneR				= m_strap_bone0_id;
+		boneR2				= m_strap_bone1_id;
+		boneL				= boneR;
+
+		if (!m_strapped_mode_rifle) m_strapped_mode_rifle = true;
+	} else {
+		E->g_WeaponBones		(boneL,boneR,boneR2);
+
+		if (m_strapped_mode_rifle) m_strapped_mode_rifle = false;
+	}
+
+	if (boneR == -1) 		return;
 
 	if ((HandDependence() == hd1Hand) || (GetState() == eReload) || (!E->g_Alive()))
 		boneL				= boneR2;
@@ -667,6 +690,7 @@ void CWeapon::OnH_B_Independent	(bool just_before_destroy)
 	SwitchState(eIdle);
 
 	m_strapped_mode				= false;
+	m_strapped_mode_rifle			= false;
 	SetHUDmode					(FALSE);
 	m_bZoomMode					= false;
 	UpdateXForm					();
@@ -733,7 +757,8 @@ void CWeapon::UpdateCL		()
 //	VERIFY(smart_cast<IKinematics*>(Visual()));
 }
 
-
+#include "ui/UIMainIngameWnd.h"
+extern int g_bHudAdjustMode;
 void CWeapon::renderable_Render		()
 {
 	UpdateXForm				();
@@ -743,7 +768,7 @@ void CWeapon::renderable_Render		()
 	RenderLight				();	
 
 	//если мы в режиме снайперки, то сам HUD рисовать не надо
-	if(IsZoomed() && !IsRotatingToZoom() && ZoomTexture())
+	if(IsZoomed() && !IsRotatingToZoom() && ZoomTexture() && !g_bHudAdjustMode)
 		m_bRenderHud = false;
 	else
 		m_bRenderHud = true;
@@ -772,7 +797,10 @@ void CWeapon::SetDefaults()
 void CWeapon::UpdatePosition(const Fmatrix& trans)
 {
 	Position().set		(trans.c);
-	XFORM().mul			(trans,m_strapped_mode ? m_StrapOffset : m_Offset);
+	if (m_strapped_mode || m_strapped_mode_rifle)
+		XFORM().mul			(trans,m_StrapOffset);
+	else
+		XFORM().mul			(trans,m_Offset);
 	VERIFY				(!fis_zero(DET(renderable.xform)));
 }
 
@@ -835,9 +863,9 @@ bool CWeapon::Action(u16 cmd, u32 flags)
 		case kWPN_ZOOM:
 			if(IsZoomEnabled())
 			{
-                if(flags&CMD_START && !IsPending())
+				if(flags&CMD_START && !IsPending())
 					OnZoomIn();
-                else if(IsZoomed())
+				else if(IsZoomed())
 					OnZoomOut();
 				return true;
 			}else 
@@ -847,8 +875,10 @@ bool CWeapon::Action(u16 cmd, u32 flags)
 		case kWPN_ZOOM_DEC:
 			if(IsZoomEnabled() && IsZoomed())
 			{
-				if(cmd==kWPN_ZOOM_INC)  ZoomInc();
-				else					ZoomDec();
+				if(cmd==kWPN_ZOOM_INC)
+					ZoomInc();
+				else
+					ZoomDec();
 				return true;
 			}else
 				return false;
@@ -1220,7 +1250,8 @@ void CWeapon::OnZoomIn()
 {
 	m_bZoomMode = true;
 	m_fZoomFactor = CurrentZoomFactor();
-	StopHudInertion();
+
+	StartHudInertion(true);
 }
 
 void CWeapon::OnZoomOut()
@@ -1228,12 +1259,12 @@ void CWeapon::OnZoomOut()
 	m_bZoomMode = false;
 	m_fZoomFactor = g_fov;
 
-	StartHudInertion();
+	StartHudInertion(false);
 }
 
 CUIStaticItem* CWeapon::ZoomTexture()
 {
-	if (UseScopeTexture())
+	if (UseScopeTexture() && !g_bHudAdjustMode)
 		return m_UIScope;
 	else
 		return NULL;
@@ -1277,17 +1308,25 @@ void CWeapon::reload			(LPCSTR section)
 	CHudItemObject::reload			(section);
 	
 	m_can_be_strapped			= true;
+	m_can_be_strapped_rifle			= (GetSlot() == RIFLE_SLOT);
 	m_strapped_mode				= false;
+	m_strapped_mode_rifle			= false;
 	
 	if (pSettings->line_exist(section,"strap_bone0"))
+	{
 		m_strap_bone0			= pSettings->r_string(section,"strap_bone0");
-	else
+	} else {
 		m_can_be_strapped		= false;
+		m_can_be_strapped_rifle		= false;
+	}
 	
 	if (pSettings->line_exist(section,"strap_bone1"))
+	{
 		m_strap_bone1			= pSettings->r_string(section,"strap_bone1");
-	else
+	} else {
 		m_can_be_strapped		= false;
+		m_can_be_strapped_rifle		= false;
+	}
 
 	if (m_eScopeStatus == ALife::eAddonAttachable) {
 		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float,m_sScopeName,"holder_range_modifier",m_holder_range_modifier);
@@ -1318,9 +1357,10 @@ void CWeapon::reload			(LPCSTR section)
 
 		m_StrapOffset.setHPB			(ypr.x,ypr.y,ypr.z);
 		m_StrapOffset.translate_over	(pos);
+	} else {
+		m_can_be_strapped		= false;
+		m_can_be_strapped_rifle		= false;
 	}
-	else
-		m_can_be_strapped	= false;
 
 	m_ef_main_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_main_weapon_type",u32(-1));
 	m_ef_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));

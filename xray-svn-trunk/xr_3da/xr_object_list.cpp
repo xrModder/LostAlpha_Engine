@@ -500,7 +500,7 @@ void		CObjectList::Destroy			( CObject*	O		)
 			VERIFY							( std::find(objects_sleeping.begin(),objects_sleeping.end(),O) == objects_sleeping.end() );
 		}
 		else
-			Debug.fatal	(DEBUG_INFO,"! Unregistered object [%d] being destroyed", O->ID());
+			Debug.fatal	(DEBUG_INFO,"! Unregistered object [%d][%s] being destroyed", O->ID(), O->cName().c_str());
 	}
 
 	g_pGamePersistent->ObjectPool.destroy	(O);

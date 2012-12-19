@@ -111,11 +111,13 @@ protected:
 	u32						dwXF_Frame;
 
 	//вкл/выкл инерции (временное, с плавным возвращением оружия в состояние без инерции)
-	void					StartHudInertion();
-	void					StopHudInertion();
+	void					StartHudInertion(bool zoom);
+
 private:
 	bool					m_bInertionEnable;
 	bool					m_bInertionAllow;
+	bool					m_bInertionAllowZoom;
+	bool					m_bIsZoomed;
 protected:
 	u32						m_animation_slot;
 public:
