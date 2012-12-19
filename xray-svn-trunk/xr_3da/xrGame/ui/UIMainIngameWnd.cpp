@@ -583,13 +583,49 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 
 		Fvector tmpV;
 
-		if (1 == g_bHudAdjustMode) //zoom offset
+		if (1 == g_bHudAdjustMode) //hud offset and zoom offset
 		{
 			CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
 			R_ASSERT(pActor);
 
-			if (pActor->IsZoomAimingMode())
+			// output coordinate info to the console
+			if (dik == DIK_P)
+			{
+				if (!pWpnHud) return false;
+
+				Fmatrix m_offset = pWpnHud->HudOffsetMatrix();
+
+				string256 tmpStr;
+				sprintf_s(tmpStr, "%s",
+					*m_pWeapon->cNameSect());
+				Log(tmpStr);
+				Msg("hud offset:");
+					sprintf_s(tmpStr, "position\t\t\t= %f,%f,%f",
+						m_offset.c.x,
+						m_offset.c.y,
+						m_offset.c.z);
+				Log(tmpStr);
+				sprintf_s(tmpStr, "orientation\t\t\t= %f,%f,%f",
+						m_offset.k.x,
+						m_offset.k.y,
+						m_offset.k.z);
+				Log(tmpStr);
+				Msg("zoom offset:");
+						sprintf_s(tmpStr, "zoom_offset\t\t\t= %f,%f,%f",
+						pWpnHud->ZoomOffset().x,
+						pWpnHud->ZoomOffset().y,
+						pWpnHud->ZoomOffset().z);
+				Log(tmpStr);
+				sprintf_s(tmpStr, "zoom_rotate_x\t\t= %f",
+					pWpnHud->ZoomRotateX());
+				Log(tmpStr);
+				sprintf_s(tmpStr, "zoom_rotate_y\t\t= %f",
+					pWpnHud->ZoomRotateY());
+				Log(tmpStr);
+				flag = true;
+
+			} else if (pActor->IsZoomAimingMode())
 			{
 				if (!pWpnHud) return false;
 				tmpV = pWpnHud->ZoomOffset();
@@ -644,26 +680,6 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				// Shift -z
 				case DIK_E:
 					tmpV.z -= g_fHudAdjustValue;
-					flag = true;
-					break;
-				// output coordinate info to the console
-				case DIK_P:
-					string256 tmpStr;
-					sprintf_s(tmpStr, "%s",
-						*m_pWeapon->cNameSect());
-					Log(tmpStr);
-
-						sprintf_s(tmpStr, "zoom_offset\t\t\t= %f,%f,%f",
-							pWpnHud->ZoomOffset().x,
-							pWpnHud->ZoomOffset().y,
-							pWpnHud->ZoomOffset().z);
-					Log(tmpStr);
-					sprintf_s(tmpStr, "zoom_rotate_x\t\t= %f",
-						pWpnHud->ZoomRotateX());
-					Log(tmpStr);
-					sprintf_s(tmpStr, "zoom_rotate_y\t\t= %f",
-						pWpnHud->ZoomRotateY());
-					Log(tmpStr);
 					flag = true;
 					break;
 				}
@@ -732,23 +748,6 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 				case DIK_E:
 					m_offset.c.z -= g_fHudAdjustValue;
 					tmpV.z += g_fHudAdjustValue;
-					flag = true;
-					break;
-				// output coordinate info to the console
-				case DIK_P:
-					string256 tmpStr;
-					sprintf_s(tmpStr, "%s",
-						*m_pWeapon->cNameSect());
-					Log(tmpStr);
-						sprintf_s(tmpStr, "position\t\t\t= %f,%f,%f",
-							m_offset.c.x,
-							m_offset.c.y,
-							m_offset.c.z);
-					Log(tmpStr);
-					sprintf_s(tmpStr, "orientation\t\t\t= %f,%f,0",
-							m_offset.k.x,
-							m_offset.k.y);
-					Log(tmpStr);
 					flag = true;
 					break;
 				}
