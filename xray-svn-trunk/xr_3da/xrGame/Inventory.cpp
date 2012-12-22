@@ -1199,7 +1199,6 @@ void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 		}
 	}
 };
-
 //call this only via Actor()->SetWeaponHideState()
 void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 {
@@ -1211,9 +1210,11 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 			bool bCanBeActivated = m_slots[i].CanBeActivated();
 			if(bBlock){
 				++m_slots[i].m_blockCounter;
+				if (m_slots[i].m_blockCounter > 5) m_slots[i].m_blockCounter = 1;
 				VERIFY2(m_slots[i].m_blockCounter< 5,"block slots overflow");
 			}else{
 				--m_slots[i].m_blockCounter;
+				if (m_slots[i].m_blockCounter < -5) m_slots[i].m_blockCounter = -1;
 				VERIFY2(m_slots[i].m_blockCounter>-5,"block slots underflow");
 			}
 			if(bCanBeActivated != m_slots[i].CanBeActivated())
