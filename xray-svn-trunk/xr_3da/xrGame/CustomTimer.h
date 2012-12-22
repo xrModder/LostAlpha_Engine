@@ -33,7 +33,7 @@ public:
 	void				SetGameTime			();
 	void				SetRealTime			();
 	xrTime				Time				();
-	ALife::_TIME_ID			TimeNumber			() {return m_time;};
+	ALife::_TIME_ID		TimeNumber			() {return m_time;};
 	xrTime				TimeElapsed			();
 	bool				isGameTimer			() {return (m_flags.test(lmGameTimer)==1)?true:false;};
 
@@ -80,9 +80,9 @@ private:
 	ALife::_TIME_ID		m_time;
 
 	enum lm_flags	{	
-						lmHUD			= (1<<1),
-						lmRestart		= (1<<2),
-						lmGameTimer		= (1<<4),
+						lmHUD			= (1<<0),
+						lmRestart		= (1<<1),
+						lmGameTimer		= (1<<2),
 					};
 
 	flags8				m_flags;
