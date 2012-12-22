@@ -101,14 +101,22 @@ void CStalkerActionDead::execute		()
 		if ((*I).m_pIItem->object().CLS_ID == CLSID_DEVICE_TORCH)
 			continue;
 
-		if ((*I).m_pIItem->GetSlot() == RIFLE_SLOT && object().inventory().GetActiveSlot() == RIFLE_SLOT)
+		if ((*I).m_pIItem->GetSlot() == RIFLE_SLOT && object().inventory().GetActiveSlot() != RIFLE_SLOT)
 			continue;
 
-		if ((I - B) == (int)object().inventory().GetActiveSlot())
+ 		if ((I - B) == (int)object().inventory().GetActiveSlot())
 		{
-			(*I).m_pIItem->SetDropManual	(TRUE);
-			continue;
-		}
+			CWeapon	*weapon = smart_cast<CWeapon*>(object().inventory().ActiveItem());
+			if (weapon)
+			{
+				if (weapon->strapped_mode())
+ 					continue;
+				else {
+ 					(*I).m_pIItem->SetDropManual	(TRUE);
+ 					continue;
+				}
+			}
+ 		}
 
 		object().inventory().Ruck		((*I).m_pIItem);
 	}
