@@ -383,18 +383,23 @@ public:
 			return;
 		};
 		#endif
-		CActor			*actor = Actor();
-		Console->Hide	();
-		string_path		fn_; 
-		strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
-		string_path		fn;
-		FS.update_path	(fn, "$game_saves$", fn_);
-		if (actor)
+		if (0==g_pGameLevel)
 		{
-			actor->setVisible					(false);
-			actor->SetDrawLegs					(false);
+			Msg	("! There are no level(s) started");
+		} else {
+			CActor			*actor = Actor();
+			Console->Hide	();
+			string_path		fn_; 
+			strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
+			string_path		fn;
+			FS.update_path	(fn, "$game_saves$", fn_);
+			if (actor)
+			{
+				actor->setVisible					(false);
+				actor->SetDrawLegs					(false);
+			}
+			g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord> (fn, &DemoRecordCallback));
 		}
-		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord> (fn, &DemoRecordCallback));
 	}
 };
 class CCC_DemoPlay : public IConsole_Command
@@ -459,11 +464,12 @@ public:
 			return;
 		}
 #endif
-
+		#ifndef	DEBUG
 		if(!IsGameTypeSingle()){
 			Msg("for single-mode only");
 			return;
 		}
+		#endif
 		if(!g_actor || !Actor()->g_Alive())
 		{
 			Msg("cannot make saved game because actor is dead :(");
