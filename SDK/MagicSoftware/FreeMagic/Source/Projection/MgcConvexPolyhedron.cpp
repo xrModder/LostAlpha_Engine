@@ -817,7 +817,7 @@ void ConvexPolyhedron::Print (ofstream& rkOStr) const
     for (i = 0; i < (int)m_akPoint.size(); i++)
     {
         const Vector3& rkV = m_akPoint[i];
-        sprintf(acMsg,"point<%d> = (%+8.4f,%+8.4f,%+8.4f)",i,rkV.x,rkV.y,
+        sprintf_s(acMsg,"point<%d> = (%+8.4f,%+8.4f,%+8.4f)",i,rkV.x,rkV.y,
             rkV.z);
         rkOStr << acMsg << endl;
     }
@@ -827,7 +827,7 @@ void ConvexPolyhedron::Print (ofstream& rkOStr) const
     for (i = 0; i < (int)m_akPlane.size(); i++)
     {
         const Plane& rkP = m_akPlane[i];
-        sprintf(acMsg,"plane<%d> = (%+8.6f,%+8.6f,%+8.6f;%+8.4f)",i,
+        sprintf_s(acMsg,"plane<%d> = (%+8.6f,%+8.6f,%+8.6f;%+8.4f)",i,
             rkP.Normal().x,rkP.Normal().y,rkP.Normal().z,rkP.Constant());
         rkOStr << acMsg << endl;
     }

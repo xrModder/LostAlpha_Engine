@@ -393,9 +393,9 @@ bool CEditableObject::GenerateBoneShape(bool bSelOnly)
                 Fvector p;
 				m_Bones[b_id]->_RITransform().transform_tiny(p,sv.offs);
                 for (FvectorIt p_it=P.begin(); p_it!=P.end(); p_it++)
-                	if (p_it->similar(p)){ 
-                    	bFound=true; 
-                        break; 
+                	if (p_it->similar(p)){
+                    	bFound=true;
+                        break;
                 }
                 if (!bFound)	P.push_back(p);       
 //		        if (sv.bone1!=BI_NONE) bone_points[sv.bone1].push_back(sv.offs1);
@@ -404,8 +404,9 @@ bool CEditableObject::GenerateBoneShape(bool bSelOnly)
         MESH->UnloadSVertices();
     }
 
-    BoneVec& lst 	= m_Bones;    
+    BoneVec& lst 	= m_Bones;
     for(BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++){
+        Msg("* %s", (*b_it)->Name().c_str());
     	if (bSelOnly&&!(*b_it)->flags.is(CBone::flSelected)) continue;
         FvectorVec& positions = bone_points[b_it-lst.begin()];
         ComputeOBB_WML	((*b_it)->shape.box,positions);
