@@ -586,21 +586,15 @@ bool CUICarBodyWnd::OnItemRButtonClick(CUICellItem* itm)
 void move_item (u16 from_id, u16 to_id, u16 what_id)
 {
 	NET_Packet P;
-	CGameObject::u_EventGen					(	P,
-												GE_OWNERSHIP_REJECT,
-												from_id
-											);
+  	CGameObject::u_EventGen		(P, GE_OWNERSHIP_REJECT, from_id);
 
-	P.w_u16									(what_id);
-	CGameObject::u_EventSend				(P);
+	P.w_u16				(what_id);
+	CGameObject::u_EventSend	(P);
 
 	//другому инвентарю - взять вещь 
-	CGameObject::u_EventGen					(	P,
-												GE_OWNERSHIP_TAKE,
-												to_id
-											);
-	P.w_u16									(what_id);
-	CGameObject::u_EventSend				(P);
+	CGameObject::u_EventGen		(P, GE_OWNERSHIP_TAKE, to_id);
+	P.w_u16				(what_id);
+	CGameObject::u_EventSend	(P);
 
 }
 

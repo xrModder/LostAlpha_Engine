@@ -33,12 +33,12 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	time_vampire_started	= 0;
 
 	psHUD_Flags.set(HUD_DRAW, FALSE);
-	g_bDisableAllInput = true;
+	//g_bDisableAllInput = true;
 
-#pragma todo("SkyLoader: SetWeaponHideState() doesn't work properly in this scheme, need to fix it")
-#if 0
+//#pragma todo("SkyLoader: SetWeaponHideState() doesn't work properly in this scheme, need to fix it")
+//#if 0
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-#endif
+//#endif
 
 	object->stop_invisible_predator	();
 
@@ -88,9 +88,8 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 {
 	psHUD_Flags.set(HUD_DRAW, TRUE);
-	//skyloader: need to fix
-	//Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
-	g_bDisableAllInput = false;
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	//g_bDisableAllInput = false;
 }
 
 TEMPLATE_SPECIALIZATION

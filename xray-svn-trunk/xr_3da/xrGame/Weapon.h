@@ -274,11 +274,15 @@ public:
 	IC		bool			strapped_mode		() const {return m_strapped_mode;}
 
 protected:
+	int					m_strap_bone0_id;
+	int					m_strap_bone1_id;
+	bool					m_strapped_mode_rifle;
 	LPCSTR					m_strap_bone0;
 	LPCSTR					m_strap_bone1;
 	Fmatrix					m_StrapOffset;
 	bool					m_strapped_mode;
 	bool					m_can_be_strapped;
+	bool					m_can_be_strapped_rifle;
 
 	Fmatrix					m_Offset;
 	// 0-используется без участия рук, 1-одна рука, 2-две руки

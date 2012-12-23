@@ -343,7 +343,7 @@ void CActor::cam_Update(float dt, float fFOV)
 		cameras[eacFirstEye]->f_fov		= fFOV;
 	}
 	
-	if( psActorFlags.test(AF_PSP) )
+	if( psActorFlags.test(AF_PSP) && eacFreeLook != cam_active)
 	{
 		Cameras().Update			(C);
 	}else

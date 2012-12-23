@@ -14,10 +14,14 @@ class CWeaponCollision
 		virtual ~CWeaponCollision();
 		void Load();
 		void Update(Fmatrix &o, float range, bool is_zoom);
+		void CheckState();
 
 	private:
-		float	fTime;
 		float	fReminderDist;
 		float	fReminderNeedDist;
+		float	fReminderStrafe;
+		float	fReminderNeedStrafe;
 		bool	bFirstUpdate;
+		u32	dwMState;
+		bool	is_limping;
 };
