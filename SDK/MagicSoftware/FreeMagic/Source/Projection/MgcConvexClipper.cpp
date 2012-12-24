@@ -547,7 +547,7 @@ bool ConvexClipper::Print (const char* acFilename) const
     for (int iV = 0; iV < iVQuantity; iV++)
     {
         const Vertex& rkV = m_akVertex[iV];
-        sprintf(acMsg,"v<%*d> %c: (%f,%f,%f)",
+        sprintf_s(acMsg,"v<%*d> %c: (%f,%f,%f)",
             iVDigits,iV,(rkV.m_bVisible ? 'T' : 'F'),
             rkV.m_kPoint.x,
             rkV.m_kPoint.y,
@@ -560,7 +560,7 @@ bool ConvexClipper::Print (const char* acFilename) const
     for (int iE = 0; iE < iEQuantity; iE++)
     {
         const Edge& rkE = m_akEdge[iE];
-        sprintf(acMsg,"e<%*d> %c: v[%*d,%*d], t[%*d,%*d]",
+        sprintf_s(acMsg,"e<%*d> %c: v[%*d,%*d], t[%*d,%*d]",
             iEDigits,iE,(rkE.m_bVisible ? 'T' : 'F'),
             iVDigits,rkE.m_aiVertex[0],
             iVDigits,rkE.m_aiVertex[1],
@@ -574,7 +574,7 @@ bool ConvexClipper::Print (const char* acFilename) const
     for (int iF = 0; iF < iFQuantity; iF++)
     {
         const Face& rkF = m_akFace[iF];
-        sprintf(acMsg,"t<%*d> %d: e = ",
+        sprintf_s(acMsg,"t<%*d> %d: e = ",
             iFDigits,iF,(rkF.m_bVisible ? 'T' : 'F'));
         kOStr << acMsg;
 

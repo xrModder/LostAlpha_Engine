@@ -459,8 +459,12 @@ public:
 	RefTargetHandle GetReference(int i);
 	void SetReference(int i, RefTargetHandle rtarg);
 
-	RefTargetHandle Clone(RemapDir &remap = DefaultRemapDir());
-	//RefTargetHandle Clone(RemapDir &remap = NoRemap());
+#if MAX_VERSION_MAJOR<=8
+		RefTargetHandle Clone(RemapDir &remap = NoRemap());
+#else
+		RefTargetHandle Clone(RemapDir &remap = DefaultRemapDir());
+#endif
+
 	RefResult NotifyRefChanged( Interval changeInt, RefTargetHandle hTarget, 
 		PartID& partID, RefMessage message );
 

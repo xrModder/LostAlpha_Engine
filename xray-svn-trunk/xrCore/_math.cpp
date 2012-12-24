@@ -316,6 +316,7 @@ void	thread_name	(const char* name)
 	tn.szName		= name;
 	tn.dwThreadID	= DWORD(-1);
 	tn.dwFlags		= 0;
+#ifndef _WIN64
 	__try
 	{
 		RaiseException(0x406D1388,0,sizeof(tn)/sizeof(DWORD),(DWORD*)&tn);
@@ -323,6 +324,9 @@ void	thread_name	(const char* name)
 	__except(EXCEPTION_CONTINUE_EXECUTION)
 	{
 	}
+#else
+#pragma todo				("rewrite to support WIN64")
+#endif
 }
 #pragma pack(pop)
 

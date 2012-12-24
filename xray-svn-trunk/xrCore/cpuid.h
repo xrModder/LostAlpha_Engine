@@ -22,7 +22,7 @@ struct _processor_info {
 	unsigned int feature;							// processor Feature ( same as return value).
 	unsigned int n_threads;							// number of available threads, both physical and logical
 
-#ifdef M_BORLAND
+#if defined(_EDITOR) || defined(_WIN64)
          int			os_support;							// does OS Support the feature
 #endif
 };

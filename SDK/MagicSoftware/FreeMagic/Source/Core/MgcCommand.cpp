@@ -45,8 +45,9 @@ Command::Command (char* acCmdline)
     if ( acCmdline == NULL || strlen(acCmdline) == 0 )
         return;
 
-    m_acCmdline = new char[strlen(acCmdline)+1];
-    strcpy(m_acCmdline,acCmdline);
+	size_t iSize = strlen(acCmdline) + 1;
+    m_acCmdline = new char[iSize];
+    strcpy_s(m_acCmdline,iSize,acCmdline);
 
     char* pcToken = strtok(m_acCmdline," \t");
     Argument* pkList = NULL;
@@ -188,7 +189,7 @@ int Command::Integer (char* acName, int& riValue)
                 m_acLastError = ms_acArgumentRequired;
                 return 0;
             }
-            sscanf(pcTmp,"%d",&riValue);
+            sscanf_s(pcTmp,"%d",&riValue);
             if ( (m_bMinSet && riValue < m_dSmall)
             ||   (m_bMaxSet && riValue > m_dLarge)
             ||   (m_bInfSet && riValue <= m_dSmall)
@@ -230,7 +231,7 @@ int Command::Float (char* acName, float& rfValue)
                 m_acLastError = ms_acArgumentRequired;
                 return 0;
             }
-            sscanf(pcTmp,"%f",&rfValue);
+            sscanf_s(pcTmp,"%f",&rfValue);
             if ( (m_bMinSet && rfValue < m_dSmall)
             ||   (m_bMaxSet && rfValue > m_dLarge)
             ||   (m_bInfSet && rfValue <= m_dSmall)
@@ -272,7 +273,7 @@ int Command::Double (char* acName, double& rdValue)
                 m_acLastError = ms_acArgumentRequired;
                 return 0;
             }
-            sscanf(pcTmp,"%lf",&rdValue);
+            sscanf_s(pcTmp,"%lf",&rdValue);
             if ( (m_bMinSet && rdValue < m_dSmall)
             ||   (m_bMaxSet && rdValue > m_dLarge)
             ||   (m_bInfSet && rdValue <= m_dSmall)
@@ -314,9 +315,9 @@ int Command::String (char* acName, char*& racValue)
                 m_acLastError = ms_acArgumentRequired;
                 return 0;
             }
-
-            racValue = new char[strlen(pcTmp)+1];
-            strcpy(racValue,pcTmp);
+			size_t iSize = strlen(pcTmp) + 1;
+            racValue = new char[iSize];
+            strcpy_s(racValue,iSize,pcTmp);
             m_abUsed[i] = true;
             m_abUsed[i+1] = true;
             iMatchFound = i;
@@ -338,8 +339,9 @@ int Command::Filename (char*& racName)
         char* pcTmp = m_apcArgument[i];
         if ( !m_abUsed[i] && pcTmp[0] != '-' )
         {
-            racName = new char[strlen(pcTmp)+1];
-            strcpy(racName,pcTmp);
+			size_t iSize = strlen(pcTmp)+1;
+            racName = new char[iSize];
+            strcpy_s(racName,iSize,pcTmp);
             m_abUsed[i] = true;
             iMatchFound = i;
             break;
