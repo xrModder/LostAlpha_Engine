@@ -23,11 +23,7 @@
 #include "memory_manager.h"
 #include "../IGame_Persistent.h"
 #include "actor.h"
-
-#ifndef MASTER_GOLD
-#	include "clsid_game.h"
-#	include "ai_debug.h"
-#endif // MASTER_GOLD
+#include "clsid_game.h"
 
 struct CHitObjectPredicate {
 	const CObject *m_object;
@@ -92,19 +88,18 @@ void CHitMemoryManager::reload				(LPCSTR section)
 	m_max_hit_count			= READ_IF_EXISTS(pSettings,r_s32,section,"DynamicHitCount",1);
 }
 
+extern Flags32 psActorFlags;
 void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const CObject *who, s16 element)
 {
-#ifndef MASTER_GOLD
-	CObject **who_obj = (CObject**)(&who);
-	if (who && smart_cast<CActor*>(*who_obj) && psAI_Flags.test(aiIgnoreActor))
-		return;
-#endif // MASTER_GOLD
-
 	VERIFY						(m_hits);
 	if (!object().g_Alive())
 		return;
 
 	if (who && (m_object->ID() == who->ID()))
+		return;
+
+	const CActor 	*actor = smart_cast<const CActor*>(who);
+	if (who && actor && psActorFlags.test(AF_INVISIBLE))
 		return;
 
 	if (who && !fis_zero(amount)) {
@@ -157,14 +152,12 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 
 void CHitMemoryManager::add					(const CHitObject &_hit_object)
 {
-#ifndef MASTER_GOLD
-	CEntityAlive **hitted_entity = (CEntityAlive**)(&_hit_object.m_object);
-	if (_hit_object.m_object && smart_cast<CActor*>(*hitted_entity) && psAI_Flags.test(aiIgnoreActor))
-		return;
-#endif // MASTER_GOLD
-
 	VERIFY						(m_hits);
 	if (!object().g_Alive())
+		return;
+
+	const CActor 	*actor = smart_cast<const CActor*>(_hit_object.m_object);
+	if (_hit_object.m_object && actor && psActorFlags.test(AF_INVISIBLE))
 		return;
 
 	CHitObject					hit_object = _hit_object;
