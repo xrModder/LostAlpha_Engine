@@ -28,12 +28,9 @@
 #include "client_spawn_manager.h"
 #include "memory_manager.h"
 #include "ai/monsters/basemonster/base_monster.h"
-
-#ifndef MASTER_GOLD
-#	include "actor.h"
-#	include "clsid_game.h"
-#	include "ai_debug.h"
-#endif // MASTER_GOLD
+#include "ai/monsters/zombie/zombie.h"
+#include "actor.h"
+#include "clsid_game.h"
 
 struct SRemoveOfflinePredicate {
 	bool		operator()						(const CVisibleObject &object) const
@@ -411,6 +408,7 @@ bool CVisualMemoryManager::visible				(const CGameObject *game_object, float tim
 	return						(object->m_value >= current_state().m_visibility_threshold);
 }
 
+extern Flags32 psActorFlags;
 bool   CVisualMemoryManager::should_ignore_object (CObject const* object) const
 {
 	if ( !object )
@@ -418,20 +416,18 @@ bool   CVisualMemoryManager::should_ignore_object (CObject const* object) const
 		return true;
 	}
 
-#ifndef MASTER_GOLD
-	if ( smart_cast<CActor const*>(object) && psAI_Flags.test(aiIgnoreActor) )
+	if ( smart_cast<CActor const*>(object) && psActorFlags.test(AF_INVISIBLE) )
 	{
 		return	true;
 	}
 	else
-#endif // MASTER_GOLD
 	
 	if ( CBaseMonster const* const monster = smart_cast<CBaseMonster const*>(object) )
 	{
-		if ( !monster->can_be_seen() )
-		{
-			return true;
-		}
+		if ( !monster->can_be_seen()) return true;
+
+		//CZombie	*zombie = smart_cast<CZombie*>(object);
+		//if (zombie && zombie->fake_death_is_active()) return true;
 	}
 
 	return false;

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Maya_Export_85"
-	ProjectGUID="{C2A6CB42-D6EC-4045-9452-B73FE1A4FABB}"
-	RootNamespace="Maya_Export_85"
+	Name="Max_Material_2008"
+	ProjectGUID="{CF5E811D-A88D-4E73-A692-EAA5CA0F5325}"
+	RootNamespace="Max_Material_2008"
 	>
 	<Platforms>
 		<Platform
@@ -44,13 +44,14 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="Export\Debug/maTranslator.tlb"
+				TypeLibraryName=".\Debug/GameMaterial.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
 				Optimization="0"
-				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\include"
-				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/include&quot;;&quot;../../../sdk/3d_sdk/3dsmax/ver-6.0/cssdk/include&quot;;..\Shared;../../xrCore"
+				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -74,22 +75,24 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
+				Culture="1049"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin&#x0D;&#x0A;"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestaticd.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib bmm.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib xrcorestaticd.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\lib"
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/lib&quot;;../../../../libraries"
+				ModuleDefinitionFile="..\Shared\GameMaterial.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xrayMaya_export.pdb"
+				ProgramDatabaseFile="$(OutDir)/xray_material.pdb"
 				SubSystem="2"
+				BaseAddress="0x3e0e0000"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
 			/>
 			<Tool
@@ -144,13 +147,14 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="Export\Release/maTranslator.tlb"
+				TypeLibraryName=".\Release/GameMaterial.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/include&quot;;../../xrCore"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/include&quot;;&quot;../../../sdk/3d_sdk/3dsmax/ver-6.0/cssdk/include&quot;;..\Shared;../../xrCore"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -166,6 +170,7 @@
 				ProgramDataBaseFileName="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				CallingConvention="0"
 				CompileAs="0"
 			/>
 			<Tool
@@ -174,22 +179,124 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
+				Culture="1049"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestatic.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib xrcorestatic.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/lib&quot;;../../../../libraries_release"
-				ProgramDatabaseFile=""
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/lib&quot;;../../../../libraries_release"
+				ModuleDefinitionFile="..\Shared\GameMaterial.def"
+				ProgramDatabaseFile=" "
 				SubSystem="2"
+				SetChecksum="true"
+				BaseAddress="0x3e0e0000"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug6|Win32"
+			OutputDirectory="x:\binaries_plugs\$(ConfigurationName)\$(ProjectName)"
+			IntermediateDirectory="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/GameMaterial.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(3D_EDITORS_SDK)\3dsmax\ver-2008\include&quot;;&quot;$(3D_EDITORS_SDK)\3dsmax\ver-6.0\cssdk\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/GameMaterial.pch"
+				AssemblerListingLocation="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				ObjectFile="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				ProgramDataBaseFileName="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+				CallingConvention="0"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib bmm.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\3dsmax\ver-2008\lib"
+				ModuleDefinitionFile=".\GameMaterial.def"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\Debug/GameMaterial.pdb"
+				SubSystem="2"
+				BaseAddress="0x3e0e0000"
+				ImportLibrary=".\Debug/GameMaterial.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -243,13 +350,14 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName="Export\Debug/maTranslator.tlb"
+				TypeLibraryName=".\Debug/GameMaterial.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
 				Optimization="0"
-				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\include"
-				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/include&quot;;&quot;../../../sdk/3d_sdk/3dsmax/ver-6.0/cssdk/include&quot;;..\Shared;../../xrCore"
+				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -273,22 +381,24 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
+				Culture="1049"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin&#x0D;&#x0A;"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestaticd.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib bmm.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib xrcorestaticd.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\lib"
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/lib&quot;;../../../../libraries"
+				ModuleDefinitionFile="..\Shared\GameMaterial.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xrayMaya_export.pdb"
+				ProgramDatabaseFile="$(OutDir)/xray_material.pdb"
 				SubSystem="2"
+				BaseAddress="0x3e0e0000"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
 				TargetMachine="17"
 			/>
@@ -344,13 +454,14 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName="Export\Release/maTranslator.tlb"
+				TypeLibraryName=".\Release/GameMaterial.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/include&quot;;../../xrCore"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/include&quot;;&quot;../../../sdk/3d_sdk/3dsmax/ver-6.0/cssdk/include&quot;;..\Shared;../../xrCore"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -366,6 +477,7 @@
 				ProgramDataBaseFileName="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				CallingConvention="0"
 				CompileAs="0"
 			/>
 			<Tool
@@ -374,22 +486,125 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
+				Culture="1049"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestatic.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib xrcorestatic.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/lib&quot;;../../../../libraries_release"
-				ProgramDatabaseFile=""
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/3dsmax/ver-2008/lib&quot;;../../../../libraries_release"
+				ModuleDefinitionFile="..\Shared\GameMaterial.def"
+				ProgramDatabaseFile=" "
 				SubSystem="2"
+				SetChecksum="true"
+				BaseAddress="0x3e0e0000"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug6|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\Debug/GameMaterial.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/LD "
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(3D_EDITORS_SDK)\3dsmax\ver-2008\include&quot;;&quot;$(3D_EDITORS_SDK)\3dsmax\ver-6.0\cssdk\include&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_MAX_MATERIAL;_MAX_PLUGIN"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/GameMaterial.pch"
+				AssemblerListingLocation="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				ObjectFile="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				ProgramDataBaseFileName="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CallingConvention="0"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1049"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="Winmm.lib comctl32.lib bmm.lib core.lib geom.lib gfx.lib mesh.lib maxutil.lib maxscrpt.lib manipsys.lib paramblk2.lib"
+				OutputFile="$(OutDir)/xray_material.dlt"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\3dsmax\ver-2008\lib"
+				ModuleDefinitionFile=".\GameMaterial.def"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\Debug/GameMaterial.pdb"
+				SubSystem="2"
+				BaseAddress="0x3e0e0000"
+				ImportLibrary=".\Debug/GameMaterial.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -425,7 +640,27 @@
 			Name="Kernel"
 			>
 			<File
-				RelativePath="Export\stdafx.cpp"
+				RelativePath="Material\DllEntry.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Shared\GameMaterial.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Shared\GameMaterial.def"
+				>
+			</File>
+			<File
+				RelativePath="..\Shared\GameMaterial.h"
+				>
+			</File>
+			<File
+				RelativePath="Material\GameMaterial.rc"
+				>
+			</File>
+			<File
+				RelativePath="Material\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -437,6 +672,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug6|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -459,13 +702,29 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug6|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Export\Stdafx.h"
+				RelativePath="Material\Stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="Export\XRayExport.cpp"
+				RelativePath="..\Shared\TexMaps.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Shared\TexMaps.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Shared\XRayMtlRes.h"
 				>
 			</File>
 		</Filter>
@@ -476,35 +735,15 @@
 				Name="Engine"
 				>
 				<File
-					RelativePath="..\Shared\bone.cpp"
+					RelativePath="..\Shared\GameMtlLib.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\Shared\bone.h"
+					RelativePath="..\Shared\GameMtlLib.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Shared\Envelope.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\envelope.h"
-					>
-				</File>
-				<File
-					RelativePath="Export\Fmesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\interp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\motion.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\motion.h"
+					RelativePath="..\Shared\Shader_xrLC.h"
 					>
 				</File>
 			</Filter>
@@ -512,35 +751,11 @@
 				Name="Editor"
 				>
 				<File
-					RelativePath="..\Shared\EditMesh.cpp"
+					RelativePath="..\Shared\BlenderListLoader.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\Shared\EditMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditMeshIO.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditMeshModify.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObject.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObject.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObjectIO.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObjectMotions.cpp"
+					RelativePath="..\Shared\BlenderListLoader.h"
 					>
 				</File>
 				<File
@@ -551,180 +766,16 @@
 					RelativePath="..\Shared\ELog.h"
 					>
 				</File>
-				<File
-					RelativePath="Export\motion.h"
-					>
-				</File>
 			</Filter>
 		</Filter>
-		<Filter
-			Name="Export"
+		<File
+			RelativePath="Material\dmtlbut.bmp"
 			>
-			<File
-				RelativePath="Export\ExportDefines.cpp"
-				>
-			</File>
-			<File
-				RelativePath="Export\ExportDefines.h"
-				>
-			</File>
-			<Filter
-				Name="Skin"
-				>
-				<File
-					RelativePath="Export\SmdBone.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdBone.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\SmdMaya.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdMaya.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\SmdTriangle.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdTriangle.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\xraySkinExportOptions.mel"
-					>
-				</File>
-				<File
-					RelativePath="Export\xraySkinMotionExportOptions.mel"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Object"
-				>
-				<File
-					RelativePath="Export\maTranslator.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\maTranslator.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\MayaExport.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\xrayObjectExportOptions.mel"
-					>
-				</File>
-			</Filter>
-		</Filter>
+		</File>
+		<File
+			RelativePath="Material\dmtlmsk.bmp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

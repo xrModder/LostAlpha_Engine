@@ -14,6 +14,7 @@
 #include "level.h"
 #include "game_cl_base.h"
 #include "../igame_persistent.h"
+#include "ai/stalker/ai_stalker.h"
 
 
 #include "InventoryOwner.h"
@@ -149,7 +150,7 @@ void CHUDTarget::Render()
 	if (psHUD_Flags.test(HUD_CROSSHAIR_DIST)){
 		F->SetColor		(C);
 		if (RQ.range >= 360.0f)
-			F->OutNext		("~");
+			F->OutNext		("");
 		else
 			F->OutNext		("%4.1f",RQ.range);
 	}
@@ -163,32 +164,37 @@ void CHUDTarget::Render()
 			if (IsGameTypeSingle())
 			{
 				CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
+
 				if (E && E->g_Alive() && !E->cast_base_monster())
 				{
-//.					CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
 					CInventoryOwner* others_inv_owner	= smart_cast<CInventoryOwner*>(E);
+					CAI_Stalker*	pStalker		= smart_cast<CAI_Stalker*>(E);
 
-					if(our_inv_owner && others_inv_owner){
+					if ((pStalker && !pStalker->IsGhost()) || !pStalker)
+					{
+						if(our_inv_owner && others_inv_owner){
 
-						switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
-						{
-						case ALife::eRelationTypeEnemy:
-							C = C_ON_ENEMY; break;
-						case ALife::eRelationTypeNeutral:
-							C = C_ON_NEUTRAL; break;
-						case ALife::eRelationTypeFriend:
-							C = C_ON_FRIEND; break;
+							switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
+							{
+							case ALife::eRelationTypeEnemy:
+								C = C_ON_ENEMY; break;
+							case ALife::eRelationTypeNeutral:
+								C = C_ON_NEUTRAL; break;
+							case ALife::eRelationTypeFriend:
+								C = C_ON_FRIEND; break;
+							}
+
+							if (fuzzyShowInfo>0.5f)
+							{
+								CStringTable	strtbl		;
+								F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
+								F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
+								F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
+							}
 						}
 
-					if (fuzzyShowInfo>0.5f){
-						CStringTable	strtbl		;
-						F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
+						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 					}
-					}
-
-					fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 				}
 				else 
 					if (l_pI && our_inv_owner && RQ.range < 2.0f*our_inv_owner->inventory().GetTakeDist())
@@ -232,6 +238,7 @@ void CHUDTarget::Render()
 
 		}else{
 			fuzzyShowInfo -= HIDE_INFO_SPEED*Device.fTimeDelta;
+
 		}
 		clamp(fuzzyShowInfo,0.f,1.f);
 	}

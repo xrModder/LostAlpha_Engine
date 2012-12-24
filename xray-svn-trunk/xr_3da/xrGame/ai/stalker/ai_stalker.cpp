@@ -335,6 +335,9 @@ void CAI_Stalker::Load				(LPCSTR section)
 	m_pPhysics_support->in_Load		(section);
 
 	m_can_select_items				= !!pSettings->r_bool(section,"can_select_items");
+	m_bIsGhost					= false;
+	if (pSettings->line_exist(section,"is_ghost"))
+		m_bIsGhost					= !!pSettings->r_bool(section,"is_ghost");
 }
 
 BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
@@ -458,6 +461,8 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 	}
 	
 	m_pPhysics_support->in_NetSpawn	(e);
+
+	if (m_bIsGhost) character_physics_support()->movement()->DestroyCharacter();
 
 	return							(TRUE);
 }
@@ -724,6 +729,7 @@ void CAI_Stalker::UpdateCL()
 
 void CAI_Stalker ::PHHit				(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /*ALife::eHitTypeWound*/)
 {
+	if (m_bIsGhost) return;
 	m_pPhysics_support->in_Hit(P,dir,who,element,p_in_object_space,impulse,hit_type,!g_Alive());
 }
 

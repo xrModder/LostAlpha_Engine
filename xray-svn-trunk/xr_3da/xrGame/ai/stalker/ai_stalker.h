@@ -273,6 +273,7 @@ public:
 	
 			bool						undetected_anomaly		();
 			bool						inside_anomaly			();
+			bool						IsGhost			() {return m_bIsGhost;};
 
 private:
 	bool				m_can_kill_member;
@@ -383,6 +384,7 @@ private:
 
 private:
 	bool								m_group_behaviour;
+	bool								m_bIsGhost;
 
 public:
 	IC		bool						group_behaviour					() const;
