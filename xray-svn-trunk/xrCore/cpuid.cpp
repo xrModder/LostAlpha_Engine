@@ -17,7 +17,7 @@
 *
 ****************************************************/
 
-#ifndef M_BORLAND
+#if !defined(_EDITOR) && !defined(_WIN64)
 int _cpuid ( _processor_info *pinfo )
 {__asm {
 
@@ -260,6 +260,7 @@ NO_CPUID:
 // register set to 80000001h (only applicable to AMD)
 #define _3DNOW_FEATURE_BIT			0x80000000
  
+#ifndef _WIN64 
 int IsCPUID()
 {
     __try {
@@ -273,6 +274,9 @@ int IsCPUID()
     }
     return 1;
 }
+#else
+#pragma todo				("rewrite cpuid to support WIN64")
+#endif
 
 // borland doesn't understand MMX/3DNow!/SSE/SSE2 asm opcodes
 void _os_support(int feature, int& res)
@@ -427,7 +431,8 @@ int _cpuid (_processor_info *pinfo)
         };
     } Ident;
 
-    if (!IsCPUID())
+#ifndef _WIN64
+	if (!IsCPUID())
     {
         return 0;
     }
@@ -466,6 +471,9 @@ notamd:
         pop ebx
         pop edx
     }
+#else
+#pragma todo				("rewrite cpuid to support WIN64")
+#endif
 
     if (dwFeature & _MMX_FEATURE_BIT)
     {
