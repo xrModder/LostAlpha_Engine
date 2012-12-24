@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-7.0/include&quot;;../../xrCore"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/include&quot;;../../xrCore"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_MATERIAL;_MAYA_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -183,7 +183,7 @@
 				OutputFile="$(OutDir)/xrayMaya_material.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-7.0/lib&quot;;../../../../libraries_release"
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/lib&quot;;../../../../libraries_release"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"

@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="LW_Export_70"
 	ProjectGUID="{F573DE85-0866-4775-955F-6C3241D2AE70}"
+	RootNamespace="LW_Export_70"
 	>
 	<Platforms>
 		<Platform
@@ -46,13 +47,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\lw\ver-7.0\include"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/lw/ver-7.0/include&quot;;../../xrCore"
 				PreprocessorDefinitions="NDEBUG;_X86_;_WIN32;WIN32;_WINDOWS;_USRDLL;_LW_PLUGIN;_LW_EXPORT;XRCORE_STATIC"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				FloatingPointModel="2"
+				ForceConformanceInForLoopScope="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
@@ -82,7 +84,7 @@
 				OutputFile="$(OutDir)/xray_export.p"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="../../../../libraries;../../../../libraries_release"
 				ModuleDefinitionFile="Server\serv.def"
 				ProgramDatabaseFile=""
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"

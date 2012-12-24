@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Maya_Export_85"
-	ProjectGUID="{C2A6CB42-D6EC-4045-9452-B73FE1A4FABB}"
-	RootNamespace="Maya_Export_85"
+	Name="Maya_Export_2010"
+	ProjectGUID="{7985E78A-DCCF-4893-885D-3CA654C82D86}"
+	RootNamespace="Maya_Export_2010"
 	>
 	<Platforms>
 		<Platform
@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\include"
+				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-2010\include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				ExceptionHandling="1"
@@ -83,7 +83,7 @@
 				OutputFile="$(OutDir)/xrayMaya_export.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\lib"
+				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-2010\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/xrayMaya_export.pdb"
 				SubSystem="2"
@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/include&quot;;../../xrCore"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-2010/include&quot;;../../xrCore"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -183,7 +183,7 @@
 				OutputFile="$(OutDir)/xrayMaya_export.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/lib&quot;;../../../../libraries_release"
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-2010/lib&quot;;../../../../libraries_release"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"

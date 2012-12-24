@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Maya_Export_85"
-	ProjectGUID="{C2A6CB42-D6EC-4045-9452-B73FE1A4FABB}"
-	RootNamespace="Maya_Export_85"
+	Name="Maya_Material_2008"
+	ProjectGUID="{1113CF71-82EB-4823-8111-AD36BA062D17}"
+	RootNamespace="Maya_Material_2008"
 	>
 	<Platforms>
 		<Platform
@@ -41,13 +41,13 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="Export\Debug/maTranslator.tlb"
+				TypeLibraryName="Material\Debug/maTranslator.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\include"
-				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="$(3D_EDITORS_SDK)\maya\ver-2008\include"
+				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_MATERIAL;_MAYA_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -79,13 +79,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin&#x0D;&#x0A;"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestaticd.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib glu32.lib opengl32.lib xrcorestaticd.lib"
+				OutputFile="$(OutDir)/xrayMaya_material.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-8.5\lib"
+				AdditionalLibraryDirectories="$(3D_EDITORS_SDK)\maya\ver-2008\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xrayMaya_export.pdb"
+				ProgramDatabaseFile="$(OutDir)/xrayMaya_material.pdb"
 				SubSystem="2"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
 			/>
@@ -141,13 +141,13 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName="Export\Release/maTranslator.tlb"
+				TypeLibraryName="Material\Release/maTranslator.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/include&quot;;../../xrCore"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_EXPORT;_MAYA_PLUGIN;XRCORE_STATIC"
+				AdditionalIncludeDirectories="&quot;../../../sdk/3d_sdk/maya/ver-2008/include&quot;;../../xrCore"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;_MAYA_MATERIAL;_MAYA_PLUGIN;XRCORE_STATIC"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -179,11 +179,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaAnim.lib xrcorestatic.lib"
-				OutputFile="$(OutDir)/xrayMaya_export.mll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib Foundation.lib OpenMaya.lib OpenMayaRender.lib OpenMayaUI.lib glu32.lib opengl32.lib xrcorestatic.lib"
+				OutputFile="$(OutDir)/xrayMaya_material.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-8.5/lib&quot;;../../../../libraries_release"
+				AdditionalLibraryDirectories="&quot;../../../sdk/3d_sdk/maya/ver-2008/lib&quot;;../../../../libraries_release"
 				ProgramDatabaseFile=""
 				SubSystem="2"
 				ImportLibrary="x:\intermediate_plugs\$(ConfigurationName)\$(ProjectName)\project.lib"
@@ -221,7 +221,7 @@
 			Name="Kernel"
 			>
 			<File
-				RelativePath="Export\stdafx.cpp"
+				RelativePath="Material\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -241,12 +241,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Export\Stdafx.h"
+				RelativePath="Material\Stdafx.h"
 				>
-			</File>
-			<File
-				RelativePath="Export\XRayExport.cpp"
-				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -256,73 +259,17 @@
 				Name="Engine"
 				>
 				<File
-					RelativePath="..\Shared\bone.cpp"
+					RelativePath="..\Shared\GameMtlLib.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\Shared\bone.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\Envelope.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\envelope.h"
-					>
-				</File>
-				<File
-					RelativePath="Export\Fmesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\interp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\motion.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\motion.h"
+					RelativePath="..\Shared\GameMtlLib.h"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Editor"
 				>
-				<File
-					RelativePath="..\Shared\EditMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditMeshIO.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditMeshModify.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObject.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObject.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObjectIO.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\Shared\EditObjectMotions.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\Shared\ELog.cpp"
 					>
@@ -331,129 +278,39 @@
 					RelativePath="..\Shared\ELog.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Plugins"
+				>
 				<File
-					RelativePath="Export\motion.h"
+					RelativePath="..\Shared\BlenderListLoader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Shared\BlenderListLoader.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Export"
+			Name="Shader"
 			>
 			<File
-				RelativePath="Export\ExportDefines.cpp"
+				RelativePath="Material\AElambertShaderTemplate.mel"
 				>
 			</File>
 			<File
-				RelativePath="Export\ExportDefines.h"
+				RelativePath="Material\AEXRayMtlTemplate.mel"
 				>
 			</File>
-			<Filter
-				Name="Skin"
+			<File
+				RelativePath="Material\crc16.cpp"
 				>
-				<File
-					RelativePath="Export\SmdBone.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdBone.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\SmdMaya.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdMaya.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\SmdTriangle.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\SmdTriangle.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\xraySkinExportOptions.mel"
-					>
-				</File>
-				<File
-					RelativePath="Export\xraySkinMotionExportOptions.mel"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Object"
+			</File>
+			<File
+				RelativePath="Material\lambertShader.cpp"
 				>
-				<File
-					RelativePath="Export\maTranslator.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\maTranslator.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Export\MayaExport.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Export\xrayObjectExportOptions.mel"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

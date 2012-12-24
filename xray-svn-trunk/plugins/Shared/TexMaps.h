@@ -75,8 +75,13 @@ class Texmaps: public TexmapContainer {
 		Class_ID ClassID();
 
 		void DeleteThis();
+
+#if MAX_VERSION_MAJOR<=8
+		RefTargetHandle Clone(RemapDir &remap = NoRemap());
+#else
 		RefTargetHandle Clone(RemapDir &remap = DefaultRemapDir());
-		//RefTargetHandle Clone(RemapDir &remap = NoRemap());	
+#endif
+
 		RefResult NotifyRefChanged( Interval changeInt, RefTargetHandle hTarget, 
 		   PartID& partID, RefMessage message );
 
