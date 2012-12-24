@@ -194,6 +194,8 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 	if (invulnerable())
 		return;
 
+	if (m_bIsGhost) return;
+
 //	pHDS->power						*= .1f;
 
 	//хит может меняться в зависимости от ранга (новички получают больше хита, чем ветераны)
