@@ -186,6 +186,29 @@ class cl_hemi_color	: public R_constant_setup {
 	}
 };	static cl_hemi_color		binder_hemi_color;
 
+class cl_texgen : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix mTexgen;
+
+		float	_w						= float(Device.dwWidth);
+		float	_h						= float(Device.dwHeight);
+		float	o_w						= (.5f / _w);
+		float	o_h						= (.5f / _h);
+		Fmatrix			mTexelAdjust		= 
+		{
+			0.5f,				0.0f,				0.0f,			0.0f,
+			0.0f,				-0.5f,				0.0f,			0.0f,
+			0.0f,				0.0f,				1.0f,			0.0f,
+			0.5f + o_w,			0.5f + o_h,			0.0f,			1.0f
+		};
+
+		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_wvp);
+
+		RCache.set_c( C, mTexgen);
+	}
+};  static cl_texgen		     binder_texgen;
 
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
@@ -197,6 +220,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("m_WV",			&binder_wv);
 	r_Constant				("m_VP",			&binder_vp);
 	r_Constant				("m_WVP",			&binder_wvp);
+	r_Constant				("m_texgen",		&binder_texgen);
 
 	// fog-params
 	r_Constant				("fog_plane",		&binder_fog_plane);

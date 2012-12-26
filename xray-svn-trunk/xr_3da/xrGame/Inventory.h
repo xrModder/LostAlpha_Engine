@@ -18,8 +18,7 @@ public:
 	PIItem					m_pIItem;
 	bool					m_bPersistent;
 	bool					m_bVisible;
-#pragma todo("gr1p:s32->s16")
-	int						m_blockCounter; 
+	s8						m_blockCounter; 
 };
 enum EActivationReason{
 	eGeneral,
