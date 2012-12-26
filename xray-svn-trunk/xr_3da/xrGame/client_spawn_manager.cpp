@@ -17,6 +17,7 @@
 CClientSpawnManager::~CClientSpawnManager	()
 {
 	VERIFY							(m_registry.empty());
+	Msg("~ CClientSpawnManager is %s empty", (m_registry.empty()) ? "" : "not");
 }
 
 void CClientSpawnManager::add		(ALife::_OBJECT_ID requesting_id, ALife::_OBJECT_ID requested_id, const luabind::functor<void> &functor, const luabind::object &object)
