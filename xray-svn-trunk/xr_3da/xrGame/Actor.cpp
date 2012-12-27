@@ -771,10 +771,10 @@ void CActor::Die(CObject* who)
 		};
 	};
 
-	if (!IsGameTypeSingle())
-	cam_Set					(eacFreeLook);
+	if (IsGameTypeSingle() && psActorFlags.test(AF_FST_PSN_DEATH))
+		cam_Set					(eacFirstEye);
 	else
-	cam_Set					(eacFirstEye);
+		cam_Set					(eacFreeLook);
 
 	mstate_wishful	&=		~mcAnyMove;
 	mstate_real		&=		~mcAnyMove;

@@ -39,6 +39,8 @@ static const float SPEED_REMINDER = 1.f;
 static const float SPEED_REMINDER_STRAFE = 0.5f;
 static const float STRAFE_ANGLE = 0.15f;
 
+extern Flags32 psActorFlags;
+
 void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 {
 	CheckState();
@@ -81,6 +83,8 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 	}
 
 	//////strafe inertion
+
+	if (!psActorFlags.test(AF_STRAFE_INERT)) return;
 
 	if (dwMState&ACTOR_DEFS::mcLStrafe || dwMState&ACTOR_DEFS::mcRStrafe)
 	{

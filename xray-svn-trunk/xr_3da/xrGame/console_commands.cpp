@@ -1441,6 +1441,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_always_run",			&psActorFlags,	AF_ALWAYSRUN);
 	CMD3(CCC_Mask,				"weapon_bobbing",		&psActorFlags,	AF_WPN_BOBBING);
 	CMD3(CCC_Mask,				"ph_collision_of_corpses",			&psActorFlags,	AF_COLLISION);
+	CMD3(CCC_Mask,				"weapon_strafe_inertion",		&psActorFlags,	AF_STRAFE_INERT);
+	CMD3(CCC_Mask,				"g_first_person_death",			&psActorFlags,	AF_FST_PSN_DEATH);
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
