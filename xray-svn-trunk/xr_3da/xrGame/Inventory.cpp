@@ -1162,7 +1162,13 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 			if (S.m_pIItem && (!for_trade || S.m_pIItem->CanTrade()))
 			{
 				if(!S.m_bPersistent || S.m_pIItem->GetSlot()==GRENADE_SLOT )
-					items_container.push_back(S.m_pIItem);
+				{
+					if (pOwner)
+						if (S.m_pIItem->GetSlot() != PISTOL_SLOT && S.m_pIItem->GetSlot() != RIFLE_SLOT)
+							items_container.push_back(S.m_pIItem);
+					else
+						items_container.push_back(S.m_pIItem);
+				}
 			}
 		}
 	}

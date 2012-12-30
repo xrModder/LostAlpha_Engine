@@ -295,6 +295,8 @@ void	CActor::RemoveAmmoForWeapon	(CInventoryItem *pIItem)
 
 bool actor_is_reloading_weapon()
 {
+	if (!Actor()->inventory().ActiveItem())		return false;
+
 	CWeapon * wpn = Actor()->inventory().ActiveItem()->cast_weapon();
 	return wpn && wpn->GetState() == CWeapon::eReload;
 }

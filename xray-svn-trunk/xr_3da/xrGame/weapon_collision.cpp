@@ -121,7 +121,7 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 		dir.z 		= fReminderStrafe;
 		Fmatrix m;
 		m.setHPB(dir.x,dir.y,dir.z);
-		o.mul_43 (o,m);
+		o.set(Fmatrix().mul_43(o,m));
 	}
 
 }
