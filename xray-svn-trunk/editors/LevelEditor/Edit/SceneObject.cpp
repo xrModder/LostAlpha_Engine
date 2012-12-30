@@ -41,7 +41,7 @@ void CSceneObject::Construct(LPVOID data)
     m_Flags.zero	();
 
     if (Tools->GetSettings(etfRandomRot))
-    	FRotation.set	(0.0f,Random.randI(0.0f,360.0f),0.0f);
+    	FRotation.set	(0.f,Random.randF(-PI,PI),0.f);
 }
 
 CSceneObject::~CSceneObject()
