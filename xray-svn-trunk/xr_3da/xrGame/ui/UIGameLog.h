@@ -32,7 +32,7 @@ public:
 	virtual ~CUIGameLog();
 	CUIStatic*				AddLogMessage	(LPCSTR msg);
 	CUIPdaKillMessage*		AddLogMessage	(KillMessageStruct& msg);
-	CUIPdaMsgListItem*		AddPdaMessage	(LPCSTR msg, float delay);
+	CUIPdaMsgListItem*		AddPdaMessage	(LPCSTR msg, float delay, BOOL to_add = TRUE);
 	void					AddChatMessage	(LPCSTR msg, LPCSTR author);
 	virtual void			Update			();
 
@@ -46,6 +46,9 @@ private:
 	xr_vector<CUIWindow*>		toDelList;
 	float						kill_msg_height;
 	u32							txt_color;
+private:
+	template <typename iterator_type>
+	void					CheckChildrenVisibility() { FATAL("wtf!?"); }
 };
 
 //////////////////////////////////////////////////////////////////////////

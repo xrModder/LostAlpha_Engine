@@ -41,14 +41,14 @@ CUIStatic* CUIGameLog::AddLogMessage(LPCSTR msg)
 
 // warning: initialization of item is incomplete!
 // initialization of item's height, text static and icon still necessary
-CUIPdaMsgListItem* CUIGameLog::AddPdaMessage(LPCSTR msg, float delay){
+CUIPdaMsgListItem* CUIGameLog::AddPdaMessage(LPCSTR msg, float delay, BOOL to_add){
 	CUIPdaMsgListItem* pItem				= xr_new<CUIPdaMsgListItem>();
 	pItem->Init								(0,0, GetDesiredChildWidth(), 10);	//fake height
 	pItem->UIMsgText.SetTextST				(msg);
 	pItem->SetClrAnimDelay					(delay);
     pItem->SetClrLightAnim					(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
-	AddWindow								(pItem, true);
-
+	if (to_add)
+		AddWindow							(pItem, true);
 	return pItem;
 }
 
@@ -93,6 +93,42 @@ void CUIGameLog::SetTextAtrib(CGameFont* pFont, u32 color){
 	txt_color = color;
 }
 
+template <> void CUIGameLog::CheckChildrenVisibility<ui_list<CUIWindow*>::iterator>()
+{
+	Frect visible_rect;
+	GetAbsoluteRect(visible_rect);
+	for(	WINDOW_LIST_it it = m_pad->GetChildWndList().begin(),
+			last = m_pad->GetChildWndList().end(); 
+			last!=it; 
+			++it)
+	{
+		Frect	r;
+		(*it)->GetAbsoluteRect(r);
+		if(! (visible_rect.in(r.x1, r.y1) && visible_rect.in(r.x2, r.y1) && visible_rect.in(r.x1, r.y2) && visible_rect.in(r.x2, r.y2)))
+		{
+			toDelList.push_back(*it);			
+		}	
+	}
+}
+
+template <> void CUIGameLog::CheckChildrenVisibility<ui_list<CUIWindow*>::reverse_iterator>()
+{
+	Frect visible_rect;
+	GetAbsoluteRect(visible_rect);
+	for(	WINDOW_LIST::reverse_iterator it = m_pad->GetChildWndList().rbegin(),
+			last = m_pad->GetChildWndList().rend(); 
+			last!=it; 
+			++it)
+	{
+		Frect	r;
+		(*it)->GetAbsoluteRect(r);
+		if(! (visible_rect.in(r.x1, r.y1) && visible_rect.in(r.x2, r.y1) && visible_rect.in(r.x1, r.y2) && visible_rect.in(r.x2, r.y2)))
+		{
+			toDelList.push_back(*it);			
+		}	
+	}
+}
+
 void CUIGameLog::Update()
 {
 	CUIScrollView::Update();
@@ -109,8 +145,10 @@ void CUIGameLog::Update()
 		VERIFY(pItem);
 		pItem->Update();
 
-		if (pItem->IsClrAnimStoped())
+		if (pItem->IsClrAnimStoped()) 
+		{
 			toDelList.push_back(pItem);
+		}
 	}
 
 	// Delete elements
@@ -125,6 +163,7 @@ void CUIGameLog::Update()
 		RecalcSize			();
 
 	toDelList.clear();
+	/*
 	Frect visible_rect;
 	GetAbsoluteRect(visible_rect);
 	for(	WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); 
@@ -139,7 +178,11 @@ void CUIGameLog::Update()
 		}
 			
 	}
-
+	*/
+	if (GetVertFlip())
+		CheckChildrenVisibility<WINDOW_LIST::reverse_iterator>();
+	else
+		CheckChildrenVisibility<WINDOW_LIST_it>();
 	// Delete elements
 	{
 		xr_vector<CUIWindow*>::iterator it;

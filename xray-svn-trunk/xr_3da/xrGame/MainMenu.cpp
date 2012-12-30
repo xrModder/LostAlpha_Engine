@@ -224,7 +224,7 @@ void CMainMenu::Activate	(bool bActivate)
 			GetUICursor()->Show			();
 
 		Device.Pause					(FALSE, FALSE, TRUE, "mm_deactivate2");
-
+		
 		if(m_Flags.test(flNeedVidRestart))
 		{
 			m_Flags.set			(flNeedVidRestart, FALSE);

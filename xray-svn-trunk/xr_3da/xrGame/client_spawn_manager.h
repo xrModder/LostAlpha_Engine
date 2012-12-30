@@ -5,6 +5,12 @@
 //	Author		: Dmitriy Iassenev
 //	Description : Seniority hierarchy holder
 ////////////////////////////////////////////////////////////////////////////
+/*
+gr1ph note:
+	there might be a bug here because it doesnt store anything (it cant due to its design)
+	but classes which use it (*MemoryManagers do storage, so they might not find the data
+	they stored, seen in log!!
+*/
 
 #pragma once
 

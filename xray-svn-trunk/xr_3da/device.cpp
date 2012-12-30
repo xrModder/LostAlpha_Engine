@@ -340,6 +340,7 @@ void CRenderDevice::FrameMove()
 	dwTimeContinual	= TimerMM.GetElapsed_ms() - app_inactive_time;
 
 	if (psDeviceFlags.test(rsConstantFPS))	{
+		// gr1ph: this code doesnt work!
 		// 20ms = 50fps
 		//fTimeDelta		=	0.020f;			
 		//fTimeGlobal		+=	0.020f;
@@ -361,9 +362,10 @@ void CRenderDevice::FrameMove()
 		if (fTimeDelta <= 0.f) 
 			fTimeDelta = EPS_S + EPS_S;					// limit to 15fps minimum
 
-		if(Paused())	
-			fTimeDelta = 0.0f;
-
+		if(Paused()) {	
+//			fTimeDelta = 0.0f;
+			fTimeDelta = 0.033f;
+		}
 //		u64	qTime		= TimerGlobal.GetElapsed_clk();
 		fTimeGlobal		= TimerGlobal.GetElapsed_sec(); //float(qTime)*CPU::cycles2seconds;
 		u32	_old_global	= dwTimeGlobal;

@@ -77,7 +77,7 @@ void CUIMessagesWindow::Init(float x, float y, float width, float height){
 
 void CUIMessagesWindow::AddIconedPdaMessage(LPCSTR textureName, Frect originalRect, LPCSTR message, int iDelay){
 	
-	CUIPdaMsgListItem *pItem			= m_pGameLog->AddPdaMessage(message, float(iDelay));
+	CUIPdaMsgListItem *pItem			= m_pGameLog->AddPdaMessage(message, float(iDelay), FALSE);
 	pItem->SetTextComplexMode			(true);
 	pItem->UIIcon.InitTexture			(textureName);
 	pItem->UIIcon.SetOriginalRect		(originalRect.left, originalRect.top, originalRect.right, originalRect.bottom);
@@ -85,10 +85,12 @@ void CUIMessagesWindow::AddIconedPdaMessage(LPCSTR textureName, Frect originalRe
 	pItem->UIMsgText.AdjustHeightToText	();
 
 	if (pItem->UIIcon.GetHeight() > pItem->UIMsgText.GetHeight())
-		pItem->SetHeight(pItem->UIIcon.GetHeight());
+		pItem->SetHeight				(pItem->UIIcon.GetHeight());
 	else
-		pItem->SetHeight(pItem->UIMsgText.GetHeight());
-	m_pGameLog->SendMessage(pItem,CHILD_CHANGED_SIZE);
+		pItem->SetHeight				(pItem->UIMsgText.GetHeight());
+	m_pGameLog->AddWindow				(pItem, true);
+	m_pGameLog->SendMessage				(pItem, CHILD_CHANGED_SIZE);
+
 }
 
 void CUIMessagesWindow::AddChatMessage(shared_str msg, shared_str author)

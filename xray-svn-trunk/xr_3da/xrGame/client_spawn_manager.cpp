@@ -14,10 +14,12 @@
 #include "gameobject.h"
 #include "script_game_object.h"
 
+#pragma todo("gr1 to all: read comments!")
+
 CClientSpawnManager::~CClientSpawnManager	()
 {
 	VERIFY							(m_registry.empty());
-	Msg("~ CClientSpawnManager is %s empty", (m_registry.empty()) ? "" : "not");
+	Msg("~ CClientSpawnManager %s empty", (m_registry.empty()) ? "is" : "isnt");
 }
 
 void CClientSpawnManager::add		(ALife::_OBJECT_ID requesting_id, ALife::_OBJECT_ID requested_id, const luabind::functor<void> &functor, const luabind::object &object)
