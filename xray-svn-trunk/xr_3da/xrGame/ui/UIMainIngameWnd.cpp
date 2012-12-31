@@ -142,6 +142,9 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic(uiXml, "static_flashlight", 0, &UIStaticTorch);
 	AttachChild(&UIStaticTurret);
 	xml_init.InitStatic(uiXml, "static_turret", 0, &UIStaticTurret);
+	AttachChild(&UIActorStateIcons);
+	UIActorStateIcons.Init();
+
 	
 	//---------------------------------------------------------
 	AttachChild					(&UIPickUpItemIcon);
@@ -167,7 +170,6 @@ void CUIMainIngameWnd::Init()
 		xml_init.InitStatic					(uiXml, "static_pda_online", 0, &UIPdaOnline);
 		UIZoneMap->Background().AttachChild	(&UIPdaOnline);
 	}
-
 
 	//Полоса прогресса здоровья
 	UIStaticHealth.AttachChild	(&UIHealthBar);
@@ -558,6 +560,7 @@ void CUIMainIngameWnd::Update()
 	float h,p;
 	Device.vCameraDirection.getHP	(h,p);
 	UIZoneMap->SetHeading			(-h);
+	UIActorStateIcons.SetIcons		(m_pActor->GetActorState());
 
 	UpdatePickUpItem				();
 	CUIWindow::Update				();

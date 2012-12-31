@@ -405,6 +405,17 @@ bool CScriptGameObject::IsHandsOnly			()
 	return			(actor && actor->inventory().IsHandsOnly());
 }
 
+void CScriptGameObject::SetActorState		(EActorState state, bool show)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (!actor)
+	{
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : attempt to call SetActorState method for non-actor object");
+		return;
+	}
+	actor->SetActorState(state, show);
+}
+
 CHolderCustom* CScriptGameObject::get_current_holder()
 {
 	CActor* actor = smart_cast<CActor*>(&object());

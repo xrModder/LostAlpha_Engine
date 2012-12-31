@@ -14,8 +14,9 @@
 #include "xr_time.h"
 #include "character_info_defs.h"
 
-enum EPdaMsg;
+enum EPdaMsg; 
 enum ESoundTypes;
+enum EActorState;
 enum ETaskState;
 
 namespace ALife {enum ERelationType;};
@@ -205,7 +206,7 @@ public:
 	void RemoveFastUpdate(void);
 	void SetFastUpdate(const luabind::functor<void> &functor, const luabind::object &object);
 	
-
+			void				SetActorState		(EActorState state, bool show);
 			CScriptEntityAction	*GetCurrentAction	() const;
 			void				AddAction			(const CScriptEntityAction *tpEntityAction, bool bHighPriority = false);
 			void				ResetActionQueue	();

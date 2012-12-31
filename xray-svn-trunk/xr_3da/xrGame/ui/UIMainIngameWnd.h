@@ -10,12 +10,13 @@
 #include "../alife_space.h"
 
 #include "UICarPanel.h"
+#include "../UIActorStateIcons.h"
 #include "UIMotionIcon.h"
 #include "../hudsound.h"
 //для режима настройки HUD
 extern int				g_bHudAdjustMode;
 extern float			g_fHudAdjustValue;
-
+ 
 class					CUIPdaMsgListItem;
 class					CLAItem;
 class					CUIZoneMap;
@@ -52,12 +53,13 @@ protected:
 	CUIZoneMap*			UIZoneMap;
 
 	// lost alpha start
-	CUIStatic UIStaticTime;
-	CUIStatic UIStaticDate;
-	CUIStatic UIStaticTorch;
-	CUIProgressBar UIFlashlightBar;
-	CUIStatic UIStaticTurret;
-	CUIProgressBar UITurretBar;
+	CUIStatic			UIStaticTime;
+	CUIStatic			UIStaticDate;
+	CUIStatic			UIStaticTorch;
+	CUIProgressBar		UIFlashlightBar;
+	CUIStatic			UIStaticTurret;
+	CUIProgressBar		UITurretBar;
+	CUIActorStateIcons	UIActorStateIcons;
 
 	//иконка, показывающая количество активных PDA
 	CUIStatic			UIPdaOnline;
@@ -174,7 +176,5 @@ protected:
 	void				UpdatePickUpItem();
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
-
-
 	void				draw_adjust_mode					();
 };

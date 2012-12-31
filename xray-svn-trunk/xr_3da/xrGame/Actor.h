@@ -14,6 +14,7 @@
 #include "PhraseDialogManager.h"
 #include "torch.h"
 #include "step_manager.h"
+#include "ActorState.h"
 
 using namespace ACTOR_DEFS;
 
@@ -773,15 +774,18 @@ private:
 public:
 	virtual bool				register_schedule				() const {return false;}
 // lost alpha start
-	void RechargeTorchBattery(void);
-	CTorch *GetCurrentTorch(void);
-	bool IsLimping();
-	bool UsingTurret();
-	u16 GetTurretTemp();
-	void SetDirectionSlowly(Fvector pos, float time);
+			void				RechargeTorchBattery			();
+			CTorch				*GetCurrentTorch				();
+			bool				IsLimping						();
+			bool				UsingTurret						();
+			u16					GetTurretTemp					();
+			void				SetDirectionSlowly				(Fvector pos, float time);
+			void				SetActorState					(EActorState state, bool show);
+			Flags16				&GetActorState					()											{  return m_actor_state; }
+
 private:
-	CTorch *m_current_torch;
-//	u16 m_torch_battery_duration;
+	CTorch				*m_current_torch;
+	Flags16				m_actor_state;
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

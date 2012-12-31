@@ -134,8 +134,6 @@ CActor::CActor() : CEntityAlive()
 
 	m_pPhysicsShell			=	NULL;
 
-
-
 	m_holder				=	NULL;
 	m_holderID				=	u16(-1);
 
@@ -163,7 +161,7 @@ CActor::CActor() : CEntityAlive()
 	m_fSprintFactor			= 4.f;
 
 	hFriendlyIndicator.create(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.QuadIB);
-
+	m_actor_state.zero		 ();
 	m_pUsableObject			= NULL;
 
 
@@ -1804,4 +1802,9 @@ void CActor::SetDirectionSlowly(Fvector pos, float time)
 		m_ScriptCameraDirection = xr_new<CScriptCameraDirection>();
 		m_ScriptCameraDirection->Start(this, pos, time);
 	}
+}
+
+void CActor::SetActorState(EActorState state, bool show)
+{
+	m_actor_state.set					(1 << state, show);
 }

@@ -58,7 +58,7 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 			value("patrol_path",			int(MovementManager::ePathTypePatrolPath)),
 			value("no_path",				int(MovementManager::ePathTypeNoPath))
 		]
-		
+				
 //		.property("visible",				&CScriptGameObject::getVisible,			&CScriptGameObject::setVisible)
 //		.property("enabled",				&CScriptGameObject::getEnabled,			&CScriptGameObject::setEnabled)
 
@@ -255,15 +255,16 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 
 		.def("head_orientation",			&CScriptGameObject::head_orientation)
 
-		.def("set_actor_position",			&CScriptGameObject::SetActorPosition)
-		.def("set_actor_direction",			&CScriptGameObject::SetActorDirection)
-		.def("set_actor_direction_vector",			&CScriptGameObject::SetActorDirectionVector)
+		.def("set_actor_position",				&CScriptGameObject::SetActorPosition)
+		.def("set_actor_direction",				&CScriptGameObject::SetActorDirection)
+		.def("set_actor_direction_vector",		&CScriptGameObject::SetActorDirectionVector)
 		.def("set_actor_look_at_position",		&CScriptGameObject::SetActorDirectionSlowly)
-		.def("set_actor_legs_visible",		&CScriptGameObject::SetActorLegsVisible)
-		.def("set_actor_camera",			&CScriptGameObject::SetActorCamSet)
-		.def("is_first_eye",				&CScriptGameObject::IsFirstEyeCam)
-		.def("block_slots_and_inventory",				&CScriptGameObject::SetHandsOnly)
-		.def("is_blocked_slots_and_inventory",		&CScriptGameObject::IsHandsOnly)
+		.def("set_actor_legs_visible",			&CScriptGameObject::SetActorLegsVisible)
+		.def("set_actor_camera",				&CScriptGameObject::SetActorCamSet)
+		.def("is_first_eye",					&CScriptGameObject::IsFirstEyeCam)
+		.def("block_slots_and_inventory",		&CScriptGameObject::SetHandsOnly)
+		.def("is_blocked_slots_and_inventory",	&CScriptGameObject::IsHandsOnly)
+		.def("set_actor_state",					&CScriptGameObject::SetActorState)
 
 		.def("vertex_in_direction",			&CScriptGameObject::vertex_in_direction)
 
