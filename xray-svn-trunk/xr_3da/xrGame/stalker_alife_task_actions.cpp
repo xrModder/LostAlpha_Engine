@@ -220,6 +220,12 @@ void CStalkerActionSmartTerrain::execute				()
 
 	CALifeSmartTerrainTask						*task = stalker->brain().smart_terrain().task(stalker);
 	THROW2										(task,"Smart terrain is assigned but returns no task");
+#pragma todo("gr1ph to all: just an hack, better to investigate if possible!")
+	if (!task)
+	{
+		Msg("! Smart terrain '%s' is assigned to '%s' but returns no task", stalker->brain().smart_terrain().name(), stalker->name());
+		return;
+	}
 	if (object().ai_location().game_vertex_id() != task->game_vertex_id()) {
 		object().movement().set_path_type		(MovementManager::ePathTypeGamePath);
 		object().movement().set_game_dest_vertex(task->game_vertex_id());
