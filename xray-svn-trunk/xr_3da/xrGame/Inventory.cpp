@@ -1149,7 +1149,7 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 		for(;slot_it!=slot_it_e;++slot_it)
 		{
 			const CInventorySlot& S = *slot_it;
-			if(S.m_pIItem && (S.m_pIItem->GetSlot()==RIFLE_SLOT || S.m_pIItem->GetSlot()==GRENADE_SLOT))
+			if(S.m_pIItem /*&& (S.m_pIItem->GetSlot()==RIFLE_SLOT || S.m_pIItem->GetSlot()==GRENADE_SLOT)*/)
 				items_container.push_back(S.m_pIItem);
 		}
 
@@ -1163,11 +1163,12 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 			{
 				if(!S.m_bPersistent || S.m_pIItem->GetSlot()==GRENADE_SLOT )
 				{
-					if (pOwner)
+					if (pOwner) {
 						if (S.m_pIItem->GetSlot() != PISTOL_SLOT && S.m_pIItem->GetSlot() != RIFLE_SLOT)
 							items_container.push_back(S.m_pIItem);
-					else
+					} else {
 						items_container.push_back(S.m_pIItem);
+					}
 				}
 			}
 		}

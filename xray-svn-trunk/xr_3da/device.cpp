@@ -364,7 +364,7 @@ void CRenderDevice::FrameMove()
 
 		if(Paused()) {	
 //			fTimeDelta = 0.0f;
-			fTimeDelta = 0.033f;
+			fTimeDelta = 0.0370f;
 		}
 //		u64	qTime		= TimerGlobal.GetElapsed_clk();
 		fTimeGlobal		= TimerGlobal.GetElapsed_sec(); //float(qTime)*CPU::cycles2seconds;
@@ -375,10 +375,10 @@ void CRenderDevice::FrameMove()
 
 	// Frame move
 	Statistic->EngineTOTAL.Begin	();
-	if(!g_bLoaded) 
+//	if(!g_bLoaded) 
 		ProcessLoading				(rp_Frame);
-	else
-		seqFrame.Process			(rp_Frame);
+//	else
+//		seqFrame.Process			(rp_Frame);
 	Statistic->EngineTOTAL.End	();
 }
 
