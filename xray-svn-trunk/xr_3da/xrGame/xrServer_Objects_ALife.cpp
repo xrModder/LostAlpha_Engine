@@ -1398,6 +1398,13 @@ LPCSTR CSE_ALifeHelicopter::get_engine_sound()
 	return engine_sound.c_str();
 }
 
+CSE_ALifeHelicopter *CSE_ALifeHelicopter::cast_helicopter(CSE_Abstract *e)
+{
+	CSE_ALifeHelicopter *ret = smart_cast<CSE_ALifeHelicopter*>(e);
+	VERIFY2(ret, "No CSE_ALifeHelicopter instance");
+	return ret;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // CSE_ALifeCar
 ////////////////////////////////////////////////////////////////////////////
@@ -1408,7 +1415,8 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
     	set_visual				(pSettings->r_string(caSection,"visual"));
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
-	health						=1.0f;
+	health						= 1.0f;
+	fuel						= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
 }
 
 CSE_ALifeCar::~CSE_ALifeCar				()
@@ -1488,6 +1496,7 @@ void CSE_ALifeCar::data_load(NET_Packet	&tNetPacket)
 		wheel_states.push_back(ws);
 	}
 	health=tNetPacket.r_float();
+	fuel=tNetPacket.r_float();
 }
 void CSE_ALifeCar::data_save(NET_Packet &tNetPacket)
 {
@@ -1514,6 +1523,7 @@ void CSE_ALifeCar::data_save(NET_Packet &tNetPacket)
 		//wheel_states.clear();
 	}
 	tNetPacket.w_float(health);
+	tNetPacket.w_float(fuel);
 }
 void CSE_ALifeCar::SDoorState::read(NET_Packet& P)
 {

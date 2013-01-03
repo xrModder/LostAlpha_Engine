@@ -33,6 +33,7 @@ void CStoreHouse::script_register(lua_State *L)
 				.def("add_vector",					&CStoreHouse::add_vector)
 				.def("add_boolean",					&CStoreHouse::add_boolean)
 				.def("add_number",					&CStoreHouse::add_number)
+				.def("add_table",					&CStoreHouse::add_table)
 
 
 				//.def("get_u8",						&CStoreHouse::get_u8)
@@ -48,6 +49,7 @@ void CStoreHouse::script_register(lua_State *L)
 				.def("get_vector",					&CStoreHouse::get_vector)
 				.def("get_number",					&CStoreHouse::get_number)
 				.def("get_boolean",					&CStoreHouse::get_boolean)
+				.def("get_table",					&CStoreHouse::get_table)
 
 				.def("get_data_type",				&CStoreHouse::get_data_type)
 				.def("data_exist",					&CStoreHouse::data_exist)

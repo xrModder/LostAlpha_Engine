@@ -136,6 +136,8 @@ void CSE_Visual::script_register(lua_State *L)
 			("cse_visual")
 //			.def(		constructor<>())
 //			.def(		constructor<LPCSTR>())
+			.def("set_startup_animation",	&CSE_Visual::set_startup_animation)
+			.def("get_startup_animation",	&CSE_Visual::get_startup_animation)
 	];
 }
 

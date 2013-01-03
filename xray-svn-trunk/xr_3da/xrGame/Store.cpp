@@ -2,7 +2,6 @@
 #include "Store.h"
 #pragma warning(push)
 #pragma warning(disable:4995)
-#include <malloc.h>
 
 CStoreHouse::CStoreHouse(void) 
 {
@@ -169,7 +168,7 @@ u32 CStoreHouse::type_to_size(StoreData d)
 		case lua_vector: return 3*sizeof(float);
 		case lua_number: return sizeof(double);
 	};
-	R_ASSERT2(0,"StoreHouse unknown type");
+	R_ASSERT2(0,make_string("StoreHouse unknown type [%d]", d.type));
 	return u32(-1);
 }
 
@@ -177,6 +176,7 @@ u32 CStoreHouse::type_to_size(StoreData d)
 
 void CStoreHouse::save(IWriter &memory_stream)
 {
+	Msg("* Writing Store...");
 	memory_stream.open_chunk	(STORE_CHUNK_DATA);
 	xr_map<shared_str,StoreData>::iterator it, last;
 
@@ -194,26 +194,35 @@ void CStoreHouse::load(IReader &file_stream)
 {
 	R_ASSERT2					(file_stream.find_chunk(STORE_CHUNK_DATA),"Can't find chunk STORE_CHUNK_DATA!");
 	Msg("* Loading Store...");
-	size_t m_size = file_stream.r_u64();
-	for (size_t i=0;i<m_size;i++) {
+	size_t count = file_stream.r_u64();
+	for (size_t i=0;i<count;i++) {
 		StoreData d;
 		shared_str name;
 		file_stream.r_stringZ(name);
 		d.type = (TypeOfData)file_stream.r_u8();
-		if (d.type==lua_string) {
-			shared_str s_data;
-			file_stream.r_stringZ(s_data);
-			
-			u32 size = sizeof(char)*(s_data.size()+1);
-			void* ptr = xr_malloc(size);
-			xr_memcpy(ptr,s_data.c_str(),size);
+		switch (d.type)
+		{
+			case lua_string:
+			case lua_table:
+			{
+				shared_str s_data;
+				file_stream.r_stringZ(s_data);
+				
+				u32 size = sizeof(char)*(s_data.size()+1);
+				void* ptr = xr_malloc(size);
+				xr_memcpy(ptr,s_data.c_str(),size);
 
-			d.data = ptr;
-		} else {
-			void* ptr = xr_malloc(type_to_size(d));
-			//CopyMemory(ptr,ptr_data,size);
-			file_stream.r(ptr, type_to_size(d));
-			d.data = ptr;
+				d.data = ptr;
+				break;
+			}
+			default:
+			{
+				u32 size = type_to_size(d);
+				void* ptr = xr_malloc(size);
+				file_stream.r(ptr, size);
+				d.data = ptr;
+				break;
+			}
 		}
 		data[name.c_str()]=d;
 	}
