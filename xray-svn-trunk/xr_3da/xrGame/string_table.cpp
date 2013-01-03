@@ -3,9 +3,12 @@
 
 #include "ui/xrUIXmlParser.h"
 #include "xr_level_controller.h"
+#include "../xr_ioconsole.h"
 
 STRING_TABLE_DATA* CStringTable::pData = NULL;
 BOOL CStringTable::m_bWriteErrorsToLog = FALSE;
+
+extern LPCSTR			g_language;
 
 CStringTable::CStringTable	()
 {
@@ -21,11 +24,22 @@ void CStringTable::Destroy	()
 void CStringTable::Init		()
 {
 	if(NULL != pData) return;
-    
+
 	pData				= xr_new<STRING_TABLE_DATA>();
-	
-	//имя языка, если не задано (NULL), то первый <text> в <string> в XML
-	pData->m_sLanguage	= pSettings->r_string("string_table", "language");
+
+	R_ASSERT2	(pSettings->section_exist("languages"),"Section [languages] is not exist!");
+	R_ASSERT2	(pSettings->line_count("languages"),"Can't find languages in the section [languages]!");
+
+
+	if (g_language && pSettings->line_exist("languages",g_language))
+		pData->m_sLanguage	= g_language;
+	else {
+		LPCSTR name;
+		LPCSTR value;
+		pSettings->r_line("languages", 0, &name, &value);
+
+		pData->m_sLanguage	= g_language =	name; 
+	}
 
 	LPCSTR S			= pSettings->r_string("string_table", "files");
 	if (S && S[0]) 
@@ -83,6 +97,15 @@ void CStringTable::ReparseKeyBindings()
 	{
 		pData->m_StringTable[it->first]			= ParseLine(*it->second, *it->first, false);
 	}
+}
+
+void CStringTable::ReloadLanguage()
+{
+	//destroy
+	xr_delete(pData);
+
+	//init
+	Init();
 }
 
 

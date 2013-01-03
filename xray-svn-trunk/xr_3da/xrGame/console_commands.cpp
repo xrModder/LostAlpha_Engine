@@ -55,6 +55,7 @@
 #include "hudmanager.h"
 
 string_path		g_last_saved_game;
+LPCSTR			g_language;
 
 extern void show_smart_cast_stats		();
 extern void clear_smart_cast_stats		();
@@ -627,6 +628,43 @@ public:
 	}
 };
 
+
+struct CCC_ChangeLanguage : public IConsole_Command {
+	CCC_ChangeLanguage(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled		= true; }
+
+	virtual void Execute(LPCSTR args) {
+
+		if (!args || !*args) {
+			Msg					("! no arguments passed");
+			return;
+		}
+
+		bool b_exist = !!pSettings->line_exist("languages",args);
+		if (!b_exist)
+		{
+			Msg							("! Can't find language \"%s\" in the section [languages]!",args);
+			return;
+		}
+
+		g_language = args;
+
+		CStringTable().ReloadLanguage();
+
+		//reload language in menu
+		if (g_pGamePersistent && MainMenu() && MainMenu()->IsActive())
+		{
+			MainMenu()->Activate(FALSE);
+			MainMenu()->Activate(TRUE);
+		}
+	}
+
+	virtual void	Save				(IWriter *F)
+	{
+		Msg("%s %s",cName,g_language);
+		F->w_printf				("%s %s\r\n",cName,g_language); 
+	}
+};
+
 class CCC_FlushLog : public IConsole_Command {
 public:
 	CCC_FlushLog(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1108,7 +1146,6 @@ struct CCC_JumpToLevel : public IConsole_Command {
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
 };
-//#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
 
@@ -1684,6 +1721,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,			"la_use_crosshair",		&psHUD_Flags,	HUD_USE_CROSSHAIR);
 	CMD3(CCC_Mask,			"show_clock",			&psHUD_Flags,	HUD_SHOW_CLOCK);
 	CMD1(CCC_MainMenu,		"main_menu"				);
+	CMD1(CCC_ChangeLanguage,	"language");
 
 #ifndef MASTER_GOLD
 #endif // MASTER_GOLD
