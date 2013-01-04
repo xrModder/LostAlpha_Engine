@@ -8,7 +8,7 @@
 STRING_TABLE_DATA* CStringTable::pData = NULL;
 BOOL CStringTable::m_bWriteErrorsToLog = FALSE;
 
-extern LPCSTR			g_language;
+extern shared_str			g_language;
 
 CStringTable::CStringTable	()
 {
@@ -31,7 +31,7 @@ void CStringTable::Init		()
 	R_ASSERT2	(pSettings->line_count("languages"),"Can't find languages in the section [languages]!");
 
 
-	if (g_language && pSettings->line_exist("languages",g_language))
+	if (*g_language && pSettings->line_exist("languages",*g_language))
 		pData->m_sLanguage	= g_language;
 	else {
 		LPCSTR name;

@@ -55,7 +55,7 @@
 #include "hudmanager.h"
 
 string_path		g_last_saved_game;
-LPCSTR			g_language;
+shared_str			g_language;
 
 extern void show_smart_cast_stats		();
 extern void clear_smart_cast_stats		();
@@ -660,8 +660,10 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 
 	virtual void	Save				(IWriter *F)
 	{
-		Msg("%s %s",cName,g_language);
-		F->w_printf				("%s %s\r\n",cName,g_language); 
+		if (!*g_language)
+			return;
+
+		F->w_printf				("%s %s\r\n",cName,g_language.c_str()); 
 	}
 };
 
