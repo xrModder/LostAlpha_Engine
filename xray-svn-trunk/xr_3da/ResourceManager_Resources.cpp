@@ -313,7 +313,9 @@ SPS*	CResourceManager::_CreatePS			(LPCSTR name)
 			else	_hr = E_FAIL;
 		}else
 		{
-			Msg("error is %s", (LPCSTR)pErrorBuf->GetBufferPointer());
+			Msg("! D3DXCompileShader failed => %ld", _hr);
+			if (pErrorBuf != NULL)
+				Msg("! error is %s", (LPCSTR)(pErrorBuf->GetBufferPointer()));
 		}
 		_RELEASE		(pShaderBuf);
 		_RELEASE		(pErrorBuf);

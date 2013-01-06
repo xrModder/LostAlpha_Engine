@@ -290,6 +290,7 @@ void print_help							(lua_State *L)
 	Msg					("\nList of the namespaces exported to LUA\n");
 	print_free_functions(L,luabind::get_globals(L),"","");
 	Msg					("End of list of the namespaces exported to LUA\n");
+	FlushLog();
 }
 #else
 void print_help							(lua_State *L)

@@ -21,6 +21,13 @@ void CUICarPanel::Init			(float x, float y, float width, float height)
 	xml_init.InitAutoStaticGroup(uiXml,"car_health_static", 0, &UIStaticCarHealth);
 	xml_init.InitProgressBar(uiXml, "car_health_progress_bar", 0, &UICarHealthBar);
 
+	AttachChild(&UIStaticCarFuel);
+	xml_init.InitStatic(uiXml, "car_fuel_static", 0, &UIStaticCarFuel);
+
+	UIStaticCarFuel.AttachChild(&UICarFuelBar);
+	xml_init.InitAutoStaticGroup(uiXml,"car_fuel_static", 0, &UIStaticCarFuel);
+	xml_init.InitProgressBar(uiXml, "car_fuel_progress_bar", 0, &UICarFuelBar);
+
 	AttachChild(&UISpeedometer);
 	xml_init.InitStatic(uiXml, "speedometer", 0, &UISpeedometer);
 	string256 buf;
@@ -75,4 +82,12 @@ void CUICarPanel::SetRPM(float rpm)
 {
 	clamp(rpm,0.f,1.f);
 	UITachometer.SetValue(rpm);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void CUICarPanel::SetFuel(float fuel)
+{
+	clamp(fuel,0.f,100.0f);
+	UICarFuelBar.SetProgressPos(fuel);
 }

@@ -122,6 +122,9 @@ void CCar::reload		(LPCSTR section)
 	CInventoryOwner::reload (section);
 	if(m_memory)
 		m_memory->reload	(section);
+	// fuel load
+	m_fuel_tank = READ_IF_EXISTS(pSettings, r_float, section, "fuel_tank", 10.0);
+	m_fuel_consumption = READ_IF_EXISTS(pSettings, r_float, section, "fuel_consumption", 0.0005);
 }
 
 void CCar::cb_Steer			(CBoneInstance* B)
@@ -171,7 +174,7 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 	PKinematics(Visual())->CalculateBones(TRUE);
 	m_fSaveMaxRPM					= m_max_rpm;
 	SetfHealth						(co->health);
-
+	m_fuel							= co->fuel;
 	if(!g_Alive())					b_exploded=true;
 	else							b_exploded=false;
 									
@@ -264,8 +267,7 @@ void CCar::net_Save(NET_Packet& P)
 {
 	inherited::net_Save(P);
 	SaveNetState(P);
-
-	
+	P.w_float(m_fuel);
 }
 
 
@@ -484,6 +486,7 @@ void CCar::UpdateCL				( )
 			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f*/);
 			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetSpeed(lin_vel.magnitude()/1000.f*3600.f/100.f);
 			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetRPM(m_current_rpm/m_max_rpm/2.f);
+			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetFuel(100.0f * (m_fuel / m_fuel_tank));
 		}
 	}
 
@@ -830,15 +833,17 @@ void CCar::ParseDefinitions()
 		gear_rat[1]*=(1.f/60.f*2.f*M_PI);
 		gear_rat[2]*=(1.f/60.f*2.f*M_PI);
 		m_gear_ratious.push_back(gear_rat);
+		Msg("! [%s][%s] [%3.3f,%3.3f,%3.3f]", this->CGameObject::Name(), rat_num, VPUSH(gear_rat));
 	}
-
 	///////////////////////////////sound///////////////////////////////////////////////////////
 	m_car_sound->Init();
 	///////////////////////////////fuel///////////////////////////////////////////////////
+/*
 	m_fuel_tank=ini->r_float("car_definition","fuel_tank");
 	m_fuel=m_fuel_tank;
 	m_fuel_consumption=ini->r_float("car_definition","fuel_consumption");
 	m_fuel_consumption/=100000.f;
+*/
 	if(ini->line_exist("car_definition","exhaust_particles"))
 		m_exhaust_particles = ini->r_string("car_definition","exhaust_particles");
 	///////////////////////////////lights///////////////////////////////////////////////////
@@ -1121,7 +1126,7 @@ void CCar::UpdatePower()
 {
 	m_current_rpm=EngineDriveSpeed();
 	m_current_engine_power=EnginePower();
-	if(b_auto_switch_transmission&&!b_transmission_switching) 
+	if(b_auto_switch_transmission&&!b_transmission_switching&&b_engine_on) 
 	{
 		VERIFY2(CurrentTransmission()<m_gear_ratious.size(),"wrong transmission");
 		if(m_current_rpm<m_gear_ratious[CurrentTransmission()][1]) TransmissionDown();
@@ -1848,6 +1853,9 @@ void CCar::CarExplode()
 
 	if(CPHDestroyable::CanDestroy())
 		CPHDestroyable::Destroy(ID(),"physic_destroyable_object");	
+	if (HUD().GetUI()->UIMainIngameWnd->CarPanel().IsShown())
+		HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(false);
+
 }
 //void CCar::object_contactCallbackFun(bool& do_colide,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
 //{
