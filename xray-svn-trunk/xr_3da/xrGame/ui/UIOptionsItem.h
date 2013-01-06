@@ -36,6 +36,7 @@ protected:
 			char*			GetOptTokenValue	();
 			xr_token*		GetOptToken			();
 			void			SaveOptTokenValue	(const char* val);
+			bool			IsLanguangeItem		() { return (0==xr_strcmp(m_entry.c_str(), "language"));}
 
 	xr_string		m_entry;
 

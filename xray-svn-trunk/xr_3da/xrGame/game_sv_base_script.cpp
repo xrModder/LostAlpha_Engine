@@ -47,6 +47,11 @@ LPCSTR translate_string(LPCSTR str)
 	return *CStringTable().translate(str);
 }
 
+void reload_language()
+{
+	CStringTable().ReloadLanguage();
+}
+
 bool has_active_tutotial()
 {
 	return (g_tutorial!=NULL);
@@ -128,6 +133,7 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("start_tutorial",		&start_tutorial),
 	def("has_active_tutorial",	&has_active_tutotial),
 	def("translate_string",		&translate_string),
+	def("reload_language",		&reload_language),
 	def("convert_time",			((xrTime (*) (u32)) &convert_time)),
 	def("convert_time",			((u32	 (*) (const xrTime &)) &convert_time)),
 	def("is_infoportion_valid",	&is_infoportion_valid)

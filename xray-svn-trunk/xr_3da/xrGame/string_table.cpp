@@ -3,7 +3,7 @@
 
 #include "ui/xrUIXmlParser.h"
 #include "xr_level_controller.h"
-#include "../xr_ioconsole.h"
+#include "MainMenu.h"
 
 STRING_TABLE_DATA* CStringTable::pData = NULL;
 BOOL CStringTable::m_bWriteErrorsToLog = FALSE;
@@ -101,11 +101,20 @@ void CStringTable::ReparseKeyBindings()
 
 void CStringTable::ReloadLanguage()
 {
+	if (0==xr_strcmp(g_language.c_str(), *(pData->m_sLanguage)))	return;
+
 	//destroy
 	xr_delete(pData);
 
 	//init
 	Init();
+
+	//reload language in menu
+	if (MainMenu()->IsActive())
+	{
+		MainMenu()->Activate(FALSE);
+		MainMenu()->Activate(TRUE);
+	}
 }
 
 
@@ -168,4 +177,3 @@ STRING_VALUE CStringTable::translate (const STRING_ID& str_id) const
 	}
 	return					pData->m_StringTable[str_id];
 }
-
