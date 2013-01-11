@@ -272,7 +272,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	if (Remote() || !g_Alive())					return;
 //	if (conditions().IsSleeping())				return;
 
-	callback(GameObject::eOnButtonHold)(cmd);
+	callback(GameObject::eOnButtonHold)(lua_game_object(), cmd);
 
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	if (IsTalking())							return;

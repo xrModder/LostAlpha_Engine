@@ -86,7 +86,7 @@ void        CPostprocessAnimator::Load                            (LPCSTR name)
           {
           IReader* F = FS.r_open (full_path);
           u32 dwVersion = F->r_u32();
-          VERIFY (dwVersion == POSTPROCESS_FILE_VERSION);
+          //VERIFY (dwVersion == POSTPROCESS_FILE_VERSION);
           //load base color
           VERIFY (m_Params[0]);
           m_Params[0]->load (*F);

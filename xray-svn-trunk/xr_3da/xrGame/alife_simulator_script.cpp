@@ -412,6 +412,27 @@ void teleport_entity(CALifeSimulator *self, CSE_Abstract *object, Fvector &posit
 	self->teleport_object(object->ID, game_vertex_id, level_vertex_id, position);
 }
 
+
+CSE_Abstract *CALifeSimulator__spawn_restrictor		(CALifeSimulator *self, LPCSTR section, const Fvector &position,
+													 u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, float radius, u8 restr_type)
+{
+	THROW				(self);
+	CSE_Abstract *entity		= (self->spawn_item(section,position,level_vertex_id,game_vertex_id,ALife::_OBJECT_ID(-1)));
+
+	CSE_ALifeSpaceRestrictor *restr	= smart_cast<CSE_ALifeSpaceRestrictor*>(entity);
+	THROW				(restr);
+
+	CShapeData::shape_def		restr_shape;
+	restr_shape.data.sphere.P.set		(0.0f,0.0f,0.0f);
+	restr_shape.data.sphere.R		= radius;
+	restr_shape.type			= CShapeData::cfSphere;
+
+	restr->assign_shapes		(&restr_shape,1);
+	restr->m_space_restrictor_type	= RestrictionSpace::ERestrictorTypes(restr_type);
+
+	return entity;
+}
+
 void script_switch_to_offline(CALifeSimulator *self, u16 id)
 {
 	VERIFY(self);
@@ -505,6 +526,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("force_entity_update",		&force_entity_update)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
+			.def("create_restrictor",			&CALifeSimulator__spawn_restrictor)
 			.def("store",					&get_store)
 			.def("timer_manager",			&get_timers_manager)
 		,def("alife",						&alife)
