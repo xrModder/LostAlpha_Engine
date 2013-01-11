@@ -1315,11 +1315,17 @@ u32	 CSE_ALifeSchedulable::ef_detector_type	() const
 // CSE_ALifeHelicopter
 ////////////////////////////////////////////////////////////////////////////
 
+static LPCSTR DEFAULT_STARTUP_ANIM = "idle";
+static LPCSTR DEFAULT_ENGINE_SOUND = "alexmx\\helicopter";
+
+
 CSE_ALifeHelicopter::CSE_ALifeHelicopter	(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_Motion(),CSE_PHSkeleton(caSection)
 {
 	m_flags.set					(flUseSwitches,		FALSE);
 	m_flags.set					(flSwitchOffline,	FALSE);
 	m_flags.set					(flInteractive,		FALSE);
+	startup_animation					= DEFAULT_STARTUP_ANIM;
+	engine_sound						= DEFAULT_ENGINE_SOUND;
 }
 
 CSE_ALifeHelicopter::~CSE_ALifeHelicopter	()
