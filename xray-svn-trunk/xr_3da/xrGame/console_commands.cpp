@@ -634,7 +634,8 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 
 	virtual void Execute(LPCSTR args) {
 
-		if (!args || !*args) {
+		if (!args || !*args)
+		{
 			Msg					("! no arguments passed");
 			return;
 		}
@@ -648,14 +649,8 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 
 		g_language = args;
 
-		CStringTable().ReloadLanguage();
-
-		//reload language in menu
-		if (g_pGamePersistent && MainMenu() && MainMenu()->IsActive())
-		{
-			MainMenu()->Activate(FALSE);
-			MainMenu()->Activate(TRUE);
-		}
+		if (g_pGamePersistent && !MainMenu()->IsActive())
+			CStringTable().ReloadLanguage();
 	}
 
 	virtual void	Save				(IWriter *F)
