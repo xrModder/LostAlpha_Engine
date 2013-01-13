@@ -54,6 +54,11 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	SetWeaponHideState				(INV_STATE_BLOCK_ALL, true);
 
+	CTorch *flashlight = GetCurrentTorch();
+	if (flashlight)
+		flashlight->Switch(FALSE);
+
+
 	CStepManager::on_animation_start(MotionID(), 0);
 }
 
@@ -127,7 +132,11 @@ bool CActor::use_Vehicle(CHolderCustom* object)
 void CActor::on_requested_spawn(CObject *object)
 {
 	CCar * car= smart_cast<CCar*>(object);
-	Fvector dir = car->XFORM().k;
-	cam_Active()->Set(dir.x,dir.y,dir.z);
+
 	attach_Vehicle(car);
+
+	//skyloader: i removed the previous version and i found an alternative:
+	Fvector			xyz;
+	car->XFORM().getXYZi(xyz);
+	r_torso.yaw		= xyz.y;
 }
