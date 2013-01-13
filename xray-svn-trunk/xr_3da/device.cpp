@@ -363,8 +363,8 @@ void CRenderDevice::FrameMove()
 			fTimeDelta = EPS_S + EPS_S;					// limit to 15fps minimum
 
 		if(Paused()) {	
-//			fTimeDelta = 0.0f;
-			fTimeDelta = 0.0370f;
+			fTimeDelta = 0.0f;
+//			fTimeDelta = 0.0370f;
 		}
 //		u64	qTime		= TimerGlobal.GetElapsed_clk();
 		fTimeGlobal		= TimerGlobal.GetElapsed_sec(); //float(qTime)*CPU::cycles2seconds;
