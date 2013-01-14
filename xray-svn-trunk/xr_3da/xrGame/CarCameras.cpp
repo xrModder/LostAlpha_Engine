@@ -9,6 +9,7 @@
 #include "alife_space.h"
 #include "hit.h"
 #include "PHDestroyable.h"
+#include "../Kinematics.h"
 #include "car.h"
 #include "actor.h"
 #include "cameralook.h"
@@ -56,15 +57,15 @@ void	CCar::OnCameraChange		(int type)
 {
 	if(Owner())
 	{
-		// if	(type==ectFirst)
-		// {
-		//	Owner()->setVisible(FALSE);
-		// }
-		// else if(active_camera->tag==ectFirst)
-		// {
-			Owner()->setVisible(TRUE);
+		Owner()->setVisible(TRUE);
 
-		// }
+		IKinematics*	pKinematics	= smart_cast<IKinematics*>(Owner()->Visual());
+		u16 		head_bone	= pKinematics->LL_BoneID("bip01_head");
+
+		if (type==ectFirst)
+			pKinematics->LL_HideBoneVisible(head_bone,FALSE);
+		else if (active_camera->tag==ectFirst)
+			pKinematics->LL_HideBoneVisible(head_bone,TRUE);
 	}
 	
 	if (!active_camera||active_camera->tag!=type){

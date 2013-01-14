@@ -27,6 +27,13 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	if(m_holder) return;
 	PickupModeOff		();
+
+	// *** movement state - reload
+	mstate_wishful			= 0;
+	mstate_real				= 0;
+	mstate_old				= 0;
+	m_bJumpKeyPressed		= FALSE;
+
 	m_holder=vehicle;
 
 	cam_Set(eacLookAt);
