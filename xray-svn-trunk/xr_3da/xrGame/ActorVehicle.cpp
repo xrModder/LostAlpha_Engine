@@ -74,6 +74,12 @@ void CActor::detach_Vehicle()
 	if(!m_holder) return;
 	CCar* car=smart_cast<CCar*>(m_holder);
 	if(!car)return;
+
+	IKinematics*	pKinematics	= smart_cast<IKinematics*>(Visual()); R_ASSERT(pKinematics);
+	u16	head_bone		= pKinematics->LL_BoneID("bip01_head");
+	pKinematics->LL_HideBoneVisible(head_bone,TRUE);
+
+
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
 	if(sh)sh->Deactivate();
 	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
@@ -82,7 +88,7 @@ void CActor::detach_Vehicle()
 		return;
 	}
 	if(sh)sh->Activate();
-	m_holder->detach_Actor();//
+	m_holder->detach_Actor();
 
 	character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
 	character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
@@ -97,7 +103,6 @@ void CActor::detach_Vehicle()
 	V->PlayCycle		(m_anims->m_normal.m_torso_idle);
 	m_holderID=u16(-1);
 
-//.	SetWeaponHideState(whs_CAR, FALSE);
 	SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
 	cam_Set(eacFirstEye);

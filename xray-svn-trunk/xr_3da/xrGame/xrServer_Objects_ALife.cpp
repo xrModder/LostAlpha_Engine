@@ -1323,7 +1323,7 @@ CSE_ALifeHelicopter::CSE_ALifeHelicopter	(LPCSTR caSection) : CSE_ALifeDynamicOb
 {
 	m_flags.set					(flUseSwitches,		FALSE);
 	m_flags.set					(flSwitchOffline,	FALSE);
-	m_flags.set					(flInteractive,		FALSE);
+	//m_flags.set					(flInteractive,		FALSE);
 	startup_animation					= DEFAULT_STARTUP_ANIM;
 	engine_sound						= DEFAULT_ENGINE_SOUND;
 }
