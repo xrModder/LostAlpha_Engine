@@ -482,11 +482,14 @@ public:
 			return;
 		}
 
-		string256					func_name;
-		luabind::functor<LPCSTR>			func;
-		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","quicksave_function"));
-		R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
-		func						();
+		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_save_callback"))
+		{
+			string256					func_name;
+			luabind::functor<LPCSTR>			func;
+			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_save_callback"));
+			R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
+			func						();
+		}
 
 		string_path				S,S1;
 		S[0]					= 0;
@@ -568,11 +571,14 @@ public:
 			return;
 		}
 
-		string256					func_name;
-		luabind::functor<LPCSTR>			func;
-		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","quickload_function"));
-		R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
-		func						();
+		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_callback"))
+		{
+			string256					func_name;
+			luabind::functor<LPCSTR>			func;
+			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_callback"));
+			R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
+			func						();
+		}
 
 /*     moved to level_network_messages.cpp
 		CSavedGameWrapper			wrapper(args);
