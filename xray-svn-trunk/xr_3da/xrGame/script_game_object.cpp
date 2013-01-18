@@ -36,6 +36,8 @@
 #include "actor_memory.h"
 #include "visual_memory_manager.h"
 #include "inventory_item.h"
+#include "PHMovementControl.h"
+#include "CharacterPhysicsSupport.h"
 
 class CScriptBinderObject;
 
@@ -612,4 +614,33 @@ void CScriptGameObject::invulnerable		(bool invulnerable)
 	}
 
 	monster->invulnerable	(invulnerable);
+}
+
+void CScriptGameObject::TeleportAliveEntity (Fvector pos, Fvector dir)
+{
+	CEntityAlive* pAlive = smart_cast<CEntityAlive*>(&object());
+	if (!pAlive) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CEntityAlive : cannot access class member TeleportAliveEntity!");
+		return;
+	}
+
+  	Fmatrix xform = pAlive->XFORM();
+
+	xform.c = pos;
+	xform.k = dir;
+
+	pAlive->XFORM().set		(xform);
+
+	if(!pAlive->g_Alive())				return;
+
+	if (pAlive->animation_movement_controlled())
+		pAlive->destroy_anim_mov_ctrl();
+
+	CPHMovementControl* mc = pAlive->character_physics_support()->movement();
+	if (mc)
+		if(mc->CharacterExist())
+			mc->EnableCharacter();
+
+	pAlive->character_physics_support()->set_movement_position(xform.c);
+	pAlive->character_physics_support()->movement()->SetVelocity(0,0,0);
 }

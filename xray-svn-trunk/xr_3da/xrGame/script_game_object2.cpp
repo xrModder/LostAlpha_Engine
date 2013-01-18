@@ -40,6 +40,8 @@
 #include "movement_manager.h"
 #include "detail_path_manager.h"
 #include "inventory.h"
+#include "holder_custom.h"
+#include "level.h"
 
 void CScriptGameObject::explode	(u32 level_time)
 {
@@ -424,6 +426,48 @@ CHolderCustom* CScriptGameObject::get_current_holder()
 		return actor->Holder();
 	else
 		return NULL;
+}
+
+u16 CScriptGameObject::get_current_holder_id()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+
+	if(actor)
+		return actor->HolderID();
+	else
+		return NULL;
+}
+
+
+void CScriptGameObject::detach_actor_Vehicle	()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (!actor)
+	{
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : attempt to call detach_actor_Vehicle method for non-actor object");
+		return;
+	}
+	actor->detach_Vehicle();
+}
+
+
+void CScriptGameObject::attach_actor_Vehicle	(u32 id)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (!actor)
+	{
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : attempt to call attach_actor_Vehicle method for non-actor object");
+		return;
+	}
+	CObject* O	= Level().Objects.net_Find	(id);
+	if (!O)
+	{
+		Msg("! Error: No object to attach holder [%d]", id);
+		return;
+	}
+	CHolderCustom*	holder = smart_cast<CHolderCustom*>(O);
+
+	actor->attach_Vehicle(holder);
 }
 
 void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_threshold)
