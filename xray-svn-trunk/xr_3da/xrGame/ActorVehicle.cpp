@@ -145,6 +145,18 @@ void CActor::on_requested_spawn(CObject *object)
 {
 	CCar * car= smart_cast<CCar*>(object);
 
+	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
+	if(sh)sh->Deactivate();
+	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
+	{
+		if(sh)sh->Activate();
+		return;
+	}
+	if(sh)sh->Activate();
+
+	character_physics_support()->movement()->SetPosition(car->ExitPosition());
+	character_physics_support()->movement()->SetVelocity(car->ExitVelocity());
+	
 	attach_Vehicle(car);
 
 	//skyloader: i removed the previous version and i found an alternative:
