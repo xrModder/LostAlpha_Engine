@@ -85,7 +85,7 @@ CTimerCustom* CTimersManager::GetTimerByName(LPCSTR name)
 {
 	CTimerCustom* timer = SearchTimer(name);
 
-	R_ASSERT3(timer,"Can't find find timer with name ",name);
+	R_ASSERT3(timer,"Can't find timer with name ",name);
 	return timer;
 }
 
@@ -131,7 +131,7 @@ void CTimersManager::Update ()
 
 	for (;it!=it_end;++it) 
 	{
-		//skyloader to ghost: i added GAME_TIMER but i thought need to optimize this code
+		//SkyLoader to Ghost: added GAME_TIMER
 		if ((*it).isGameTimer() && !(*it).isHUD())
 		{
 			if ((*it).CheckGameTime())

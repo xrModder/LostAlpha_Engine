@@ -32,6 +32,7 @@ CTimerCustom::CTimerCustom(void)
 	m_name = "@";
 	m_action = "";
 	m_info = "";
+	m_argument = "";
 }
 
 CTimerCustom::~CTimerCustom(void) 
@@ -118,6 +119,7 @@ void CTimerCustom::save (IWriter& stream)
 	save_data(m_time,	stream);
 	save_data(m_game_time,	stream);
 	save_data(m_flags,	stream);
+	save_data(m_argument,	stream);
 }
 
 void CTimerCustom::load (IReader& stream)
@@ -128,6 +130,7 @@ void CTimerCustom::load (IReader& stream)
 	load_data(m_time,	stream);
 	load_data(m_game_time,	stream);
 	load_data(m_flags,	stream);
+	load_data(m_argument,	stream);
 	if (isHUD()) m_parent->OnHud(this,true);
 }
 
@@ -137,9 +140,12 @@ void CTimerCustom::StartAction()
 	if (Action().size()) {
 		luabind::functor<void>			fl;
 		R_ASSERT3							(ai().script_engine().functor<void>(ActionScript(),fl),"Can't find function ",ActionScript());
-		fl									(Name());
+		if (GetArgs().size())
+			fl	(ArgsScript());
+		else
+			fl	(Name());
 	}
 	if (Info().size()) {
-		Actor()->TransferInfo(Info(),true);
+		Actor()->TransferInfo(InfoScript(),true);
 	}
 }
