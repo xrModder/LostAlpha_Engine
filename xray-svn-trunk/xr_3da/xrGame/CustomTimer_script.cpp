@@ -22,6 +22,8 @@ void CTimerCustom::script_register(lua_State *L)
 				.def("Action",						&CTimerCustom::ActionScript)
 				.def("SetInfo",						&CTimerCustom::SetInfo)
 				.def("Info",						&CTimerCustom::InfoScript)
+				.def("SetArgs",						&CTimerCustom::SetArgs)
+				.def("GetArgs",						&CTimerCustom::ArgsScript)
 
 				
 				.def_readwrite("day",				&CTimerCustom::m_day)

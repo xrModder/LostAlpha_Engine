@@ -223,7 +223,7 @@ void CStalkerActionSmartTerrain::execute				()
 #pragma todo("gr1ph to all: just an hack, better to investigate if possible!")
 	if (!task)
 	{
-		Msg("! Smart terrain '%s' is assigned to '%s' but returns no task", stalker->brain().smart_terrain().name(), stalker->name());
+		Msg("! Smart terrain is assigned to [%s][%d] but returns no task", stalker->name_replace(), m_object->ID());
 		return;
 	}
 	if (object().ai_location().game_vertex_id() != task->game_vertex_id()) {

@@ -360,15 +360,12 @@ public:
 
 void DemoRecordCallback()
 {
-#pragma todo("gr1ph to Skyloader: it works, it just waits your legs fix :)")
-#if 0
 	CActor *actor = Actor();
-	if (actor)
+	if (actor && actor->CanBeDrawLegs())
 	{
 		actor->setVisible					(true);
 		actor->SetDrawLegs					(true);
 	}
-#endif
 }
 
 class CCC_DemoRecord : public IConsole_Command
@@ -377,13 +374,13 @@ public:
 
 	CCC_DemoRecord(LPCSTR N) : IConsole_Command(N) {};
 	virtual void Execute(LPCSTR args) {
-		#ifndef	DEBUG
+#ifndef	DEBUG
 		if (GameID() != GAME_SINGLE) 
 		{
 			Msg("For this game type Demo Record is disabled.");
 			return;
 		};
-		#endif
+#endif
 		if (0==g_pGameLevel)
 		{
 			Msg	("! There are no level(s) started");
@@ -394,7 +391,7 @@ public:
 			strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
 			string_path		fn;
 			FS.update_path	(fn, "$game_saves$", fn_);
-			if (actor)
+			if (actor && actor->CanBeDrawLegs() && actor->IsFirstEye())
 			{
 				actor->setVisible					(false);
 				actor->SetDrawLegs					(false);
@@ -482,6 +479,15 @@ public:
 			return;
 		}
 
+		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_save_callback"))
+		{
+			string256					func_name;
+			luabind::functor<LPCSTR>			func;
+			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_save_callback"));
+			R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
+			func						();
+		}
+
 		string_path				S,S1;
 		S[0]					= 0;
 //.		sscanf					(args ,"%s",S);
@@ -561,6 +567,16 @@ public:
 			Msg						("! Cannot load saved game %s, version mismatch or saved game is corrupted",saved_game);
 			return;
 		}
+
+		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_callback"))
+		{
+			string256					func_name;
+			luabind::functor<LPCSTR>			func;
+			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_callback"));
+			R_ASSERT					(ai().script_engine().functor<LPCSTR>(func_name,func));
+			func						();
+		}
+
 /*     moved to level_network_messages.cpp
 		CSavedGameWrapper			wrapper(args);
 		if (wrapper.level_id() == ai().level_graph().level_id()) {

@@ -46,6 +46,11 @@ public:
 	void				SetInfo				(LPCSTR _info) { m_info = _info;};
 	shared_str			Info				() { return m_info;}
 	LPCSTR				InfoScript			() { return m_info.c_str();}
+
+	//Argument
+	void				SetArgs			(LPCSTR argument) { m_argument = argument;}
+	LPCSTR				ArgsScript				() { return m_argument.c_str();}
+	shared_str			GetArgs				() { return m_argument;}
 	
 
 	//Hud
@@ -77,6 +82,7 @@ private:
 	shared_str			m_action;
 	shared_str			m_info;
 	u32				m_game_time;
+	shared_str			m_argument;
 	ALife::_TIME_ID		m_time;
 
 	enum lm_flags	{	

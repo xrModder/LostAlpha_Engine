@@ -27,6 +27,13 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	if(m_holder) return;
 	PickupModeOff		();
+
+	// *** movement state - reload
+	mstate_wishful			= 0;
+	mstate_real				= 0;
+	mstate_old				= 0;
+	m_bJumpKeyPressed		= FALSE;
+
 	m_holder=vehicle;
 
 	cam_Set(eacLookAt);
@@ -54,6 +61,11 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	SetWeaponHideState				(INV_STATE_BLOCK_ALL, true);
 
+	CTorch *flashlight = GetCurrentTorch();
+	if (flashlight)
+		flashlight->Switch(FALSE);
+
+
 	CStepManager::on_animation_start(MotionID(), 0);
 }
 
@@ -62,6 +74,12 @@ void CActor::detach_Vehicle()
 	if(!m_holder) return;
 	CCar* car=smart_cast<CCar*>(m_holder);
 	if(!car)return;
+
+	IKinematics*	pKinematics	= smart_cast<IKinematics*>(Visual()); R_ASSERT(pKinematics);
+	u16	head_bone		= pKinematics->LL_BoneID("bip01_head");
+	pKinematics->LL_HideBoneVisible(head_bone,TRUE);
+
+
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
 	if(sh)sh->Deactivate();
 	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
@@ -70,7 +88,7 @@ void CActor::detach_Vehicle()
 		return;
 	}
 	if(sh)sh->Activate();
-	m_holder->detach_Actor();//
+	m_holder->detach_Actor();
 
 	character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
 	character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
@@ -85,7 +103,6 @@ void CActor::detach_Vehicle()
 	V->PlayCycle		(m_anims->m_normal.m_torso_idle);
 	m_holderID=u16(-1);
 
-//.	SetWeaponHideState(whs_CAR, FALSE);
 	SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
 	cam_Set(eacFirstEye);
@@ -127,7 +144,23 @@ bool CActor::use_Vehicle(CHolderCustom* object)
 void CActor::on_requested_spawn(CObject *object)
 {
 	CCar * car= smart_cast<CCar*>(object);
-	Fvector dir = car->XFORM().k;
-	cam_Active()->Set(dir.x,dir.y,dir.z);
+
+	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
+	if(sh)sh->Deactivate();
+	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
+	{
+		if(sh)sh->Activate();
+		return;
+	}
+	if(sh)sh->Activate();
+
+	character_physics_support()->movement()->SetPosition(car->ExitPosition());
+	character_physics_support()->movement()->SetVelocity(car->ExitVelocity());
+	
 	attach_Vehicle(car);
+
+	//skyloader: i removed the previous version and i found an alternative:
+	Fvector			xyz;
+	car->XFORM().getXYZi(xyz);
+	r_torso.yaw		= xyz.y;
 }

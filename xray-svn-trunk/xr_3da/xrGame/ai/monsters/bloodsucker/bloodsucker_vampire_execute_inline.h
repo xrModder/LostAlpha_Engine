@@ -33,7 +33,7 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	time_vampire_started	= 0;
 
 	psHUD_Flags.set(HUD_DRAW, FALSE);
-	//g_bDisableAllInput = true;
+	g_bDisableAllInput = true;
 
 //#pragma todo("SkyLoader: SetWeaponHideState() doesn't work properly in this scheme, need to fix it")
 //#if 0
@@ -89,7 +89,7 @@ void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 {
 	psHUD_Flags.set(HUD_DRAW, TRUE);
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
-	//g_bDisableAllInput = false;
+	g_bDisableAllInput = false;
 }
 
 TEMPLATE_SPECIALIZATION

@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module		: weapon_collision.cpp
 //	Created		: 12/10/2012
-//	Modified 	: 17/12/2012
+//	Modified 	: 13/01/2013
 //	Author		: lost alpha (SkyLoader)
-//	Description	: weapon HUD collision (based on weapon_bobbing.cpp)
+//	Description	: weapon HUD collision
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -49,7 +49,7 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 	Fvector	dir;
 	o.getHPB(dir.x,dir.y,dir.z);
 
-	//////collision of weapon hud
+	//////collision of weapon hud:
 
 	if (bFirstUpdate) {
 		fReminderDist		= xyz.z;
@@ -82,7 +82,7 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 		o.c.set(xyz);
 	}
 
-	//////strafe inertion
+	//////strafe inertion:
 
 	if (!psActorFlags.test(AF_STRAFE_INERT)) return;
 
@@ -90,15 +90,13 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 	{
 		float k	= ((dwMState & ACTOR_DEFS::mcCrouch) ? 0.5f : 1.f);
 		if (dwMState&ACTOR_DEFS::mcLStrafe)
-			k *= -1;
+			k *= -1.f;
 		if (is_zoom) k = 0.f;
 
-		if (isActorAccelerated(dwMState, is_zoom))
-			fReminderNeedStrafe	= dir.z + (STRAFE_ANGLE * k * 0.9f);
-		else if (is_limping)
-			fReminderNeedStrafe	= dir.z + (STRAFE_ANGLE * k * 0.75f);
-		else
-			fReminderNeedStrafe	= dir.z + (STRAFE_ANGLE * k);
+		fReminderNeedStrafe	= dir.z + (STRAFE_ANGLE * k);
+
+		if (dwMState&ACTOR_DEFS::mcFwd || dwMState&ACTOR_DEFS::mcBack)
+			fReminderNeedStrafe	/= 2.f;
 
 	} else fReminderNeedStrafe = 0.f;
 
@@ -121,7 +119,6 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 		dir.z 		= fReminderStrafe;
 		Fmatrix m;
 		m.setHPB(dir.x,dir.y,dir.z);
-		//o.set(Fmatrix().mul_43(o,m));
 		Fmatrix tmp;
 		tmp.mul_43(o, m);
 		o.set(tmp);

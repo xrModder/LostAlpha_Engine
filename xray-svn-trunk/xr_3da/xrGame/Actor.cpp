@@ -387,7 +387,12 @@ if(!g_dedicated_server)
 	SetDefaultVisualOutfit			(default_outfit);
 	LPCSTR							default_outfit_legs = pSettings->r_string(section, "default_outfit_legs");
 	SetDefaultVisualOutfit_legs		(default_outfit_legs);
-	if (IsGameTypeSingle())
+
+	m_bCanBeDrawLegs 			= false;
+	if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","actor_legs_visible"))
+		m_bCanBeDrawLegs = !!pSettings->r_bool("lost_alpha_cfg","actor_legs_visible");
+
+	if (IsGameTypeSingle() && CanBeDrawLegs())
 		m_bDrawLegs						= true;
 	else
 		m_bDrawLegs						= false;

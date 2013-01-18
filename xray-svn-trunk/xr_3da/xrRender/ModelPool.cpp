@@ -117,7 +117,7 @@ IRender_Visual*	CModelPool::Instance_Load		(const char* N, BOOL allow_register)
 	
 	// Actual loading
 #ifdef DEBUG
-	if (bLogging)		Msg		("- Uncached model loading: %s",fn);
+//	if (bLogging)		Msg		("- Uncached model loading: %s",fn);
 #endif // DEBUG
 
 	IReader*			data	= FS.r_open(fn);

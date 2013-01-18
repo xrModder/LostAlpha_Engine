@@ -148,7 +148,8 @@ void CCF_Skeleton::BuildState()
 		Fmatrix					ME,T,TW;
 		const Fmatrix& Mbone	= K->LL_GetTransform(I->elem_id);
 
-		VERIFY2( DET(Mbone)>EPS, ( make_string("0 scale bone matrix, %d \n", I->elem_id ) + dbg_object_full_dump_string( owner ) ).c_str()  );
+		//SkyLoader: commented because added LL_HideBoneVisible(u16,bool)
+		//VERIFY2( DET(Mbone)>EPS, ( make_string("0 scale bone matrix, %d \n", I->elem_id ) + dbg_object_full_dump_string( owner ) ).c_str()  );
 
 		switch (I->type){
 			case SBoneShape::stBox:{
@@ -161,11 +162,13 @@ void CCF_Skeleton::BuildState()
 				bool b						= I->b_IM.invert_b	(TW);
 				// check matrix validity
 				if (!b)	{
+#ifdef DEBUG
+					//SkyLoader: you get this message because you got hit and enabled LL_HideBoneVisible(u16,FALSE) from CCar::OnCameraChange(int)
+
 					Msg						("! ERROR: invalid bone xform . Bone disabled.");
 					Msg						("! ERROR: bone_id=[%d], world_pos[%f,%f,%f]",I->elem_id,VPUSH(TW.c));
 					Msg						("visual name %s",owner->cNameVisual().c_str());
 					Msg						("object name %s",owner->cName().c_str());
-#ifdef DEBUG
 					Msg						( dbg_object_full_dump_string( owner ).c_str() );
 #endif //#ifdef DEBUG
 					I->elem_id				= u16(-1);				//. hack - disable invalid bone

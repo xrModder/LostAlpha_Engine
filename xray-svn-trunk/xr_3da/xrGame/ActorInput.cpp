@@ -207,12 +207,14 @@ void CActor::IR_OnMouseWheel(int direction)
 	if (direction>0)
 	{
 		if (eacLookAt==cam_active)
-			cam_Active()->Move(kCAM_ZOOM_IN);
+			for (int i=0; i<10; ++i)
+				cam_Active()->Move(kCAM_ZOOM_IN);
 		else
 			OnNextWeaponSlot();
 	} else {
 		if (eacLookAt==cam_active)
-			cam_Active()->Move(kCAM_ZOOM_OUT);
+			for (int i=0; i<10; ++i)
+				cam_Active()->Move(kCAM_ZOOM_OUT);
 		else
 			OnPrevWeaponSlot();
 	}

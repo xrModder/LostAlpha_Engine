@@ -448,19 +448,22 @@ void CKinematics::Release		()
 
 void CKinematics::LL_SetBoneVisible(u16 bone_id, BOOL val, BOOL bRecursive)
 {
-	VERIFY				(bone_id<LL_BoneCount());      
-    u64 mask 			= u64(1)<<bone_id;
-    visimask.set		(mask,val);
-	if (!visimask.is(mask)){
-        bone_instances[bone_id].mTransform.scale(0.f,0.f,0.f);
-	}else{
+	VERIFY				(bone_id<LL_BoneCount());
+
+	u64 mask 			= u64(1)<<bone_id;
+	visimask.set		(mask,val);
+
+	if (!visimask.is(mask))
+		bone_instances[bone_id].mTransform.scale(0.f,0.f,0.f);
+	else
 		CalculateBones_Invalidate	();
-	}
+
 	bone_instances[bone_id].mRenderTransform.mul_43(bone_instances[bone_id].mTransform,(*bones)[bone_id]->m2b_transform);
-    if (bRecursive)		{
-        for (xr_vector<CBoneData*>::iterator C=(*bones)[bone_id]->children.begin(); C!=(*bones)[bone_id]->children.end(); C++)
-            LL_SetBoneVisible((*C)->GetSelfID(),val,bRecursive);
-    }
+	if (bRecursive)
+	{
+		for (xr_vector<CBoneData*>::iterator C=(*bones)[bone_id]->children.begin(); C!=(*bones)[bone_id]->children.end(); C++)
+			LL_SetBoneVisible((*C)->GetSelfID(),val,bRecursive);
+	}
 	Visibility_Invalidate			();
 }
 
@@ -470,21 +473,23 @@ void CKinematics::LL_HideBoneVisible(u16 bone_id, BOOL bRecursive)
 {
 	VERIFY				(bone_id<LL_BoneCount());      
     	u64 mask 			= u64(1)<<bone_id;
-  	hidden_bones.set		(mask,FALSE);
+  	hidden_bones.set		(mask,bRecursive);
 
-        bone_instances[bone_id].mTransform.scale(0.f,0.f,0.f);
-
-	u16 ParentID		= LL_GetData(bone_id).GetParentID();
-
-	CBoneInstance 	&BI	= LL_GetBoneInstance(ParentID);
-        bone_instances[bone_id].mTransform.c = BI.mTransform.c;
+	if (!hidden_bones.is(mask))
+	{
+		bone_instances[bone_id].mTransform.scale(0.f,0.f,0.f);
+		u16 ParentID		= LL_GetData(bone_id).GetParentID();
+		CBoneInstance 	&BI	= LL_GetBoneInstance(ParentID);
+	        bone_instances[bone_id].mTransform.c = BI.mTransform.c;
+	} else {
+		CalculateBones_Invalidate	();
+	}
 
 	bone_instances[bone_id].mRenderTransform.mul_43(bone_instances[bone_id].mTransform,(*bones)[bone_id]->m2b_transform);
 
-    if (bRecursive)		{
         for (xr_vector<CBoneData*>::iterator C=(*bones)[bone_id]->children.begin(); C!=(*bones)[bone_id]->children.end(); C++)
-            LL_HideBoneVisible((*C)->GetSelfID(),bRecursive);
-    }
+		LL_HideBoneVisible((*C)->GetSelfID(),bRecursive);
+
 	Visibility_Invalidate			();
 }
 

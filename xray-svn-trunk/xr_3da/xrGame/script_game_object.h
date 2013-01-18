@@ -220,6 +220,8 @@ public:
 			void				SetHandsOnly		(bool val);
 			bool				IsHandsOnly		();
 			bool				IsFirstEyeCam		();
+	// CEntityAlive
+			void				TeleportAliveEntity	(Fvector pos, Fvector dir);
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
 			bool				CheckTypeVisibility	(const char *section_name);
@@ -529,6 +531,10 @@ public:
 			CHangingLamp*		get_hanging_lamp		();
 			CHolderCustom*		get_custom_holder		();
 			CHolderCustom*		get_current_holder		(); //actor only
+			u16			get_current_holder_id		(); //actor only
+
+			void				detach_actor_Vehicle		(); //actor only
+			void				attach_actor_Vehicle		(u32 id); //actor only
 			// Turret
 			CMountedTurret		*get_turret				();
 

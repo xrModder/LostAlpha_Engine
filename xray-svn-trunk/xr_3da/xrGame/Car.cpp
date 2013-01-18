@@ -470,16 +470,9 @@ void CCar::UpdateCL				( )
 		
 		if(m_pPhysicsShell->isEnabled())
 		{
-			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms[0]);
+			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms);
 		}
-/*
-		if(OwnerActor() && OwnerActor()->IsMyCamera()) 
-		{
-			cam_Update(Device.fTimeDelta, fov);
-			OwnerActor()->Cameras().Update(Camera());
-			OwnerActor()->Cameras().ApplyDevice();
-		}
-*/
+
 		if(HUD().GetUI())//
 		{
 			HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(true);
@@ -662,7 +655,7 @@ void CCar::detach_Actor()
 
 bool CCar::attach_Actor(CGameObject* actor)
 {
-	if(Owner()||CPHDestroyable::Destroyed()) return false;
+	if(CPHDestroyable::Destroyed()) return false;
 	CHolderCustom::attach_Actor(actor);
 
 	IKinematics* K	= smart_cast<IKinematics*>(Visual());
@@ -676,7 +669,9 @@ bool CCar::attach_Actor(CGameObject* actor)
 		id=K->LL_GetBoneRoot();
 	}
 	CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
-	m_sits_transforms.push_back(instance.mTransform);
+	m_sits_transforms.set(instance.mTransform);
+	actor->XFORM().mul_43	(XFORM(),m_sits_transforms);
+
 	OnCameraChange(ectFirst);
 	PPhysicsShell()->Enable();
 	PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
@@ -684,15 +679,6 @@ bool CCar::attach_Actor(CGameObject* actor)
 	processing_activate();
 	ReleaseHandBreak();
 	ReleaseBreaks();
-//	HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(true);
-//	HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(fEntityHealth/100.f);
-	//HUD().GetUI()->UIMainIngameWnd.ShowBattery(true);
-	//CBoneData&	bone_data=K->LL_GetData(id);
-	//Fmatrix driver_pos_tranform;
-	//driver_pos_tranform.setHPB(bone_data.bind_hpb.x,bone_data.bind_hpb.y,bone_data.bind_hpb.z);
-	//driver_pos_tranform.c.set(bone_data.bind_translate);
-	//m_sits_transforms.push_back(driver_pos_tranform);
-	//H_SetParent(actor);
 
 	return true;
 }

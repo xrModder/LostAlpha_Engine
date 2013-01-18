@@ -643,6 +643,8 @@ public:
 	virtual	void			SetDefaultVisualOutfit_legs	(shared_str DefaultOutfit) {m_DefaultVisualOutfit_legs = DefaultOutfit;};
 	virtual	void			SetDrawLegs	(bool DrawLegs) {m_bDrawLegs = DrawLegs;};
 	virtual bool			IsFirstEye	() const {return (m_bFirstEye);}
+	virtual bool			CanBeDrawLegs	() const {return (m_bCanBeDrawLegs);}
+	virtual u16			HolderID 	() const {return m_holderID;}
 
 	virtual void			UpdateAnimation			() 	{ g_SetAnimation(mstate_real); };
 
@@ -674,6 +676,7 @@ protected:
 		shared_str				m_DefaultVisualOutfit_legs;
 		bool					m_bDrawLegs;
 		bool					m_bFirstEye;
+		bool					m_bCanBeDrawLegs;
 
 		LPCSTR					invincibility_fire_shield_3rd;
 		LPCSTR					invincibility_fire_shield_1st;

@@ -65,8 +65,11 @@ void CActor::cam_Set	(EActorCameras style)
 float CActor::f_Ladder_cam_limit=1.f;
 void CActor::cam_SetLadder()
 {
-	setVisible(FALSE);
-	m_bDrawLegs = false;
+	if (CanBeDrawLegs())
+	{
+		setVisible(FALSE);
+		m_bDrawLegs = false;
+	}
 
 	CCameraBase* C			= cameras[eacFirstEye];
 	g_LadderOrient			();
@@ -120,9 +123,11 @@ void CActor::camUpdateLadder(float dt)
 
 void CActor::cam_UnsetLadder()
 {
-	//SkyLoader: i've temporarily disabled it
-	//setVisible(TRUE);
-	//m_bDrawLegs				= true;
+	if (CanBeDrawLegs())
+	{
+		setVisible(TRUE);
+		m_bDrawLegs = true;
+	}
 
 	CCameraBase* C			= cameras[eacFirstEye];
 	C->lim_yaw[0]			= 0;

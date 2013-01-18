@@ -224,6 +224,10 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("get_physics_shell",			&CScriptGameObject::get_physics_shell)
 		.def("get_holder_class",			&CScriptGameObject::get_custom_holder)
 		.def("get_current_holder",			&CScriptGameObject::get_current_holder)
+		//by skyloader for car fix
+		.def("get_current_holder_id",			&CScriptGameObject::get_current_holder_id)
+		.def("attach_vehicle",			&CScriptGameObject::attach_actor_Vehicle)
+		.def("detach_vehicle",			&CScriptGameObject::detach_actor_Vehicle)
 		//usable object
 		.def("set_tip_text",				&CScriptGameObject::SetTipText)
 		.def("set_tip_text_default",		&CScriptGameObject::SetTipTextDefault)
