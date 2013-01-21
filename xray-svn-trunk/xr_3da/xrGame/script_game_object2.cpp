@@ -442,12 +442,19 @@ u16 CScriptGameObject::get_current_holder_id()
 void CScriptGameObject::detach_actor_Vehicle	()
 {
 	CActor* actor = smart_cast<CActor*>(&object());
-	if (!actor)
+
+	if(!actor)
 	{
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : attempt to call detach_actor_Vehicle method for non-actor object");
 		return;
 	}
-	actor->detach_Vehicle();
+
+	CCar* car = smart_cast<CCar*>(actor->Holder());
+	if(!car){
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CGameObject : it is not a car!");
+	}
+
+	car->DoExit();
 }
 
 
@@ -459,14 +466,23 @@ void CScriptGameObject::attach_actor_Vehicle	(u32 id)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : attempt to call attach_actor_Vehicle method for non-actor object");
 		return;
 	}
+
 	CObject* O	= Level().Objects.net_Find	(id);
 	if (!O)
 	{
 		Msg("! Error: No object to attach holder [%d]", id);
 		return;
 	}
-	CHolderCustom*	holder = smart_cast<CHolderCustom*>(O);
 
+	CHolderCustom*	holder = smart_cast<CHolderCustom*>(O);
+	if (!holder)
+	{
+		Msg("! Error: Object[%d] is not holder", id);
+		return;
+	}
+
+	CCar* car = smart_cast<CCar*>(holder);
+	if(car) car->DoEnter();
 	actor->attach_Vehicle(holder);
 }
 

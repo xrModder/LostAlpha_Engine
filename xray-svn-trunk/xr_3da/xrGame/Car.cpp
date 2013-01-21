@@ -742,6 +742,28 @@ bool CCar::Exit(const Fvector& pos,const Fvector& dir)
 
 }
 
+void CCar::DoEnter()
+{
+	Fvector center;
+	Center(center);
+
+	Fvector enter_pos;
+	enter_pos.add(Device.vCameraPosition,center);
+	enter_pos.mul(0.5f);
+}
+
+void CCar::DoExit()
+{
+	CActor* A=OwnerActor();
+	if(A)
+	{
+		if(!m_doors.empty())m_doors.begin()->second.GetExitPosition(m_exit_position);
+		else m_exit_position.set(Position());
+		A->detach_Vehicle();
+		if(A->g_Alive()<=0.f)A->character_physics_support()->movement()->DestroyCharacter();
+	}
+}
+
 void CCar::ParseDefinitions()
 {
 	 

@@ -144,6 +144,7 @@ bool CActor::use_Vehicle(CHolderCustom* object)
 void CActor::on_requested_spawn(CObject *object)
 {
 	CCar * car= smart_cast<CCar*>(object);
+	if (!car) return;
 
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
 	if(sh)sh->Deactivate();
@@ -157,9 +158,10 @@ void CActor::on_requested_spawn(CObject *object)
 	character_physics_support()->movement()->SetPosition(car->ExitPosition());
 	character_physics_support()->movement()->SetVelocity(car->ExitVelocity());
 	
+	car->DoEnter();
 	attach_Vehicle(car);
 
-	//skyloader: i removed the previous version and i found an alternative:
+	//SkyLoader: straightening of actor torso:
 	Fvector			xyz;
 	car->XFORM().getXYZi(xyz);
 	r_torso.yaw		= xyz.y;

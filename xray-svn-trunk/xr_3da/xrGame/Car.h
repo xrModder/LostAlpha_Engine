@@ -540,6 +540,8 @@ public:
 	bool					Enter						(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos);
 	bool					Exit						(const Fvector& pos,const Fvector& dir);
 	bool					Use							(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos);
+	void					DoExit						();
+	void					DoEnter						();
 	u16						DriverAnimationType 		();
 	// Core events
 	virtual DLL_Pure		*_construct					();
