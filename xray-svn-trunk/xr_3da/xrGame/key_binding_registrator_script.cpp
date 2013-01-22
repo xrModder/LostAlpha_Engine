@@ -9,12 +9,17 @@ int dik_to_bind(int dik){
 	return get_binded_action(dik);
 }
 
+int bind_to_dik(EGameActions action){
+	return get_action_dik(action);
+}
+
 #pragma optimize("s",on)
 void key_binding_registrator::script_register(lua_State *L)
 {
 	module(L)
 	[
 		def("dik_to_bind",		&dik_to_bind),
+		def("bind_to_dik",		&bind_to_dik),
 
 		class_<enum_exporter<EGameActions> >("key_bindings")
 			.enum_("commands")
@@ -58,6 +63,12 @@ void key_binding_registrator::script_register(lua_State *L)
 				value("kSCORES",					int(kSCORES)),
 				value("kCHAT",						int(kCHAT)),
 				value("kSCREENSHOT",				int(kSCREENSHOT)),
+				value("kUSE_BANDAGE",				int(kUSE_BANDAGE)),
+				value("kUSE_MEDKIT",				int(kUSE_MEDKIT)),
+				value("kQUICK_SAVE",				int(kQUICK_SAVE)),
+				value("kQUICK_LOAD",				int(kQUICK_LOAD)),
+				value("kENGINE",				int(kENGINE)),
+				value("kNIGHT_VISION",				int(kNIGHT_VISION)),
 				value("kQUIT",						int(kQUIT)),
 				value("kCONSOLE",					int(kCONSOLE)),
 				value("kINVENTORY",					int(kINVENTORY)),
