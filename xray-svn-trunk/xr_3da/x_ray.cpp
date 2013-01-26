@@ -1004,6 +1004,11 @@ void CApplication::LoadTitleInt(LPCSTR str)
 	LoadDraw					();
 }
 
+void CApplication::ClearTitle()
+{
+	app_title[0] = '\0';
+}
+
 void CApplication::LoadSwitch	()
 {
 }

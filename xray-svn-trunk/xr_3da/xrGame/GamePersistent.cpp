@@ -27,6 +27,8 @@
 #	include "ai_debug.h"
 #endif // _EDITOR
 
+#include "../x_ray.h"
+
 #ifdef DEBUG_MEMORY_MANAGER
 	static	void *	ode_alloc	(size_t size)								{ return Memory.mem_alloc(size,"ODE");			}
 	static	void *	ode_realloc	(void *ptr, size_t oldsize, size_t newsize)	{ return Memory.mem_realloc(ptr,newsize,"ODE");	}
@@ -147,7 +149,6 @@ void CGamePersistent::OnAppEnd	()
 void CGamePersistent::Start		(LPCSTR op)
 {
 	__super::Start				(op);
-	m_intro_event.bind			(this,&CGamePersistent::start_game_intro);
 }
 
 void CGamePersistent::Disconnect()
@@ -292,10 +293,45 @@ void CGamePersistent::update_logo_intro			()
 	}
 }
 
+bool allow_intro ()
+{
+	return 0 == strstr(Core.Params,"-nointro");
+}
+
+extern int g_keypress_on_start;
+void CGamePersistent::game_loaded()
+{
+	if(Device.dwPrecacheFrame<=2)
+	{
+		if(	g_pGameLevel							&&
+			g_pGameLevel->bReady					&&
+			(allow_intro() && g_keypress_on_start)	&&
+			load_screen_renderer.b_need_user_input	&& 
+			m_game_params.m_e_game_type == GAME_SINGLE)
+		{
+			pApp->ClearTitle();
+			VERIFY				(NULL==m_intro);
+			m_intro				= xr_new<CUISequencer>();
+			m_intro->Start		("game_loaded");
+			Msg					("intro_start game_loaded");
+			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
+		}
+		m_intro_event			= 0;
+	}
+}
+
+void CGamePersistent::update_game_loaded()
+{
+	xr_delete				(m_intro);
+	Msg("intro_delete ::update_game_loaded");
+	load_screen_renderer.stop();
+	start_game_intro		();
+}
+
 void CGamePersistent::start_game_intro		()
 {
 #if 1//def DEBUG
-	if (0!=strstr(Core.Params,"-nointro")){
+	if (!allow_intro()){
 		m_intro_event			= 0;
 		return;
 	}
@@ -316,6 +352,10 @@ void CGamePersistent::update_game_intro			()
 		xr_delete				(m_intro);
 		m_intro_event			= 0;
 	}
+	else if(!m_intro)
+	{
+		m_intro_event			= 0;
+	}
 }
 #include "holder_custom.h"
 extern CUISequencer * g_tutorial;
@@ -323,6 +363,11 @@ extern CUISequencer * g_tutorial2;
 
 void CGamePersistent::OnFrame	()
 {
+	if(Device.dwPrecacheFrame==5 && m_intro_event.empty())
+	{
+		m_intro_event.bind			(this,&CGamePersistent::game_loaded);
+	}
+
 	if(g_tutorial2){ 
 		g_tutorial2->Destroy	();
 		xr_delete				(g_tutorial2);
@@ -514,7 +559,7 @@ void CGamePersistent::OnRenderPPUI_PP()
 	MainMenu()->OnRenderPPUI_PP();
 }
 #include "string_table.h"
-#include "../x_ray.h"
+
 void CGamePersistent::LoadTitle(LPCSTR str)
 {
 	string512			buff;

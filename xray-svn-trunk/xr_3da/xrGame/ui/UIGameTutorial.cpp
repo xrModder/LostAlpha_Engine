@@ -121,6 +121,9 @@ void CUISequencer::Destroy()
 	IR_Release					();
 	m_bActive					= false;
 	m_pStoredInputReceiver		= NULL;
+
+	if(!m_on_destroy_event.empty())
+		m_on_destroy_event		();
 }
 
 void CUISequencer::Stop()

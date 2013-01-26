@@ -84,6 +84,7 @@ extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
+int				g_keypress_on_start	= 1;
 
 
 void register_mp_console_commands();
@@ -1763,6 +1764,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"dbg_show_ani_info",	&g_ShowAnimationInfo,	0, 1)	;
 	CMD4(CCC_Integer,		"dbg_dump_physics_step", &g_bDebugDumpPhysicsStep, 0, 1);
 #endif
+	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
 	*g_last_saved_game	= 0;
 
 	register_mp_console_commands					();

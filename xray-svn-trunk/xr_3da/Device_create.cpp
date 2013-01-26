@@ -106,5 +106,5 @@ void CRenderDevice::Create	()
 	Resources			= xr_new<CResourceManager>		();
 	_Create				(fname);
 
-	PreCache			(0);
+	PreCache			(0, false, false);
 }
