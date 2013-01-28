@@ -151,7 +151,7 @@ void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_us
 #ifdef DEDICATED_SERVER
 	amount = 0;
 #endif
-	// Msg			("* PCACHE: start for %d...",amount);
+	 Msg			("* PCACHE: start for %d...",amount);
 	dwPrecacheFrame	= dwPrecacheTotal = amount;
 	if(amount && !precache_light && g_pGameLevel)
 	{

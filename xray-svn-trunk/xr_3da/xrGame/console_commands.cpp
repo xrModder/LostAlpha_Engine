@@ -1764,7 +1764,9 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"dbg_show_ani_info",	&g_ShowAnimationInfo,	0, 1)	;
 	CMD4(CCC_Integer,		"dbg_dump_physics_step", &g_bDebugDumpPhysicsStep, 0, 1);
 #endif
+#ifdef DEBUG
 	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
+#endif
 	*g_last_saved_game	= 0;
 
 	register_mp_console_commands					();

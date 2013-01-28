@@ -291,6 +291,10 @@ void CGamePersistent::update_logo_intro			()
 		xr_delete				(m_intro);
 		Console->Execute		("main_menu on");
 	}
+	else if (!m_intro)
+	{
+		m_intro_event			= 0;
+	}
 }
 
 bool allow_intro ()
