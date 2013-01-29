@@ -317,7 +317,7 @@ void CGamePersistent::game_loaded()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
-			Msg					("intro_start game_loaded");
+	//		Msg					("intro_start game_loaded");
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
 		}
 		m_intro_event			= 0;
@@ -327,8 +327,8 @@ void CGamePersistent::game_loaded()
 void CGamePersistent::update_game_loaded()
 {
 	xr_delete				(m_intro);
-	Msg("intro_delete ::update_game_loaded");
-	load_screen_renderer.stop();
+//	Msg("intro_delete ::update_game_loaded");
+//	load_screen_renderer.stop();
 	start_game_intro		();
 }
 
@@ -385,6 +385,8 @@ void CGamePersistent::OnFrame	()
 	++m_frame_counter;
 #endif
 	if (!g_dedicated_server && !m_intro_event.empty())	m_intro_event();
+	if(!g_dedicated_server && Device.dwPrecacheFrame==0 && !m_intro && m_intro_event.empty())
+		load_screen_renderer.stop();
 
 	if( !m_pMainMenu->IsActive() )
 		m_pMainMenu->DestroyInternal(false);
