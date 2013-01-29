@@ -74,6 +74,7 @@ public:
 	virtual void			Update				()=0;
 	virtual void			OnRender			()=0;
 	virtual void			OnKeyboardPress		(int dik)=0;
+	virtual void			OnMousePress		(int dik)=0;
 
 	virtual bool			IsPlaying			()=0;
 
@@ -114,6 +115,7 @@ public:
 	virtual void			Update				();
 	virtual void			OnRender			(){}
 	virtual void			OnKeyboardPress		(int dik);
+	virtual void			OnMousePress		(int dik);
 
 	virtual bool			IsPlaying			();
 };
@@ -144,6 +146,7 @@ public:
 	virtual void			Update				();
 	virtual void			OnRender			();
 	virtual void			OnKeyboardPress		(int dik){}
+	virtual void			OnMousePress		(int dik){}
 
 	virtual bool			IsPlaying			();
 };

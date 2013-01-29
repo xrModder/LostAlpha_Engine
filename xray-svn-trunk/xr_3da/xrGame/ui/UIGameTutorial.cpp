@@ -195,6 +195,8 @@ bool CUISequencer::GrabInput()
 
 void CUISequencer::IR_OnMousePress		(int btn)
 {
+	if(m_items.size())	m_items.front()->OnMousePress			(btn);
+
 	if(!GrabInput()&&m_pStoredInputReceiver)
 		m_pStoredInputReceiver->IR_OnMousePress(btn);
 }

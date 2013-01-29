@@ -254,3 +254,12 @@ void CUISequenceSimpleItem::OnKeyboardPress	(int dik)
 	}
 }
 
+void CUISequenceSimpleItem::OnMousePress	(int dik)
+{
+	if	(!m_flags.test(etiCanBeStopped) )
+	{
+		if(m_continue_dik_guard==9999 || dik == m_continue_dik_guard)
+			m_flags.set(etiCanBeStopped, TRUE); //match key
+
+	}
+}
