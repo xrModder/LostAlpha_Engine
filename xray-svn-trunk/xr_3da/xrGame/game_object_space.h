@@ -46,6 +46,9 @@ namespace GameObject {
 		eOnButtonPress,
 		eOnButtonRelease,
 		eOnButtonHold,
+		eOnMoveToSlot,
+		eOnMoveToBelt,
+		eOnMoveToRuck,
 		//
 
 		eScriptAnimation,

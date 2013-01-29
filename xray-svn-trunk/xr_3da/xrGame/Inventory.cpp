@@ -18,6 +18,9 @@
 #include "clsid_game.h"
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
+#include "game_object_space.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 using namespace InventoryUtilities;
 
@@ -346,6 +349,9 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemPlace);
 	pIItem->m_eItemPlace		= eItemPlaceSlot;
 	pIItem->OnMoveToSlot		();
+
+	if(IsGameTypeSingle() && Actor()->m_inventory == this)
+		Actor()->callback(GameObject::eOnMoveToSlot)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
 	
 	pIItem->object().processing_activate();
 
@@ -379,6 +385,10 @@ bool CInventory::Belt(PIItem pIItem)
 	pIItem->m_eItemPlace = eItemPlaceBelt;
 	m_pOwner->OnItemBelt(pIItem, p);
 	pIItem->OnMoveToBelt();
+
+
+	if(IsGameTypeSingle() && Actor()->m_inventory == this)
+		Actor()->callback(GameObject::eOnMoveToBelt)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
@@ -415,8 +425,12 @@ bool CInventory::Ruck(PIItem pIItem)
 	pIItem->m_eItemPlace							= eItemPlaceRuck;
 	pIItem->OnMoveToRuck							();
 
+	if(IsGameTypeSingle() && Actor()->m_inventory == this)
+		Actor()->callback(GameObject::eOnMoveToRuck)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
+
 	if(in_slot)
 		pIItem->object().processing_deactivate();
+
 	return true;
 }
 
@@ -954,9 +968,6 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 }
 
 //скушать предмет 
-#include "game_object_space.h"
-#include "script_callback_ex.h"
-#include "script_game_object.h"
 bool CInventory::Eat(PIItem pIItem)
 {
 	R_ASSERT(pIItem->m_pCurrentInventory==this);
