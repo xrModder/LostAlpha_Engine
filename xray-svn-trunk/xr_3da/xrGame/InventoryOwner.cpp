@@ -165,10 +165,11 @@ void CInventoryOwner::net_Destroy()
 
 void	CInventoryOwner::save	(NET_Packet &output_packet)
 {
-	if(inventory().GetActiveSlot() == NO_ACTIVE_SLOT)
+	u32 active_slot = inventory().GetActiveSlot();
+	if(active_slot == NO_ACTIVE_SLOT || active_slot == BOLT_SLOT)
 		output_packet.w_u8((u8)(-1));
 	else
-		output_packet.w_u8((u8)inventory().GetActiveSlot());
+		output_packet.w_u8((u8)active_slot);
 
 	CharacterInfo().save(output_packet);
 	save_data	(m_game_name, output_packet);

@@ -40,11 +40,11 @@ public:
 	IC void								desc_enshure	()		{ if (!desc_valid()) desc_update(); }
 	void								desc_update		();
 public:
-	void	__stdcall					apply_load		(u32	stage);
-	void	__stdcall					apply_theora	(u32	stage);
-	void	__stdcall					apply_avi		(u32	stage);
-	void	__stdcall					apply_seq		(u32	stage);
-	void	__stdcall					apply_normal	(u32	stage);
+	void	xr_stdcall					apply_load		(u32	stage);
+	void	xr_stdcall					apply_theora	(u32	stage);
+	void	xr_stdcall					apply_avi		(u32	stage);
+	void	xr_stdcall					apply_seq		(u32	stage);
+	void	xr_stdcall					apply_normal	(u32	stage);
 
 	void								Preload			();
 	void								Load			();
