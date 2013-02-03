@@ -200,6 +200,7 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 				SlotItemVecIt _iI			= items->begin();
 				SlotItemVecIt _iE			= items->end();
 				for (; _iI!=_iE; _iI++){
+					R_ASSERT2((*_iI) != NULL, make_string("invalid slot item for 0x%x", &Object));
 					SlotItem&	Instance	= **_iI;
 					u32			base		= dwBatch*4;
 

@@ -112,6 +112,7 @@ void CDetail::Load		(IReader* S)
 #ifndef _EDITOR
 	Optimize	();
 #endif
+	Msg("~ loaded Detail 0x%x [%s,%s]", this, fnS, fnT);
 }
 
 #ifndef _EDITOR

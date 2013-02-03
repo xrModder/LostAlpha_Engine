@@ -351,7 +351,7 @@ void	IReader::r_string	(char *dest, u32 tgt_sz)
 {
 	char *src 	= (char *) data+Pos;
 	u32 sz 		= advance_term_string();
-    R_ASSERT2(sz<(tgt_sz-1),"Dest string less than needed.");
+    R_ASSERT2(sz<(tgt_sz-1),make_string("Dest string is too small, [%s]", src));
     strncpy		(dest,src,sz);
     dest[sz]	= 0;
 }
