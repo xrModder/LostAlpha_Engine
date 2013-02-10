@@ -14,11 +14,13 @@
 #include "../../squad_hierarchy_holder.h"
 #include "../../group_hierarchy_holder.h"
 #include "../../effectorshot.h"
-
+ 
 IC	CAgentManager &CAI_Stalker::agent_manager	() const
 {
-// gr1ph to all: this method is called on update, it d be better to set a callback in order to set the agent manager and access it directly
-	return			(Level().seniority_holder().team(g_Team()).squad(g_Squad()).group(g_Group()).agent_manager());
+//  gr1ph to all: this method is called on update, it d be better to set a callback in order to set the agent manager and access it directly
+//	return			(Level().seniority_holder().team(g_Team()).squad(g_Squad()).group(g_Group()).agent_manager());
+	VERIFY(m_agent_manager);
+	return *m_agent_manager;
 }
 
 IC	Fvector CAI_Stalker::weapon_shot_effector_direction	(const Fvector &current) const

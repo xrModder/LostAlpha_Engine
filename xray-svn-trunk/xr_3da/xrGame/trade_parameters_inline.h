@@ -117,6 +117,7 @@ IC	void CTradeParameters::process							(_action_type type, CInifile &ini_file, 
 	CInifile::SectCIt		I = S.Data.begin();
 	CInifile::SectCIt		E = S.Data.end();
 	for ( ; I != E; ++I) {
+		R_ASSERT(pSettings->section_exist((*I).first)); 
 		if (!(*I).second.size()) {
 			_action.disable	((*I).first);
 			continue;

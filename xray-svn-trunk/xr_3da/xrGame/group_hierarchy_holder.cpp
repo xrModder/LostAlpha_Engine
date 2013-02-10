@@ -74,8 +74,11 @@ void CGroupHierarchyHolder::register_in_squad			(CEntity *member)
 
 void CGroupHierarchyHolder::register_in_agent_manager	(CEntity *member)
 {
-	if (!get_agent_manager() && smart_cast<CAI_Stalker*>(member)) {
+	CAI_Stalker *stalker = NULL;
+	if (!get_agent_manager() && ((stalker = smart_cast<CAI_Stalker*>(member)) != NULL)) 
+	{
 		m_agent_manager								= xr_new<CAgentManager>();
+		stalker->set_agent_manager					(m_agent_manager);
 		agent_manager().memory().set_squad_objects	(&visible_objects());
 		agent_manager().memory().set_squad_objects	(&sound_objects());
 		agent_manager().memory().set_squad_objects	(&hit_objects());
@@ -119,8 +122,12 @@ void CGroupHierarchyHolder::unregister_in_squad			(CEntity *member)
 
 void CGroupHierarchyHolder::unregister_in_agent_manager	(CEntity *member)
 {
-	if (get_agent_manager()) {
+	if (get_agent_manager()) 
+	{
+		CAI_Stalker *stalker = NULL;
 		agent_manager().member().remove	(member);
+		if ((stalker = smart_cast<CAI_Stalker*>(member)) != NULL)
+			stalker->set_agent_manager	(NULL);
 		if (agent_manager().member().members().empty())
 			xr_delete					(m_agent_manager);
 	}

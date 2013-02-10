@@ -93,6 +93,7 @@ private:
 	CStalkerPlanner					*m_brain;
 	CSightManager					*m_sight_manager;
 	CStalkerMovementManager			*m_movement_manager;
+	CAgentManager					*m_agent_manager;
 
 #ifdef DEBUG
 	const script_planner			*m_debug_planner;
@@ -265,6 +266,7 @@ public:
 	virtual float						GetWeaponAccuracy		() const;
 	virtual	void						spawn_supplies			();
 	IC		CAgentManager				&agent_manager			() const;
+	IC		void						set_agent_manager		(CAgentManager *manager) { VERIFY(m_agent_manager == NULL); m_agent_manager = manager; }
 	
 	virtual bool						human_being				() const
 	{
