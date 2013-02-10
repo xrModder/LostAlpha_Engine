@@ -141,7 +141,7 @@ void CPhraseScript::Action(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCS
 		luabind::functor<void>	lua_function;
 		THROW(*Actions()[i]);
 		bool functor_exists = ai().script_engine().functor(*Actions()[i] ,lua_function);
-		THROW3(functor_exists, "Cannot find phrase dialog script function", *Actions()[i]);
+		R_ASSERT2 (functor_exists, make_string("Cannot find script function[%s] in phrase dialog[%s][%s]", *Actions()[i], dialog_id, phrase_id));
 		lua_function		(pSpeakerGO->lua_game_object(), dialog_id);
 	}
 	TransferInfo(smart_cast<const CInventoryOwner*>(pSpeakerGO));
@@ -190,7 +190,7 @@ void CPhraseScript::Action(const CGameObject* pSpeakerGO1, const CGameObject* pS
 		luabind::functor<void>	lua_function;
 		THROW(*Actions()[i]);
 		bool functor_exists = ai().script_engine().functor(*Actions()[i] ,lua_function);
-		THROW3(functor_exists, "Cannot find phrase dialog script function", *Actions()[i]);
+		R_ASSERT2 (functor_exists, make_string("Cannot find script function [%s] in phrase dialog [%s][%s]", *Actions()[i], dialog_id, phrase_id));
 		try {
 			lua_function		(pSpeakerGO1->lua_game_object(), pSpeakerGO2->lua_game_object(), dialog_id, phrase_id);
 		} catch (...) {

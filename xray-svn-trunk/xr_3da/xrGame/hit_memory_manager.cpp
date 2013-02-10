@@ -92,8 +92,6 @@ extern Flags32 psActorFlags;
 void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const CObject *who, s16 element)
 {
 	VERIFY						(m_hits);
-	if (!object().g_Alive())
-		return;
 
 	if (who && (m_object->ID() == who->ID()))
 		return;
@@ -102,18 +100,22 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 	if (who && actor && psActorFlags.test(AF_INVISIBLE))
 		return;
 
+	if (who && !fis_zero(amount))
+		object().callback(GameObject::eHit)(
+			m_object->lua_game_object(), 
+			amount,
+			vLocalDir,
+			smart_cast<const CGameObject*>(who)->lua_game_object(),
+			element
+		);
+
+	if (!object().g_Alive())
+		return;
+
 	if (who && !fis_zero(amount)) {
 		m_last_hit_object_id	= who->ID();
 		m_last_hit_time			= Device.dwTimeGlobal;
 	}
-
-	object().callback(GameObject::eHit)(
-		m_object->lua_game_object(), 
-		amount,
-		vLocalDir,
-		smart_cast<const CGameObject*>(who)->lua_game_object(),
-		element
-	);
 
 	Fvector						direction;
 	m_object->XFORM().transform_dir	(direction,vLocalDir);
