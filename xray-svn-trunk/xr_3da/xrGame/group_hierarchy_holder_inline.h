@@ -28,7 +28,8 @@ IC	CGroupHierarchyHolder::CGroupHierarchyHolder			(CSquadHierarchyHolder *squad)
 
 IC	CAgentManager &CGroupHierarchyHolder::agent_manager		() const
 {
-	VERIFY				(m_agent_manager);
+#pragma todo("gr1ph to all: once fixed, change assertion to verify..")
+	R_ASSERT			(m_agent_manager);
 	return				(*m_agent_manager);
 }
 

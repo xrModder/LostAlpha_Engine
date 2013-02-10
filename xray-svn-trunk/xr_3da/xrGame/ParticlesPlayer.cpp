@@ -41,13 +41,18 @@ void CParticlesPlayer::SBoneInfo::StopParticles(const shared_str& ps_name, bool 
 
 void CParticlesPlayer::SBoneInfo::StopParticles(u16 sender_id, bool bDestroy)
 {
+	if (!particles.size())
+		return;
 	for (ParticlesInfoListIt it=particles.begin(); it!=particles.end(); it++)
-		if (it->sender_id==sender_id){
+	{
+		if (it->sender_id==sender_id)
+		{
 			if(!bDestroy)
 				it->ps->Stop();
 			else
 				CParticlesObject::Destroy(it->ps);
 		}
+	}
 }
 //-------------------------------------------------------------------------------------
 

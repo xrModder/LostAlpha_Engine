@@ -42,8 +42,8 @@ void CAgentMemberManager::add					(CEntity *member)
 	CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(member);
 	if (!stalker || !stalker->g_Alive())
 		return;
-
-	VERIFY2						(
+#pragma todo("change it to verify once fixed..")
+	R_ASSERT2					(
 		sizeof(squad_mask_type)*8 > members().size(),
 		make_string(
 			"too many stalkers in group ([team:%d][squad:%d][group:%d]!",

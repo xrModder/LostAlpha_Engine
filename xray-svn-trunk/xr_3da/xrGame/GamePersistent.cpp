@@ -384,7 +384,8 @@ void CGamePersistent::OnFrame	()
 #ifdef DEBUG
 	++m_frame_counter;
 #endif
-	if (!g_dedicated_server && !m_intro_event.empty())	m_intro_event();
+	if (!g_dedicated_server && !m_intro_event.empty())	
+		m_intro_event();
 	if(!g_dedicated_server && Device.dwPrecacheFrame==0 && !m_intro && m_intro_event.empty())
 		load_screen_renderer.stop();
 

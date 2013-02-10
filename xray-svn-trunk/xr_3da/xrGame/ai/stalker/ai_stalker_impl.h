@@ -17,6 +17,7 @@
 
 IC	CAgentManager &CAI_Stalker::agent_manager	() const
 {
+// gr1ph to all: this method is called on update, it d be better to set a callback in order to set the agent manager and access it directly
 	return			(Level().seniority_holder().team(g_Team()).squad(g_Squad()).group(g_Group()).agent_manager());
 }
 

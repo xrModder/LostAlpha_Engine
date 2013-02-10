@@ -82,8 +82,16 @@ CEntityCondition::~CEntityCondition(void)
 
 void CEntityCondition::ClearWounds()
 {
+/*
 	for(WOUND_VECTOR_IT it = m_WoundVector.begin(); m_WoundVector.end() != it; ++it)
 		xr_delete(*it);
+*/
+	while (m_WoundVector.size())
+	{
+		CWound *tmp = m_WoundVector[0];
+		m_WoundVector.erase(m_WoundVector.begin());
+		xr_delete(tmp);
+	}
 	m_WoundVector.clear();
 
 	m_bIsBleeding = false;
