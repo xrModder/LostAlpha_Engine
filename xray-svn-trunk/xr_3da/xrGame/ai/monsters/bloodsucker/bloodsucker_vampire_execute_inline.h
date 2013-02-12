@@ -77,7 +77,6 @@ void CStateBloodsuckerVampireExecuteAbstract::execute()
 
 		case eActionCompleted:
 			controlling_value = 0;
-			show_hud();
 			break;
 	}
 	object->set_action						(ACT_STAND_IDLE);
@@ -95,13 +94,13 @@ void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::cleanup()
 {	
-	show_hud();
 	if ( object->com_man().ta_is_active() )
 		object->com_man().ta_deactivate();
 
 	if (object->CControlledActor::is_controlling())
 		object->CControlledActor::release		();
 
+	show_hud();
 }
 
 TEMPLATE_SPECIALIZATION
