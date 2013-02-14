@@ -36,8 +36,12 @@ void CRender::render_main	(Fmatrix&	m_ViewProjection, bool _fportals)
 
 			// Determine visibility for dynamic part of scene
 			set_Object							(0);
+
 			u32 uID_LTRACK						= 0xffffffff;
 			if (phase==PHASE_NORMAL)			{
+			g_pGameLevel->pHUD->Render_First	( );	// shadows
+			g_pGameLevel->pHUD->Render_Last		( );	
+
 				uLastLTRACK	++;
 				if (lstRenderables.size())		uID_LTRACK	= uLastLTRACK%lstRenderables.size();
 
