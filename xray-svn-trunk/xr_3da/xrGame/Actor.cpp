@@ -666,12 +666,13 @@ void CActor::HitMark	(float P,
 		}
 	}
 
-	callback(GameObject::eHit)(
-		lua_game_object(), 
-		P,
-		dir,
-		smart_cast<const CGameObject*>(who)->lua_game_object(), 
-		element
+	if (who && !fis_zero(P))
+		callback(GameObject::eHit)(
+			lua_game_object(), 
+			P,
+			dir,
+			smart_cast<const CGameObject*>(who)->lua_game_object(), 
+			element
 		);
 
 }

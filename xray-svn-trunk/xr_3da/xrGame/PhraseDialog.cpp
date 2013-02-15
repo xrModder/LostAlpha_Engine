@@ -141,7 +141,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 					CPhraseGraph::CVertex* next_phrase_vertex = phrase_dialog->data()->m_PhraseGraph.vertex(edge.vertex_id());
 					THROW						(next_phrase_vertex);
 					shared_str next_phrase_id	= next_phrase_vertex->vertex_id();
-					Msg("	- %s:%s",next_phrase_vertex->data()->GetID(),next_phrase_id.c_str());
+					Msg("	- %s:%d",next_phrase_id.c_str(),next_phrase_vertex->data()->GetID());
 			}
 			R_ASSERT2	(
 				0,
@@ -299,7 +299,7 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 	{
 		LPCSTR next_phrase_id_str		= pXml->Read(phrase_node, "next", i, "");
 		XML_NODE* next_phrase_node		= pXml->NavigateToNodeWithAttribute("phrase", "id", next_phrase_id_str);
-		R_ASSERT2						(next_phrase_node, next_phrase_id_str );
+		R_ASSERT2						(next_phrase_node, make_string("next phrase[%s] is not exist in dialog",next_phrase_id_str));
 //.		int next_phrase_id				= atoi(next_phrase_id_str);
 
 		AddPhrase						(pXml, next_phrase_node, next_phrase_id_str, phrase_id);

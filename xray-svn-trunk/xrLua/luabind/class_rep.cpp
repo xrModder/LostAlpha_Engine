@@ -728,7 +728,13 @@ int luabind::detail::class_rep::function_dispatcher(lua_State* L)
 
         if (force_static_call && !o.has_static())
 		{
-			lua_pushstring(L, "pure virtual function called");
+			string_class function_name = "pure virtual function[";
+			function_name += rep->crep->name();
+			function_name += ":";
+			function_name += rep->name;
+			function_name += "] called";
+
+			lua_pushstring(L, function_name.c_str());
         }
 		else
 		{
