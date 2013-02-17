@@ -260,18 +260,15 @@ void CGamePersistent::WeathersUpdate()
 	}
 }
 
+bool allow_intro ()
+{
+	return 0 == strstr(Core.Params,"-nointro");
+}
+
 #include "UI/UIGameTutorial.h"
 
 void CGamePersistent::start_logo_intro		()
 {
-#if 1//def DEBUG
-	if (0!=strstr(Core.Params,"-nointro")){
-		m_intro_event			= 0;
-		Console->Show			();
-		Console->Execute		("main_menu on");
-		return;
-	}
-#endif
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this,&CGamePersistent::update_logo_intro);
@@ -295,11 +292,6 @@ void CGamePersistent::update_logo_intro			()
 	{
 		m_intro_event			= 0;
 	}
-}
-
-bool allow_intro ()
-{
-	return 0 == strstr(Core.Params,"-nointro");
 }
 
 extern int g_keypress_on_start;
@@ -346,7 +338,7 @@ void CGamePersistent::start_game_intro		()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_game");
-			Log("Intro start",Device.dwFrame);
+			Msg("intro_start intro_game");
 		}
 	}
 }

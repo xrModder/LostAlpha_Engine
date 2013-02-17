@@ -52,7 +52,7 @@ void CAgentMemberManager::add					(CEntity *member)
 			m_members.front()->object().g_Group()
 		)
 	);
-
+	stalker->set_agent_manager	(m_object);
 	iterator					I = std::find_if(m_members.begin(),m_members.end(), CMemberPredicate(stalker));
 	VERIFY						(I == m_members.end());
 	m_members.push_back			(xr_new<CMemberOrder>(stalker));
@@ -67,6 +67,7 @@ void CAgentMemberManager::remove				(CEntity *member)
 	if (registered_in_combat(stalker))
 		unregister_in_combat	(stalker);
 
+	stalker->set_agent_manager	(NULL);
 	squad_mask_type							m = mask(stalker);
 	object().memory().update_memory_masks	(m);
 	object().memory().update_memory_mask	(m,m_combat_mask);

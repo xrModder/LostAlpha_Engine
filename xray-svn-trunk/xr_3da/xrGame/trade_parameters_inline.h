@@ -117,7 +117,12 @@ IC	void CTradeParameters::process							(_action_type type, CInifile &ini_file, 
 	CInifile::SectCIt		I = S.Data.begin();
 	CInifile::SectCIt		E = S.Data.end();
 	for ( ; I != E; ++I) {
-		R_ASSERT(pSettings->section_exist((*I).first)); 
+		//R_ASSERT2(pSettings->section_exist((*I).first), make_string("%s has invalid section %s", *section, (*I).first.c_str())); 
+		if (!pSettings->section_exist((*I).first))
+		{
+			Msg("! %s has invalid section %s", *section, (*I).first.c_str()); 
+			continue;
+		}
 		if (!(*I).second.size()) {
 			_action.disable	((*I).first);
 			continue;
