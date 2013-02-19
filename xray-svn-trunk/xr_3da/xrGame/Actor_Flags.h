@@ -14,6 +14,7 @@ enum
 		AF_COLLISION			= (1<<9),
 		AF_STRAFE_INERT			= (1<<10),
 		AF_FST_PSN_DEATH			= (1<<11),
+		AF_ACTOR_BODY			= (1<<12),
 };
 
 extern Flags32 psActorFlags;

@@ -129,7 +129,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 
 			if (pActor->IsFirstEye() && IsGameTypeSingle())
 			{
-				if (m_ActorVisual_legs.size())
+				if (m_ActorVisual_legs.size() && !pActor->IsActorShadowsOn())
 				{
 						shared_str NewVisual = m_ActorVisual_legs;
 						pActor->ChangeVisual(NewVisual);

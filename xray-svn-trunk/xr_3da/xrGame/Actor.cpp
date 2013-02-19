@@ -383,10 +383,15 @@ if(!g_dedicated_server)
 	m_fDispCrouchFactor			= pSettings->r_float		(section,"disp_crouch_factor");
 	m_fDispCrouchNoAccelFactor	= pSettings->r_float		(section,"disp_crouch_no_acc_factor");
 
+	m_bActorShadows = (psActorFlags.test(AF_ACTOR_BODY)) ? false : true;
+
 	LPCSTR							default_outfit = READ_IF_EXISTS(pSettings,r_string,section,"default_outfit",0);
 	SetDefaultVisualOutfit			(default_outfit);
 	LPCSTR							default_outfit_legs = pSettings->r_string(section, "default_outfit_legs");
-	SetDefaultVisualOutfit_legs		(default_outfit_legs);
+	if (m_bActorShadows)
+		SetDefaultVisualOutfit_legs		(default_outfit);
+	else
+		SetDefaultVisualOutfit_legs		(default_outfit_legs);
 
 	m_bCanBeDrawLegs 			= false;
 	if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","actor_legs_visible"))
@@ -1179,7 +1184,7 @@ void CActor::shedule_Update	(u32 DT)
 	
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-		if (m_bDrawLegs && IsGameTypeSingle()) 
+		if (m_bDrawLegs && IsGameTypeSingle() && (!m_bActorShadows || (psDeviceFlags.test(rsR2) && m_bActorShadows)))
 			setVisible				(TRUE);
 		else
 			setVisible				(!HUDview	());
@@ -1259,14 +1264,14 @@ void CActor::shedule_Update	(u32 DT)
 void CActor::renderable_Render	()
 {
 	inherited::renderable_Render			();
-	if (!HUDview()){
+	if (!HUDview() || (m_bActorShadows && m_bFirstEye)){
 		CInventoryOwner::renderable_Render	();
 	}
 }
 
 BOOL CActor::renderable_ShadowGenerate	() 
 {
-	if(m_holder)
+	if(m_holder || (!m_bActorShadows && m_bFirstEye))
 		return FALSE;
 	
 	return inherited::renderable_ShadowGenerate();

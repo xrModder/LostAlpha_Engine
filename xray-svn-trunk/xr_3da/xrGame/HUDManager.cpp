@@ -168,7 +168,9 @@ void CHUDManager::Render_First()
 	if (0==O)						return;
 	CActor*		A					= smart_cast<CActor*> (O);
 	if (!A)							return;
-	if (A && !A->HUDview())			return;
+
+	if ((!A->HUDview() && A->IsActorShadowsOn()) || (!A->IsActorShadowsOn()))
+			return;
 
 	// only shadow 
 	::Render->set_Invisible			(TRUE);

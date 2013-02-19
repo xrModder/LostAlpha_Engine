@@ -362,7 +362,7 @@ public:
 void DemoRecordCallback()
 {
 	CActor *actor = Actor();
-	if (actor && actor->CanBeDrawLegs())
+	if (actor && actor->CanBeDrawLegs() && !actor->IsActorShadowsOn())
 	{
 		actor->setVisible					(true);
 		actor->SetDrawLegs					(true);
@@ -392,7 +392,7 @@ public:
 			strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
 			string_path		fn;
 			FS.update_path	(fn, "$game_saves$", fn_);
-			if (actor && actor->CanBeDrawLegs() && actor->IsFirstEye())
+			if (actor && actor->CanBeDrawLegs() && actor->IsFirstEye() && !actor->IsActorShadowsOn())
 			{
 				actor->setVisible					(false);
 				actor->SetDrawLegs					(false);
@@ -463,12 +463,14 @@ public:
 			return;
 		}
 #endif
-		#ifndef	DEBUG
+
 		if(!IsGameTypeSingle()){
+#ifndef	DEBUG
 			Msg("for single-mode only");
+#endif
 			return;
 		}
-		#endif
+
 		if(!g_actor || !Actor()->g_Alive())
 		{
 			Msg("cannot make saved game because actor is dead :(");
@@ -480,7 +482,7 @@ public:
 			return;
 		}
 
-		//#x# skyloader: because done script callback
+		//#x# skyloader: removed because done script callback
 		/*if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_save_callback"))
 		{
 			string256					func_name;
@@ -1496,6 +1498,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"ph_collision_of_corpses",			&psActorFlags,	AF_COLLISION);
 	CMD3(CCC_Mask,				"weapon_strafe_inertion",		&psActorFlags,	AF_STRAFE_INERT);
 	CMD3(CCC_Mask,				"g_first_person_death",			&psActorFlags,	AF_FST_PSN_DEATH);
+	CMD3(CCC_Mask,				"g_actor_body",			&psActorFlags,	AF_ACTOR_BODY);
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);

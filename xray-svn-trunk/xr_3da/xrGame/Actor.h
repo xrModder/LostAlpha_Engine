@@ -639,11 +639,18 @@ public:
 
 	virtual	shared_str		GetDefaultVisualOutfit	() const	{return m_DefaultVisualOutfit;};
 	virtual	void			SetDefaultVisualOutfit	(shared_str DefaultOutfit) {m_DefaultVisualOutfit = DefaultOutfit;};
+
+	//Functions for actor legs and actor shadows 			#+# SkyLoader
 	virtual	shared_str		GetDefaultVisualOutfit_legs	() const	{return m_DefaultVisualOutfit_legs;};
 	virtual	void			SetDefaultVisualOutfit_legs	(shared_str DefaultOutfit) {m_DefaultVisualOutfit_legs = DefaultOutfit;};
 	virtual	void			SetDrawLegs	(bool DrawLegs) {m_bDrawLegs = DrawLegs;};
+	virtual	void			SetActorShadows	(bool ActorShadows) {m_bActorShadows = ActorShadows;};
+	virtual bool			IsActorShadowsOn	() const {return m_bActorShadows;}
 	virtual bool			IsFirstEye	() const {return (m_bFirstEye);}
+	virtual bool			IsLookAt	() const {return (eacLookAt==cam_active);}
 	virtual bool			CanBeDrawLegs	() const {return (m_bCanBeDrawLegs);}
+	//
+
 	virtual u16			HolderID 	() const {return m_holderID;}
 
 	virtual void			UpdateAnimation			() 	{ g_SetAnimation(mstate_real); };
@@ -677,6 +684,7 @@ protected:
 		bool					m_bDrawLegs;
 		bool					m_bFirstEye;
 		bool					m_bCanBeDrawLegs;
+		bool					m_bActorShadows;
 
 		LPCSTR					invincibility_fire_shield_3rd;
 		LPCSTR					invincibility_fire_shield_1st;
