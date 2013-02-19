@@ -65,7 +65,7 @@ void CActor::cam_Set	(EActorCameras style)
 float CActor::f_Ladder_cam_limit=1.f;
 void CActor::cam_SetLadder()
 {
-	if (CanBeDrawLegs())
+	if (CanBeDrawLegs() && !m_bActorShadows)
 	{
 		setVisible(FALSE);
 		m_bDrawLegs = false;
@@ -123,7 +123,7 @@ void CActor::camUpdateLadder(float dt)
 
 void CActor::cam_UnsetLadder()
 {
-	if (CanBeDrawLegs())
+	if (CanBeDrawLegs() && !m_bActorShadows)
 	{
 		setVisible(TRUE);
 		m_bDrawLegs = true;
@@ -374,7 +374,12 @@ void CActor::update_camera (CCameraShotEffector* effector)
 	if (!effector) return;
 	//	if (Level().CurrentViewEntity() != this) return;
 
-	CCameraBase* pACam = cam_FirstEye();
+	CCameraBase* pACam = NULL;
+	if (eacLookAt == cam_active)
+		pACam = cam_Active();
+	else
+		pACam = cam_FirstEye();
+
 	if (!pACam) return;
 
 	if (pACam->bClampPitch)
