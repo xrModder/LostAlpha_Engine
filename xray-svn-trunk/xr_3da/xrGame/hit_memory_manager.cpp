@@ -163,7 +163,10 @@ void CHitMemoryManager::add					(const CHitObject &_hit_object)
 		return;
 
 	CHitObject					hit_object = _hit_object;
-	hit_object.m_squad_mask.set	(m_stalker->agent_manager().member().mask(m_stalker),TRUE);
+	squad_mask_type mask = squad_mask_type(-1);
+	if (m_stalker)
+		mask = m_stalker->agent_manager().member().mask(m_stalker);
+	hit_object.m_squad_mask.set	(mask,TRUE);
 
 	const CEntityAlive			*entity_alive = hit_object.m_object;
 	HITS::iterator	J = std::find(m_hits->begin(),m_hits->end(),object_id(entity_alive));
