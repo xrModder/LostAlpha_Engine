@@ -205,26 +205,45 @@ void CDetailManager::UpdateVisibleM()
 	for (int _mz=0; _mz<dm_cache1_line; _mz++){
 		for (int _mx=0; _mx<dm_cache1_line; _mx++){
 			CacheSlot1& MS		= cache_level1[_mz][_mx];
-			if (MS.empty)		continue;
+			if (MS.empty)
+			{
+				continue;
+			}
 			u32 mask			= 0xff;
 			u32 res				= View.testSAABB		(MS.vis.sphere.P,MS.vis.sphere.R,MS.vis.box.data(),mask);
-			if (fcvNone==res)						 	continue;	// invisible-view frustum
+			if (fcvNone==res)
+			{
+				continue;	// invisible-view frustum
+			}
 			// test slots
-			for (int _i=0; _i<dm_cache1_count*dm_cache1_count; _i++){
+			
+			u32 dwCC = dm_cache1_count*dm_cache1_count;
+
+			for (u32 _i=0; _i < dwCC ; _i++){
 				Slot*	PS		= *MS.slots[_i];
 				Slot& 	S 		= *PS;
 
+
 				// if slot empty - continue
-				if (S.empty)	continue;
+				if (S.empty)
+				{
+					continue;
+				}
 
 				// if upper test = fcvPartial - test inner slots
 				if (fcvPartial==res){
 					u32 _mask	= mask;
 					u32 _res	= View.testSAABB			(S.vis.sphere.P,S.vis.sphere.R,S.vis.box.data(),_mask);
-					if (fcvNone==_res)						continue;	// invisible-view frustum
+					if (fcvNone==_res)
+					{
+						continue;	// invisible-view frustum
+					}
 				}
 #ifndef _EDITOR
-				if (!RImplementation.HOM.visible(S.vis))	continue;	// invisible-occlusion
+				if (!RImplementation.HOM.visible(S.vis))
+				{
+					continue;	// invisible-occlusion
+				}
 #endif
 				// Add to visibility structures
 				if (Device.dwFrame>S.frame){
@@ -252,7 +271,10 @@ void CDetailManager::UpdateVisibleM()
 							SlotItem& Item			= *(*siIT);
 							float   scale			= Item.scale_calculated	= Item.scale*alpha_i;
 							float	ssa				= scale*scale*Rq_drcp;
-							if (ssa < r_ssaDISCARD) continue;
+							if (ssa < r_ssaDISCARD)
+							{
+								continue;
+							}
 							u32		vis_id			= 0;
 							if (ssa > r_ssaCHEAP)	vis_id = Item.vis_ID;
 							
@@ -265,9 +287,18 @@ void CDetailManager::UpdateVisibleM()
 				for (int sp_id=0; sp_id<dm_obj_in_slot; sp_id++){
 					SlotPart&			sp	= S.G		[sp_id];
 					if (sp.id==DetailSlot::ID_Empty)	continue;
-					if (!sp.r_items[0].empty()) m_visibles[0][sp.id].push_back(&sp.r_items[0]);
-					if (!sp.r_items[1].empty()) m_visibles[1][sp.id].push_back(&sp.r_items[1]);
-					if (!sp.r_items[2].empty()) m_visibles[2][sp.id].push_back(&sp.r_items[2]);
+					if (!sp.r_items[0].empty())
+					{
+						m_visibles[0][sp.id].push_back(&sp.r_items[0]);
+					}
+					if (!sp.r_items[1].empty())
+					{
+						m_visibles[1][sp.id].push_back(&sp.r_items[1]);
+					}
+					if (!sp.r_items[2].empty())
+					{
+						m_visibles[2][sp.id].push_back(&sp.r_items[2]);
+					}
 				}
 			}
 		}

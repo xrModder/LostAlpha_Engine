@@ -48,7 +48,7 @@ void CDetailManager::hw_Load	()
 	u32			dwIndices	= 0;
 	for (u32 o=0; o<objects.size(); o++)
 	{
-		CDetail& D	=	*objects[o];
+		const CDetail& D	=	*objects[o];
 		dwVerts		+=	D.number_vertices*hw_BatchSize;
 		dwIndices	+=	D.number_indices*hw_BatchSize;
 	}
@@ -69,13 +69,13 @@ void CDetailManager::hw_Load	()
 		R_CHK			(hw_VB->Lock(0,0,(void**)&pV,0));
 		for (o=0; o<objects.size(); o++)
 		{
-			CDetail& D		=	*objects[o];
+			const CDetail& D		=	*objects[o];
 			for (u32 batch=0; batch<hw_BatchSize; batch++)
 			{
 				u32 mid	=	batch*c_size;
 				for (u32 v=0; v<D.number_vertices; v++)
 				{
-					Fvector&	vP = D.vertices[v].P;
+					const Fvector&	vP = D.vertices[v].P;
 					pV->x	=	vP.x;
 					pV->y	=	vP.y;
 					pV->z	=	vP.z;
@@ -96,7 +96,7 @@ void CDetailManager::hw_Load	()
 		R_CHK			(hw_IB->Lock(0,0,(void**)(&pI),0));
 		for (o=0; o<objects.size(); o++)
 		{
-			CDetail& D		=	*objects[o];
+			const CDetail& D		=	*objects[o];
 			u16		offset	=	0;
 			for (u32 batch=0; batch<hw_BatchSize; batch++)
 			{

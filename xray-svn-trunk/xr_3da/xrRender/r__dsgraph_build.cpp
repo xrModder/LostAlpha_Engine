@@ -522,8 +522,11 @@ void CRender::add_Static(IRender_Visual *pVisual, u32 planes)
 	EFC_Visible	VIS;
 	vis_data&	vis			= pVisual->vis;
 	VIS = View->testSAABB	(vis.sphere.P,vis.sphere.R,vis.box.data(),planes);
-	if (fcvNone==VIS)		return;
-	if (!HOM.visible(vis))	return;
+	if (fcvNone==VIS)		
+		return;
+
+	if (!HOM.visible(vis))	
+		return;
 
 	// If we get here visual is visible or partially visible
 	xr_vector<IRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
