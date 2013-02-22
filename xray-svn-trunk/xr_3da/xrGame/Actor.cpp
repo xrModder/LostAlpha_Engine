@@ -393,9 +393,9 @@ if(!g_dedicated_server)
 	else
 		SetDefaultVisualOutfit_legs		(default_outfit_legs);
 
-	m_bCanBeDrawLegs 			= false;
-	if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","actor_legs_visible"))
-		m_bCanBeDrawLegs = !!pSettings->r_bool("lost_alpha_cfg","actor_legs_visible");
+	m_bCanBeDrawLegs 			= true;
+	//if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","actor_legs_visible"))
+	//	m_bCanBeDrawLegs = !!pSettings->r_bool("lost_alpha_cfg","actor_legs_visible"); //#x# SkyLoader: added console command for this
 
 	if (IsGameTypeSingle() && CanBeDrawLegs())
 		m_bDrawLegs						= true;
@@ -618,14 +618,13 @@ void CActor::HitMark	(float P,
 						 ALife::EHitType hit_type)
 {
 	// hit marker
-	if ( (hit_type==ALife::eHitTypeFireWound||hit_type==ALife::eHitTypeWound_2) && g_Alive() && Local() && /*(this!=who) && */(Level().CurrentEntity()==this) )	
+	if ( (hit_type==ALife::eHitTypeFireWound||hit_type==ALife::eHitTypeWound_2) && g_Alive() && Local() && (Level().CurrentEntity()==this) )	
 	{
 		HUD().Hit(0, P, dir);
 
-	{
 		CEffectorCam* ce = Cameras().GetCamEffector((ECamEffectorType)effFireHit);
 		if(!ce)
-			{
+		{
 			int id						= -1;
 			Fvector						cam_pos,cam_dir,cam_norm;
 			cam_Active()->Get			(cam_pos,cam_dir,cam_norm);
@@ -635,7 +634,7 @@ void CActor::HitMark	(float P,
 			float ang_diff				= angle_difference	(cam_dir.getH(), dir.getH());
 			Fvector						cp;
 			cp.crossproduct				(cam_dir,dir);
-			bool bUp					=(cp.y>0.0f);
+			bool bUp					= (cp.y>0.0f);
 
 			Fvector cross;
 			cross.crossproduct			(cam_dir, dir);
@@ -646,28 +645,22 @@ void CActor::HitMark	(float P,
 			float _s3 = _s2+PI_DIV_4;
 			float _s4 = _s3+PI_DIV_4;
 
-			if(ang_diff<=_s1){
+			if(ang_diff<=_s1)
 				id = 2;
-			}else
-			if(ang_diff>_s1 && ang_diff<=_s2){
+			else if(ang_diff>_s1 && ang_diff<=_s2)
 				id = (bUp)?5:7;
-			}else
-			if(ang_diff>_s2 && ang_diff<=_s3){
+			else if(ang_diff>_s2 && ang_diff<=_s3)
 				id = (bUp)?3:1;
-			}else
-			if(ang_diff>_s3 && ang_diff<=_s4){
+			else if(ang_diff>_s3 && ang_diff<=_s4)
 				id = (bUp)?4:6;
-			}else
-			if(ang_diff>_s4){
+			else if(ang_diff>_s4)
 				id = 0;
-			}else{
+			else
 				VERIFY(0);
-			}
 
 			string64 sect_name;
 			sprintf_s(sect_name,"effector_fire_hit_%d",id);
 			AddEffector(this, effFireHit, sect_name, P/100.0f);
-			}
 		}
 	}
 
@@ -781,8 +774,10 @@ void CActor::Die(CObject* who)
 	};
 
 	if (IsGameTypeSingle() && psActorFlags.test(AF_FST_PSN_DEATH))
+	{
 		cam_Set					(eacFirstEye);
-	else
+		m_bActorShadows 			= true;
+	} else
 		cam_Set					(eacFreeLook);
 
 	mstate_wishful	&=		~mcAnyMove;
@@ -1182,6 +1177,22 @@ void CActor::shedule_Update	(u32 DT)
 				m_BloodSnd.stop();
 	}
 	
+	if (((BOOL)m_bActorShadows == psActorFlags.test(AF_ACTOR_BODY)) && g_Alive())
+	{
+		if (m_bActorShadows)
+			SetDefaultVisualOutfit_legs		(pSettings->r_string(*cNameSect(),"default_outfit_legs"));
+		else
+			SetDefaultVisualOutfit_legs		(GetDefaultVisualOutfit());
+
+		m_bActorShadows = (psActorFlags.test(AF_ACTOR_BODY)) ? false : true;
+
+		if (eacFirstEye == cam_active) //reset visual
+		{
+			cam_Set(eacLookAt);
+			cam_Set(eacFirstEye);
+		}
+	}
+
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
 		if (m_bDrawLegs && IsGameTypeSingle() && (!m_bActorShadows || (psDeviceFlags.test(rsR2) && m_bActorShadows)))
