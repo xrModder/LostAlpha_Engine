@@ -52,11 +52,14 @@ public:
 
 	void					Take				(CGameObject *pObj, bool bNotActivate, bool strict_placement);
 	void					repackAmmo			(PIItem pObj);
+
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
 
 	
 	bool					Slot				(PIItem pIItem, bool bNotActivate = false);	
+
+	bool					RepackBelt			(PIItem pIItem);
 	bool					Belt				(PIItem pIItem);
 	bool					Ruck				(PIItem pIItem);
 
