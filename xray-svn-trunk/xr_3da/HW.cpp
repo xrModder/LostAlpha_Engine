@@ -444,8 +444,8 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 		// desktop.
 
 		RECT			m_rcWindowBounds;
-		BOOL			bCenter = FALSE;
-		if (strstr(Core.Params, "-center_screen"))	bCenter = TRUE;
+		BOOL			bCenter = TRUE; //Screen centering is on by default in COP, it is here now too.
+		//if (strstr(Core.Params, "-center_screen"))	bCenter = TRUE;
 
 #ifdef DEDICATED_SERVER
 		bCenter			= TRUE;
