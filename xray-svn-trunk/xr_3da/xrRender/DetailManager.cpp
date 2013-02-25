@@ -268,6 +268,12 @@ void CDetailManager::UpdateVisibleM()
 
 						SlotItem			**siIT=&(*sp.items.begin()), **siEND=&(*sp.items.end());
 						for (; siIT!=siEND; siIT++){
+							if( (*siIT) == NULL )
+							{
+								//Todo: remove msg before release.
+								Msg("Invalid Slot item passed to Visibility");
+								continue;
+							}
 							SlotItem& Item			= *(*siIT);
 							float   scale			= Item.scale_calculated	= Item.scale*alpha_i;
 							float	ssa				= scale*scale*Rq_drcp;
