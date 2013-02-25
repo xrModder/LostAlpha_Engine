@@ -115,6 +115,7 @@ void CInventory::Clear()
 	InvalidateState						();
 }
 
+/*
 void CInventory::repackAmmo(PIItem pIItem)
 {
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
@@ -151,6 +152,7 @@ void CInventory::repackAmmo(PIItem pIItem)
 	}
 	return;
 }
+*/
 
 void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placement)
 {
@@ -179,8 +181,6 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	if (GetOwner()->object_id()==actor_id && this->m_pOwner->object_id()==actor_id)		//actors inventory
 	{
-		if (pIItem->object().CLS_ID==CLSID_OBJECT_AMMO)				//Is Ammo? (we can use)
-			repackAmmo(pIItem);
 
 		CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
 		if (pWeapon && pWeapon->strapped_mode())
@@ -364,6 +364,7 @@ bool CInventory::RepackBelt( PIItem pIItem )
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
 	R_ASSERT(ammo);
 
+	if ( !m_belt.size()) return true;
 	TIItemContainer::const_iterator it			= m_belt.begin();
 	TIItemContainer::const_iterator it_end		= m_belt.end();
 	
@@ -375,8 +376,8 @@ bool CInventory::RepackBelt( PIItem pIItem )
 			CWeaponAmmo* beltAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj); //Cast to ammo obj
 			R_ASSERT(beltAmmo);//Check the cast
 
-			if( ammo == beltAmmo) //Not sure how its possible for this to happen but it did (during game loading?)
-				continue;		  //Just skip it.
+			if( ammo == beltAmmo ) //Not sure how its possible for this to happen but it did (during game loading?)
+				continue;		   //Just skip it.
 			
 			u16 empty_space = beltAmmo->m_boxSize - beltAmmo->m_boxCurr;
 			if( empty_space > 0 )				//Is this box not full?
@@ -449,9 +450,61 @@ bool CInventory::Belt(PIItem pIItem)
 	return true;
 }
 
+bool CInventory::RepackRuck( PIItem pIItem )
+{
+
+	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
+	R_ASSERT(ammo);
+
+	if ( !m_ruck.size()) return true;
+	TIItemContainer::const_iterator it			= m_ruck.begin();
+	TIItemContainer::const_iterator it_end		= m_ruck.end();
+	
+	for(it; it != it_end; it++) 
+	{
+		CInventoryItem* invAmmoObj = (*it);
+		if( invAmmoObj->m_eItemPlace == eItemPlaceRuck && invAmmoObj->object().cNameSect()== pIItem->object().cNameSect() ) //Is in ruck, is the same type;
+		{
+			CWeaponAmmo* ruckAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj); //Cast to ammo obj
+			R_ASSERT(ruckAmmo);//Check the cast
+
+			if( ammo == ruckAmmo ) //Not sure how its possible for this to happen but it did (during game loading?)
+				continue;		   //Just skip it.
+			
+			u16 empty_space = ruckAmmo->m_boxSize - ruckAmmo->m_boxCurr;
+			if( empty_space > 0 )				//Is this box not full?
+			{
+				if( empty_space > ammo->m_boxCurr )
+				{
+					ruckAmmo->m_boxCurr += ammo->m_boxCurr; 
+					ammo->m_boxCurr = 0;		
+				}
+				else								
+				{
+					ruckAmmo->m_boxCurr += empty_space; 
+					ammo->m_boxCurr -= empty_space;
+				};
+			};
+			if( ammo->m_boxCurr == 0 )				//Its and empty Box, Discard it.
+			{
+				pIItem->SetDeleteManual(TRUE);		//Saw this in repack ammo, is this correct??
+				return false;
+			};
+		};
+	};
+	return true; //There is enough ammo left over to put the box in the ruck
+};
+
 bool CInventory::Ruck(PIItem pIItem)
 {
 	if(!CanPutInRuck(pIItem)) return true;
+
+	//Nova: Here is my belt repacking code.
+	if ( pIItem->object().CLS_ID==CLSID_OBJECT_AMMO )
+	{
+		if ( !RepackRuck(pIItem) )
+			return false;
+	}
 
 	bool in_slot = InSlot(pIItem);
 	//גושü בûכא ג סכמעו

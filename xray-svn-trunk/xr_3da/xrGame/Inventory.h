@@ -51,16 +51,16 @@ public:
 	float 					CalcTotalWeight		();
 
 	void					Take				(CGameObject *pObj, bool bNotActivate, bool strict_placement);
-	void					repackAmmo			(PIItem pObj);
+	//void					repackAmmo			(PIItem pObj); //Im refactoring this, perviously it was called by take. ive moved repack calls to belt and ruck
 
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
-
 	
 	bool					Slot				(PIItem pIItem, bool bNotActivate = false);	
 
 	bool					RepackBelt			(PIItem pIItem);
 	bool					Belt				(PIItem pIItem);
+	bool					RepackRuck			(PIItem pIItem);
 	bool					Ruck				(PIItem pIItem);
 
 	bool 					InSlot				(PIItem pIItem) const;
