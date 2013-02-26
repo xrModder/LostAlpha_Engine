@@ -97,26 +97,39 @@ bool CTimersManager::TimerExist(LPCSTR name)
 
 void CTimersManager::save(IWriter &memory_stream)
 {
+	Msg							("* Saving timers...");
+
 	memory_stream.open_chunk	(TIMERS_CHUNK_DATA);
-	memory_stream.w_u32(objects.size());
-	for (u32 idx=0;idx<objects.size();idx++) {
-		objects[idx].save(memory_stream);
+	memory_stream.w_u16(objects.size());
+
+	VECTOR_TIMERS_ITERATOR it = objects.begin();
+	VECTOR_TIMERS_ITERATOR it_end = objects.end();
+
+	for (;it!=it_end;++it) {
+		(*it).save(memory_stream);
 	}
 
 	memory_stream.close_chunk	();
+	Msg							("%d timers successfully saved",objects.size());
 }
 
 void CTimersManager::load(IReader &file_stream)
 {
+	objects.clear();
+	objects_to_call.clear();
+
 	Msg							("* Loading timers...");
 	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk TIMERS_CHUNK_DATA!");
-	u32 size = file_stream.r_u32();
-	for (u32 idx=0;idx<size;idx++) {
+	u16 size = file_stream.r_u16();
+	for (int idx=0;idx<size;idx++) {
 		CTimerCustom* timer = xr_new<CTimerCustom>();
 		timer->SetParent(this);
 		timer->load(file_stream);
+		if (timer->isGameTimer() && !timer->isHUD())
+			timer->PrepareGameTime();
+		else
+			timer->PrepareTime();
 		objects.push_back((*timer));
-		//objects[idx].save(memory_stream);
 	}
 	Msg							("%d timers successfully loaded",size);
 }
