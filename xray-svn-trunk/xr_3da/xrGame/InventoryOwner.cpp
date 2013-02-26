@@ -76,6 +76,10 @@ void CInventoryOwner::Load					(LPCSTR section)
 	{
 		m_need_osoznanie_mode=FALSE;
 	}
+
+	m_bDrawSecWpn					= true;
+	if (pSettings->line_exist(section,"draw_secondary_weapon"))
+		m_bDrawSecWpn					= !!pSettings->r_bool(section,"draw_secondary_weapon");
 }
 
 void CInventoryOwner::reload				(LPCSTR section)
@@ -288,8 +292,11 @@ void CInventoryOwner::renderable_Render		()
 	if (inventory().ActiveItem())
 		inventory().ActiveItem()->renderable_Render();
 
-	if (inventory().ItemFromSlot(RIFLE_SLOT))
-		inventory().ItemFromSlot(RIFLE_SLOT)->renderable_Render();
+	if (m_bDrawSecWpn)
+	{
+		if (inventory().ItemFromSlot(RIFLE_SLOT))
+			inventory().ItemFromSlot(RIFLE_SLOT)->renderable_Render();
+	}
 
 	CAttachmentOwner::renderable_Render();
 }
