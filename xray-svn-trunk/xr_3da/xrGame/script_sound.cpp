@@ -44,6 +44,7 @@ Fvector CScriptSound::GetPosition() const
 
 void CScriptSound::Play			(CScriptGameObject *object, float delay, int flags)
 {
+	R_ASSERT2 					(object, "There is no game object");
 	THROW3						(m_sound._handle(),"There is no sound",*m_caSoundToPlay);
 //	Msg							("%6d : CScriptSound::Play (%s), delay %f, flags %d",Device.dwTimeGlobal,m_sound._handle()->file_name(),delay,flags);
 	m_sound.play				(&object->object(),flags,delay);
@@ -51,6 +52,7 @@ void CScriptSound::Play			(CScriptGameObject *object, float delay, int flags)
 
 void CScriptSound::PlayAtPos		(CScriptGameObject *object, const Fvector &position, float delay, int flags)
 {
+	R_ASSERT2 					(object, "There is no game object");
 	THROW3						(m_sound._handle(),"There is no sound",*m_caSoundToPlay);
 //	Msg							("%6d : CScriptSound::Play (%s), delay %f, flags %d",m_sound._handle()->file_name(),delay,flags);
 	m_sound.play_at_pos			(&object->object(), position,flags,delay);
@@ -58,6 +60,7 @@ void CScriptSound::PlayAtPos		(CScriptGameObject *object, const Fvector &positio
 
 void CScriptSound::PlayNoFeedback	(CScriptGameObject *object,	u32 flags/*!< Looping */, float delay/*!< Delay */, Fvector pos, float vol)
 {
+	R_ASSERT2 					(object, "There is no game object");
 	THROW3						(m_sound._handle(),"There is no sound",*m_caSoundToPlay);
 	m_sound.play_no_feedback	(&object->object(), flags,delay,&pos,&vol);
 }
