@@ -484,6 +484,7 @@ static	u32 SlotsToCheck [] = {
 		RIFLE_SLOT		,		// 2
 		GRENADE_SLOT	,		// 3
 		APPARATUS_SLOT	,		// 4
+		BOLT_SLOT		,		// 5 - Nova: For mouse scrolling to bolt.
 		ARTEFACT_SLOT	,		// 10
 };
 

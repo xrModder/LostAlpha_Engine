@@ -358,13 +358,13 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 	return						true;
 }
 
-bool CInventory::RepackBelt( PIItem pIItem )
+void CInventory::RepackBelt( PIItem pIItem )
 {
 
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
 	R_ASSERT(ammo);
 
-	if ( !m_belt.size()) return true;
+	if ( !m_belt.size() || pIItem -> m_eItemPlace == eItemPlaceBelt  ) return; //Belt is empty, nothing to repack.
 	TIItemContainer::const_iterator it			= m_belt.begin();
 	TIItemContainer::const_iterator it_end		= m_belt.end();
 	
@@ -376,7 +376,7 @@ bool CInventory::RepackBelt( PIItem pIItem )
 			CWeaponAmmo* beltAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj); //Cast to ammo obj
 			R_ASSERT(beltAmmo);//Check the cast
 
-			if( ammo == beltAmmo ) //Not sure how its possible for this to happen but it did (during game loading?)
+			if( ammo == beltAmmo || beltAmmo->m_boxCurr == beltAmmo->m_boxSize )
 				continue;		   //Just skip it.
 			
 			u16 empty_space = beltAmmo->m_boxSize - beltAmmo->m_boxCurr;
@@ -385,7 +385,9 @@ bool CInventory::RepackBelt( PIItem pIItem )
 				if( empty_space > ammo->m_boxCurr )
 				{
 					beltAmmo->m_boxCurr += ammo->m_boxCurr; 
-					ammo->m_boxCurr = 0;		
+					ammo->m_boxCurr = 0;
+					pIItem->SetDeleteManual( true );
+					return;
 				}
 				else								
 				{
@@ -395,12 +397,11 @@ bool CInventory::RepackBelt( PIItem pIItem )
 			};
 			if( ammo->m_boxCurr == 0 )				//Its and empty Box, Discard it.
 			{
-				pIItem->SetDeleteManual(TRUE);		//Saw this in repack ammo, is this correct??
-				return false;
+				pIItem->SetDeleteManual( true );
+				return;
 			};
 		};
 	};
-	return true; //There is enough ammo left over to put the box on the belt
 };
 
 bool CInventory::Belt(PIItem pIItem)
@@ -409,10 +410,8 @@ bool CInventory::Belt(PIItem pIItem)
 
 	//Nova: Here is my belt repacking code.
 	if ( pIItem->object().CLS_ID==CLSID_OBJECT_AMMO )
-	{
-		if (!RepackBelt(pIItem))
-			return false;
-	}
+		RepackBelt(pIItem);
+
 
 	//גושü בûכא ג סכמעו
 	bool in_slot = InSlot(pIItem);
@@ -450,13 +449,13 @@ bool CInventory::Belt(PIItem pIItem)
 	return true;
 }
 
-bool CInventory::RepackRuck( PIItem pIItem )
+void CInventory::RepackRuck( PIItem pIItem )
 {
 
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(pIItem);
 	R_ASSERT(ammo);
 
-	if ( !m_ruck.size()) return true;
+	if ( !m_ruck.size() || pIItem -> m_eItemPlace == eItemPlaceRuck ) return;
 	TIItemContainer::const_iterator it			= m_ruck.begin();
 	TIItemContainer::const_iterator it_end		= m_ruck.end();
 	
@@ -468,31 +467,30 @@ bool CInventory::RepackRuck( PIItem pIItem )
 			CWeaponAmmo* ruckAmmo = smart_cast<CWeaponAmmo*>(invAmmoObj); //Cast to ammo obj
 			R_ASSERT(ruckAmmo);//Check the cast
 
-			if( ammo == ruckAmmo ) //Not sure how its possible for this to happen but it did (during game loading?)
+			if( ammo == ruckAmmo || ruckAmmo->m_boxCurr == ruckAmmo->m_boxSize )
 				continue;		   //Just skip it.
 			
 			u16 empty_space = ruckAmmo->m_boxSize - ruckAmmo->m_boxCurr;
-			if( empty_space > 0 )				//Is this box not full?
+			if( empty_space > ammo->m_boxCurr )
 			{
-				if( empty_space > ammo->m_boxCurr )
-				{
-					ruckAmmo->m_boxCurr += ammo->m_boxCurr; 
-					ammo->m_boxCurr = 0;		
-				}
-				else								
-				{
-					ruckAmmo->m_boxCurr += empty_space; 
-					ammo->m_boxCurr -= empty_space;
-				};
+				ruckAmmo->m_boxCurr += ammo->m_boxCurr; 
+				ammo->m_boxCurr = 0;
+				pIItem->SetDeleteManual( true );
+				return;
+			}
+			else								
+			{
+				ruckAmmo->m_boxCurr += empty_space; 
+				ammo->m_boxCurr -= empty_space;
 			};
+
 			if( ammo->m_boxCurr == 0 )				//Its and empty Box, Discard it.
 			{
-				pIItem->SetDeleteManual(TRUE);		//Saw this in repack ammo, is this correct??
-				return false;
+				pIItem->SetDeleteManual( true );
+				return;
 			};
 		};
 	};
-	return true; //There is enough ammo left over to put the box in the ruck
 };
 
 bool CInventory::Ruck(PIItem pIItem)
@@ -502,8 +500,7 @@ bool CInventory::Ruck(PIItem pIItem)
 	//Nova: Here is my belt repacking code.
 	if ( pIItem->object().CLS_ID==CLSID_OBJECT_AMMO )
 	{
-		if ( !RepackRuck(pIItem) )
-			return false;
+		RepackRuck(pIItem);
 	}
 
 	bool in_slot = InSlot(pIItem);
@@ -1116,8 +1113,8 @@ bool CInventory::InBelt(PIItem pIItem) const
 }
 bool CInventory::InRuck(PIItem pIItem) const
 {
-	if(Get(pIItem->object().ID(), true)) return true;
-	return false;
+	if( Get(pIItem->object().ID(), true ) ) return true;
+	return false; 
 }
 
 

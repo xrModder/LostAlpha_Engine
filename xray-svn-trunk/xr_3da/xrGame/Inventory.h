@@ -58,9 +58,9 @@ public:
 	
 	bool					Slot				(PIItem pIItem, bool bNotActivate = false);	
 
-	bool					RepackBelt			(PIItem pIItem);
+	void					RepackBelt			(PIItem pIItem);
 	bool					Belt				(PIItem pIItem);
-	bool					RepackRuck			(PIItem pIItem);
+	void					RepackRuck			(PIItem pIItem);
 	bool					Ruck				(PIItem pIItem);
 
 	bool 					InSlot				(PIItem pIItem) const;
