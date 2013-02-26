@@ -198,6 +198,7 @@ private:
 	CTradeParameters			*m_trade_parameters;
 	CPurchaseList				*m_purchase_list;
 	BOOL						m_need_osoznanie_mode;
+	bool						m_bDrawSecWpn;
 
 public:
 	IC		CTradeParameters	&trade_parameters		() const;

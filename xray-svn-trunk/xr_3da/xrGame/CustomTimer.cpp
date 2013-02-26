@@ -3,6 +3,7 @@
 #include "pch_script.h"
 #include "alife_space.h"
 #include "actor.h"
+#include "level.h"
 
 
 u64	generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
@@ -111,18 +112,24 @@ void CTimerCustom::SetHUD(bool b)
 	if (m_parent) m_parent->OnHud(this,b);
 }
 
-void CTimerCustom::save (IWriter& stream)
+void CTimerCustom::save (IWriter &stream)
 {
+	u32 m_save_game_time = m_game_time;
+	if (m_save_game_time > 0)
+		m_save_game_time -= Device.dwTimeGlobal;
+
 	save_data(m_name,	stream);
 	save_data(m_action,	stream);
 	save_data(m_info,	stream);
 	save_data(m_time,	stream);
-	save_data(m_game_time,	stream);
+	save_data(m_save_game_time,	stream);
 	save_data(m_flags,	stream);
 	save_data(m_argument,	stream);
+
+	//Msg("m_action[%s], m_game_time[%d]", m_action.c_str(), m_save_game_time);
 }
 
-void CTimerCustom::load (IReader& stream)
+void CTimerCustom::load (IReader &stream)
 {
 	load_data(m_name,	stream);
 	load_data(m_action,	stream);
@@ -132,6 +139,8 @@ void CTimerCustom::load (IReader& stream)
 	load_data(m_flags,	stream);
 	load_data(m_argument,	stream);
 	if (isHUD()) m_parent->OnHud(this,true);
+
+	//Msg("m_name[%s], m_game_time[%d]", m_name.c_str(), m_game_time); //all parameters was loaded
 }
 
 

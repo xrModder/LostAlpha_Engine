@@ -463,7 +463,7 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 	
 	m_pPhysics_support->in_NetSpawn	(e);
 
-	if (m_bIsGhost) character_physics_support()->movement()->DestroyCharacter();
+	// if (m_bIsGhost) character_physics_support()->movement()->DestroyCharacter(); //because stalkers cant walk
 
 	return							(TRUE);
 }
