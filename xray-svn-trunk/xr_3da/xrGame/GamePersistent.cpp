@@ -15,6 +15,8 @@
 #include "weaponhud.h"
 #include "stalker_animation_data_storage.h"
 #include "stalker_velocity_holder.h"
+#include "alife_simulator.h"
+#include "CustomTimersManager.h"
 
 #include "../CameraManager.h"
 #include "actor.h"
@@ -322,6 +324,9 @@ void CGamePersistent::update_game_loaded()
 //	Msg("intro_delete ::update_game_loaded");
 //	load_screen_renderer.stop();
 	start_game_intro		();
+
+	CALifeSimulator* alife = ai().get_alife_nonconst();
+	alife->timers().GameLoaded(true);
 }
 
 void CGamePersistent::start_game_intro		()

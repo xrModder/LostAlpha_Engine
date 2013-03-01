@@ -581,9 +581,8 @@ void CLevel::OnFrame	()
 	Device.Statistic->TEST0.End			();
 
 	CALifeSimulator* alife = ai().get_alife_nonconst();
-	if (alife->initialized()) {
+	if (alife->initialized() && alife->timers().IsGameLoaded())
 		alife->timers().Update();
-	}
 
 	// update static sounds
 	if(!g_dedicated_server)

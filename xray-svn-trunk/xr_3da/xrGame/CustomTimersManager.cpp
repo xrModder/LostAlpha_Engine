@@ -6,6 +6,7 @@ CTimersManager::CTimersManager(void)
 {
 	b_HUDTimerActive = false;
 	hud_timer = NULL;
+	b_GameLoaded = false;
 }
 
 CTimersManager::~CTimersManager(void) 
@@ -115,9 +116,6 @@ void CTimersManager::save(IWriter &memory_stream)
 
 void CTimersManager::load(IReader &file_stream)
 {
-	objects.clear();
-	objects_to_call.clear();
-
 	Msg							("* Loading timers...");
 	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk TIMERS_CHUNK_DATA!");
 	u16 size = file_stream.r_u16();
@@ -125,11 +123,7 @@ void CTimersManager::load(IReader &file_stream)
 		CTimerCustom* timer = xr_new<CTimerCustom>();
 		timer->SetParent(this);
 		timer->load(file_stream);
-		if (timer->isGameTimer() && !timer->isHUD())
-			timer->PrepareGameTime();
-		else
-			timer->PrepareTime();
-		objects.push_back((*timer));
+		objects_to_load.push_back((*timer));
 	}
 	Msg							("%d timers successfully loaded",size);
 }
@@ -144,7 +138,6 @@ void CTimersManager::Update ()
 
 	for (;it!=it_end;++it) 
 	{
-		//SkyLoader to Ghost: added GAME_TIMER
 		if ((*it).isGameTimer() && !(*it).isHUD())
 		{
 			if ((*it).CheckGameTime())
@@ -165,6 +158,21 @@ void CTimersManager::Update ()
 				break;
 			}
 		}
+	}
+
+	if (b_GameLoaded)
+	{
+		for (it=objects_to_load.begin();it!=objects_to_load.end();++it)
+		{
+			if ((*it).isGameTimer() && !(*it).isHUD())
+				(*it).PrepareGameTime();
+			else
+				(*it).PrepareTime();
+	
+			objects.push_back((*it));
+		}
+
+	objects_to_load.clear();
 	}
 	
 	for (it=objects_to_call.begin();it!=objects_to_call.end();++it)

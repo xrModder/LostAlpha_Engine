@@ -27,13 +27,17 @@ public:
 	void			OnHud					(CTimerCustom *t,bool b);
 	bool			IsAnyHUDTimerActive		() {return b_HUDTimerActive;};
 
+	void				GameLoaded			(bool val) { b_GameLoaded = val;}
+	bool				IsGameLoaded		() {return b_GameLoaded;};
 
 private:
+	xr_vector<CTimerCustom> objects_to_load;
 	xr_vector<CTimerCustom> objects;
 	xr_vector<CTimerCustom> objects_to_call;
 	CTimerCustom			*hud_timer;
 	CUIStatic				*ui_hud_timer;
 	bool					b_HUDTimerActive;
+	bool					b_GameLoaded;
 	CTimerCustom*	SearchTimer				(LPCSTR name);
 
 public:
