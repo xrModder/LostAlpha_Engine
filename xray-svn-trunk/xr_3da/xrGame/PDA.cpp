@@ -90,7 +90,9 @@ void CPda::UpdateActiveContacts	()
 void CPda::feel_touch_new(CObject* O) 
 {
 	CInventoryOwner* pNewContactInvOwner	= smart_cast<CInventoryOwner*>(O);
-	CInventoryOwner* pOwner					= smart_cast<CInventoryOwner*>( H_Parent() );VERIFY(pOwner);
+	CInventoryOwner* pOwner					= smart_cast<CInventoryOwner*>( H_Parent() );
+
+	R_ASSERT2(pOwner, "Actor lost his pda. He should always have it!");
 
 	pOwner->NewPdaContact					(pNewContactInvOwner);
 }
@@ -99,7 +101,9 @@ void CPda::feel_touch_delete(CObject* O)
 {
 	if(!H_Parent())							return;
 	CInventoryOwner* pLostContactInvOwner	= smart_cast<CInventoryOwner*>(O);
-	CInventoryOwner* pOwner					= smart_cast<CInventoryOwner*>( H_Parent() );VERIFY(pOwner);
+	CInventoryOwner* pOwner					= smart_cast<CInventoryOwner*>( H_Parent() );
+
+	R_ASSERT2(pOwner, "Actor lost his pda. He should always have it!");
 
 	pOwner->LostPdaContact					(pLostContactInvOwner);
 }

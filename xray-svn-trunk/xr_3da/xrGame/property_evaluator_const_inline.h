@@ -18,9 +18,9 @@ TEMPLATE_SPECIALIZATION
 IC	CEvaluator::CPropertyEvaluatorConst	(_value_type value, LPCSTR evaluator_name) :
 	m_value			(value)
 {
-#ifdef LOG_ACTION
+//#ifdef LOG_ACTION
 	m_evaluator_name	= evaluator_name;
-#endif
+//#endif
 }
 
 TEMPLATE_SPECIALIZATION
