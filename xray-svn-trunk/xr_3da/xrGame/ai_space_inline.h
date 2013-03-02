@@ -60,12 +60,12 @@ IC	const CALifeSimulator		&CAI_Space::alife					() const
 	VERIFY					(m_alife_simulator);
 	return					(*m_alife_simulator);
 }
-
+/*
 IC CALifeSimulator		*CAI_Space::get_alife_nonconst				()
 {
 	return					(m_alife_simulator);
 }
-
+*/
 IC	const CALifeSimulator		*CAI_Space::get_alife				() const
 {
 	return					(m_alife_simulator);

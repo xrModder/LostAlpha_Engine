@@ -216,6 +216,11 @@ Device.Statistic->TEST0.End		();
 			}
 
 			// Save it
+			if (ItemP == NULL)
+			{
+				Msg("! Skipping invalid face for slot %d 0x%x frame=%d", index, &D, D.frame);
+				continue;
+			}
 			D.G[index].items.push_back(ItemP);
 		}
 	}

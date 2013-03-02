@@ -325,8 +325,7 @@ void CGamePersistent::update_game_loaded()
 //	load_screen_renderer.stop();
 	start_game_intro		();
 
-	CALifeSimulator* alife = ai().get_alife_nonconst();
-	alife->timers().GameLoaded(true);
+	ai().alife().timers().GameLoaded(true);
 }
 
 void CGamePersistent::start_game_intro		()

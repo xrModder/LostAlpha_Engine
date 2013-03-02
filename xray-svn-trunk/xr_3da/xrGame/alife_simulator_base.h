@@ -81,6 +81,7 @@ public:
 	IC		bool								initialized					() const;
 	IC		const CALifeSimulatorHeader			&header						() const;
 	IC		const CALifeTimeManager				&time						() const;
+	IC		CTimersManager						&timers						() const;
 	IC		const CALifeSpawnRegistry			&spawns						() const;
 	IC		const CALifeObjectRegistry			&objects					() const;
 	IC		const CALifeGraphRegistry			&graph						() const;

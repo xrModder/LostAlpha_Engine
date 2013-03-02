@@ -131,6 +131,8 @@ void CTimersManager::load(IReader &file_stream)
 
 void CTimersManager::Update ()
 {
+	if (!b_GameLoaded)
+		return;
 	TIMER_CUSTOM_IT it = objects.begin();
 	TIMER_CUSTOM_IT it_end = objects.end();
 

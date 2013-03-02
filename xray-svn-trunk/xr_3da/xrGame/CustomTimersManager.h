@@ -28,7 +28,7 @@ public:
 	bool			IsAnyHUDTimerActive		() {return b_HUDTimerActive;};
 
 	void				GameLoaded			(bool val) { b_GameLoaded = val;}
-	bool				IsGameLoaded		() {return b_GameLoaded;};
+	bool				IsGameLoaded		() const {return b_GameLoaded;};
 
 private:
 	xr_vector<CTimerCustom> objects_to_load;

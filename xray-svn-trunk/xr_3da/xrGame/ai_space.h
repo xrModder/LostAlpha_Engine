@@ -70,7 +70,7 @@ public:
 	IC		CEF_Storage					&ef_storage				() const;
 	IC		CGraphEngine				&graph_engine			() const;
 	IC		const CALifeSimulator		&alife					() const;
-	IC		CALifeSimulator				*get_alife_nonconst		();
+//	IC		CALifeSimulator				*get_alife_nonconst		();
 	IC		const CALifeSimulator		*get_alife				() const;
 	IC		const CCoverManager			&cover_manager			() const;
 	IC		CScriptEngine				&script_engine			() const;

@@ -160,6 +160,13 @@ IC	CTimersManager					&CALifeSimulatorBase::timers							()
 	return						(*m_timers_manager);
 }
 
+IC	CTimersManager					&CALifeSimulatorBase::timers							()  const
+{
+	VERIFY						(initialized());
+	VERIFY						(m_timers_manager);
+	return						(*m_timers_manager);
+}
+
 /*
 	CStoreHouse					*CALifeSimulatorBase::get_store_house_script						() 
 {
