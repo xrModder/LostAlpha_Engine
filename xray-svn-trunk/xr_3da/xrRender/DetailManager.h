@@ -89,6 +89,10 @@ public:
 	};
 	SSwingValue						swing_desc[2];
 	SSwingValue						swing_current; 
+	float							m_time_rot_1;
+	float							m_time_rot_2;
+	float							m_time_pos;
+	float							m_global_time_old;
 public:
 	IReader*						dtFS;
 	DetailHeader					dtH;

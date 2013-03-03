@@ -41,7 +41,7 @@ void* _VertexStream::Lock	( u32 vl_Count, u32 Stride, u32& vOffset )
 
 	// Ensure there is enough space in the VB for this data
 	u32	bytes_need		= vl_Count*Stride;
-	R_ASSERT			((bytes_need<=mSize) && vl_Count);
+	R_ASSERT2			((bytes_need<=mSize) && vl_Count, make_string("bytes_need = %d, mSize = %d, vl_Count = %d", bytes_need, mSize, vl_Count));
 
 	// Vertex-local info
 	u32 vl_mSize		= mSize/Stride;
@@ -56,13 +56,19 @@ void* _VertexStream::Lock	( u32 vl_Count, u32 Stride, u32& vOffset )
 		vOffset				= 0;
 		mDiscardID			++;
 
-		pVB->Lock			( mPosition, bytes_need, (void**)&pData, LOCKFLAGS_FLUSH);
+		HRESULT res = pVB->Lock( mPosition, bytes_need, (void**)&pData, LOCKFLAGS_FLUSH);
+
+		if( res != D3D_OK )
+			Msg( " pVB->Lock - failed: res = %d,mPosition = %d, bytes_need = %d, &pData = %x, LOCKFLAGS_FLUSH", res, mPosition, bytes_need, (void**)&pData );
 	} else {
 		// APPEND-LOCK
 		mPosition			= vl_mPosition*Stride;
 		vOffset				= vl_mPosition;
 
-		pVB->Lock			( mPosition, bytes_need, (void**)&pData, LOCKFLAGS_APPEND);
+		HRESULT res = pVB->Lock			( mPosition, bytes_need, (void**)&pData, LOCKFLAGS_APPEND);
+		
+		if( res != D3D_OK )
+			Msg( " pVB->Lock - failed: res = %d,mPosition = %d, bytes_need = %d, &pData = %x, LOCKFLAGS_APPEND", res, mPosition, bytes_need, (void**)&pData );
 	}
 	VERIFY				( pData );
 
@@ -91,6 +97,22 @@ void	_VertexStream::reset_end	()
 {
 	Create				();
 	//old_pVB				= NULL;
+}
+
+_VertexStream::_VertexStream()
+{
+	_clear();
+};
+
+void _VertexStream::_clear()
+{
+    pVB			= NULL;
+    mSize		= 0;
+    mPosition	= 0;
+    mDiscardID	= 0;
+#ifdef DEBUG
+	dbg_lock	= 0;
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////

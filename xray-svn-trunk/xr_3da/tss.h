@@ -4,7 +4,21 @@
 
 #include "tss_def.h"
 
-class ENGINE_API CSimulatorTSS
+#if defined(USE_DX10) || defined(USE_DX11)
+enum	XRDX10SAMPLERSTATETYPE
+{
+	XRDX10SAMP_ANISOTROPICFILTER	=	256,
+	XRDX10SAMP_COMPARISONFILTER,
+	XRDX10SAMP_COMPARISONFUNC,
+	XRDX10SAMP_MINLOD				//	integer value. 0 - the most detailed level
+};
+enum	XRDX10RENDERSTATETYPE
+{
+	XRDX10RS_ALPHATOCOVERAGE		=	1024
+};
+#endif	//	USE_DX10
+
+class  CSimulatorTSS
 {
 public:
 	IC void Set			(SimulatorStates& container, u32 S, u32 N, u32 V)

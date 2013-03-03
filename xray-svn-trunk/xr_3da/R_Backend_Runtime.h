@@ -8,6 +8,7 @@
 #include "sh_rt.h"
 
 IC void		R_xforms::set_c_w			(R_constant* C)		{	c_w		= C;	RCache.set_c(C,m_w);	};
+IC void		R_xforms::set_c_invw		(R_constant* C)		{	c_invw	= C;	apply_invw();			};
 IC void		R_xforms::set_c_v			(R_constant* C)		{	c_v		= C;	RCache.set_c(C,m_v);	};
 IC void		R_xforms::set_c_p			(R_constant* C)		{	c_p		= C;	RCache.set_c(C,m_p);	};
 IC void		R_xforms::set_c_wv			(R_constant* C)		{	c_wv	= C;	RCache.set_c(C,m_wv);	};
@@ -34,6 +35,18 @@ IC	void	CBackend::set_xform_project	(const Fmatrix& M)
 IC	const Fmatrix&	CBackend::get_xform_world	()	{ return xforms.get_W();	}
 IC	const Fmatrix&	CBackend::get_xform_view	()	{ return xforms.get_V();	}
 IC	const Fmatrix&	CBackend::get_xform_project	()	{ return xforms.get_P();	}
+
+IC	IDirect3DSurface9* CBackend::get_RT(u32 ID)
+{
+	VERIFY((ID>=0)&&(ID<4));
+
+	return pRT[ID];
+}
+
+IC	IDirect3DSurface9* CBackend::get_ZB				()
+{
+	return pZB;
+}
 
 IC void CBackend::set_RT				(IDirect3DSurface9* RT, u32 ID)
 {
@@ -85,7 +98,7 @@ IC void CBackend::set_Matrices			(SMatrixList*	_M)
 					matrices	[it]	= mat;
 					mat->Calculate		();
 					set_xform			(D3DTS_TEXTURE0+it,mat->xform);
-					stat.matrices		++;
+	//				stat.matrices		++;
 				}
 			}
 		}

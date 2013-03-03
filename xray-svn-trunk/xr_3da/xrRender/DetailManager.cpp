@@ -81,6 +81,10 @@ CDetailManager::CDetailManager	()
 	hw_BatchSize= 0;
 	hw_VB		= 0;
 	hw_IB		= 0;
+	m_time_rot_1 = 0;
+	m_time_rot_2 = 0;
+	m_time_pos	= 0;
+	m_global_time_old = 0;
 }
 
 CDetailManager::~CDetailManager	()

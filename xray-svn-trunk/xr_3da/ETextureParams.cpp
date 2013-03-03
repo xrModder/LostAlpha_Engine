@@ -60,6 +60,7 @@ xr_token					tmtl_token								[ ]={
 xr_token					tbmode_token							[ ]={
 	{ "None",				STextureParams::tbmNone						},
 	{ "Use",				STextureParams::tbmUse						},
+	{ "Use parallax",		STextureParams::tbmUseParallax				},
 	{ 0,					0											}
 };
 

@@ -131,47 +131,6 @@ void CLightShadows::add_element	(NODE& N)
 	casters.back()->nodes.push_back		(N);
 }
 
-IC float PLC_energy	(Fvector& P, Fvector& N, light* L, float E)
-{
-	Fvector Ldir;
-	if (L->flags.type==IRender_Light::DIRECT)
-	{
-		// Cos
-		Ldir.invert	(L->direction);
-		float D		= Ldir.dotproduct( N );
-		if( D <=0 )						return 0;
-		
-		// Trace Light
-		float A		= D*E;
-		return A;
-	} else {
-		// Distance
-		float sqD	= P.distance_to_sqr(L->position);
-		if (sqD > (L->range*L->range))	return 0;
-		
-		// Dir
-		Ldir.sub	(L->position,P);
-		Ldir.normalize_safe();
-		float D		= Ldir.dotproduct( N );
-		if( D <=0 )						return 0;
-		
-		// Trace Light
-		float R		= _sqrt		(sqD);
-		float att	= 1-(1/(1+R));
-		float A		= D * E * att;
-		return A;
-	}
-}
-
-IC int PLC_calc	(Fvector& P, Fvector& N, light* L, float energy, Fvector& O)
-{
-	float	E		= PLC_energy(P,N,L,energy);
-	float	C1		= clampr(Device.vCameraPosition.distance_to_sqr(P)/S_distance2,	0.f,1.f);
-	float	C2		= clampr(O.distance_to_sqr(P)/S_fade2,							0.f,1.f);
-	float	A		= 1.f-1.5f*E*(1.f-C1)*(1.f-C2);
-	return			iCeil(255.f*A);
-}
-
 //
 void CLightShadows::calculate	()
 {
@@ -250,18 +209,24 @@ void CLightShadows::calculate	()
 			float		p_hat	=	p_R/p_dist;
 			float		p_asp	=	1.f;
 			float		p_near	=	p_dist-p_R-eps;									
-			float		p_nearR	=	C.C.distance_to(L.source->position) + p_R*0.85f + eps;
-						p_nearR =	p_near;
+			//float		p_nearR	=	C.C.distance_to(L.source->position) + p_R*0.85f + eps;
+			//			p_nearR =	p_near;
 			float		p_far	=	_min(Lrange,_max(p_dist+S_fade,p_dist+p_R));	
 			if (p_near<eps)			continue;
 			if (p_far<(p_near+eps))	continue;
+			//	Igor: make check here instead of assertion in buil_projection_hat
+			if (!(_abs(p_far-p_near) > eps)) continue;
 			if (p_hat>0.9f)			continue;
 			if (p_hat<0.01f)		continue;
 
 			//Msg			("* near(%f), near-x(%f)",p_near,p_nearR);
 			
 			mProject.build_projection_HAT	(p_hat,p_asp,p_near,	p_far);
-			mProjectR.build_projection_HAT	(p_hat,p_asp,p_nearR,	p_far);
+			//	Igor: strange bug with building projection_hat
+			//	building projection with the same parameters fails for the 
+			//	second time
+			//mProjectR.build_projection_HAT	(p_hat,p_asp,p_nearR,	p_far);
+			mProjectR = mProject;
 			RCache.set_xform_project		(mProject);
 			
 			// calculate view-matrix
@@ -353,6 +318,43 @@ IC	bool		cache_search(const CLightShadows::cache_item& A, const CLightShadows::c
 	return			false;	// eq
 }
 
+IC float PLC_energy	(Fvector& P, Fvector& N, light* L, float E)
+{
+	Fvector Ldir;
+	if (L->flags.type==IRender_Light::DIRECT)
+	{
+		// Cos
+		Ldir.invert	(L->direction);
+		float D		= Ldir.dotproduct( N );
+		if( D <=0 )						return 0;
+		return E;
+	} else {
+		// Distance
+		float sqD	= P.distance_to_sqr(L->position);
+		if (sqD > (L->range*L->range))	return 0;
+		
+		// Dir
+		Ldir.sub	(L->position,P);
+		Ldir.normalize_safe();
+		float D		= Ldir.dotproduct( N );
+		if( D <=0 )						return 0;
+
+		// Trace Light
+		float R		= _sqrt		(sqD);
+		float att	= 1-(1/(1+R));
+		return (E * att);
+	}
+}
+
+IC int PLC_calc	(Fvector& P, Fvector& N, light* L, float energy, Fvector& O)
+{
+	float	E		= PLC_energy(P,N,L,energy);
+	float	C1		= clampr(Device.vCameraPosition.distance_to_sqr(P)/S_distance2,	0.f,1.f);
+	float	C2		= clampr(O.distance_to_sqr(P)/S_fade2,							0.f,1.f);
+	float	A		= 1.f-1.5f*E*(1.f-C1)*(1.f-C2);
+	return			iCeil(255.f*A);
+}
+
 void CLightShadows::render	()
 {
 	// Gain access to collision-DB
@@ -364,6 +366,17 @@ void CLightShadows::render	()
 	
 	// Projection and xform
 	float _43					=	Device.mProject._43;
+
+	//	Handle biasing problem when near changes
+	const float fMinNear = 0.1f;
+	const float fMaxNear = 0.2f;
+	const float fMinNearBias = 0.0002f;
+	const float fMaxNearBias = 0.002f;
+	float	fLerpCoeff	= (_43 - fMinNear) / (fMaxNear - fMinNear);
+	clamp( fLerpCoeff, 0.0f, 1.0f );
+	//	lerp
+	Device.mProject._43			-=	fMinNearBias + (fMaxNearBias-fMinNearBias) * fLerpCoeff;
+	//Device.mProject._43			-=	0.0002f; 
 	Device.mProject._43			-=	0.002f; 
 	RCache.set_xform_world		(Fidentity);
 	RCache.set_xform_project	(Device.mProject);
@@ -488,9 +501,15 @@ void CLightShadows::render	()
 			Fplane		ttp;	ttp.build_unit_normal(v[0],TT.N);
 
 			if (ttp.classify(View)<0)						continue;
+			/*
 			int	c0		= PLC_calc(v[0],TT.N,S.L,Le,S.C);
 			int	c1		= PLC_calc(v[1],TT.N,S.L,Le,S.C);
 			int	c2		= PLC_calc(v[2],TT.N,S.L,Le,S.C);
+			*/
+			int	c0,c1,c2;
+
+			PSGP.PLC_calc3(c0,c1,c2,Device,v,TT.N,S.L,Le,S.C);
+
 			if (c0>S_clip && c1>S_clip && c2>S_clip)		continue;	
 			clamp		(c0,S_ambient,255);
 			clamp		(c1,S_ambient,255);

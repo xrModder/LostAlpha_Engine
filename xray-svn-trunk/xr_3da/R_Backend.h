@@ -13,6 +13,8 @@
 #include "r_DStreams.h"
 #include "r_constants_cache.h"
 #include "r_backend_xform.h"
+#include "r_backend_hemi.h"
+#include "r_backend_tree.h"
 #include "fvf.h"
 
 const	u32		CULL_CCW			= D3DCULL_CCW;
@@ -37,16 +39,48 @@ struct	R_statistics			{
 	R_statistics_element		s_dynamic_2B	;
 };
 
-
+#pragma warning(push)
+#pragma warning(disable:4324)
 class ENGINE_API CBackend
 {
+public:
+#if defined(USE_DX10) || defined(USE_DX11)
+	enum	MaxTextures
+	{
+		//	Actually these values are 128
+		mtMaxPixelShaderTextures = 16,
+		mtMaxVertexShaderTextures = 4,
+		mtMaxGeometryShaderTextures = 16,
+#	ifdef USE_DX11
+		mtMaxHullShaderTextures = 16,
+		mtMaxDomainShaderTextures = 16,
+		mtMaxComputeShaderTextures = 16,
+#	endif
+	};
+	enum
+	{
+		MaxCBuffers	= 14
+	};
+#else	//	USE_DX10
+	enum	MaxTextures
+	{
+		mtMaxPixelShaderTextures = 16,
+		mtMaxVertexShaderTextures = 4,
+	};
+#endif	//	USE_DX10
+	
+
+
 public:            
 	// Dynamic geometry streams
 	_VertexStream					Vertex;
 	_IndexStream					Index;
 	IDirect3DIndexBuffer9*			QuadIB;
 	IDirect3DIndexBuffer9*			old_QuadIB;
+	IDirect3DIndexBuffer9* 			CuboidIB;
 	R_xforms						xforms;
+	R_hemi							hemi;
+	R_tree							tree;
 private:
 	// Render-targets
 	IDirect3DSurface9*				pRT[4];
@@ -80,6 +114,9 @@ private:
 	u32								stencil_zfail;
 	u32								colorwrite_mask;
 	u32								cull_mode;
+	u32								z_enable;
+	u32								z_func;
+	u32								alpha_ref;
 
 	// Lists
 	STextureList*					T;
@@ -87,8 +124,9 @@ private:
 	SConstantList*					C;
 
 	// Lists-expanded
-	CTexture*						textures_ps	[16	];	// stages
-	CTexture*						textures_vs	[5	];	// dmap + 4 vs
+	CTexture*						textures_ps	[mtMaxPixelShaderTextures];	// stages
+	//CTexture*						textures_vs	[5	];	// dmap + 4 vs
+	CTexture*						textures_vs	[mtMaxVertexShaderTextures];	// 4 vs
 #ifdef _EDITOR
 	CMatrix*						matrices	[8	];	// matrices are supported only for FFP
 #endif
@@ -120,8 +158,24 @@ public:
 public:
 	IC	CTexture*					get_ActiveTexture			(u32 stage)
 	{
-		if (stage>=256)				return textures_vs[stage-256];
-		else 						return textures_ps[stage];
+		if (stage<CTexture::rstVertex)			return textures_ps[stage];
+		else if (stage<CTexture::rstGeometry)	return textures_vs[stage-CTexture::rstVertex];
+#ifdef USE_DX10
+		else									return textures_gs[stage-CTexture::rstGeometry];
+#elif USE_DX11
+		else if (stage<CTexture::rstHull)	return textures_gs[stage-CTexture::rstGeometry];
+		else if (stage<CTexture::rstDomain) return textures_hs[stage-CTexture::rstHull];
+		else if (stage<CTexture::rstCompute) return textures_ds[stage-CTexture::rstDomain];
+		else if (stage<CTexture::rstInvalid) return textures_cs[stage-CTexture::rstCompute];
+		else
+		{
+			VERIFY(!"Invalid texture stage");
+			return 0;
+		}
+#else	//	USE_DX10
+		VERIFY(!"Invalid texture stage");
+		return 0;
+#endif	//	USE_DX10
 	}
 	IC	R_constant_array&			get_ConstantCache_Vertex	()			{ return constants.a_vertex;	}
 	IC	R_constant_array&			get_ConstantCache_Pixel		()			{ return constants.a_pixel;		}
@@ -137,6 +191,8 @@ public:
 
 	IC	void						set_RT				(IDirect3DSurface9* RT, u32 ID=0);
 	IC	void						set_ZB				(IDirect3DSurface9* ZB);
+	IC	IDirect3DSurface9*			get_RT				(u32 ID=0);
+	IC	IDirect3DSurface9*			get_ZB				();
 
 	IC	void						set_Constants		(R_constant_table* C);
 	IC	void						set_Constants		(ref_ctable& C)						{ set_Constants(&*C);			}
@@ -171,6 +227,9 @@ public:
 	ICF void						set_Geometry		(SGeometry* _geom);
 	ICF void						set_Geometry		(ref_geom& _geom)					{	set_Geometry(&*_geom);		}
 	IC  void						set_Stencil			(u32 _enable, u32 _func=D3DCMP_ALWAYS, u32 _ref=0x00, u32 _mask=0x00, u32 _writemask=0x00, u32 _fail=D3DSTENCILOP_KEEP, u32 _pass=D3DSTENCILOP_KEEP, u32 _zfail=D3DSTENCILOP_KEEP);
+	IC  void						set_Z				(u32 _enable);
+	IC  void						set_ZFunc			(u32 _func);
+	IC  void						set_AlphaRef		(u32 _value);
 	IC  void						set_ColorWriteEnable(u32 _mask = D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
 	IC  void						set_CullMode		(u32 _mode);
 	IC  u32							get_CullMode		(){return cull_mode;}
@@ -210,6 +269,7 @@ public:
 	ICF	void						Render				(D3DPRIMITIVETYPE T, u32 startV, u32 PC);
 
 	// Device create / destroy / frame signaling
+	void							RestoreQuadIBData	();	// Igor: is used to test bug with rain, particles corruption
 	void							CreateQuadIB		();
 	void							OnFrameBegin		();
 	void							OnFrameEnd			();
@@ -236,6 +296,7 @@ public:
 
 	CBackend()						{	Invalidate(); };
 };
+#pragma warning(pop)
 
 extern ENGINE_API CBackend			RCache;
 

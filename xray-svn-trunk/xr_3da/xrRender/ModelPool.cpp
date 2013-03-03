@@ -86,7 +86,11 @@ IRender_Visual*	CModelPool::Instance_Duplicate	(IRender_Visual* V)
 	N->Spawn		();
     // inc ref counter
 	for (xr_vector<ModelDef>::iterator I=Models.begin(); I!=Models.end(); I++) 
-		if (I->model==V){ I->refs++; break;}
+		if (I->model==V)
+		{ 
+			I->refs++; 
+			break;
+		}
 	return N;
 }
 
@@ -275,7 +279,7 @@ IRender_Visual* CModelPool::CreateChild(LPCSTR name, IReader* data)
     return					Model;
 }
 
-extern ENGINE_API BOOL				g_bRendering; 
+extern  BOOL ENGINE_API g_bRendering; 
 void	CModelPool::DeleteInternal	(IRender_Visual* &V, BOOL bDiscard)
 {
 	VERIFY					(!g_bRendering);

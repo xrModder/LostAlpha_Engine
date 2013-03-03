@@ -24,6 +24,7 @@ public:
 	BOOL				bDetail;
 	BOOL				bDetail_Diffuse;
 	BOOL				bDetail_Bump;
+	BOOL				bUseSteepParallax;
 	int					iElement;
 
 public:
@@ -43,7 +44,7 @@ private:
 	string128			pass_vs;
 	string128			pass_ps;
 
-	u32					BC					(BOOL v)	{ return v?0xff:0; }
+	u32					BC					(BOOL v)	{ return v?0x01:0; }
 public:
 	CSimulator&			R()					{ return RS; }
 	
@@ -86,6 +87,7 @@ public:
 	void				i_Texture			(u32 s, LPCSTR	name);
 	void				i_Projective		(u32 s, bool	b);
 	void				i_Address			(u32 s, u32		address);
+	void				i_BorderColor		(u32 s, u32	color);
 	void				i_Filter_Min		(u32 s, u32		f);
 	void				i_Filter_Mip		(u32 s, u32		f);
 	void				i_Filter_Mag		(u32 s, u32		f);
@@ -101,6 +103,7 @@ public:
 	void				r_Sampler_rtf		(LPCSTR name,	LPCSTR texture,		bool b_ps1x_ProjectiveDivide=false);
 	void				r_Sampler_clf		(LPCSTR name,	LPCSTR texture,		bool b_ps1x_ProjectiveDivide=false);
 	void				r_Sampler_clw		(LPCSTR name,	LPCSTR texture,		bool b_ps1x_ProjectiveDivide=false);
+	void				r_ColorWriteEnable( bool cR=true, bool cG=true, bool cB=true, bool cA=true);
 	void				r_End				();
 
 	CBlender_Compile	();

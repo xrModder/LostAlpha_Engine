@@ -85,6 +85,27 @@ void		CResourceManager::_DeleteState		(const SState* state)
 }
 
 //--------------------------------------------------------------------------------------------------------------
+SPass*		CResourceManager::_CreatePass			(const SPass& proto)
+{
+	for (u32 it=0; it<v_passes.size(); it++)
+		if (v_passes[it]->equal(proto))
+			return v_passes[it];
+
+	SPass*	P					=	xr_new<SPass>();
+	P->dwFlags					|=	xr_resource_flagged::RF_REGISTERED;
+	P->state					=	proto.state;
+	P->ps						=	proto.ps;
+	P->vs						=	proto.vs;
+	P->constants				=	proto.constants;
+	P->T						=	proto.T;
+#ifdef _EDITOR
+	P->M						=	proto.M;
+#endif
+	P->C						=	proto.C;
+
+	v_passes.push_back			(P);
+	return v_passes.back();
+}
 SPass*		CResourceManager::_CreatePass			(ref_state& _state, ref_ps& _ps, ref_vs& _vs, ref_ctable& _ctable, ref_texture_list& _T, ref_matrix_list& _M, ref_constant_list& _C)
 {
 	for (u32 it=0; it<v_passes.size(); it++)
@@ -360,7 +381,7 @@ void				CResourceManager::_DeleteConstantTable	(const R_constant_table* C)
 }
 
 //--------------------------------------------------------------------------------------------------------------
-CRT*	CResourceManager::_CreateRT		(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f)
+CRT*	CResourceManager::_CreateRT		(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f, u32 SampleCount)
 {
 	R_ASSERT(Name && Name[0] && w && h);
 

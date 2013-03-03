@@ -66,6 +66,7 @@ public:
 	adopt_compiler&			_ZB				(bool	_test,	bool _write)			{	C->PassSET_ZB		(_test,_write);			return	*this;		}
 	adopt_compiler&			_blend			(bool	_blend, u32 abSRC, u32 abDST)	{	C->PassSET_ablend_mode(_blend,abSRC,abDST);	return 	*this;		}
 	adopt_compiler&			_aref			(bool	_aref,  u32 aref)				{	C->PassSET_ablend_aref(_aref,aref);			return 	*this;		}
+	adopt_compiler&			_color_write_enable (bool cR, bool cG, bool cB, bool cA)		{	C->r_ColorWriteEnable(cR, cG, cB, cA);		return	*this;		}
 	adopt_sampler			_sampler		(LPCSTR _name)							{	u32 s = C->r_Sampler(_name,0);				return	adopt_sampler(C,s);	}
 };
 
@@ -187,6 +188,7 @@ void	CResourceManager::LS_Load			()
 			.def("zb",							&adopt_compiler::_ZB			,return_reference_to(_1))
 			.def("blend",						&adopt_compiler::_blend			,return_reference_to(_1))
 			.def("aref",						&adopt_compiler::_aref			,return_reference_to(_1))
+			.def("color_write_enable",			&adopt_compiler::_color_write_enable,return_reference_to(_1))
 			.def("sampler",						&adopt_compiler::_sampler		),	// returns sampler-object
 
 		class_<adopt_blend>("blend")

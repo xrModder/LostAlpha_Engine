@@ -86,7 +86,8 @@ BOOL	R_constant_table::parse	(void* _desc, u16 destination)
 						{
 						case 2:	r_type	=	RC_2x4;	break;
 						case 3: r_type	=	RC_3x4;	break;
-						default:	
+						default:
+							Msg("Invalid matrix dimension:%dx%d in constant %s", it->RegisterCount, T->Columns, name);
 							fatal		("MATRIX_ROWS: unsupported number of RegisterCount");
 							break;
 						}
@@ -185,7 +186,8 @@ void R_constant_table::merge(R_constant_table* T)
 	{
 		ref_constant src		=	T->table[it];
 		ref_constant C			=	get	(*src->name);
-		if (!C)	{
+		if (!C)	
+		{
 			C					=	xr_new<R_constant>();//.g_constant_allocator.create();
 			C->name				=	src->name;
 			C->destination		=	src->destination;
@@ -194,11 +196,14 @@ void R_constant_table::merge(R_constant_table* T)
 			C->vs				=	src->vs;
 			C->samp				=	src->samp;
 			table.push_back		(C);
-		} else {
+		} 
+		else 
+		{
+			VERIFY2(!(C->destination&src->destination&RC_dest_sampler), "Can't have samplers or textures with the same name for PS, VS and GS.");
 			C->destination		|=	src->destination;
 			VERIFY	(C->type	==	src->type);
-			R_constant_load& sL	=	(src->destination&4)?src->samp:((src->destination&1)?src->ps:src->vs);
-			R_constant_load& dL	=	(src->destination&4)?C->samp:((src->destination&1)?C->ps:C->vs);
+			R_constant_load& sL	=	src->get_load(src->destination);
+			R_constant_load& dL	=	C->get_load(src->destination);
 			dL.index			=	sL.index;
 			dL.cls				=	sL.cls;
 		}

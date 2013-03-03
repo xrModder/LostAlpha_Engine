@@ -28,7 +28,6 @@ void	CBlender_Compile::r_Pass		(LPCSTR _vs, LPCSTR _ps, bool bFog, BOOL bZtest, 
 	dest.vs					= vs;
 	ctable.merge			(&ps->constants);
 	ctable.merge			(&vs->constants);
-	SetMapping				();
 
 	// Last Stage - disable
 	if (0==stricmp(_ps,"null"))	{
@@ -44,6 +43,19 @@ void	CBlender_Compile::r_Constant	(LPCSTR name, R_constant_setup* s)
 	if (C)					C->handler	= s;
 }
 
+void CBlender_Compile::r_ColorWriteEnable( bool cR, bool cG, bool cB, bool cA)
+{
+	BYTE	Mask = 0;
+	Mask |= cR ? D3DCOLORWRITEENABLE_RED : 0;
+	Mask |= cG ? D3DCOLORWRITEENABLE_GREEN : 0;
+	Mask |= cB ? D3DCOLORWRITEENABLE_BLUE : 0;
+	Mask |= cA ? D3DCOLORWRITEENABLE_ALPHA : 0;
+
+	RS.SetRS( D3DRS_COLORWRITEENABLE, Mask);
+	RS.SetRS( D3DRS_COLORWRITEENABLE1, Mask);
+	RS.SetRS( D3DRS_COLORWRITEENABLE2, Mask);
+	RS.SetRS( D3DRS_COLORWRITEENABLE3, Mask);
+}
 u32		CBlender_Compile::i_Sampler		(LPCSTR _name)
 {
 	//
@@ -77,6 +89,10 @@ void	CBlender_Compile::i_Address		(u32 s, u32	address)
 	RS.SetSAMP			(s,D3DSAMP_ADDRESSV,	address);
 	RS.SetSAMP			(s,D3DSAMP_ADDRESSW,	address);
 }
+void	CBlender_Compile::i_BorderColor	(u32 s, u32	color)
+{
+	RS.SetSAMP			(s,D3DSAMP_BORDERCOLOR,	color);
+}
 void	CBlender_Compile::i_Filter_Min		(u32 s, u32	f)
 {
 	RS.SetSAMP			(s,D3DSAMP_MINFILTER,	f);
@@ -104,6 +120,13 @@ u32		CBlender_Compile::r_Sampler		(LPCSTR _name, LPCSTR texture, bool b_ps1x_Pro
 
 		// force ANISO-TF for "s_base"
 		if ((0==xr_strcmp(_name,"s_base")) && (fmin==D3DTEXF_LINEAR))	{ fmin = D3DTEXF_ANISOTROPIC; fmag=D3DTEXF_ANISOTROPIC; }
+		
+		if ( 0==xr_strcmp(_name,"s_base_hud") )
+		{
+			fmin	= D3DTEXF_GAUSSIANQUAD; //D3DTEXF_PYRAMIDALQUAD; //D3DTEXF_ANISOTROPIC; //D3DTEXF_LINEAR; //D3DTEXF_POINT; //D3DTEXF_NONE
+			fmag	= D3DTEXF_GAUSSIANQUAD; //D3DTEXF_PYRAMIDALQUAD; //D3DTEXF_ANISOTROPIC; //D3DTEXF_LINEAR; //D3DTEXF_POINT; //D3DTEXF_NONE; 
+		}
+
 		if ((0==xr_strcmp(_name,"s_detail")) && (fmin==D3DTEXF_LINEAR))	{ fmin = D3DTEXF_ANISOTROPIC; fmag=D3DTEXF_ANISOTROPIC; }
 
 		// Sampler states
@@ -130,15 +153,13 @@ void	CBlender_Compile::r_Sampler_clw	(LPCSTR name, LPCSTR texture, bool b_ps1x_P
 }
 void	CBlender_Compile::r_End			()
 {
+	SetMapping				();
 	dest.constants			= Device.Resources->_CreateConstantTable(ctable);
 	dest.state				= Device.Resources->_CreateState		(RS.GetContainer());
 	dest.T					= Device.Resources->_CreateTextureList	(passTextures);
 	dest.C					= 0;
 #ifdef _EDITOR
 	dest.M					= 0;
-	SH->passes.push_back	(Device.Resources->_CreatePass(dest.state,dest.ps,dest.vs,dest.constants,dest.T,dest.M,dest.C));
-#else
-	ref_matrix_list			temp(0);
-	SH->passes.push_back	(Device.Resources->_CreatePass(dest.state,dest.ps,dest.vs,dest.constants,dest.T,temp,dest.C));
 #endif
+	SH->passes.push_back(Device.Resources->_CreatePass(dest));
 }

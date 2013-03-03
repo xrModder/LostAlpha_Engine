@@ -73,6 +73,14 @@ struct	ENGINE_API		SPass			: public xr_resource_flagged									{
 	ref_state							state;		// Generic state, like Z-Buffering, samplers, etc
 	ref_ps								ps;			// may be NULL = FFP, in that case "state" must contain TSS setup
 	ref_vs								vs;			// may be NULL = FFP, in that case "state" must contain RS setup, *and* FVF-compatible declaration must be used
+#if defined(USE_DX10) || defined(USE_DX11)
+	ref_gs								gs;			// may be NULL = don't use geometry shader at all
+#	ifdef USE_DX11
+	ref_hs								hs;			// may be NULL = don't use hull shader at all
+	ref_ds								ds;			// may be NULL = don't use domain shader at all
+	ref_cs								cs;			// may be NULL = don't use compute shader at all
+#	endif
+#endif	//	USE_DX10
 	ref_ctable							constants;	// may be NULL
 
 	ref_texture_list					T;
@@ -83,6 +91,7 @@ struct	ENGINE_API		SPass			: public xr_resource_flagged									{
 
 						~SPass			();
 	BOOL				equal			(ref_state& _state, ref_ps& _ps, ref_vs& _vs, ref_ctable& _ctable, ref_texture_list& _T, ref_matrix_list& _M, ref_constant_list& _C);
+	BOOL 				equal			(const SPass& other);
 };
 typedef	resptr_core<SPass,resptr_base<SPass> >												ref_pass;
 

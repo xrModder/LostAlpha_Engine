@@ -28,7 +28,8 @@ void __fastcall mapNormal_Render	(mapNormalItems& N)
 	_NormalItem				*I=&*N.begin(), *E = &*N.end();
 	for (; I!=E; I++)		{
 		_NormalItem&		Ni	= *I;
-		Ni.pVisual->Render	(calcLOD(Ni.ssa,Ni.pVisual->vis.sphere.R));
+		float LOD = calcLOD(Ni.ssa,Ni.pVisual->vis.sphere.R);
+		Ni.pVisual->Render	(LOD);
 	}
 }
 
@@ -46,7 +47,8 @@ void __fastcall mapMatrix_Render	(mapMatrixItems& N)
 		RCache.set_xform_world			(Ni.Matrix);
 		RImplementation.apply_object	(Ni.pObject);
 		RImplementation.apply_lmaterial	();
-		Ni.pVisual->Render				(calcLOD(Ni.ssa,Ni.pVisual->vis.sphere.R));
+		float LOD = calcLOD(Ni.ssa,Ni.pVisual->vis.sphere.R);
+		Ni.pVisual->Render(LOD);
 	}
 	N.clear	();
 }
@@ -64,11 +66,27 @@ void __fastcall sorted_L1		(mapSorted_Node *N)
 	V->Render						(calcLOD(N->key,V->vis.sphere.R));
 }
 
-IC	bool	cmp_vs_nrm			(mapNormalVS::TNode* N1, mapNormalVS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
-IC	bool	cmp_vs_mat			(mapMatrixVS::TNode* N1, mapMatrixVS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
+IC	bool	cmp_vs_nrm			(mapNormalVS::TNode* N1, mapNormalVS::TNode* N2)
+{
+	return (N1->val.ssa > N2->val.ssa);
+}
+IC	bool	cmp_vs_mat			(mapMatrixVS::TNode* N1, mapMatrixVS::TNode* N2)
+{
+	return (N1->val.ssa > N2->val.ssa);
+}
 
-IC	bool	cmp_ps_nrm			(mapNormalPS::TNode* N1, mapNormalPS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
-IC	bool	cmp_ps_mat			(mapMatrixPS::TNode* N1, mapMatrixPS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
+IC	bool	cmp_ps_nrm			(mapNormalPS::TNode* N1, mapNormalPS::TNode* N2)
+{
+	return (N1->val.ssa > N2->val.ssa);
+}
+IC	bool	cmp_ps_mat			(mapMatrixPS::TNode* N1, mapMatrixPS::TNode* N2)
+{
+	return (N1->val.ssa > N2->val.ssa);
+}
+#if defined(USE_DX10) || defined(USE_DX11)
+IC	bool	cmp_gs_nrm			(mapNormalGS::TNode* N1, mapNormalGS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
+IC	bool	cmp_gs_mat			(mapMatrixGS::TNode* N1, mapMatrixGS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
+#endif	//	USE_DX10
 
 IC	bool	cmp_cs_nrm			(mapNormalCS::TNode* N1, mapNormalCS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
 IC	bool	cmp_cs_mat			(mapMatrixCS::TNode* N1, mapMatrixCS::TNode* N2)			{	return (N1->val.ssa > N2->val.ssa);		}
@@ -230,125 +248,144 @@ void R_dsgraph_structure::r_dsgraph_render_graph	(u32	_priority, bool _clear)
 	// Sorting by SSA and changes minimizations
 	{
 		RCache.set_xform_world			(Fidentity);
-		mapNormalVS&	vs				= mapNormal	[_priority];
-		vs.getANY_P						(nrmVS);
-		std::sort						(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
-		for (u32 vs_id=0; vs_id<nrmVS.size(); vs_id++)
+		// Render several passes
+		for ( u32 iPass = 0; iPass<SHADER_PASSES_MAX; ++iPass)
 		{
-			mapNormalVS::TNode*	Nvs			= nrmVS[vs_id];
-			RCache.set_VS					(Nvs->key);	
+			//mapNormalVS&	vs				= mapNormal	[_priority];
+			mapNormalVS&	vs				= mapNormalPasses[_priority][iPass];
+			vs.getANY_P						(nrmVS);
+			std::sort						(nrmVS.begin(), nrmVS.end(), cmp_vs_nrm);
+			for (u32 vs_id=0; vs_id<nrmVS.size(); vs_id++)
+			{
+				mapNormalVS::TNode*	Nvs			= nrmVS[vs_id];
+				RCache.set_VS					(Nvs->key);
 
-			mapNormalPS&		ps			= Nvs->val;		ps.ssa	= 0;
+					mapNormalPS&		ps			= Nvs->val;		ps.ssa	= 0;
 			ps.getANY_P						(nrmPS);
 			std::sort						(nrmPS.begin(), nrmPS.end(), cmp_ps_nrm);
 			for (u32 ps_id=0; ps_id<nrmPS.size(); ps_id++)
 			{
 				mapNormalPS::TNode*	Nps			= nrmPS[ps_id];
-				RCache.set_PS					(Nps->key);	
+						RCache.set_PS					(Nps->key);	
 
-				mapNormalCS&		cs			= Nps->val;		cs.ssa	= 0;
-				cs.getANY_P						(nrmCS);
-				std::sort						(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
-				for (u32 cs_id=0; cs_id<nrmCS.size(); cs_id++)
-				{
-					mapNormalCS::TNode*	Ncs			= nrmCS[cs_id];
-					RCache.set_Constants			(Ncs->key);
-
-					mapNormalStates&	states		= Ncs->val;		states.ssa	= 0;
-					states.getANY_P					(nrmStates);
-					std::sort						(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
-					for (u32 state_id=0; state_id<nrmStates.size(); state_id++)
-					{
-						mapNormalStates::TNode*	Nstate		= nrmStates[state_id];
-						RCache.set_States					(Nstate->key);
-
-						mapNormalTextures&		tex			= Nstate->val;	tex.ssa =	0;
-						sort_tlist_nrm						(nrmTextures,nrmTexturesTemp,tex,true);
-						for (u32 tex_id=0; tex_id<nrmTextures.size(); tex_id++)
+						mapNormalCS&		cs			= Nps->val;		cs.ssa	= 0;
+						cs.getANY_P						(nrmCS);
+						std::sort						(nrmCS.begin(), nrmCS.end(), cmp_cs_nrm);
+						for (u32 cs_id=0; cs_id<nrmCS.size(); cs_id++)
 						{
-							mapNormalTextures::TNode*	Ntex	= nrmTextures[tex_id];
-							RCache.set_Textures					(Ntex->key);
-							RImplementation.apply_lmaterial		();
+							mapNormalCS::TNode*	Ncs			= nrmCS[cs_id];
+							RCache.set_Constants			(Ncs->key);
 
-							mapNormalItems&				items	= Ntex->val;		items.ssa	= 0;
-							mapNormal_Render					(items);
-							if (_clear)				items.clear	();
+							mapNormalStates&	states		= Ncs->val;		states.ssa	= 0;
+							states.getANY_P					(nrmStates);
+							std::sort						(nrmStates.begin(), nrmStates.end(), cmp_states_nrm);
+							for (u32 state_id=0; state_id<nrmStates.size(); state_id++)
+							{
+								mapNormalStates::TNode*	Nstate		= nrmStates[state_id];
+								RCache.set_States					(Nstate->key);
+
+								mapNormalTextures&		tex			= Nstate->val;	tex.ssa =	0;
+								sort_tlist_nrm						(nrmTextures,nrmTexturesTemp,tex,true);
+								for (u32 tex_id=0; tex_id<nrmTextures.size(); tex_id++)
+								{
+									mapNormalTextures::TNode*	Ntex	= nrmTextures[tex_id];
+									RCache.set_Textures					(Ntex->key);
+									RImplementation.apply_lmaterial		();
+
+									mapNormalItems&				items	= Ntex->val;		items.ssa	= 0;
+									mapNormal_Render					(items);
+									if (_clear)				items.clear	();
+								}
+								nrmTextures.clear		();
+								nrmTexturesTemp.clear	();
+								if(_clear) tex.clear	();
+							}
+							nrmStates.clear			();
+							if(_clear) states.clear	();
 						}
-						nrmTextures.clear		();
-						nrmTexturesTemp.clear	();
-						if(_clear) tex.clear	();
+						nrmCS.clear				();
+						if(_clear) cs.clear		();
+
 					}
-					nrmStates.clear			();
-					if(_clear) states.clear	();
+					nrmPS.clear				();
+					if(_clear) ps.clear		();
+#if defined(USE_DX10) || defined(USE_DX11)
 				}
-				nrmCS.clear				();
-				if(_clear) cs.clear		();
+				nrmGS.clear				();
+				if(_clear) gs.clear		();
+#endif	//	USE_DX10
 			}
-			nrmPS.clear				();
-			if(_clear) ps.clear		();
+			nrmVS.clear				();
+			if(_clear) vs.clear		();
 		}
-		nrmVS.clear				();
-		if(_clear) vs.clear		();
 	}
 
 	// **************************************************** MATRIX
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
+	// Render several passes
+	for ( u32 iPass = 0; iPass<SHADER_PASSES_MAX; ++iPass)
 	{
-		mapMatrixVS&	vs				= mapMatrix	[_priority];
+		//mapMatrixVS&	vs				= mapMatrix	[_priority];
+		mapMatrixVS&	vs				= mapMatrixPasses[_priority][iPass];
 		vs.getANY_P						(matVS);
 		std::sort						(matVS.begin(), matVS.end(), cmp_vs_mat);
 		for (u32 vs_id=0; vs_id<matVS.size(); vs_id++)	{
 			mapMatrixVS::TNode*	Nvs			= matVS[vs_id];
 			RCache.set_VS					(Nvs->key);	
 
-			mapMatrixPS&		ps			= Nvs->val;		ps.ssa	= 0;
-			ps.getANY_P						(matPS);
-			std::sort						(matPS.begin(), matPS.end(), cmp_ps_mat);
-			for (u32 ps_id=0; ps_id<matPS.size(); ps_id++)
-			{
-				mapMatrixPS::TNode*	Nps			= matPS[ps_id];
-				RCache.set_PS					(Nps->key);	
-
-				mapMatrixCS&		cs			= Nps->val;		cs.ssa	= 0;
-				cs.getANY_P						(matCS);
-				std::sort						(matCS.begin(), matCS.end(), cmp_cs_mat);
-				for (u32 cs_id=0; cs_id<matCS.size(); cs_id++)
+				mapMatrixPS&		ps			= Nvs->val;		ps.ssa	= 0;
+				ps.getANY_P						(matPS);
+				std::sort						(matPS.begin(), matPS.end(), cmp_ps_mat);
+				for (u32 ps_id=0; ps_id<matPS.size(); ps_id++)
 				{
-					mapMatrixCS::TNode*	Ncs			= matCS[cs_id];
-					RCache.set_Constants			(Ncs->key);
+					mapMatrixPS::TNode*	Nps			= matPS[ps_id];
+					RCache.set_PS					(Nps->key);	
 
-					mapMatrixStates&	states		= Ncs->val;		states.ssa	= 0;
-					states.getANY_P					(matStates);
-					std::sort						(matStates.begin(), matStates.end(), cmp_states_mat);
-					for (u32 state_id=0; state_id<matStates.size(); state_id++)
+					mapMatrixCS&		cs			= Nps->val;		cs.ssa	= 0;
+					cs.getANY_P						(matCS);
+					std::sort						(matCS.begin(), matCS.end(), cmp_cs_mat);
+					for (u32 cs_id=0; cs_id<matCS.size(); cs_id++)
 					{
-						mapMatrixStates::TNode*	Nstate		= matStates[state_id];
-						RCache.set_States					(Nstate->key);
+						mapMatrixCS::TNode*	Ncs			= matCS[cs_id];
+						RCache.set_Constants			(Ncs->key);
 
-						mapMatrixTextures&		tex			= Nstate->val;	tex.ssa =	0;
-						sort_tlist_mat						(matTextures,matTexturesTemp,tex,true);
-						for (u32 tex_id=0; tex_id<matTextures.size(); tex_id++)
+						mapMatrixStates&	states		= Ncs->val;		states.ssa	= 0;
+						states.getANY_P					(matStates);
+						std::sort						(matStates.begin(), matStates.end(), cmp_states_mat);
+						for (u32 state_id=0; state_id<matStates.size(); state_id++)
 						{
-							mapMatrixTextures::TNode*	Ntex	= matTextures[tex_id];
-							RCache.set_Textures					(Ntex->key);
-							RImplementation.apply_lmaterial		();
+							mapMatrixStates::TNode*	Nstate		= matStates[state_id];
+							RCache.set_States					(Nstate->key);
 
-							mapMatrixItems&				items	= Ntex->val;		items.ssa	= 0;
-							mapMatrix_Render					(items);
+							mapMatrixTextures&		tex			= Nstate->val;	tex.ssa =	0;
+							sort_tlist_mat						(matTextures,matTexturesTemp,tex,true);
+							for (u32 tex_id=0; tex_id<matTextures.size(); tex_id++)
+							{
+								mapMatrixTextures::TNode*	Ntex	= matTextures[tex_id];
+								RCache.set_Textures					(Ntex->key);
+								RImplementation.apply_lmaterial		();
+
+								mapMatrixItems&				items	= Ntex->val;		items.ssa	= 0;
+								mapMatrix_Render					(items);
+							}
+							matTextures.clear		();
+							matTexturesTemp.clear	();
+							if(_clear) tex.clear	();
 						}
-						matTextures.clear		();
-						matTexturesTemp.clear	();
-						if(_clear) tex.clear	();
+						matStates.clear			();
+						if(_clear) states.clear	();
 					}
-					matStates.clear			();
-					if(_clear) states.clear	();
+					matCS.clear				();
+					if(_clear) cs.clear		();
 				}
-				matCS.clear				();
-				if(_clear) cs.clear		();
+				matPS.clear				();
+				if(_clear) ps.clear		();
+#if defined(USE_DX10) || defined(USE_DX11)
 			}
-			matPS.clear				();
-			if(_clear) ps.clear		();
+			matGS.clear				();
+			if(_clear) gs.clear		();
+#endif	//	USE_DX10
 		}
 		matVS.clear				();
 		if(_clear) vs.clear		();
@@ -361,7 +398,9 @@ void R_dsgraph_structure::r_dsgraph_render_graph	(u32	_priority, bool _clear)
 // HUD render
 void R_dsgraph_structure::r_dsgraph_render_hud	()
 {
-	ENGINE_API extern float		psHUD_FOV;
+	extern ENGINE_API float		psHUD_FOV;
+	
+	//PIX_EVENT(r_dsgraph_render_hud);
 
 	// Change projection
 	Fmatrix Pold				= Device.mProject;
@@ -403,6 +442,34 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	()
 	// Sorted (back to front)
 	mapEmissive.traverseLR	(sorted_L1);
 	mapEmissive.clear		();
+
+	//	HACK: Calculate this only once
+
+	extern ENGINE_API float		psHUD_FOV;
+
+	// Change projection
+	Fmatrix Pold				= Device.mProject;
+	Fmatrix FTold				= Device.mFullTransform;
+	Device.mProject.build_projection(
+		deg2rad(psHUD_FOV*Device.fFOV /* *Device.fASPECT*/ ), 
+		Device.fASPECT, VIEWPORT_NEAR, 
+		g_pGamePersistent->Environment().CurrentEnv.far_plane);
+
+	Device.mFullTransform.mul	(Device.mProject, Device.mView);
+	RCache.set_xform_project	(Device.mProject);
+
+	// Rendering
+	rmNear						();
+	// Sorted (back to front)
+	mapHUDEmissive.traverseLR	(sorted_L1);
+	mapHUDEmissive.clear		();
+
+	rmNormal					();
+
+	// Restore projection
+	Device.mProject				= Pold;
+	Device.mFullTransform		= FTold;
+	RCache.set_xform_project	(Device.mProject);
 #endif
 }
 
@@ -572,7 +639,8 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 			{
 				// Renderable visual
 				ShaderElement* E	= V->shader->E[sh]._get();
-				if (E) {
+				if (E && !(E->flags.bDistort))
+				{
 					for (u32 pass=0; pass<E->passes.size(); pass++)
 					{
 						RCache.set_Element			(E,pass);

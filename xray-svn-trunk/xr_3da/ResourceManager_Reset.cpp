@@ -36,7 +36,8 @@ void	CResourceManager::reset_end				()
 	// create RDStreams
 	RCache.Vertex.reset_end		();
 	RCache.Index.reset_end		();
-	Evict(); RCache.CreateQuadIB();
+	Evict(); 
+	RCache.CreateQuadIB();
 
 	// remark geom's which point to dynamic VB/IB
 	{

@@ -48,22 +48,56 @@ void	CBlender_Compile::_cpp_Compile	(ShaderElement* _SH)
 		sh_list& lst=	L_textures;
 		int id		=	ParseName(BT->oT_Name);
 		base		=	BT->oT_Name;
-		if (id>=0)	{
+		if (id>=0)	
+		{
 			if (id>=int(lst.size()))	Debug.fatal(DEBUG_INFO,"Not enought textures for shader. Base texture: '%s'.",*lst[0]);
 			base	=	*lst [id];
 		}
 //.		if (!Device.Resources->_GetDetailTexture(base,detail_texture,detail_scaler))	bDetail	= FALSE;
 		if (!Device.Resources->m_textures_description.GetDetailTexture(base,detail_texture,detail_scaler))	bDetail	= FALSE;
-	} else 
+	} 
+	else 
 	{
+		////////////////////
+		//	Igor
+		//	Need this to correct base to detect steep parallax.
+		if (BT->canUseSteepParallax())
+		{
+			sh_list& lst=	L_textures;
+			int id		=	ParseName(BT->oT_Name);
+			base		=	BT->oT_Name;
+			if (id>=0)	
+			{
+				if (id>=int(lst.size()))	Debug.fatal(DEBUG_INFO,"Not enought textures for shader. Base texture: '%s'.",*lst[0]);
+				base	=	*lst [id];
+			}
+		}
+		//	Igor
+		////////////////////
 		bDetail	= FALSE;
 	}
 
 	// Validate for R1 or R2
 	bDetail_Diffuse	= FALSE;
 	bDetail_Bump	= FALSE;
+
+
 	if(bDetail)
+	{
 		Device.Resources->m_textures_description.GetTextureUsage(base, bDetail_Diffuse, bDetail_Bump);
+#ifndef _EDITOR
+#if RENDER!=R_R1
+		//	Detect the alowance of detail bump usage here.
+		if (  !(RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_DETAIL_BUMP) ) )
+		{
+			bDetail_Diffuse |= bDetail_Bump;
+			bDetail_Bump = false;
+		}
+#endif
+#endif
+	}
+
+
 /*
 	if (bDetail && Device.Resources->m_description->line_exist("association",base))	
 	{

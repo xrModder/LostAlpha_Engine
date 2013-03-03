@@ -2002,11 +2002,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\R_Backend_hemi.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\R_Backend_hemi.h"
+					>
+				</File>
+				<File
 					RelativePath="R_Backend_Runtime.cpp"
 					>
 				</File>
 				<File
 					RelativePath="R_Backend_Runtime.h"
+					>
+				</File>
+				<File
+					RelativePath=".\R_Backend_tree.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\R_Backend_tree.h"
 					>
 				</File>
 				<File

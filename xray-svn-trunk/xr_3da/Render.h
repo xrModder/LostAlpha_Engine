@@ -249,6 +249,12 @@ public:
 
 	// Constructor/destructor
 	virtual ~IRender_interface();
+
+	// utils
+	virtual DWORD					get_dx_level			()	= 0;
+	virtual bool					is_sun_static			()  = 0;
+
+
 };
 
 extern ENGINE_API	IRender_interface*	Render;

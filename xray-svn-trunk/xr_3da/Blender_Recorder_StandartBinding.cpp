@@ -18,11 +18,116 @@
 class cl_xform_##xf	: public R_constant_setup {	virtual void setup (R_constant* C) { RCache.xforms.set_c_##xf (C); } }; \
 	static cl_xform_##xf	binder_##xf
 BIND_DECLARE(w);
+BIND_DECLARE(invw);
 BIND_DECLARE(v);
 BIND_DECLARE(p);
 BIND_DECLARE(wv);
 BIND_DECLARE(vp);
 BIND_DECLARE(wvp);
+
+#define DECLARE_TREE_BIND(c)	\
+	class cl_tree_##c: public R_constant_setup	{virtual void setup(R_constant* C) {RCache.tree.set_c_##c(C);} };	\
+	static cl_tree_##c	tree_binder_##c
+
+DECLARE_TREE_BIND(m_xform_v);
+DECLARE_TREE_BIND(m_xform);
+DECLARE_TREE_BIND(consts);
+DECLARE_TREE_BIND(wave);
+DECLARE_TREE_BIND(wind);
+DECLARE_TREE_BIND(c_scale);
+DECLARE_TREE_BIND(c_bias);
+DECLARE_TREE_BIND(c_sun);
+
+class cl_hemi_cube_pos_faces: public R_constant_setup
+{
+	virtual void setup(R_constant* C) {RCache.hemi.set_c_pos_faces(C);}
+};
+
+static cl_hemi_cube_pos_faces binder_hemi_cube_pos_faces;
+
+class cl_hemi_cube_neg_faces: public R_constant_setup
+{
+	virtual void setup(R_constant* C) {RCache.hemi.set_c_neg_faces(C);}
+};
+
+static cl_hemi_cube_neg_faces binder_hemi_cube_neg_faces;
+
+class cl_material: public R_constant_setup
+{
+	virtual void setup(R_constant* C) {RCache.hemi.set_c_material(C);}
+};
+
+static cl_material binder_material;
+
+class cl_texgen : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix mTexgen;
+
+#if defined(USE_DX10) || defined(USE_DX11)
+		Fmatrix			mTexelAdjust		= 
+		{
+			0.5f,				0.0f,				0.0f,			0.0f,
+			0.0f,				-0.5f,				0.0f,			0.0f,
+			0.0f,				0.0f,				1.0f,			0.0f,
+			0.5f,				0.5f,				0.0f,			1.0f
+		};
+#else	//	USE_DX10
+		float	_w						= float(Device.dwWidth);
+		float	_h						= float(Device.dwHeight);
+		float	o_w						= (.5f / _w);
+		float	o_h						= (.5f / _h);
+		Fmatrix			mTexelAdjust		= 
+		{
+			0.5f,				0.0f,				0.0f,			0.0f,
+			0.0f,				-0.5f,				0.0f,			0.0f,
+			0.0f,				0.0f,				1.0f,			0.0f,
+			0.5f + o_w,			0.5f + o_h,			0.0f,			1.0f
+		};
+#endif	//	USE_DX10
+
+		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_wvp);
+
+		RCache.set_c( C, mTexgen);
+	}
+};
+static cl_texgen		binder_texgen;
+
+class cl_VPtexgen : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix mTexgen;
+
+#if defined(USE_DX10) || defined(USE_DX11)
+		Fmatrix			mTexelAdjust		= 
+		{
+			0.5f,				0.0f,				0.0f,			0.0f,
+			0.0f,				-0.5f,				0.0f,			0.0f,
+			0.0f,				0.0f,				1.0f,			0.0f,
+			0.5f,				0.5f,				0.0f,			1.0f
+		};
+#else	//	USE_DX10
+		float	_w						= float(Device.dwWidth);
+		float	_h						= float(Device.dwHeight);
+		float	o_w						= (.5f / _w);
+		float	o_h						= (.5f / _h);
+		Fmatrix			mTexelAdjust		= 
+		{
+			0.5f,				0.0f,				0.0f,			0.0f,
+			0.0f,				-0.5f,				0.0f,			0.0f,
+			0.0f,				0.0f,				1.0f,			0.0f,
+			0.5f + o_w,			0.5f + o_h,			0.0f,			1.0f
+		};
+#endif	//	USE_DX10
+
+		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_vp);
+
+		RCache.set_c( C, mTexgen);
+	}
+};
+static cl_VPtexgen		binder_VPtexgen;
 
 // fog
 class cl_fog_plane	: public R_constant_setup {
@@ -186,41 +291,43 @@ class cl_hemi_color	: public R_constant_setup {
 	}
 };	static cl_hemi_color		binder_hemi_color;
 
-class cl_texgen : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
+static class cl_screen_res : public R_constant_setup		
+{	
+	virtual void setup	(R_constant* C)
 	{
-		Fmatrix mTexgen;
-
-		float	_w						= float(Device.dwWidth);
-		float	_h						= float(Device.dwHeight);
-		float	o_w						= (.5f / _w);
-		float	o_h						= (.5f / _h);
-		Fmatrix			mTexelAdjust		= 
-		{
-			0.5f,				0.0f,				0.0f,			0.0f,
-			0.0f,				-0.5f,				0.0f,			0.0f,
-			0.0f,				0.0f,				1.0f,			0.0f,
-			0.5f + o_w,			0.5f + o_h,			0.0f,			1.0f
-		};
-
-		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_wvp);
-
-		RCache.set_c( C, mTexgen);
+		RCache.set_c	(C, (float)Device.dwWidth, (float)Device.dwHeight, 1.0f/(float)Device.dwWidth, 1.0f/(float)Device.dwHeight);
 	}
-};  static cl_texgen		     binder_texgen;
+}	binder_screen_res;
 
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
 	// matrices
 	r_Constant				("m_W",				&binder_w);
+	r_Constant				("m_invW",			&binder_invw);
 	r_Constant				("m_V",				&binder_v);
 	r_Constant				("m_P",				&binder_p);
 	r_Constant				("m_WV",			&binder_wv);
 	r_Constant				("m_VP",			&binder_vp);
 	r_Constant				("m_WVP",			&binder_wvp);
-	r_Constant				("m_texgen",		&binder_texgen);
+
+	r_Constant				("m_xform_v",		&tree_binder_m_xform_v);
+	r_Constant				("m_xform",			&tree_binder_m_xform);
+	r_Constant				("consts",			&tree_binder_consts);
+	r_Constant				("wave",			&tree_binder_wave);
+	r_Constant				("wind",			&tree_binder_wind);
+	r_Constant				("c_scale",			&tree_binder_c_scale);
+	r_Constant				("c_bias",			&tree_binder_c_bias);
+	r_Constant				("c_sun",			&tree_binder_c_sun);
+
+	//hemi cube
+	r_Constant				("L_material",			&binder_material);
+	r_Constant				("hemi_cube_pos_faces",			&binder_hemi_cube_pos_faces);
+	r_Constant				("hemi_cube_neg_faces",			&binder_hemi_cube_neg_faces);
+
+	//	Igor	temp solution for the texgen functionality in the shader
+	r_Constant				("m_texgen",			&binder_texgen);
+	r_Constant				("mVPTexgen",			&binder_VPtexgen);
 
 	// fog-params
 	r_Constant				("fog_plane",		&binder_fog_plane);
@@ -242,6 +349,7 @@ void	CBlender_Compile::SetMapping	()
 //	r_Constant				("L_lmap_color",	&binder_lm_color);
 	r_Constant				("L_hemi_color",	&binder_hemi_color);
 	r_Constant				("L_ambient",		&binder_amb_color);
+	r_Constant				("screen_res",		&binder_screen_res);
 
 	// detail
 	if (bDetail	&& detail_scaler)

@@ -21,16 +21,7 @@ public:
 	u32							dbg_lock;
 #endif
 private:
-	void						_clear			()
-	{
-		pVB			= NULL;
-		mSize		= 0;
-		mPosition	= 0;
-		mDiscardID	= 0;
-#ifdef DEBUG
-		dbg_lock	= 0;
-#endif
-	}
+	void						_clear			();
 public:
 	void						Create			();
 	void						Destroy			();
@@ -43,8 +34,9 @@ public:
 
 	void*						Lock			( u32 vl_Count, u32 Stride, u32& vOffset );
 	void						Unlock			( u32 Count, u32 Stride);
+	u32							GetSize()		{ return mSize;}
 
-	_VertexStream()				{ _clear();		};
+	_VertexStream();
 	~_VertexStream()			{ Destroy();	};
 };
 

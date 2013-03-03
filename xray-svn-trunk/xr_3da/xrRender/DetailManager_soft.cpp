@@ -7,6 +7,9 @@ const u32	vs_size				= 3000;
 
 void CDetailManager::soft_Load		()
 {
+
+	R_ASSERT(RCache.Vertex.Buffer());
+	R_ASSERT(RCache.Index.Buffer());
 	// Vertex Stream
 	soft_Geom.create				(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
 }

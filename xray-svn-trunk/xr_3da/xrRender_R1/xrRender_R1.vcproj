@@ -322,6 +322,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\xrRender\ColorMapManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\ColorMapManager.h"
+				>
+			</File>
+			<File
 				RelativePath="stdafx.cpp"
 				>
 				<FileConfiguration

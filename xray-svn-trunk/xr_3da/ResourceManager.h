@@ -108,7 +108,7 @@ public:
 	R_constant_table*				_CreateConstantTable(R_constant_table& C);
 	void							_DeleteConstantTable(const R_constant_table* C);
 
-	CRT*							_CreateRT			(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f);
+	CRT*							_CreateRT			(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f, u32 SampleCount = 1 );
 	void							_DeleteRT			(const CRT*	RT	);
 
 	CRTC*							_CreateRTC			(LPCSTR Name, u32 size,	D3DFORMAT f);
@@ -120,6 +120,7 @@ public:
 	SVS*							_CreateVS			(LPCSTR Name);
 	void							_DeleteVS			(const SVS*	VS	);
 
+	SPass*							_CreatePass			(const SPass& proto);
 	SPass*							_CreatePass			(ref_state& _state, ref_ps& _ps, ref_vs& _vs, ref_ctable& _ctable, ref_texture_list& _T, ref_matrix_list& _M, ref_constant_list& _C);
 	void							_DeletePass			(const SPass* P	);
 

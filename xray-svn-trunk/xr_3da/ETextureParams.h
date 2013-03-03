@@ -32,6 +32,7 @@ struct ECORE_API STextureParams{
     	tbmResereved	= 0,
         tbmNone,
         tbmUse,
+        tbmUseParallax,
 		tbmForceU32	= u32(-1)
     };
     enum ETMaterial{

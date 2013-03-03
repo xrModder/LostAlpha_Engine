@@ -3,6 +3,14 @@
 #pragma once
 
 // Common
+extern ECORE_API	u32			ps_r_sun_shafts;	//=	0;
+extern ECORE_API	xr_token	qsun_shafts_token[];
+extern ECORE_API	u32			ps_r_ssao;			//	=	0;
+extern ECORE_API	xr_token	qssao_token[];
+extern ECORE_API	u32			ps_r_ssao_mode;
+extern ECORE_API	xr_token	qssao_mode_token[];
+extern ECORE_API	u32			ps_r_sun_quality;	//	=	0;
+extern ECORE_API	xr_token	qsun_quality_token[];
 extern ENGINE_API	int			ps_r__Supersample;
 extern ECORE_API	int			ps_r__LightSleepFrames;
 
@@ -41,6 +49,8 @@ extern ECORE_API	float		ps_r1_pps_v;
 // R1-specific
 extern ECORE_API	int			ps_r1_GlowsPerFrame;	// r1-only
 extern ECORE_API	Flags32		ps_r1_flags;			// r1-only
+extern ECORE_API	float		ps_r1_fog_luminance;	//1.f r1-only
+extern ECORE_API	int			ps_r1_SoftwareSkinning;	// r1-only
 enum
 {
 	R1FLAG_DLIGHTS				= (1<<0),
@@ -53,6 +63,7 @@ extern ECORE_API	float		ps_r2_tf_Mipbias;
 
 // R2-specific
 extern ECORE_API Flags32		ps_r2_ls_flags;				// r2-only
+extern ECORE_API Flags32		ps_r2_ls_flags_ext;
 extern ECORE_API float			ps_r2_df_parallax_h;		// r2-only
 extern ECORE_API float			ps_r2_df_parallax_range;	// r2-only
 extern ECORE_API float			ps_r2_gmaterial;			// r2-only
@@ -92,10 +103,17 @@ extern ECORE_API float			ps_r2_sun_lumscale_hemi;	// 1.0f
 extern ECORE_API float			ps_r2_sun_lumscale_amb;		// 1.0f
 extern ECORE_API float			ps_r2_zfill;				// .1f
 
-extern ECORE_API float			ps_r2_dhemi_scale;			// 1.5f
+extern ECORE_API float			ps_r2_dhemi_sky_scale;		// 1.5f
+extern ECORE_API float			ps_r2_dhemi_light_scale;	// 1.f
+extern ECORE_API float			ps_r2_dhemi_light_flow;		// .1f
 extern ECORE_API int			ps_r2_dhemi_count;			// 5
 extern ECORE_API float			ps_r2_slight_fade;			// 1.f
 extern ECORE_API int			ps_r2_wait_sleep;
+
+//	x - min (0), y - focus (1.4), z - max (100)
+extern ECORE_API Fvector3		ps_r2_dof;
+extern ECORE_API float			ps_r2_dof_sky;				//	distance to sky
+extern ECORE_API float			ps_r2_dof_kernel_size;		//	7.0f
 
 enum
 {
@@ -116,11 +134,36 @@ enum
 	
 	R2FLAG_EXP_SPLIT_SCENE					= (1<<13),
 	R2FLAG_EXP_DONT_TEST_UNSHADOWED			= (1<<14),
+	R2FLAG_EXP_DONT_TEST_SHADOWED			= (1<<15),
 
-	R2FLAG_USE_NVDBT			= (1<<15),
-	R2FLAG_USE_NVSTENCIL		= (1<<16),
+	R2FLAG_USE_NVDBT			= (1<<16),
+	R2FLAG_USE_NVSTENCIL		= (1<<17),
 
-	R2FLAG_EXP_MT_CALC			= (1<<17),
+	R2FLAG_EXP_MT_CALC			= (1<<18),
+
+	R2FLAG_SOFT_WATER			= (1<<19),	//	Igor: need restart
+	R2FLAG_SOFT_PARTICLES		= (1<<20),	//	Igor: need restart
+	R2FLAG_VOLUMETRIC_LIGHTS	= (1<<21),
+	R2FLAG_STEEP_PARALLAX		= (1<<22),
+	R2FLAG_DOF					= (1<<23),
+
+	R1FLAG_DETAIL_TEXTURES		= (1<<24),
+
+	R2FLAG_DETAIL_BUMP			= (1<<25),
+};
+
+enum
+{
+	R2FLAGEXT_SSAO_BLUR				= (1<<0),
+	R2FLAGEXT_SSAO_OPT_DATA			= (1<<1),
+	R2FLAGEXT_SSAO_HALF_DATA		= (1<<2),
+	R2FLAGEXT_SSAO_HBAO				= (1<<3),
+	R2FLAGEXT_SSAO_HDAO				= (1<<4),
+	R2FLAGEXT_ENABLE_TESSELLATION	= (1<<5),
+	R2FLAGEXT_WIREFRAME				= (1<<6),
+	R_FLAGEXT_HOM_DEPTH_DRAW		= (1<<7),
+	R2FLAGEXT_SUN_ZCULLING			= (1<<8),
+	R2FLAGEXT_SUN_OLD				= (1<<9),
 };
 
 extern void						xrRender_initconsole	();

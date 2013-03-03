@@ -1,4 +1,6 @@
 #pragma once
+#ifndef XRRENDER_LIGHT_H_INCLUDED
+#define XRRENDER_LIGHT_H_INCLUDED
 
 #include "..\ispatial.h"
 #if RENDER==R_R2
@@ -15,6 +17,7 @@ public:
 		u32			bStatic	:	1;
 		u32			bActive	:	1;
 		u32			bShadow	:	1;
+		u32			bVolumetric:1;
 	}				flags;
 	Fvector			position	;
 	Fvector			direction	;
@@ -26,7 +29,15 @@ public:
 	vis_data		hom			;
 	u32				frame_render;
 
+	float			m_volumetric_quality;
+	float			m_volumetric_intensity;
+	float			m_volumetric_distance;
+
 #if RENDER==R_R2
+	float			falloff;			// precalc to make light equal to zero at light range
+	float	        attenuation0;		// Constant attenuation		
+	float	        attenuation1;		// Linear attenuation		
+	float	        attenuation2;		// Quadratic attenuation	
 	light*						omnipart	[6]	;
 	xr_vector<light_indirect>	indirect		;
 	u32							indirect_photons;
@@ -35,6 +46,7 @@ public:
 
 	ref_shader		s_spot;
 	ref_shader		s_point;
+	ref_shader		s_volumetric;
 
 	u32				m_xform_frame;
 	Fmatrix			m_xform;
@@ -81,6 +93,13 @@ public:
 	{ 
 		flags.bShadow=b;			
 	}
+	virtual void	set_volumetric			(bool b)						
+	{ 
+		flags.bVolumetric=b;			
+	}
+	virtual void	set_volumetric_quality(float fValue) {m_volumetric_quality = fValue;}
+	virtual void	set_volumetric_intensity(float fValue) {m_volumetric_intensity = fValue;}
+	virtual void	set_volumetric_distance(float fValue) {m_volumetric_distance = fValue;}
 	virtual void	set_position			(const Fvector& P);
 	virtual void	set_rotation			(const Fvector& D, const Fvector& R);
 	virtual void	set_cone				(float angle);
@@ -102,10 +121,13 @@ public:
 	void			vis_prepare				();
 	void			vis_update				();
 	void			export 					(light_Package& dest);
-#endif
+	void			set_attenuation_params	(float a0, float a1, float a2, float fo);
+#endif // (RENDER==R_R2)
 
 	float			get_LOD					();
 
 	light();
 	virtual ~light();
 };
+
+#endif // #define XRRENDER_LIGHT_H_INCLUDED
