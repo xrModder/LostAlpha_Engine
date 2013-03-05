@@ -273,7 +273,12 @@ IC static int CollideIntoGroup(dGeomID o1, dGeomID o2,dJointGroupID jointGroup,C
 	return collided_contacts;
 }
 void NearCallback(CPHObject* obj1,CPHObject* obj2, dGeomID o1, dGeomID o2)
-{	
+{
+	if (obj2 == NULL)
+	{
+		Msg("! Skipping physic callback for removed second object");
+		return;
+	}
 	
 	CPHIsland* island1=obj1->DActiveIsland();
 	CPHIsland* island2=obj2->DActiveIsland();

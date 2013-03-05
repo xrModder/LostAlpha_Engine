@@ -889,7 +889,7 @@ void CUIMapWnd::Select				(CMapLocation* ml)
 
 void CUIMapWnd::Hint					(const shared_str& text)
 {
-	if (!xr_strcmp(text,"global_map")) {
+	if (xr_strcmp(text,"global_map")) {
 		u16 __id = GetIdxByName(text);
 		if (__id!=u16(-1)) m_tgtMap = GetMapByIdx(__id);
 	}
