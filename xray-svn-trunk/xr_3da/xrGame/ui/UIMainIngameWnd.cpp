@@ -599,22 +599,26 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 
 				Fmatrix m_offset = pWpnHud->HudOffsetMatrix();
 
+				Msg("Print coordinates:");
 				string256 tmpStr;
-				sprintf_s(tmpStr, "%s",
-					*m_pWeapon->cNameSect());
+				sprintf_s(tmpStr, "[%s]",
+					pSettings->r_string(*m_pWeapon->cNameSect(),"hud"));
 				Log(tmpStr);
-				Msg("hud offset:");
 					sprintf_s(tmpStr, "position\t\t\t= %f,%f,%f",
 						m_offset.c.x,
 						m_offset.c.y,
 						m_offset.c.z);
 				Log(tmpStr);
+
+				Fvector orient;
+				m_offset.getHPB (orient);
+				orient.mul (180.f/PI);
+
 				sprintf_s(tmpStr, "orientation\t\t\t= %f,%f,%f",
-						m_offset.k.x,
-						m_offset.k.y,
-						m_offset.k.z);
+						orient.x,
+						orient.y,
+						orient.z);
 				Log(tmpStr);
-				Msg("zoom offset:");
 						sprintf_s(tmpStr, "zoom_offset\t\t\t= %f,%f,%f",
 						pWpnHud->ZoomOffset().x,
 						pWpnHud->ZoomOffset().y,
