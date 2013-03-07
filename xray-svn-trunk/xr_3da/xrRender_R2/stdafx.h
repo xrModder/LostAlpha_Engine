@@ -16,6 +16,8 @@
 
 #define		R_R1	1
 #define		R_R2	2
+#define		R_R3	3
+#define		R_R4	4
 #define		RENDER	R_R2
 
 #include "..\resourcemanager.h"
@@ -35,4 +37,5 @@ IC	void	jitter(CBlender_Compile& C)
 	C.r_Sampler	("jitter1",	JITTER(1), true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 	C.r_Sampler	("jitter2",	JITTER(2), true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 	C.r_Sampler	("jitter3",	JITTER(3), true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
+	C.r_Sampler	("jitter4",	JITTER(4), true, D3DTADDRESS_WRAP, D3DTEXF_POINT, D3DTEXF_NONE, D3DTEXF_POINT);
 }

@@ -49,6 +49,9 @@ typedef void	__stdcall	xrMemFill_32b	(LPVOID ptr,  u32 count, u32 value);
 typedef void	__stdcall	xrMemFill_8b	(LPVOID ptr,  u32 count, u32 value);
 typedef void	__stdcall	xrMemCopy_8b	(LPVOID dest, const void* src,  u32 count);
 
+typedef void	__stdcall	xrPLC_calc3		(int& c0, int& c1, int& c2, Fvector3 camera_position, Fvector* P, Fvector& N, bool light_direct,
+											 Fvector3 light_position, Fvector3 light_direction, float light_range, float energy, Fvector& O);
+
 #pragma pack(push,8)
 struct xrDispatchTable
 {
@@ -56,6 +59,7 @@ struct xrDispatchTable
 	xrSkin2W*			skin2W;
 //	xrBoneLerp*			blerp;
 	xrM44_Mul*			m44_mul;
+	xrPLC_calc3*		PLC_calc3;
 	xrTransfer*			transfer;
 	xrMemCopy_8b*		memCopy;
 	xrMemFill_8b*		memFill;

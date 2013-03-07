@@ -452,7 +452,8 @@ public:
 
 
 
-ENGINE_API BOOL r2_sun_static = TRUE;
+ENGINE_API BOOL r2_sun_static	= TRUE;
+ENGINE_API BOOL r2_advanced_pp	= FALSE;	//	advanced post process and effects
 
 u32				renderer_value=0;
 class CCC_r2 : public CCC_Token

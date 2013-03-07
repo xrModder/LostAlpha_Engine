@@ -9,7 +9,7 @@
 	#include "light_GI.h"
 #endif
 
-class	light		:	public IRender_Light, public ISpatial
+class light		:	public IRender_Light, public ISpatial
 {
 public:
 	struct {
@@ -18,6 +18,7 @@ public:
 		u32			bActive	:	1;
 		u32			bShadow	:	1;
 		u32			bVolumetric:1;
+		u32			bHudMode:	1;
 	}				flags;
 	Fvector			position	;
 	Fvector			direction	;

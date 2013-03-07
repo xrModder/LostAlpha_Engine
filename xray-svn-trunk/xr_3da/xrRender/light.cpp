@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "light.h"
 
+//static const float	SQRT2		=	1.4142135623730950488016887242097f;
+static const float	RSQRTDIV2	=	0.70710678118654752440084436210485f;
+
 light::light		(void)	: ISpatial(g_SpatialSpace)
 {
 	spatial.type	= STYPE_LIGHTSOURCE;
@@ -8,12 +11,19 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 	flags.bStatic	= false;
 	flags.bActive	= false;
 	flags.bShadow	= false;
+	flags.bVolumetric = false;
+	flags.bHudMode	= false;
 	position.set	(0,-1000,0);
 	direction.set	(0,-1,0);
 	right.set		(0,0,0);
 	range			= 8.f;
 	cone			= deg2rad(60.f);
 	color.set		(1,1,1,1);
+
+	m_volumetric_quality	= 1;
+	//m_volumetric_quality	= 0.5;
+	m_volumetric_intensity	= 1;
+	m_volumetric_distance	= 1;
 
 	frame_render	= 0;
 
@@ -51,13 +61,35 @@ void light::set_texture		(LPCSTR name)
 		// default shaders
 		s_spot.destroy		();
 		s_point.destroy		();
+		s_volumetric.destroy();
 		return;
 	}
 
 #pragma todo				("Only shadowed spot implements projective texture")
 	string256				temp;
-	s_spot.create			(RImplementation.Target->b_accum_spot,strconcat(sizeof(temp),temp,"r2\\accum_spot_",name),name);
-	s_spot.create			(RImplementation.Target->b_accum_spot,strconcat(sizeof(temp),temp,"r2\\accum_spot_",name),name);
+	
+	strconcat(sizeof(temp),temp,"r2\\accum_spot_",name);
+	//strconcat(sizeof(temp),temp,"_nomsaa",name);
+	s_spot.create			(RImplementation.Target->b_accum_spot,temp,name);
+
+#if	(RENDER!=R_R3) && (RENDER!=R_R4)
+	s_volumetric.create		("accum_volumetric", name);
+#else	//	(RENDER!=R_R3) && (RENDER!=R_R4)
+	s_volumetric.create		("accum_volumetric_nomsaa", name);
+	if( RImplementation.o.dx10_msaa )
+	{
+		int bound = 1;
+
+		if( !RImplementation.o.dx10_msaa_opt )
+			bound = RImplementation.o.dx10_msaa_samples;
+
+		for( int i = 0; i < bound; ++i )
+		{
+			s_spot_msaa[i].create				(RImplementation.Target->b_accum_spot_msaa[i],strconcat(sizeof(temp),temp,"r2\\accum_spot_",name),name);
+			s_volumetric_msaa[i].create	(RImplementation.Target->b_accum_volumetric_msaa[i],strconcat(sizeof(temp),temp,"r2\\accum_volumetric_",name),name);
+		}
+	}
+#endif // (RENDER!=R_R3) || (RENDER!=R_R4)
 }
 #endif
 
@@ -149,8 +181,12 @@ void	light::spatial_move			()
 	case IRender_Light::OMNIPART	:
 		{
 			// is it optimal? seems to be...
-			spatial.sphere.P.mad		(position,direction,range);
-			spatial.sphere.R			= range;
+			//spatial.sphere.P.mad		(position,direction,range);
+			//spatial.sphere.R			= range;
+			// This is optimal.
+			const float fSphereR		= range*RSQRTDIV2;
+			spatial.sphere.P.mad		(position,direction,fSphereR);
+			spatial.sphere.R			= fSphereR;
 		}
 		break;
 	}
@@ -273,6 +309,11 @@ void	light::export		(light_Package& package)
 						L->spatial.sector	= spatial.sector;	//. dangerous?
 						L->s_spot			= s_spot	;
 						L->s_point			= s_point	;
+						//	Igor: add volumetric support
+						L->set_volumetric(flags.bVolumetric);
+						L->set_volumetric_quality(m_volumetric_quality);
+						L->set_volumetric_intensity(m_volumetric_intensity);
+						L->set_volumetric_distance(m_volumetric_distance);
 						package.v_shadowed.push_back	(L);
 					}
 				}
@@ -289,7 +330,15 @@ void	light::export		(light_Package& package)
 	}
 }
 
-#endif
+void	light::set_attenuation_params	(float a0, float a1, float a2, float fo)
+{
+	attenuation0 = a0;
+	attenuation1 = a1;
+	attenuation2 = a2;
+	falloff      = fo;
+}
+
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 
 extern float		r_ssaGLOD_start,	r_ssaGLOD_end;
 extern float		ps_r2_slight_fade;

@@ -563,6 +563,17 @@ void	CRender::Render		()
 	g_pGamePersistent->Environment().RenderFlares	();				// lens-flares
 	g_pGamePersistent->Environment().RenderLast	();				// rain/thunder-bolts
 
+#if DEBUG
+	for (int _priority=0; _priority<2; ++_priority)
+	{
+		for ( u32 iPass = 0; iPass<SHADER_PASSES_MAX; ++iPass)
+		{
+			R_ASSERT( mapNormalPasses[_priority][iPass].size() == 0);
+			R_ASSERT( mapMatrixPasses[_priority][iPass].size() == 0);
+		}
+	}
+
+#endif
 	// Postprocess, if necessary
 	Target->End									();
 	if (L_Projector) L_Projector->finalize		();
@@ -604,7 +615,7 @@ void	CRender::Statistics	(CGameFont* _F)
 
 #pragma comment(lib,"d3dx9.lib")
 
-#include <boost/crc.hpp>
+#include "boost/crc.hpp"
 
 static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
 
@@ -789,16 +800,16 @@ HRESULT	CRender::shader_compile			(
 	HRESULT		_result = E_FAIL;
 
 	string_path	folder_name, folder;
-	xr_strcpy		( folder, "r1\\objects\\r1\\" );
-	xr_strcat		( folder, name );
-	xr_strcat		( folder, "." );
+	strcpy_s		( folder, "r1\\objects\\r1\\" );
+	strcat_s		( folder, name );
+	strcat_s		( folder, "." );
 
 	char extension[3];
 	strncpy_s		( extension, pTarget, 2 );
-	xr_strcat		( folder, extension );
+	strcat_s		( folder, extension );
 
 	FS.update_path	( folder_name, "$game_shaders$", folder );
-	xr_strcat		( folder_name, "\\" );
+	strcat_s		( folder_name, "\\" );
 	
 	m_file_set.clear( );
 	FS.file_list	( m_file_set, folder_name, FS_ListFiles | FS_RootOnly, "*");
@@ -806,17 +817,17 @@ HRESULT	CRender::shader_compile			(
 	string_path temp_file_name, file_name;
 	if ( !match_shader_id(name, sh_name, m_file_set, temp_file_name) ) {
 		string_path file;
-		xr_strcpy		( file, "shaders_cache\\r1\\" );
-		xr_strcat		( file, name );
-		xr_strcat		( file, "." );
-		xr_strcat		( file, extension );
-		xr_strcat		( file, "\\" );
-		xr_strcat		( file, sh_name );
+		strcpy_s		( file, "shaders_cache\\r1\\" );
+		strcat_s		( file, name );
+		strcat_s		( file, "." );
+		strcat_s		( file, extension );
+		strcat_s		( file, "\\" );
+		strcat_s		( file, sh_name );
 		FS.update_path	( file_name, "$app_data_root$", file);
 	}
 	else {
-		xr_strcpy		( file_name, folder_name );
-		xr_strcat		( file_name, temp_file_name );
+		strcpy_s		( file_name, folder_name );
+		strcat_s		( file_name, temp_file_name );
 	}
 
 	if (FS.exist(file_name))
@@ -926,7 +937,7 @@ static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const 
 	FS_FileSet::const_iterator	const e = file_set.end();
 	for ( ; i != e; ++i ) {
 		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			xr_strcpy			( result, (*i).name.c_str() );
+			strcpy_s			( result, (*i).name.c_str() );
 			return				true;
 		}
 	}

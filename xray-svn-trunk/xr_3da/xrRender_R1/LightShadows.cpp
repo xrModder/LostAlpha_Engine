@@ -355,6 +355,8 @@ IC int PLC_calc	(Fvector& P, Fvector& N, light* L, float energy, Fvector& O)
 	return			iCeil(255.f*A);
 }
 
+#define UNPACK_LIGHT(L) L->flags.type==IRender_Light::DIRECT,L->position,L->direction,L->range
+
 void CLightShadows::render	()
 {
 	// Gain access to collision-DB
@@ -508,7 +510,7 @@ void CLightShadows::render	()
 			*/
 			int	c0,c1,c2;
 
-			PSGP.PLC_calc3(c0,c1,c2,Device,v,TT.N,S.L,Le,S.C);
+			PSGP.PLC_calc3(c0,c1,c2,Device.vCameraPosition,v,TT.N,UNPACK_LIGHT(S.L),Le,S.C);
 
 			if (c0>S_clip && c1>S_clip && c2>S_clip)		continue;	
 			clamp		(c0,S_ambient,255);
@@ -555,3 +557,5 @@ void CLightShadows::render	()
 	Device.mProject._43			= _43;
 	RCache.set_xform_project	(Device.mProject);
 }
+
+#undef UNPACK_LIGHT

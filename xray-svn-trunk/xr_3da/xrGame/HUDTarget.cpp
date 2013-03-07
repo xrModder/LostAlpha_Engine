@@ -70,6 +70,10 @@ CHUDTarget::CHUDTarget	()
 	m_bShowCrosshair	= false;
 }
 
+CHUDTarget::~CHUDTarget	()
+{
+}
+
 void CHUDTarget::net_Relcase(CObject* O)
 {
 	if(RQ.O == O)

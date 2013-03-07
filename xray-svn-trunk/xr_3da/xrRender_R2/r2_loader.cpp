@@ -36,10 +36,10 @@ void CRender::level_Load(IReader* fs)
 			LPCSTR			n		= LPCSTR(chunk->pointer());
 			chunk->skip_stringZ		();
 			if (0==n[0])			continue;
-			strcpy					(n_sh,n);
+			strcpy_s					(n_sh,n);
 			LPSTR			delim	= strchr(n_sh,'/');
 			*delim					= 0;
-			strcpy					(n_tlist,delim+1);
+			strcpy_s					(n_tlist,delim+1);
 			Shaders[i]				= Device.Resources->Create(n_sh,n_tlist);
 		}
 		chunk->close();
@@ -138,6 +138,10 @@ void CRender::level_Unload()
 		xr_delete(Visuals[I]);
 	}
 	Visuals.clear			();
+
+	//*** SWI
+	for (I=0; I<SWIs.size();I++)xr_free	(SWIs[I].sw);
+	SWIs.clear				();
 
 	//*** VB/IB
 	for (I=0; I<nVB.size(); I++)	_RELEASE(nVB[I]);
@@ -253,6 +257,7 @@ void CRender::LoadLights(IReader *fs)
 {
 	// lights
 	Lights.Load	(fs);
+	Lights.LoadHemi();
 }
 
 struct b_portal

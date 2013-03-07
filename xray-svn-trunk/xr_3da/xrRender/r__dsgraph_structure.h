@@ -46,6 +46,7 @@ public:
 #if RENDER==R_R2
 	R_dsgraph::mapSorted_T										mapWmark;			// sorted
 	R_dsgraph::mapSorted_T										mapEmissive;
+	R_dsgraph::mapSorted_T										mapHUDEmissive;
 #endif
 
 	// Runtime structures 

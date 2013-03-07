@@ -18,6 +18,10 @@
 
 #define		r2_RT_generic0		"$user$generic0"		// ---
 #define		r2_RT_generic1		"$user$generic1"		// ---
+#define		r2_RT_generic2		"$user$generic2"		// ---	//	Igor: for volumetric lights
+
+#define		r2_RT_ssao_temp		"$user$ssao_temp"		//temporary rt for ssao calculation
+#define		r2_RT_half_depth	"$user$half_depth"		//temporary rt for hbao calculation
 
 #define		r2_RT_bloom1		"$user$bloom1"			// ---
 #define		r2_RT_bloom2		"$user$bloom2"			// ---
@@ -36,6 +40,7 @@
 #define		r2_ds2_fade			"$user$ds2_fade"		// ---
 
 #define		r2_jitter			"$user$jitter_"			// --- dither
+#define		r2_jitter_mipped	"$user$jitter_mipped"			// --- dither
 #define		r2_sunmask			"sunmask"
 
 #define		JITTER(a) r2_jitter #a
@@ -49,7 +54,7 @@ const		u32					SMAP_adapt_max		= 1536	;
 const		u32					TEX_material_LdotN	= 128	;	// diffuse,		X, almost linear = small res
 const		u32					TEX_material_LdotH	= 256	;	// specular,	Y
 const		u32					TEX_jitter			= 64	;
-const		u32					TEX_jitter_count	= 4		;
+const		u32					TEX_jitter_count	= 5		;	// for HBAO
 
 const		u32					BLOOM_size_X		= 256	;
 const		u32					BLOOM_size_Y		= 256	;
@@ -77,8 +82,9 @@ const		u32					LUMINANCE_size		= 16	;
 
 // sun
 #define		SE_SUN_NEAR			0
-#define		SE_SUN_FAR			1
-#define		SE_SUN_LUMINANCE	2
+#define		SE_SUN_MIDDLE		1
+#define		SE_SUN_FAR			2
+#define		SE_SUN_LUMINANCE	3
 
 extern		float	ps_r2_gloss_factor;
 IC	float	u_diffuse2s	(float x, float y, float z)	{ float	v = (x+y+z)/3.f;	return ps_r2_gloss_factor * ((v<1)?powf(v,2.f/3.f):v); }

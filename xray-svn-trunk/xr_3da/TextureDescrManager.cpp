@@ -4,7 +4,7 @@
 #include "ETextureParams.h"
 
 // eye-params
-float					r__dtex_range	= 50;
+float	ENGINE_API		r__dtex_range	= 50;
 class cl_dt_scaler		: public R_constant_setup {
 public:
 	float				scale;

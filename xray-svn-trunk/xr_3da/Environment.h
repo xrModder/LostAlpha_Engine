@@ -110,7 +110,7 @@ public:
 
 	float				bolt_period;
 	float				bolt_duration;
-
+	
     float				wind_velocity;
     float				wind_direction;  
     
@@ -118,6 +118,9 @@ public:
 	Fvector4			hemi_color	;	// w = R2 correction
 	Fvector3			sun_color	;
 	Fvector3			sun_dir		;
+
+	float				m_fSunShaftsIntensity;
+	float				m_fWaterIntensity;
 
     int					lens_flare_id;
 	int					tb_id;

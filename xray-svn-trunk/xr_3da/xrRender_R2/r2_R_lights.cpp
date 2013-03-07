@@ -99,8 +99,8 @@ void	CRender::render_lights	(light_Package& LP)
 			else							r_pmask	(true,false	);
 			L->svis.begin							();
 			r_dsgraph_render_subspace				(L->spatial.sector, L->X.S.combine, L->position, TRUE);
-			bool	bNormal							= mapNormal[0].size() || mapMatrix[0].size();
-			bool	bSpecial						= mapNormal[1].size() || mapMatrix[1].size() || mapSorted.size();
+			bool	bNormal							= mapNormalPasses[0][0].size() || mapMatrixPasses[0][0].size();
+			bool	bSpecial						= mapNormalPasses[1][0].size() || mapMatrixPasses[1][0].size() || mapSorted.size();
 			if ( bNormal || bSpecial)	{
 				stats.s_merged						++;
 				L_spot_s.push_back					(L);
@@ -149,11 +149,18 @@ void	CRender::render_lights	(light_Package& LP)
 		}
 
 		//		if (was_spot_shadowed)		->	accum spot shadowed
-		if		(!L_spot_s.empty())		{ 
-			for (u32 it=0; it<L_spot_s.size(); it++)	{
+		if		(!L_spot_s.empty())
+		{ 
+			for (u32 it=0; it<L_spot_s.size(); it++)
+			{
 				Target->accum_spot			(L_spot_s[it]);
 				render_indirect				(L_spot_s[it]);
 			}
+
+			if (RImplementation.o.advancedpp && ps_r2_ls_flags.is(R2FLAG_VOLUMETRIC_LIGHTS))
+			for (u32 it=0; it<L_spot_s.size(); it++)
+				Target->accum_volumetric(L_spot_s[it]);
+
 			L_spot_s.clear	();
 		}
 	}

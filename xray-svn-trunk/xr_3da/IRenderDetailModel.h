@@ -2,6 +2,8 @@
 #define IRenderDetailModelH
 #pragma once
 
+#include "Shader.h"
+
 //////////////////////////////////////////////////////////////////////////
 // definition (Detail Model)
 class	ENGINE_API	IRender_DetailModel

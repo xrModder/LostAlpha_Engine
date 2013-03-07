@@ -98,7 +98,8 @@ void CLight_DB::Load			(IReader *fs)
 	*/
 }
 
-#if RENDER != R_R1
+#if RENDER == R_R2
+#include "../../xrLC/R_light.h"
 void	CLight_DB::LoadHemi	()
 {
 	string_path fn_game;

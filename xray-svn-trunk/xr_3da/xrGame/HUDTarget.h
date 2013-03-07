@@ -28,8 +28,10 @@ private:
 			void	net_Relcase		(CObject* O);
 
 public:
-					CHUDTarget		();
-			void	CursorOnFrame	();
-			void	Render			();
-			void	Load			();
+							CHUDTarget	();
+							~CHUDTarget	();
+	void					CursorOnFrame ();
+	void					Render		();
+	void					Load		();
+	collide::rq_result&		GetRQ		() {return RQ;};
 };

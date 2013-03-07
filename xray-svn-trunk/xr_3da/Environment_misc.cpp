@@ -115,6 +115,9 @@ CEnvDescriptor::CEnvDescriptor()
 
     lens_flare_id		= -1;
 	tb_id				= -1;
+
+	m_fSunShaftsIntensity	= 0;
+	m_fWaterIntensity		= 1;
     
 	env_ambient			= NULL;
 }
@@ -159,6 +162,9 @@ void CEnvDescriptor::load	(LPCSTR exec_tm, LPCSTR S, CEnvironment* parent)
 	bolt_period				= (tb_id>=0)?pSettings->r_float	(S,"bolt_period"):0.f;
 	bolt_duration			= (tb_id>=0)?pSettings->r_float	(S,"bolt_duration"):0.f;
 	env_ambient				= pSettings->line_exist(S,"env_ambient")?parent->AppendEnvAmb	(pSettings->r_string(S,"env_ambient")):0;
+
+	m_fSunShaftsIntensity	= pSettings->line_exist(S,"sun_shafts_intensity") ? pSettings->r_float(S,"sun_shafts_intensity") : 0;
+	m_fWaterIntensity		= pSettings->line_exist(S,"water_intensity") ? pSettings->r_float(S,"water_intensity") : 1;
 
 	C_CHECK					(clouds_color);
 	C_CHECK					(sky_color	);
@@ -253,6 +259,10 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	// wind
 	wind_velocity			=	fi*A.wind_velocity + f*B.wind_velocity;
 	wind_direction			=	fi*A.wind_direction + f*B.wind_direction;
+	
+	// sunshafts and water
+	m_fSunShaftsIntensity	=	fi*A.m_fSunShaftsIntensity + f*B.m_fSunShaftsIntensity;
+	m_fWaterIntensity		=	fi*A.m_fWaterIntensity + f*B.m_fWaterIntensity;
 
 	// colors
 	sky_color.lerp			(A.sky_color,B.sky_color,f).add(M.sky_color).mul(_power);

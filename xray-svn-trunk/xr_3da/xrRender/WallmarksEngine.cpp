@@ -228,8 +228,12 @@ void CWallmarksEngine::AddWallmark_internal	(CDB::TRI* pTri, const Fvector* pVer
 	RecurseTri			(0,mView,*W);
 
 	// calc sphere
-	if (W->verts.size()<3) { static_wm_destroy(W); return; }
-	else {
+	if (W->verts.size()<3) 
+	{ 
+		static_wm_destroy(W); 
+		return; 
+	}else 
+	{
 		Fbox bb;	bb.invalidate();
 
 		FVF::LIT* I=&*W->verts.begin	();
