@@ -178,8 +178,8 @@ void CGamePersistent::OnGameStart()
 	
 	UpdateGameType				();
 
-	diff_far	= pSettings->r_float("zone_pick_dof","far"); 
-	diff_near	= pSettings->r_float("zone_pick_dof","near"); 
+	diff_far	= pSettings->r_float("zone_pick_dof", "far"); 
+	diff_near	= pSettings->r_float("zone_pick_dof", "near"); 
 
 }
 
@@ -592,24 +592,24 @@ void CGamePersistent::SetPickableEffectorDOF(bool bSet)
 
 void CGamePersistent::GetCurrentDof(Fvector3& dof)
 {
-	dof = m_dof[1];
+	dof = m_dof[eDofCurrent];
 }
 
 void CGamePersistent::SetBaseDof(const Fvector3& dof)
 {
-	m_dof[0]=m_dof[1]=m_dof[2]=m_dof[3]	= dof;
+	m_dof[eDofDest]=m_dof[eDofCurrent]=m_dof[eDofFrom]=m_dof[eDofOriginal]	= dof;
 }
 
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if(m_bPickableDOF)	return;
-	m_dof[0]	= needed_dof;
-	m_dof[2]	= m_dof[1]; //current
+	m_dof[eDofDest]	= needed_dof;
+	m_dof[eDofFrom]	= m_dof[eDofCurrent]; //current
 }
 
 void CGamePersistent::RestoreEffectorDOF()
 {
-	SetEffectorDOF			(m_dof[3]);
+	SetEffectorDOF			(m_dof[eDofOriginal]);
 }
 
 void CGamePersistent::UpdateDof()
@@ -621,18 +621,27 @@ void CGamePersistent::UpdateDof()
 		pick_dof.y	= HUD().GetCurrentRayQuery().range;
 		pick_dof.x	= pick_dof.y+diff_near;
 		pick_dof.z	= pick_dof.y+diff_far;
-		m_dof[0]	= pick_dof;
-		m_dof[2]	= m_dof[1]; //current
+		m_dof[eDofDest]	= pick_dof;
+		m_dof[eDofFrom]	= m_dof[eDofCurrent]; //current
 	}
-	if (m_dof[1].similar(m_dof[0]))
+	if (m_dof[eDofCurrent].similar(m_dof[eDofDest]))
 		return;
 
 	float td			= Device.fTimeDelta;
 	Fvector				diff;
-	diff.sub			(m_dof[0], m_dof[2]);
+	diff.sub			(m_dof[eDofDest], m_dof[eDofFrom]);
 	diff.mul			(td/0.2f); //0.2 sec
-	m_dof[1].add		(diff);
-	(m_dof[0].x<m_dof[2].x)?clamp(m_dof[1].x,m_dof[0].x,m_dof[2].x):clamp(m_dof[1].x,m_dof[2].x,m_dof[0].x);
-	(m_dof[0].y<m_dof[2].y)?clamp(m_dof[1].y,m_dof[0].y,m_dof[2].y):clamp(m_dof[1].y,m_dof[2].y,m_dof[0].y);
-	(m_dof[0].z<m_dof[2].z)?clamp(m_dof[1].z,m_dof[0].z,m_dof[2].z):clamp(m_dof[1].z,m_dof[2].z,m_dof[0].z);
+	m_dof[eDofCurrent].add		(diff);
+	if (m_dof[eDofDest].x<m_dof[eDofFrom].x)
+		clamp(m_dof[eDofCurrent].x,m_dof[eDofDest].x,m_dof[eDofFrom].x);
+	else
+		clamp(m_dof[eDofCurrent].x,m_dof[eDofFrom].x,m_dof[eDofDest].x);
+	if (m_dof[eDofDest].y<m_dof[eDofFrom].y)
+		clamp(m_dof[eDofCurrent].y,m_dof[eDofDest].y,m_dof[eDofFrom].y);
+	else
+		clamp(m_dof[eDofCurrent].y,m_dof[eDofFrom].y,m_dof[eDofDest].y);
+	if (m_dof[eDofDest].z<m_dof[eDofFrom].z)
+		clamp(m_dof[eDofCurrent].z,m_dof[eDofDest].z,m_dof[eDofFrom].z);
+	else
+		clamp(m_dof[eDofCurrent].z,m_dof[eDofFrom].z,m_dof[eDofDest].z);
 }
