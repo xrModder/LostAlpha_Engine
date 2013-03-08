@@ -278,4 +278,31 @@ ICF void	CBackend::set_CullMode		(u32 _mode)
 	if (cull_mode		!= _mode)		{ cull_mode = _mode;			CHK_DX(HW.pDevice->SetRenderState	( D3DRS_CULLMODE,			_mode				)); }
 }
 
+IC  void CBackend::set_Z(u32 _enable)
+{
+	if (z_enable != _enable)
+	{ 
+		z_enable=_enable;
+		CHK_DX(HW.pDevice->SetRenderState	( D3DRS_ZENABLE, _enable )); 
+	}
+}
+
+IC  void CBackend::set_ZFunc(u32 _func)
+{
+	if (z_func!=_func)
+	{
+		z_func = _func;
+		CHK_DX(HW.pDevice->SetRenderState( D3DRS_ZFUNC, _func));
+	}
+}
+
+IC  void CBackend::set_AlphaRef (u32 _value)
+{
+	if (alpha_ref != _value)
+	{ 
+		alpha_ref = _value;
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,_value));
+	}
+}
+
 #endif

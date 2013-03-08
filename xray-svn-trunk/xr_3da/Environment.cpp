@@ -26,8 +26,9 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-ENGINE_API	float			psVisDistance	= 1.f;
-static const float			MAX_NOISE_FREQ	= 0.03f;
+ENGINE_API		float			psVisDistance		= 1.f;
+static const	float			MAX_NOISE_FREQ		= 0.03f;
+ENGINE_API		float			ps_r1_fog_luminance	= 1.1f;					// r1-only
 
 //#define WEATHER_LOGGING
 
@@ -373,7 +374,13 @@ void CEnvironment::OnFrame()
 	eff_Rain->OnFrame					();
 
 	// ******************** Environment params (setting)
-	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGCOLOR,	color_rgba_f(CurrentEnv.fog_color.x,CurrentEnv.fog_color.y,CurrentEnv.fog_color.z,0) )); 
+	Fvector3	&fog_color = CurrentEnv.fog_color;
+	if (::Render->get_generation()==IRender_interface::GENERATION_R2)
+	{
+		fog_color.mul(ps_r1_fog_luminance);
+	}
+
+	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGCOLOR,	 color_rgba_f(fog_color.x,fog_color.y,fog_color.z,0) ));
 	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGSTART,	*(u32 *)(&CurrentEnv.fog_near)	));
 	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGEND,	*(u32 *)(&CurrentEnv.fog_far)	));
 }

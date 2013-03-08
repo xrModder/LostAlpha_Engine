@@ -98,7 +98,6 @@ float		ps_r1_pps_v					= 0.f	;
 
 // R1-specific
 int			ps_r1_GlowsPerFrame			= 16	;					// r1-only
-float		ps_r1_fog_luminance			= 1.1f	;					// r1-only
 int			ps_r1_SoftwareSkinning		= 0		;					// r1-only
 
 // R2
@@ -441,7 +440,7 @@ CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.02f,	1.00f	);
 	// R1-specific
 	CMD4(CCC_Integer,	"r1_glows_per_frame",	&ps_r1_GlowsPerFrame,		2,		32		);
 	CMD3(CCC_Mask,		"r1_detail_textures",	&ps_r2_ls_flags,			R1FLAG_DETAIL_TEXTURES);
-	CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
+	
 
 	// R2
 	CMD4(CCC_Float,		"r2_ssa_lod_a",			&ps_r2_ssaLOD_A,			16,		96		);

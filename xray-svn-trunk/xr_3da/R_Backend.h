@@ -44,32 +44,12 @@ struct	R_statistics			{
 class ENGINE_API CBackend
 {
 public:
-#if defined(USE_DX10) || defined(USE_DX11)
-	enum	MaxTextures
-	{
-		//	Actually these values are 128
-		mtMaxPixelShaderTextures = 16,
-		mtMaxVertexShaderTextures = 4,
-		mtMaxGeometryShaderTextures = 16,
-#	ifdef USE_DX11
-		mtMaxHullShaderTextures = 16,
-		mtMaxDomainShaderTextures = 16,
-		mtMaxComputeShaderTextures = 16,
-#	endif
-	};
-	enum
-	{
-		MaxCBuffers	= 14
-	};
-#else	//	USE_DX10
-	enum	MaxTextures
-	{
-		mtMaxPixelShaderTextures = 16,
-		mtMaxVertexShaderTextures = 4,
-	};
-#endif	//	USE_DX10
-	
 
+	enum	MaxTextures
+	{
+		mtMaxPixelShaderTextures = 16,
+		mtMaxVertexShaderTextures = 4,
+	};
 
 public:            
 	// Dynamic geometry streams

@@ -499,6 +499,8 @@ extern float		r__dtex_range;
 
 extern int			g_ErrorLineCount;
 
+extern float		ps_r1_fog_luminance;
+
 
 ENGINE_API int			ps_r__Supersample			= 1;
 void CCC_Register()
@@ -649,5 +651,7 @@ if(strstr(Core.Params,"-designer"))
 
 	extern int g_svDedicateServerUpdateReate;
 	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);
+
+	CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
 };
  

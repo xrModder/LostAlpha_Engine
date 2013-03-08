@@ -21,10 +21,10 @@ static	Fvector3	hbox_verts[24]	=
 	{ 1.f,	-1.f,	-1.f}, { 1.f,	-1.01f,	-1.f},	// down
 	{-1.f,	-1.f,	 1.f}, {-1.f,	-1.01f,	 1.f},	// down
 	{ 1.f,	-1.f,	 1.f}, { 1.f,	-1.01f,	 1.f},	// down
-	{-1.f,	 1.f,	-1.f}, {-1.f,	 1.f,	-1.f},
-	{ 1.f,	 1.f,	-1.f}, { 1.f,	 1.f,	-1.f},
-	{-1.f,	 1.f,	 1.f}, {-1.f,	 1.f,	 1.f},
-	{ 1.f,	 1.f,	 1.f}, { 1.f,	 1.f,	 1.f},
+	{-1.f,	 2.f,	-1.f}, {-1.f,	 1.f,	-1.f},
+	{ 1.f,	 2.f,	-1.f}, { 1.f,	 1.f,	-1.f},
+	{-1.f,	 2.f,	 1.f}, {-1.f,	 1.f,	 1.f},
+	{ 1.f,	 2.f,	 1.f}, { 1.f,	 1.f,	 1.f},
 	{-1.f,	 0.f,	-1.f}, {-1.f,	-1.f,	-1.f},	// half
 	{ 1.f,	 0.f,	-1.f}, { 1.f,	-1.f,	-1.f},	// half
 	{ 1.f,	 0.f,	 1.f}, { 1.f,	-1.f,	 1.f},	// half
@@ -136,8 +136,23 @@ void CEnvironment::RenderSky		()
 	RCache.Render				(D3DPT_TRIANGLELIST,v_offset,0,12,i_offset,20);
 
 	// Sun
-	::Render->rmNormal			();
-	eff_LensFlare->Render		(TRUE,FALSE,FALSE);
+ 	::Render->rmNormal			();
+	if (::Render->get_generation()==IRender_interface::GENERATION_R2)
+	{
+		//
+		// This hack is done to make sure that the state is set for sure:
+		// The state may be not set by RCache if the state is changed using API SetRenderState() function before 
+		// and the RCache flag will remain unchanged to it's old value. 
+		// 
+		RCache.set_Z(FALSE);
+		RCache.set_Z(TRUE);
+ 		eff_LensFlare->Render		(TRUE,FALSE,FALSE);
+		RCache.set_Z(FALSE);
+	}
+	else
+	{
+		eff_LensFlare->Render		(TRUE,FALSE,FALSE);
+	}
 }
 
 void CEnvironment::RenderClouds			()

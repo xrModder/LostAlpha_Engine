@@ -36,7 +36,7 @@ void	CRenderTarget::phase_combine	()
 	Fvector2	p0,p1;
 
 	//*** exposure-pipeline
-	u32			gpu_id	= Device.dwFrame%2;
+	u32			gpu_id	= Device.dwFrame%HW.Caps.iGPUNum;
 	{
 		t_LUM_src->surface_set		(rt_LUM_pool[gpu_id*2+0]->pSurface);
 		t_LUM_dest->surface_set		(rt_LUM_pool[gpu_id*2+1]->pSurface);
@@ -54,7 +54,7 @@ void	CRenderTarget::phase_combine	()
 
 	// low/hi RTs
 	u_setrt				( rt_Generic_0,rt_Generic_1,0,HW.pBaseZB );
-	RCache.set_CullMode	( CULL_NONE );
+//	RCache.set_CullMode	( CULL_NONE );
 	RCache.set_Stencil	( FALSE		);
 
 	BOOL	split_the_scene_to_minimize_wait			= FALSE;
@@ -285,6 +285,9 @@ void	CRenderTarget::phase_combine	()
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
 	/* if (!RImplementation.o.fp16_blend)*/	g_pGamePersistent->Environment().RenderFlares	();	// lens-flares
+
+	//	Igor: screenshot will not have postprocess applied.
+	//	TODO: fix that later
 
 	//	PP-if required
 	if (PP_Complex)		{
