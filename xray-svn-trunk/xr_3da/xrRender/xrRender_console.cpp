@@ -98,7 +98,6 @@ float		ps_r1_pps_v					= 0.f	;
 
 // R1-specific
 int			ps_r1_GlowsPerFrame			= 16	;					// r1-only
-int			ps_r1_SoftwareSkinning		= 0		;					// r1-only
 
 // R2
 float		ps_r2_ssaLOD_A				= 48.f	;

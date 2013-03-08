@@ -15,6 +15,9 @@
 
 #include "xr_object.h"
 
+int	ENGINE_API		ps_r1_SoftwareSkinning		= 0;					// r1-only
+
+
 xr_token							snd_freq_token							[ ]={
 	{ "22khz",						sf_22K										},
 	{ "44khz",						sf_44K										},
@@ -653,5 +656,6 @@ if(strstr(Core.Params,"-designer"))
 	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);
 
 	CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
+	CMD4(CCC_Integer,	"ps_r1_SoftwareSkinning",&ps_r1_SoftwareSkinning,	0,		2	);
 };
  

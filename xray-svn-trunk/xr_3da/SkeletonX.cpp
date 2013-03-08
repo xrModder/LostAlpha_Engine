@@ -124,6 +124,7 @@ void CSkeletonX::_Render_soft	(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCo
 }
 
 //////////////////////////////////////////////////////////////////////
+extern int ps_r1_SoftwareSkinning;
 void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount) 
 {	
 	s_bones_array_const	= "sbones_array";
@@ -136,6 +137,10 @@ void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount)
 	//u16			hw_bones_cnt		= u16((HW.Caps.geometry.dwRegisters-22)/3);
 	//	Igor: some shaders in r1 need more free constant registers
 	u16			hw_bones_cnt		= u16((HW.Caps.geometry.dwRegisters-22-3)/3);
+
+	if ( ps_r1_SoftwareSkinning == 1 )
+		hw_bones_cnt = 0;
+
 	u16			sw_bones_cnt		= 0;
 #ifdef _EDITOR
 	hw_bones_cnt					= 0;

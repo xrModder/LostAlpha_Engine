@@ -159,7 +159,7 @@ public:
 public:
 	// options
 	s32								m_skinning;
-	s32								m_MSAASample;
+//	s32								m_MSAASample;
 
 	// data
 	CFrustum						ViewBase;
