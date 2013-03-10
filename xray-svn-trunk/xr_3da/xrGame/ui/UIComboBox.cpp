@@ -17,19 +17,19 @@
 
 CUIComboBox::CUIComboBox()
 {
-	AttachChild			(&m_frameLine);
-	AttachChild			(&m_text);
+	AttachChild						(&m_frameLine);
+	AttachChild						(&m_text);
 
-//.	AttachChild			(&m_btn);
+//.	AttachChild						(&m_btn);
 
-	AttachChild			(&m_frameWnd);
+	AttachChild						(&m_frameWnd);
 	m_frameWnd.AttachChild			(&m_list);
+	m_list.SetMessageTarget			(this);
+	m_iListHeight			= 0;
+	m_bInited				= false;
+	m_eState				= LIST_FONDED;
 
-	m_iListHeight		= 0;
-	m_bInited			= false;
-	m_eState			= LIST_FONDED;
-
-	m_textColor[0]		= 0xff00ff00;
+	m_textColor[0]			= 0xff00ff00;
 }
 
 CUIComboBox::~CUIComboBox()
@@ -273,7 +273,8 @@ void CUIComboBox::OnFocusReceive()
         SetState(S_Highlighted);
 }
 
-bool CUIComboBox::OnMouse(float x, float y, EUIMessages mouse_action){
+bool CUIComboBox::OnMouse(float x, float y, EUIMessages mouse_action)
+{
 	if(CUIWindow::OnMouse(x, y, mouse_action)) 
 		return true;
 
@@ -310,7 +311,6 @@ void CUIComboBox::SetState(UIState state)
 void CUIComboBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	CUIWindow::SendMessage	(pWnd, msg, pData);
-
 	switch (msg)
 	{
 		case LIST_ITEM_CLICKED:

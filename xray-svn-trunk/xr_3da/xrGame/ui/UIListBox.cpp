@@ -67,6 +67,22 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	{
 		switch (msg){
 			case LIST_ITEM_SELECT:	
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, pData);
+				break;
+			case LIST_ITEM_CLICKED:
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pData);
+				break;
+			case LIST_ITEM_FOCUS_RECEIVED:
+				if (m_bImmediateSelection)
+                    SetSelected(pWnd);
+				break;
+		}		
+	}
+/*
+	if (m_pad->IsChild(pWnd))
+	{
+		switch (msg){
+			case LIST_ITEM_SELECT:	
 			case LIST_ITEM_CLICKED:
 			case LIST_ITEM_DB_CLICKED:
 				GetMessageTarget()->SendMessage(this, msg, pData);
@@ -77,7 +93,7 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 				break;
 		}		
 	}
-
+*/
 	CUIScrollView::SendMessage(pWnd, msg, pData);
 }
 
