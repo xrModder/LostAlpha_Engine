@@ -580,7 +580,7 @@ CRenderTarget::~CRenderTarget	()
 	t_LUM_dest->surface_set		(NULL);
 
 #ifdef DEBUG
-	ID3DBaseTexture*	pSurf = 0;
+	IDirect3DBaseTexture9*	pSurf = 0;
 
 	pSurf = t_envmap_0->surface_get();
 	if (pSurf) pSurf->Release();

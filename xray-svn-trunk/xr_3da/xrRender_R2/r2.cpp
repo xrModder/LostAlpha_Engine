@@ -1067,7 +1067,7 @@ static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const 
 		}
 	}
 
-	xr_strcpy					( result, temp );
+	strcpy_s					( result, temp );
 	return						found;
 #else // #ifdef DEBUG
 	FS_FileSet::const_iterator	i = file_set.begin();

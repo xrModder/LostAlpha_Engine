@@ -27,7 +27,7 @@ public:
 		LPCSTR			GetField(LPCSTR key);
 
 protected:
-			float		FieldsLength();
+		float			FieldsLength() const;
 		xr_vector<CUIStatic*>	fields;
 		u32				txt_color;
 		u32				txt_color_s;

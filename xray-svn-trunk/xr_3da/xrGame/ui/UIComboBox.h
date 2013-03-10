@@ -17,13 +17,14 @@
 
 class CUIListBoxItem;
 
-class CUIComboBox : public CUIWindow, public CUIOptionsItem {
+class CUIComboBox : public CUIWindow, public CUIOptionsItem, public pureRender
+{
 	friend class CUIXmlInit;
 	typedef enum{
 		LIST_EXPANDED, 
 		LIST_FONDED    
 	} E_COMBO_STATE;
-
+ 
 public:
 						CUIComboBox				();
 	virtual				~CUIComboBox			();
@@ -32,6 +33,7 @@ public:
 	virtual void		SaveValue				();
 	virtual bool		IsChanged				();
 	virtual void 		SeveBackUpValue			();
+	virtual void		OnRender				(); // only for list-box
 	virtual void 		Undo					();
 
 			LPCSTR		GetText					();
@@ -60,6 +62,7 @@ protected:
 			void		ShowList				(bool bShow);
 			void		OnListItemSelect		();
 	virtual void		Update();
+	virtual void		Draw					();
 
 protected:
 	bool				m_bInited;

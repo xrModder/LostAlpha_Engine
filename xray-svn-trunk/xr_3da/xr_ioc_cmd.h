@@ -146,6 +146,7 @@ public		:
 		}
 	}
 	virtual xr_token* GetToken(){return tokens;}
+	virtual u32 GetValue(){return *value;}
 };
 
 class ENGINE_API	CCC_Float : public IConsole_Command

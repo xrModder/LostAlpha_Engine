@@ -90,7 +90,7 @@ void CUIListBoxItem::SetTextColor(u32 color, u32 color_s)
 	SetTextColor(color);
 }
 
-float CUIListBoxItem::FieldsLength()
+float CUIListBoxItem::FieldsLength() const
 {
 	float c = 0;
 	for (u32 i = 0; i<fields.size(); i++)

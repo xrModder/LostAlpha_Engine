@@ -656,6 +656,6 @@ if(strstr(Core.Params,"-designer"))
 	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);
 
 	CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
-	CMD4(CCC_Integer,	"ps_r1_SoftwareSkinning",&ps_r1_SoftwareSkinning,	0,		2	);
+	CMD4(CCC_Integer,	"r1_software_skinning",&ps_r1_SoftwareSkinning,	0,		2	);
 };
  

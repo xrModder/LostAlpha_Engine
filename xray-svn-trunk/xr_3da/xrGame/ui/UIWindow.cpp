@@ -231,14 +231,15 @@ void CUIWindow::AttachChild(CUIWindow* pChild)
 
 void CUIWindow::DetachChild(CUIWindow* pChild)
 {
+	R_ASSERT(pChild);
 	if(NULL==pChild)
 		return;
 	
 	if(m_pMouseCapturer == pChild)
 		SetCapture(pChild, false);
 
-	SafeRemoveChild(pChild);
-	pChild->SetParent(NULL);
+	SafeRemoveChild			(pChild);
+	pChild->SetParent		(NULL);
 
 	if(pChild->IsAutoDelete())
 		xr_delete(pChild);

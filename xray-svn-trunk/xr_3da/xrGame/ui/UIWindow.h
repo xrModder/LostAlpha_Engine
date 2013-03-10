@@ -54,8 +54,11 @@ public:
 template<class _Ty,	class _Other>	inline	bool operator==(const uialloc<_Ty>&, const uialloc<_Other>&)		{	return (true);							}
 template<class _Ty, class _Other>	inline	bool operator!=(const uialloc<_Ty>&, const uialloc<_Other>&)		{	return (false);							}
 
-template<typename T>	
-class	ui_list 		: public std::list<T,uialloc<T> >{ public: u32 size() const {return (u32)__super::size(); } };
+//. template<typename T>	
+//. class	ui_list 		: public std::list<T,uialloc<T> >{ public: u32 size() const {return (u32)__super::size(); } };
+
+
+#define	 ui_list xr_vector
 
 #define DEF_UILIST(N,T)		typedef ui_list< T > N;			typedef N::iterator N##_it;
 
