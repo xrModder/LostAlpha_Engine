@@ -13,7 +13,7 @@ xr_token							qpreset_token							[ ]={
 	{ 0,							0											}
 };
 
-u32			ps_r_ssao_mode			=	2;
+u32			ps_r_ssao_mode			=	1;
 xr_token							qssao_mode_token						[ ]={
 	{ "disabled",					0											},
 	{ "default",					1											},
