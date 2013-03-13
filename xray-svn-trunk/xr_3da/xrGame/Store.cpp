@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Store.h"
-#pragma warning(push)
-#pragma warning(disable:4995)
+#include "pch_script.h"
+#include "alife_space.h"
+#include "script_engine.h"
+#include "ai_space.h"
+#include "alife_simulator.h"
 
 CStoreHouse::CStoreHouse(void) 
 {
@@ -188,6 +191,8 @@ void CStoreHouse::save(IWriter &memory_stream)
 		memory_stream.w(it->second.data, type_to_size(it->second));
 	}
 	memory_stream.close_chunk	();
+
+	Msg("* %d store values successfully saved", data.size());
 }
 
 void CStoreHouse::load(IReader &file_stream)
@@ -225,7 +230,27 @@ void CStoreHouse::load(IReader &file_stream)
 			}
 		}
 		data[name.c_str()]=d;
+
+		//script callback
+		bool loaded = ((u8)i==(u8)count)?true:false;
+
+		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_store_callback"))
+		{
+			string256					func_name;
+			luabind::functor<void>			func;
+			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_store_callback"));
+			R_ASSERT					(ai().script_engine().functor<void>(func_name,func));
+
+			switch (d.type)
+			{
+				case lua_bool : func(name.c_str(), get_boolean(name.c_str()),loaded); break;
+				case lua_vector : func(name.c_str(), get_vector(name.c_str()),loaded); break;
+				case lua_string : func(name.c_str(), get_string(name.c_str()),loaded); break;
+				case lua_number : func(name.c_str(), get_number(name.c_str()),loaded); break;
+				case lua_table : func(name.c_str(), get_table(name.c_str()),loaded); break;
+			}
+		}
 	}
-	Msg("* Store successfully loaded");
+	Msg("* %d store values successfully loaded", count);
+
 }
-#pragma warning(pop)

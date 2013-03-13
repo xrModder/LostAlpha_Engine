@@ -16,5 +16,6 @@ void CTimersManager::script_register(lua_State *L)
 				.def("RemoveTimer",						&CTimersManager::RemoveTimer)
 				.def("GetTimerByName",					&CTimersManager::GetTimerByName)
 				.def("IsAnyHUDTimerActive",				&CTimersManager::IsAnyHUDTimerActive)
+				.def("TimerExist",				&CTimersManager::TimerExist)
 		];
 }

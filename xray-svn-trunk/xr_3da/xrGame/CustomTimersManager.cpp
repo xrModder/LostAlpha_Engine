@@ -63,7 +63,7 @@ void CTimersManager::RemoveTimer (LPCSTR name)
 			break;
 		}
 	}
-	R_ASSERT3(it!=it_end,"Can't find find timer with name ",name);
+	R_ASSERT3(it!=it_end,"Can't find timer with name ",name);
 	
 	if ((*it).isHUD()) OnHud(NULL,false);
 	objects.erase(it);
@@ -111,7 +111,7 @@ void CTimersManager::save(IWriter &memory_stream)
 	}
 
 	memory_stream.close_chunk	();
-	Msg							("%d timers successfully saved",objects.size());
+	Msg							("* %d timers successfully saved",objects.size());
 }
 
 void CTimersManager::load(IReader &file_stream)
@@ -125,7 +125,7 @@ void CTimersManager::load(IReader &file_stream)
 		timer->load(file_stream);
 		objects_to_load.push_back((*timer));
 	}
-	Msg							("%d timers successfully loaded",size);
+	Msg							("* %d timers successfully loaded",size);
 }
 
 
