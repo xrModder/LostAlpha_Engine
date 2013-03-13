@@ -29,9 +29,9 @@ CWeaponShotEffector::CWeaponShotEffector()
 void CWeaponShotEffector::Initialize(float max_angle, float relax_speed, float max_angle_horz, float step_angle_horz, float angle_frac)
 {
 	fRelaxSpeed				= _abs(relax_speed);
-	VERIFY(!fis_zero(fRelaxSpeed));
+	//VERIFY(!fis_zero(fRelaxSpeed));
 	fAngleVertMax			= _abs(max_angle);
-	VERIFY(!fis_zero(fAngleVertMax));
+	//VERIFY(!fis_zero(fAngleVertMax));
 	fAngleVertFrac			= _abs(angle_frac);
 	fAngleHorzMax			= max_angle_horz;
 	fAngleHorzStep			= step_angle_horz;
