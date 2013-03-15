@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "customzone.h"
+#include "pch_script.h"
 #include "script_export_space.h"
 #include "xr_time.h"
 #include "date_time.h"
@@ -11,9 +11,8 @@
 #include "script_engine.h"
 #include "object_broker.h"
 #include "script_space_forward.h"
-//#include "CustomTimersManager.h"
 
-
+using namespace luabind;
 
 class CTimerCustom : public IPureSerializeObject<IReader, IWriter>
 { //: public IPureSerializeObject<IReader,IWriter> {
@@ -30,8 +29,7 @@ public:
 	LPCSTR				Name				() {return m_name.c_str();}
 
 	//Time
-	void				SetGameTime			();
-	void				SetRealTime			();
+	void				SetTimerType			(bool value);
 	xrTime				Time				();
 	ALife::_TIME_ID		TimeNumber			() {return m_time;};
 	xrTime				TimeElapsed			();
@@ -48,9 +46,9 @@ public:
 	LPCSTR				InfoScript			() { return m_info.c_str();}
 
 	//Argument
-	void				SetArgs			(LPCSTR argument) { m_argument = argument;}
-	LPCSTR				ArgsScript				() { return m_argument.c_str();}
-	shared_str			GetArgs				() { return m_argument;}
+	void				SetArgument			(luabind::object argument);
+	luabind::object				GetArgument				() { return m_argument;}
+	u32				GetArgumentSize				() { return (m_argument_size>0);}
 	
 
 	//Hud
@@ -82,7 +80,8 @@ private:
 	shared_str			m_action;
 	shared_str			m_info;
 	u32				m_game_time;
-	shared_str			m_argument;
+	luabind::object			m_argument;
+	u32			m_argument_size;
 	ALife::_TIME_ID		m_time;
 
 	enum lm_flags	{	
