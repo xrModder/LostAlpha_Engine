@@ -13,7 +13,10 @@
 
 CBlender_Vertex::CBlender_Vertex()
 {
-	description.CLS		= B_VERT;
+	description.CLS		        = B_VERT;
+	description.version         = 1;
+	oTessellation.Count         = 4;
+	oTessellation.IDselected	= 0;
 }
 
 CBlender_Vertex::~CBlender_Vertex()
@@ -24,11 +27,21 @@ CBlender_Vertex::~CBlender_Vertex()
 void	CBlender_Vertex::Save	( IWriter& fs	)
 {
 	IBlender::Save	(fs);
+	xrP_TOKEN::Item	I;
+	xrPWRITE_PROP	(fs,"Tessellation",	xrPID_TOKEN, oTessellation);
+	I.ID = 0; strcpy_s(I.str,"NO_TESS");	fs.w		(&I,sizeof(I));
+	I.ID = 1; strcpy_s(I.str,"TESS_PN");	fs.w		(&I,sizeof(I));
+	I.ID = 2; strcpy_s(I.str,"TESS_HM");	fs.w		(&I,sizeof(I));
+	I.ID = 3; strcpy_s(I.str,"TESS_PN+HM");	fs.w		(&I,sizeof(I));
 }
 
 void	CBlender_Vertex::Load	( IReader& fs, u16 version	)
 {
 	IBlender::Load	(fs,version);
+	if (version>0)
+	{
+		xrPREAD_PROP(fs,xrPID_TOKEN,oTessellation);
+	}
 }
 
 void CBlender_Vertex::Compile	(CBlender_Compile& C)

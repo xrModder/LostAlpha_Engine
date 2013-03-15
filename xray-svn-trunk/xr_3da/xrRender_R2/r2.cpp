@@ -220,6 +220,8 @@ void					CRender::create					()
 	if (strstr(Core.Params,"-smap3072"))	o.smapsize	= 3072;
 	if (strstr(Core.Params,"-smap4096"))	o.smapsize	= 4096;
 
+	Msg("* smap pool size is %d", o.smapsize);
+
 	// gloss
 	char*	g			= strstr(Core.Params,"-gloss ");
 	o.forcegloss		= g?	TRUE	:FALSE	;
@@ -228,6 +230,7 @@ void					CRender::create					()
 	}
 
 	// options
+
 	o.bug				= (strstr(Core.Params,"-bug"))?			TRUE	:FALSE	;
 	o.sunfilter			= (strstr(Core.Params,"-sunfilter"))?	TRUE	:FALSE	;
 	//.	o.sunstatic			= (strstr(Core.Params,"-sunstatic"))?	TRUE	:FALSE	;
@@ -866,10 +869,12 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition	=	c_sun_shafts;
 		def_it						++;
 		sh_name[len]='0'+char(ps_r_sun_shafts); ++len;
+		Msg("SUN_SHAFTS_QUALITY: %d", ps_r_sun_shafts);
 	}
 	else
 	{
 		sh_name[len]='0'; ++len;
+		Msg("SUN_SHAFTS_QUALITY:: %d", ps_r_sun_shafts);
 	}
 
 	if (RImplementation.o.advancedpp && ps_r_ssao)

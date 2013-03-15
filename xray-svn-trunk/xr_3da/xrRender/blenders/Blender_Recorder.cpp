@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "..\ResourceManager.h"
+#include "..\..\ResourceManager.h"
 #include "Blender_Recorder.h"
 #include "Blender.h"
 
@@ -37,6 +37,10 @@ void	CBlender_Compile::_cpp_Compile	(ShaderElement* _SH)
 {
 	SH =			_SH;
 	RS.Invalidate	();
+
+	//	TODO: Check if we need such wired system for
+	//	base texture name detection. Perhapse it's done for
+	//	optimization?
 
 	// Analyze possibility to detail this shader
 	detail_texture	= NULL;
@@ -80,8 +84,14 @@ void	CBlender_Compile::_cpp_Compile	(ShaderElement* _SH)
 	// Validate for R1 or R2
 	bDetail_Diffuse	= FALSE;
 	bDetail_Bump	= FALSE;
-
-
+/*
+#ifndef _EDITOR
+#if RENDER==R_R1
+	if (RImplementation.o.no_detail_textures)
+		bDetail = FALSE;
+#endif
+#endif
+*/
 	if(bDetail)
 	{
 		Device.Resources->m_textures_description.GetTextureUsage(base, bDetail_Diffuse, bDetail_Bump);

@@ -11,15 +11,12 @@
 
 #include "ResourceManager.h"
 #include "tss.h"
-#include "blenders\blender.h"
-#include "blenders\blender_recorder.h"
+#include "xrRender\blenders\blender.h"
+#include "xrRender\blenders\blender_recorder.h"
 
 void fix_texture_name(LPSTR fn);
 
  
-
-
-
 template <class T>
 BOOL	reclaim		(xr_vector<T*>& vec, const T* ptr)
 {

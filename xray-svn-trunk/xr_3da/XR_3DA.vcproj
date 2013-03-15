@@ -1606,35 +1606,35 @@
 						Name="Blender"
 						>
 						<File
-							RelativePath=".\Blenders\Blender.cpp"
+							RelativePath=".\xrRender\blenders\Blender.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\Blenders\Blender.h"
+							RelativePath=".\xrRender\blenders\Blender.h"
 							>
 						</File>
 						<File
-							RelativePath=".\Blenders\Blender_CLSID.h"
+							RelativePath=".\xrRender\blenders\Blender_CLSID.h"
 							>
 						</File>
 						<File
-							RelativePath="Blenders\Blender_Palette.cpp"
+							RelativePath=".\xrRender\blenders\Blender_Palette.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\Blenders\Blender_Recorder.cpp"
+							RelativePath=".\xrRender\blenders\Blender_Recorder.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\Blenders\Blender_Recorder.h"
+							RelativePath=".\xrRender\blenders\Blender_Recorder.h"
 							>
 						</File>
 						<File
-							RelativePath="Blender_Recorder_R2.cpp"
+							RelativePath=".\xrRender\Blender_Recorder_R2.cpp"
 							>
 						</File>
 						<File
-							RelativePath=".\Blender_Recorder_StandartBinding.cpp"
+							RelativePath=".\xrRender\Blender_Recorder_StandartBinding.cpp"
 							>
 						</File>
 						<File

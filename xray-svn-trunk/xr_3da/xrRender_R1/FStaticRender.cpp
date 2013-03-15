@@ -615,7 +615,7 @@ void	CRender::Statistics	(CGameFont* _F)
 
 #pragma comment(lib,"d3dx9.lib")
 
-#include "boost/crc.hpp"
+#include <boost/crc.hpp>
 
 static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
 

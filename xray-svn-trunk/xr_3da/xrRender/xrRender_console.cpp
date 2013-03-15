@@ -164,8 +164,8 @@ float		ps_r2_sun_depth_far_bias	= 0.00000f;			// -0.0000f
 float		ps_r2_sun_depth_near_scale	= 1.f; // was 1.00001f;			// 1.00001f
 float		ps_r2_sun_depth_near_bias	= 0.f; //was -0.00004f;		// -0.00005f
 float		ps_r2_sun_lumscale			= 1.0f;				// 1.0f
-float		ps_r2_sun_lumscale_hemi		= 1.0f;				// 1.0f
-float		ps_r2_sun_lumscale_amb		= 0.3f;
+float		ps_r2_sun_lumscale_hemi		= 0.65f;				// 1.0f
+float		ps_r2_sun_lumscale_amb		= 0.25f;
 float		ps_r2_gmaterial				= 0.f;				// 
 float		ps_r2_zfill					= 0.1f;				// .1f
 

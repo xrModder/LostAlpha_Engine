@@ -58,7 +58,10 @@ extern "C" {
 			//T->skin2W	= xrSkin2W_SSE;
 			T->PLC_calc3 = PLC_calc3_SSE;
 		}
- 
+		
+		// Init helper threads
+		ttapi_Init();
+
 		// 3dnow!
 		if (dwFeatures & _CPU_FEATURE_3DNOW) {
  			//T->skin1W	= xrSkin1W_3DNow;

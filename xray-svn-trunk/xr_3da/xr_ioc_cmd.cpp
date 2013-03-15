@@ -475,6 +475,7 @@ public:
 
 		psDeviceFlags.set	(rsR2, (renderer_value>0) );
 		r2_sun_static =		(renderer_value!=2);
+		r2_advanced_pp =	(renderer_value==2);
 	}
 
 	virtual void	Save	(IWriter *F)	{

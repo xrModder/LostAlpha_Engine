@@ -10,9 +10,9 @@ namespace PS
 	class ECORE_API CParticleEffect: public IParticleCustom
 	{
 		friend class CPEDef;
-	protected:
+	public:
 		CPEDef*				m_Def;
-
+	protected:
 		float				m_fElapsedLimit;
 
 		int					m_HandleEffect;
@@ -31,6 +31,7 @@ namespace PS
 			flRT_Playing		= (1<<0),
 			flRT_DefferedStop	= (1<<1),
 			flRT_XFORM			= (1<<2),
+			flRT_HUDmode		= (1<<3),
 		};
 		Flags8				m_RT_Flags;
 	protected:
@@ -62,6 +63,9 @@ namespace PS
 		virtual void		Play				();
 		virtual void		Stop				(BOOL bDefferedStop=TRUE);
 		virtual BOOL		IsPlaying			(){return m_RT_Flags.is(flRT_Playing);}
+		
+		virtual void		SetHudMode			(BOOL b){m_RT_Flags.set(flRT_HUDmode,b);}
+		virtual BOOL		GetHudMode			()		{return m_RT_Flags.is(flRT_HUDmode);}
 
 		virtual float		GetTimeLimit		(){VERIFY(m_Def); return m_Def->m_Flags.is(CPEDef::dfTimeLimit)?m_Def->m_fTimeLimit:-1.f;}
 

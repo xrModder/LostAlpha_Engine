@@ -163,8 +163,8 @@ void CEnvDescriptor::load	(LPCSTR exec_tm, LPCSTR S, CEnvironment* parent)
 	bolt_duration			= (tb_id>=0)?pSettings->r_float	(S,"bolt_duration"):0.f;
 	env_ambient				= pSettings->line_exist(S,"env_ambient")?parent->AppendEnvAmb	(pSettings->r_string(S,"env_ambient")):0;
 
-	m_fSunShaftsIntensity	= pSettings->line_exist(S,"sun_shafts_intensity") ? pSettings->r_float(S,"sun_shafts_intensity") : 0;
-	m_fWaterIntensity		= pSettings->line_exist(S,"water_intensity") ? pSettings->r_float(S,"water_intensity") : 1;
+	m_fSunShaftsIntensity	= pSettings->line_exist(S, "sun_shafts_intensity") ? pSettings->r_float(S, "sun_shafts_intensity") : 0.5f;
+	m_fWaterIntensity		= pSettings->line_exist(S, "water_intensity") ? pSettings->r_float(S, "water_intensity") : 1;
 
 	C_CHECK					(clouds_color);
 	C_CHECK					(sky_color	);

@@ -6,12 +6,12 @@
 #include <d3dx9.h>
 #pragma warning(pop)
 
-#include "ResourceManager.h"
+#include "..\ResourceManager.h"
 #include "blenders\Blender_Recorder.h"
 #include "blenders\Blender.h"
 
-#include "igame_persistent.h"
-#include "environment.h"
+#include "..\igame_persistent.h"
+#include "..\environment.h"
 
 // matrices
 #define	BIND_DECLARE(xf)	\
@@ -352,7 +352,11 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("screen_res",		&binder_screen_res);
 
 	// detail
-	if (bDetail	&& detail_scaler)
+	//if (bDetail	&& detail_scaler)
+	//	Igor: bDetail can be overridden by no_detail_texture option.
+	//	But shader can be deatiled implicitly, so try to set this parameter
+	//	anyway.
+	if (detail_scaler)
 		r_Constant			("dt_params",		detail_scaler);
 
 	// other common

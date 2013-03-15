@@ -6,7 +6,7 @@
 	invalidate				();
 	frame_sleep				= 0;
 }
-		smapvis::~smapvis	()
+smapvis::~smapvis	()
 {
 	flushoccq				();
 	invalidate				();

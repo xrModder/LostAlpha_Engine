@@ -649,6 +649,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Threads"
+			>
+			<File
+				RelativePath=".\ttapi.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ttapi.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 		<Global
