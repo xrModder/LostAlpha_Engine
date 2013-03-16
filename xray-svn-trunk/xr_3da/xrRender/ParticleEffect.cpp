@@ -401,7 +401,7 @@ __forceinline void magnitude_sse( Fvector &vec , float &res )
 	tv = _mm_sqrt_ss( tv );						// tv = zz | yy | 0 | sqrt( xx + yy + zz )
 	_mm_store_ss( (float*) &res , tv );
 }
-
+#pragma warning(disable:4701)
 void ParticleRenderStream( LPVOID lpvParams )
 {
 			float sina = 0.0f , cosa = 0.0f;
@@ -502,6 +502,7 @@ void ParticleRenderStream( LPVOID lpvParams )
 				}
 			}
 }
+#pragma warning(default:4701)
 #include "../xrCPU_Pipe/ttapi.h"
 void CParticleEffect::Render(float )
 {

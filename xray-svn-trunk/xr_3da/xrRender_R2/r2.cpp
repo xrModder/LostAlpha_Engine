@@ -869,12 +869,10 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition	=	c_sun_shafts;
 		def_it						++;
 		sh_name[len]='0'+char(ps_r_sun_shafts); ++len;
-		Msg("SUN_SHAFTS_QUALITY: %d", ps_r_sun_shafts);
 	}
 	else
 	{
 		sh_name[len]='0'; ++len;
-		Msg("SUN_SHAFTS_QUALITY:: %d", ps_r_sun_shafts);
 	}
 
 	if (RImplementation.o.advancedpp && ps_r_ssao)

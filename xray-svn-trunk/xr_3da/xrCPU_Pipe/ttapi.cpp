@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <windows.h>
+#pragma warning(disable:4995)
 #include <intrin.h>
 #pragma hdrstop
 
@@ -93,7 +94,7 @@ void SetThreadName( DWORD dwThreadID , LPCSTR szThreadName )
   {
   }
 }
-#pragma warning(disable:4995)
+
 DWORD ttapi_Init()
 {
 	if ( ttapi_initialized )
@@ -133,7 +134,7 @@ DWORD ttapi_Init()
 		SetThreadIdealProcessor( ttapi_threads_handles[ i ] , i + 1 );
 
 		// Setting thread name
-		sprintf_s( szThreadName , "X-Ray Helper Thread #%u" , i );
+		sprintf_s( szThreadName , "X-RAY Helper Thread #%u" , i );
 		SetThreadName( dwThreadId , szThreadName );
 	}
 
