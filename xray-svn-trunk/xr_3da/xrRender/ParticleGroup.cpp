@@ -154,11 +154,25 @@ void CParticleGroup::SItem::Clear()
 	VisualVec 		visuals;
     GetVisuals		(visuals);
     for (VisualVecIt it=visuals.begin(); it!=visuals.end(); it++)
-	    ::Render->model_Delete(*it);
+	{
+	    //::Render->model_Delete(*it);
+		IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+		::Render->model_Delete(pVisual);
+		*it = 0;
+	}
+
+	//	Igor: zero all pointers! Previous code didn't zero _source_ pointers,
+	//	just temporary ones.
+	_effect = 0;
+	_children_related.clear_not_free();
+	_children_free.clear_not_free();
 }
 void CParticleGroup::SItem::StartRelatedChild(CParticleEffect* emitter, LPCSTR eff_name, PAPI::Particle& m)
 {
     CParticleEffect*C		= static_cast<CParticleEffect*>(RImplementation.model_CreatePE(eff_name));
+	
+	C->SetHudMode			(emitter->GetHudMode());
+
     Fmatrix M; 				M.identity();
     Fvector vel; 			vel.sub(m.pos,m.posB); vel.div(fDT_STEP);
     if (emitter->m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
@@ -184,7 +198,9 @@ void CParticleGroup::SItem::StopRelatedChild(u32 idx)
 void CParticleGroup::SItem::StartFreeChild(CParticleEffect* emitter, LPCSTR nm, PAPI::Particle& m)
 {
     CParticleEffect*C			= static_cast<CParticleEffect*>(RImplementation.model_CreatePE(nm));
-    if(!C->IsLooped()){
+	C->SetHudMode				(emitter->GetHudMode());
+    if(!C->IsLooped())
+	{
         Fmatrix M; 				M.identity();
         Fvector vel; 			vel.sub(m.pos,m.posB); vel.div(fDT_STEP);
         if (emitter->m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
@@ -221,9 +237,22 @@ void CParticleGroup::SItem::Stop(BOOL def_stop)
     for (it=_children_free.begin(); it!=_children_free.end(); it++)
         static_cast<CParticleEffect*>(*it)->Stop(def_stop);
     // and delete if !deffered
-    if (!def_stop){
-        for (it=_children_related.begin(); it!=_children_related.end(); it++)	::Render->model_Delete(*it);
-        for (it=_children_free.begin(); it!=_children_free.end(); it++)			::Render->model_Delete(*it);
+    if (!def_stop)
+	{
+        for (it=_children_related.begin(); it!=_children_related.end(); it++)	
+		{
+			//::Render->model_Delete(*it);
+			IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+			::Render->model_Delete(pVisual);
+			*it = 0;
+		}
+        for (it=_children_free.begin(); it!=_children_free.end(); it++)			
+		{
+			//::Render->model_Delete(*it);
+			IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+			::Render->model_Delete(pVisual);
+			*it = 0;
+		}
         _children_related.clear();
         _children_free.clear	();
     }
@@ -323,7 +352,10 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
                     if (E->vis.box.is_valid()) box.merge	(E->vis.box);
                 }else{
                 	rem_cnt++	;
-                    ::Render->model_Delete(*it);
+					//::Render->model_Delete(*it);
+					IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+					::Render->model_Delete(pVisual);
+					*it = 0;                    
                 }
             }
         }
@@ -477,5 +509,24 @@ u32 CParticleGroup::ParticlesCount()
     for (SItemVecIt i_it=items.begin(); i_it!=items.end(); i_it++)
         p_count 	+= i_it->ParticlesCount();
 	return p_count;
+}
+
+void CParticleGroup::SetHudMode(BOOL b)
+{
+    for (SItemVecIt i_it=items.begin(); i_it!=items.end(); ++i_it)
+	{
+		CParticleEffect* E	= static_cast<CParticleEffect*>(i_it->_effect);
+		E->SetHudMode(b);
+	}
+}
+
+BOOL CParticleGroup::GetHudMode()
+{
+	if(items.size())
+	{
+		CParticleEffect* E	= static_cast<CParticleEffect*>(items[0]._effect);
+		return E->GetHudMode();
+	}else
+		return FALSE;
 }
 

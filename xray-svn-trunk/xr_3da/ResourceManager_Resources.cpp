@@ -369,6 +369,9 @@ void	CResourceManager::_DeleteRT		(const CRT* RT)
 	}
 	Msg	("! ERROR: Failed to find render-target '%s'",*RT->cName);
 }
+
+//	DX10 cut 
+/*
 //--------------------------------------------------------------------------------------------------------------
 CRTC*	CResourceManager::_CreateRTC		(LPCSTR Name, u32 size,	D3DFORMAT f)
 {
@@ -383,7 +386,7 @@ CRTC*	CResourceManager::_CreateRTC		(LPCSTR Name, u32 size,	D3DFORMAT f)
 		CRTC *RT				=	xr_new<CRTC>();
 		RT->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 		m_rtargets_c.insert		(mk_pair(RT->set_name(Name),RT));
-		if (Device.b_is_Ready)	RT->create	(Name,size,f);
+		if (RDEVICE.b_is_Ready)	RT->create	(Name,size,f);
 		return					RT;
 	}
 }
@@ -398,6 +401,7 @@ void	CResourceManager::_DeleteRTC		(const CRTC* RT)
 	}
 	Msg	("! ERROR: Failed to find render-target '%s'",*RT->cName);
 }
+*/
 //--------------------------------------------------------------------------------------------------------------
 void	CResourceManager::DBG_VerifyGeoms	()
 {

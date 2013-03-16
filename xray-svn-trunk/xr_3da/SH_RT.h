@@ -18,7 +18,7 @@ public:
 	CRT					();
 	~CRT				();
 
-	void				create			(LPCSTR Name, u32 w, u32 h, D3DFORMAT f);
+	void	create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount = 1 );
 	void				destroy			();
 	void				reset_begin		();
 	void				reset_end		();
@@ -26,11 +26,12 @@ public:
 };
 struct ENGINE_API		resptrcode_crt	: public resptr_base<CRT>
 {
-	void				create			(LPCSTR Name, u32 w, u32 h, D3DFORMAT f);
+	void				create			(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount = 1);
 	void				destroy			()	{ _set(NULL);		}
 };
 typedef	resptr_core<CRT,resptrcode_crt>		ref_rt;
 
+/*	//	DX10 cut 
 //////////////////////////////////////////////////////////////////////////
 class	ENGINE_API	CRTC	:	public xr_resource_named	{
 public:
@@ -58,5 +59,6 @@ struct ENGINE_API		resptrcode_crtc	: public resptr_base<CRTC>
 	void				destroy			()	{ _set(NULL);		}
 };
 typedef	resptr_core<CRTC,resptrcode_crtc>		ref_rtc;
+*/
 
 #endif // SH_RT_H

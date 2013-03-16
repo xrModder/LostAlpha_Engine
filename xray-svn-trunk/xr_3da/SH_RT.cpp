@@ -19,7 +19,7 @@ CRT::~CRT			()
 	Device.Resources->_DeleteRT	(this);	
 }
 
-void CRT::create	(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f)
+void CRT::create	(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f, u32 SampleCount )
 {
 	if (pSurface)	return;
 
@@ -98,12 +98,15 @@ void CRT::reset_end		()
 {
 	create		(*cName,dwWidth,dwHeight,fmt);
 }
-void resptrcode_crt::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f)
+void resptrcode_crt::create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount )
 {
 	_set			(Device.Resources->_CreateRT(Name,w,h,f));
 }
 
+
 //////////////////////////////////////////////////////////////////////////
+//	DX10 cut 
+/*
 CRTC::CRTC			()
 {
 	if (pSurface)	return;
@@ -184,3 +187,4 @@ void resptrcode_crtc::create(LPCSTR Name, u32 size, D3DFORMAT f)
 {
 	_set		(Device.Resources->_CreateRTC(Name,size,f));
 }
+*/
