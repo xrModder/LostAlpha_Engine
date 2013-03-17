@@ -11,6 +11,12 @@ CTimersManager::CTimersManager(void)
 
 CTimersManager::~CTimersManager(void) 
 {
+	while (objects.size())
+	{
+		TIMERS_IT it = objects.begin();
+		objects.erase(it);
+		xr_delete(*it);
+	}
 }
 
 void CTimersManager::OnHud(CTimerCustom *t,bool b)
@@ -34,51 +40,43 @@ void CTimersManager::OnHud(CTimerCustom *t,bool b)
 	}
 }
 
-bool CTimersManager::AddTimer (CTimerCustom timer)
+bool CTimersManager::AddTimer (CTimerCustom *timer)
 {
-	if (xr_strcmp(timer.Name(),"@")) {
-		if (TimerExist(timer.Name())) {
+	if (xr_strcmp(timer->Name(),"@")) {
+		if (TimerExist(timer->Name())) {
 			Msg("Trying to add timer with the same timer name");
 			return false;
 		}
 	}
 
-	if (timer.isGameTimer() && !timer.isHUD())
-		timer.PrepareGameTime();
+	if (timer->isGameTimer() && !timer->isHUD())
+		timer->PrepareGameTime();
 	else
-		timer.PrepareTime();
-	timer.SetParent(this);
-	if (timer.isHUD()) OnHud(&objects.back(),true);
+		timer->PrepareTime();
+	timer->SetParent(this);
+	if (timer->isHUD()) 
+		OnHud(objects.back(),true);
 	objects.push_back(timer);
 	return true;
 }
 
 void CTimersManager::RemoveTimer (LPCSTR name)
 {
-	VECTOR_TIMERS_ITERATOR it = objects.begin();
-	VECTOR_TIMERS_ITERATOR it_end = objects.end();
+	TIMERS_IT it = std::find_if(objects.begin(), objects.end(), STimerPred(name));
 	
-	for (;it!=it_end;++it) {
-		if (xr_strcmp((*it).Name(),name)==0) {
-			break;
-		}
-	}
-	R_ASSERT3(it!=it_end,"Can't find timer with name ",name);
+	R_ASSERT3(it!=objects.end(),"Can't find timer with name ",name);
 	
-	if ((*it).isHUD()) OnHud(NULL,false);
+	if ((*it)->isHUD()) 
+		OnHud(NULL,false);
 	objects.erase(it);
+	xr_delete(*it);
 }
 
 CTimerCustom* CTimersManager::SearchTimer(LPCSTR name)
 {
-	VECTOR_TIMERS_ITERATOR it = objects.begin();
-	VECTOR_TIMERS_ITERATOR it_end = objects.end();
-	
-	for (;it!=it_end;++it) {
-		if (xr_strcmp((*it).Name(),name)==0) {
-			return (&(*it));
-		}
-	}
+	TIMERS_IT it = std::find_if(objects.begin(), objects.end(), STimerPred(name));
+	if (it != objects.end())
+		return *it;
 	return NULL;
 }
 
@@ -91,7 +89,7 @@ CTimerCustom* CTimersManager::GetTimerByName(LPCSTR name)
 }
 
 
-bool CTimersManager::TimerExist(LPCSTR name)
+bool CTimersManager::TimerExist(LPCSTR name) 
 {
 	return SearchTimer(name)!=NULL;
 }
@@ -103,11 +101,11 @@ void CTimersManager::save(IWriter &memory_stream)
 	memory_stream.open_chunk	(TIMERS_CHUNK_DATA);
 	memory_stream.w_u16(objects.size());
 
-	VECTOR_TIMERS_ITERATOR it = objects.begin();
-	VECTOR_TIMERS_ITERATOR it_end = objects.end();
+	TIMERS_IT it = objects.begin();
+	TIMERS_IT it_end = objects.end();
 
 	for (;it!=it_end;++it) {
-		(*it).save(memory_stream);
+		(*it)->save(memory_stream);
 	}
 
 	memory_stream.close_chunk	();
@@ -123,7 +121,7 @@ void CTimersManager::load(IReader &file_stream)
 		CTimerCustom* timer = xr_new<CTimerCustom>();
 		timer->SetParent(this);
 		timer->load(file_stream);
-		objects_to_load.push_back((*timer));
+		objects_to_load.push_back(timer);
 	}
 	Msg							("* %d timers successfully loaded",size);
 }
@@ -133,16 +131,16 @@ void CTimersManager::Update ()
 {
 	if (!b_GameLoaded)
 		return;
-	TIMER_CUSTOM_IT it = objects.begin();
-	TIMER_CUSTOM_IT it_end = objects.end();
+	TIMERS_IT it = objects.begin();
+	TIMERS_IT it_end = objects.end();
 
 	objects_to_call.clear();
 
 	for (;it!=it_end;++it) 
 	{
-		if ((*it).isGameTimer() && !(*it).isHUD())
+		if ((*it)->isGameTimer() && !(*it)->isHUD())
 		{
-			if ((*it).CheckGameTime())
+			if ((*it)->CheckGameTime())
 			{
 				objects_to_call.push_back((*it));
 				objects.erase(it);
@@ -151,9 +149,9 @@ void CTimersManager::Update ()
 		} else {
 			ALife::_TIME_ID timer_time = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
-			if ((*it).CheckTime(timer_time)) 
+			if ((*it)->CheckTime(timer_time)) 
 			{
-				if ((*it).isHUD())
+				if ((*it)->isHUD())
 					OnHud(NULL,false);
 				objects_to_call.push_back((*it));
 				objects.erase(it);
@@ -166,10 +164,10 @@ void CTimersManager::Update ()
 	{
 		for (it=objects_to_load.begin();it!=objects_to_load.end();++it)
 		{
-			if ((*it).isGameTimer() && !(*it).isHUD())
-				(*it).PrepareGameTime();
+			if ((*it)->isGameTimer() && !(*it)->isHUD())
+				(*it)->PrepareGameTime();
 			else
-				(*it).PrepareTime();
+				(*it)->PrepareTime();
 	
 			objects.push_back((*it));
 		}
@@ -178,7 +176,7 @@ void CTimersManager::Update ()
 	}
 	
 	for (it=objects_to_call.begin();it!=objects_to_call.end();++it)
-		(*it).StartAction();
+		(*it)->StartAction();
 
 	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 

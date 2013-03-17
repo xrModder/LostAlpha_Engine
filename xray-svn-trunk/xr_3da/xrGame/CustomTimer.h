@@ -26,7 +26,7 @@ public:
 
 	//Name
 	void				SetName				(LPCSTR _name ) {m_name = _name;}
-	LPCSTR				Name				() {return m_name.c_str();}
+	LPCSTR				Name				() const {return *m_name;}
 
 	//Time
 	void				SetTimerType			(bool value);
@@ -47,8 +47,8 @@ public:
 
 	//Argument
 	void				SetArgument			(luabind::object argument);
-	luabind::object				GetArgument				() { return m_argument;}
-	u32				GetArgumentSize				() { return (m_argument_size>0);}
+	luabind::object		GetArgument				() { return m_argument;}
+	u32					GetArgumentSize				() { return (m_argument_size>0);}
 	
 
 	//Hud
@@ -79,16 +79,17 @@ private:
 	shared_str			m_name;
 	shared_str			m_action;
 	shared_str			m_info;
-	u32				m_game_time;
-	luabind::object			m_argument;
-	u32			m_argument_size;
+	u32					m_game_time;
+	luabind::object		m_argument;
+	u32					m_argument_size;
 	ALife::_TIME_ID		m_time;
 
-	enum lm_flags	{	
-						lmHUD			= (1<<0),
-						lmRestart		= (1<<1),
-						lmGameTimer		= (1<<2),
-					};
+	enum lm_flags	
+	{	
+		lmHUD			= (1<<0),
+		lmRestart		= (1<<1),
+		lmGameTimer		= (1<<2),
+	};
 
 	flags8				m_flags;
 	CTimersManager*		m_parent;
@@ -99,7 +100,7 @@ public:
 };
 
 
-DEFINE_VECTOR(CTimerCustom, TIMER_CUSTOM_VECTOR, TIMER_CUSTOM_IT);
+//DEFINE_VECTOR(CTimerCustom, TIMER_CUSTOM_VECTOR, TIMER_CUSTOM_IT);
 
 add_to_type_list(CTimerCustom)
 #undef script_type_list

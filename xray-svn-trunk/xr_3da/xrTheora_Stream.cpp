@@ -180,6 +180,7 @@ BOOL CTheoraStream::Decode(u32 tm_play)
 						continue; 
 					}
 					BOOL is_key				= theora_packet_iskeyframe(&o_packet);
+					
 //					VERIFY					( (d_frame!=k_frame) || ((d_frame==k_frame) && is_key) );
 					// real decode
 //.					dbg_log					((stderr,"%04d: decode\n",d_frame)); 
