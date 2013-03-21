@@ -2,21 +2,16 @@
 #include "CustomTimersManager.h"
 #include "ui\uistatic.h"
 
-CTimersManager::CTimersManager(void) 
+CTimersManager::CTimersManager() 
 {
 	b_HUDTimerActive = false;
 	hud_timer = NULL;
 	b_GameLoaded = false;
 }
 
-CTimersManager::~CTimersManager(void) 
+CTimersManager::~CTimersManager() 
 {
-	while (objects.size())
-	{
-		TIMERS_IT it = objects.begin();
-		objects.erase(it);
-		xr_delete(*it);
-	}
+	delete_data					(objects);
 }
 
 void CTimersManager::OnHud(CTimerCustom *t,bool b)
@@ -83,7 +78,6 @@ CTimerCustom* CTimersManager::SearchTimer(LPCSTR name)
 CTimerCustom* CTimersManager::GetTimerByName(LPCSTR name)
 {
 	CTimerCustom* timer = SearchTimer(name);
-
 	R_ASSERT3(timer,"Can't find timer with name ",name);
 	return timer;
 }
@@ -172,7 +166,7 @@ void CTimersManager::Update ()
 			objects.push_back((*it));
 		}
 
-	objects_to_load.clear();
+		objects_to_load.clear();
 	}
 	
 	for (it=objects_to_call.begin();it!=objects_to_call.end();++it)

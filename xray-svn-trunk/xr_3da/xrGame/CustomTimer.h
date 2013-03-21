@@ -11,8 +11,11 @@
 #include "script_engine.h"
 #include "object_broker.h"
 #include "script_space_forward.h"
-
+/*
+gr1ph to skyloader: this is a bad practice!!
 using namespace luabind;
+*/
+
 
 class CTimerCustom : public IPureSerializeObject<IReader, IWriter>
 { //: public IPureSerializeObject<IReader,IWriter> {
@@ -46,9 +49,9 @@ public:
 	LPCSTR				InfoScript			() { return m_info.c_str();}
 
 	//Argument
-	void				SetArgument			(luabind::object argument);
-	luabind::object		GetArgument				() { return m_argument;}
-	u32					GetArgumentSize				() { return (m_argument_size>0);}
+	void				SetArgument			(luabind::object& argument);
+	luabind::object&	GetArgument			() { return m_argument;}
+//	u32					GetArgumentSize				() { return (m_argument_size>0);}
 	
 
 	//Hud
@@ -80,8 +83,8 @@ private:
 	shared_str			m_action;
 	shared_str			m_info;
 	u32					m_game_time;
-	luabind::object		m_argument;
-	u32					m_argument_size;
+	luabind::object&	m_argument;
+	//u32					m_argument_size;
 	ALife::_TIME_ID		m_time;
 
 	enum lm_flags	
@@ -94,6 +97,9 @@ private:
 	flags8				m_flags;
 	CTimersManager*		m_parent;
 	bool				m_bGameTimer;
+protected:
+	void				load_table			(IReader& r);
+	void				store_table			(IWriter& w);
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

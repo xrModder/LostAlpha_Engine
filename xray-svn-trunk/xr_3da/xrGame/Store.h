@@ -3,7 +3,8 @@
 #include "script_export_space.h"
 #include "alife_space.h"
 
-enum TypeOfData {
+enum TypeOfData 
+{
 	lua_nil,
 	lua_bool,
 	lua_string,
@@ -20,8 +21,8 @@ struct StoreData {
 class CStoreHouse : public IPureSerializeObject<IReader, IWriter>
 {
 public:
-					CStoreHouse		(void);
-	virtual			~CStoreHouse	(void);
+					CStoreHouse		() { }
+	virtual			~CStoreHouse	();
 
 	void			add_boolean		(LPCSTR name, bool b);
 	void			add_float		(LPCSTR name, float number);

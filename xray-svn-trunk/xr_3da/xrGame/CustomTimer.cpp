@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "CustomTimer.h"
-#include "pch_script.h"
 #include "alife_space.h"
-#include "actor.h"
 #include "level.h"
 
-using namespace luabind;
 
 u64	generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
 {
@@ -20,7 +17,7 @@ u64	generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
 	return					(result);
 }
 
-CTimerCustom::CTimerCustom(void) 
+CTimerCustom::CTimerCustom(void) : m_argument(luabind::object())
  {
 	m_time = 0;
 	m_game_time = 0;
@@ -34,7 +31,7 @@ CTimerCustom::CTimerCustom(void)
 	m_name = "@";
 	m_action = "";
 	m_info = "";
-	m_argument_size = 0;
+//	m_argument_size = 0;
 }
 
 CTimerCustom::~CTimerCustom(void) 
@@ -99,7 +96,7 @@ void CTimerCustom::PrepareGameTime()
 	m_game_time += Device.dwTimeGlobal;
 }
 
-void CTimerCustom::SetArgument(luabind::object argument)
+void CTimerCustom::SetArgument(luabind::object& argument)
 {
 	m_argument = argument;
 	//m_argument_size = sizeof(argument);
@@ -125,6 +122,9 @@ void CTimerCustom::save (IWriter &stream)
 	save_data(m_time,	stream);
 	save_data(m_save_game_time,	stream);
 	save_data(m_flags,	stream);
+
+	store_table(stream);
+
 	//save_data(m_argument_size,	stream);
 	//stream.w(luabind::object_cast<void *>(m_argument),	m_argument_size);
 }
@@ -137,23 +137,13 @@ void CTimerCustom::load (IReader &stream)
 	load_data(m_time,	stream);
 	load_data(m_game_time,	stream);
 	load_data(m_flags,	stream);
+	
+	load_table(stream);
+
 	//load_data(m_argument_size,	stream);
 	//stream.r(luabind::object_cast<void *>(m_argument),	m_argument_size);
 	if (isHUD()) m_parent->OnHud(this,true);
 }
 
 
-void CTimerCustom::StartAction()
-{
-	if (Action().size()) {
-		luabind::functor<void>			fl;
-		R_ASSERT3							(ai().script_engine().functor<void>(ActionScript(),fl),"Can't find function ",ActionScript());
-		if (m_argument.type()!=LUA_TNIL)
-			fl	(GetArgument());
-		else
-			fl	();
-	}
-	if (Info().size()) {
-		Actor()->TransferInfo(InfoScript(),true);
-	}
-}
+

@@ -6,17 +6,15 @@
 #include "ai_space.h"
 #include "alife_simulator.h"
 
-CStoreHouse::CStoreHouse(void) 
-{
-}
 
-CStoreHouse::~CStoreHouse(void) 
+CStoreHouse::~CStoreHouse() 
 {
 	while (data.size())
 	{
 		xr_delete(data.begin()->second.data);
 		data.erase(data.begin());
 	}
+	data.clear();
 	Memory.mem_compact();
 }
 
