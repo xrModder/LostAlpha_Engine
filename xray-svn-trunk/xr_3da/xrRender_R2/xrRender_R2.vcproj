@@ -660,6 +660,14 @@
 		<Filter
 			Name="Glows"
 			>
+			<File
+				RelativePath="GlowManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="GlowManager.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Wallmarks"
