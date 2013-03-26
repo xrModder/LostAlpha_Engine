@@ -112,25 +112,30 @@ void CRender::render_main	(Fmatrix&	m_ViewProjection, bool _fportals)
 
 				if (spatial->spatial.type & STYPE_RENDERABLE)
 				{
-					// renderable
-					IRenderable*	renderable		= spatial->dcast_Renderable	();
-					VERIFY							(renderable);
+						// renderable
+						IRenderable*	renderable		= spatial->dcast_Renderable	();
+						if (0==renderable)	{
+							// It may be an glow
+							CGlow*		glow				= dynamic_cast<CGlow*>(spatial);
+							VERIFY							(glow);
+							L_Glows->add					(glow);
+						} else {
+							// Occlusion
+							vis_data&		v_orig			= renderable->renderable.visual->vis;
+							vis_data		v_copy			= v_orig;
+							v_copy.box.xform				(renderable->renderable.xform);
+							BOOL			bVisible		= HOM.visible(v_copy);
+							v_orig.marker					= v_copy.marker;
+							v_orig.accept_frame				= v_copy.accept_frame;
+							v_orig.hom_frame				= v_copy.hom_frame;
+							v_orig.hom_tested				= v_copy.hom_tested;
+							if (!bVisible)					break;	// exit loop on frustums
 
-					// Occlusion
-					vis_data&		v_orig			= renderable->renderable.visual->vis;
-					vis_data		v_copy			= v_orig;
-					v_copy.box.xform				(renderable->renderable.xform);
-					BOOL			bVisible		= HOM.visible(v_copy);
-					v_orig.marker					= v_copy.marker;
-					v_orig.accept_frame				= v_copy.accept_frame;
-					v_orig.hom_frame				= v_copy.hom_frame;
-					v_orig.hom_tested				= v_copy.hom_tested;
-					if (!bVisible)					break;	// exit loop on frustums
-
-					// Rendering
-					set_Object						(renderable);
-					renderable->renderable_Render	();
-					set_Object						(0);
+							// Rendering
+							set_Object						(renderable);
+							renderable->renderable_Render	();
+							set_Object						(0);
+						}
 				}
 				break;	// exit loop on frustums
 			}
@@ -386,6 +391,10 @@ void CRender::Render		()
 		}
 		Lights_LastFrame.clear	();
 	}
+
+
+	if(L_Glows)
+		L_Glows->Render					();						// glows
 
 	// Directional light - fucking sun
 	if (bSUN)	{

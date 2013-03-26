@@ -10,6 +10,7 @@
 
 #include "..\xrRender\hom.h"
 #include "..\xrRender\detailmanager.h"
+#include "glowmanager.h"
 #include "..\xrRender\modelpool.h"
 #include "..\xrRender\wallmarksengine.h"
 
@@ -105,6 +106,7 @@ public:
 	xr_vector<IRender_Visual*>									Visuals;
 	CPSLibrary													PSLibrary;
 
+	CGlowManager*												L_Glows;
 	CDetailManager*												Details;
 	CModelPool*													Models;
 	CWallmarksEngine*											Wallmarks;
