@@ -351,10 +351,10 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 				holderGO->CLS_ID==CLSID_OBJECT_W_TURRET)
 					b = use_MountedWeapon(0);
 
-		if(inventory().ActiveItem()){
+		/*if(inventory().ActiveItem()){						//SkyLoader: why we added it? It works incorrent on long distance if use car
 			CHudItem* hi = smart_cast<CHudItem*>(inventory().ActiveItem());
 			if(hi) hi->OnAnimationEnd(hi->GetState());
-		}
+		}*/
 
 		return b;
 	}else{
@@ -377,10 +377,10 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 			}
 		}
 
-		if(inventory().ActiveItem()){
+		/*if(inventory().ActiveItem()){						//SkyLoader: why we added it? It works incorrent on long distance if use car
 			CHudItem* hi = smart_cast<CHudItem*>(inventory().ActiveItem());
 			if(hi) hi->OnAnimationEnd(hi->GetState());
-		}
+		}*/
 
 		return b;
 	}
