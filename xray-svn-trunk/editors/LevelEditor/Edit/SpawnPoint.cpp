@@ -799,20 +799,26 @@ shared_str CSpawnPoint::EditorToSection(shared_str nm)
 
 void CSpawnPoint::OnProfileChange(PropValue* prop)
 {
-	if (m_SpawnData.m_Profile.size()!=0){
-        shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
-        VERIFY					(s_name.size());
-        if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name)){
-            ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
-            NET_Packet 			Packet;
-            tmp->Spawn_Write	(Packet,TRUE);
-            R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
-            m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
-            destroy_entity		(tmp);
-        }
-    }else{
+	if (m_SpawnData.m_Profile.size()!=0)
+	{
+		shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
+		VERIFY					(s_name.size());
+		if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
+		{
+	    		int res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, "Do you want set all parameters from new profile?");
+				if (res==mrYes)
+				{
+			            ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
+			            NET_Packet 			Packet;
+			            tmp->Spawn_Write	(Packet,TRUE);
+			            R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
+			            m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
+			            destroy_entity		(tmp);
+				}
+		}
+	}else{
 		m_SpawnData.m_Profile	= SectionToEditor(m_SpawnData.m_Data->name());
-    }
+	}
 }
 
 void CSpawnPoint::FillProp(LPCSTR pref, PropItemVec& items)
