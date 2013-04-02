@@ -5,7 +5,7 @@
 #include "script_engine.h"
 #include "ai_space.h"
 #include "alife_simulator.h"
-
+#include "xr_time.h"
 
 CStoreHouse::~CStoreHouse() 
 {
@@ -95,7 +95,7 @@ void CStoreHouse::delete_data(LPCSTR c_name)
 void CStoreHouse::get(shared_str name,void* p,u32 size)
 {
 	get_data_exist(name);
-	CopyMemory(p,data[name].data,size);
+	xr_memcpy(p,data[name].data,size);
 }
 
 bool CStoreHouse::get_boolean(LPCSTR name)
@@ -145,17 +145,30 @@ bool CStoreHouse::data_exist(LPCSTR name)
 LPCSTR CStoreHouse::get_data_type(LPCSTR name)
 {
 	shared_str s_name(name);
-	//if (data_exist(name)) {
 	xr_map<shared_str, StoreData>::iterator it = data.find(s_name);
 	if (it!=data.end()){
-		switch(it->second.type) {
-			case lua_bool : return "boolean";
-			case lua_vector : return "vector";
-			case lua_string : return "string";
-			case lua_nil : return "nil";
-			case lua_number : return "number";
-			case lua_table : return "table";
-		}
+		return get_data_type(it->second.type);
+	}
+	return "ERROR";
+}
+
+LPCSTR CStoreHouse::get_data_type(TypeOfData d)
+{
+	switch(d) {
+		case lua_bool : return "boolean";
+		case lua_vector : return "vector";
+		case lua_string : return "string";
+		case lua_nil : return "nil";
+		case lua_number : return "number";
+		case lua_table : return "table";
+		case lua_u32: return "u32";
+		case lua_s32: return "s32";
+		case lua_u16: return "u16";
+		case lua_s16: return "s16";
+		case lua_u8: return "u8";
+		case lua_s8: return "s8";
+		case lua_float: return "float";
+		case lua_ctime: return "CTime";
 	}
 	return "ERROR";
 }
@@ -168,23 +181,79 @@ u32 CStoreHouse::type_to_size(StoreData d)
 		case lua_string: return xr_strlen((char*)d.data) * sizeof(char)+1;
 		case lua_vector: return 3*sizeof(float);
 		case lua_number: return sizeof(double);
+		case lua_u32: return sizeof(u32);
+		case lua_s32: return sizeof(s32);
+		case lua_u16: return sizeof(u16);
+		case lua_s16: return sizeof(s16);
+		case lua_u8: return sizeof(u8);
+		case lua_s8: return sizeof(s8);
+		case lua_float: return sizeof(float);
+		case lua_ctime: return sizeof(u64);
 	};
 	R_ASSERT2(0,make_string("StoreHouse unknown type [%d]", d.type));
 	return u32(-1);
 }
 
-
+static long prec = 1e16;
 
 void CStoreHouse::save(IWriter &memory_stream)
 {
 	Msg("* Writing Store...");
 	memory_stream.open_chunk	(STORE_CHUNK_DATA);
 	xr_map<shared_str,StoreData>::iterator it, last;
+	
 
-	memory_stream.w_u64(data.size());
+	if (ai().script_engine().ready())
+	{
+		luabind::functor<void>		func;
+		string256					func_name;
+		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
+		R_ASSERT					(ai().script_engine().functor<void>(func_name,func));
+		func						();	
+	}
+
+	memory_stream.w_u16(data.size());
 	for (it=data.begin(),last=data.end();it!=last;++it)
 	{
 		memory_stream.w_stringZ(it->first);
+		switch (it->second.type)
+		{
+			case lua_number:
+			{	
+				TypeOfData num_type;
+				double number; 
+				xr_memcpy(&number, it->second.data, sizeof(double));
+				int i = (int) number;
+				int d = ((int) (i * prec) % prec);
+				if (!d && i <= type_max(u32) && i >= type_min(s32))
+				{
+					if (i >= 0)
+					{
+						if (i <= type_max(u8))
+							num_type = lua_u8;
+						else if (i <= type_max(u16))
+							num_type = lua_u16;
+						else
+							num_type = lua_u32;
+					}
+					else
+					{
+						if (i >= type_min(s8) && i <= type_max(s8))
+							num_type = lua_s8;
+						else if (i >= type_min(s16) && i <= type_max(s16))
+							num_type = lua_s16;
+						else
+							num_type = lua_s32;
+					}
+					it->second.type = num_type;
+				}
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 		memory_stream.w_u8(it->second.type);
 		memory_stream.w(it->second.data, type_to_size(it->second));
 	}
@@ -193,16 +262,56 @@ void CStoreHouse::save(IWriter &memory_stream)
 	Msg("* %d store values successfully saved", data.size());
 }
 
+#define CAST_HELPER_MACRO(type, T) case type: T val##T; xr_memcpy(&val##T, d.data, sizeof(T)); f(name, type_name, val##T); break;
+
+namespace detail
+{
+	
+	static void CallHelper(luabind::functor<void>& f, LPCSTR name, StoreData &d, LPCSTR type_name)
+	{
+		switch (d.type)
+		{
+			CAST_HELPER_MACRO(lua_bool, bool);
+		
+			CAST_HELPER_MACRO(lua_number, double);
+			CAST_HELPER_MACRO(lua_vector, Fvector);
+			
+			CAST_HELPER_MACRO(lua_u32, u32);
+			CAST_HELPER_MACRO(lua_s32, s32);
+			CAST_HELPER_MACRO(lua_u16, u16);
+			CAST_HELPER_MACRO(lua_s16, s16);
+			CAST_HELPER_MACRO(lua_u8, u8);
+			CAST_HELPER_MACRO(lua_s8, s8);
+			CAST_HELPER_MACRO(lua_float, float);
+			case lua_ctime: u64 val; xr_memcpy(&val, d.data, sizeof(u64)); f(name, type_name, xrTime(val)); break;
+			case lua_table:
+			case lua_string: f(name, type_name, LPCSTR(d.data)); break;
+
+		}
+	}
+	
+};
+
 void CStoreHouse::load(IReader &file_stream)
 {
 	R_ASSERT2					(file_stream.find_chunk(STORE_CHUNK_DATA),"Can't find chunk STORE_CHUNK_DATA!");
+	luabind::functor<void>		func;
+	
+	if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_store_callback"))
+	{
+		string256					func_name;
+		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_store_callback"));
+		R_ASSERT					(ai().script_engine().functor<void>(func_name,func));	
+	}
 	Msg("* Loading Store...");
-	size_t count = file_stream.r_u64();
-	for (size_t i=0;i<count;i++) {
+	u16 count = file_stream.r_u16();
+	for (u16 i=0;i<count;i++) 
+	{
 		StoreData d;
 		shared_str name;
 		file_stream.r_stringZ(name);
-		d.type = (TypeOfData)file_stream.r_u8();
+		d.type = (TypeOfData) file_stream.r_u8();
+		LPCSTR stype = get_data_type(d.type);
 		switch (d.type)
 		{
 			case lua_string:
@@ -214,7 +323,6 @@ void CStoreHouse::load(IReader &file_stream)
 				u32 size = sizeof(char)*(s_data.size()+1);
 				void* ptr = xr_malloc(size);
 				xr_memcpy(ptr,s_data.c_str(),size);
-
 				d.data = ptr;
 				break;
 			}
@@ -227,28 +335,34 @@ void CStoreHouse::load(IReader &file_stream)
 				break;
 			}
 		}
-		data[name.c_str()]=d;
+		data[*name]=d;
+
+		detail::CallHelper(func, *name, d, get_data_type(d.type));
 
 		//script callback
-		bool loaded = ((u8)i==(u8)count)?true:false;
-
-		if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_store_callback"))
-		{
-			string256					func_name;
-			luabind::functor<void>			func;
-			strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_store_callback"));
-			R_ASSERT					(ai().script_engine().functor<void>(func_name,func));
-
-			switch (d.type)
-			{
-				case lua_bool : func(name.c_str(), get_boolean(name.c_str()),loaded); break;
-				case lua_vector : func(name.c_str(), get_vector(name.c_str()),loaded); break;
-				case lua_string : func(name.c_str(), get_string(name.c_str()),loaded); break;
-				case lua_number : func(name.c_str(), get_number(name.c_str()),loaded); break;
-				case lua_table : func(name.c_str(), get_table(name.c_str()),loaded); break;
-			}
-		}
+		
+	//	func(*name, , detail::CastHelper::CastTo(d.type, d.data));
+/*
+		func.pushvalue();
+		lua_pushstring(func.lua_state(), *name);
+		lua_pushstring(func.lua_state(), get_data_type(d.type));
+		lua_pushlightuserdata(func.lua_state(), d.data); //luabind doesnt support default conversion void* -> T
+		lua_call(func.lua_state(), 3, 0);
+*/		
 	}
 	Msg("* %d store values successfully loaded", count);
 
+}
+
+xrTime CStoreHouse::get_time(LPCSTR name)
+{
+	u64 val;
+	get(name,&val,sizeof(u64));
+	return xrTime(val);
+}
+
+void CStoreHouse::add_time(LPCSTR name, xrTime *t)
+{
+	u64 val = t->time();
+	add(name,&val,sizeof(u64),lua_ctime);
 }

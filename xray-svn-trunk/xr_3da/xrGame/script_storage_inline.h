@@ -13,6 +13,11 @@ IC	lua_State *CScriptStorage::lua					()
 	return				(m_virtual_machine);
 }
 
+IC  bool CScriptStorage::ready						()
+{
+	return				m_virtual_machine != NULL;
+}
+
 IC	void CScriptStorage::current_thread				(CScriptThread *thread)
 {
 	VERIFY					((thread && !m_current_thread) || !thread);

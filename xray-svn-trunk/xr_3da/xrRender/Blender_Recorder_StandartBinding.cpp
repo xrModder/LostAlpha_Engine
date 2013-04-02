@@ -13,6 +13,8 @@
 #include "..\igame_persistent.h"
 #include "..\environment.h"
 
+#define DUMP_CONST(C) C->name,C->type,C->destination
+
 // matrices
 #define	BIND_DECLARE(xf)	\
 class cl_xform_##xf	: public R_constant_setup {	virtual void setup (R_constant* C) { RCache.xforms.set_c_##xf (C); } }; \
@@ -26,7 +28,7 @@ BIND_DECLARE(vp);
 BIND_DECLARE(wvp);
 
 #define DECLARE_TREE_BIND(c)	\
-	class cl_tree_##c: public R_constant_setup	{virtual void setup(R_constant* C) {RCache.tree.set_c_##c(C);} };	\
+	class cl_tree_##c: public R_constant_setup	{virtual void setup(R_constant* C) {RCache.tree.set_c_##c(C);  } };	\
 	static cl_tree_##c	tree_binder_##c
 
 DECLARE_TREE_BIND(m_xform_v);
@@ -40,14 +42,14 @@ DECLARE_TREE_BIND(c_sun);
 
 class cl_hemi_cube_pos_faces: public R_constant_setup
 {
-	virtual void setup(R_constant* C) {RCache.hemi.set_c_pos_faces(C);}
+	virtual void setup(R_constant* C) {RCache.hemi.set_c_pos_faces(C); }
 };
 
 static cl_hemi_cube_pos_faces binder_hemi_cube_pos_faces;
 
 class cl_hemi_cube_neg_faces: public R_constant_setup
 {
-	virtual void setup(R_constant* C) {RCache.hemi.set_c_neg_faces(C);}
+	virtual void setup(R_constant* C) {RCache.hemi.set_c_neg_faces(C); }
 };
 
 static cl_hemi_cube_neg_faces binder_hemi_cube_neg_faces;
@@ -58,7 +60,18 @@ class cl_material: public R_constant_setup
 };
 
 static cl_material binder_material;
-
+/*
+LPCSTR dump_matrix(LPCSTR name, Fmatrix& M)
+{
+	shared_str str = "";
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+			str.sprintf("%s %s[%d][%d]=%.4f", *str, name, i, j, M[i][j]);
+	}
+	return *str;
+}
+*/
 class cl_texgen : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -90,6 +103,11 @@ class cl_texgen : public R_constant_setup
 		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_wvp);
 
 		RCache.set_c( C, mTexgen);
+/*
+		Msg("~ binder_texgen:%s/%d/%d", DUMP_CONST(C));
+		Msg("~ %s", dump_matrix("mTexelAdjust", mTexelAdjust));
+		Msg("~ %s", dump_matrix("mTexgen", mTexgen));
+*/
 	}
 };
 static cl_texgen		binder_texgen;
@@ -125,6 +143,11 @@ class cl_VPtexgen : public R_constant_setup
 		mTexgen.mul	(mTexelAdjust,RCache.xforms.m_vp);
 
 		RCache.set_c( C, mTexgen);
+/*
+		Msg("~ binder_VPtexgen:%s/%d/%d", DUMP_CONST(C));
+		Msg("~ %s", dump_matrix("mTexelAdjust", mTexelAdjust));
+		Msg("~ %s", dump_matrix("mTexgen", mTexgen));
+*/
 	}
 };
 static cl_VPtexgen		binder_VPtexgen;
@@ -154,6 +177,7 @@ class cl_fog_plane	: public R_constant_setup {
 			result.set		(-plane.x*B, -plane.y*B, -plane.z*B, 1 - (plane.w-A)*B	);								// view-plane
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_fog_plane:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };
 static cl_fog_plane		binder_fog_plane;
@@ -168,11 +192,12 @@ class cl_fog_params	: public R_constant_setup {
 		{
 			// Near/Far
 			float	n		= g_pGamePersistent->Environment().CurrentEnv.fog_near	;
-			float	f		= g_pGamePersistent->Environment().CurrentEnv.fog_far		;
+			float	f		= g_pGamePersistent->Environment().CurrentEnv.fog_far	;
 			float	r		= 1/(f-n);
 			result.set		(-n*r, r, r, r);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_fog_params:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_fog_params	binder_fog_params;
 
@@ -186,6 +211,7 @@ class cl_fog_color	: public R_constant_setup {
 			result.set				(desc.fog_color.x,	desc.fog_color.y, desc.fog_color.z,	0);
 		}
 		RCache.set_c	(C,result);
+	//	Msg("~ binder_fog_color:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_fog_color		binder_fog_color;
 
@@ -195,6 +221,7 @@ class cl_times		: public R_constant_setup {
 	{
 		float 		t	= Device.fTimeGlobal;
 		RCache.set_c	(C,t,t*10,t/10,_sin(t))	;
+	//	Msg("~ binder_times:%s/%d/%d fTimeGlobal=%.5f", DUMP_CONST(C), t);
 	}
 };
 static cl_times		binder_times;
@@ -205,6 +232,7 @@ class cl_eye_P		: public R_constant_setup {
 	{
 		Fvector&		V	= Device.vCameraPosition;
 		RCache.set_c	(C,V.x,V.y,V.z,1);
+		//Msg("~ binder_eye_P:%s/%d/%d (%.4f,%.4f,%.4f,1)", DUMP_CONST(C), V.x, V.y, V.z);
 	}
 };
 static cl_eye_P		binder_eye_P;
@@ -215,6 +243,7 @@ class cl_eye_D		: public R_constant_setup {
 	{
 		Fvector&		V	= Device.vCameraDirection;
 		RCache.set_c	(C,V.x,V.y,V.z,0);
+		//Msg("~ binder_eye_D:%s/%d/%d (%.4f,%.4f,%.4f,0)", DUMP_CONST(C), V.x, V.y, V.z);
 	}
 };
 static cl_eye_D		binder_eye_D;
@@ -225,6 +254,7 @@ class cl_eye_N		: public R_constant_setup {
 	{
 		Fvector&		V	= Device.vCameraTop;
 		RCache.set_c	(C,V.x,V.y,V.z,0);
+		//Msg("~ binder_eye_N:%s/%d/%d (%.4f,%.4f,%.4f,0)", DUMP_CONST(C), V.x, V.y, V.z);
 	}
 };
 static cl_eye_N		binder_eye_N;
@@ -239,6 +269,7 @@ class cl_sun0_color	: public R_constant_setup {
 			result.set				(desc.sun_color.x,	desc.sun_color.y, desc.sun_color.z,	0);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_sun0_color:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_sun0_color		binder_sun0_color;
 class cl_sun0_dir_w	: public R_constant_setup {
@@ -250,6 +281,7 @@ class cl_sun0_dir_w	: public R_constant_setup {
 			result.set				(desc.sun_dir.x,	desc.sun_dir.y, desc.sun_dir.z,	0);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_sun0_dir_w:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_sun0_dir_w		binder_sun0_dir_w;
 class cl_sun0_dir_e	: public R_constant_setup {
@@ -264,6 +296,7 @@ class cl_sun0_dir_e	: public R_constant_setup {
 			result.set					(D.x,D.y,D.z,0);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_sun0_dir_e:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_sun0_dir_e		binder_sun0_dir_e;
 
@@ -277,6 +310,7 @@ class cl_amb_color	: public R_constant_setup {
 			result.set				(desc.ambient.x, desc.ambient.y, desc.ambient.z, desc.weight);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_amb_color:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_amb_color		binder_amb_color;
 class cl_hemi_color	: public R_constant_setup {
@@ -288,6 +322,7 @@ class cl_hemi_color	: public R_constant_setup {
 			result.set				(desc.hemi_color.x, desc.hemi_color.y, desc.hemi_color.z, desc.hemi_color.w);
 		}
 		RCache.set_c	(C,result);
+		//Msg("~ binder_hemi_color:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), result.x, result.y, result.z, result.w);
 	}
 };	static cl_hemi_color		binder_hemi_color;
 

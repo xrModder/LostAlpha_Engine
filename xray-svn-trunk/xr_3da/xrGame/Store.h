@@ -3,6 +3,8 @@
 #include "script_export_space.h"
 #include "alife_space.h"
 
+class xrTime;
+
 enum TypeOfData 
 {
 	lua_nil,
@@ -10,13 +12,24 @@ enum TypeOfData
 	lua_string,
 	lua_number,
 	lua_vector,
-	lua_table
+	lua_table,
+	lua_u32,
+	lua_u16,
+	lua_u8,
+	lua_s32,
+	lua_s16,
+	lua_s8,
+	lua_float,
+	lua_ctime
 };
 
-struct StoreData {
+
+struct StoreData 
+{
 	void* data;
 	TypeOfData type;
 };
+
 
 class CStoreHouse : public IPureSerializeObject<IReader, IWriter>
 {
@@ -25,21 +38,21 @@ public:
 	virtual			~CStoreHouse	();
 
 	void			add_boolean		(LPCSTR name, bool b);
-	void			add_float		(LPCSTR name, float number);
 	void			add_string		(LPCSTR name, LPCSTR string);
 	void			add_vector		(LPCSTR name, Fvector v);
 	void			add_number		(LPCSTR name, double number);
 	void			add_table		(LPCSTR name, LPCSTR string);
+	void			add_time		(LPCSTR name, xrTime *t);
 
 	bool			get_boolean		(LPCSTR name);
 	LPCSTR			get_string		(LPCSTR name);
 	double			get_number		(LPCSTR name);
 	Fvector			get_vector		(LPCSTR name);
 	LPCSTR			get_table		(LPCSTR name);
-
-
+	xrTime			get_time		(LPCSTR name);
 
 	LPCSTR			get_data_type	(LPCSTR name);
+	LPCSTR			get_data_type	(TypeOfData d);
 	bool			data_exist		(LPCSTR name);
 	void			delete_data		(LPCSTR name);
 

@@ -17,7 +17,7 @@ u64	generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
 	return					(result);
 }
 
-CTimerCustom::CTimerCustom(void) : m_argument(luabind::object())
+CTimerCustom::CTimerCustom(CTimersManager *parent) 
  {
 	m_time = 0;
 	m_game_time = 0;
@@ -27,18 +27,30 @@ CTimerCustom::CTimerCustom(void) : m_argument(luabind::object())
 	m_sec = 0;
 	m_ms = 0;
 	m_flags.zero();
-	m_parent = 0;
+	m_parent = parent;
 	m_name = "@";
 	m_action = "";
-	m_info = "";
-//	m_argument_size = 0;
 }
 
-CTimerCustom::~CTimerCustom(void) 
+CTimerCustom::~CTimerCustom() 
 {
 }
 
-xrTime CTimerCustom::Time()
+bool CTimerCustom::Prepare()
+{
+	if (isGameTimer() && !isHUD())
+	{
+		PrepareGameTime();
+		return true;
+	}
+	else
+	{
+		PrepareTime();
+		return false;
+	}
+}
+
+xrTime CTimerCustom::TimeObject()
 {
 	return xrTime(m_time);
 }
@@ -96,12 +108,7 @@ void CTimerCustom::PrepareGameTime()
 	m_game_time += Device.dwTimeGlobal;
 }
 
-void CTimerCustom::SetArgument(luabind::object& argument)
-{
-	m_argument = argument;
-	//m_argument_size = sizeof(argument);
-	//Msg("m_argument_size = %f", m_argument_size);
-}
+
 
 #include "CustomTimersManager.h"
 void CTimerCustom::SetHUD(bool b)
@@ -110,7 +117,7 @@ void CTimerCustom::SetHUD(bool b)
 	if (m_parent) m_parent->OnHud(this,b);
 }
 
-void CTimerCustom::save (IWriter &stream)
+void CTimerCustom::save (NET_Packet &stream)
 {
 	u32 m_save_game_time = m_game_time;
 	if (m_save_game_time > 0)
@@ -118,30 +125,18 @@ void CTimerCustom::save (IWriter &stream)
 
 	save_data(m_name,	stream);
 	save_data(m_action,	stream);
-	save_data(m_info,	stream);
 	save_data(m_time,	stream);
 	save_data(m_save_game_time,	stream);
 	save_data(m_flags,	stream);
-
-	store_table(stream);
-
-	//save_data(m_argument_size,	stream);
-	//stream.w(luabind::object_cast<void *>(m_argument),	m_argument_size);
 }
 
 void CTimerCustom::load (IReader &stream)
 {
 	load_data(m_name,	stream);
 	load_data(m_action,	stream);
-	load_data(m_info,	stream);
 	load_data(m_time,	stream);
 	load_data(m_game_time,	stream);
 	load_data(m_flags,	stream);
-	
-	load_table(stream);
-
-	//load_data(m_argument_size,	stream);
-	//stream.r(luabind::object_cast<void *>(m_argument),	m_argument_size);
 	if (isHUD()) m_parent->OnHud(this,true);
 }
 

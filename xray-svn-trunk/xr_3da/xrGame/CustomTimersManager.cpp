@@ -9,9 +9,29 @@ CTimersManager::CTimersManager()
 	b_GameLoaded = false;
 }
 
+template <typename T>
+void delete_container(xr_vector<T>& container)
+{
+	xr_vector<T>::iterator	I = container.begin();
+	xr_vector<T>::iterator	E = container.end();
+	for ( ; I != E; ++I)
+	{
+		try 
+		{
+			xr_delete			(*I);
+		}
+		catch(...) 
+		{
+			*I			= 0;
+		}
+	}
+	container.clear();
+}
+
 CTimersManager::~CTimersManager() 
 {
-	delete_data					(objects);
+	delete_container(game_timers);
+	delete_container(timers);
 }
 
 void CTimersManager::OnHud(CTimerCustom *t,bool b)
@@ -37,41 +57,62 @@ void CTimersManager::OnHud(CTimerCustom *t,bool b)
 
 bool CTimersManager::AddTimer (CTimerCustom *timer)
 {
-	if (xr_strcmp(timer->Name(),"@")) {
-		if (TimerExist(timer->Name())) {
-			Msg("Trying to add timer with the same timer name");
-			return false;
-		}
+
+	if (xr_strcmp(timer->Name(), "@") != 0 && TimerExist(timer->Name()))
+	{
+		Msg("! adding a timer with same name: %s", timer->Name());
+		return false;
 	}
 
-	if (timer->isGameTimer() && !timer->isHUD())
-		timer->PrepareGameTime();
-	else
-		timer->PrepareTime();
+	bool b = timer->Prepare();
 	timer->SetParent(this);
+
 	if (timer->isHUD()) 
-		OnHud(objects.back(),true);
-	objects.push_back(timer);
+		OnHud(timers.back(), true);
+
+	if (b)
+	{
+		game_timers.push_back(timer);
+		std::push_heap(game_timers.begin(), game_timers.end(), m_game_timer_pred);
+	}
+	else
+	{
+		timers.push_back(timer);
+		std::push_heap(timers.begin(), timers.end(), m_timer_pred);
+	}
+
 	return true;
 }
 
 void CTimersManager::RemoveTimer (LPCSTR name)
 {
-	TIMERS_IT it = std::find_if(objects.begin(), objects.end(), STimerPred(name));
+	TIMERS_IT it0 = std::find_if(timers.begin(), timers.end(), STimerPred(name));
+	TIMERS_IT it1 = std::find_if(game_timers.begin(), game_timers.end(), STimerPred(name));
 	
-	R_ASSERT3(it!=objects.end(),"Can't find timer with name ",name);
+	TIMERS_IT *it = (it0 != timers.end()) ? &it0 : ((it1 != game_timers.end()) ? &it1 : NULL);
+
+	R_ASSERT3(it != NULL, "Can't find timer with name ",name);
 	
-	if ((*it)->isHUD()) 
-		OnHud(NULL,false);
-	objects.erase(it);
-	xr_delete(*it);
+	if ((**it)->isHUD()) 
+		OnHud(NULL, false);
+	if (it0 != timers.end())
+		timers.erase(it0);
+	if (it1 != game_timers.end())
+		game_timers.erase(it1);
+	xr_delete(**it);
+	std::make_heap(timers.begin(), timers.end(), m_timer_pred);
+	std::make_heap(game_timers.begin(), game_timers.end(), m_game_timer_pred);
 }
 
 CTimerCustom* CTimersManager::SearchTimer(LPCSTR name)
 {
-	TIMERS_IT it = std::find_if(objects.begin(), objects.end(), STimerPred(name));
-	if (it != objects.end())
-		return *it;
+	TIMERS_IT it0 = std::find_if(timers.begin(), timers.end(), STimerPred(name));
+	TIMERS_IT it1 = std::find_if(game_timers.begin(), game_timers.end(), STimerPred(name));
+	
+	TIMERS_IT *it = (it0 != timers.end()) ? &it0 : ((it1 != game_timers.end()) ? &it1 : NULL);
+
+	if (it)
+		return **it;
 	return NULL;
 }
 
@@ -93,91 +134,112 @@ void CTimersManager::save(IWriter &memory_stream)
 	Msg							("* Saving timers...");
 
 	memory_stream.open_chunk	(TIMERS_CHUNK_DATA);
-	memory_stream.w_u16(objects.size());
+	memory_stream.w_u16(timers.size());
+	NET_Packet packet;
+	packet.write_start();
+	for (TIMERS_IT it = timers.begin(), it_end = timers.end(); it!=it_end; ++it) 
+		(*it)->save(packet);
+	if (packet.B.count)
+		memory_stream.w(packet.B.data, packet.B.count);
 
-	TIMERS_IT it = objects.begin();
-	TIMERS_IT it_end = objects.end();
-
-	for (;it!=it_end;++it) {
-		(*it)->save(memory_stream);
-	}
-
+	memory_stream.w_u16(game_timers.size());
+	packet.write_start();
+	for (TIMERS_IT it = game_timers.begin(), it_end = game_timers.end(); it!=it_end; ++it) 
+		(*it)->save(packet);
+	if (packet.B.count)
+		memory_stream.w(packet.B.data, packet.B.count);
 	memory_stream.close_chunk	();
-	Msg							("* %d timers successfully saved",objects.size());
+
+	
+
+	Msg							("* %d timers successfully saved",game_timers.size() + timers.size());
 }
 
 void CTimersManager::load(IReader &file_stream)
 {
 	Msg							("* Loading timers...");
+	
 	R_ASSERT2					(file_stream.find_chunk(TIMERS_CHUNK_DATA),"Can't find chunk TIMERS_CHUNK_DATA!");
-	u16 size = file_stream.r_u16();
-	for (int idx=0;idx<size;idx++) {
-		CTimerCustom* timer = xr_new<CTimerCustom>();
-		timer->SetParent(this);
+	u16 size0 = file_stream.r_u16();
+	for (int idx=0; idx<size0; idx++) {
+		CTimerCustom* timer = xr_new<CTimerCustom, CTimersManager*>(this);
 		timer->load(file_stream);
-		objects_to_load.push_back(timer);
+		to_register.push_back(timer);
 	}
-	Msg							("* %d timers successfully loaded",size);
+	
+	u16 size1 = file_stream.r_u16();
+	for (int idx=0; idx<size1; idx++) {
+		CTimerCustom* timer = xr_new<CTimerCustom, CTimersManager*>(this);
+		timer->load(file_stream);
+		to_register.push_back(timer);
+	}
+	Msg							("* %d timers successfully loaded", size0 + size1);
 }
 
 
 void CTimersManager::Update ()
 {
+	ALife::_TIME_ID time_now = u64(0);
+
 	if (!b_GameLoaded)
 		return;
-	TIMERS_IT it = objects.begin();
-	TIMERS_IT it_end = objects.end();
 
-	objects_to_call.clear();
+	time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
-	for (;it!=it_end;++it) 
+	if (game_timers.size())
 	{
-		if ((*it)->isGameTimer() && !(*it)->isHUD())
+		CTimerCustom *timer = game_timers.front();
+		if (timer && timer->CheckGameTime())
 		{
-			if ((*it)->CheckGameTime())
-			{
-				objects_to_call.push_back((*it));
-				objects.erase(it);
-				break;
-			}
-		} else {
-			ALife::_TIME_ID timer_time = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
-
-			if ((*it)->CheckTime(timer_time)) 
-			{
-				if ((*it)->isHUD())
-					OnHud(NULL,false);
-				objects_to_call.push_back((*it));
-				objects.erase(it);
-				break;
-			}
+			//
+			std::pop_heap(game_timers.begin(), game_timers.end(), m_game_timer_pred);
+			game_timers.pop_back();
+			timer->execute(timer->Action());
+			//xr_delete(timer);
 		}
 	}
+
+	if (timers.size())
+	{
+		CTimerCustom *timer = timers.front();
+		if (timer && timer->CheckTime(time_now))
+		{
+			//timer->execute(timer->Action());
+			if (timer->isHUD())
+				OnHud(NULL,false);
+			std::pop_heap(timers.begin(), timers.end(), m_timer_pred);
+			timers.pop_back();
+			timer->execute(timer->Action());
+			//xr_delete(timer);
+		}
+	}
+
 
 	if (b_GameLoaded)
 	{
-		for (it=objects_to_load.begin();it!=objects_to_load.end();++it)
+		while (to_register.size())
 		{
-			if ((*it)->isGameTimer() && !(*it)->isHUD())
-				(*it)->PrepareGameTime();
+			CTimerCustom *tmp = to_register.back();
+			to_register.pop_back();
+			if (tmp->Prepare())
+			{
+				game_timers.push_back(tmp);
+				std::push_heap(game_timers.begin(), game_timers.end(), m_game_timer_pred);	
+			}
 			else
-				(*it)->PrepareTime();
-	
-			objects.push_back((*it));
+			{
+				timers.push_back(tmp);
+				std::push_heap(timers.begin(), timers.end(), m_timer_pred);
+			}
 		}
-
-		objects_to_load.clear();
 	}
 	
-	for (it=objects_to_call.begin();it!=objects_to_call.end();++it)
-		(*it)->StartAction();
 
-	ALife::_TIME_ID time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
-
-	if (hud_timer) {
+	if (hud_timer) 
+	{
 		string64 str;
-
-		ALife::_TIME_ID time_elapsed = hud_timer->TimeNumber() - time_now;
+		
+		ALife::_TIME_ID time_elapsed = hud_timer->Time() - time_now;
 
 		u32 _years,_months,_days,_hours=0,_minutes=0,_seconds=0,_mseconds;
 		split_time(time_elapsed,_years,_months,_days,_hours,_minutes,_seconds,_mseconds);
