@@ -980,15 +980,15 @@ HRESULT	CRender::shader_compile			(
 		_result						= D3DXCompileShader((LPCSTR)pSrcData,SrcDataLen,defines,pInclude,pFunctionName,pTarget,Flags|D3DXSHADER_USE_LEGACY_D3DX9_31_DLL,&pShaderBuf,&pErrorBuf,&pConstants);
 		if (SUCCEEDED(_result)) {
 //			Msg						( "shader compilation succeeded" );
-			IWriter* file = FS.w_open(file_name);
+//			IWriter* file = FS.w_open(file_name);
 
 			boost::crc_32_type		processor;
 			processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
 			u32 const crc			= processor.checksum( );
 
-			file->w_u32				(crc);
-			file->w					( pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-			FS.w_close				(file);
+//			file->w_u32				(crc);
+//			file->w					( pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
+//			FS.w_close				(file);
 
 			_result					= create_shader(pTarget, (DWORD*)pShaderBuf->GetBufferPointer(), pShaderBuf->GetBufferSize(), file_name, result, o.disasm);
 		}
