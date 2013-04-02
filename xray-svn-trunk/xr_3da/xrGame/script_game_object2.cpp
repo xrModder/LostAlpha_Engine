@@ -325,10 +325,13 @@ void CScriptGameObject::SetActorPosition			(Fvector pos)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
+		CCar* car = smart_cast<CCar*>(actor->Holder());
+		if(car)
+			car->DoExit();
+
 		Fmatrix F = actor->XFORM();
 		F.c = pos;
 		actor->ForceTransform(F);
-//		actor->XFORM().c = pos;
 	}else
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorPosition method for non-actor object");
 
@@ -372,7 +375,7 @@ void CScriptGameObject::SetActorLegsVisible			(bool val)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorLegsVisible method for non-actor object");
 }
 
-void CScriptGameObject::SetActorCamSet			(u32 val)
+void CScriptGameObject::SetActorCam			(u32 val)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
