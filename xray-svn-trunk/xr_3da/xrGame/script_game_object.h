@@ -216,7 +216,7 @@ public:
 			void				SetActorDirectionVector	(Fvector dir);
 			void				SetActorDirectionSlowly	(Fvector pos, float time);
 			void				SetActorLegsVisible	(bool val);
-			void				SetActorCamSet		(u32 val);
+			void				SetActorCam		(u32 val);
 			void				SetHandsOnly		(bool val);
 			bool				IsHandsOnly		();
 			bool				IsFirstEyeCam		();

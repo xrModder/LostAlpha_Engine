@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "ParticlesObject.h"
 #include "Physics.h"
 
@@ -7,6 +8,9 @@
 #	include "PHDebug.h"
 #endif // DEBUG
 
+#include "ai_space.h"
+#include "alife_simulator.h"
+#include "script_engine.h"
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "car.h"
@@ -1515,18 +1519,33 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 	VERIFY(!fis_zero(Q.dir.square_magnitude()));
 	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,collidable.model,Q))
 	{
+		IKinematics* K	= smart_cast<IKinematics*>(Visual());
+		CInifile* ini	= K->LL_UserData();
+
+		u16 id;
+		if (ini->line_exist("car_definition","trunk_bone"))
+			id = K->LL_BoneID(ini->r_string("car_definition","trunk_bone"));
+
 		collide::rq_results& R = RQR;
 		int y=R.r_count();
 		for (int k=0; k<y; ++k)
 		{
 			collide::rq_result* I = R.r_begin()+k;
+
+			if (id && (id == (u16)I->element))
+			{
+				luabind::functor<void>				fl;
+				R_ASSERT2					(ai().script_engine().functor<void>("_g.on_use_trunk",fl), "Can't find function _g.on_use_trunk");
+				fl						(ID());
+				return false;
+			}
+
 			if(is_Door((u16)I->element,i)) 
 			{
 				bool front=i->second.IsFront(pos,dir);
 				if((Owner()&&!front)||(!Owner()&&front))i->second.Use();
 				if(i->second.state==SDoor::broken) break;
 				return false;
-				
 			}
 		}
 	}
