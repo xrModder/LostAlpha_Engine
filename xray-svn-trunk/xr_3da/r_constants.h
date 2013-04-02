@@ -100,18 +100,6 @@ struct	R_constant			:public xr_resource
 			return vs;
 		case RC_dest_pixel:
 			return ps;
-#if defined(USE_DX10) || defined(USE_DX11)
-		case RC_dest_geometry:
-			return gs;
-#	ifdef USE_DX11
-		case RC_dest_hull:
-			return hs;
-		case RC_dest_domain:
-			return ds;
-		case RC_dest_compute:
-			return cs;
-#	endif
-#endif
 		default:
 			FATAL("invalid enumeration for shader");
 		}

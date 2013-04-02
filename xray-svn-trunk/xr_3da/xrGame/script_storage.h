@@ -57,6 +57,7 @@ public:
 								CScriptStorage				();
 	virtual						~CScriptStorage				();
 	IC		lua_State			*lua						();
+	IC		bool				ready						();
 	IC		void				current_thread				(CScriptThread *thread);
 	IC		CScriptThread		*current_thread				() const;
 			bool				load_buffer					(lua_State *L, LPCSTR caBuffer, size_t tSize, LPCSTR caScriptName, LPCSTR caNameSpaceName = 0);

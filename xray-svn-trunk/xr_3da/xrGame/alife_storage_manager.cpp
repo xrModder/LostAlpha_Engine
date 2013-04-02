@@ -85,7 +85,7 @@ void CALifeStorageManager::save	(LPCSTR save_name, bool update_name)
 #endif // DEBUG
 
 	if (!update_name)
-		strcpy					(m_save_name,save);
+		strcpy_s				(m_save_name,save);
 }
 
 void CALifeStorageManager::load	(void *buffer, const u32 &buffer_size, LPCSTR file_name)

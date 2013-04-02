@@ -8,6 +8,8 @@
 #include "..\SkeletonCustom.h"
 #include "..\xrRender\LightTrack.h"
 
+#define DUMP_CONST(C) C->name,C->type,C->destination
+
 CRender										RImplementation;
 
 //////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,7 @@ static class cl_parallax		: public R_constant_setup		{	virtual void setup	(R_con
 {
 	float			h			=	ps_r2_df_parallax_h;
 	RCache.set_c	(C,h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
+	//Msg("~ binder_parallax:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
 }}	binder_parallax;
 
 static class cl_pos_decompress_params		: public R_constant_setup		{	virtual void setup	(R_constant* C)
@@ -45,7 +48,7 @@ static class cl_pos_decompress_params		: public R_constant_setup		{	virtual void
 	float HorzTan =  - VertTan / Device.fASPECT;
 
 	RCache.set_c	( C, HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight );
-
+	//Msg("~ binder_pos_decompress_params:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight);
 }}	binder_pos_decompress_params;
 
 static class cl_water_intensity : public R_constant_setup		
@@ -55,6 +58,7 @@ static class cl_water_intensity : public R_constant_setup
 		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fWaterIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
+		//Msg("~ binder_water_intensity:%s/%d/%d %.4f", DUMP_CONST(C), fValue);
 	}
 }	binder_water_intensity;
 
@@ -65,6 +69,7 @@ static class cl_sun_shafts_intensity : public R_constant_setup
 		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fSunShaftsIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
+		//Msg("~ binder_sun_shafts_intensity:%s/%d/%d %.4f", DUMP_CONST(C), fValue);
 	}
 }	binder_sun_shafts_intensity;
 

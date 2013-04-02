@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __XR_TIME_H__
+#define __XR_TIME_H__
 
 #include "alife_space.h"
 
@@ -31,6 +33,7 @@ public:
 	void	get				(u32 &y, u32 &mo, u32 &d, u32 &h, u32 &mi, u32 &s, u32 &ms);
 	
 	u32		time_id			() const { return u32(m_time & u32(-1)); }
+	u64		time			() const { return m_time;				 }
 
 	LPCSTR	dateToString	(int mode);
 	LPCSTR	timeToString	(int mode);
@@ -41,3 +44,5 @@ extern u32 get_time();
 extern xrTime get_time_struct();
 extern xrTime convert_time(u32 time);
 extern u32 convert_time(const xrTime &timer);
+
+#endif

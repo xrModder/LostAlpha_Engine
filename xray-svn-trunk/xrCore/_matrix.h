@@ -50,6 +50,11 @@ public:
 		T m[4][4];					// Array
 	};
 
+	ICF T* operator[]	(int i)
+	{
+		return m[i];
+	}
+
 	// Class members
 	ICF	SelfRef	set			(const Self &a) 
 	{

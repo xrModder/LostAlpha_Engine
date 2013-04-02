@@ -90,7 +90,13 @@ namespace luabind { namespace detail
 	{
 		static void apply(void* ptr)
 		{
-			delete static_cast<T*>(ptr);
+
+			T* obj = static_cast<T*>(ptr);
+#if 0
+			if (obj)
+#endif
+				delete obj;
+
 		}
 	};
 

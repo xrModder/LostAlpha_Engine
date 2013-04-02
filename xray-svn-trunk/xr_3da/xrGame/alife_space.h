@@ -17,7 +17,7 @@
 #define GAME_TIME_CHUNK_DATA		0x0005
 #define STORE_CHUNK_DATA			0x0006
 #define TIMERS_CHUNK_DATA			0x0007
-#define REGISTRY_CHUNK_DATA			0x0009
+#define REGISTRY_CHUNK_DATA			0x0008
 #define SECTION_HEADER				"location_"
 #define SAVE_EXTENSION				".sav"
 #define SPAWN_NAME					"game.spawn"

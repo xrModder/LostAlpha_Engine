@@ -111,6 +111,11 @@ public:
     	if (*p)	w(*p,(u32)xr_strlen(p)+1);
         else	w_u8(0);
 	}
+	IC void w_stringZ			(const shared_str& p )
+	{
+		if (*p)	w(*p, p.size()+1);
+        else	w_u8(0);
+	}
 	IC void w_matrix			(Fmatrix& M)
 	{
 		w_vec3	(M.i);
