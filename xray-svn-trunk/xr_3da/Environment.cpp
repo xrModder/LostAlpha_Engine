@@ -375,10 +375,10 @@ void CEnvironment::OnFrame()
 
 	// ******************** Environment params (setting)
 	Fvector3	&fog_color = CurrentEnv.fog_color;
-	if (::Render->get_generation()==IRender_interface::GENERATION_R2)
-	{
-		fog_color.mul(ps_r1_fog_luminance);
-	}
+	//if (::Render->get_generation()==IRender_interface::GENERATION_R2)
+	//{
+		//fog_color.mul(ps_r1_fog_luminance);
+	//}
 
 	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGCOLOR,	 color_rgba_f(fog_color.x,fog_color.y,fog_color.z,0) ));
 	CHK_DX(HW.pDevice->SetRenderState( D3DRS_FOGSTART,	*(u32 *)(&CurrentEnv.fog_near)	));

@@ -8,6 +8,8 @@
 #include "..\SkeletonCustom.h"
 #include "..\xrRender\LightTrack.h"
 
+#pragma todo("cjayho to all: Всем чмоке в этам чяте!")
+
 CRender										RImplementation;
 
 //////////////////////////////////////////////////////////////////////////
