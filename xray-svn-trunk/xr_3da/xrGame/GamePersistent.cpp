@@ -271,12 +271,22 @@ bool allow_intro ()
 
 void CGamePersistent::start_logo_intro		()
 {
+	if (!allow_intro()){
+		m_intro_event			= 0;
+		if (!xr_strlen(m_game_params.m_new_or_load))
+		{
+			Console->Show			();
+			Console->Execute		("main_menu on");
+		}
+		return;
+	}
+
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this,&CGamePersistent::update_logo_intro);
 		if (!g_dedicated_server && 0==xr_strlen(m_game_params.m_game_or_spawn) && NULL==g_pGameLevel)
 		{
-			VERIFY				(NULL==m_intro);
+			if (NULL!=m_intro)	return;
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_logo");
 			Console->Hide		();
@@ -296,22 +306,21 @@ void CGamePersistent::update_logo_intro			()
 	}
 }
 
-extern int g_keypress_on_start;
 void CGamePersistent::game_loaded()
 {
 	if(Device.dwPrecacheFrame<=2)
 	{
 		if(	g_pGameLevel							&&
 			g_pGameLevel->bReady					&&
-			(allow_intro() && g_keypress_on_start)	&&
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == GAME_SINGLE)
 		{
 			pApp->ClearTitle();
-			VERIFY				(NULL==m_intro);
+
+			if (NULL!=m_intro)	return;
+
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
-	//		Msg					("intro_start game_loaded");
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
 		}
 		m_intro_event			= 0;
@@ -321,29 +330,31 @@ void CGamePersistent::game_loaded()
 void CGamePersistent::update_game_loaded()
 {
 	xr_delete				(m_intro);
-//	Msg("intro_delete ::update_game_loaded");
-//	load_screen_renderer.stop();
 	start_game_intro		();
 
 	ai().alife().timers().GameLoaded(true);
 }
 
+#include "alife_spawn_registry.h"
 void CGamePersistent::start_game_intro		()
 {
-#if 1//def DEBUG
-	if (!allow_intro()){
-		m_intro_event			= 0;
-		return;
-	}
-#endif
 	if (g_pGameLevel && g_pGameLevel->bReady && Device.dwPrecacheFrame<=2){
 		m_intro_event.bind		(this,&CGamePersistent::update_game_intro);
-		if (0==stricmp(m_game_params.m_new_or_load,"new")){
-			VERIFY				(NULL==m_intro);
+
+		LPCSTR spawn_name = ai().alife().spawns().GetSpawnName();
+		bool load_spawn = (0==stricmp(m_game_params.m_new_or_load,"load") && 0==xr_strcmp(m_game_params.m_game_or_spawn, spawn_name));	//skyloader: flag if load save and (save == spawn_name), for example, all.sav
+		if (0==stricmp(m_game_params.m_new_or_load,"new") || load_spawn)
+		{
+			if (NULL!=m_intro)	return;
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_game");
-			Msg("intro_start intro_game");
+
+			if (allow_intro() && !load_spawn)
+				Msg("intro_start intro_game");
+			else
+				m_intro->Stop(); //<= skyloader: call functions from sequencer (call the first scene in sid bunker)
 		}
+			
 	}
 }
 void CGamePersistent::update_game_intro			()
