@@ -26,8 +26,8 @@ SRainParams::SRainParams() : dwReferences(1)
 	drop_length				= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_length");			// 5.f;
 	drop_width				= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_width");			// 0.30f;
 	drop_angle				= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_angle");			// 3.0f;
-	drop_max_angle			= deg2rad(pSettings->r_float			(RAIN_MANAGER_LTX, "drop_max_angle"));		// 10.f
-	drop_max_wind_vel		= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_max_wind_vel");	// 20.0f;
+	drop_max_angle			= deg2rad(pSettings->r_float			(RAIN_MANAGER_LTX, "drop_max_angle"));		// 80.f
+	drop_max_wind_vel		= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_max_wind_vel");	// 2000.0f;
 	drop_speed_min			= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_speed_min");		// 40.f;
 	drop_speed_max			= pSettings->r_float					(RAIN_MANAGER_LTX, "drop_speed_max");		// 80.f;
 	max_particles			= pSettings->r_s32						(RAIN_MANAGER_LTX, "max_particles");		// 1000;

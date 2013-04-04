@@ -8,7 +8,7 @@
 #include "..\SkeletonCustom.h"
 #include "..\xrRender\LightTrack.h"
 
-#pragma todo("cjayho to all: Всем чмоке в этам чяте!")
+#pragma todo("cjayho to all: Hello all in this chat :)")
 
 CRender										RImplementation;
 

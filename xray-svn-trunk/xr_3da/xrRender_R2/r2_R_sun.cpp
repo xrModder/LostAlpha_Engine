@@ -1253,7 +1253,7 @@ void CRender::render_sun_near	()
 		L_right.crossproduct		(L_up,L_dir).normalize		();
 		mdir_View.build_camera_dir	(L_pos,L_dir,L_up);
 
-		#if 1 // cjayho: 1 - full calc, 0 - like in SoC
+		#if 0 // cjayho: 1 - full calc, 0 - like in SoC
 
 		// projection: box
 		//	Original
