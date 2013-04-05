@@ -1253,8 +1253,9 @@ void CRender::render_sun_near	()
 		L_right.crossproduct		(L_up,L_dir).normalize		();
 		mdir_View.build_camera_dir	(L_pos,L_dir,L_up);
 
+		#if 0 // cjayho: 1 - full calc, 0 - like in SoC
+
 		// projection: box
-		/*
 		//	Original
 		float	_D					= ps_r2_sun_near;
 		float	a0					= deg2rad(Device.fFOV*Device.fASPECT)/2.f;
@@ -1281,7 +1282,8 @@ void CRender::render_sun_near	()
 		frustum_bb.min.y -= diff_y; frustum_bb.max.y += diff_y;
 		Fbox&	bb					= frustum_bb;
 		D3DXMatrixOrthoOffCenterLH	((D3DXMATRIX*)&mdir_Project,bb.min.x,bb.max.x,  bb.min.y,bb.max.y,  bb.min.z-tweak_ortho_xform_initial_offs,bb.max.z);
-		/**/
+
+		#else
 
 		//	Simple
 		Fbox	frustum_bb;			frustum_bb.invalidate();
@@ -1293,7 +1295,8 @@ void CRender::render_sun_near	()
 		Fbox&	bb					= frustum_bb;
 		bb.grow				(EPS);
 		D3DXMatrixOrthoOffCenterLH	((D3DXMATRIX*)&mdir_Project,bb.min.x,bb.max.x,  bb.min.y,bb.max.y,  bb.min.z-tweak_ortho_xform_initial_offs,bb.max.z);
-		/**/
+
+		#endif
 
 		// build viewport xform
 		float	view_dim			= float(RImplementation.o.smapsize);

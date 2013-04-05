@@ -9,6 +9,7 @@
 #include "..\xrRender\LightTrack.h"
 
 #define DUMP_CONST(C) C->name,C->type,C->destination
+#pragma todo("cjayho to all: Hello all in this chat :)")
 
 CRender										RImplementation;
 
