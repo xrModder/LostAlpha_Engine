@@ -580,9 +580,9 @@ void CLevel::OnFrame	()
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
 
-	//CALifeSimulator* alife = ai().get_alife_nonconst();
-	if (ai().alife().initialized() /* && ai().alife().timers().IsGameLoaded() */)
+	if (GameID()==GAME_SINGLE && ai().alife().initialized())
 		ai().alife().timers().Update();
+
 	// update static sounds
 	if(!g_dedicated_server)
 	{

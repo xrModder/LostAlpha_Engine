@@ -7,12 +7,6 @@ CUISpinText::CUISpinText(){
     m_curItem = -1;
 }
 
-void CUISpinText::Init(float x, float y, float width, float height)
-{
-	CUICustomSpin::Init(x,y,width,height);
-	SetItem();
-}
-
 void CUISpinText::AddItem_(const char* item, int id)
 {
 	SInfo			_info;

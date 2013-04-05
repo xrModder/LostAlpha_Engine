@@ -746,7 +746,12 @@ void CUIMapWnd::OnToolActorClicked		(CUIWindow*, void*)
 {
 	if (GlobalMap()->Locked())			return;
 
-	Fvector v					= Level().CurrentEntity()->Position();
+	Fvector v;				
+	if (Level().CurrentEntity())
+		v		= Level().CurrentEntity()->Position();
+	else
+		v		= Device.vCameraPosition;
+
 	Fvector2 v2;
 	v2.set						(v.x,v.z);
 
