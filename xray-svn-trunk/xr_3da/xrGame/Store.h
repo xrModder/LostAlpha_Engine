@@ -4,6 +4,7 @@
 #include "alife_space.h"
 
 class xrTime;
+class NET_Packet;
 
 enum TypeOfData 
 {
@@ -23,55 +24,37 @@ enum TypeOfData
 	lua_ctime
 };
 
-
-struct StoreData 
+namespace luabind 
 {
-	void* data;
-	TypeOfData type;
+	class object;
 };
 
 
 class CStoreHouse : public IPureSerializeObject<IReader, IWriter>
 {
-public:
-					CStoreHouse		() { }
-	virtual			~CStoreHouse	();
+	public:
+								CStoreHouse		();
+		virtual					~CStoreHouse	();
+		virtual void			load			(IReader& stream);
+		virtual void			save			(IWriter& stream);
+	
+	private:
+				void			OnSave			();
+				void			OnLoad			();
+				void			SerializeTable	(luabind::object& tbl);
 
-	void			add_boolean		(LPCSTR name, bool b);
-	void			add_string		(LPCSTR name, LPCSTR string);
-	void			add_vector		(LPCSTR name, Fvector v);
-	void			add_number		(LPCSTR name, double number);
-	void			add_table		(LPCSTR name, LPCSTR string);
-	void			add_time		(LPCSTR name, xrTime *t);
+	public:
+		DECLARE_SCRIPT_REGISTER_FUNCTION;
 
-	bool			get_boolean		(LPCSTR name);
-	LPCSTR			get_string		(LPCSTR name);
-	double			get_number		(LPCSTR name);
-	Fvector			get_vector		(LPCSTR name);
-	LPCSTR			get_table		(LPCSTR name);
-	xrTime			get_time		(LPCSTR name);
+	private:
+		struct SStorageHelper
+		{
+			template <typename T> static void	Write	(NET_Packet *P, shared_str str, T& val);
+												   static void*	Read	(NET_Packet *P, shared_str* str);
+		};
 
-	LPCSTR			get_data_type	(LPCSTR name);
-	LPCSTR			get_data_type	(TypeOfData d);
-	bool			data_exist		(LPCSTR name);
-	void			delete_data		(LPCSTR name);
+		NET_Packet*		m_buffer;
 
-
-	virtual void	save			(IWriter &memory_stream);
-	virtual void	load			(IReader &file_stream);
-
-private:
-	void add(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
-	void get(shared_str name, void* ptr,u32 size);
-	void add_data_exist(shared_str name);
-	void get_data_exist(shared_str name);
-	bool update(shared_str name, void* ptr_data, u32 size, TypeOfData _type);
-	u32 type_to_size(StoreData d);
-
-
-	xr_map<shared_str,StoreData> data;
-
-	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 
 

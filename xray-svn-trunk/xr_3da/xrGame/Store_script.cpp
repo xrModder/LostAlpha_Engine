@@ -18,7 +18,7 @@ void CStoreHouse::script_register(lua_State *L)
 	[
 		class_<CStoreHouse>("StoreHouse")
 			.def(constructor<>())
-			
+		/*	
 			.def("add_string",					&CStoreHouse::add_string)
 			
 			.def("add_vector",					&CStoreHouse::add_vector)
@@ -40,6 +40,8 @@ void CStoreHouse::script_register(lua_State *L)
 			.def("get_vector",					&CStoreHouse::get_vector)
 			
 			.def("delete_data",					&CStoreHouse::delete_data)
+
+		*/
 	];
 }
 
