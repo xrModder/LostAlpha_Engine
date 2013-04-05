@@ -334,6 +334,11 @@ public:
 			void				RestoreWeapon		();
 			bool				IsWeaponHidden		();
 
+			u16				BoneNameToId			(LPCSTR name);
+			bool				GetBoneVisible		(LPCSTR name);
+			void				SetBoneVisible		(LPCSTR name, bool val, bool bRecursive);
+			bool				BoneExist		(LPCSTR name);
+
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();
 			LPCSTR				CharacterCommunity	();

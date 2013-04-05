@@ -489,6 +489,34 @@ void CScriptGameObject::attach_actor_Vehicle	(u32 id)
 	actor->attach_Vehicle(holder);
 }
 
+u16 CScriptGameObject::BoneNameToId(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_BoneID(name));
+}
+
+bool CScriptGameObject::GetBoneVisible(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (TRUE==V->LL_GetBoneVisible(V->LL_BoneID(name)));
+}
+
+void CScriptGameObject::SetBoneVisible(LPCSTR name, bool val, bool bRecursive)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_SetBoneVisible(V->LL_BoneID(name), val, bRecursive));
+}
+
+bool CScriptGameObject::BoneExist(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_BoneID(name) != BI_NONE);
+}
+
 void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_threshold)
 {
 	CAI_Stalker			*stalker = smart_cast<CAI_Stalker*>(&object());
