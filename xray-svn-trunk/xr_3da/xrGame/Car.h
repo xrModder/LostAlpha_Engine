@@ -17,6 +17,9 @@
 #include "PHDestroyable.h"
 #include "DelayedActionFuse.h"
 #include "InventoryOwner.h"
+#include "inventory_space.h"
+
+
 // refs
 class ENGINE_API			CBoneInstance;
 class						CActor;
@@ -380,6 +383,7 @@ private:
 	float					m_steer_angle;
 	bool					m_repairing;
 	u16						m_bone_steer;
+	u16						m_bone_trunk;
 	CCameraBase*			camera[3];
 	CCameraBase*			active_camera;
 
@@ -402,6 +406,7 @@ private:
 	xr_vector <Fvector>		m_gear_ratious;
 	Fmatrix			m_sits_transforms; // driver_place
 	float					m_current_gear_ratio;
+	xr_vector<u16>				m_items;
 
 	/////////////////////////////////////////////////////////////
 	bool					b_auto_switch_transmission;
@@ -542,6 +547,8 @@ public:
 	bool					Use							(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos);
 	void					DoExit						();
 	void					DoEnter						();
+	void					CloseTrunkBone						();
+	u16					GetTrunkBone					() const		{return m_bone_trunk;};
 	u16						DriverAnimationType 		();
 	// Core events
 	virtual DLL_Pure		*_construct					();
@@ -574,6 +581,8 @@ public:
 	virtual void			GetRayExplosionSourcePos	(Fvector &pos);
 	virtual void			ActivateExplosionBox		(const Fvector &size,Fvector &in_out_pos){};
 	virtual void			ResetScriptData				(void *P=0);
+
+		void			AddAvailableItems				(TIItemContainer& items_container) const;
 
 	virtual void			Action						(int id, u32 flags);
 	virtual void			SetParam					(int id, Fvector2 val);
