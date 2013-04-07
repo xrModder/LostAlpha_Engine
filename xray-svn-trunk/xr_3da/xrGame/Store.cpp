@@ -1,30 +1,21 @@
 #include "stdafx.h"
 #include "Store.h"
 #include "pch_script.h"
-#include "alife_space.h"
-#include "script_engine.h"
 #include "ai_space.h"
 #include "alife_simulator.h"
-#include "xr_time.h"
-#include "..\xrNETServer\NET_utils.h"
+#include "alife_space.h"
+#include "script_engine_space.h"
+#include "script_engine.h"
 
 CStoreHouse::CStoreHouse()
 {
-	m_buffer = xr_new<NET_Packet>		();
-	m_buffer->write_start				();
+//	m_buffer = xr_new<NET_Packet>		();
+//	m_buffer->write_start				();
 }
 
 CStoreHouse::~CStoreHouse() 
 {
-/*
-	while (data.size())
-	{
-		xr_delete(data.begin()->second.data);
-		data.erase(data.begin());
-	}
-	data.clear();
-	Memory.mem_compact();
-*/
+//	xr_delete							(m_buffer);
 }
 /*
 void CStoreHouse::add(shared_str name, void* ptr_data, u32 size, TypeOfData _type)
@@ -373,24 +364,153 @@ void CStoreHouse::add_time(LPCSTR name, xrTime *t)
 
 void CStoreHouse::save(IWriter &memory_stream)
 {
+//	u16 size = 0;
 	Msg("* Writing Store...");
+//	m_buffer->write_start		();
+//	OnSave						();
+//	m_buffer->read_start		();
+//	size = m_buffer->r_u16		();
 	memory_stream.open_chunk	(STORE_CHUNK_DATA);
+//	memory_stream.w				(m_buffer->B.data, m_buffer->B.count);
+
+	string256					fn;
+	luabind::functor<LPCSTR>	callback;
+	strcpy_s					(fn, pSettings->r_string("lost_alpha_cfg", "on_save_store_callback"));
+	R_ASSERT					(ai().script_engine().functor<LPCSTR>(fn, callback));
+
+	LPCSTR						str = callback();
+	
+	memory_stream.w_stringZ		(str);
+
 	memory_stream.close_chunk	();
-	OnSave						();
-
-
-
-//	Msg("* %d store values successfully saved", data.size());
+	
+//	Msg("* %d store values successfully saved", size);
 }
+/*
+
+#define LOAD_HELPER_NUMBER(type, T)					\
+	case type:	{								\
+		T val##T;								\
+		file_stream.r(&val##T, sizeof(T));		\
+		lua_pushstring(m_lua, *str);				\
+		lua_pushnumber(m_lua, val##T);				\
+		lua_settable(m_lua, -3 * (i + 1));		\
+		break;									\
+}
+*/
 
 void CStoreHouse::load(IReader &file_stream)
 {
 	R_ASSERT2					(file_stream.find_chunk(STORE_CHUNK_DATA),"Can't find chunk STORE_CHUNK_DATA!");
-	Msg("* Loading Store...");
-	u16 count = file_stream.r_u16();
+	Msg							("* Loading Store...");
 
-	Msg("* %d store values successfully loaded", count);
+	string256					fn;
+	luabind::functor<void>		callback;
 
+	strcpy_s					(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
+	R_ASSERT					(ai().script_engine().functor<void>(fn, callback));
+
+	shared_str					str;
+	
+	file_stream.r_stringZ		(str);
+
+	callback					(*str);
+	
+	
+
+//	u16 count = OnLoad			(file_stream);
+//	Msg							("* %d store values successfully loaded", count);
+
+}
+/*
+u16 CStoreHouse::OnLoad(IReader &file_stream)
+{
+	u16						total = 0;
+	string256				fn;
+	luabind::functor<void>	callback;
+	m_lua					      = ai().script_engine().lua();
+	strcpy_s											(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
+	R_ASSERT											(ai().script_engine().functor<void>(fn, callback));
+
+	luabind::object&		table = UnserializeTable	(file_stream, total);
+	
+	callback											(table);
+
+	return total;
+	
+}
+
+luabind::object& CStoreHouse::UnserializeTable(IReader &file_stream, u16& total)
+{
+	u16 count = file_stream.r_u16			();
+	lua_newtable							(m_lua);
+	for (u16 i = 0, l = count; i < l; ++i)
+	{
+		shared_str				key		= "";
+		u8						marker	= 0;
+		file_stream.r_stringZ									(key);
+		marker							= file_stream.r_u8		();
+		switch (marker)
+		{	
+			case lua_bool: 
+			{
+				bool b = file_stream.r_bool();
+				lua_pushstring(m_lua, *str);				
+				lua_pushboolean(m_lua, b);
+				lua_settable(m_lua, -3 * (i + 1));
+				break;
+			}
+			LOAD_HELPER_NUMBER(lua_number, double);
+	//		LOAD_HELPER(lua_vector, Fvector3);
+			
+			LOAD_HELPER_NUMBER(lua_u32, u32);
+			LOAD_HELPER_NUMBER(lua_s32, s32);
+			LOAD_HELPER_NUMBER(lua_u16, u16);
+			LOAD_HELPER_NUMBER(lua_s16, s16);
+			LOAD_HELPER_NUMBER(lua_u8, u8);
+			LOAD_HELPER_NUMBER(lua_s8, s8);
+			LOAD_HELPER_NUMBER(lua_float, float);
+			//case lua_ctime: u64 val; file_stream.r(&val, sizeof(u64)); tbl[*key] = xrTime(val); break;
+			//case lua_table: UnserializeTable(file_stream, total); break;
+			//case lua_string: shared_str s; file_stream.r_stringZ(s); tbl[*key] = *s; break;
+			case lua_vector: 
+			{
+				Fvector3 v = file_stream.r_vec3(v);
+				lua_pushstring(m_lua, *str);	
+				Fvector3* obj = (Fvector3*) lua_newuserdata(m_lua, sizeof(Fvector3));
+				obj->add(v);
+				lua_settable(m_lua, -3 * (i + 1));
+				break;
+			}
+			case lua_ctime: 
+			{
+				u64 val = file_stream.r_u64();
+				lua_pushstring(m_lua, *str);	
+				xrTime* obj = (xrTime*) lua_newuserdata(m_lua, sizeof(xrTime));
+				obj->add(xrTime(val));
+				lua_settable(m_lua, -3 * (i + 1));
+				break;
+			}
+			case lua_bool: 
+			{
+				bool b = file_stream.r_bool();
+				lua_pushstring(m_lua, *str);				
+				lua_pushboolean(m_lua, b);
+				lua_settable(m_lua, -3 * (i + 1));
+				break;
+			}
+			case lua_bool: 
+			{
+				bool b = file_stream.r_bool();
+				lua_pushstring(m_lua, *str);				
+				lua_pushboolean(m_lua, b);
+				lua_settable(m_lua, -3 * (i + 1));
+				break;
+			}
+		}
+	}
+	total		+= count;
+	return tbl;
 }
 
 static long prec = 1e16;
@@ -398,14 +518,14 @@ static long prec = 1e16;
 void CStoreHouse::OnSave()
 {
 	R_ASSERT(ai().script_engine().ready());
-	luabind::object&			table = luabind::newtable			(ai().script_engine().lua());
+//	luabind::object&			table = luabind::newtable			(ai().script_engine().lua());
 
-	luabind::functor<void>		func;
+	luabind::functor<luabind::object> func;
 	string256					func_name;
 	strcpy_s														(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
-	R_ASSERT														(ai().script_engine().functor<void>(func_name,func));
+	R_ASSERT														(ai().script_engine().functor<luabind::object>(func_name,func));
 
-	func															(table);	
+	luabind::object table = func									();	
 	
 	SerializeTable													(table);
 
@@ -414,13 +534,28 @@ void CStoreHouse::OnSave()
 void CStoreHouse::SerializeTable(luabind::object& tbl)
 {
 	R_ASSERT															(tbl.type() == LUA_TTABLE);
-	lua_State*					L		= tbl.lua_state					();
-	tbl.pushvalue														();
-	int							size    = luaL_getn						(L, 1);
-	m_buffer->w_u16														(u16(size));
-	for (luabind::object::iterator it = tbl.begin(), end = tbl.end(); it != end; ++it)
+	u16		pos		= m_buffer->w_tell									();
+	m_buffer->w_u16														(u16(0));
+	u16		cnt		= 0;
+	for (luabind::object::iterator it = tbl.begin(), end = tbl.end(); it != end; ++it, ++cnt)
 	{
-		LPCSTR					str		= luabind::object_cast<LPCSTR>	(it.key());
+		shared_str				k		= "";
+		try
+		{
+			k = luabind::object_cast<LPCSTR>	(it.key());
+		}
+		catch (...)
+		{
+			try
+			{
+				k.sprintf("%d", luabind::object_cast<int>	(it.key()));
+			}
+			catch (...)
+			{
+				FATAL("wtf");
+			}
+		}
+		LPCSTR					str		= *k;
 		luabind::object			val		= *it;
 		switch (val.type())
 		{
@@ -456,13 +591,13 @@ void CStoreHouse::SerializeTable(luabind::object& tbl)
 			case LUA_TSTRING:
 			{
 				LPCSTR			value	= luabind::object_cast<LPCSTR>	(val);
-				SStorageHelper::Write<LPCSTR>							(P, str, val);
+				SStorageHelper::Write<LPCSTR>							(m_buffer, str, value);
 				break;
 			}
 			case LUA_TBOOLEAN:
 			{
 				bool			value   = luabind::object_cast<bool>	(val);
-				SStorageHelper::Write<bool>								(P, str, val);
+				SStorageHelper::Write<bool>								(m_buffer, str, value);
 				break;
 			}
 			case LUA_TNIL:
@@ -471,8 +606,24 @@ void CStoreHouse::SerializeTable(luabind::object& tbl)
 			}
 			case LUA_TUSERDATA:
 			{
-			//	val.pushvalue											();
-
+				// only xrTime/Fvector3 supported so far
+				try
+				{
+					xrTime			value   = luabind::object_cast<xrTime>	(val);
+					SStorageHelper::Write<xrTime>							(m_buffer, str, value);
+				}
+				catch (...)
+				{
+					try
+					{
+						Fvector3	value	= luabind::object_cast<Fvector3>(val);
+						SStorageHelper::Write<Fvector3>							(m_buffer, str, value);
+					}
+					catch (...)
+					{
+						R_ASSERT2(0, make_string("unsupported userdata '%s'", str));
+					}
+				}
 				break;
 			}
 			case LUA_TTABLE:
@@ -485,41 +636,9 @@ void CStoreHouse::SerializeTable(luabind::object& tbl)
 		}
     
 	}
-}
-#define WRITE_TEMPLATE(T, type, method) \
-	template <> static void CStoreHouse::SStorageHelper::Write<T>(NET_Packet *P, shared_str str, T& val) { \
-		P->w_stringZ	(*str); \
-		P->w_u8			(type); \
-		P->method		(val);  \
-	}
-												
-template <typename T> static void CStoreHouse::SStorageHelper::Write(NET_Packet *P, shared_str str, T& val)
-{
-	FATAL("wtf");
+	m_buffer->w_seek													(pos, &cnt, sizeof(u16));
 }
 
 
-WRITE_TEMPLATE(bool, lua_bool, w_bool);
+*/
 
-WRITE_TEMPLATE(double, lua_number, w_double);
-WRITE_TEMPLATE(Fvector3, lua_vector, w_vec3);
-
-WRITE_TEMPLATE(u32, lua_u32, w_u32);
-WRITE_TEMPLATE(s32, lua_s32, w_s32);
-WRITE_TEMPLATE(u16, lua_u16, w_u16);
-WRITE_TEMPLATE(s16, lua_s16, w_s16);
-WRITE_TEMPLATE(u8, lua_u8, w_u8);
-WRITE_TEMPLATE(s8, lua_s8, w_s8);
-WRITE_TEMPLATE(float, lua_float, w_float);
-
-WRITE_TEMPLATE(LPCSTR, lua_string, w_stringZ);
-WRITE_TEMPLATE(shared_str, lua_string, w_stringZ);
-WRITE_TEMPLATE(xr_string, lua_string, w_stringZ);
-
-
-template <> static void CStoreHouse::SStorageHelper::Write<xrTime>(NET_Packet *P, shared_str str, xrTime& val) 
-{ 
-	P->w_stringZ	(*str); 
-	P->w_u8			(type); 
-	P->w_u64		(val.time());  
-}

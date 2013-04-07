@@ -14,11 +14,12 @@ using namespace luabind;
 
 void CStoreHouse::script_register(lua_State *L)
 {
+/*
 	module(L)
 	[
 		class_<CStoreHouse>("StoreHouse")
 			.def(constructor<>())
-		/*	
+			
 			.def("add_string",					&CStoreHouse::add_string)
 			
 			.def("add_vector",					&CStoreHouse::add_vector)
@@ -41,8 +42,9 @@ void CStoreHouse::script_register(lua_State *L)
 			
 			.def("delete_data",					&CStoreHouse::delete_data)
 
-		*/
+		
 	];
+*/
 }
 
 
