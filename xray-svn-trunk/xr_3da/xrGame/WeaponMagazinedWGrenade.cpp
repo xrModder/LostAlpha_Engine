@@ -115,7 +115,7 @@ void CWeaponMagazinedWGrenade::net_Destroy()
 
 BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC) 
 {
-	CSE_ALifeItemWeapon* const weapon		= smart_cast<CSE_ALifeItemWeapon*>(DC);
+	CSE_ALifeItemWeaponMagazinedWGL* const weapon		= smart_cast<CSE_ALifeItemWeaponMagazinedWGL*>(DC);
 	R_ASSERT								(weapon);
 	BOOL l_res = inherited::net_Spawn(DC);
 	 

@@ -325,10 +325,13 @@ void CScriptGameObject::SetActorPosition			(Fvector pos)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
+		CCar* car = smart_cast<CCar*>(actor->Holder());
+		if(car)
+			car->DoExit();
+
 		Fmatrix F = actor->XFORM();
 		F.c = pos;
 		actor->ForceTransform(F);
-//		actor->XFORM().c = pos;
 	}else
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorPosition method for non-actor object");
 
@@ -372,7 +375,7 @@ void CScriptGameObject::SetActorLegsVisible			(bool val)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorLegsVisible method for non-actor object");
 }
 
-void CScriptGameObject::SetActorCamSet			(u32 val)
+void CScriptGameObject::SetActorCam			(u32 val)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
@@ -484,6 +487,34 @@ void CScriptGameObject::attach_actor_Vehicle	(u32 id)
 	CCar* car = smart_cast<CCar*>(holder);
 	if(car) car->DoEnter();
 	actor->attach_Vehicle(holder);
+}
+
+u16 CScriptGameObject::BoneNameToId(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_BoneID(name));
+}
+
+bool CScriptGameObject::GetBoneVisible(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (TRUE==V->LL_GetBoneVisible(V->LL_BoneID(name)));
+}
+
+void CScriptGameObject::SetBoneVisible(LPCSTR name, bool val, bool bRecursive)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_SetBoneVisible(V->LL_BoneID(name), val, bRecursive));
+}
+
+bool CScriptGameObject::BoneExist(LPCSTR name)
+{
+	IKinematics		*V = smart_cast<IKinematics*>(object().Visual());
+	VERIFY			(V);
+	return (V->LL_BoneID(name) != BI_NONE);
 }
 
 void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_threshold)

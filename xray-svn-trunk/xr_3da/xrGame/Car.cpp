@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "ParticlesObject.h"
 #include "Physics.h"
 
@@ -7,6 +8,9 @@
 #	include "PHDebug.h"
 #endif // DEBUG
 
+#include "ai_space.h"
+#include "alife_simulator.h"
+#include "script_engine.h"
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "car.h"
@@ -40,6 +44,7 @@ CCar::CCar()
 	m_memory		= NULL;
 	m_driver_anim_type = 0;
 	m_bone_steer	= BI_NONE;
+	m_bone_trunk	= BI_NONE;
 	active_camera	= 0;
 	camera[ectFirst]= xr_new<CCameraFirstEye>	(this, CCameraBase::flRelativeLink|CCameraBase::flPositionRigid); 
 	camera[ectFirst]->tag	= ectFirst;
@@ -99,9 +104,7 @@ CCar::~CCar(void)
 	xr_delete			(camera[1]);
 	xr_delete			(camera[2]);
 	xr_delete			(m_car_sound);
-	//xr_delete			(inventoryBox);
 	ClearExhausts		();
-//	xr_delete			(inventory);
 	xr_delete			(m_car_weapon);
 	xr_delete			(m_memory);
  //	xr_delete			(l_tpEntityAction);
@@ -186,6 +189,9 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 		CPHDestroyable::Load(pUserData,"destroyed");
 	if(pUserData->section_exist("mounted_weapon_definition"))
 		m_car_weapon = xr_new<CCarWeapon>(this);
+
+	if (pUserData->line_exist("car_definition","trunk_bone"))
+		m_bone_trunk = PKinematics(Visual())->LL_BoneID(pUserData->r_string("car_definition","trunk_bone"));
 
 	if(pUserData->section_exist("visual_memory_definition"))
 	{
@@ -786,6 +792,19 @@ void CCar::ParseDefinitions()
 	fill_wheel_vector			(ini->r_string	("car_definition","breaking_wheels"),m_breaking_wheels);
 	fill_exhaust_vector			(ini->r_string	("car_definition","exhausts"),m_exhausts);
 	fill_doors_map				(ini->r_string	("car_definition","doors"),m_doors);
+
+	if (ini->line_exist("car_definition","trunk_bone"))
+	{
+		u16 bone_id	=				pKinematics->LL_BoneID(ini->r_string("car_definition","trunk_bone"));
+		SDoor						door(this);
+		door.bone_id=				bone_id;
+		m_doors.insert				(mk_pair(bone_id,door));
+		BONE_P_PAIR_IT J		= bone_map.find(bone_id);
+		if (J == bone_map.end()) 
+		{
+			bone_map.insert(mk_pair(bone_id,physicsBone()));
+		}
+	}
 
 	///////////////////////////car properties///////////////////////////////
 
@@ -1515,18 +1534,29 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 	VERIFY(!fis_zero(Q.dir.square_magnitude()));
 	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,collidable.model,Q))
 	{
+		IKinematics* K	= smart_cast<IKinematics*>(Visual());
+
 		collide::rq_results& R = RQR;
 		int y=R.r_count();
 		for (int k=0; k<y; ++k)
 		{
 			collide::rq_result* I = R.r_begin()+k;
+
+			if (m_bone_trunk == (u16)I->element)
+			{
+				luabind::functor<void>				fl;
+				R_ASSERT2					(ai().script_engine().functor<void>("_g.on_use_trunk",fl), "Can't find function _g.on_use_trunk");
+				fl						(ID());
+				bool door 					= DoorOpen(m_bone_trunk);
+				return false;
+			}
+
 			if(is_Door((u16)I->element,i)) 
 			{
 				bool front=i->second.IsFront(pos,dir);
 				if((Owner()&&!front)||(!Owner()&&front))i->second.Use();
 				if(i->second.state==SDoor::broken) break;
 				return false;
-				
 			}
 		}
 	}
@@ -1730,54 +1760,38 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 {
 	inherited::OnEvent		(P,type);
 	CExplosive::OnEvent		(P,type);
-	//inventory->OnEvent(P,type);
 
 	//обработка сообщений, нужных для работы с багажником машины
-	u16 id;
 	switch (type)
 	{
 	case GE_OWNERSHIP_TAKE:
 		{
-			P.r_u16		(id);
-			CObject* O	= Level().Objects.net_Find	(id);
-			if (!O)
-			{
-				Msg("! Error: No object to take/buy [%d]", id);
-				break;
-			}
-			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(O)) ) 
-			{
-				O->H_SetParent(this);
-				inventory().Take(smart_cast<CGameObject*>(O), false, false);
-			}
-			else 
-			{
-				if (!O || !O->H_Parent() || (this != O->H_Parent())) return;
-				NET_Packet P;
-				u_EventGen(P,GE_OWNERSHIP_REJECT,ID());
-				P.w_u16(u16(O->ID()));
-				u_EventSend(P);
-			}
+			u16 id;
+
+			P.r_u16(id);
+			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			m_items.push_back	(id);
+			itm->H_SetParent	(this);
+			itm->setVisible		(FALSE);
+			itm->setEnabled		(FALSE);
 		}break;
+
 	case GE_OWNERSHIP_REJECT:
 		{
-			P.r_u16		(id);
-			CObject* O	= Level().Objects.net_Find	(id);
-			if (!O)
-			{
-				Msg("! Error: No object to take/buy [%d]", id);
-				break;
-			}
+			u16 id;
 
-			bool just_before_destroy		= !P.r_eof() && P.r_u8();
-			O->SetTmpPreDestroy				(just_before_destroy);
-			if(inventory().DropItem(smart_cast<CGameObject*>(O))) 
-			{
-				O->H_SetParent(0, just_before_destroy);
-			}
+			P.r_u16(id);
+			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			xr_vector<u16>::iterator it;
+			it = std::find(m_items.begin(),m_items.end(),id); VERIFY(it!=m_items.end());
+			m_items.erase		(it);
+			itm->H_SetParent	(NULL,!P.r_eof() && P.r_u8());
+
+			//CGameObject* GO		= smart_cast<CGameObject*>(itm);
+			//Actor()->callback(GameObject::eInvBoxItemTake)( this->lua_game_object(), GO->lua_game_object() );
+
 		}break;
-	}
-
+	};
 }
 
 void CCar::ResetScriptData(void	*P)
@@ -2102,4 +2116,22 @@ void CCar::ShowTrunk()
 {
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if(pGameSP)pGameSP->StartCarBody(Actor(), this );
+}
+
+void CCar::CloseTrunkBone()
+{
+	bool door = DoorClose(m_bone_trunk);
+}
+
+#include "inventory_item.h"
+void CCar::AddAvailableItems(TIItemContainer& items_container) const
+{
+	xr_vector<u16>::const_iterator it = m_items.begin();
+	xr_vector<u16>::const_iterator it_e = m_items.end();
+
+	for(;it!=it_e;++it)
+	{
+		PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it));VERIFY(itm);
+		items_container.push_back	(itm);
+	}
 }

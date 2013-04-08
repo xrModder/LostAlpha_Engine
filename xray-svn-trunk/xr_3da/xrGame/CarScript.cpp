@@ -36,6 +36,7 @@ void CCar::script_register(lua_State *L)
 		.def("CarExplode",		&CCar::CarExplode)
 		.def("RemoveDamageParticles", &CCar::RemoveDamangeParticles)
 		.def("ShowTrunk",		&CCar::ShowTrunk)
+		.def("CloseTrunkBone",		&CCar::CloseTrunkBone)
 		.def(constructor<>())
 	];
 }

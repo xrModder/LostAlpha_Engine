@@ -162,7 +162,7 @@ ENGINE_API extern float psHUD_FOV;
 
 void CHUDManager::Render_First()
 {
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return;
+	//if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return; 	//skyloader: commented because it has problems with 'actor shadow'/'actor body'
 	if (0==pUI)						return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;

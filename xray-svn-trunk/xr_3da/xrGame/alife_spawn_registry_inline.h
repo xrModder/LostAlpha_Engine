@@ -53,3 +53,9 @@ IC	const ALife::_SPAWN_ID &CALifeSpawnRegistry::spawn_id	(const ALife::_SPAWN_ST
 	VERIFY2							(I != m_spawn_story_ids.end(),"Spawn story id cannot be found");
 	return							((*I).second);
 }
+
+
+IC	LPCSTR			CALifeSpawnRegistry::GetSpawnName	() const
+{
+	return						(m_spawn_name.c_str());
+}

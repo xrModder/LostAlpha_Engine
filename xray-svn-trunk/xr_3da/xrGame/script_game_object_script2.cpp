@@ -260,11 +260,16 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("set_actor_direction_vector",		&CScriptGameObject::SetActorDirectionVector)
 		.def("set_actor_look_at_position",		&CScriptGameObject::SetActorDirectionSlowly)
 		.def("set_actor_legs_visible",			&CScriptGameObject::SetActorLegsVisible)
-		.def("set_actor_camera",				&CScriptGameObject::SetActorCamSet)
+		.def("set_actor_camera",				&CScriptGameObject::SetActorCam)
 		.def("is_first_eye",					&CScriptGameObject::IsFirstEyeCam)
 		.def("block_slots_and_inventory",		&CScriptGameObject::SetHandsOnly)
 		.def("is_blocked_slots_and_inventory",	&CScriptGameObject::IsHandsOnly)
 		.def("set_actor_state",					&CScriptGameObject::SetActorState)
+
+		.def("bone_name_to_id",					&CScriptGameObject::BoneNameToId)
+		.def("get_bone_visible",					&CScriptGameObject::GetBoneVisible)
+		.def("set_bone_visible",					&CScriptGameObject::SetBoneVisible)
+		.def("bone_exist",					&CScriptGameObject::BoneExist)
 
 		.def("vertex_in_direction",			&CScriptGameObject::vertex_in_direction)
 
