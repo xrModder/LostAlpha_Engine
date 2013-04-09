@@ -405,6 +405,7 @@ static HBRUSH MainDlg_OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
 		if (nChildID == IDC_INTRO_BKGND ||
 			nChildID == IDC_INTRO1 ||
 			nChildID == IDC_INTRO2 ||
+			nChildID == IDC_DESCRIPTION ||
 			nChildID == IDC_URL ||
 			nChildID == IDC_URL_PREFIX)
 		{

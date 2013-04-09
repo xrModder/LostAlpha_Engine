@@ -99,6 +99,7 @@
 #define IDC_FILEFORMAT_FRAME            1046
 #define IDC_IMAGE_COMMANDS              1047
 #define IDC_VERSION_STRING              1049
+#define IDC_DESCRIPTION                 1050
 
 // Next default values for new objects
 // 
