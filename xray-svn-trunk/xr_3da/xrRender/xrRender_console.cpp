@@ -168,6 +168,9 @@ float		ps_r2_sun_lumscale_hemi		= 0.65f;				// 1.0f
 float		ps_r2_sun_lumscale_amb		= 0.25f;
 float		ps_r2_gmaterial				= 0.f;				// 
 float		ps_r2_zfill					= 0.1f;				// .1f
+float		ps_r2_specularExponentMul					= 1.f;				// 1.f
+float		ps_r2_specularExponentBias					= 1.f;				// 1.f
+float		ps_r2_anamorphicLFfactor					= 1.f;				// 1.f
 
 float		ps_r2_dhemi_sky_scale		= 0.08f;				// 1.5f
 float		ps_r2_dhemi_light_scale     = 0.2f	;
@@ -471,6 +474,10 @@ CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.02f,	1.00f	);
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
 	//- Mad Max
+
+	CMD4(CCC_Float,		"r2_specularExponentMul",		&ps_r2_specularExponentMul,		.0f,	10.f	);
+	CMD4(CCC_Float,		"r2_specularExponentBias",		&ps_r2_specularExponentBias,		-100.f,	100.f	);
+	CMD4(CCC_Float,		"r2_anamorphicLFfactor",		&ps_r2_anamorphicLFfactor,		.0f,	10.f	);
 
 #ifdef DEBUG
 	CMD3(CCC_Mask,		"r2_use_nvdbt",			&ps_r2_ls_flags,			R2FLAG_USE_NVDBT);

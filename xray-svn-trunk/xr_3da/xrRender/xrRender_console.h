@@ -103,6 +103,10 @@ extern ECORE_API float			ps_r2_sun_lumscale_hemi;	// 1.0f
 extern ECORE_API float			ps_r2_sun_lumscale_amb;		// 1.0f
 extern ECORE_API float			ps_r2_zfill;				// .1f
 
+extern ECORE_API float			ps_r2_specularExponentMul;				// 1.f
+extern ECORE_API float			ps_r2_specularExponentBias;				// 1.f
+extern ECORE_API float			ps_r2_anamorphicLFfactor;				// 1.f
+
 extern ECORE_API float			ps_r2_dhemi_sky_scale;		// 1.5f
 extern ECORE_API float			ps_r2_dhemi_light_scale;	// 1.f
 extern ECORE_API float			ps_r2_dhemi_light_flow;		// .1f

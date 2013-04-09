@@ -149,26 +149,6 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u16								a_current;
 	u16								a_elapsed;
 
-	//count of grenades to spawn in grenade launcher [ttcccccc]
-	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
-
-	struct grenade_count_t
-	{
-		u8	grenades_count	:	6;
-		u8	grenades_type	:	2;
-		u8	pack_to_byte() const
-		{
-			return (grenades_type << 6) | grenades_count;
-		}
-		void unpack_from_byte(u8 const b)
-		{
-			grenades_type	=	(b >> 6);
-			grenades_count	=	b & 0x3f; //111111
-		}
-	}; 
-
-	grenade_count_t					a_elapsed_grenades;
-
 	float							m_fHitPower;
 	ALife::EHitType					m_tHitType;
 	LPCSTR							m_caAmmoSections;
@@ -209,11 +189,32 @@ add_to_type_list(CSE_ALifeItemWeaponMagazined)
 #define script_type_list save_type_list(CSE_ALifeItemWeaponMagazined)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazinedWGL, CSE_ALifeItemWeaponMagazined)
-bool			m_bGrenadeMode;
-CSE_ALifeItemWeaponMagazinedWGL(LPCSTR caSection);
-virtual							~CSE_ALifeItemWeaponMagazinedWGL();
 
-virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
+							CSE_ALifeItemWeaponMagazinedWGL(LPCSTR caSection);
+	virtual						~CSE_ALifeItemWeaponMagazinedWGL();
+
+	//count of grenades to spawn in grenade launcher [ttcccccc]
+	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
+	//skyloader: moved to CSE_ALifeItemWeaponMagazinedWGL because it has gl params only
+	struct grenade_count_t
+	{
+		u8	grenades_count	:	6;
+		u8	grenades_type	:	2;
+		u8	pack_to_byte() const
+		{
+			return (grenades_type << 6) | grenades_count;
+		}
+		void unpack_from_byte(u8 const b)
+		{
+			grenades_type	=	(b >> 6);
+			grenades_count	=	b & 0x3f; //111111
+		}
+	}; 
+
+	grenade_count_t					a_elapsed_grenades;
+	bool						m_bGrenadeMode;
+
+	virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemWeaponMagazinedWGL)
 #define script_type_list save_type_list(CSE_ALifeItemWeaponMagazinedWGL)
