@@ -1099,6 +1099,17 @@ void InitIntro(HWND hwnd, CHyperLink& hlURL)
 		SetWindowText(hwndCtl, g_strSecondIntroMesage);
 	}
 
+	if (! g_strUserMessage.IsEmpty())
+	{
+		hwndCtl = GetDlgItem(hwnd, IDC_DESCRIPTION);
+		SetWindowText(hwndCtl, g_strUserMessage);
+	} else {
+		hwndCtl = GetDlgItem(hwnd, IDC_DESCRIPTION);
+		TCHAR g_strNoDescription[256];
+		_tcscpy_s(g_strNoDescription, countof(g_strNoDescription), "No description.");
+		SetWindowText(hwndCtl, g_strNoDescription);
+	}
+
 	if (*g_szSupportURL)
 	{
 		hwndCtl = GetDlgItem(hwnd, IDC_URL);
