@@ -136,14 +136,20 @@ void set_weather	(LPCSTR weather_name, bool forced)
 	return			(g_pGamePersistent->Environment().SetWeather(weather_name,forced));
 }
 
-extern	float	g_fTimeFactor;
+#include "game_sv_single.h"
 
-void set_game_time	(u32 hours, u32 mins)
+void set_game_time	(u32 new_hours, u32 new_mins)
 {
-	u32 year = 1, month = 1, day = 1, secs = 0, milisecs = 0;
-	u64 new_time = generate_time(year,month,day,hours,mins,secs,milisecs);
-	Level().SetEnvironmentGameTimeFactor(new_time, g_fTimeFactor);
-	Level().SetGameTimeFactor(new_time, g_fTimeFactor);
+	float time_factor = Level().GetGameTimeFactor();
+	u32 year = 1, month = 0, day = 0, hours = 0, mins = 0, secs = 0, milisecs = 0;
+	split_time(Level().GetGameTime(), year, month, day, hours, mins, secs, milisecs);
+	u64 new_time = generate_time(year,month,day,new_hours,new_mins,secs,milisecs);
+	game_sv_Single* server_game = smart_cast<game_sv_Single*>(Level().Server->game);  
+	game_cl_Single* client_game = smart_cast<game_cl_Single*>(Level().game);			 
+	server_game->SetGameTimeFactor(new_time, time_factor);
+	server_game->SetEnvironmentGameTimeFactor(new_time, time_factor);
+	client_game->SetEnvironmentGameTimeFactor(new_time, time_factor);
+	client_game->SetGameTimeFactor(new_time, time_factor);
 }
 
 bool set_weather_fx	(LPCSTR weather_name)

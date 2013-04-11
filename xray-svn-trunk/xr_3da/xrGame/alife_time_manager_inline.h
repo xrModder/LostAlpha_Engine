@@ -15,6 +15,12 @@ IC	void			CALifeTimeManager::set_time_factor		(float time_factor)
 	m_time_factor				= time_factor;
 };
 
+IC	void			CALifeTimeManager::set_game_time		(ALife::_TIME_ID new_time)
+{
+	m_game_time					= new_time;
+	m_start_time				= Device.dwTimeGlobal;
+};
+
 IC	ALife::_TIME_ID	CALifeTimeManager::game_time			() const
 {
 	return						(m_game_time + iFloor(m_time_factor*float(Device.dwTimeGlobal - m_start_time)));
