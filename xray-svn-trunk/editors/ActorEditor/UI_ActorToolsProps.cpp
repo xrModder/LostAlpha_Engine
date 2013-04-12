@@ -201,7 +201,9 @@ void CActorTools::OnMarksControlClick(ButtonValue* V, bool& bModif, bool& bSafe)
 
 void  CActorTools::OnMotionRefsChange(PropValue* sender)
 {
-    OnMotionKeysModified	();
+	ATools->SetAnimChangedFlag(TRUE);
+
+	OnMotionKeysModified	();
 	ExecCommand				(COMMAND_UPDATE_PROPERTIES);
 }
 
