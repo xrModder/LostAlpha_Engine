@@ -365,11 +365,14 @@ void CActorTools::PlayMotion()
 void CActorTools::StopMotion()
 {
 	if (m_pEditObject)
-    	if (fraLeftBar->ebRenderEditorStyle->Down) m_pEditObject->SkeletonStop();
-        else if (fraLeftBar->ebRenderEngineStyle->Down&&m_RenderObject.m_pBlend) {
-        	m_RenderObject.m_pBlend->playing	 = false;
-        	m_RenderObject.m_pBlend->timeCurrent = 0;
-        }
+	{
+		m_pEditObject->SkeletonStop();  							//stop motion for editor style
+		if (m_RenderObject.m_pBlend)								//stop motion for engine style
+		{
+        		m_RenderObject.m_pBlend->playing	 = false;
+        		m_RenderObject.m_pBlend->timeCurrent = 0;
+		}
+	}
 }
 
 void CActorTools::PauseMotion()

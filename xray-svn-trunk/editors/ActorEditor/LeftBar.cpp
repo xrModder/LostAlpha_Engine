@@ -277,20 +277,33 @@ void __fastcall TfraLeftBar::miExportOMFClick(TObject *Sender)
 
 void __fastcall TfraLeftBar::ebRenderStyleClick(TObject *Sender)
 {
-	if (Sender==ebRenderEngineStyle){
-		if (!ATools->IsVisualPresent()) ExecCommand( COMMAND_MAKE_PREVIEW );
-        if (!ATools->IsVisualPresent()) SetRenderStyle(false);
-        else						  SetRenderStyle(true);
-    }
-    ExecCommand		(COMMAND_UPDATE_PROPERTIES);
-    UI->RedrawScene	();
+	ATools->StopMotion();		//skyloader: stop current animation
+
+	if (Sender==ebRenderEngineStyle)
+	{
+		if (!ATools->IsVisualPresent() || ATools->AnimChanged())
+		{
+			ExecCommand( COMMAND_MAKE_PREVIEW );
+			if (ATools->AnimChanged())
+				SetRenderStyle(true);
+			else
+				SetRenderStyle(false);
+			ATools->SetAnimChangedFlag(FALSE);
+		} else
+			SetRenderStyle(true);
+	}
+	ExecCommand		(COMMAND_UPDATE_PROPERTIES);
+	UI->RedrawScene	();
 }
 //---------------------------------------------------------------------------
 
 void TfraLeftBar::SetRenderStyle(bool bEngineStyle)
 {
-    if (ATools->IsVisualPresent()&&bEngineStyle) 	ebRenderEngineStyle->Down = true;
-    else 										ebRenderEditorStyle->Down = true;
+	if (ATools->IsVisualPresent()&&bEngineStyle)
+		ebRenderEngineStyle->Down = true;
+	else
+		ebRenderEditorStyle->Down = true;
+
 	ATools->PlayMotion();
 }
 //---------------------------------------------------------------------------

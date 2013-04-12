@@ -79,7 +79,8 @@ void CActorTools::OnChangeTransform(PropValue* sender)
 
 void CActorTools::OnMotionEditClick(ButtonValue* V, bool& bModif, bool& bSafe)
 {
-	R_ASSERT(m_pEditObject);
+    R_ASSERT(m_pEditObject);
+
     xr_string fn;
     switch (V->btn_num){
     case 0:{ // append
@@ -92,6 +93,7 @@ void CActorTools::OnMotionEditClick(ButtonValue* V, bool& bModif, bool& bSafe)
             for (AStringIt it=lst.begin(); it!=lst.end(); it++)
                 if (AppendMotion(it->c_str())) bRes=true;
             ExecCommand	(COMMAND_UPDATE_PROPERTIES);
+            ATools->SetAnimChangedFlag(TRUE);
 			if (bRes)	OnMotionKeysModified();
             else 		ELog.DlgMsg(mtError,"Append not completed.");
             bModif = false;
@@ -110,6 +112,7 @@ void CActorTools::OnMotionEditClick(ButtonValue* V, bool& bModif, bool& bSafe)
 				SelectListItem(MOTIONS_PREFIX,0,true,false,false);
 		    	m_ObjectItems->UnlockUpdating();
                 ExecCommand(COMMAND_UPDATE_PROPERTIES);
+                ATools->SetAnimChangedFlag(TRUE);
 				OnMotionKeysModified();
                 bModif = false;
             }else{
@@ -244,13 +247,20 @@ void CActorTools::FillMotionProperties(PropItemVec& items, LPCSTR pref, ListItem
     }
                                             
     PHelper().CreateCaption			(items, PrepareKey(pref,"Global\\Motion count"),	m_cnt.c_str());
-    V=PHelper().CreateChoose		(items, PrepareKey(pref,"Global\\Motion reference"),&m_pEditObject->m_SMotionRefs, smGameSMotions,0,0,MAX_ANIM_SLOT);
-    V->OnChangeEvent.bind			(this,&CActorTools::OnMotionRefsChange);
-    ButtonValue* B;             
-    if (m_pEditObject->m_SMotionRefs.size()==0) {            
-        B=PHelper().CreateButton	(items, PrepareKey(pref,"Global\\Edit"),			"Append,Delete,Save",ButtonValue::flFirstOnly);
-        B->OnBtnClickEvent.bind		(this,&CActorTools::OnMotionEditClick); 
+
+    ButtonValue* B;
+    if (!fraLeftBar->ebRenderEngineStyle->Down)
+    {
+	V=PHelper().CreateChoose		(items, PrepareKey(pref,"Global\\Motion reference"),&m_pEditObject->m_SMotionRefs, smGameSMotions,0,0,MAX_ANIM_SLOT);
+	V->OnChangeEvent.bind			(this,&CActorTools::OnMotionRefsChange);
+
+	if (m_pEditObject->m_SMotionRefs.size()==0)
+	{            
+		B=PHelper().CreateButton	(items, PrepareKey(pref,"Global\\Edit"),			"Append,Delete,Save",ButtonValue::flFirstOnly);
+		B->OnBtnClickEvent.bind		(this,&CActorTools::OnMotionEditClick); 
+	}
     }
+
     if (SM){                                                                     
         B=PHelper().CreateButton	(items, PrepareKey(pref,"Motion\\Control"),	"Play,Stop,Pause",ButtonValue::flFirstOnly);
         B->OnBtnClickEvent.bind		(this,&CActorTools::OnMotionControlClick);
