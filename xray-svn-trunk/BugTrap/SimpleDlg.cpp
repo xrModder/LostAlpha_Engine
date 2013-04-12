@@ -161,7 +161,8 @@ static HBRUSH SimpleDlg_OnCtlColor(HWND hwnd, HDC hdc, HWND hwndChild, int type)
 		int nChildID = GetDlgCtrlID(hwndChild);
 		if (nChildID == IDC_INTRO_BKGND ||
 			nChildID == IDC_INTRO1 ||
-			nChildID == IDC_INTRO2)
+			nChildID == IDC_INTRO2 ||
+			nChildID == IDC_DESCRIPTION)
 		{
 			_ASSERTE(g_pResManager != NULL);
 			SetBkColor(hdc, GetSysColor(COLOR_WINDOW));

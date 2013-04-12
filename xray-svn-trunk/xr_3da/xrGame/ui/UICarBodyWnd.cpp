@@ -227,6 +227,10 @@ void CUICarBodyWnd::Hide()
 	inherited::Hide								();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
+
+	CCar* car = smart_cast<CCar*>(m_pOthersObject);
+	if (car)
+		car->CloseTrunkBone();
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -251,8 +255,13 @@ void CUICarBodyWnd::UpdateLists()
 
 	ruck_list.clear									();
 	if(m_pOthersObject)
-		m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
-	else
+	{
+		CCar* car = smart_cast<CCar*>(m_pOthersObject);
+		if (car)
+			car->AddAvailableItems (ruck_list);
+		else
+			m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
+	} else
 		m_pInventoryBox->AddAvailableItems			(ruck_list);
 
 	std::sort										(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
