@@ -29,6 +29,8 @@ __published:	// IDE-managed Components
 	TExtBtn *ExtBtn1;
 	TExtBtn *ebAttachObject;
 	TExtBtn *evDetachObject;
+	TExtBtn *evShowAllSpawnObjects;
+	TExtBtn *evHideSameObjects;
 	TPanel *paItems;
 	TBevel *Bevel1;
 	TPanel *paSelectObject;
@@ -47,6 +49,8 @@ __published:	// IDE-managed Components
     void __fastcall ExpandClick(TObject *Sender);
 	void __fastcall ebAttachObjectClick(TObject *Sender);
 	void __fastcall evDetachObjectClick(TObject *Sender);
+	void __fastcall evShowAllSpawnObjectsClick(TObject *Sender);
+	void __fastcall evHideSameObjectsClick(TObject *Sender);
 	void __fastcall FormHide(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
