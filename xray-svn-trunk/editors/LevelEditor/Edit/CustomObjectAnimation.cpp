@@ -99,18 +99,18 @@ void 	CCustomObject::OnMotionControlClick(ButtonValue* value, bool& bModif, bool
 	ButtonValue* B = dynamic_cast<ButtonValue*>(value); R_ASSERT(B);
 	switch(B->btn_num){
     case 0:{
-		m_MotionParams->t 	= m_MotionParams->min_t;
+		m_MotionParams->t_current 	= m_MotionParams->min_t;
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 1:{
     	float min_k;
     	float max_k;
-		m_Motion->FindNearestKey(m_MotionParams->t, min_k, max_k);
-        m_MotionParams->t	= min_k;
+		m_Motion->FindNearestKey(m_MotionParams->t_current, min_k, max_k);
+        m_MotionParams->t_current	= min_k;
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 2:{
-		m_MotionParams->t	-= 1.f/30.f;
+		m_MotionParams->t_current	-= 1.f/30.f;
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 3:{
@@ -120,18 +120,18 @@ void 	CCustomObject::OnMotionControlClick(ButtonValue* value, bool& bModif, bool
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 5:{
-		m_MotionParams->t	+= 1.f/30.f;
+		m_MotionParams->t_current	+= 1.f/30.f;
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 6:{
     	float min_k;
     	float max_k;
-		m_Motion->FindNearestKey(m_MotionParams->t, min_k, max_k);
-        m_MotionParams->t	= max_k;
+		m_Motion->FindNearestKey(m_MotionParams->t_current, min_k, max_k);
+        m_MotionParams->t_current	= max_k;
 		m_MotionParams->bPlay= FALSE;
     }break;
     case 7:{
-		m_MotionParams->t 	= m_MotionParams->max_t;
+		m_MotionParams->t_current 	= m_MotionParams->max_t;
 		m_MotionParams->bPlay= FALSE;
     }break;
     }
@@ -145,10 +145,10 @@ void 	CCustomObject::OnMotionCommandsClick(ButtonValue* value, bool& bModif, boo
 	ButtonValue* B = dynamic_cast<ButtonValue*>(value); R_ASSERT(B);
 	switch(B->btn_num){
     case 0:
-    	AnimationCreateKey	(m_MotionParams->t);
+    	AnimationCreateKey	(m_MotionParams->t_current);
     break;
     case 1:
-    	AnimationDeleteKey	(m_MotionParams->t);
+    	AnimationDeleteKey	(m_MotionParams->t_current);
     break;
     case 2:{
     	TProperties* P 		= TProperties::CreateModalForm("Scale keys");
@@ -228,8 +228,8 @@ void 	CCustomObject::OnMotionFrameChange(PropValue* value)
 
 void 	CCustomObject::OnMotionCurrentFrameChange(PropValue* value)
 {
-	if (m_MotionParams->t<m_MotionParams->min_t) 		m_MotionParams->min_t = m_MotionParams->t;
-    else if (m_MotionParams->t>m_MotionParams->max_t) m_MotionParams->max_t = m_MotionParams->t;
+	if (m_MotionParams->t_current<m_MotionParams->min_t) 		m_MotionParams->min_t = m_MotionParams->t_current;
+    else if (m_MotionParams->t_current>m_MotionParams->max_t) m_MotionParams->max_t = m_MotionParams->t_current;
 	m_Motion->SetParam	(m_MotionParams->min_t*30.f,m_MotionParams->max_t*30.f,30.f);
     m_MotionParams->bPlay= FALSE;
     AnimationUpdate		(m_MotionParams->Frame());
@@ -266,7 +266,7 @@ void CCustomObject::AnimationFillProp(LPCSTR pref, PropItemVec& items)
     	V->OnChangeEvent.bind(this,&CCustomObject::OnMotionFrameChange);
 		V				= PHelper().CreateFloat		(items,PrepareKey(pref,"Motion\\End Frame (sec)"),		&m_MotionParams->max_t, m_MotionParams->min_t, 10000.f, 	1.f/30.f, 3);
     	V->OnChangeEvent.bind(this,&CCustomObject::OnMotionFrameChange);
-		V				= PHelper().CreateFloat		(items,PrepareKey(pref,"Motion\\Current Frame (sec)"),	&m_MotionParams->t, -10000.f, 10000.f,	1.f/30.f, 3);
+		V				= PHelper().CreateFloat		(items,PrepareKey(pref,"Motion\\Current Frame (sec)"),	&m_MotionParams->t_current, -10000.f, 10000.f,	1.f/30.f, 3);
     	V->OnChangeEvent.bind(this,&CCustomObject::OnMotionCurrentFrameChange);                                     
         				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Key Count"),			shared_str().sprintf("%d",m_Motion->KeyCount()));
         				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Length (sec)"),		shared_str().sprintf("%3.2f",m_Motion->GetLength()));

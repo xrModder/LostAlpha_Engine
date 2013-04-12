@@ -244,7 +244,7 @@ void CActorTools::GetStatTime(float& a, float& b, float& c)
 			SAnimParams& P=m_pEditObject->m_SMParam;
 		    a = P.min_t;
     		b = P.max_t;
-            c = P.t;
+            c = P.t_current;
         }else{
         	a = 0;
             b = 0;
@@ -303,7 +303,7 @@ void CActorTools::OnFrame()
 
         if(!m_KeyBar->auto_ch->Checked)
         {
-            m_pEditObject->m_SMParam.t = float(m_KeyBar->anm_track->Position)/float(1000);
+            m_pEditObject->m_SMParam.t_current = float(m_KeyBar->anm_track->Position)/float(1000);
         }
     }
     if (m_KeyBar) m_KeyBar->UpdateBar();

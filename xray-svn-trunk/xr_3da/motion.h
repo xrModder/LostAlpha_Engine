@@ -66,7 +66,7 @@ public:
     int				FrameStart		()				{return iFrameStart;}
     int				FrameEnd		()				{return iFrameEnd;}
     float			FPS				()				{return fFPS;}
-    int				Length			()				{return iFrameEnd-iFrameStart+1;}
+    int				Length			()				{return iFrameEnd-iFrameStart;}
 
 	void			SetParam		(int s, int e, float fps){iFrameStart=s; iFrameEnd=e; fFPS=fps;}
 

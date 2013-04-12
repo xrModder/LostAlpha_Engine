@@ -148,7 +148,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	C.bEditor			= FALSE;
 	C.bDetail			= FALSE;
 #ifdef _EDITOR
-	if (!C.BT)			{ ELog.Msg(mtError,"Can't find shader '%s'",s_shader); return 0; }
+	if (!C.BT)			{ ELog.Msg(mtError,"Can't find shader '%s' in shaders.xr",s_shader); return 0; }
 	C.bEditor			= TRUE;
 #endif
 
