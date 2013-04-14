@@ -183,20 +183,20 @@
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrECoreB.bpf"/>
     <INCLUDEPATH value="blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;$(DXSDK_DIR)\Include;WildMagic;Editor;Engine;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Include\Mfc;$(CORESOC_DIR);..\xrEProps;$(XIPH_DIR);$(MAGIC_SW_DIR);$(SDK_DIR)\freeimage;$(MAGIC_SW_DIR)\Include"/>
-    <LIBPATH value="..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB"/>
+    <LIBPATH value="..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;$(MAIN_DIR)\libraries;$(BCB)\Projects\LIB"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
       -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_EDITOR -D_ECOREB -D_DEBUG -DXRCDB_EXPORTS -D_DEBUG 
-      -Iblenders -I..\..\xr_3daSDK\xrRender_R1 -I..\..\xr_3daSDK\blenders 
+    <IDLCFLAGS value="-Iblenders -I..\..\xr_3daSDK\xrRender_R1 -I..\..\xr_3daSDK\blenders 
       -I..\..\xrCDB -I..\..\xr_3daSDK\xrCPU_Pipe -IEngine\Blenders 
       -I..\..\xr_3daSDK\xrRender -I..\..\xr_3daSDK -I$(DXSDK_DIR)\Include 
       -IWildMagic -IEditor -IEngine -I$(BCB)\include -I$(BCB)\include\vcl 
       -I$(COMPONENTS_SOC)\AlexMX -I$(COMPONENTS_SOC)\ElPack\Code\Source 
       -I$(BCB)\Include\Mfc -I$(CORESOC_DIR) -I..\xrEProps -I$(XIPH_DIR) 
-      -I$(MAGIC_SW_DIR) -I$(SDK_DIR)\freeimage -I$(MAGIC_SW_DIR)\Include -boa"/>
+      -I$(MAGIC_SW_DIR) -I$(SDK_DIR)\freeimage -I$(MAGIC_SW_DIR)\Include 
+      -src_suffix cpp -D_EDITOR -D_ECOREB -D_DEBUG -DXRCDB_EXPORTS -D_DEBUG -boa"/>
     <CFLAG1 value="-WD -Od -H=x:\intermediate_ed\ecore\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp 
       -VF -ff -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -tWD -tWM -c"/>
     <PFLAGS value="-N2x:\intermediate_ed\ecore -N0x:\intermediate_ed\ecore -$Y+ -$W -$O- -$A8 
@@ -429,6 +429,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
+c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
 c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
@@ -448,23 +449,24 @@ Item11=..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xr
 Item12=$(DXSDK_DIR)\Include;WildMagic;Editor;Engine;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code\Source;$(BCB)\Include\Mfc;$(CORE_DIR);..\xrEProps;$(XIPH_DIR)\include
 
 [HistoryLists\hlLibraryPath]
-Count=16
-Item0=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
+Count=17
+Item0=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;$(MAIN_DIR)\libraries;$(BCB)\Projects\LIB
 Item1=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
-Item2=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
-Item3=blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
+Item2=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
+Item3=..\..\..\SDK\components\AlexMX;..\..\..\SDK\components\ElPack\Code;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
 Item4=blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
-Item5=C:\Program Files (x86)\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item6=C:\Program Files (x86)\Borland\CBuilder6\Projects\;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item7=C:\Program Files (x86)\Borland\CBuilder6\Projects\LIB;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item8=C:\Program Files (x86)\Borland\CBuilder6\Projects\LIB;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item9=C:\Program Files (x86)\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item10=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
-Item11=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
-Item12=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
-Item13=blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
-Item14=WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
-Item15=Editor;WildMagic;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
+Item5=blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries;$(BCB)\Projects\LIB
+Item6=C:\Program Files (x86)\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item7=C:\Program Files (x86)\Borland\CBuilder6\Projects\;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item8=C:\Program Files (x86)\Borland\CBuilder6\Projects\LIB;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item9=C:\Program Files (x86)\Borland\CBuilder6\Projects\LIB;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item10=C:\Program Files (x86)\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item11=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(BCB)\Lib\Psdk;x:\libraries
+Item12=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\AlexMX;$(COMPONENTS_SOC)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
+Item13=I:\Program Files\Borland\CBuilder6\Projects;blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
+Item14=blenders;..\..\xr_3daSDK\xrRender_R1;..\..\xr_3daSDK\blenders;WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
+Item15=WildMagic;Editor;..\..\xrCDB;..\..\xr_3daSDK\xrCPU_Pipe;Engine\Blenders;..\..\xr_3daSDK\xrRender;..\..\xr_3daSDK;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
+Item16=Editor;WildMagic;Engine;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\AlexMX;$(COMPONENTS)\ElPack\Code;$(BCB)\Lib\Psdk;x:\libraries
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
