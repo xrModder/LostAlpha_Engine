@@ -136,7 +136,7 @@
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="LevelEditor.cpp"/>
     <INCLUDEPATH value="$(DXSDK_DIR)\Include;Edit;Engine;$(BCB)\Projects;$(BCB)\include\vcl;$(BCB)\include;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(MAGIC_SW_DIR);$(MAGIC_SW_DIR)\Include"/>
-    <LIBPATH value="..\..\..\SDK\components\ElPack\Code;..\..\xr_3da\xrRender;..\..\xr_3da;Edit;Engine;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries"/>
+    <LIBPATH value="..\..\..\SDK\components\ElPack\Code;..\..\xr_3da\xrRender;..\..\xr_3da;Edit;Engine;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
       -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
@@ -313,7 +313,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=2
-Build=144
+Build=146
 Debug=1
 PreRelease=0
 Special=0
@@ -325,7 +325,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.2.144
+FileVersion=1.0.2.146
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -335,6 +335,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
+c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
 c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
 [HistoryLists\hlIncludePath]
@@ -364,14 +365,16 @@ Item9=H:\RAD\Borland\CBuilder6\Projects;Edit;Engine;C:\Rad\Borland\CBuilder6\Pro
 Item10=H:\RAD\Borland\CBuilder6\Projects;Engine\Game;Edit;Engine;C:\Rad\Borland\CBuilder6\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;r:\borland\components6\alexmx;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;..\lib\dx;..\lib;x:\;..\ECore;..\ECore\Editor
 
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=c:\rad\borland\cbuilder5\source\vcl;R:\Borland\Components6\AlexMX\
+Count=2
+Item0=X:\stalker\xray-svn-trunk\editors\ECore\Editor
+Item1=c:\rad\borland\cbuilder5\source\vcl;R:\Borland\Components6\AlexMX\
 
 [HistoryLists\hlConditionals]
-Count=3
-Item0=_EDITOR;_LEVEL_EDITOR;_DEBUG
+Count=4
+Item0=_EDITOR;_LEVEL_EDITOR;_DEBUG;
 Item1=_EDITOR;_LEVEL_EDITOR;_DEBUG
 Item2=_EDITOR;_LEVEL_EDITOR;_DEBUG
+Item3=_EDITOR;_LEVEL_EDITOR;_DEBUG
 
 [HistoryLists\hlIntOutputDir]
 Count=2

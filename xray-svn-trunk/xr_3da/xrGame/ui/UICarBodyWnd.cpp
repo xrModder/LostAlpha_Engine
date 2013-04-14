@@ -1,4 +1,5 @@
 #include "pch_script.h"
+#include <dinput.h>
 #include "UICarBodyWnd.h"
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
@@ -416,10 +417,18 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
-	if(keyboard_action==WINDOW_KEY_PRESSED && is_binded(kUSE, dik)) 
+	if(keyboard_action==WINDOW_KEY_PRESSED)
 	{
+		if(is_binded(kUSE, dik)) 
+		{
 			GetHolder()->StartStopMenu(this,true);
 			return true;
+		}
+		if(DIK_LSHIFT == dik)
+		{
+			TakeAll();
+			return true;
+		}
 	}
 	return false;
 }
