@@ -23,6 +23,8 @@ void	CThreadManager::wait	(u32	sleep_time)
 {
 	// Wait for completition
 	char		perf			[1024];
+	if( threads.empty() )
+		return;
 	for (;;)
 	{
 		Sleep	(sleep_time);

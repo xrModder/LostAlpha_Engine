@@ -35,6 +35,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id);
 CUICarBodyWnd::CUICarBodyWnd()
 {
 	m_pInventoryBox		= NULL;
+	m_pCar				= NULL;
 	Init				();
 	Hide				();
 	m_b_need_update		= false;
@@ -165,11 +166,11 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	m_pUIOthersIcon->Show							(true);
 	
 	CBaseMonster *monster = NULL;
-	CCar *car = NULL;
+	
 	if(m_pOthersObject) {
 		monster										= smart_cast<CBaseMonster *>(m_pOthersObject);
-		car											= smart_cast<CCar *>(m_pOthersObject);
-		if (monster || car || m_pOthersObject->use_simplified_visual() ) 
+		m_pCar										= smart_cast<CCar *>(m_pOthersObject);
+		if (monster || m_pCar || m_pOthersObject->use_simplified_visual() ) 
 		{
 			m_pUICharacterInfoRight->ClearInfo		();
 			if(monster)
@@ -178,7 +179,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 				m_pUICharacterInfoRight->UIIcon().InitTexture(monster_tex_name.c_str());
 				m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
 			} else {
-				shared_str car_tex_name = pSettings->r_string(car->cNameSect(),"icon");
+				shared_str car_tex_name = pSettings->r_string(m_pCar->cNameSect(),"icon");
 				m_pUICharacterInfoRight->UIIcon().InitTexture(car_tex_name.c_str());
 				m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
 			}
@@ -192,7 +193,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	EnableAll										();
 	UpdateLists										();
 
-	if(!monster && !car){
+	if(!monster && !m_pCar){
 		CInfoPortionWrapper	*known_info_registry	= xr_new<CInfoPortionWrapper>();
 		known_info_registry->registry().init		(other_id);
 		KNOWN_INFO_VECTOR& known_info				= known_info_registry->registry().objects();
@@ -214,7 +215,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 
 void CUICarBodyWnd::UpdateLists_delayed()
 {
-		m_b_need_update = true;
+	m_b_need_update = true;
 }
 
 #include "UIInventoryUtilities.h"
@@ -228,9 +229,10 @@ void CUICarBodyWnd::Hide()
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
 
-	CCar* car = smart_cast<CCar*>(m_pOthersObject);
-	if (car)
-		car->CloseTrunkBone();
+	if (m_pCar)
+	{
+		m_pCar->CloseTrunkBone();
+	}
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -256,9 +258,9 @@ void CUICarBodyWnd::UpdateLists()
 	ruck_list.clear									();
 	if(m_pOthersObject)
 	{
-		CCar* car = smart_cast<CCar*>(m_pOthersObject);
-		if (car)
-			car->AddAvailableItems (ruck_list);
+		//CCar* car = smart_cast<CCar*>(m_pOthersObject);
+		if (m_pCar)
+			m_pCar->AddAvailableItems (ruck_list);
 		else
 			m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
 	} else

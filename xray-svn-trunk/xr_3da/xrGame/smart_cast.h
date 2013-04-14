@@ -166,9 +166,11 @@
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(CEffectorZoomInertion,	CCameraEffector)
 */
+
 		DECLARE_SPECIALIZATION	(CParticlesPlayer,	CGameObject,	cast_particles_player);
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(CParticlesPlayer,	CGameObject)
+
 
 		DECLARE_SPECIALIZATION	(CArtefact,			CGameObject,	cast_artefact);
 #		undef cast_type_list
