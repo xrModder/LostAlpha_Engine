@@ -327,24 +327,29 @@ void __fastcall TfrmEditLibrary::tvItemsDblClick(TObject *Sender)
 void __fastcall TfrmEditLibrary::ebMakeThmClick(TObject *Sender)
 {
 	U32Vec pixels;
-    TElTreeItem* node = m_Items->GetSelected();
-	if (node&&FHelper.IsObject(node)){
-    	AnsiString name; FHelper.MakeName(node,0,name,false);
-   	    CEditableObject* obj = Lib.CreateEditObject(name.c_str());
-    	if (obj&&cbPreview->Checked){
-            AnsiString tex_name;
-            tex_name = ChangeFileExt(obj->GetName(),".thm");
-            if (ImageLib.CreateOBJThumbnail(tex_name.c_str(),obj,obj->Version())){
-	            ELog.Msg(mtInformation,"Thumbnail successfully created.");
-                AnsiString full_name;
-                FHelper.MakeFullName(node,0,full_name);
-                m_Items->SelectItem(full_name.c_str(),true,false,true);
-            }
-	    }else{
-            ELog.DlgMsg(mtError,"Can't create thumbnail. Set preview mode.");
-        }
+	TElTreeItem* node = m_Items->GetSelected();
+	if (node&&FHelper.IsObject(node))
+	{
+		AnsiString name; FHelper.MakeName(node,0,name,false);
+		CEditableObject* obj = Lib.CreateEditObject(name.c_str());
+		if (obj&&cbPreview->Checked)
+		{
+			AnsiString thm_fn = ChangeFileExt(obj->GetName(),".thm");
+			string_path	fname;
+			FS.update_path(fname,_objects_,thm_fn.c_str());
+
+			if (ImageLib.CreateOBJThumbnail(fname,obj,obj->Version()))
+			{
+				ELog.Msg(mtInformation,"Thumbnail successfully created.");
+				AnsiString full_name;
+				FHelper.MakeFullName(node,0,full_name);
+				m_Items->SelectItem(full_name.c_str(),true,false,true);
+			}
+		} else {
+			ELog.DlgMsg(mtError,"Can't create thumbnail. Set preview mode.");
+		}
 		Lib.RemoveEditObject(obj);
-    }
+	}
 }
 //---------------------------------------------------------------------------
 
