@@ -414,6 +414,45 @@ void  CActorTools::OnBoneFileClick(ButtonValue* V, bool& bModif, bool& bSafe)
 	}
 }
 
+void  CActorTools::OnSurfacesFileClick(ButtonValue* V, bool& bModif, bool& bSafe)
+{              
+	R_ASSERT(m_pEditObject);
+	switch (V->btn_num)
+	{
+		case 0:
+		{ 
+			xr_string fn;
+			if (EFS.GetOpenName("$ssurfaces$",fn))
+			{
+				IReader* R = FS.r_open(fn.c_str());
+				if (m_pEditObject->LoadSurfaceData(*R))
+					ELog.DlgMsg(mtInformation,"Surface data succesfully loaded.");
+				else
+					ELog.DlgMsg(mtError,"Failed to load surface data.");
+				FS.r_close(R);
+			} else {
+			bModif = false;
+			}
+		} break;
+		case 1:
+		{ 
+			xr_string fn;
+			if (EFS.GetSaveName("$ssurfaces$",fn))
+			{
+				IWriter* W = FS.w_open(fn.c_str());
+				if (W)
+				{
+					m_pEditObject->SaveSurfaceData(*W);
+					FS.w_close	(W);
+				} else {
+					Log			("!Can't save surface settings:",fn.c_str());
+				}
+			bModif = false;
+			}
+		} break;
+	}
+}
+
 void  CActorTools::OnBoneSkeletonClick(ButtonValue* V, bool& bModif, bool& bSafe)
 {
 	R_ASSERT(m_pEditObject);
@@ -568,12 +607,16 @@ void CActorTools::FillSurfaceProperties(PropItemVec& items, LPCSTR pref, ListIte
 {
 	R_ASSERT(m_pEditObject);
 	CSurface* SURF = (CSurface*)sender->m_Object;
-    PHelper().CreateCaption			(items, PrepareKey(pref,"Statistic\\Count"),	shared_str().sprintf("%d",m_pEditObject->SurfaceCount()));
-    if (SURF){
-        PHelper().CreateCaption		(items,PrepareKey(pref,"Surface\\Name"),		SURF->_Name());
-        AnsiString _pref			= PrepareKey(pref,"Surface").c_str();
-	    m_pEditObject->FillSurfaceProps(SURF,_pref.c_str(),items);
-    }
+	PHelper().CreateCaption			(items, PrepareKey(pref,"Statistic\\Count"),	shared_str().sprintf("%d",m_pEditObject->SurfaceCount()));
+	ButtonValue* B;
+	B=PHelper().CreateButton	(items, PrepareKey(pref,"Surfaces"),"Load,Save",ButtonValue::flFirstOnly);
+	B->OnBtnClickEvent.bind		(this,&CActorTools::OnSurfacesFileClick);
+	if (SURF)
+	{
+		PHelper().CreateCaption		(items,PrepareKey(pref,"Surface\\Name"),		SURF->_Name());
+		AnsiString _pref			= PrepareKey(pref,"Surface").c_str();
+		m_pEditObject->FillSurfaceProps(SURF,_pref.c_str(),items);
+	}
 }
 //------------------------------------------------------------------------------
 
