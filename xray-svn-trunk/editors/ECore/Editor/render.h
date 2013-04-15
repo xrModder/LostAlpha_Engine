@@ -100,7 +100,7 @@ public:
 	virtual	GenerationLevel	get_generation			(){return GENERATION_R1;}
 
 	virtual void			add_SkeletonWallmark	(intrusive_ptr<CSkeletonWallmark> wm){};
-	virtual void			add_SkeletonWallmark	(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size){};
+	virtual void			add_SkeletonWallmark	(const Fmatrix* xf, IKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size){};
 
 	// Render mode
 	virtual void			rmNear					();

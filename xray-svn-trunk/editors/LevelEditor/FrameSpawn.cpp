@@ -58,6 +58,26 @@ void __fastcall TfraSpawn::evDetachObjectClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TfraSpawn::evShowAllSpawnObjectsClick(TObject *Sender)
+{
+	if (Tools->GetSettings(etfShowAllSpawnObjects)) return;
+
+	Tools->SetSettings(etfShowAllSpawnObjects, true);
+	FormHide(Sender);					//skyloader: reload spawn list
+	FormShow(Sender);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfraSpawn::evHideSameObjectsClick(TObject *Sender)
+{
+	if (!Tools->GetSettings(etfShowAllSpawnObjects)) return;
+
+	Tools->SetSettings(etfShowAllSpawnObjects, false);
+	FormHide(Sender);
+	FormShow(Sender);
+}
+//---------------------------------------------------------------------------
+
 void __fastcall TfraSpawn::FormHide(TObject *Sender)
 {
     m_Items->SaveSelection	(fsStorage);
@@ -74,8 +94,20 @@ void __fastcall TfraSpawn::FormShow(TObject *Sender)
     for (CInifile::RootIt it=data.begin(); it!=data.end(); it++){
     	LPCSTR val;
     	if ((*it)->line_exist("$spawn",&val)){
-        	shared_str v	= pSettings->r_string_wb((*it)->Name,"$spawn");
-            if (v.size())	LHelper().CreateItem(items,*v,0,0,(LPVOID)*(*it)->Name);
+		shared_str v	= pSettings->r_string_wb((*it)->Name,"$spawn");
+		if (v.size())
+		{
+			if (Tools->GetSettings(etfShowAllSpawnObjects))
+			{
+				xr_string pref	= v.c_str(); 
+				pref		+= " [";
+				pref		+= (*it)->Name.c_str();
+				pref		+= "]";
+				LHelper().CreateItem(items,pref.c_str(),0,0,(LPVOID)*(*it)->Name);
+			} else
+				if (0==LHelper().FindItem(items,*v))
+					LHelper().CreateItem(items,*v,0,0,(LPVOID)*(*it)->Name);
+		}
         }
     }
     m_Items->AssignItems	(items,false,true);

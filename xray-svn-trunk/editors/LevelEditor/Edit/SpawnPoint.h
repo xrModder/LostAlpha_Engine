@@ -6,7 +6,7 @@
 #define SpawnPointH
 
 #include "LevelGameDef.h"
-#include "../../xr_3daSDK/xrGame/xrServer_Objects_abstract.h"
+#include "../../xr_3da/xrGame/xrServer_Objects_abstract.h"
 #include "CustomObject.h"
 
 // refs

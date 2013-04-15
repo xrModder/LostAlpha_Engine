@@ -107,6 +107,53 @@ void CEditableObject::SaveBoneData(IWriter& F)
     F.close_chunk	();
 }
 
+bool CEditableObject::LoadSurfaceData(IReader& F)
+{
+	bool bRes = true;
+        shared_str buf;
+
+	R_ASSERT(F.find_chunk(EOBJ_CHUNK_SURFACES3));
+
+	u32 cnt = F.r_u32();
+
+	if (cnt!=SurfaceCount())
+	{
+		ELog.Msg	(mtError,"Object surface count != load surface count");
+		bRes		= false; 
+	} else {
+		for (SurfaceIt s_it=m_Surfaces.begin(); s_it!=m_Surfaces.end(); s_it++)
+		{
+			F.r_stringZ	(buf);	(*s_it)->SetShader		(buf.c_str());
+			F.r_stringZ	(buf);	(*s_it)->SetShaderXRLC	(buf.c_str());
+			F.r_stringZ	(buf);	(*s_it)->SetGameMtl		(buf.c_str());
+			(*s_it)->m_Flags.assign(F.r_u32());
+		}
+	}
+
+	return bRes;
+}
+
+void CEditableObject::SaveSurfaceData(IWriter& F)
+{
+	int count = SurfaceCount();
+	if (count==0)
+	{
+		ELog.Msg	(mtError,"Surface count = 0");
+		return;
+	}
+
+	F.open_chunk	(EOBJ_CHUNK_SURFACES3);
+	F.w_u32		(m_Surfaces.size());
+	for (SurfaceIt sf_it=m_Surfaces.begin(); sf_it!=m_Surfaces.end(); sf_it++)
+	{
+		F.w_stringZ	((*sf_it)->_ShaderName		());
+		F.w_stringZ	((*sf_it)->_ShaderXRLCName	());
+		F.w_stringZ	((*sf_it)->_GameMtlName		());
+		F.w_u32	((*sf_it)->m_Flags.get		());
+	}
+	F.close_chunk	();
+}
+
 void CEditableObject::RenderSkeletonSingle(const Fmatrix& parent)
 {
 	RenderSingle(parent);

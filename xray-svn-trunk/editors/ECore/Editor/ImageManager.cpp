@@ -635,28 +635,28 @@ void CImageManager::ApplyBorders(U32Vec& tgt_data, u32 w, u32 h)
 BOOL CImageManager::CreateOBJThumbnail(LPCSTR tex_name, CEditableObject* obj, int age)
 {
 	BOOL bResult = TRUE;
-    // save render params
-    Flags32 old_flag= 	psDeviceFlags;
-    // set render params
-    psDeviceFlags.set(rsStatistic|rsDrawGrid,FALSE);
-//	u32 cc						= 	EPrefs.scene_clear_color;
-//	EPrefs.scene_clear_color 	= 	0x00333333;
+
+	// save render params
+	Flags32 old_flag = 	psDeviceFlags;
+	// set render params
+	psDeviceFlags.set(rsStatistic|rsDrawGrid,FALSE);
 
 	U32Vec pixels;
-    u32 w=512,h=512;
-    if (Device.MakeScreenshot(pixels,w,h)){
-        EObjectThumbnail tex(tex_name,false);
-        tex.CreateFromData(pixels.begin(),w,h,obj->GetFaceCount(),obj->GetVertexCount());
-        tex.Save(age);
-    }else{
-    	bResult = FALSE;
-        ELog.DlgMsg(mtError,"Can't make screenshot.");
-    }
+	u32 w=512,h=512;
+	if (Device.MakeScreenshot(pixels,w,h))
+	{
+		EObjectThumbnail tex(tex_name,false);
+		tex.CreateFromData(pixels.begin(),w,h,obj->GetFaceCount(),obj->GetVertexCount());
+		tex.Save(age);
+	} else {
+		bResult = FALSE;
+		ELog.DlgMsg(mtError,"Can't make screenshot.");
+	}
 
-    // restore render params
-    psDeviceFlags 				= old_flag;
-//	EPrefs.scene_clear_color 	= cc;
-    return bResult;
+	// restore render params
+	psDeviceFlags 				= old_flag;
+
+	return bResult;
 }
 
 void CImageManager::RemoveTexture(LPCSTR fname, EItemType type, bool& res)
