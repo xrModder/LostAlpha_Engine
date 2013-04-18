@@ -36,6 +36,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id);
 CUICarBodyWnd::CUICarBodyWnd()
 {
 	m_pInventoryBox		= NULL;
+	m_pOthersObject		= NULL;
 	Init				();
 	Hide				();
 	m_b_need_update		= false;
