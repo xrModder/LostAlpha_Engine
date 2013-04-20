@@ -186,6 +186,7 @@ void CTimersManager::Update ()
 	if (!b_GameLoaded)
 		return;
 	START_PROFILE("ALife/Timers")
+	u64 start = CPU::QPC();
 	time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
 	if (!game_timers.empty())

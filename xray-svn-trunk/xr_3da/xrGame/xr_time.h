@@ -7,9 +7,11 @@
 class xrTime{
 	ALife::_TIME_ID		m_time;
 public:
-	xrTime():m_time(0){}
-	xrTime(const xrTime& other):m_time(other.m_time){}
-	xrTime(ALife::_TIME_ID t):m_time(t){}
+	xrTime() : m_time(0)											{}
+	xrTime(const xrTime& other) : m_time(other.m_time)				{}
+	xrTime(ALife::_TIME_ID t) : m_time(t)							{}
+	xrTime(int y, int mo, int d, int h, int mi, int s, int ms)		{ set(y, mo, d, h, mi, s, ms);			}
+	xrTime(int d, int h, int mi, int s, int ms)						{ set(d, h, mi, s, ms);					}
 
 	bool	operator <		(const xrTime& other)	const			{ return m_time < other.m_time;			}
 	bool	operator >		(const xrTime& other)	const			{ return m_time > other.m_time;			}
@@ -30,6 +32,7 @@ public:
 	void	setHMS			(int h, int m, int s);
 	void	setHMSms		(int h, int m, int s, int ms);
 	void	set				(int y, int mo, int d, int h, int mi, int s, int ms);
+	void	set				(int d, int h, int mi, int s, int ms);
 	void	get				(u32 &y, u32 &mo, u32 &d, u32 &h, u32 &mi, u32 &s, u32 &ms);
 	
 	u32		time_id			() const { return u32(m_time & u32(-1)); }
