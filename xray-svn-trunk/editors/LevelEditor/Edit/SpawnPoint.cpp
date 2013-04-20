@@ -73,17 +73,26 @@ void CSpawnPoint::CLE_Visual::OnChangeVisual	()
         visual				= ::Render->model_Create(source->visual_name.c_str());
         if(NULL==visual)
         {
-         xr_string _msg = "Model [" + xr_string(source->visual_name.c_str())+"] not found. Do you want to select it from library?";
-              int mr = ELog.DlgMsg(mtConfirmation,TMsgDlgButtons() << mbYes << mbNo, _msg.c_str());
-              LPCSTR _new_val = 0;
-              b_tmp_lock = true;
-              if (mr==mrYes && TfrmChoseItem::SelectItem(smVisual,_new_val, 1) )
-              {
-                  source->visual_name  =  _new_val;
-                  visual = ::Render->model_Create(source->visual_name.c_str());
-              }
-              b_tmp_lock = false;
+		xr_string _msg = "Model [" + xr_string(source->visual_name.c_str())+"] not found. Do you want to select it from library?";
+		int mr = mrNo;
+		if (!psDeviceFlags.is(rsSkipModelObjects))
+		{
+			mr = ELog.DlgMsg(mtConfirmation,TMsgDlgButtons() << mbYes << mbNo << mbNoToAll, _msg.c_str());
+			if(mr==mrNoToAll)
+			{
+				psDeviceFlags.set(rsSkipModelObjects, TRUE);
+				mr = mbNo;
+			}
+		}
 
+		LPCSTR _new_val = 0;
+		b_tmp_lock = true;
+		if (mr==mrYes && TfrmChoseItem::SelectItem(smVisual,_new_val, 1) )
+		{
+			source->visual_name  =  _new_val;
+			visual = ::Render->model_Create(source->visual_name.c_str());
+		}
+		b_tmp_lock = false;
         }
         PlayAnimation		();
     }
@@ -802,16 +811,32 @@ void CSpawnPoint::OnProfileChange(PropValue* prop)
 		VERIFY					(s_name.size());
 		if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
 		{
-	    		int res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, "Do you want set all parameters from new profile?");
-				if (res==mrYes)
+			int res = mrNo;
+			if (!psDeviceFlags.is(rsChangeProfileParamsYes)&&!psDeviceFlags.is(rsChangeProfileParamsYes))
+			{
+		    		res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo << mbYesToAll << mbNoToAll, "Do you want set all parameters from new profile?");
+				if(res==mrYesToAll)
 				{
-			            ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
-			            NET_Packet 			Packet;
-			            tmp->Spawn_Write	(Packet,TRUE);
-			            R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
-			            m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
-			            destroy_entity		(tmp);
+					psDeviceFlags.set(rsChangeProfileParamsYes, TRUE);
+					res = mrYes;
+
+				} else if(res==mrNoToAll) {
+					psDeviceFlags.set(rsChangeProfileParamsNo, TRUE);
+					res = mrNo;
 				}
+
+			} else if (psDeviceFlags.is(rsChangeProfileParamsYes))
+				res = mrYes;
+
+			if (res==mrYes)
+			{
+				ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
+				NET_Packet 			Packet;
+				tmp->Spawn_Write	(Packet,TRUE);
+				R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
+				m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
+				destroy_entity		(tmp);
+			}
 		}
 	}else{
 		m_SpawnData.m_Profile	= SectionToEditor(m_SpawnData.m_Data->name());
