@@ -79,6 +79,7 @@ int CLog::DlgMsg (TMsgDlgType mt, TMsgDlgButtons btn, LPCSTR _Format, ...)
         switch (res){
         case mrYes: 	strcat(buf," - Yes."); 	break;
         case mrNo: 		strcat(buf," - No."); 	break;
+        case mrYesToAll:  strcat(buf," - Yes to all.");	break;
         case mrNoToAll:  strcat(buf," - No to all.");	break;
         case mrCancel:  strcat(buf," - Cancel.");	break;
         default: strcat(buf," - Something.");
