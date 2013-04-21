@@ -161,7 +161,9 @@
       x:\intermediate_ed\ecore\tga.obj 
       x:\intermediate_ed\ecore\TextureDescrManager.obj 
       x:\intermediate_ed\ecore\ETextureParams.obj 
-      x:\intermediate_ed\ecore\Animation.obj"/>
+      x:\intermediate_ed\ecore\Animation.obj 
+      x:\intermediate_ed\ecore\R_Backend_hemi.obj 
+      x:\intermediate_ed\ecore\R_Backend_tree.obj"/>
     <RESFILES value="resource.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -189,15 +191,14 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-Iblenders -I..\..\xr_3da\xrRender\blenders
-      -I..\..\xr_3da\xrRender_R1 -I..\..\xrCDB -I..\..\xr_3da\xrCPU_Pipe 
-      -IEngine\Blenders -I..\..\xr_3da\xrRender -I..\..\xr_3da 
-      -I$(DXSDK_DIR)\Include -IWildMagic -IEditor -IEngine -I$(BCB)\include 
-      -I$(BCB)\include\vcl -I$(COMPONENTS_SOC)\AlexMX 
-      -I$(COMPONENTS_SOC)\ElPack\Code\Source -I$(BCB)\Include\Mfc 
-      -I$(CORESOC_DIR) -I..\xrEProps -I$(XIPH_DIR) -I$(MAGIC_SW_DIR) 
-      -I$(SDK_DIR)\freeimage -I$(MAGIC_SW_DIR)\Include -src_suffix cpp -D_EDITOR 
-      -D_ECOREB -D_DEBUG -DXRCDB_EXPORTS -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-Iblenders -I..\..\xr_3da\xrRender\blenders -I..\..\xr_3da\xrRender_R1 
+      -I..\..\xrCDB -I..\..\xr_3da\xrCPU_Pipe -IEngine\Blenders 
+      -I..\..\xr_3da\xrRender -I..\..\xr_3da -I$(DXSDK_DIR)\Include -IWildMagic 
+      -IEditor -IEngine -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I$(COMPONENTS_SOC)\AlexMX -I$(COMPONENTS_SOC)\ElPack\Code\Source 
+      -I$(BCB)\Include\Mfc -I$(CORESOC_DIR) -I..\xrEProps -I$(XIPH_DIR) 
+      -I$(MAGIC_SW_DIR) -I$(SDK_DIR)\freeimage -I$(MAGIC_SW_DIR)\Include 
+      -src_suffix cpp -D_EDITOR -D_ECOREB -D_DEBUG -DXRCDB_EXPORTS -D_DEBUG -boa"/>
     <CFLAG1 value="-WD -Od -H=x:\intermediate_ed\ecore\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp 
       -VF -ff -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -tWD -tWM -c"/>
     <PFLAGS value="-N2x:\intermediate_ed\ecore -N0x:\intermediate_ed\ecore -$Y+ -$W -$O- -$A8 
@@ -397,6 +398,8 @@
       <FILE FILENAME="..\..\xr_3da\TextureDescrManager.cpp" FORMNAME="" UNITNAME="TextureDescrManager" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\xr_3da\ETextureParams.cpp" FORMNAME="" UNITNAME="ETextureParams" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\xr_3da\Animation.cpp" FORMNAME="" UNITNAME="Animation" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\xr_3da\R_Backend_hemi.cpp" FORMNAME="" UNITNAME="R_Backend_hemi" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\xr_3da\R_Backend_tree.cpp" FORMNAME="" UNITNAME="R_Backend_tree" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
