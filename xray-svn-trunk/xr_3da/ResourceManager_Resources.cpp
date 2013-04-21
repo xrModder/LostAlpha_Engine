@@ -687,12 +687,21 @@ public:
 SVS*	CResourceManager::_CreateVS		(LPCSTR _name)
 {
 	string_path			name;
-	xr_strcpy				(name,_name);
-	if (0 == ::Render->m_skinning)	xr_strcat(name,"_0");
-	if (1 == ::Render->m_skinning)	xr_strcat(name,"_1");
-	if (2 == ::Render->m_skinning)	xr_strcat(name,"_2");
-	if (3 == ::Render->m_skinning)	xr_strcat(name,"_3");
-	if (4 == ::Render->m_skinning)	xr_strcat(name,"_4");
+    #ifdef __BORLANDC__
+	   strcpy				(name,_name);
+	   if (0 == ::Render->m_skinning)	strcat(name,"_0");
+	   if (1 == ::Render->m_skinning)	strcat(name,"_1");
+	   if (2 == ::Render->m_skinning)	strcat(name,"_2");
+	   if (3 == ::Render->m_skinning)	strcat(name,"_3");
+	   if (4 == ::Render->m_skinning)	strcat(name,"_4");
+    #else
+	   xr_strcpy				(name,_name);
+	   if (0 == ::Render->m_skinning)	xr_strcat(name,"_0");
+	   if (1 == ::Render->m_skinning)	xr_strcat(name,"_1");
+	   if (2 == ::Render->m_skinning)	xr_strcat(name,"_2");
+	   if (3 == ::Render->m_skinning)	xr_strcat(name,"_3");
+	   if (4 == ::Render->m_skinning)	xr_strcat(name,"_4");
+    #endif
 	LPSTR N				= LPSTR		(name);
 	map_VS::iterator I	= m_vs.find	(N);
 	if (I!=m_vs.end())	return I->second;
@@ -728,7 +737,11 @@ SVS*	CResourceManager::_CreateVS		(LPCSTR _name)
 
 		u32 needed_len				= fs->length() + 1;
 		LPSTR pfs					= xr_alloc<char>(needed_len);
-		strncpy_s					(pfs, needed_len, (LPCSTR)fs->pointer(), fs->length());
+        #ifdef __BORLANDC__
+           strncpy				        	(pfs, (LPCSTR)fs->pointer(), fs->length());
+        #else
+		   strncpy_s					(pfs, needed_len, (LPCSTR)fs->pointer(), fs->length());
+        #endif
 		pfs							[fs->length()] = 0;
 
 		if (strstr(pfs, "main_vs_1_1"))			{ c_target = "vs_1_1"; c_entry = "main_vs_1_1";	}

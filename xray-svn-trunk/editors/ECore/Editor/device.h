@@ -179,7 +179,12 @@ enum {
     rsMuteSounds		= (1ul<<28ul),
     rsEnvironment		= (1ul<<29ul),
     rsDrawFlashtok		= (1ul<<30ul),
+
+    //skyloader: "to all" windows
     rsSkipAllObjects		= (1ul<<31ul),
+    rsSkipModelObjects		= (1ul<<32ul),
+    rsChangeProfileParamsYes		= (1ul<<33ul),
+    rsChangeProfileParamsNo		= (1ul<<34ul),
 };
 
 #define DEFAULT_CLEARCOLOR 0x00555555
