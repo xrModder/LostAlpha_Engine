@@ -244,7 +244,7 @@ void CActorTools::GetStatTime(float& a, float& b, float& c)
 			SAnimParams& P=m_pEditObject->m_SMParam;
 		    a = P.min_t;
     		b = P.max_t;
-            c = P.t;
+            c = P.t_current;
         }else{
         	a = 0;
             b = 0;
@@ -303,7 +303,7 @@ void CActorTools::OnFrame()
 
         if(!m_KeyBar->auto_ch->Checked)
         {
-            m_pEditObject->m_SMParam.t = float(m_KeyBar->anm_track->Position)/float(1000);
+            m_pEditObject->m_SMParam.t_current = float(m_KeyBar->anm_track->Position)/float(1000);
         }
     }
     if (m_KeyBar) m_KeyBar->UpdateBar();
@@ -838,23 +838,18 @@ void CActorTools::OptimizeMotions()
 
 void CActorTools::MakeThumbnail()
 {
-    if (CurrentObject()){
-   	    CEditableObject* obj = CurrentObject();
-        AnsiString tex_name,obj_name;
-        tex_name = ChangeFileExt(obj->GetName(),".thm");
-        obj_name = ChangeFileExt(obj->GetName(),".object");
-        FS_File 	F;
-        string_path	fname;
-        FS.update_path(fname,_objects_,obj_name.c_str());
-        R_ASSERT	(FS.file_find(fname,F));
-        if (ImageLib.CreateOBJThumbnail(tex_name.c_str(),obj,F.time_write)){
-            ELog.Msg(mtInformation,"Thumbnail successfully created.");
-        }else{
-            ELog.Msg(mtError,"Making thumbnail failed.");
-        }
-    }else{
-        ELog.DlgMsg(mtError,"Can't create thumbnail. Empty scene.");
-    }
+	if (CurrentObject())
+	{
+		CEditableObject* obj = CurrentObject();
+
+		R_ASSERT	(FS.exist(ChangeFileExt(obj->GetName(),".object").c_str()));
+		if (ImageLib.CreateOBJThumbnail(ChangeFileExt(obj->GetName(),".thm").c_str(),obj,obj->Version()))
+			ELog.Msg(mtInformation,"Thumbnail successfully created.");
+		else
+			ELog.Msg(mtError,"Making thumbnail failed.");
+	} else {
+		ELog.DlgMsg(mtError,"Can't create thumbnail. Empty scene.");
+	}
 }
 
 bool CActorTools::BatchConvert(LPCSTR fn)
