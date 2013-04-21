@@ -152,7 +152,7 @@ IC	CStoreHouse					&CALifeSimulatorBase::store_house						()
 	VERIFY						(m_store_house);
 	return						(*m_store_house);
 }
-
+#ifdef USE_TIMERS_MANAGER
 IC	CTimersManager					&CALifeSimulatorBase::timers							() 
 {
 	VERIFY						(initialized());
@@ -166,7 +166,7 @@ IC	CTimersManager					&CALifeSimulatorBase::timers							()  const
 	VERIFY						(m_timers_manager);
 	return						(*m_timers_manager);
 }
-
+#endif
 /*
 	CStoreHouse					*CALifeSimulatorBase::get_store_house_script						() 
 {

@@ -579,10 +579,10 @@ void CLevel::OnFrame	()
 	Device.Statistic->TEST0.Begin		();
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
-
+#ifdef USE_TIMERS_MANAGER
 	if (GameID()==GAME_SINGLE && ai().alife().initialized())
 		ai().alife().timers().Update();
-
+#endif
 	// update static sounds
 	if(!g_dedicated_server)
 	{

@@ -59,8 +59,9 @@ void CALifeStorageManager::save	(LPCSTR save_name, bool update_name)
 		objects().save			(stream);
 		registry().save			(stream);
 		store_house().save		(stream);
+#ifdef USE_TIMERS_MANAGER
 		timers().save			(stream);
-
+#endif
 		source_count			= stream.tell();
 		void					*source_data = stream.pointer();
 		dest_count				= rtc_csize(source_count);
@@ -115,8 +116,9 @@ void CALifeStorageManager::load	(void *buffer, const u32 &buffer_size, LPCSTR fi
 
 	registry().load				(source);
 	store_house().load			(source);
+#ifdef USE_TIMERS_MANAGER
 	timers().load				(source);
-
+#endif
 	can_register_objects		(true);
 
 	for (I = B; I != E; ++I)

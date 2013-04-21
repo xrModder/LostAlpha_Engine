@@ -47,7 +47,9 @@ protected:
 	CALifeGroupRegistry							*m_groups;
 	CALifeRegistryContainer						*m_registry_container;
 	CStoreHouse									*m_store_house;
+#ifdef USE_TIMERS_MANAGER
 	CTimersManager								*m_timers_manager;
+#endif
 	CRandom32									m_random;
 	bool										m_initialized;
 	shared_str									*m_server_command_line;
@@ -60,7 +62,9 @@ public:
 	IC		CALifeTimeManager					&time						();
 	IC		CALifeSpawnRegistry					&spawns						();
 	IC		CStoreHouse							&store_house				();
+#ifdef USE_TIMERS_MANAGER
 	IC		CTimersManager						&timers						();
+#endif
 	IC		CALifeObjectRegistry				&objects					();
 	IC		CALifeStoryRegistry					&story_objects				();
 	IC		CALifeSmartTerrainRegistry			&smart_terrains				();
@@ -81,7 +85,9 @@ public:
 	IC		bool								initialized					() const;
 	IC		const CALifeSimulatorHeader			&header						() const;
 	IC		const CALifeTimeManager				&time						() const;
+#ifdef USE_TIMERS_MANAGER
 	IC		CTimersManager						&timers						() const;
+#endif
 	IC		const CALifeSpawnRegistry			&spawns						() const;
 	IC		const CALifeObjectRegistry			&objects					() const;
 	IC		const CALifeGraphRegistry			&graph						() const;

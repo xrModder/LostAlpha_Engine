@@ -338,10 +338,11 @@ void CGamePersistent::update_game_loaded()
 {
 	xr_delete				(m_intro);
 	start_game_intro		();
-
+#ifdef USE_TIMERS_MANAGER
 	ai().alife().timers().GameLoaded(true);
+#endif
 }
-
+#include "ai_space.h"
 #include "alife_spawn_registry.h"
 void CGamePersistent::start_game_intro		()
 {
@@ -364,15 +365,27 @@ void CGamePersistent::start_game_intro		()
 			
 	}
 }
+#include "script_engine.h"
+void synchronization_callback()
+{
+	string256					fn;
+	luabind::functor<void>		callback;
+	strcpy_s					(fn, pSettings->r_string("lost_alpha_cfg", "on_synchronization_done"));
+	R_ASSERT					(ai().script_engine().functor<void>(fn, callback));
+	callback					();
+}
+
 void CGamePersistent::update_game_intro			()
 {
 	if(m_intro && (false==m_intro->IsActive())){
 		xr_delete				(m_intro);
 		m_intro_event			= 0;
+		synchronization_callback();
 	}
 	else if(!m_intro)
 	{
 		m_intro_event			= 0;
+		synchronization_callback();
 	}
 }
 #include "holder_custom.h"
@@ -622,6 +635,10 @@ void CGamePersistent::RestoreEffectorDOF()
 {
 	SetEffectorDOF			(m_dof[3]);
 }
+
+#include "ui.h"
+#include "HudManager.h"
+#include "UIGameSP.h"
 
 void CGamePersistent::UpdateDof()
 {
