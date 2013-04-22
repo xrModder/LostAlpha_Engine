@@ -547,6 +547,7 @@ public:
 	bool					Use							(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos);
 	void					DoExit						();
 	void					DoEnter						();
+	void					OpenTrunkBone						();
 	void					CloseTrunkBone						();
 	u16					GetTrunkBone					() const		{return m_bone_trunk;};
 	u16						DriverAnimationType 		();

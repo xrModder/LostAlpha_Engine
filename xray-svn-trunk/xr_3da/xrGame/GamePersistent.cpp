@@ -17,6 +17,7 @@
 #include "stalker_velocity_holder.h"
 #include "alife_simulator.h"
 #include "CustomTimersManager.h"
+#include "HUDManager.h"
 
 #include "../CameraManager.h"
 #include "actor.h"
@@ -326,6 +327,9 @@ void CGamePersistent::game_loaded()
 
 			if (NULL!=m_intro)	return;
 
+			HUD().GetUI()->HideGameIndicators();
+			HUD().GetUI()->HideCrosshair();
+
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
@@ -347,6 +351,9 @@ void CGamePersistent::start_game_intro		()
 {
 	if (g_pGameLevel && g_pGameLevel->bReady && Device.dwPrecacheFrame<=2){
 		m_intro_event.bind		(this,&CGamePersistent::update_game_intro);
+
+		HUD().GetUI()->ShowGameIndicators();
+		HUD().GetUI()->ShowCrosshair();
 
 		LPCSTR spawn_name = ai().alife().spawns().GetSpawnName();
 		bool load_spawn = (0==stricmp(m_game_params.m_new_or_load,"load") && 0==xr_strcmp(m_game_params.m_game_or_spawn, spawn_name));	//skyloader: flag if load save and (save == spawn_name), for example, all.sav
