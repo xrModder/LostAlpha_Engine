@@ -45,7 +45,9 @@ CALifeSimulatorBase::CALifeSimulatorBase	(xrServer *server, LPCSTR section)
 	m_groups					= 0;
 	m_registry_container		= 0;
 	m_store_house				= 0;
+#ifdef USE_TIMERS_MANAGER
 	m_timers_manager			= 0;
+#endif
 	random().seed				(u32(CPU::QPC() & 0xffffffff));
 	m_can_register_objects		= true;
 }
@@ -73,7 +75,9 @@ void CALifeSimulatorBase::unload			()
 	xr_delete					(m_groups);
 	xr_delete					(m_registry_container);
 	xr_delete					(m_store_house);
+#ifdef USE_TIMERS_MANAGER
 	xr_delete					(m_timers_manager);
+#endif
 	m_initialized				= false;
 }
 
@@ -90,7 +94,9 @@ void CALifeSimulatorBase::reload			(LPCSTR section)
 	m_groups					= xr_new<CALifeGroupRegistry>		();
 	m_registry_container		= xr_new<CALifeRegistryContainer>	();
 	m_store_house				= xr_new<CStoreHouse>				();
+#ifdef USE_TIMERS_MANAGER
 	m_timers_manager			= xr_new<CTimersManager>			();
+#endif
 	m_initialized				= true;
 }
 

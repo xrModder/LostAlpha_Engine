@@ -12,6 +12,7 @@ class CUI3tButton;
 class CUICellItem;
 class CInventoryBox;
 class CInventoryOwner;
+class CCar;
 
 class CUICarBodyWnd: public CUIDialogWnd
 {
@@ -51,6 +52,8 @@ protected:
 	CInventoryOwner*		m_pOthersObject;
 	CInventoryBox*			m_pInventoryBox;
 	CInventory*				m_pInventory;
+
+	CCar*					m_pCar;
 
 	CUIDragDropListEx*		m_pUIOurBagList;
 	CUIDragDropListEx*		m_pUIOthersBagList;

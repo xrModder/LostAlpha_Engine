@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CustomTimersManager.h"
 #include "ui\uistatic.h"
+#include "profiler.h"
+
 
 CTimersManager::CTimersManager() 
 {
@@ -91,7 +93,7 @@ void CTimersManager::RemoveTimer (LPCSTR name)
 	
 	TIMERS_IT *it = (it0 != timers.end()) ? &it0 : ((it1 != game_timers.end()) ? &it1 : NULL);
 
-	R_ASSERT3(it != NULL, "Can't find timer with name ",name);
+	R_ASSERT3(it != NULL, "Can't find timer with name ", name);
 	
 	if ((**it)->isHUD()) 
 		OnHud(NULL, false);
@@ -183,10 +185,11 @@ void CTimersManager::Update ()
 
 	if (!b_GameLoaded)
 		return;
-
+	START_PROFILE("ALife/Timers")
+	u64 start = CPU::QPC();
 	time_now = ai().get_alife() ? ai().alife().time().game_time() : Level().GetGameTime();
 
-	if (game_timers.size())
+	if (!game_timers.empty())
 	{
 		CTimerCustom *timer = game_timers.front();
 		if (timer && timer->CheckGameTime())
@@ -199,7 +202,7 @@ void CTimersManager::Update ()
 		}
 	}
 
-	if (timers.size())
+	if (!timers.empty())
 	{
 		CTimerCustom *timer = timers.front();
 		if (timer && timer->CheckTime(time_now))
@@ -217,7 +220,7 @@ void CTimersManager::Update ()
 
 	if (b_GameLoaded)
 	{
-		while (to_register.size())
+		while (!to_register.empty())
 		{
 			CTimerCustom *tmp = to_register.back();
 			to_register.pop_back();
@@ -251,5 +254,6 @@ void CTimersManager::Update ()
 
 		ui_hud_timer->SetText(str);
 	}
+	STOP_PROFILE
 }
 

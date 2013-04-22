@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef USE_TIMERS_MANAGER
 #include "pch_script.h"
 #include "script_export_space.h"
 #include "xr_time.h"
@@ -116,3 +116,5 @@ class CTimerCustomWrapper : public CTimerCustom, public luabind::wrap_base
 add_to_type_list(CTimerCustom)
 #undef script_type_list
 #define script_type_list save_type_list(CTimerCustom)
+
+#endif

@@ -190,7 +190,17 @@ public:
 	}
 };
 
-
+class CCC_SetGameTime: public IConsole_Command {
+public:
+					CCC_SetGameTime	(LPCSTR N) : IConsole_Command(N) {};
+	virtual void	Execute						(LPCSTR args)
+	{
+		u32 hours = 0, mins = 0;
+		
+		sscanf				(args,"%d:%d",&hours,&mins);
+		Level().SetGameTime	(hours, mins);
+	}
+};
 
 
 
@@ -1545,6 +1555,8 @@ void CCC_RegisterCommands()
 
 	// lost alpha starts
 	CMD1(CCC_LogPrint, "log_print");
+
+	CMD1(CCC_SetGameTime, "set_game_time");
 
 #ifndef MASTER_GOLD
 	CMD1(CCC_ALifeTimeFactor,		"al_time_factor"		);		// set time factor

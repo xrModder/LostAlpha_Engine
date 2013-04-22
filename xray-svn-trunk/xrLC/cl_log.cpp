@@ -150,18 +150,22 @@ void logThread(void *dummy)
 	}
 
 	BOOL		bHighPriority	= FALSE;
+/*
 	string256	u_name;
 	unsigned long		u_size	= sizeof(u_name)-1;
 	GetUserName	(u_name,&u_size);
 	_strlwr		(u_name);
+
 	if ((0==xr_strcmp(u_name,"oles"))||(0==xr_strcmp(u_name,"alexmx")))	bHighPriority	= TRUE;
+*/
+	if (strstr(GetCommandLine(), "-lox") != NULL)	bHighPriority	= TRUE; 
 
 	// Main cycle
 	u32		LogSize = 0;
 	float	PrSave	= 0;
 	while (TRUE)
 	{
-		SetPriorityClass	(GetCurrentProcess(),IDLE_PRIORITY_CLASS);	// bHighPriority?NORMAL_PRIORITY_CLASS:IDLE_PRIORITY_CLASS
+		SetPriorityClass	(GetCurrentProcess(), bHighPriority?NORMAL_PRIORITY_CLASS:IDLE_PRIORITY_CLASS);
 
 		// transfer data
 		while (!csLog.TryEnter())	{

@@ -439,22 +439,22 @@ CRenderTarget::CRenderTarget		()
 						{
 						case 0:	{ // looks like OrenNayar
 							fd	= powf(ld,0.75f);		// 0.75
-							fs	= powf(ls,16.f)*.5f;
+							fs	= powf(ls,(16.f+ps_r2_specularExponentBias)*ps_r2_specularExponentMul)*.5f;
 								}	break;
 						case 1:	{// looks like Blinn
 							fd	= powf(ld,0.90f);		// 0.90
-							fs	= powf(ls,24.f);
+							fs	= powf(ls,(24.f+ps_r2_specularExponentBias)*ps_r2_specularExponentMul);
 								}	break;
 						case 2:	{ // looks like Phong
 							fd	= ld;					// 1.0
-							fs	= powf(ls*1.01f,128.f	);
+							fs	= powf(ls*1.01f,(128.f+ps_r2_specularExponentBias)*ps_r2_specularExponentMul);
 								}	break;
 						case 3:	{ // looks like Metal
 							float	s0	=	_abs	(1-_abs	(0.05f*_sin(33.f*ld)+ld-ls));
 							float	s1	=	_abs	(1-_abs	(0.05f*_cos(33.f*ld*ls)+ld-ls));
 							float	s2	=	_abs	(1-_abs	(ld-ls));
 							fd		=	ld;				// 1.0
-							fs		=	powf	(_max(_max(s0,s1),s2), 24.f);
+							fs		=	powf	(_max(_max(s0,s1),s2), (24.f+ps_r2_specularExponentBias)*ps_r2_specularExponentMul);
 							fs		*=	powf	(ld,1/7.f);
 								}	break;
 						default:

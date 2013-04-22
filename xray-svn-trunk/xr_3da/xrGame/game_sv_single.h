@@ -36,6 +36,10 @@ public:
 	virtual		float				GetEnvironmentGameTimeFactor		();
 	virtual		void				SetEnvironmentGameTimeFactor		(const float fTimeFactor);
 
+	virtual		void				SetGameTimeFactor					(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	virtual		void				SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	
+
 	virtual		bool				change_level			(NET_Packet &net_packet, ClientID sender);
 	virtual		void				save_game				(NET_Packet &net_packet, ClientID sender);
 	virtual		bool				load_game				(NET_Packet &net_packet, ClientID sender);

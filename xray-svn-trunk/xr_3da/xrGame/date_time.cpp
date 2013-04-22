@@ -116,3 +116,17 @@ void split_time		(u64 time, u32 &years, u32 &months, u32 &days, u32 &hours, u32 
 	}}}}}}}}}}}
 	days					= u32(time);
 }
+
+
+u64	__generate_add_time	(u32 days, u32 hours, u32 minutes, u32 seconds)
+{
+	u64						result = 0;
+
+	result					+= u64(days);
+	result					= result*u64(24) + u64(hours);
+	result					= result*u64(60) + u64(minutes);
+	result					= result*u64(60) + u64(seconds);
+	result					*=u64(1000);
+
+	return					(result);
+}

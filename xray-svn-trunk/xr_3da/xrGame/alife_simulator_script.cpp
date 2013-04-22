@@ -205,12 +205,12 @@ CStoreHouse *get_store(CALifeSimulator *self)
 	return &(self->store_house());
 	//return NULL;
 }
-
+#ifdef USE_TIMERS_MANAGER
 CTimersManager *get_timers_manager(CALifeSimulator *self)
 {
 	return &(self->timers());
 }
-
+#endif
 CSE_Abstract *CALifeSimulator__spawn_item3		(CALifeSimulator *self, LPCSTR section, ALife::_STORY_ID sid, const Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id)
 {
 	CSE_Abstract			*entity		= NULL;
@@ -528,7 +528,9 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
 			.def("create_restrictor",			&CALifeSimulator__spawn_restrictor)
 			.def("store",					&get_store)
+#ifdef USE_TIMERS_MANAGER
 			.def("timer_manager",			&get_timers_manager)
+#endif
 		,def("alife",						&alife)
 	];
 

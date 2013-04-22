@@ -28,6 +28,7 @@ public:
 	virtual void					load					(IReader	&file_stream);
 			void					init					(LPCSTR		section);
 	IC		void					set_time_factor			(float		time_factor);
+	IC		void					set_game_time			(ALife::_TIME_ID new_time);
 	IC		ALife::_TIME_ID			game_time				() const;
 	IC		float					time_factor				() const;
 	IC		float					normal_time_factor		() const;

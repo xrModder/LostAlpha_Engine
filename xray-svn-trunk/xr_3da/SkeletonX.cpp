@@ -124,9 +124,14 @@ void CSkeletonX::_Render_soft	(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCo
 }
 
 //////////////////////////////////////////////////////////////////////
+#ifndef __BORLANDC__
 extern int ps_r1_SoftwareSkinning;
+#else
+int ENGINE_API 	ps_r1_SoftwareSkinning = 0;
+#endif
+
 void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount) 
-{	
+{
 	s_bones_array_const	= "sbones_array";
 #pragma todo("container is created in stack!")
 	xr_vector<u16>	bids;

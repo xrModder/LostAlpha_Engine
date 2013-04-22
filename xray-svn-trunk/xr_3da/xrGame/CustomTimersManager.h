@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef USE_TIMERS_MANAGER
 #include "script_export_space.h"
 #include "CustomTimer.h"
 //#include "alife_registry_wrappers.h"
@@ -65,3 +65,5 @@ class CTimersManager : public IPureSerializeObject<IReader, IWriter>
 add_to_type_list(CTimersManager)
 #undef script_type_list
 #define script_type_list save_type_list(CTimersManager)
+
+#endif
