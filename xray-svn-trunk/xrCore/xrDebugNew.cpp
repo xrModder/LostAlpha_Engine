@@ -47,11 +47,11 @@ extern bool shared_str_initialized;
 #include <new.h>							// for _set_new_mode
 #include <signal.h>							// for signals
 
-#if 0//def DEBUG
+#if __BORLANDC__
 #	define USE_OWN_ERROR_MESSAGE_WINDOW
-#else // DEBUG
+#else // __BORLANDC__
 #	define USE_OWN_MINI_DUMP
-#endif // DEBUG
+#endif // __BORLANDC__
 
 XRCORE_API	xrDebug		Debug;
 

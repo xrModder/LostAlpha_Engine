@@ -139,6 +139,7 @@ class CActorTools: public CToolsCustom
     void __stdcall 		OnBoneShapeClick  		(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneEditClick			(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneFileClick			(ButtonValue* sender, bool& bModif, bool& bSafe);
+    void __stdcall 		OnSurfacesFileClick			(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneSkeletonClick		(ButtonValue* sender, bool& bModif, bool& bSafe);
     void __stdcall 		OnBoneLimitsChange		(PropValue* sender);
     
@@ -160,6 +161,7 @@ protected:
     	flUpdateMotionKeys 	= (1<<4),
     	flUpdateMotionDefs	= (1<<5),
         flReadOnlyMode 		= (1<<6),
+        flAnimChanged		= (1<<7),
     };
     Flags32				m_Flags;
     
@@ -206,6 +208,9 @@ public:
     virtual void		OnDestroy			();
 
     ICF bool			ReadOnly			(){return m_Flags.is(flReadOnlyMode);}
+
+    virtual bool		AnimChanged			(){return m_Flags.is(flAnimChanged);}
+    virtual void		SetAnimChangedFlag	(BOOL bForced){m_Flags.set(flAnimChanged,bForced);}
     
     virtual bool		IfModified			();
     virtual bool		IsModified			(){return m_bObjectModified;}

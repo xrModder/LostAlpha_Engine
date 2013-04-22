@@ -66,7 +66,11 @@ public:
     int				FrameStart		()				{return iFrameStart;}
     int				FrameEnd		()				{return iFrameEnd;}
     float			FPS				()				{return fFPS;}
+#ifdef __BORLANDC__
+    int				Length			()				{return iFrameEnd-iFrameStart;}
+#else
     int				Length			()				{return iFrameEnd-iFrameStart+1;}
+#endif
 
 	void			SetParam		(int s, int e, float fps){iFrameStart=s; iFrameEnd=e; fFPS=fps;}
 

@@ -1,4 +1,5 @@
 #include "pch_script.h"
+#include <dinput.h>
 #include "UICarBodyWnd.h"
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
@@ -35,6 +36,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id);
 CUICarBodyWnd::CUICarBodyWnd()
 {
 	m_pInventoryBox		= NULL;
+	m_pOthersObject		= NULL;
 	Init				();
 	Hide				();
 	m_b_need_update		= false;
@@ -227,6 +229,10 @@ void CUICarBodyWnd::Hide()
 	inherited::Hide								();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
+
+	CCar* car = smart_cast<CCar*>(m_pOthersObject);
+	if (car)
+		car->CloseTrunkBone();
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -251,8 +257,13 @@ void CUICarBodyWnd::UpdateLists()
 
 	ruck_list.clear									();
 	if(m_pOthersObject)
-		m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
-	else
+	{
+		CCar* car = smart_cast<CCar*>(m_pOthersObject);
+		if (car)
+			car->AddAvailableItems (ruck_list);
+		else
+			m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
+	} else
 		m_pInventoryBox->AddAvailableItems			(ruck_list);
 
 	std::sort										(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
@@ -407,10 +418,18 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
-	if(keyboard_action==WINDOW_KEY_PRESSED && is_binded(kUSE, dik)) 
+	if(keyboard_action==WINDOW_KEY_PRESSED)
 	{
+		if(is_binded(kUSE, dik)) 
+		{
 			GetHolder()->StartStopMenu(this,true);
 			return true;
+		}
+		if(DIK_LSHIFT == dik)
+		{
+			TakeAll();
+			return true;
+		}
 	}
 	return false;
 }

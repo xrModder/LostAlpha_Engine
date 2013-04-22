@@ -53,6 +53,8 @@ CCommandVar CActorTools::CommandLoad(CCommandVar p1, CCommandVar p2)
         
         BOOL bReadOnly 			= !FS.can_modify_file(temp_fn.c_str());
         m_Flags.set				(flReadOnlyMode,bReadOnly);
+
+	ATools->SetAnimChangedFlag(TRUE);
         
         if (bReadOnly || EFS.CheckLocking(temp_fn.c_str(),false,true))
             Msg					("#!Object '%s' opened in readonly mode.",temp_fn.c_str());

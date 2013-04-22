@@ -325,6 +325,8 @@ public:
     int 			GetFaceCount			();
 	int 			GetVertexCount			();
     int 			GetSurfFaceCount		(LPCSTR surf_name);
+	bool 			LoadSurfaceData			(IReader& F);
+	void 			SaveSurfaceData			(IWriter& F);
 
     // render methods
 	void 			Render					(const Fmatrix& parent, int priority, bool strictB2F);

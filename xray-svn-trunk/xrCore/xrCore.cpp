@@ -40,8 +40,10 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 		_control87	( _MCW_EM,  MCW_EM );
 #endif
 		// Init COM so we can use CoCreateInstance
-//		HRESULT co_res = 
-		if (!strstr(GetCommandLine(),"-editor"))
+		OSVERSIONINFO osvi;
+		osvi.dwOSVersionInfoSize = sizeof(osvi);
+		GetVersionEx(&osvi);
+		if (osvi.dwMajorVersion < 6)								//skyloader: if not windows vista, 7, 8, etc.
 			CoInitializeEx (NULL, COINIT_MULTITHREADED);
 
 		strcpy_s			(Params,sizeof(Params),GetCommandLine());
@@ -181,8 +183,12 @@ void xrCore::_destroy		()
 //.		LogFile.reserve		(256);
 		break;
 	case DLL_THREAD_ATTACH:
-		if (!strstr(GetCommandLine(),"-editor"))
-		    CoInitializeEx	(NULL, COINIT_MULTITHREADED);
+		OSVERSIONINFO osvi;
+		osvi.dwOSVersionInfoSize = sizeof(osvi);
+		GetVersionEx(&osvi);
+		if (osvi.dwMajorVersion < 6)								//skyloader: if not windows vista, 7, 8, etc.
+			CoInitializeEx	(NULL, COINIT_MULTITHREADED);
+
 		timeBeginPeriod	(1);
 		break;
 	case DLL_THREAD_DETACH:

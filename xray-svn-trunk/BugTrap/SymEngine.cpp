@@ -987,6 +987,9 @@ void CSymEngine::GetOsInfo(COsInfo& rOsInfo)
 	static const TCHAR szWindowsMe[] = _T("Windows Me");
 	static const TCHAR szWindows2000[] = _T("Windows 2000");
 	static const TCHAR szWindowsXP[] = _T("Windows XP");
+	static const TCHAR szWindowsVista[] = _T("Windows vista");
+	static const TCHAR szWindows7[] = _T("Windows 7");
+	static const TCHAR szWindows8[] = _T("Windows 8");
 
 	OSVERSIONINFO osvi;
 	osvi.dwOSVersionInfoSize = sizeof(osvi);
@@ -1028,6 +1031,23 @@ void CSymEngine::GetOsInfo(COsInfo& rOsInfo)
 		case 1:
 			if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
 				rOsInfo.m_pszWinVersion = szWindowsXP;
+			break;
+		}
+		break;
+	case 6: 								//skyloader: added windows vista, 7, 8
+		switch (osvi.dwMinorVersion)
+		{
+		case 0:
+			if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+				rOsInfo.m_pszWinVersion = szWindowsVista;
+			break;
+		case 1:
+			if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+				rOsInfo.m_pszWinVersion = szWindows7;
+			break;
+		case 2:
+			if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
+				rOsInfo.m_pszWinVersion = szWindows8;
 			break;
 		}
 		break;
