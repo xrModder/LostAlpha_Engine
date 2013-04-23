@@ -154,7 +154,6 @@ public:
 
 //#pragma optimize( "g", off )
 
-#define	NUM_THREADS	8
 void CBuild::ImplicitLighting()
 {
 	if (g_params.m_quality==ebqDraft) return;
@@ -210,6 +209,10 @@ void CBuild::ImplicitLighting()
 		}
 
 		// Start threads
+		u32 NUM_THREADS = 8;
+		if (strstr(Core.Params,"-t"))
+			sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
+
 		CThreadManager			tmanager;
 		u32	stride				= defl.Height()/NUM_THREADS;
 		for (u32 thID=0; thID<NUM_THREADS; thID++)

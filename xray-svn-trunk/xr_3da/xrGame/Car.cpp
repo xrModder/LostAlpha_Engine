@@ -1547,7 +1547,6 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 				luabind::functor<void>				fl;
 				R_ASSERT2					(ai().script_engine().functor<void>("_g.on_use_trunk",fl), "Can't find function _g.on_use_trunk");
 				fl						(ID());
-				bool door 					= DoorOpen(m_bone_trunk);
 				return false;
 			}
 
@@ -2116,6 +2115,11 @@ void CCar::ShowTrunk()
 {
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if(pGameSP)pGameSP->StartCarBody(Actor(), this );
+}
+
+void CCar::OpenTrunkBone()
+{
+	bool door = DoorOpen(m_bone_trunk);
 }
 
 void CCar::CloseTrunkBone()

@@ -23,6 +23,7 @@ static const char* h_str =
 	"-? or -h	== this help\n"
 	"-f<NAME>	== compile level in gamedata\\levels\\<NAME>\\\n"
 	"-o			== modify build options\n"
+	"-t<NUM>			== numbers of threads \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 

@@ -232,7 +232,6 @@ public:
 	}
 };
 
-#define NUM_THREADS			4
 void CBuild::LightVertex	()
 {
 	g_trans				= xr_new<mapVert>	();
@@ -242,6 +241,11 @@ void CBuild::LightVertex	()
 	CThreadManager		Threads;
 	VLT.init			();
 	CTimer	start_time;	start_time.Start();				
+
+	u32 NUM_THREADS = 4;
+	if (strstr(Core.Params,"-t"))
+		sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
+
 	for (u32 thID=0; thID<NUM_THREADS; thID++)	Threads.start(xr_new<CVertexLightThread>(thID));
 	Threads.wait		();
 	clMsg				("%f seconds",start_time.GetElapsed_sec());

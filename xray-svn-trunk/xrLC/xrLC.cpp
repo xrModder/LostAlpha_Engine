@@ -36,7 +36,8 @@ static const char* h_str =
 	"-o				== modify build options\n"
 	"-nosun			== disable sun-lighting\n"
 	"-f<NAME>		== compile level in GameData\\Levels\\<NAME>\\\n"
-	"-noinvalidfaces== invalid faces detection\n"
+	"-noinvalidfaces	== invalid faces detection\n"
+	"-t<NUM>			== numbers of threads \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 

@@ -16,7 +16,7 @@ BOOL					b_nosun		= FALSE;
 BOOL					b_noinvalidfaces = FALSE;
 CThreadManager			mu_base;
 CThreadManager			mu_secondary;
-#define		MU_THREADS	4
+
 BOOL					gl_linear	= FALSE;
 
 //////////////////////////////////////////////////////////////////////
@@ -75,6 +75,10 @@ public:
 			pBuild->mu_models[m]->calc_materials();
 			pBuild->mu_models[m]->calc_lighting	();
 		}
+
+		u32 MU_THREADS = 4;
+		if (strstr(Core.Params,"-t"))
+			sscanf (strstr(Core.Params,"-t")+2,"%d",MU_THREADS);
 
 		// Light references
 		u32	stride			= pBuild->mu_refs.size()/MU_THREADS;
