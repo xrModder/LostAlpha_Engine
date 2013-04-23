@@ -3,7 +3,6 @@
 #include "xrThread.h"
 #include "xrSyncronize.h"
 
-#define	GI_THREADS		2
 const	u32				gi_num_photons		= 32;
 const	float			gi_optimal_range	= 15.f;
 const	float			gi_reflect			= 0.9f;
@@ -77,6 +76,10 @@ public:
 		CDB::MODEL*	model	= RCAST_Model;
 		CDB::TRI*	tris	= RCAST_Model->get_tris();
 		Fvector*	verts	= RCAST_Model->get_verts();
+
+		u32 GI_THREADS = 2;
+		if (strstr(Core.Params,"-t"))
+			sscanf (strstr(Core.Params,"-t")+2,"%d",GI_THREADS);
 
 		// full iteration
 		for (;;)	
@@ -184,6 +187,10 @@ void	CBuild::xrPhase_Radiosity	()
 	float	_energy_before	= 0;
 	for (u32 l=0; l<task->size(); l++)
 		if (task->at(l).type == LT_POINT)	_energy_before	+= task->at(l).energy;
+
+	int GI_THREADS = 2;
+	if (strstr(Core.Params,"-t"))
+		sscanf (strstr(Core.Params,"-t")+2,"%d",GI_THREADS);
 
 	// perform all the work
 	u32	setup_old			= task->size	();

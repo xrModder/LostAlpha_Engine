@@ -9,8 +9,6 @@
 #include "Etextureparams.h"
 #include "r_light.h"
 
-#define NUM_THREADS		3
-
 enum
 {
 	LP_DEFAULT			= 0,
@@ -681,6 +679,10 @@ public:
 void	xrLight			()
 {
 	u32	range				= dtH.size_z;
+
+	u32 NUM_THREADS = 3;
+	if (strstr(Core.Params,"-t"))
+		sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
 
 	// Start threads, wait, continue --- perform all the work
 	CThreadManager		Threads;
