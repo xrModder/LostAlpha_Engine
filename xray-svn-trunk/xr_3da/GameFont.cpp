@@ -80,21 +80,47 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 		
 		fXStep = ceil( fHeight / 2.0f );
 
+		Fvector vFirstValid = {0,0,0};
+
+		if ( ini->line_exist( "mb_symbol_coords" , "09608" ) ) {
+			Fvector v = ini->r_fvector3( "mb_symbol_coords" , "09608" );
+			vFirstValid.set( v.x , v.y , 1 + v[2] - v[0] );
+		} else 
+		for ( u32 i=0 ; i < nNumChars ; i++ ) {
+			sprintf_s( buf ,sizeof(buf), "%05d" , i );
+			if ( ini->line_exist( "mb_symbol_coords" , buf ) ) {
+				Fvector v = ini->r_fvector3( "mb_symbol_coords" , buf );
+				vFirstValid.set( v.x , v.y , 1 + v[2] - v[0] );
+				break;
+			}
+		}
+
+		// Filling entire character table
+
 		for ( u32 i=0 ; i < nNumChars ; i++ ) {
 			sprintf_s( buf ,sizeof(buf), "%05d" , i );
 			if ( ini->line_exist( "mb_symbol_coords" , buf ) ) {
 				Fvector v = ini->r_fvector3( "mb_symbol_coords" , buf );
 				TCMap[i].set( v.x , v.y , 1 + v[2] - v[0] );
 			} else
-				TCMap[i].set( 0 , 0 , 0 );
+				TCMap[i] = vFirstValid; // "unassigned" unprintable characters
 		}
+
+		// Special case for space
+		TCMap[ 0x0020 ].set( 0 , 0 , 0 );
+		// Special case for ideographic space
+		TCMap[ 0x3000 ].set( 0 , 0 , 0 );
+
+
 	}else
-	if (ini->section_exist("symbol_coords")){
+	if (ini->section_exist("symbol_coords"))
+	{
+		float d						= 0.0f;
 		fHeight						= ini->r_float("symbol_coords","height");
 		for (u32 i=0; i<nNumChars; i++){
 			sprintf_s				(buf,sizeof(buf),"%03d",i);
 			Fvector v				= ini->r_fvector3("symbol_coords",buf);
-			TCMap[i].set			(v.x,v.y,v[2]-v[0]);
+			TCMap[i].set			(v.x,v.y,v[2]-v[0]+d);
 		}
 	}else{
 	if (ini->section_exist("char widths")){
@@ -156,6 +182,7 @@ u32 CGameFont::smart_strlen( const char* S )
 void CGameFont::OnRender()
 {
 	VERIFY				(g_bRendering);
+
 	if (pShader)		RCache.set_Shader	(pShader);
 
 	if (!(uFlags&fsValid)){
@@ -226,6 +253,12 @@ void CGameFont::OnRender()
 					clr2	= color_rgba	(_R,_G,_B,_A);
 				}
 
+#if defined(USE_DX10) || defined(USE_DX11)		//	Vertex shader will cancel a DX9 correction, so make fake offset
+				X			-= 0.5f;
+				Y			-= 0.5f;
+				Y2			-= 0.5f;
+#endif	//	USE_DX10
+
 				float	tu,tv;
 				for (int j=0; j<len; j++)
 				{
@@ -239,8 +272,15 @@ void CGameFont::OnRender()
 
 					if (!fis_zero(l.z))
 					{
-						tu			= ( l.x / vTS.x ) + ( 0.5f / vTS.x );
-						tv			= ( l.y / vTS.y ) + ( 0.5f / vTS.y );
+//						tu			= ( l.x / vTS.x ) + ( 0.5f / vTS.x );
+//						tv			= ( l.y / vTS.y ) + ( 0.5f / vTS.y );
+						tu			= ( l.x / vTS.x );
+						tv			= ( l.y / vTS.y );
+#ifndef	USE_DX10
+						//	Make half pixel offset for 1 to 1 mapping
+						tu			+=( 0.5f / vTS.x );
+						tv			+=( 0.5f / vTS.y );
+#endif	//	USE_DX10
 
 						v->set( X , Y2 , clr2 , tu , tv + fTCHeight );						v++;
 						v->set( X ,	Y , clr , tu , tv );									v++;
@@ -412,7 +452,8 @@ float CGameFont::SizeOf_( LPCSTR s )
 	if (len)
 		for (int j=0; j<len; j++)
 			X			+= GetCharTC( ( u16 ) ( u8 ) s[ j ] ).z;
-	return				(X*vInterval.x/**vTS.x*/);
+
+	return				(X*vInterval.x);
 }
 
 float CGameFont::SizeOf_( const wide_char *wsStr )
