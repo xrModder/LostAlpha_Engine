@@ -1638,6 +1638,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ConstantDebug.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ConstantDebug.h"
+							>
+						</File>
+						<File
 							RelativePath=".\tss.h"
 							>
 						</File>

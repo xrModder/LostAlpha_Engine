@@ -8,7 +8,8 @@
 #include "..\SkeletonCustom.h"
 #include "..\xrRender\LightTrack.h"
 
-#define DUMP_CONST(C) C->name,C->type,C->destination
+#include "..\ConstantDebug.h"
+
 #pragma todo("cjayho to all: Hello all in this chat :)")
 
 CRender										RImplementation;
@@ -36,21 +37,31 @@ ShaderElement*			CRender::rimp_select_sh_static	(IRender_Visual	*pVisual, float 
 	}
 	return pVisual->shader->E[id]._get();
 }
-static class cl_parallax		: public R_constant_setup		{	virtual void setup	(R_constant* C)
-{
-	float			h			=	ps_r2_df_parallax_h;
-	RCache.set_c	(C,h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
-	//Msg("~ binder_parallax:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
-}}	binder_parallax;
+static class cl_parallax		: public R_constant_setup		
+{	
+	virtual void setup	(R_constant* C)
+	{
+		float			h			=	ps_r2_df_parallax_h;
+		RCache.set_c	(C,h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_parallax", Fvector4().set(h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range));
+#endif	
+	}
+}	binder_parallax;
 
-static class cl_pos_decompress_params		: public R_constant_setup		{	virtual void setup	(R_constant* C)
+static class cl_pos_decompress_params		: public R_constant_setup		
 {
-	float VertTan =  -1.0f * tanf( deg2rad(Device.fFOV/2.0f ) );
-	float HorzTan =  - VertTan / Device.fASPECT;
+	virtual void setup	(R_constant* C)
+	{
+		float VertTan =  -1.0f * tanf( deg2rad(Device.fFOV/2.0f ) );
+		float HorzTan =  - VertTan / Device.fASPECT;
 
-	RCache.set_c	( C, HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight );
-	//Msg("~ binder_pos_decompress_params:%s/%d/%d (%.4f,%.4f,%.4f,%.4f)", DUMP_CONST(C), HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight);
-}}	binder_pos_decompress_params;
+		RCache.set_c	( C, HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight );
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_pos_decompress_params", Fvector4().set(HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight));
+#endif	
+	}
+}	binder_pos_decompress_params;
 
 static class cl_water_intensity : public R_constant_setup		
 {	
@@ -59,7 +70,9 @@ static class cl_water_intensity : public R_constant_setup
 		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fWaterIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
-		//Msg("~ binder_water_intensity:%s/%d/%d %.4f", DUMP_CONST(C), fValue);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_water_intensity", Fvector4().set(fValue, fValue, fValue, 0));
+#endif	
 	}
 }	binder_water_intensity;
 
@@ -70,7 +83,9 @@ static class cl_sun_shafts_intensity : public R_constant_setup
 		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fSunShaftsIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
-		//Msg("~ binder_sun_shafts_intensity:%s/%d/%d %.4f", DUMP_CONST(C), fValue);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_sun_shafts_intensity", Fvector4().set(fValue, fValue, fValue, 0));
+#endif	
 	}
 }	binder_sun_shafts_intensity;
 

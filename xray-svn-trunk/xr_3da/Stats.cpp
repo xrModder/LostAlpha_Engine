@@ -6,6 +6,7 @@
 #include "IGame_Persistent.h"
 #include "render.h"
 #include "xr_object.h"
+#include "ConstantDebug.h"
 
 int		g_ErrorLineCount	= 15;
 Flags32 g_stats_flags		= {0};
@@ -309,6 +310,14 @@ void CStats::Show()
 		F.SetHeightI						(f_base_size);
 		seqStats.Process				(rp_Stats);
 		pFont->OnRender					();
+#ifdef LA_SHADERS_DEBUG
+		/////////////////////////////////////////////////////////////////////////
+		// shaders constants debug
+		F.SetHeightI						(f_base_size);
+		F.OutSet							(650,0);
+		g_pConstantsDebug->OnRender			(pFont);
+		pFont->OnRender						();
+#endif
 	};
 
 	if( psDeviceFlags.test(rsStatistic) || psDeviceFlags.test(rsCameraPos) ){
@@ -448,11 +457,17 @@ void CStats::OnDeviceCreate			()
 #ifdef DEBUG
 	if (!g_bDisableRedText)			SetLogCB	(_LogCallback);
 #endif
+#ifdef LA_SHADERS_DEBUG
+	g_pConstantsDebug = xr_new<CConstantsDebug>();
+#endif
 }
 
 void CStats::OnDeviceDestroy		()
 {
 	xr_delete	(pFont);
+#ifdef LA_SHADERS_DEBUG
+	xr_delete	(g_pConstantsDebug);
+#endif
 }
 
 void CStats::OnRender				()

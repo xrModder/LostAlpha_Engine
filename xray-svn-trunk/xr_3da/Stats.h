@@ -6,8 +6,13 @@
 #define AFX_STATS_H__4C8D1860_0EE2_11D4_B4E3_4854E82A090D__INCLUDED_
 #pragma once
 
-class ENGINE_API CGameFont;
+// remove it when fixed
+#define LA_SHADERS_DEBUG
 
+class ENGINE_API CGameFont;
+#ifdef LA_SHADERS_DEBUG
+class CConstantsDebug;
+#endif
 DECLARE_MESSAGE(Stats);
 
 class ENGINE_API CStats: public pureRender
