@@ -243,8 +243,8 @@ void CBuild::LightVertex	()
 	CTimer	start_time;	start_time.Start();				
 
 	u32 NUM_THREADS = 4;
-	if (strstr(Core.Params,"-t"))
-		sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
+	if (strstr(Core.Params,"-t "))
+		sscanf (strstr(Core.Params,"-t ")+3,"%d",&NUM_THREADS);
 
 	for (u32 thID=0; thID<NUM_THREADS; thID++)	Threads.start(xr_new<CVertexLightThread>(thID));
 	Threads.wait		();
