@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include "../xrRender/du_sphere.h"
+
+/*
 Fvector du_sphere_vertices[DU_SPHERE_NUMVERTEX]=
 {
 	0.0000f,	1.0000f, 	0.0000f,
@@ -278,6 +281,7 @@ u16 du_sphere_faces[DU_SPHERE_NUMFACES*3]={
 		71,   60,   91,
 		10,   60,   71,
 };
+*/
 
 void CRenderTarget::accum_point_geom_create()
 {

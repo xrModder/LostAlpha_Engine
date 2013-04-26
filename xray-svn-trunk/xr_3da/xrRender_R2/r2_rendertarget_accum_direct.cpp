@@ -2,6 +2,7 @@
 #include "..\igame_persistent.h"
 #include "..\environment.h"
 
+
 //////////////////////////////////////////////////////////////////////////
 // tables to calculate view-frustum bounds in world space
 // note: D3D uses [0..1] range for Z

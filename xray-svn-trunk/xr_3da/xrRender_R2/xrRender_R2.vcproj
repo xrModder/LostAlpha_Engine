@@ -1023,10 +1023,26 @@
 			<File
 				RelativePath=".\du_sphere_part.cpp"
 				>
+				<FileConfiguration
+					Name="Mixed|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\du_sphere_part.h"
 				>
+				<FileConfiguration
+					Name="Mixed|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="r2_rendertarget.cpp"
@@ -1122,6 +1138,77 @@
 			</File>
 			<File
 				RelativePath=".\r2_rendertarget_wallmarks.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="DebugDraw"
+			>
+			<File
+				RelativePath="..\xrRender\du_box.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_box.h"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_cone.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_cone.h"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_cylinder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_cylinder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_sphere.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_sphere.h"
+				>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_sphere_part.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Mixed|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\xrRender\du_sphere_part.h"
 				>
 			</File>
 		</Filter>

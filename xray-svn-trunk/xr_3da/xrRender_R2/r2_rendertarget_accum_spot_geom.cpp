@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "../xrRender/du_cone.h"
+/*
 Fvector du_cone_vertices[DU_CONE_NUMVERTEX]=
 {
 	0.0000f,    0.0000f, 0.0000f,
@@ -56,7 +58,7 @@ u16 du_cone_faces[DU_CONE_NUMFACES*3]=
 	17,15, 16,
 	17,16, 1
 };
-
+*/
 
 void CRenderTarget::accum_spot_geom_create	()
 {

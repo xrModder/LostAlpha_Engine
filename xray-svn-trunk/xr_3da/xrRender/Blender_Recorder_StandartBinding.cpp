@@ -159,7 +159,9 @@ class cl_fog_plane	: public R_constant_setup {
 			result.set		(-plane.x*B, -plane.y*B, -plane.z*B, 1 - (plane.w-A)*B	);								// view-plane
 		}
 		RCache.set_c	(C,result);
-		
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_fog_params", result);
+#endif
 	}
 };
 static cl_fog_plane		binder_fog_plane;

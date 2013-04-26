@@ -129,7 +129,8 @@ public:
 		c_f.dirty	(base,base+1);
 	}
 };
-
+#include "Stats.h"
+#include "ConstantDebug.h"
 class	ENGINE_API R_constants
 {
 public:
@@ -150,6 +151,9 @@ public:
 	ICF void				set		(R_constant* C, float x, float y, float z, float w)	{
 		Fvector4 data;		data.set(x,y,z,w);
 		set					(C,data);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add(C->name, data);
+#endif
 	}
 
 	// fp, array versions
@@ -164,6 +168,9 @@ public:
 	ICF void				seta	(R_constant* C, u32 e, float x, float y, float z, float w)	{
 		Fvector4 data;		data.set(x,y,z,w);
 		seta				(C,e,data);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add(C->name, data);
+#endif
 	}
 
 	//
