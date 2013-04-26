@@ -77,8 +77,8 @@ public:
 		}
 
 		u32 MU_THREADS = 4;
-		if (strstr(Core.Params,"-t"))
-			sscanf (strstr(Core.Params,"-t")+2,"%d",MU_THREADS);
+		if (strstr(Core.Params,"-t "))
+			sscanf (strstr(Core.Params,"-t ")+3,"%d",&MU_THREADS);
 
 		// Light references
 		u32	stride			= pBuild->mu_refs.size()/MU_THREADS;

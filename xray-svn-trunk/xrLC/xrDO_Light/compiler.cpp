@@ -681,8 +681,8 @@ void	xrLight			()
 	u32	range				= dtH.size_z;
 
 	u32 NUM_THREADS = 3;
-	if (strstr(Core.Params,"-t"))
-		sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
+	if (strstr(Core.Params,"-t "))
+		sscanf (strstr(Core.Params,"-t ")+3,"%d",&NUM_THREADS);
 
 	// Start threads, wait, continue --- perform all the work
 	CThreadManager		Threads;

@@ -78,8 +78,8 @@ public:
 		Fvector*	verts	= RCAST_Model->get_verts();
 
 		u32 GI_THREADS = 2;
-		if (strstr(Core.Params,"-t"))
-			sscanf (strstr(Core.Params,"-t")+2,"%d",GI_THREADS);
+		if (strstr(Core.Params,"-t "))
+			sscanf (strstr(Core.Params,"-t ")+3,"%d",&GI_THREADS);
 
 		// full iteration
 		for (;;)	
@@ -189,8 +189,8 @@ void	CBuild::xrPhase_Radiosity	()
 		if (task->at(l).type == LT_POINT)	_energy_before	+= task->at(l).energy;
 
 	int GI_THREADS = 2;
-	if (strstr(Core.Params,"-t"))
-		sscanf (strstr(Core.Params,"-t")+2,"%d",GI_THREADS);
+	if (strstr(Core.Params,"-t "))
+		sscanf (strstr(Core.Params,"-t ")+3,"%d",&GI_THREADS);
 
 	// perform all the work
 	u32	setup_old			= task->size	();

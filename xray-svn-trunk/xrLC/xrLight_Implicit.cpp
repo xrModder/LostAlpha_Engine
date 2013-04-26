@@ -210,8 +210,8 @@ void CBuild::ImplicitLighting()
 
 		// Start threads
 		u32 NUM_THREADS = 8;
-		if (strstr(Core.Params,"-t"))
-			sscanf (strstr(Core.Params,"-t")+2,"%d",NUM_THREADS);
+		if (strstr(Core.Params,"-t "))
+			sscanf (strstr(Core.Params,"-t ")+3,"%d",&NUM_THREADS);
 
 		CThreadManager			tmanager;
 		u32	stride				= defl.Height()/NUM_THREADS;
