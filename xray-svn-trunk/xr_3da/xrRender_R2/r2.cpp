@@ -664,7 +664,7 @@ HRESULT	CRender::shader_compile			(
 
 	// options
 	{
-		sprintf_s						(c_smapsize,"%04d",u32(o.smapsize));
+		xr_sprintf						(c_smapsize,"%04d",u32(o.smapsize));
 		defines[def_it].Name		=	"SMAP_size";
 		defines[def_it].Definition	=	c_smapsize;
 		def_it						++	;
@@ -757,7 +757,7 @@ HRESULT	CRender::shader_compile			(
 	sh_name[len]='0'+char(o.sunstatic); ++len;
 
 	if (o.forcegloss)		{
-		sprintf_s						(c_gloss,"%f",o.forcegloss_v);
+		xr_sprintf						(c_gloss,"%f",o.forcegloss_v);
 		defines[def_it].Name		=	"FORCE_GLOSS";
 		defines[def_it].Definition	=	c_gloss;
 		def_it						++	;
@@ -870,7 +870,7 @@ HRESULT	CRender::shader_compile			(
 
 	if (RImplementation.o.advancedpp && ps_r_sun_shafts)
 	{
-		sprintf_s					(c_sun_shafts,"%d",ps_r_sun_shafts);
+		xr_sprintf					(c_sun_shafts,"%d",ps_r_sun_shafts);
 		defines[def_it].Name		=	"SUN_SHAFTS_QUALITY";
 		defines[def_it].Definition	=	c_sun_shafts;
 		def_it						++;
@@ -883,7 +883,7 @@ HRESULT	CRender::shader_compile			(
 
 	if (RImplementation.o.advancedpp && ps_r_ssao)
 	{
-		sprintf_s					(c_ssao,"%d",ps_r_ssao);
+		xr_sprintf					(c_ssao,"%d",ps_r_ssao);
 		defines[def_it].Name		=	"SSAO_QUALITY";
 		defines[def_it].Definition	=	c_ssao;
 		def_it						++;
@@ -896,7 +896,7 @@ HRESULT	CRender::shader_compile			(
 
 	if (RImplementation.o.advancedpp && ps_r_sun_quality)
 	{
-		sprintf_s					(c_sun_quality,"%d",ps_r_sun_quality);
+		xr_sprintf					(c_sun_quality,"%d",ps_r_sun_quality);
 		defines[def_it].Name		=	"SUN_QUALITY";
 		defines[def_it].Definition	=	c_sun_quality;
 		def_it						++;
@@ -927,7 +927,7 @@ HRESULT	CRender::shader_compile			(
 	HRESULT		_result = E_FAIL;
 
 	string_path	folder_name, folder;
-	strcpy_s		( folder, "r2\\objects\\r2\\" );
+	xr_strcpy		( folder, "r2\\objects\\r2\\" );
 	strcat_s		( folder, name );
 	strcat_s		( folder, "." );
 
@@ -945,7 +945,7 @@ HRESULT	CRender::shader_compile			(
 	if ( !match_shader_id(name, sh_name, m_file_set, temp_file_name) ) {
 //		Msg				( "no library shader found" );
 		string_path file;
-		strcpy_s		( file, "shaders_cache\\r2\\" );
+		xr_strcpy		( file, "shaders_cache\\r2\\" );
 		strcat_s		( file, name );
 		strcat_s		( file, "." );
 		strcat_s		( file, extension );
@@ -954,7 +954,7 @@ HRESULT	CRender::shader_compile			(
 		FS.update_path	( file_name, "$app_data_root$", file);
 	}
 	else {
-		strcpy_s		( file_name, folder_name );
+		xr_strcpy		( file_name, folder_name );
 		strcat_s		( file_name, temp_file_name );
 	}
 
@@ -1061,7 +1061,7 @@ static inline bool match_shader		( LPCSTR const debug_shader_id, LPCSTR const fu
 static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result )
 {
 #if 0
-	strcpy_s					( result, "" );
+	xr_strcpy					( result, "" );
 	return						false;
 #else // #if 1
 #ifdef DEBUG
@@ -1077,14 +1077,14 @@ static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const 
 		}
 	}
 
-	strcpy_s					( result, temp );
+	xr_strcpy					( result, temp );
 	return						found;
 #else // #ifdef DEBUG
 	FS_FileSet::const_iterator	i = file_set.begin();
 	FS_FileSet::const_iterator	const e = file_set.end();
 	for ( ; i != e; ++i ) {
 		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			strcpy_s			( result, (*i).name.c_str() );
+			xr_strcpy			( result, (*i).name.c_str() );
 			return				true;
 		}
 	}

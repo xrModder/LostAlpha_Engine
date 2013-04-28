@@ -61,7 +61,7 @@ void CUIOptConCom::Init()
 	m_iReinforcementType = 1;
 	CMD4(CCC_Integer,	"mm_net_srv_reinforcement_type",	&m_iReinforcementType, 0, 2 );
 
-	//strcpy_s			(m_sReinforcementType,"reinforcement");
+	//xr_strcpy			(m_sReinforcementType,"reinforcement");
 	//CMD3(CCC_String,	"mm_net_srv_reinforcement_type",	m_sReinforcementType, sizeof(m_sReinforcementType));
 	
 	m_fNetWeatherRate = 1.0f;

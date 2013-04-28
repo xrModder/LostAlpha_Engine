@@ -170,7 +170,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
+				AdditionalIncludeDirectories="X:\STALKER\SDK\DPlay;X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;XR_NETSERVER_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -359,6 +359,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ip_filter.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ip_filter.h"
+			>
+		</File>
+		<File
+			RelativePath=".\NET_AuthCheck.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\NET_AuthCheck.h"
+			>
+		</File>
+		<File
 			RelativePath=".\NET_Client.cpp"
 			>
 		</File>
@@ -392,6 +408,10 @@
 		</File>
 		<File
 			RelativePath=".\NET_Messages.h"
+			>
+		</File>
+		<File
+			RelativePath=".\NET_PlayersMonitor.h"
 			>
 		</File>
 		<File

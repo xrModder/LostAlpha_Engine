@@ -2,11 +2,12 @@
 #pragma hdrstop
 
 #include "bone.h"
+#include "gamemtllib.h"
 
 
 u16	CBone::get_game_mtl_idx	( )			const	
 {
-	return -1; //GMLib.GetMaterialIdx(game_mtl.c_str());
+	return GMLib.GetMaterialIdx(game_mtl.c_str());
 }
 
 static const Fobb	dummy = Fobb().identity();

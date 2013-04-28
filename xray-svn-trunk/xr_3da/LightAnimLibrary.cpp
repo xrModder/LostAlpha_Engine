@@ -197,7 +197,7 @@ void ELightAnimLibrary::Unload()
     Items.clear();
 }
 
-void ELightAnimLibrary::Load()
+__declspec(dllexport) void ELightAnimLibrary::Load()
 {
 	string_path fn;
     FS.update_path(fn,_game_data_,"lanims.xr");

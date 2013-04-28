@@ -122,7 +122,7 @@ void CUIActorInfoWnd::FillPointsInfo			()
 					itm->m_text2->SetTextST				("");
 				}else
 				{
-					sprintf_s							(buff,"%d", _totl);
+					xr_sprintf							(buff,"%d", _totl);
 					itm->m_text2->SetTextST				(buff);
 				}
 			}
@@ -168,7 +168,7 @@ void CUIActorInfoWnd::FillMasterPart(CUIXml* xml, const shared_str& key_name)
 				itm->m_text2->SetTextST				("");
 			}else
 			{
-				sprintf_s							(buff,"%d", _totl);
+				xr_sprintf							(buff,"%d", _totl);
 				itm->m_text2->SetTextST				(buff);
 			}
 		}
@@ -185,11 +185,11 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 	uiXml.SetLocalRoot						(uiXml.NavigateToNode("actor_stats_wnd",0));
 	
 	string512 path;
-	sprintf_s								(path,"detail_part_%s",id.c_str());
+	xr_sprintf								(path,"detail_part_%s",id.c_str());
 	
 	XML_NODE* n								= uiXml.NavigateToNode(path,0);
 	if(!n)
-		sprintf_s								(path,"detail_part_def");
+		xr_sprintf								(path,"detail_part_def");
 
 	if(id=="reputation")//reputation
 	{
@@ -198,7 +198,7 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 		return;
 	}
 	string256									str;
-	sprintf_s									(str,"st_detail_list_for_%s", id.c_str());
+	xr_sprintf									(str,"st_detail_list_for_%s", id.c_str());
 	UIInfoHeader->GetTitleStatic()->SetTextST	(str);
 
 	SStatSectionData&	section				= Actor()->	StatisticMgr().GetSection(id);
@@ -212,7 +212,7 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 		CUIActorStaticticDetail* itm		= xr_new<CUIActorStaticticDetail>();
 		itm->Init							(&uiXml, path, 0);
 
-		sprintf_s							(buff,"%d.",_cntr);
+		xr_sprintf							(buff,"%d.",_cntr);
 		itm->m_text0->SetText				(buff);
 
 		itm->m_text1->SetTextST				(*CStringTable().translate((*it).key));
@@ -220,10 +220,10 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 
 		if( 0==(*it).str_value.size() )
 		{
-			sprintf_s							(buff,"x%d", (*it).int_count);
+			xr_sprintf							(buff,"x%d", (*it).int_count);
 			itm->m_text2->SetTextST				(buff);
 
-			sprintf_s							(buff,"%d", (*it).int_points);
+			xr_sprintf							(buff,"%d", (*it).int_points);
 			itm->m_text3->SetTextST				(buff);
 		}else
 		{
@@ -274,7 +274,7 @@ void	CUIActorInfoWnd::FillReputationDetails(CUIXml* xml, LPCSTR path)
 		itm->m_text2->SetTextST				(InventoryUtilities::GetGoodwillAsText(gw));
 		itm->m_text2->SetTextColor			(InventoryUtilities::GetGoodwillColor(gw));
 
-		sprintf_s							(buff,"%d", gw);
+		xr_sprintf							(buff,"%d", gw);
 		itm->m_text3->SetTextST				(buff);
 
 		UIDetailList->AddWindow				(itm, true);

@@ -505,7 +505,7 @@ notamd:
         pinfo->model = (dwStandard >> 4)&0xF;   // retriving model
         pinfo->stepping = (dwStandard) & 0xF;   // retriving stepping
         Ident.cBuf[12] = 0;
-        strcpy_s		(pinfo->v_name, Ident.cBuf);
+        xr_strcpy		(pinfo->v_name, Ident.cBuf);
         map_mname	(pinfo->family, pinfo->model, pinfo->v_name, pinfo->model_name);
     }
    return feature;

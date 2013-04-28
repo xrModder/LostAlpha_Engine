@@ -574,7 +574,7 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 
 	m_start_time = Device.dwTimeGlobal;
 	string1024 Text;
-	strcpy_s(Text, sizeof(Text), "Client disconnected. ");
+	xr_strcpy(Text, sizeof(Text), "Client disconnected. ");
 	strcat_s(Text,sizeof(Text),reason);
 	m_pMB_ErrDlgs[SessionTerminate]->SetText(Text);
 	SetErrorDialog(CMainMenu::SessionTerminate);
@@ -583,7 +583,7 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 void	CMainMenu::OnLoadError(LPCSTR module)
 {
 	string1024 Text;
-	strcpy_s(Text, sizeof(Text),"Error loading (not found) ");
+	xr_strcpy(Text, sizeof(Text),"Error loading (not found) ");
 	strcat_s(Text,sizeof(Text), module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);

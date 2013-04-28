@@ -1,7 +1,7 @@
 #ifndef _CPS_Instance_H_
 #define _CPS_Instance_H_
 
-#include "ispatial.h"
+#include "../xrcdb/ispatial.h"
 #include "isheduled.h"
 #include "irenderable.h"
 
@@ -11,6 +11,9 @@ class ENGINE_API CPS_Instance	:
 	public IRenderable
 {
 	friend class			IGame_Persistent;
+
+	template <bool _is_pm, typename T>
+	friend struct xr_special_free;
 
 private:
 	bool					m_destroy_on_game_load;
@@ -33,7 +36,7 @@ public:
 	IC BOOL					PSI_IsAutomatic		()						{	return m_bAutoRemove;				}
 	IC void					PSI_SetLifeTime		(float life_time)		{	m_iLifeTime=iFloor(life_time*1000);	}
 
-	virtual void			Play				()				= 0;
+	virtual void			Play				(bool bHudMode)	= 0;
 	virtual BOOL			Locked				()				{ return FALSE; }
 
 	virtual	shared_str		shedule_Name		() const		{ return shared_str("particle_instance"); };

@@ -30,27 +30,37 @@
 #endif
 
 #ifdef  _EDITOR
-IC void strcpy_s(char* strDestination,   size_t sizeInBytes,   const char *strSource)
+IC char* strncpy_s(char* strDestination, size_t sizeInBytes, const char *strSource, size_t count)
 {
-	strcpy(strDestination, strSource);
+    return strncpy(strDestination, strSource, count);
 }
 
-IC void strcpy_s(char* strDestination,   const char *strSource)
+IC char* xr_strcpy(char* strDestination,   size_t sizeInBytes,   const char *strSource)
 {
-	strcpy(strDestination, strSource);
+	return strcpy(strDestination, strSource);
 }
 
-IC void _strlwr_s(char* strDestination, size_t sizeInBytes)
+IC char* xr_strcpy(char* strDestination,   const char *strSource)
 {
-    strlwr(strDestination);
+	return strcpy(strDestination, strSource);
 }
 
-IC void strcat_s(char* strDestination,   size_t sizeInBytes,   const char *strSource)
+IC char* _strlwr_s(char* strDestination, size_t sizeInBytes)
 {
-	strcat(strDestination, strSource);
+    return strlwr(strDestination);
 }
 
-IC int sprintf_s(char* dest, size_t sizeOfBuffer, const char* format, ...)
+IC char* xr_strcat(char* strDestination,   size_t sizeInBytes,   const char *strSource)
+{
+	return strncat(strDestination, strSource, sizeInBytes);
+}
+
+IC char* xr_strcat(char* strDestination,  const char *strSource)
+{
+	return strcat(strDestination, strSource);
+}
+
+IC int xr_sprintf(char* dest, size_t sizeOfBuffer, const char* format, ...)
 {
 	va_list 	mark;
 	va_start	(mark, format );
@@ -166,103 +176,8 @@ IC s64		_max	(s64 x, s64 y)	{ return x - ((x - y) & ((x - y) >> (sizeof(s64) * 8
 
 IC u32							xr_strlen				( const char* S );
 
-#ifndef  _EDITOR
 // string management
-IC LPCSTR						strconcat				( int dest_sz, char* dest, const char* S1, const char* S2)
-{
-	u32 l1 = xr_strlen(S1);
-	strcpy_s(dest,dest_sz,S1);
-	strcat_s(dest,dest_sz-l1,S2);
-	return dest;
-//.	return strcat(strcpy(dest,S1),S2);
-}
 
-// dest = S1+S2+S3
-IC LPCSTR						strconcat				( int dest_sz, char* dest, const char* S1, const char* S2, const char* S3)
-{
-	u32 l1 = xr_strlen(S1);
-	u32 l2 = xr_strlen(S2);
-	strcpy_s(dest,dest_sz,S1);
-	strcat_s(dest,dest_sz-l1,S2);
-	strcat_s(dest,dest_sz-l1-l2,S3);
-
-	return dest;
-//.	return strcat(strcat(strcpy(dest,S1),S2),S3);
-}
-
-// dest = S1+S2+S3+S4
-IC LPCSTR						strconcat				( int dest_sz, char* dest, const char* S1, const char* S2, const char* S3, const char* S4)
-{
-	u32 l1 = xr_strlen(S1);
-	u32 l2 = xr_strlen(S2);
-	u32 l3 = xr_strlen(S3);
-	strcpy_s(dest,dest_sz,S1);
-	strcat_s(dest,dest_sz-l1,S2);
-	strcat_s(dest,dest_sz-l1-l2,S3);
-	strcat_s(dest,dest_sz-l1-l2-l3,S4);
-
-	return dest;
-//.	return strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4);
-}
-
-// dest = S1+S2+S3+S4+S5
-IC LPCSTR						strconcat				( int dest_sz, char* dest, const char* S1, const char* S2, const char* S3, const char* S4, const char* S5)
-{
-	u32 l1 = xr_strlen(S1);
-	u32 l2 = xr_strlen(S2);
-	u32 l3 = xr_strlen(S3);
-	u32 l4 = xr_strlen(S4);
-	strcpy_s(dest,dest_sz,S1);
-	strcat_s(dest,dest_sz-l1,S2);
-	strcat_s(dest,dest_sz-l1-l2,S3);
-	strcat_s(dest,dest_sz-l1-l2-l3,S4);
-	strcat_s(dest,dest_sz-l1-l2-l3-l4,S5);
-
-	return dest;
-//.	return strcat(strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4),S5);
-}
-
-// dest = S1+S2+S3+S4+S5+S6
-IC LPCSTR						strconcat				( int dest_sz, char* dest, const char* S1, const char* S2, const char* S3, const char* S4, const char* S5, const char* S6)
-{
-	u32 l1 = xr_strlen(S1);
-	u32 l2 = xr_strlen(S2);
-	u32 l3 = xr_strlen(S3);
-	u32 l4 = xr_strlen(S4);
-	u32 l5 = xr_strlen(S5);
-	strcpy_s(dest,dest_sz,S1);
-	strcat_s(dest,dest_sz-l1,S2);
-	strcat_s(dest,dest_sz-l1-l2,S3);
-	strcat_s(dest,dest_sz-l1-l2-l3,S4);
-	strcat_s(dest,dest_sz-l1-l2-l3-l4,S5);
-	strcat_s(dest,dest_sz-l1-l2-l3-l4-l5,S6);
-
-	return dest;
-	//.	return strcat(strcat(strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4),S5),S6);
-}
-
-#else
-
-IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const char* S2)
-{	return strcat(strcpy(dest,S1),S2); }
-
-// dest = S1+S2+S3
-IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const char* S2, const char* S3)
-{	return strcat(strcat(strcpy(dest,S1),S2),S3); }
-
-// dest = S1+S2+S3+S4
-IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const char* S2, const char* S3, const char* S4)
-{	return strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4); }
-
-// dest = S1+S2+S3+S4+S5
-IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const char* S2, const char* S3, const char* S4, const char* S5)
-{	return strcat(strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4),S5); }
-
-// dest = S1+S2+S3+S4+S5+S6
-IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const char* S2, const char* S3, const char* S4, const char* S5, const char* S6)
-{	return strcat(strcat(strcat(strcat(strcat(strcpy(dest,S1),S2),S3),S4),S5),S6); }
-
-#endif
 // return pointer to ".ext"
 IC char*						strext					( const char* S )
 {	return (char*) strrchr(S,'.');	}
@@ -280,8 +195,90 @@ IC int							xr_strcmp				( const char* S1, const char* S2 )
 {	return (int)strcmp(S1,S2);  }
 #endif
 
+#ifndef  _EDITOR
+#ifndef MASTER_GOLD
+
+inline errno_t xr_strcpy		( LPSTR destination, size_t const destination_size, LPCSTR source )
+{
+	return						strcpy_s( destination, destination_size, source );
+}
+
+inline errno_t xr_strcat		( LPSTR destination, size_t const buffer_size, LPCSTR source )
+{
+	return						strcat_s( destination, buffer_size, source );
+}
+
+inline int __cdecl xr_sprintf	( LPSTR destination, size_t const buffer_size, LPCSTR format_string, ... )
+{
+	va_list args;
+	va_start					( args, format_string);
+	return						vsprintf_s( destination, buffer_size, format_string, args );
+}
+
+template <int count>
+inline int __cdecl xr_sprintf	( char (&destination)[count], LPCSTR format_string, ... )
+{
+	va_list args;
+	va_start					( args, format_string);
+	return						vsprintf_s( destination, count, format_string, args );
+}
+#else // #ifndef MASTER_GOLD
+
+inline errno_t xr_strcpy	( LPSTR destination, size_t const destination_size, LPCSTR source )
+{
+	return						strncpy_s( destination, destination_size, source, destination_size );
+}
+
+inline errno_t xr_strcat		( LPSTR destination, size_t const buffer_size, LPCSTR source )
+{
+	size_t const destination_length	= xr_strlen(destination);
+	LPSTR i						= destination + destination_length;
+	LPSTR const e				= destination + buffer_size - 1;
+	if ( i > e )
+		return					0;
+
+	for ( LPCSTR j = source; *j && (i != e); ++i, ++j )
+		*i						= *j;
+
+	*i							= 0;
+	return						0;
+}
+
+inline int __cdecl xr_sprintf	( LPSTR destination, size_t const buffer_size, LPCSTR format_string, ... )
+{
+	va_list args;
+	va_start					( args, format_string);
+	return						vsnprintf_s( destination, buffer_size, buffer_size - 1, format_string, args );
+}
+
+template <int count>
+inline int __cdecl xr_sprintf	( char (&destination)[count], LPCSTR format_string, ... )
+{
+	va_list args;
+	va_start					( args, format_string);
+	return						vsnprintf_s( destination, count, count - 1, format_string, args );
+}
+#endif // #ifndef MASTER_GOLD
+
+#	pragma deprecated( strcpy, strcpy_s, sprintf, sprintf_s, strcat, strcat_s )
+
+template <int count>
+inline errno_t xr_strcpy	( char (&destination)[count], LPCSTR source )
+{
+	return						xr_strcpy( destination, count, source );
+}
+
+template <int count>
+inline errno_t xr_strcat	( char (&destination)[count], LPCSTR source )
+{
+	return						xr_strcat( destination, count, source );
+}
+#endif // #ifndef _EDITOR
+
 XRCORE_API	char*				timestamp				(string64& dest);
 
 extern XRCORE_API u32			crc32					(const void* P, u32 len);
+extern XRCORE_API u32			crc32					(const void* P, u32 len, u32 starting_crc);
+extern XRCORE_API u32			path_crc32				(const char* path, u32 len); // ignores '/' and '\'
 
-#endif
+#endif // _STD_EXT_internal

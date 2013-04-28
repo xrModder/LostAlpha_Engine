@@ -6,33 +6,19 @@
 #define RainH
 #pragma once
 
-#include "xr_collide_defs.h"
+#define RAIN_MANAGER_LTX "rain_manager"
+
+#include "../xrcdb/xr_collide_defs.h"
 
 //refs
 class ENGINE_API IRender_DetailModel;
 
-
-// gr1ph start
-#define RAIN_MANAGER_LTX "rain_manager"
-
-struct SRainParams
-{
-	public:
-		int		max_desired_items;
-		float	source_radius, source_offset;
-		float	max_distance, sink_offset, drop_length;
-		float	drop_width, drop_angle, drop_max_angle;
-		float	drop_max_wind_vel, drop_speed_min, drop_speed_max;
-		int		max_particles, particles_cache;
-		float	particles_time;
-		u32		dwReferences;
-	public:
-				SRainParams();		
-};
-
+#include "../Include/xrRender/FactoryPtr.h"
+#include "../Include/xrRender/RainRender.h"
 //
 class ENGINE_API CEffect_Rain
 {
+	friend class dxRainRender;
 private:
 	struct	Item
 	{
@@ -61,6 +47,9 @@ private:
 		stWorking
 	};
 private:
+	// Visualization	(rain) and (drops)
+	FactoryPtr<IRainRender>	m_pRender;
+	/*
 	// Visualization	(rain)
 	ref_shader						SH_Rain;
 	ref_geom						hGeom_Rain;
@@ -68,6 +57,7 @@ private:
 	// Visualization	(drops)
 	IRender_DetailModel*			DM_Drop;
 	ref_geom						hGeom_Drops;
+	*/
 	
 	// Data and logic
 	xr_vector<Item>					items;

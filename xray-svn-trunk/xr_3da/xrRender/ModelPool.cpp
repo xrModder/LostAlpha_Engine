@@ -102,7 +102,7 @@ IRender_Visual*	CModelPool::Instance_Load		(const char* N, BOOL allow_register)
 
 	// Add default ext if no ext at all
 	if (0==strext(N))	strconcat	(sizeof(name),name,N,".ogf");
-	else				strcpy_s	(name,sizeof(name),N);
+	else				xr_strcpy	(name,sizeof(name),N);
 
 	// Load data from MESHES or LEVEL
 	if (!FS.exist(N))	{

@@ -129,7 +129,7 @@ void CUIChangeMap::OnBtnOk()
 		const shared_str& name		= M.m_map_names[idx];
 
 		string512					command;
-        sprintf_s						(command, "cl_votestart changemap %s", name.c_str());
+        xr_sprintf						(command, "cl_votestart changemap %s", name.c_str());
 		Console->Execute			(command);
 		GetHolder()->StartStopMenu	(this, true);
 	}

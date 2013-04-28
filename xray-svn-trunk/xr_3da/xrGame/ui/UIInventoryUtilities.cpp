@@ -215,21 +215,21 @@ const shared_str InventoryUtilities::GetTimeAsString(ALife::_TIME_ID time, ETime
 	switch (timePrec)
 	{
 	case etpTimeToHours:
-		sprintf_s(bufTime, "%02i", hours);
+		xr_sprintf(bufTime, "%02i", hours);
 		break;
 	case etpTimeToMinutes:
-		sprintf_s(bufTime, "%02i%c%02i", hours, timeSeparator, mins);
+		xr_sprintf(bufTime, "%02i%c%02i", hours, timeSeparator, mins);
 		break;
 	case etpTimeToSeconds:
-		sprintf_s(bufTime, "%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs);
+		xr_sprintf(bufTime, "%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs);
 		break;
 	case etpTimeToMilisecs:
-		sprintf_s(bufTime, "%02i%c%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs, timeSeparator, milisecs);
+		xr_sprintf(bufTime, "%02i%c%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs, timeSeparator, milisecs);
 		break;
 	case etpTimeToSecondsAndDay:
 		{
 			int total_day = (int)( time/(1000*60*60*24) );
-			sprintf_s(bufTime, sizeof(bufTime), "%dd %02i%c%02i%c%02i", total_day, hours, timeSeparator, mins, timeSeparator, secs);
+			xr_sprintf(bufTime, sizeof(bufTime), "%dd %02i%c%02i%c%02i", total_day, hours, timeSeparator, mins, timeSeparator, secs);
 			break;
 		}
 	default:
@@ -253,13 +253,13 @@ const shared_str InventoryUtilities::GetDateAsString(ALife::_TIME_ID date, EDate
 	switch (datePrec)
 	{
 	case edpDateToYear:
-		sprintf_s(bufDate, "%04i", year);
+		xr_sprintf(bufDate, "%04i", year);
 		break;
 	case edpDateToMonth:
-		sprintf_s(bufDate, "%02i%c%04i", month, dateSeparator, year);
+		xr_sprintf(bufDate, "%02i%c%04i", month, dateSeparator, year);
 		break;
 	case edpDateToDay:
-		sprintf_s(bufDate, "%02i%c%02i%c%04i", day, dateSeparator, month, dateSeparator, year);
+		xr_sprintf(bufDate, "%02i%c%02i%c%04i", day, dateSeparator, month, dateSeparator, year);
 		break;
 	default:
 		R_ASSERT(!"Unknown type of date precision");
@@ -280,19 +280,19 @@ LPCSTR InventoryUtilities::GetTimePeriodAsString(LPSTR _buff, u32 buff_sz, ALife
 	_buff[0]	= 0;
 
 	if(month1!=month2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s ",month2-month1, *CStringTable().translate("ui_st_months"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s ",month2-month1, *CStringTable().translate("ui_st_months"));
 
 	if(!cnt && day1!=day2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",day2-day1, *CStringTable().translate("ui_st_days"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",day2-day1, *CStringTable().translate("ui_st_days"));
 
 	if(!cnt && hours1!=hours2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",hours2-hours1, *CStringTable().translate("ui_st_hours"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",hours2-hours1, *CStringTable().translate("ui_st_hours"));
 
 	if(!cnt && mins1!=mins2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",mins2-mins1, *CStringTable().translate("ui_st_mins"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",mins2-mins1, *CStringTable().translate("ui_st_mins"));
 
 	if(!cnt && secs1!=secs2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",secs2-secs1, *CStringTable().translate("ui_st_secs"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",secs2-secs1, *CStringTable().translate("ui_st_secs"));
 
 	return _buff;
 }
@@ -326,14 +326,14 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 
 	if (withPrefix)
 	{
-		sprintf_s(prefix, "%%c[default]%s ", *CStringTable().translate("ui_inv_weight"));
+		xr_sprintf(prefix, "%%c[default]%s ", *CStringTable().translate("ui_inv_weight"));
 	}
 	else
 	{
 		strcpy(prefix, "");
 	}
 
-	sprintf_s(buf, "%s%s%3.1f %s/%5.1f", prefix, cl, total, "%c[UI_orange]", max);
+	xr_sprintf(buf, "%s%s%3.1f %s/%5.1f", prefix, cl, total, "%c[UI_orange]", max);
 	wnd.SetText(buf);
 	//	UIStaticWeight.ClipperOff();
 }

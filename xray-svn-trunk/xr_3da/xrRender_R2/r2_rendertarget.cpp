@@ -374,7 +374,7 @@ CRenderTarget::CRenderTarget		()
 		// create pool
 		for (u32 it=0; it<HW.Caps.iGPUNum*2; it++)	{
 			string256					name;
-			sprintf_s					(name,"%s_%d",	r2_RT_luminance_pool,it	);
+			xr_sprintf					(name,"%s_%d",	r2_RT_luminance_pool,it	);
 			rt_LUM_pool[it].create		(name,	1,	1,	D3DFMT_R32F				);
 			u_setrt						(rt_LUM_pool[it],	0,	0,	0			);
 			CHK_DX						(HW.pDevice->Clear( 0L, NULL, D3DCLEAR_TARGET,	0x7f7f7f7f,	1.0f, 0L));
@@ -481,7 +481,7 @@ CRenderTarget::CRenderTarget		()
 			for (int it1=0; it1<TEX_jitter_count-1; it1++)
 			{
 				string_path					name;
-				sprintf_s					(name,"%s%d",r2_jitter,it1);
+				xr_sprintf					(name,"%s%d",r2_jitter,it1);
 				R_CHK	(D3DXCreateTexture	(HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it1]));
 				t_noise[it1]					= Device.Resources->_CreateTexture	(name);
 				t_noise[it1]->surface_set	(t_noise_surf[it1]);
@@ -508,7 +508,7 @@ CRenderTarget::CRenderTarget		()
 			// generate HBAO jitter texture (last)
 			int it = TEX_jitter_count - 1;
 			string_path					name;
-			sprintf_s					(name,"%s%d",r2_jitter,it);
+			xr_sprintf					(name,"%s%d",r2_jitter,it);
 			R_CHK	(D3DXCreateTexture	(HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_A32B32G32R32F,D3DPOOL_MANAGED,&t_noise_surf[it]));
 			t_noise[it]					= Device.Resources->_CreateTexture	(name);
 			t_noise[it]->surface_set	(t_noise_surf[it]);

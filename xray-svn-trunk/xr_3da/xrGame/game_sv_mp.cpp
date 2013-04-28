@@ -150,7 +150,7 @@ void game_sv_mp::OnRoundEnd()
 	inherited::OnRoundEnd();
 
 	string64 res_str;
-	strcpy_s( res_str, get_token_name( round_end_result_str, round_end_reason ) );
+	xr_strcpy( res_str, get_token_name( round_end_result_str, round_end_reason ) );
 	
 	OnVoteStop();
 
@@ -617,7 +617,7 @@ bool game_sv_mp::OnNextMap				()
 		return				false;
 	}*/
 	string1024 Command;
-	sprintf_s(Command, "sv_changelevel %s", MapName.c_str());
+	xr_sprintf(Command, "sv_changelevel %s", MapName.c_str());
 	Console->Execute(Command);
 	return true;
 };
@@ -639,7 +639,7 @@ void game_sv_mp::OnPrevMap				()
 //.	if (!stricmp(MapName.c_str(), Level().name().c_str())) return;
 
 	string1024	Command;
-	sprintf_s(Command, "sv_changelevel %s", MapName.c_str());
+	xr_sprintf(Command, "sv_changelevel %s", MapName.c_str());
 	Console->Execute(Command);
 };
 
@@ -705,7 +705,7 @@ void game_sv_mp::OnVoteStart				(LPCSTR VoteCommand, ClientID sender)
 			sscanf(CommandParams, "%s %s", WeatherName, WeatherTime );
 
 			m_pVoteCommand.sprintf("%s %s", votecommands[i].command, WeatherTime);
-			sprintf_s(resVoteCommand, "%s %s", votecommands[i].name, WeatherName);
+			xr_sprintf(resVoteCommand, "%s %s", votecommands[i].name, WeatherName);
 		}
 		else
 		{
@@ -891,7 +891,7 @@ void	game_sv_mp::SetPlayersDefItems		(game_PlayerState* ps)
 			strconcat(sizeof(ItemStr),ItemStr, "def_item_repl_", *WeaponName);
 			if (!pSettings->line_exist(RankStr, ItemStr)) continue;
 			
-			strcpy_s(NewItemStr,sizeof(NewItemStr),pSettings->r_string(RankStr, ItemStr));
+			xr_strcpy(NewItemStr,sizeof(NewItemStr),pSettings->r_string(RankStr, ItemStr));
 //			if (!GetTeamItem_ByName(&pWpnS, &(TeamList[ps->team].aWeapons), NewItemStr)) continue;
 			if (m_strWeaponsData->GetItemIdx(NewItemStr) == u32(-1)) continue;
 
@@ -1148,7 +1148,7 @@ void	game_sv_mp::LoadRanks	()
 	while(1)
 	{
 		string256 RankSect;
-		sprintf_s(RankSect, "rank_%d",NumRanks);
+		xr_sprintf(RankSect, "rank_%d",NumRanks);
 		if (!pSettings->section_exist(RankSect)) break;
 		NumRanks++;
 	};
@@ -1156,7 +1156,7 @@ void	game_sv_mp::LoadRanks	()
 	for (int i=0; ; i++)
 	{
 		string256 RankSect;
-		sprintf_s(RankSect, "rank_%d",i);
+		xr_sprintf(RankSect, "rank_%d",i);
 		if (!pSettings->section_exist(RankSect)) break;
 		Rank_Struct NewRank; 
 		
@@ -1370,10 +1370,10 @@ void game_sv_mp::DumpOnlineStatistic()
 
 	ini.w_u32					(current_section.c_str(), "players_total_cnt", m_server->client_Count());
 
-	sprintf_s					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
+	xr_sprintf					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name", str_buff);
 
-	sprintf_s					(str_buff,"%s",CStringTable().translate(type_name()).c_str() );
+	xr_sprintf					(str_buff,"%s",CStringTable().translate(type_name()).c_str() );
 	ini.w_string				(current_section.c_str(), "game_mode", str_buff);
 
 	MAP_ROTATION_LIST_it it		= m_pMapRotation_List.begin();
@@ -1381,8 +1381,8 @@ void game_sv_mp::DumpOnlineStatistic()
 	for(u32 idx=0;it!=it_e;++it,++idx)
 	{
 		string16					num_buf;
-		sprintf_s					(num_buf,"%d",idx);
-		sprintf_s					(str_buff,"\"%s\"", CStringTable().translate((*it).c_str()).c_str());
+		xr_sprintf					(num_buf,"%d",idx);
+		xr_sprintf					(str_buff,"\"%s\"", CStringTable().translate((*it).c_str()).c_str());
 		ini.w_string				("map_rotation", num_buf, str_buff);
 	}
 
@@ -1397,7 +1397,7 @@ void game_sv_mp::DumpOnlineStatistic()
 			continue;
 
 		string16					num_buf;
-		sprintf_s					(num_buf,"player_%d",idx);
+		xr_sprintf					(num_buf,"player_%d",idx);
 
 		WritePlayerStats			(ini,num_buf,l_pC);
 	}
@@ -1462,13 +1462,13 @@ void game_sv_mp::DumpRoundStatistics()
 
 	ini.w_string				(current_section.c_str(),"start_time", m_round_start_time_str);
 
-	sprintf_s					(str_buff,"%s",CStringTable().translate(type_name()).c_str() );
+	xr_sprintf					(str_buff,"%s",CStringTable().translate(type_name()).c_str() );
 	ini.w_string				(current_section.c_str(), "game_mode", str_buff);
 
-	sprintf_s					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
+	xr_sprintf					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name", str_buff);
 
-	sprintf_s					(str_buff,"\"%s\"",Level().name().c_str());
+	xr_sprintf					(str_buff,"\"%s\"",Level().name().c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name_internal", str_buff);
 
 	for(u32 idx=0; idx<m_server->client_Count(); ++idx)
@@ -1478,7 +1478,7 @@ void game_sv_mp::DumpRoundStatistics()
 			continue;
 
 		string16					num_buf;
-		sprintf_s					(num_buf,"player_%d",idx);
+		xr_sprintf					(num_buf,"player_%d",idx);
 
 		WritePlayerStats			(ini,num_buf,l_pC);
 	}

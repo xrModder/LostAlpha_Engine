@@ -243,15 +243,15 @@ void _initialize_cpu	(void)
 		CPU::ID.feature	&= ~_CPU_FEATURE_SSE4_2	;
 	};
 
-	string256	features;	strcpy_s(features,sizeof(features),"RDTSC");
-    if (CPU::ID.feature&_CPU_FEATURE_MMX)	strcat(features,", MMX");
-    if (CPU::ID.feature&_CPU_FEATURE_3DNOW)	strcat(features,", 3DNow!");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE)   strcat(features,", SSE");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE2)	strcat(features,", SSE2");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE3)	strcat(features,", SSE3");
-    if (CPU::ID.feature&_CPU_FEATURE_SSSE3)	strcat(features,", SSSE3");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE4_1) strcat(features,", SSE4.1");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE4_2) strcat(features,", SSE4.2");
+	string256	features;	xr_strcpy(features,sizeof(features),"RDTSC");
+    if (CPU::ID.feature&_CPU_FEATURE_MMX)	xr_strcat(features,", MMX");
+    if (CPU::ID.feature&_CPU_FEATURE_3DNOW)	xr_strcat(features,", 3DNow!");
+    if (CPU::ID.feature&_CPU_FEATURE_SSE)	xr_strcat(features,", SSE");
+    if (CPU::ID.feature&_CPU_FEATURE_SSE2)	xr_strcat(features,", SSE2");
+    if (CPU::ID.feature&_CPU_FEATURE_SSE3)	xr_strcat(features,", SSE3");
+    if (CPU::ID.feature&_CPU_FEATURE_SSSE3)	xr_strcat(features,", SSSE3");
+    if (CPU::ID.feature&_CPU_FEATURE_SSE4_1)xr_strcat(features,", SSE4.1");
+    if (CPU::ID.feature&_CPU_FEATURE_SSE4_2)xr_strcat(features,", SSE4.2");
 	Msg("* CPU features: %s" , features );
 
 	Msg("* CPU threads: %d\n" , CPU::ID.n_threads );

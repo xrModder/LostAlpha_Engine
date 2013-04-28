@@ -32,7 +32,7 @@ public:
 	float		lm_density;
 
 	Shader_xrLC()	{
-		strcpy_s					(Name,"unknown");
+		xr_strcpy					(Name,"unknown");
 		m_Flags.assign			(0);
 		flags.bCollision		= TRUE;
 		flags.bRendering		= TRUE;
@@ -57,7 +57,7 @@ public:
 		if(NULL==fs){
 			string256		inf;
 			extern HWND		logWindow;
-			sprintf_s			(inf,sizeof(inf),"Build failed!\nCan't load shaders library: '%s'",name);
+			xr_sprintf			(inf,sizeof(inf),"Build failed!\nCan't load shaders library: '%s'",name);
 //			clMsg			(inf);
 //			MessageBox		(logWindow,inf,"Error!",MB_OK|MB_ICONERROR);
 			FATAL			(inf);

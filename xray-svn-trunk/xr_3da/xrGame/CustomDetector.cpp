@@ -59,7 +59,7 @@ void CCustomDetector::Load(LPCSTR section)
 	//загрузить звуки для обозначения различных типов зон
 	do 
 	{
-		sprintf_s			(temp, "zone_class_%d", i);
+		xr_sprintf			(temp, "zone_class_%d", i);
 		if(pSettings->line_exist(section,temp))
 		{
 			LPCSTR z_Class			= pSettings->r_string(section,temp);
@@ -67,16 +67,16 @@ void CCustomDetector::Load(LPCSTR section)
 
 			m_ZoneTypeMap.insert	(std::make_pair(zone_cls,ZONE_TYPE()));
 			ZONE_TYPE& zone_type	= m_ZoneTypeMap[zone_cls];
-			sprintf_s					(temp, "zone_min_freq_%d", i);
+			xr_sprintf					(temp, "zone_min_freq_%d", i);
 			zone_type.min_freq		= pSettings->r_float(section,temp);
-			sprintf_s					(temp, "zone_max_freq_%d", i);
+			xr_sprintf					(temp, "zone_max_freq_%d", i);
 			zone_type.max_freq		= pSettings->r_float(section,temp);
 			R_ASSERT				(zone_type.min_freq<zone_type.max_freq);
-			sprintf_s					(temp, "zone_sound_%d_", i);
+			xr_sprintf					(temp, "zone_sound_%d_", i);
 
 			HUD_SOUND::LoadSound(section, temp	,zone_type.detect_snds		, SOUND_TYPE_ITEM);
 
-			sprintf_s					(temp, "zone_map_location_%d", i);
+			xr_sprintf					(temp, "zone_map_location_%d", i);
 			
 			if( pSettings->line_exist(section,temp) )
 				zone_type.zone_map_location = pSettings->r_string(section,temp);

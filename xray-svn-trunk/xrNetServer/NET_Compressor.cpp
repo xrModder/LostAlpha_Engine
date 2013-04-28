@@ -346,11 +346,11 @@ u16 NET_Compressor::Compress(BYTE* dest, const u32 &dest_size, BYTE* src, const 
 	VERIFY(count);
 
 #if 1//def DEBUG
-//	if( strstr(Core.Params,"-dump_traffic") ) 
-//	{
+	if( strstr(Core.Params,"-dump_traffic") ) 
+	{
 //		fwrite( src,count,1,OriginalTrafficDump );
 //		fflush( OriginalTrafficDump );
-//	}
+	}
 #endif // DEBUG
 
 #if !NET_USE_COMPRESSION
@@ -372,8 +372,8 @@ u16 NET_Compressor::Compress(BYTE* dest, const u32 &dest_size, BYTE* src, const 
 	if( !psNET_direct_connect  && g_net_compressor_enabled && b_compress_packet) 
 	{
 		CS.Enter							();
-		compressed_size						= offset + ENCODE( dest+offset, dest_size-offset, src, count );
-		
+		compressed_size = offset + ENCODE( dest+offset, dest_size-offset, src, count );
+
 		if(g_net_compressor_gather_stats)
 			m_stats.total_compressed_bytes		+= compressed_size;
 

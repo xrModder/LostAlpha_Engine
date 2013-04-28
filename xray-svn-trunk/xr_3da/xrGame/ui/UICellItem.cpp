@@ -121,9 +121,9 @@ void CUICellItem::UpdateItemText()
 {
 	string32			str;
 	if(ChildsCount())
-		sprintf_s				(str,"x%d",ChildsCount()+1);
+		xr_sprintf				(str,"x%d",ChildsCount()+1);
 	else
-		sprintf_s				(str,"");
+		xr_sprintf				(str,"");
 
 	SetText				(str);
 }

@@ -14,13 +14,14 @@ public:
 	INetQueue();
 	~INetQueue();
 
-	NET_Packet*			CreateGet	();
-//.	NET_Packet*			CreateGet	(const NET_Packet& _other);
-	void				CreateCommit(NET_Packet*);
-
+	NET_Packet*			Create	();
+	NET_Packet*			Create	(const NET_Packet& _other);
 	NET_Packet*			Retreive();
 	void				Release	();
+	inline void			Lock	() { cs.Enter(); };
+	inline void			Unlock	() { cs.Leave(); };
 };
+
 
 //==============================================================================
 
@@ -37,18 +38,19 @@ IPureClient
 	};
 	friend void 				sync_thread(void*);
 protected:
-	struct HOST_NODE
+	struct HOST_NODE			//deprecated...
 	{
 		DPN_APPLICATION_DESC	dpAppDesc;
 		IDirectPlay8Address*	pHostAddress;
 		shared_str				dpSessionName;
 	};
+	GameDescriptionData		m_game_description;
 	CTimer*					device_timer;
 protected:
 	IDirectPlay8Client*		NET;
 	IDirectPlay8Address*	net_Address_device;
 	IDirectPlay8Address*	net_Address_server;
-	
+		
 	xrCriticalSection		net_csEnumeration;
 	xr_vector<HOST_NODE>	net_Hosts;
 
@@ -65,9 +67,12 @@ protected:
 	s32						net_TimeDelta;
 	s32						net_TimeDelta_Calculated;
 	s32						net_TimeDelta_User;
-
+	
 	void					Sync_Thread		();
 	void					Sync_Average	();
+
+	void					SetClientID		(ClientID const & local_client) { net_ClientID = local_client; };
+		
 
 	IC virtual	void			SendTo_LL				(void* data, u32 size, u32 dwFlags=DPNSEND_GUARANTEED, u32 dwTimeout=0);													
 
@@ -84,11 +89,14 @@ public:
 	BOOL					net_isFails_Connect		()	{ return net_Connected==EnmConnectionFails;}
 	BOOL					net_isCompleted_Sync	()	{ return net_Syncronised;	}
 	BOOL					net_isDisconnected		()	{ return net_Disconnected;	}
+	IC GameDescriptionData const & get_net_DescriptionData() const { return m_game_description; }
 	LPCSTR					net_SessionName			()	{ return *(net_Hosts.front().dpSessionName); }
 
 	// receive
-	IC virtual	NET_Packet*			net_msg_Retreive		()	{ return net_Queue.Retreive();	}
-	IC void					net_msg_Release			()	{ net_Queue.Release();			}
+	IC void							StartProcessQueue		()	{ net_Queue.Lock(); }; // WARNING ! after Start mast be End !!! <-
+	IC virtual	NET_Packet*			net_msg_Retreive		()	{ return net_Queue.Retreive();	};//							|
+	IC void							net_msg_Release			()	{ net_Queue.Release();			};//							|
+	IC void							EndProcessQueue			()	{ net_Queue.Unlock();			};//							<-
 
 	// send
 	virtual	void			Send					(NET_Packet& P, u32 dwFlags=DPNSEND_GUARANTEED, u32 dwTimeout=0);
@@ -100,8 +108,9 @@ public:
 	virtual void			OnConnectRejected		()	{};
 	BOOL					net_HasBandwidth		();
 	void					ClearStatistic			();
-	IClientStatistic		GetStatistic			() const {return  net_Statistic; }
+	IClientStatistic&		GetStatistic			() {return  net_Statistic; }
 	void					UpdateStatistic			();
+	ClientID const &		GetClientID				() { return net_ClientID; };
 
 			bool			GetServerAddress		(ip_address& pAddress, DWORD* pPort);
 	
@@ -116,13 +125,13 @@ public:
 
 	virtual	LPCSTR			GetMsgId2Name			(u16 ID) { return ""; }
 	virtual void			OnSessionTerminate		(LPCSTR reason){};
-	
+
 	virtual bool			TestLoadBEClient		() { return false; }
 
 private:
+	ClientID				net_ClientID;
 
     virtual void    _Recieve( const void* data, u32 data_size, u32 param );
     virtual void    _SendTo_LL( const void* data, u32 size, u32 flags, u32 timeout );
-
 };
 

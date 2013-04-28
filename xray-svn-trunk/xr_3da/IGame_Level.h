@@ -1,9 +1,11 @@
+#ifndef igame_level_h_defined
+#define igame_level_h_defined
+
 #pragma once
 
 #include "iinputreceiver.h"
-//#include "CameraManager.h"
 #include "xr_object_list.h"
-#include "xr_area.h"
+#include "../xrcdb/xr_area.h"
 
 // refs
 class ENGINE_API CCameraManager;
@@ -32,8 +34,8 @@ public:
 
 	IC SItem_ServerInfo&	operator[] ( u32 id ) { VERIFY( id < max_item ); return data[id]; }
 
-	//CServerInfo() {};
-	//~CServerInfo() {};
+	CServerInfo() {};
+	~CServerInfo() {};
 };
 
 
@@ -93,22 +95,26 @@ public:
 	virtual BOOL				Load_GameSpecific_After	( )										{ return TRUE; };		// after object loading
 	virtual void				Load_GameSpecific_CFORM	( CDB::TRI* T, u32 count )				= 0;
 
-	virtual void				OnFrame					( void );
+	virtual void	_BCL		OnFrame					( void );
 	virtual void				OnRender				( void );
+
+	virtual	shared_str			OpenDemoFile			(LPCSTR demo_file_name) = 0;
+	virtual void				net_StartPlayDemo		() = 0;
 
 	// Main interface
 	CObject*					CurrentEntity			( void ) const							{ return pCurrentEntity;				}
 	CObject*					CurrentViewEntity		( void ) const							{ return pCurrentViewEntity;			}
-	void						SetEntity				( CObject* O  )							{ pCurrentEntity=pCurrentViewEntity=O;	}
-	void						SetViewEntity			( CObject* O  )							{ pCurrentViewEntity=O;					}
+	void						SetEntity				( CObject* O  );//							{ pCurrentEntity=pCurrentViewEntity=O;	}
+	void						SetViewEntity			( CObject* O  );//							{ pCurrentViewEntity=O;					}
 	
 	void						SoundEvent_Register		( ref_sound_data_ptr S, float range );
 	void						SoundEvent_Dispatch		( );
 	void                        SoundEvent_OnDestDestroy (Feel::Sound*);
 
 	// Loader interface
-	ref_shader					LL_CreateShader			(int S, int T, int M, int C);
+	//ref_shader					LL_CreateShader			(int S, int T, int M, int C);
 	void						LL_CheckTextures		();
+	virtual void				SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTimeFactor) = 0;
 };
 
 //-----------------------------------------------------------------------------------------------------------
@@ -133,3 +139,4 @@ template <typename _class_type>
 				function_to_bind)
 		);
 	}
+#endif    

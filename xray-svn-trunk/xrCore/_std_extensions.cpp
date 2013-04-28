@@ -35,6 +35,6 @@ char*							timestamp				(string64& dest)
 	_strtime	( temp );
 	for (it=0; it<xr_strlen(temp); it++)
 		if (':'==temp[it]) temp[it]='-';
-	strcat		( dest, temp);
+	xr_strcat		( dest, sizeof(dest), temp);
 	return dest;
 }

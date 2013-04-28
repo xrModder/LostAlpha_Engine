@@ -800,7 +800,7 @@ HRESULT	CRender::shader_compile			(
 	HRESULT		_result = E_FAIL;
 
 	string_path	folder_name, folder;
-	strcpy_s		( folder, "r1\\objects\\r1\\" );
+	xr_strcpy		( folder, "r1\\objects\\r1\\" );
 	strcat_s		( folder, name );
 	strcat_s		( folder, "." );
 
@@ -817,7 +817,7 @@ HRESULT	CRender::shader_compile			(
 	string_path temp_file_name, file_name;
 	if ( !match_shader_id(name, sh_name, m_file_set, temp_file_name) ) {
 		string_path file;
-		strcpy_s		( file, "shaders_cache\\r1\\" );
+		xr_strcpy		( file, "shaders_cache\\r1\\" );
 		strcat_s		( file, name );
 		strcat_s		( file, "." );
 		strcat_s		( file, extension );
@@ -826,7 +826,7 @@ HRESULT	CRender::shader_compile			(
 		FS.update_path	( file_name, "$app_data_root$", file);
 	}
 	else {
-		strcpy_s		( file_name, folder_name );
+		xr_strcpy		( file_name, folder_name );
 		strcat_s		( file_name, temp_file_name );
 	}
 
@@ -914,7 +914,7 @@ static inline bool match_shader		( LPCSTR const debug_shader_id, LPCSTR const fu
 static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result )
 {
 #if 0
-	strcpy_s					( result, "" );
+	xr_strcpy					( result, "" );
 	return						false;
 #else // #if 1
 #ifdef DEBUG
@@ -930,14 +930,14 @@ static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const 
 		}
 	}
 
-	strcpy_s					( result, temp );
+	xr_strcpy					( result, temp );
 	return						found;
 #else // #ifdef DEBUG
 	FS_FileSet::const_iterator	i = file_set.begin();
 	FS_FileSet::const_iterator	const e = file_set.end();
 	for ( ; i != e; ++i ) {
 		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			strcpy_s			( result, (*i).name.c_str() );
+			xr_strcpy			( result, (*i).name.c_str() );
 			return				true;
 		}
 	}

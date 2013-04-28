@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "xr_object.h"
+#include "../xr_3da/xr_object.h"
 #ifdef DEBUG
 #include "ObjectDump.h"
 

@@ -224,7 +224,7 @@ void CServerList::FillUpDetailedServerInfo()
 
 				if (!t1)		// add header
 				{
-					sprintf_s(_buff, "team \"%s\"", *CTeamInfo::GetTeam1_name());
+					xr_sprintf(_buff, "team \"%s\"", *CTeamInfo::GetTeam1_name());
 					pItemAdv = xr_new<CUIListItemAdv>();
 					pItemAdv->SetTextColor(m_list[LST_PLAYERS].GetTextColor());
 					pItemAdv->SetFont(m_list[LST_PLAYERS].GetFont());
@@ -257,7 +257,7 @@ void CServerList::FillUpDetailedServerInfo()
 
 				if (!t2)
 				{
-					sprintf_s(_buff, "team \"%s\"", *CTeamInfo::GetTeam2_name());
+					xr_sprintf(_buff, "team \"%s\"", *CTeamInfo::GetTeam2_name());
 					pItemAdv = xr_new<CUIListItemAdv>();
 					pItemAdv->SetTextColor(m_list[LST_PLAYERS].GetTextColor());
 					pItemAdv->SetFont(m_list[LST_PLAYERS].GetFont());
@@ -286,7 +286,7 @@ void CServerList::FillUpDetailedServerInfo()
 
 				if (!spect)
 				{
-					sprintf_s(_buff, "spectator");
+					xr_sprintf(_buff, "spectator");
 					pItemAdv = xr_new<CUIListItemAdv>();
 					pItemAdv->SetTextColor(m_list[LST_PLAYERS].GetTextColor());
 					pItemAdv->SetFont(m_list[LST_PLAYERS].GetFont());

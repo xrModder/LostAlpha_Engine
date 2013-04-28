@@ -1142,9 +1142,9 @@ void	CWeaponMagazined::SetQueueSize			(int size)
 {
 	m_iQueueSize = size; 
 	if (m_iQueueSize == -1)
-		strcpy_s(m_sCurFireMode, " (A)");
+		xr_strcpy(m_sCurFireMode, " (A)");
 	else
-		sprintf_s(m_sCurFireMode, " (%d)", m_iQueueSize);
+		xr_sprintf(m_sCurFireMode, " (%d)", m_iQueueSize);
 };
 
 float	CWeaponMagazined::GetWeaponDeterioration	()
@@ -1200,7 +1200,7 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 
 
 	string256		sItemName;
-	strcpy_s			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
+	xr_strcpy			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
 
 	if ( HasFireModes() )
 		strcat_s(sItemName, GetCurrentFireModeStr());
@@ -1210,9 +1210,9 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 
 	{
 		if (!unlimited_ammo())
-			sprintf_s			(sItemName, "%d/%d",AE,AC - AE);
+			xr_sprintf			(sItemName, "%d/%d",AE,AC - AE);
 		else
-			sprintf_s			(sItemName, "%d/--",AE);
+			xr_sprintf			(sItemName, "%d/--",AE);
 
 		str_count				= sItemName;
 	}

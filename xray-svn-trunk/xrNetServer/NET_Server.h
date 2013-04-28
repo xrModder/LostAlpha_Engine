@@ -1,8 +1,9 @@
 #pragma once
 
 #include "net_shared.h"
+#include "ip_filter.h"
 #include "NET_Common.h"
-
+#include "NET_PlayersMonitor.h"
 
 struct SClientConnectData
 {
@@ -74,9 +75,9 @@ public:
 	ip_address			m_cAddress;
 	DWORD				m_dwPort;
 	u32					process_id;
-
-    IPureServer*        server;
 	
+    IPureServer*        server;
+
 private:
 
     virtual void    _SendTo_LL( const void* data, u32 size, u32 flags, u32 timeout );
@@ -126,6 +127,21 @@ public:
 
 
 //==============================================================================
+
+struct ClientIdSearchPredicate
+{
+	ClientID clientId;
+	ClientIdSearchPredicate(ClientID clientIdToSearch) :
+		clientId(clientIdToSearch)
+	{
+	}
+	inline bool operator()(IClient* client) const
+	{
+		return client->ID == clientId;
+	}
+};
+
+
 class CServerInfo;
 
 class XRNETSERVER_API 
@@ -136,8 +152,6 @@ public:
 	enum EConnect
 	{
 		ErrConnect,
-		ErrBELoad,
-		ErrNoLevel,
 		ErrMax,
 		ErrNoError = ErrMax,
 	};
@@ -148,15 +162,17 @@ protected:
 	
 	NET_Compressor			net_Compressor;
 
-	xrCriticalSection		csPlayers;
-	xr_vector<IClient*>		net_Players;
-	xr_vector<IClient*>		net_Players_disconnected;
+	PlayersMonitor			net_players;
+	//xrCriticalSection		csPlayers;
+	//xr_vector<IClient*>	net_Players;
+	//xr_vector<IClient*>	net_Players_disconnected;
 	IClient*				SV_Client;
 
 	int						psNET_Port;	
 	
 
 	xr_vector<IBannedClient*>		BannedAddresses;
+	ip_filter						m_ip_filter;
 
 	// 
 	xrCriticalSection		csMessage;
@@ -170,13 +186,15 @@ protected:
 	BOOL					m_bDedicated;
 
 	IClient*				ID_to_client		(ClientID ID, bool ScanAll = false);
-
+	
 	virtual IClient*		new_client			( SClientConnectData* cl_data )   =0;
 			bool			GetClientAddress	(IDirectPlay8Address* pClientAddress, ip_address& Address, DWORD* pPort = NULL);
 
 			IBannedClient*	GetBannedClient		(const ip_address& Address);			
 			void			BannedList_Save		();
 			void			BannedList_Load		();
+			void			IpList_Load			();
+			void			IpList_Unload		();
 			LPCSTR			GetBannedListName	();
 
 			void			UpdateBannedList	();
@@ -185,7 +203,7 @@ public:
 	virtual					~IPureServer		();
 	HRESULT					net_Handler			(u32 dwMessageType, PVOID pMessage);
 	
-	virtual EConnect		Connect				(LPCSTR session_name);
+	virtual EConnect		Connect				(LPCSTR session_name, GameDescriptionData & game_descr);
 	virtual void			Disconnect			();
 
 	// send
@@ -195,7 +213,7 @@ public:
 
 	void					SendTo				(ClientID ID, NET_Packet& P, u32 dwFlags=DPNSEND_GUARANTEED, u32 dwTimeout=0);
 	void					SendBroadcast_LL	(ClientID exclude, void* data, u32 size, u32 dwFlags=DPNSEND_GUARANTEED);
-	void					SendBroadcast		(ClientID exclude, NET_Packet& P, u32 dwFlags=DPNSEND_GUARANTEED);
+	virtual void			SendBroadcast		(ClientID exclude, NET_Packet& P, u32 dwFlags=DPNSEND_GUARANTEED);
 
 	// statistic
 	const IServerStatistic*	GetStatistic		() { return &stats; }
@@ -212,35 +230,66 @@ public:
 	virtual void			client_Replicate	()				= 0;			// replicate current state to client
 	virtual void			client_Destroy		(IClient* C)	= 0;			// destroy client info
 
-	IC u32					client_Count		()			{ return net_Players.size(); }
-	IC IClient*				client_Get			(u32 num)	{ return net_Players[num]; }
+	//IC u32					client_Count		()			{ return net_Players.size(); }
+	//IC IClient*				client_Get			(u32 num)	{ return net_Players[num]; }
 
-	IC u32					disconnected_client_Count		()			{ return net_Players_disconnected.size(); }
-	IC IClient*				disconnected_client_Get			(u32 num)	{ return net_Players_disconnected[num]; }
+	//IC u32					disconnected_client_Count		()			{ return net_Players_disconnected.size(); }
+	//IC IClient*				disconnected_client_Get			(u32 num)	{ return net_Players_disconnected[num]; }
 	
 	BOOL					HasBandwidth			(IClient* C);
 
 	IC int					GetPort					()				{ return psNET_Port; };
-			bool			GetClientAddress		(ClientID ID, ip_address& Address, DWORD* pPort = NULL);
-	virtual bool			DisconnectClient		(IClient* C);
-	virtual bool			DisconnectClient		(IClient* C,string512& Reason);
-	virtual bool			DisconnectAddress		(const ip_address& Address);
+			bool			GetClientAddress		(ClientID ID, ip_address& Address, DWORD* pPort = NULL);	
+//			bool			DisconnectClient		(IClient* C);
+	virtual bool			DisconnectClient		(IClient* C, LPCSTR Reason);
+	virtual bool			DisconnectAddress		(const ip_address& Address, LPCSTR reason);
 	virtual void			BanClient				(IClient* C, u32 BanTime);
 	virtual void			BanAddress				(const ip_address& Address, u32 BanTime);
 	virtual void			UnBanAddress			(const ip_address& Address);
 			void			Print_Banned_Addreses	();
-	
+
 	virtual bool			Check_ServerAccess( IClient* CL, string512& reason )	{ return true; }
 	virtual void			Assign_ServerType( string512& res ) {};
 	virtual void			GetServerInfo( CServerInfo* si ) {};
 
+	u32						GetClientsCount		()			{ return net_players.ClientsCount(); };
 	IClient*				GetServerClient		()			{ return SV_Client; };
+	template<typename SearchPredicate>
+	IClient*				FindClient		(SearchPredicate const & predicate) { return net_players.GetFoundClient(predicate); }
+	template<typename ActionFunctor>
+	void					ForEachClientDo	(ActionFunctor & action)			{ net_players.ForEachClientDo(action); }
+	template<typename SenderFunctor>
+	void					ForEachClientDoSender(SenderFunctor & action)		{ 
+																					csMessage.Enter();
+#ifdef DEBUG
+																					sender_functor_invoked = true;
+#endif //#ifdef DEBUG
+																					net_players.ForEachClientDo(action);
+#ifdef DEBUG
+																					sender_functor_invoked = false;
+#endif //#ifdef DEBUG
+																					csMessage.Leave();
+																				}
+	//template<typename ActionFunctor>
+	//void					ForEachDisconnectedClientDo(ActionFunctor & action) { net_players.ForEachDisconnectedClientDo(action); };
+#ifdef DEBUG
+	bool					IsPlayersMonitorLockedByMe()	const				{ return net_players.IsCurrentThreadIteratingOnClients() && !sender_functor_invoked; };
+#endif
+	bool					IsPlayerIPDenied(u32 ip_address);
+	//WARNING! very bad method :(
+	//IClient*				client_Get		(u32 index)							{return net_players.GetClientByIndex(index);};
+	IClient*				GetClientByID	(ClientID clientId)					{return net_players.GetFoundClient(ClientIdSearchPredicate(clientId));};
+	//IClient*				GetDisconnectedClientByID(ClientID clientId)		{return net_players.GetFoundDisconnectedClient(ClientIdSearchPredicate(clientId));}
+
 
 	const shared_str&		GetConnectOptions	() const {return connect_options;}
 
+
 private:
+#ifdef DEBUG
+	bool					sender_functor_invoked;
+#endif
 
     virtual void    _Recieve( const void* data, u32 data_size, u32 param );
 };
 
-// =========================================================================================================

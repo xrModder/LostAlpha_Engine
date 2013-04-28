@@ -2,12 +2,12 @@
 #pragma hdrstop
 
 #include "IGame_Persistent.h"
-#include "environment.h"
+
 #ifndef _EDITOR
+#include "environment.h"
 #	include "x_ray.h"
 #	include "IGame_Level.h"
 #	include "XR_IOConsole.h"
-#	include "resourcemanager.h"
 #	include "Render.h"
 #	include "ps_instance.h"
 #	include "CustomHUD.h"
@@ -17,29 +17,44 @@
 	bool g_dedicated_server	= false;
 #endif
 
+#ifdef INGAME_EDITOR
+#	include "editor_environment_manager.hpp"
+#endif // INGAME_EDITOR
+
 ENGINE_API	IGame_Persistent*		g_pGamePersistent	= NULL;
 
 IGame_Persistent::IGame_Persistent	()
 {
-	Device.seqAppStart.Add			(this);
-	Device.seqAppEnd.Add			(this);
-	Device.seqFrame.Add				(this,REG_PRIORITY_HIGH+1);
-	Device.seqAppActivate.Add		(this);
-	Device.seqAppDeactivate.Add		(this);
+	RDEVICE.seqAppStart.Add			(this);
+	RDEVICE.seqAppEnd.Add			(this);
+	RDEVICE.seqFrame.Add			(this,REG_PRIORITY_HIGH+1);
+	RDEVICE.seqAppActivate.Add		(this);
+	RDEVICE.seqAppDeactivate.Add	(this);
 
 	m_pMainMenu						= NULL;
 
+#ifndef INGAME_EDITOR
+	#ifndef _EDITOR
 	pEnvironment					= xr_new<CEnvironment>();
+	#endif
+#else // #ifdef INGAME_EDITOR
+	if (RDEVICE.editor())
+		pEnvironment				= xr_new<editor::environment::manager>();
+	else
+		pEnvironment				= xr_new<CEnvironment>();
+#endif // #ifdef INGAME_EDITOR
 }
 
 IGame_Persistent::~IGame_Persistent	()
 {
-	Device.seqFrame.Remove			(this);
-	Device.seqAppStart.Remove		(this);
-	Device.seqAppEnd.Remove			(this);
-	Device.seqAppActivate.Remove	(this);
-	Device.seqAppDeactivate.Remove	(this);
+	RDEVICE.seqFrame.Remove			(this);
+	RDEVICE.seqAppStart.Remove		(this);
+	RDEVICE.seqAppEnd.Remove			(this);
+	RDEVICE.seqAppActivate.Remove	(this);
+	RDEVICE.seqAppDeactivate.Remove	(this);
+#ifndef _EDITOR
 	xr_delete						(pEnvironment);
+#endif
 }
 
 void IGame_Persistent::OnAppActivate		()
@@ -52,13 +67,16 @@ void IGame_Persistent::OnAppDeactivate		()
 
 void IGame_Persistent::OnAppStart	()
 {
-	if(!g_dedicated_server)
-		Environment().load				();
+#ifndef _EDITOR
+	Environment().load				();
+#endif    
 }
 
 void IGame_Persistent::OnAppEnd		()
 {
-	Environment().unload				();
+#ifndef _EDITOR
+	Environment().unload			 ();
+#endif    
 	OnGameEnd						();
 
 #ifndef _EDITOR
@@ -71,7 +89,7 @@ void IGame_Persistent::PreStart		(LPCSTR op)
 {
 	string256						prev_type;
 	params							new_game_params;
-	strcpy_s							(prev_type,m_game_params.m_game_type);
+	xr_strcpy							(prev_type,m_game_params.m_game_type);
 	new_game_params.parse_cmd_line	(op);
 
 	// change game type
@@ -82,7 +100,7 @@ void IGame_Persistent::PreStart		(LPCSTR op)
 void IGame_Persistent::Start		(LPCSTR op)
 {
 	string256						prev_type;
-	strcpy_s							(prev_type,m_game_params.m_game_type);
+	xr_strcpy							(prev_type,m_game_params.m_game_type);
 	m_game_params.parse_cmd_line	(op);
 	// change game type
 	if ((0!=xr_strcmp(prev_type,m_game_params.m_game_type))) 
@@ -106,7 +124,8 @@ void IGame_Persistent::Disconnect	()
 	destroy_particles					(true);
 
 	if(g_hud)
-		g_hud->OnDisconnected			();
+			DEL_INSTANCE			(g_hud);
+//.		g_hud->OnDisconnected			();
 #endif
 }
 
@@ -124,7 +143,8 @@ void IGame_Persistent::OnGameStart()
 	ObjectPool.prefetch					();
 	Log				("Loading models...");
 	Render->models_Prefetch				();
-	Device.Resources->DeferredUpload	();
+	//Device.Resources->DeferredUpload	();
+	Device.m_pRender->ResourcesDeferredUpload();
 
 	p_time				=			1000.f*Device.GetTimerGlobal()->GetElapsed_sec() - p_time;
 	u32		p_mem		=			Memory.mem_usage() - mem_0	;
@@ -144,13 +164,11 @@ void IGame_Persistent::OnGameEnd	()
 
 void IGame_Persistent::OnFrame		()
 {
-
-#ifndef DEDICATED_SERVER
-	if(!Device.Paused() || Device.dwPrecacheFrame)
-		Environment().OnFrame				();
-#endif
-
 #ifndef _EDITOR
+
+	if(!Device.Paused() || Device.dwPrecacheFrame)
+		Environment().OnFrame	();
+
 
 	Device.Statistic->Particles_starting= ps_needtoplay.size	();
 	Device.Statistic->Particles_active	= ps_active.size		();
@@ -161,7 +179,7 @@ void IGame_Persistent::OnFrame		()
 	{
 		CPS_Instance*	psi		= ps_needtoplay.back	();
 		ps_needtoplay.pop_back	();
-		psi->Play				();
+		psi->Play				(false);
 	}
 	// Destroy inactive particle systems
 	while (ps_destroy.size())
@@ -218,4 +236,11 @@ void IGame_Persistent::destroy_particles		(const bool &all_particles)
 
 	VERIFY								(ps_needtoplay.empty() && ps_destroy.empty() && (!all_particles || ps_active.empty()));
 #endif
+}
+
+void IGame_Persistent::OnAssetsChanged()
+{
+#ifndef _EDITOR
+	Device.m_pRender->OnAssetsChanged(); //Resources->m_textures_description.Load();
+#endif    
 }

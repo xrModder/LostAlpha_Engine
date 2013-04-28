@@ -313,16 +313,16 @@ void CGameSpy_Browser::GetServerInfoByIndex(ServerInfo* pServerInfo, int idx)
 }
 
 #define ADD_BOOL_INFO(i, s, t, k)	i->m_aInfos.push_back(GameInfo(t, ((xrGS_SBServerGetBoolValue(s, m_pQR2->xrGS_RegisteredKey(k), SBFalse)) == SBTrue)? *st.translate("mp_si_yes") : *st.translate("mp_si_no")))
-#define ADD_INT_INFO(i, s, t, k)	{string256 tmp; sprintf_s(tmp, "%d", xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0));\
+#define ADD_INT_INFO(i, s, t, k)	{string256 tmp; xr_sprintf(tmp, "%d", xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0));\
 	i->m_aInfos.push_back(GameInfo(t, tmp));}
 
 #define ADD_INT_INFO_N(i, s, m, t1, t2, k)	{if (xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0))\
-{string256 tmp; sprintf_s(tmp, "%d" t2, xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0)*m);\
+{string256 tmp; xr_sprintf(tmp, "%d" t2, xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0)*m);\
 	i->m_aInfos.push_back(GameInfo(t1, tmp));}\
 	else {i->m_aInfos.push_back(GameInfo(t1, *st.translate("mp_si_no")));}}
 
 #define ADD_TIME_INFO(i, s, m, t1, t2, t3, k)	{if (xrGS_SBServerGetIntValue(s, m_pQR2->xrGS_RegisteredKey(k), 0))\
-{string256 tmp; sprintf_s(tmp,t2, xrGS_SBServerGetFloatValue(s, m_pQR2->xrGS_RegisteredKey(k), 0)*m, t3);\
+{string256 tmp; xr_sprintf(tmp,t2, xrGS_SBServerGetFloatValue(s, m_pQR2->xrGS_RegisteredKey(k), 0)*m, t3);\
 	i->m_aInfos.push_back(GameInfo(t1, tmp));}\
 	else {i->m_aInfos.push_back(GameInfo(t1, *st.translate("mp_si_no")));}}
 
@@ -331,12 +331,12 @@ void	CGameSpy_Browser::ReadServerInfo	(ServerInfo* pServerInfo, void* pServer)
 	CStringTable st;
 
 	if (!pServer || !pServerInfo) return;
-	sprintf_s(pServerInfo->m_Address, "%s:%d", xrGS_SBServerGetPublicAddress(pServer), xrGS_SBServerGetPublicQueryPort(pServer));
-	sprintf_s(pServerInfo->m_HostName, "%s", xrGS_SBServerGetPublicAddress(pServer));
-	sprintf_s(pServerInfo->m_ServerName, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(HOSTNAME_KEY), pServerInfo->m_HostName));
+	xr_sprintf(pServerInfo->m_Address, "%s:%d", xrGS_SBServerGetPublicAddress(pServer), xrGS_SBServerGetPublicQueryPort(pServer));
+	xr_sprintf(pServerInfo->m_HostName, "%s", xrGS_SBServerGetPublicAddress(pServer));
+	xr_sprintf(pServerInfo->m_ServerName, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(HOSTNAME_KEY), pServerInfo->m_HostName));
 
-	sprintf_s(pServerInfo->m_SessionName, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(MAPNAME_KEY), "Unknown"));	
-	sprintf_s(pServerInfo->m_ServerGameType, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(GAMETYPE_KEY), "Unknown"));
+	xr_sprintf(pServerInfo->m_SessionName, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(MAPNAME_KEY), "Unknown"));	
+	xr_sprintf(pServerInfo->m_ServerGameType, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(GAMETYPE_KEY), "Unknown"));
 	pServerInfo->m_bPassword	= xrGS_SBServerGetBoolValue(pServer, m_pQR2->xrGS_RegisteredKey(PASSWORD_KEY), SBFalse) == SBTrue;
 	pServerInfo->m_bUserPass	= xrGS_SBServerGetBoolValue(pServer, m_pQR2->xrGS_RegisteredKey(G_USER_PASSWORD_KEY), SBFalse) == SBTrue;
 
@@ -361,7 +361,7 @@ void	CGameSpy_Browser::ReadServerInfo	(ServerInfo* pServerInfo, void* pServer)
 		else if (!xr_strcmp(pServerInfo->m_ServerGameType, "artefacthunt"))
 			pServerInfo->m_GameType = GAME_ARTEFACTHUNT;
 	}
-	sprintf_s(pServerInfo->m_ServerVersion, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(GAMEVER_KEY), "--"));
+	xr_sprintf(pServerInfo->m_ServerVersion, "%s", xrGS_SBServerGetStringValue(pServer, m_pQR2->xrGS_RegisteredKey(GAMEVER_KEY), "--"));
 
 	//--------- Read Game Infos ---------------------------//
 	pServerInfo->m_aInfos.clear();
@@ -468,7 +468,7 @@ void	CGameSpy_Browser::ReadServerInfo	(ServerInfo* pServerInfo, void* pServer)
 	for (int i=0; i<pServerInfo->m_ServerNumPlayers; i++)
 	{
 		PlayerInfo PInfo;
-		sprintf_s(PInfo.Name, "%s", xrGS_SBServerGetPlayerStringValue(pServer, i,	"player", "Unknown"));
+		xr_sprintf(PInfo.Name, "%s", xrGS_SBServerGetPlayerStringValue(pServer, i,	"player", "Unknown"));
 		PInfo.Frags =		s16(xrGS_SBServerGetPlayerIntValue(pServer, i,			"score", 0));
 		PInfo.Deaths =		u16(xrGS_SBServerGetPlayerIntValue(pServer, i,			"deaths", 0));
 		PInfo.Rank =		u8(xrGS_SBServerGetPlayerIntValue(pServer, i,			"skill", 0));

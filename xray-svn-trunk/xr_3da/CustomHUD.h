@@ -16,12 +16,13 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_DRAW_RT				(1<<10)
 #define HUD_SHOW_CLOCK			(1<<11)
 
-class ENGINE_API IRender_Visual;
+class ENGINE_API IRenderVisual;
 class CUI;
 
 class ENGINE_API CCustomHUD:
 	public DLL_Pure,
-	public IEventReceiver	
+	public IEventReceiver,
+	public pureScreenResolutionChanged
 {
 public:
 					CCustomHUD				();
@@ -36,9 +37,12 @@ public:
 	virtual		void		OnEvent					(EVENT E, u64 P1, u64 P2){;}
 
 	virtual IC	CUI*		GetUI					()=0;
+	
 	virtual void			OnScreenRatioChanged	()=0;
 	virtual void			OnDisconnected			()=0;
 	virtual void			OnConnected				()=0;
+	virtual		void		RenderActiveItemUI		()=0;
+	virtual		bool		RenderActiveItemUIQuery	()=0;
 	virtual void			net_Relcase				(CObject *object) = 0;
 };
 

@@ -7,7 +7,7 @@
 	#include "IGame_ObjectPool.h"
 #endif
 
-class IRender_Visual;
+class IRenderVisual;
 class IMainMenu;
 class ENGINE_API CPS_Instance;
 //-----------------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public:
 		void			reset		()
 		{
 			for (int i=0; i<4; ++i)
-				strcpy_s	(m_params[i],"");
+				xr_strcpy	(m_params[i],"");
 		}
 		void						parse_cmd_line		(LPCSTR cmd_line)
 		{
@@ -77,7 +77,7 @@ public:
 	virtual void					OnAppEnd			();
 	virtual	void					OnAppActivate		();
 	virtual void					OnAppDeactivate		();
-	virtual void					OnFrame				();
+	virtual void	_BCL			OnFrame				();
 
 	// вызывается только когда изменяется тип игры
 	virtual	void					OnGameStart			(); 
@@ -86,9 +86,10 @@ public:
 	virtual void					UpdateGameType		() {};
 	virtual void					GetCurrentDof		(Fvector3& dof){dof.set(-1.4f, 0.0f, 250.f);};
 	virtual void					SetBaseDof			(const Fvector3& dof){};
+	virtual void					OnSectorChanged		(int sector){};
+	virtual void					OnAssetsChanged		();
 
-
-	virtual void					RegisterModel		(IRender_Visual* V)
+	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR
      = 0;
 #else
@@ -104,7 +105,7 @@ public:
 	IGame_Persistent				();
 	virtual ~IGame_Persistent		();
 
-			u32						GameType			() {return m_game_params.m_e_game_type;};
+	ICF		u32						GameType			() {return m_game_params.m_e_game_type;};
 	virtual void					Statistics			(CGameFont* F)
 #ifndef _EDITOR
      = 0;
@@ -121,6 +122,7 @@ public:
 	virtual			~IMainMenu						()													{};
 	virtual void	Activate						(bool bActive)										=0; 
 	virtual	bool	IsActive						()													=0; 
+	virtual	bool	CanSkipSceneRendering			()													=0; 
 	virtual void	DestroyInternal					(bool bForce)										=0;
 };
 

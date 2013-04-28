@@ -58,14 +58,14 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 	{
 		u32 _cost						= 0;
 		string128						buff;
-		sprintf_s							(buff, "%d", m_money);
+		xr_sprintf							(buff, "%d", m_money);
 		m_static_player_money->SetText	(buff);
 		//update preset money
 		for(u32 i=_preset_idx_last; i<=_preset_idx_3; ++i)
 		{
 			CUIStatic* st				= m_static_preset_money[i];
 			_cost						= GetPresetCost((ETradePreset)i);
-			sprintf_s						(buff, "%d", _cost);
+			xr_sprintf						(buff, "%d", _cost);
 			st->SetText					(buff);
 			bool b_has_enought_money	= _cost<=GetMoneyAmount();
 			u32 clr						= (b_has_enought_money)?m_text_color_money_positive:m_text_color_money_negative;
@@ -81,7 +81,7 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 		string128						buff;
 		StorePreset						(_preset_idx_temp, true, false);
 		_cost							= GetPresetCost(_preset_idx_temp);
-		sprintf_s							(buff, "%d", _cost);
+		xr_sprintf							(buff, "%d", _cost);
 		m_static_curr_items_money->SetText(buff);
 	}
 }
@@ -89,7 +89,7 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 void CUIMpTradeWnd::SetMoneyChangeString(int diff)
 {
 	string128								buff;
-	sprintf_s									(buff, "%+d RU", diff);
+	xr_sprintf									(buff, "%+d RU", diff);
 	m_static_money_change->SetText			(buff);
 	u32 clr									= (diff>0)?m_text_color_money_positive:m_text_color_money_negative;
 	m_static_money_change->SetTextColor		(clr);
@@ -132,7 +132,7 @@ void CUIMpTradeWnd::SetCurrentItem(CUICellItem* itm)
 	{
 		const shared_str& current_sect_name = CurrentIItem()->object().cNameSect();
 		string256						str;
-		sprintf_s							(str, "%d", GetItemPrice(CurrentIItem()));
+		xr_sprintf							(str, "%d", GetItemPrice(CurrentIItem()));
 		m_item_info->UICost->SetText	(str);
 
 		m_item_info->UIName->SetText	(CurrentIItem()->NameShort());
@@ -147,7 +147,7 @@ void CUIMpTradeWnd::SetCurrentItem(CUICellItem* itm)
 		{
 			strcpy						(team, _team_names[m_store_hierarchy->TeamIdx()%1]);
 		}
-		sprintf_s							(tex_name, "ui_hud_status_%s_0%d", team, 1+get_rank(current_sect_name.c_str()) );
+		xr_sprintf							(tex_name, "ui_hud_status_%s_0%d", team, 1+get_rank(current_sect_name.c_str()) );
 				
 		m_static_item_rank->InitTexture		(tex_name);
 		m_static_item_rank->TextureOn		();
@@ -411,7 +411,7 @@ void CUIMpTradeWnd::SetRank(u32 rank)
 	string64			team;
 
 	strcpy				(team, _team_names[m_store_hierarchy->TeamIdx()]);
-	sprintf_s				(tex_name, "ui_hud_status_%s_0%d", team, 1+rank );
+	xr_sprintf				(tex_name, "ui_hud_status_%s_0%d", team, 1+rank );
 			
 	m_static_player_rank->InitTexture(tex_name);
 	m_static_player_rank->TextureOn();

@@ -144,12 +144,12 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 	if(UIWeight)
 	{
-		sprintf_s				(str, "%3.2f kg", pInvItem->Weight());
+		xr_sprintf				(str, "%3.2f kg", pInvItem->Weight());
 		UIWeight->SetText	(str);
 	}
 	if( UICost && IsGameTypeSingle() )
 	{
-		sprintf_s				(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
+		xr_sprintf				(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
 		UICost->SetText		(str);
 	}
 

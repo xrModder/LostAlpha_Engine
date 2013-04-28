@@ -128,7 +128,7 @@ void CUIArtefactParams::SetInfo(const shared_str& af_section)
 			_color = (_val>0)?"%c[red]":"%c[green]";
 
 
-		sprintf_s					(	_buff, "%s %s %+.0f %s", 
+		xr_sprintf					(	_buff, "%s %s %+.0f %s", 
 									CStringTable().translate(af_item_param_names[i]).c_str(), 
 									_color, 
 									_val, 

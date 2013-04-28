@@ -23,7 +23,7 @@ class ENGINE_API CInput
 {
 public:
 	enum {
-		COUNT_MOUSE_BUTTONS			= 3,
+		COUNT_MOUSE_BUTTONS			= 8,
 		COUNT_MOUSE_AXIS			= 3,
 		COUNT_KB_BUTTONS			= 256
 	};
@@ -81,7 +81,7 @@ public:
 	CInput						( BOOL bExclusive = true, int deviceForInit = default_key);
 	~CInput						( );
 
-	virtual void				OnFrame						(void);
+	virtual void	_BCL		OnFrame						(void);
 	virtual void				OnAppActivate				(void);
 	virtual void				OnAppDeactivate				(void);
 
@@ -94,6 +94,9 @@ public:
 
 public:
 			void				exclusive_mode				(const bool &exclusive);
+	IC		bool				get_exclusive_mode			();
+			void				unacquire					();
+			void				acquire						(const bool &exclusive);
 			bool				get_dik_name				(int dik, LPSTR dest, int dest_sz);
 //lost alpha start
 private:

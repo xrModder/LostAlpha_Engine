@@ -29,40 +29,46 @@ public:
 		u32						size_compressed;// if (size_real==size_compressed) - uncompressed
         u32						modif;			// for editor
 	};
+	struct	archive
+	{
+		shared_str				path;
+		void					*hSrcFile, *hSrcMap;
+		u32						size;
+		CInifile*				header;
+		u32						vfs_idx;
+		archive():hSrcFile(NULL),hSrcMap(NULL),header(NULL),size(0),vfs_idx(u32(-1)){}
+		void					open();
+		void					close();
+	};
+    DEFINE_VECTOR				(archive,archives_vec,archives_it);
+    archives_vec				m_archives;
+	void						LoadArchive		(archive& A, LPCSTR entrypoint=NULL);
+
 private:
 	struct	file_pred: public 	std::binary_function<file&, file&, bool> 
 	{	
 		IC bool operator()	(const file& x, const file& y) const
 		{	return xr_strcmp(x.name,y.name)<0;	}
 	};
-	struct	archive
-	{
-		shared_str				path;
-		void					*hSrcFile, *hSrcMap;
-		u32						size;
-	};
 	DEFINE_MAP_PRED				(LPCSTR,FS_Path*,PathMap,PathPairIt,pred_str);
 	PathMap						pathes;
 
 	DEFINE_SET_PRED				(file,files_set,files_it,file_pred);
-    DEFINE_VECTOR				(archive,archives_vec,archives_it);
 
 	DEFINE_VECTOR				(_finddata_t,FFVec,FFIt);
 	FFVec						rec_files;
 
     int							m_iLockRescan	; 
-    void						rescan_path		(LPCSTR full_path, BOOL bRecurse);
     void						check_pathes	();
 
-	files_set					files			;
-    archives_vec				archives		;
+	files_set					m_files			;
 	BOOL						bNoRecurse		;
 
 	xrCriticalSection			m_auth_lock		;
 	u64							m_auth_code		;
 
 	void						Register		(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real, u32 size_compressed, u32 modif);
-	void						ProcessArchive	(LPCSTR path, LPCSTR base_path=NULL);
+	void						ProcessArchive	(LPCSTR path);
 	void						ProcessOne		(LPCSTR path, void* F);
 	bool						Recurse			(LPCSTR path);	
 //	bool						CheckExistance	(LPCSTR path);
@@ -86,12 +92,12 @@ public:
 	u32							dwOpenCounter;
 
 private:
-			void				check_cached_files	(LPSTR fname, const file &desc, LPCSTR &source_name);
+			void				check_cached_files	(LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 
 			void				file_from_cache_impl(IReader *&R, LPSTR fname, const file &desc);
 			void				file_from_cache_impl(CStreamReader *&R, LPSTR fname, const file &desc);
 	template <typename T>
-			void				file_from_cache		(T *&R, LPSTR fname, const file &desc, LPCSTR &source_name);
+			void				file_from_cache		(T *&R, LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 			
 			void				file_from_archive	(IReader *&R, LPCSTR fname, const file &desc);
 			void				file_from_archive	(CStreamReader *&R, LPCSTR fname, const file &desc);
@@ -105,7 +111,12 @@ private:
 	
 	template <typename T>
 	IC		T					*r_open_impl		(LPCSTR path, LPCSTR _fname);
-			void				ProcessExternalArch	();
+
+private:
+			void				setup_fs_path		(LPCSTR fs_name, string_path &fs_path);
+			void				setup_fs_path		(LPCSTR fs_name);
+			IReader				*setup_fs_ltx		(LPCSTR fs_name);
+
 public:
 								CLocatorAPI		();
 								~CLocatorAPI	();
@@ -155,14 +166,15 @@ public:
     LPCSTR						update_path			(string_path& dest, LPCSTR initial, LPCSTR src);
 
 	int							file_list			(FS_FileSet& dest, LPCSTR path, u32 flags=FS_ListFiles, LPCSTR mask=0);
-//.    void						update_path			(xr_string& dest, LPCSTR initial, LPCSTR src);
 
-	// 
-	void						register_archieve	(LPCSTR path);
-	void						auth_generate		(xr_vector<xr_string>&	ignore, xr_vector<xr_string>&	important);
+	bool						load_all_unloaded_archives();
+	void						unload_archive		(archive& A);
+
+	void						auth_generate		(xr_vector<shared_str>&	ignore, xr_vector<shared_str>&	important);
 	u64							auth_get			();
 	void						auth_runtime		(void*);
 
+	void						rescan_path			(LPCSTR full_path, BOOL bRecurse);
 	// editor functions
 	void						rescan_pathes		();
 	void						lock_rescan			();

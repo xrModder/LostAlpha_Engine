@@ -30,7 +30,7 @@ extern char g_application_path[256];
 
 void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, LPCSTR fs_fname)
 {
-	strcpy_s					(ApplicationName,_ApplicationName);
+	xr_strcpy					(ApplicationName,_ApplicationName);
 	if (0==init_counter) {
 #ifdef XRCORE_STATIC	
 		_clear87	();
@@ -46,7 +46,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 		if (osvi.dwMajorVersion < 6)								//skyloader: if not windows vista, 7, 8, etc.
 			CoInitializeEx (NULL, COINIT_MULTITHREADED);
 
-		strcpy_s			(Params,sizeof(Params),GetCommandLine());
+		xr_strcpy			(Params,sizeof(Params),GetCommandLine());
 		_strlwr_s			(Params,sizeof(Params));
 
 		string_path		fn,dr,di;
@@ -56,7 +56,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
         _splitpath		(fn,dr,di,0,0);
         strconcat		(sizeof(ApplicationPath),ApplicationPath,dr,di);
 #ifndef _EDITOR
-		strcpy_s		(g_application_path,sizeof(g_application_path),ApplicationPath);
+		xr_strcpy		(g_application_path,sizeof(g_application_path),ApplicationPath);
 #endif
 
 #ifdef _EDITOR

@@ -319,13 +319,13 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 		}break;
 	case GAME_EVENT_VOTE_START:
 		{
-			sprintf_s(Text, "%s%s", Color_Main, *st.translate("mp_voting_started_msg"));
+			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_started_msg"));
 			CommonMessageOut(Text);
 			OnVoteStart(P);
 		}break;
 	case GAME_EVENT_VOTE_STOP:
 		{
-			sprintf_s(Text, "%s%s", Color_Main, *st.translate("mp_voting_broken"));
+			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_broken"));
 			CommonMessageOut(Text);
 			OnVoteStop(P);
 		}break;
@@ -333,7 +333,7 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 		{
 			string512 Reason;
 			P.r_stringZ(Reason);
-			sprintf_s(Text, "%s%s", Color_Main, *st.translate(Reason));
+			xr_sprintf(Text, "%s%s", Color_Main, *st.translate(Reason));
 			CommonMessageOut(Text);
 			OnVoteEnd(P);
 		}break;
@@ -366,7 +366,7 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 		{
 			string1024 mess;
 			P.r_stringZ(mess);
-			sprintf_s( Text, "%s%s", Color_Red, *st.translate(mess) );
+			xr_sprintf( Text, "%s%s", Color_Red, *st.translate(mess) );
 			CommonMessageOut(Text);
 		}break;
 	case GAME_EVENT_SERVER_DIALOG_MESSAGE:
@@ -424,15 +424,15 @@ void game_cl_mp::OnWarnMessage(NET_Packet* P)
 		if(HUD().GetUI())
 		{
 			string512				_buff;
-			sprintf_s					(_buff,"max_ping_warn_%d", _cnt);
+			xr_sprintf					(_buff,"max_ping_warn_%d", _cnt);
 			SDrawStaticStruct* ss	= HUD().GetUI()->AddInfoMessage(_buff);
 			
-			sprintf_s					(_buff,"%d ms.", _ping);
+			xr_sprintf					(_buff,"%d ms.", _ping);
 			ss->m_static->SetText	(_buff);
 			CUIWindow*	w			= ss->m_static->FindChild("auto_static_0");
 			if(w)
 			{
-				sprintf_s				(_buff,"%d/%d", _cnt, _total);
+				xr_sprintf				(_buff,"%d/%d", _cnt, _total);
 				CUIStatic* s		= smart_cast<CUIStatic*>(w);
 				s->SetText			(_buff);
 			}
@@ -462,7 +462,7 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 	if(g_dedicated_server)	return;
 
 	string256 colPlayerName;
-	sprintf_s(colPlayerName, "%s%s:%s", Color_Teams[team], PlayerName, "%c[default]");
+	xr_sprintf(colPlayerName, "%s%s:%s", Color_Teams[team], PlayerName, "%c[default]");
 	if (Level().CurrentViewEntity() && HUD().GetUI())
 		HUD().GetUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
 };
@@ -589,7 +589,7 @@ void game_cl_mp::OnPlayerVoted			(game_PlayerState* ps)
 
 	CStringTable st;
 	string1024 resStr;
-	sprintf_s(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[ps->team], ps->getName(), Color_Main, *st.translate("mp_voted"),
+	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[ps->team], ps->getName(), Color_Main, *st.translate("mp_voted"),
 		ps->m_bCurrentVoteAgreed ? Color_Green : Color_Red, *st.translate(ps->m_bCurrentVoteAgreed ? "mp_voted_yes" : "mp_voted_no"));
 	CommonMessageOut(resStr);
 }
@@ -762,7 +762,7 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 					KMS.m_initiator.m_rect.y1 = pIItem->GetKillMsgYPos();
 					KMS.m_initiator.m_rect.x2 = KMS.m_initiator.m_rect.x1 + pIItem->GetKillMsgWidth();
 					KMS.m_initiator.m_rect.y2 = KMS.m_initiator.m_rect.y1 + pIItem->GetKillMsgHeight();
-					sprintf_s(sWeapon, "%s %s", st.translate("mp_from").c_str(), pIItem->NameShort());
+					xr_sprintf(sWeapon, "%s %s", st.translate("mp_from").c_str(), pIItem->NameShort());
 				}
 				else
 				{
@@ -774,7 +774,7 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 						KMS.m_initiator.m_rect.y1 = 202;
 						KMS.m_initiator.m_rect.x2 = KMS.m_initiator.m_rect.x1 + 31;
 						KMS.m_initiator.m_rect.y2 = KMS.m_initiator.m_rect.y1 + 30;
-						sprintf_s(sWeapon, *st.translate("mp_by_anomaly"));
+						xr_sprintf(sWeapon, *st.translate("mp_by_anomaly"));
 					}
 				}
 			}
@@ -826,7 +826,7 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 						KMS.m_ext_info.m_rect.y2 = pBS->IconRects[0].y1 + pBS->IconRects[0].y2;
 					};
 
-					sprintf_s(sSpecial, *st.translate("mp_with_headshot"));
+					xr_sprintf(sSpecial, *st.translate("mp_with_headshot"));
 
 					if (pOKiller && pOKiller==Level().CurrentViewEntity())
 						PlaySndMessage(ID_HEADSHOT);
@@ -844,7 +844,7 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 						KMS.m_ext_info.m_rect.y2 = pBS->IconRects[0].y1 + pBS->IconRects[0].y2;
 					};
 
-					sprintf_s(sSpecial, *st.translate("mp_with_backstab"));
+					xr_sprintf(sSpecial, *st.translate("mp_with_backstab"));
 
 					if (pOKiller && pOKiller==Level().CurrentViewEntity())
 						PlaySndMessage(ID_ASSASSIN);					
@@ -936,7 +936,7 @@ void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
 	P.r_stringZ(NewName);
 
 	string1024 resStr;
-	sprintf_s(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[Team], OldName, Color_Main, *st.translate("mp_is_now"),Color_Teams[Team], NewName);
+	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[Team], OldName, Color_Main, *st.translate("mp_is_now"),Color_Teams[Team], NewName);
 	CommonMessageOut(resStr);
 	//-------------------------------------------
 	CObject* pObj = Level().Objects.net_Find(ObjID);
@@ -959,8 +959,8 @@ void	game_cl_mp::OnRankChanged	(u8 OldRank)
 	CStringTable st;
 	string256 tmp;
 	string1024 RankStr;
-	sprintf_s(tmp, "rank_%d",local_player->rank);
-	sprintf_s(RankStr, "%s : %s", *st.translate("mp_your_rank"), *st.translate(READ_IF_EXISTS(pSettings, r_string, tmp, "rank_name", "")));
+	xr_sprintf(tmp, "rank_%d",local_player->rank);
+	xr_sprintf(RankStr, "%s : %s", *st.translate("mp_your_rank"), *st.translate(READ_IF_EXISTS(pSettings, r_string, tmp, "rank_name", "")));
 	CommonMessageOut(RankStr);	
 #ifdef DEBUG
 	Msg("- %s", RankStr);
@@ -1048,7 +1048,7 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 		if(pUIDM)
 		{
 			string256					MoneyStr;
-			sprintf_s						(MoneyStr,(Money_Added>0)?"+%d":"%d", Money_Added);
+			xr_sprintf						(MoneyStr,(Money_Added>0)?"+%d":"%d", Money_Added);
 			pUIDM->DisplayMoneyChange	(MoneyStr);
 		}
 	};
@@ -1065,9 +1065,9 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 		KillMessageStruct BMS;
 		string256	MoneyStr;
 		if (BonusMoney >=0)
-			sprintf_s		(MoneyStr, "+%d", BonusMoney);
+			xr_sprintf		(MoneyStr, "+%d", BonusMoney);
 		else
-			sprintf_s		(MoneyStr, "-%d", BonusMoney);
+			xr_sprintf		(MoneyStr, "-%d", BonusMoney);
 		BMS.m_victim.m_name = MoneyStr;
 		BMS.m_victim.m_color = 0xff00ff00;
 		u32 RectID = 0;
@@ -1095,7 +1095,7 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 			{				
 				BName.sprintf("%d_kill_in_row", BonusKills);
 				
-				sprintf_s		(MoneyStr, sizeof(MoneyStr), "%d", BonusKills);
+				xr_sprintf		(MoneyStr, sizeof(MoneyStr), "%d", BonusKills);
 				BMS.m_killer.m_name = MoneyStr;
 				BMS.m_killer.m_color = 0xffff0000;
 			}break;
@@ -1160,10 +1160,10 @@ void	game_cl_mp::OnGameMenuRespond		(NET_Packet& P)
 
 void	game_cl_mp::OnGameRoundStarted				()
 {
-	//			sprintf_s(Text, "%sRound started !!!",Color_Main);
+	//			xr_sprintf(Text, "%sRound started !!!",Color_Main);
 	string512 Text;
 	CStringTable st;
-	sprintf_s(Text, "%s%s",Color_Main, *st.translate("mp_match_started"));
+	xr_sprintf(Text, "%s%s",Color_Main, *st.translate("mp_match_started"));
 	CommonMessageOut(Text);
 	OnSwitchPhase_InProgress();
 	//-------------------------------
@@ -1190,11 +1190,11 @@ void game_cl_mp::LoadBonuses				()
 		_GetItem(line, 1, tmp1);
 		if (strstr(name, "kill_in_row")) 
 		{
-			sprintf_s(tmp1, "%s Kill", tmp1);
-			sprintf_s(IconStr, "kill_in_row");
+			xr_sprintf(tmp1, "%s Kill", tmp1);
+			xr_sprintf(IconStr, "kill_in_row");
 		}
 		else
-			sprintf_s(IconStr, "%s",name);
+			xr_sprintf(IconStr, "%s",name);
 		//-------------------------------------
 		Bonus_Struct	NewBonus;
 		NewBonus.BonusTypeName = name;
@@ -1205,11 +1205,11 @@ void game_cl_mp::LoadBonuses				()
 		if (!strstr(name, "new_rank"))
 		{
 			string1024 IconShader, IconX, IconY, IconW, IconH;
-			sprintf_s(IconShader, "%s_shader", IconStr);
-			sprintf_s(IconX, "%s_x", IconStr);
-			sprintf_s(IconY, "%s_y", IconStr);
-			sprintf_s(IconW, "%s_w", IconStr);
-			sprintf_s(IconH, "%s_h", IconStr);
+			xr_sprintf(IconShader, "%s_shader", IconStr);
+			xr_sprintf(IconX, "%s_x", IconStr);
+			xr_sprintf(IconY, "%s_y", IconStr);
+			xr_sprintf(IconW, "%s_w", IconStr);
+			xr_sprintf(IconH, "%s_h", IconStr);
 			if (pSettings->line_exist("mp_bonus_icons", IconShader))
 			{			
 				NewBonus.IconShader.create("hud\\default", pSettings->r_string("mp_bonus_icons", IconShader));
@@ -1231,13 +1231,13 @@ void game_cl_mp::LoadBonuses				()
 			{
 				string256 rankstr;				
 
-				sprintf_s(rankstr, "ui_hud_status_green_0%d", r);
+				xr_sprintf(rankstr, "ui_hud_status_green_0%d", r);
 				IconRect = CUITextureMaster::GetTextureRect(rankstr);
 				IconRect.x2 -= IconRect.x1;
 				IconRect.y2 -= IconRect.y1;
 				NewBonus.IconRects.push_back(IconRect);
 
-				sprintf_s(rankstr, "ui_hud_status_blue_0%d", r);
+				xr_sprintf(rankstr, "ui_hud_status_blue_0%d", r);
 				IconRect = CUITextureMaster::GetTextureRect(rankstr);
 				IconRect.x2 -= IconRect.x1;
 				IconRect.y2 -= IconRect.y1;

@@ -512,13 +512,13 @@ public:
 		
 		sscanf	(args,"%s %s", LevelName, GameType);
 
-		if (!xr_strcmp(GameType, "dm")) sprintf_s(GameType, "deathmatch");
+		if (!xr_strcmp(GameType, "dm")) xr_sprintf(GameType, "deathmatch");
 		else
-			if (!xr_strcmp(GameType, "tdm")) sprintf_s(GameType, "teamdeathmatch");
+			if (!xr_strcmp(GameType, "tdm")) xr_sprintf(GameType, "teamdeathmatch");
 			else
-				if (!xr_strcmp(GameType, "artifacthunt")) sprintf_s(GameType, "artefacthunt");
+				if (!xr_strcmp(GameType, "artifacthunt")) xr_sprintf(GameType, "artefacthunt");
 				else
-					if (!xr_strcmp(GameType, "ah")) sprintf_s(GameType, "artefacthunt");
+					if (!xr_strcmp(GameType, "ah")) xr_sprintf(GameType, "artefacthunt");
 
 		if (xr_strcmp(GameType, "deathmatch"))
 			if (xr_strcmp(GameType, "teamdeathmatch"))
@@ -579,7 +579,7 @@ public:
 		sscanf				(args,"%s", GameType);
 
 		string1024			argsNew;
-		sprintf_s				(argsNew, "%s %s", Level().name().c_str(), GameType);
+		xr_sprintf				(argsNew, "%s %s", Level().name().c_str(), GameType);
 
 		CCC_ChangeLevelGameType::Execute((LPCSTR)argsNew);
 	};
@@ -599,7 +599,7 @@ public:
 		sscanf			(args,"%s", LevelName);
 
 		string1024		argsNew;
-		sprintf_s			(argsNew, "%s %s", LevelName, Level().Server->game->type_name());
+		xr_sprintf			(argsNew, "%s %s", LevelName, Level().Server->game->type_name());
 
 		CCC_ChangeLevelGameType::Execute((LPCSTR)argsNew);
 	};
@@ -1145,7 +1145,7 @@ public:
 		if (!(&Level()))											return;
 		if (!(&Game()))												return;
 		if( !Game().local_player || !Game().local_player->name )	return;
-		sprintf_s( S, "is \"%s\" ", Game().local_player->name );
+		xr_sprintf( S, "is \"%s\" ", Game().local_player->name );
 	}
 
 	virtual void	Save	(IWriter *F)	{}

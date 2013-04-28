@@ -13,6 +13,7 @@ namespace Feel {
 		m_owner(owner)
 	{	
 	}
+
 	Vision::~Vision()
 	{	
 	}

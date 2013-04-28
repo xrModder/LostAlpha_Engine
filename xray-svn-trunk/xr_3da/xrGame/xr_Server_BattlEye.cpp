@@ -56,7 +56,7 @@ BattlEyeServer::BattlEyeServer( xrServer* Server )
 	}
 
 	string64 game_version;
-	strcpy_s( game_version, GAME_VERSION );
+	xr_strcpy( game_version, GAME_VERSION );
 
 	m_succefull = Init(
 		game_version,
@@ -126,7 +126,7 @@ void BattlEyeServer::PrintMessage( char* message )
 	//if( g_be_message_out )
 	{
 		string512 text;
-		sprintf_s( text, sizeof(text), "BattlEye Server: %s", message );
+		xr_sprintf( text, sizeof(text), "BattlEye Server: %s", message );
 		Msg( "%s", text );
 
 		if( g_be_message_out )//==2
@@ -162,7 +162,7 @@ void  BattlEyeServer::KickPlayer( int player, char* reason )
 			{
 				Msg( "- Disconnecting : %s ! Kicked by BattlEye Server. Reason: %s", l_pC->ps->getName(), reason );
 				string512 reason2;
-				strcpy_s( reason2, reason );
+				xr_strcpy( reason2, reason );
 
 				Level().Server->DisconnectClient( l_pC, reason2 );
 				break;
@@ -172,7 +172,7 @@ void  BattlEyeServer::KickPlayer( int player, char* reason )
 //				Msg("BattlEye Server disconnect server's client");
 				//*CStringTable().translate( ui_st_kicked_by_battleye ); //reason translate?
 				string512 reason2;
-				sprintf_s( reason2, sizeof(reason2),
+				xr_sprintf( reason2, sizeof(reason2),
 					"  Disconnecting : %s !  Server's Client kicked by BattlEye Server.  Reason: %s",
 					l_pC->ps->getName(), reason );
 				Msg( reason2 );

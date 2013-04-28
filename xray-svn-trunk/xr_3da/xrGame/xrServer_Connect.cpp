@@ -95,7 +95,7 @@ IClient* xrServer::new_client( SClientConnectData* cl_data )
 	CL->process_id	= cl_data->process_id;
 	
 	string64 new_name;
-	strcpy_s( new_name, cl_data->name );
+	xr_strcpy( new_name, cl_data->name );
 	CL->name._set( new_name );
 	
 	if ( !HasProtected() && game->NewPlayerName_Exists( CL, new_name ) )

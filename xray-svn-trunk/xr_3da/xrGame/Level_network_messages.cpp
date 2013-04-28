@@ -290,7 +290,7 @@ void CLevel::ClientReceive()
 					P->r_stringZ(GameType);
 
 					string4096 NewServerOptions = "";
-					sprintf_s(NewServerOptions, "%s/%s", LevelName, GameType);
+					xr_sprintf(NewServerOptions, "%s/%s", LevelName, GameType);
 
 					if (m_SO) strcat(NewServerOptions, m_SO);
 					m_caServerOptions = NewServerOptions;

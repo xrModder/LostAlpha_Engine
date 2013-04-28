@@ -1,14 +1,15 @@
 #ifndef __XR_OBJECT_H__
 #define __XR_OBJECT_H__
 
-#include "ispatial.h"
+#include "../xrcdb/ispatial.h"
 #include "isheduled.h"
 //#include "iinputreceiver.h"
 #include "irenderable.h"
 #include "icollidable.h"
-
+#include "engineapi.h"
+#include "device.h"
 // refs
-class	ENGINE_API	IRender_Visual;
+//class	ENGINE_API	IRenderVisual;
 class	ENGINE_API	IRender_Sector;
 class	ENGINE_API	IRender_ObjectSpecific;
 class	ENGINE_API	CCustomHUD;
@@ -21,6 +22,8 @@ class	CSE_Abstract;
 //-----------------------------------------------------------------------------------------------------------
 //	CObject
 //-----------------------------------------------------------------------------------------------------------
+class	IPhysicsShell;
+xr_pure_interface	IObjectPhysicsCollision;
 #pragma pack(push,4)
 class	ENGINE_API						CObject :	
 	public DLL_Pure,
@@ -127,7 +130,7 @@ public:
 	virtual BOOL						renderable_ShadowReceive	()			{ return TRUE;						}
 
 	// Accessors and converters
-	ICF IRender_Visual*					Visual				() const			{ return renderable.visual;			}
+	ICF IRenderVisual*					Visual				() const			{ return renderable.visual;			}
 	ICF ICollisionForm*					CFORM				() const			{ return collidable.model;			}
 	virtual		CObject*				dcast_CObject		()					{ return this;						}
 	virtual		IRenderable*			dcast_Renderable	()					{ return this;						}
@@ -195,6 +198,9 @@ public:
 	virtual void						OnH_B_Independent	(bool just_before_destroy);
 	virtual void						OnH_A_Chield		();		// after
 	virtual void						OnH_A_Independent	();
+
+	virtual void						On_SetEntity		()	{};
+	virtual void						On_LostEntity		()	{};
 
 public:
 	virtual bool						register_schedule	() const {return true;}

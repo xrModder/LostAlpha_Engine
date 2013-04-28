@@ -93,6 +93,6 @@ LPCSTR SVSpectatorDlg::GetSpectatorModesStr	(LPSTR result, const u32 &result_siz
 	res |= (m_SP_TeamOnly.GetCheck()) ? 1<<4 : 0;
 
 	sprintf(result,"/spectrmds=%d", res);
-//	sprintf_s(result,result_size,"/spectrmds=%d", res);
+//	xr_sprintf(result,result_size,"/spectrmds=%d", res);
 	return (result);
 };

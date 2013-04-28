@@ -10,7 +10,7 @@
 #else
     #include "render.h"
 	#include "igame_level.h"
-	#include "xr_area.h"
+	#include "../xrcdb/xr_area.h"
 	#include "xr_object.h"
 #endif
 
@@ -51,6 +51,8 @@ CEffect_Rain::CEffect_Rain()
 	
 	snd_Ambient.create				("ambient\\rain",st_Effect,sg_Undefined);
 
+	//	Moced to p_Render constructor
+	/*
 	IReader*	F					= FS.r_open("$game_meshes$","dm\\rain.dm"); 
 	VERIFY3							(F,"Can't open file.","dm\\rain.dm");
 	DM_Drop							= ::Render->model_CreateDM		(F);
@@ -59,8 +61,9 @@ CEffect_Rain::CEffect_Rain()
 	SH_Rain.create					("effects\\rain","fx\\fx_rain");
 	hGeom_Rain.create				(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
 	hGeom_Drops.create				(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+	*/
 	p_create						();
-	FS.r_close						(F);
+	//FS.r_close						(F);
 }
 
 CEffect_Rain::~CEffect_Rain()
@@ -69,7 +72,8 @@ CEffect_Rain::~CEffect_Rain()
 
 	// Cleanup
 	p_destroy						();
-	::Render->model_Delete			(DM_Drop);
+	//	Moved to p_Render destructor
+	//::Render->model_Delete			(DM_Drop);
 	params->dwReferences--;
 	if (!params->dwReferences)
 		xr_free(params);
@@ -133,9 +137,14 @@ void	CEffect_Rain::OnFrame	()
 #ifndef _EDITOR
 	if (!g_pGameLevel)			return;
 #endif
+
+#ifdef DEDICATED_SERVER
+	return;
+#endif
+
 	// Parse states
-	float	factor				= g_pGamePersistent->Environment().CurrentEnv.rain_density;
-	float	hemi_factor			= 1.f;
+	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
+	static float hemi_factor	= 0.f;
 #ifndef _EDITOR
 	CObject* E 					= g_pGameLevel->CurrentViewEntity();
 	if (E&&E->renderable_ROS())
@@ -189,22 +198,26 @@ void	CEffect_Rain::Render	()
 #ifndef _EDITOR
 	if (!g_pGameLevel)			return;
 #endif
-	float	factor				= g_pGamePersistent->Environment().CurrentEnv.rain_density;
+
+	m_pRender->Render(*this);
+
+	/*
+	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
 	if (factor<EPS_L)			return;
 
-	u32 desired_items			= iFloor	(0.5f*(1.f+factor)*float(params->max_desired_items));
+	u32 desired_items			= iFloor	(0.5f*(1.f+factor)*float(max_desired_items));
 	// visual
 	float		factor_visual	= factor/2.f+.5f;
-	Fvector3	f_rain_color	= g_pGamePersistent->Environment().CurrentEnv.rain_color;
+	Fvector3	f_rain_color	= g_pGamePersistent->Environment().CurrentEnv->rain_color;
 	u32			u_rain_color	= color_rgba_f(f_rain_color.x,f_rain_color.y,f_rain_color.z,factor_visual);
 
 	// born _new_ if needed
-	float	b_radius_wrap_sqr	= _sqr((params->source_radius+.5f));
+	float	b_radius_wrap_sqr	= _sqr((source_radius+.5f));
 	if (items.size()<desired_items)	{
 		// items.reserve		(desired_items);
 		while (items.size()<desired_items)	{
 			Item				one;
-			Born				(one,params->source_radius);
+			Born				(one,source_radius);
 			items.push_back		(one);
 		}
 	}
@@ -212,7 +225,7 @@ void	CEffect_Rain::Render	()
 	// build source plane
     Fplane src_plane;
     Fvector norm	={0.f,-1.f,0.f};
-    Fvector upper; 	upper.set(Device.vCameraPosition.x,Device.vCameraPosition.y+params->source_offset,Device.vCameraPosition.z);
+    Fvector upper; 	upper.set(Device.vCameraPosition.x,Device.vCameraPosition.y+source_offset,Device.vCameraPosition.z);
     src_plane.build(upper,norm);
 	
 	// perform update
@@ -225,7 +238,7 @@ void	CEffect_Rain::Render	()
 		Item&	one		=	items[I];
 
 		if (one.dwTime_Hit<Device.dwTimeGlobal)		Hit (one.Phit);
-		if (one.dwTime_Life<Device.dwTimeGlobal)	Born(one,params->source_radius);
+		if (one.dwTime_Life<Device.dwTimeGlobal)	Born(one,source_radius);
 
 // последн€€ дельта ??
 //.		float xdt		= float(one.dwTime_Hit-Device.dwTimeGlobal)/1000.f;
@@ -239,17 +252,17 @@ void	CEffect_Rain::Render	()
 		if (wlen>b_radius_wrap_sqr)	{
 			wlen		= _sqrt(wlen);
 //.			Device.Statistic->TEST3.Begin();
-			if ((one.P.y-vEye.y)<params->sink_offset){
+			if ((one.P.y-vEye.y)<sink_offset){
 				// need born
 				one.invalidate();
 			}else{
 				Fvector		inv_dir, src_p;
 				inv_dir.invert(one.D);
 				wdir.div	(wlen);
-				one.P.mad	(one.P, wdir, -(wlen+params->source_radius));
+				one.P.mad	(one.P, wdir, -(wlen+source_radius));
 				if (src_plane.intersectRayPoint(one.P,inv_dir,src_p)){
 					float dist_sqr	= one.P.distance_to_sqr(src_p);
-					float height	= params->max_distance;
+					float height	= max_distance;
 					if (RayPick(src_p,one.D,height,collide::rqtBoth)){	
 						if (_sqr(height)<=dist_sqr){ 
 							one.invalidate	();								// need born
@@ -259,7 +272,7 @@ void	CEffect_Rain::Render	()
 //							Log("2",height-dist);
 						}
 					}else{
-						RenewItem		(one,params->max_distance-_sqrt(dist_sqr),FALSE);		// fly ...
+						RenewItem		(one,max_distance-_sqrt(dist_sqr),FALSE);		// fly ...
 //						Log("3",1.5f*b_height-dist);
 					}
 				}else{
@@ -274,7 +287,7 @@ void	CEffect_Rain::Render	()
 
 		// Build line
 		Fvector&	pos_head	= one.P;
-		Fvector		pos_trail;	pos_trail.mad	(pos_head,one.D,-params->drop_length*factor_visual);
+		Fvector		pos_trail;	pos_trail.mad	(pos_head,one.D,-drop_length*factor_visual);
 		
 		// Culling
 		Fvector sC,lineD;	float sR; 
@@ -295,7 +308,7 @@ void	CEffect_Rain::Render	()
 		camDir.sub			(sC,vEye);
 		camDir.normalize	();
 		lineTop.crossproduct(camDir,lineD);
-		float w = params->drop_width;
+		float w = drop_width;
 		u32 s	= one.uv_set;
 		P.mad(pos_trail,lineTop,-w);	verts->set(P,u_rain_color,UV[s][0].x,UV[s][0].y);	verts++;
 		P.mad(pos_trail,lineTop,w);		verts->set(P,u_rain_color,UV[s][1].x,UV[s][1].y);	verts++;
@@ -304,17 +317,15 @@ void	CEffect_Rain::Render	()
 	}
 	u32 vCount					= (u32)(verts-start);
 	RCache.Vertex.Unlock		(vCount,hGeom_Rain->vb_stride);
-
+	
 	// Render if needed
 	if (vCount)	{
-		//HW.pDevice->SetRenderState	(D3DRS_CULLMODE,D3DCULL_NONE);
-		RCache.set_CullMode(CULL_NONE);
+		HW.pDevice->SetRenderState	(D3DRS_CULLMODE,D3DCULL_NONE);
 		RCache.set_xform_world		(Fidentity);
 		RCache.set_Shader			(SH_Rain);
 		RCache.set_Geometry			(hGeom_Rain);
 		RCache.Render				(D3DPT_TRIANGLELIST,vOffset,0,vCount,0,vCount/2);
-		//HW.pDevice->SetRenderState	(D3DRS_CULLMODE,D3DCULL_CCW);
-		RCache.set_CullMode(CULL_CCW);
+		HW.pDevice->SetRenderState	(D3DRS_CULLMODE,D3DCULL_CCW);
 	}
 	
 	// Particles
@@ -329,8 +340,8 @@ void	CEffect_Rain::Render	()
 		Fmatrix					mXform,mScale;
 		int						pcount  = 0;
 		u32						v_offset,i_offset;
-		u32						vCount_Lock		= params->particles_cache*DM_Drop->number_vertices;
-		u32						iCount_Lock		= params->particles_cache*DM_Drop->number_indices;
+		u32						vCount_Lock		= particles_cache*DM_Drop->number_vertices;
+		u32						iCount_Lock		= particles_cache*DM_Drop->number_indices;
 		IRender_DetailModel::fvfVertexOut* v_ptr= (IRender_DetailModel::fvfVertexOut*) RCache.Vertex.Lock	(vCount_Lock, hGeom_Drops->vb_stride, v_offset);
 		u16*					i_ptr			= _IS.Lock													(iCount_Lock, i_offset);
 		while (P)	{
@@ -349,7 +360,7 @@ void	CEffect_Rain::Render	()
 			if (::Render->ViewBase.testSphere_dirty(P->bounds.P, P->bounds.R))
 			{
 				// Build matrix
-				float scale			=	P->time / params->particles_time;
+				float scale			=	P->time / particles_time;
 				mScale.scale		(scale,scale,scale);
 				mXform.mul_43		(P->mXForm,mScale);
 				
@@ -359,7 +370,7 @@ void	CEffect_Rain::Render	()
 				i_ptr			+=	DM_Drop->number_indices;
 				pcount			++;
 
-				if (pcount >= params->particles_cache) {
+				if (pcount >= particles_cache) {
 					// flush
 					u32	dwNumPrimitives		= iCount_Lock/3;
 					RCache.Vertex.Unlock	(vCount_Lock,hGeom_Drops->vb_stride);
@@ -388,6 +399,7 @@ void	CEffect_Rain::Render	()
 			RCache.Render			(D3DPT_TRIANGLELIST,v_offset,0,vCount_Lock,i_offset,dwNumPrimitives);
 		}
 	}
+	*/
 }
 
 // startup _new_ particle system
@@ -397,18 +409,21 @@ void	CEffect_Rain::Hit		(Fvector& pos)
 	Particle*	P	= p_allocate();
 	if (0==P)	return;
 
-	P->time						= params->particles_time;
+	const Fsphere &bv_sphere = m_pRender->GetDropBounds();
+
+	P->time						= particles_time;
 	P->mXForm.rotateY			(::Random.randF(PI_MUL_2));
 	P->mXForm.translate_over	(pos);
-	P->mXForm.transform_tiny	(P->bounds.P,DM_Drop->bv_sphere.P);
-	P->bounds.R					= DM_Drop->bv_sphere.R;
+	P->mXForm.transform_tiny	(P->bounds.P, bv_sphere.P);
+	P->bounds.R					= bv_sphere.R;
+
 }
 
 // initialize particles pool
 void CEffect_Rain::p_create		()
 {
 	// pool
-	particle_pool.resize	(params->max_particles);
+	particle_pool.resize	(max_particles);
 	for (u32 it=0; it<particle_pool.size(); it++)
 	{
 		Particle&	P	= particle_pool[it];

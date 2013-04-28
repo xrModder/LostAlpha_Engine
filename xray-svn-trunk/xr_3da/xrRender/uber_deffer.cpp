@@ -6,7 +6,7 @@ void	uber_deffer	(CBlender_Compile& C, bool hq, LPCSTR _vspec, LPCSTR _pspec, BO
 {
 	// Uber-parse
 	string256		fname,fnameA,fnameB;
-	strcpy_s			(fname,*C.L_textures[0]);	//. andy if (strext(fname)) *strext(fname)=0;
+	xr_strcpy			(fname,*C.L_textures[0]);	//. andy if (strext(fname)) *strext(fname)=0;
 	fix_texture_name(fname);
 	ref_texture		_t;		_t.create			(fname);
 	bool			bump	= _t.bump_exist		();
@@ -24,7 +24,7 @@ void	uber_deffer	(CBlender_Compile& C, bool hq, LPCSTR _vspec, LPCSTR _pspec, BO
 	string256		ps,vs,dt;
 	strconcat		(sizeof(vs),vs,"deffer_", _vspec, lmap?"_lmh":""	);
 	strconcat		(sizeof(ps),ps,"deffer_", _pspec, lmap?"_lmh":""	);
-	strcpy_s		(dt,sizeof(dt),_detail_replace?_detail_replace:( C.detail_texture?C.detail_texture:"" ) );
+	xr_strcpy		(dt,sizeof(dt),_detail_replace?_detail_replace:( C.detail_texture?C.detail_texture:"" ) );
 
 	if	(_aref)		{ strcat(ps,"_aref");	}
 
@@ -37,7 +37,7 @@ void	uber_deffer	(CBlender_Compile& C, bool hq, LPCSTR _vspec, LPCSTR _pspec, BO
 			strcat		(ps,"_d");
 		}
 	} else {
-		strcpy_s			(fnameA,_t.bump_get().c_str());
+		xr_strcpy			(fnameA,_t.bump_get().c_str());
 		strconcat		(sizeof(fnameB),fnameB,fnameA,"#");
 		strcat			(vs,"_bump");
 		strcat			(ps,"_bump");

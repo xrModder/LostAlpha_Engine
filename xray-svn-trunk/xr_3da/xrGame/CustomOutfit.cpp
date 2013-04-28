@@ -151,7 +151,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 						{
 							NewVisual = pSettings->r_string(TeamSection, *cNameSect());
 							string256 SkinName;
-							strcpy_s(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
+							xr_strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
 							strcat_s(SkinName, *NewVisual);
 							strcat_s(SkinName, ".ogf");
 							NewVisual._set(SkinName);

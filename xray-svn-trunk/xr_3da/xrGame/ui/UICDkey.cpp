@@ -143,8 +143,8 @@ void CUICDkey::SaveValue(){
 //	HKEY KeyCDKey = 0;
 
 //	string256 tmp;
-	sprintf_s(gsCDKey,"%s",AddHyphens(m_lines.GetText()));
-//	sprintf_s(tmp,"cdkey %s",AddHyphens(m_lines.GetText()));
+	xr_sprintf(gsCDKey,"%s",AddHyphens(m_lines.GetText()));
+//	xr_sprintf(tmp,"cdkey %s",AddHyphens(m_lines.GetText()));
 //	Console->Execute(tmp);
 
 }

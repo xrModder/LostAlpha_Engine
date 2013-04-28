@@ -406,7 +406,7 @@ void CControl_Manager::dump(CControl_Com *com, LPCSTR action, ControlCom::EContr
 			else 
 				strcpy(str, "NONE");
 
-			sprintf_s(st, "Locked[%u] Capturer[%s]", it->second->ced()->is_locked(), str);
+			xr_sprintf(st, "Locked[%u] Capturer[%s]", it->second->ced()->is_locked(), str);
 		}
 
 		Msg("[%u] %s: Active[%u] %s",index+1, dbg_control_name_table[it->first], it->second->is_active(),st);

@@ -26,10 +26,10 @@ CDemoPlay::CDemoPlay(const char *name, float ms, u32 cycles, float life_time) : 
 	m_pMotion			= 0;
 	m_MParam			= 0;
 	string_path			nm, fn;
-	strcpy_s			(nm,sizeof(nm),name);	
-	
-	if (strext(nm))	
-		strcpy(strext(nm),".anm");
+	xr_strcpy			(nm,sizeof(nm),name);	
+	LPSTR extp			=strext(nm);
+	if (extp)	
+		xr_strcpy			( nm, sizeof( nm ) - ( extp - nm ), ".anm");
 
 	if ( FS.exist(fn,"$level$",nm) || FS.exist(fn,"$game_anims$",nm) )
 	{
@@ -101,6 +101,39 @@ void CDemoPlay::stat_Stop	()
 	rfps_min				= flt_max;
 	rfps_max				= flt_min;
 	rfps_middlepoint		= 0;
+
+	//	Filtered FPS
+	const u32 iAvgFPS		=	_max((u32)rfps_average,10);
+	const u32 WindowSize	=	_max(16, iAvgFPS/2);
+
+	if ( stat_table.size() > WindowSize*4 )
+	{
+		for (u32	it=2; it<stat_table.size()-WindowSize+1; it++)
+		{
+			float	fTime = 0;
+			for (u32 i=0; i<WindowSize; ++i)
+				fTime += stat_table[it+i];
+			float	fps	= WindowSize / fTime;
+			if		(fps<rfps_min)	rfps_min = fps;
+			if		(fps>rfps_max)	rfps_max = fps;
+			rfps_middlepoint	+=	fps;
+		}
+
+		rfps_middlepoint		/= float(stat_table.size()-1-WindowSize+1);
+	}
+	else
+	{
+		for (u32	it=1; it<stat_table.size(); it++)
+		{
+			float	fps	= 1.f / stat_table[it];
+			if		(fps<rfps_min)	rfps_min = fps;
+			if		(fps>rfps_max)	rfps_max = fps;
+			rfps_middlepoint	+=	fps;
+		}
+		rfps_middlepoint		/= float(stat_table.size()-1);
+	}
+
+	/*
 	for (u32	it=1; it<stat_table.size(); it++)
 	{
 		float	fps	= 1.f / stat_table[it];
@@ -109,16 +142,18 @@ void CDemoPlay::stat_Stop	()
 		rfps_middlepoint	+=	fps;
 	}
 	rfps_middlepoint		/= float(stat_table.size()-1);
+	*/
 
 	Msg("* [DEMO] FPS: average[%f], min[%f], max[%f], middle[%f]",rfps_average,rfps_min,rfps_max,rfps_middlepoint);
 
-	if(g_bBenchmark){
+	if(g_bBenchmark)
+	{
 		string_path			fname;
 
 		if(xr_strlen(g_sBenchmarkName))
-			sprintf_s	(fname,sizeof(fname),"%s.result",g_sBenchmarkName);
+			xr_sprintf	(fname,sizeof(fname),"%s.result",g_sBenchmarkName);
 		else
-			strcpy_s	(fname,sizeof(fname),"benchmark.result");
+			xr_strcpy	(fname,sizeof(fname),"benchmark.result");
 
 
 		FS.update_path		(fname,"$app_data_root$",fname);
@@ -131,7 +166,7 @@ void CDemoPlay::stat_Stop	()
 		for (u32	it=1; it<stat_table.size(); it++)
 		{
 			string32		id;
-			sprintf_s		(id,sizeof(id),"%7d",it);
+			xr_sprintf		(id,sizeof(id),"%7d",it);
 			for (u32 c=0; id[c]; c++) if (' '==id[c]) id[c] = '0';
 			res.w_float		("per_frame_stats",	id, 1.f / stat_table[it]);
 		}
@@ -163,11 +198,20 @@ void spline1( float t, Fvector *p, Fvector *ret )
 	}
 }
 
-BOOL CDemoPlay::Process(Fvector &P, Fvector &D, Fvector &N, float& fFov, float& fFar, float& fAspect)
+BOOL CDemoPlay::ProcessCam(SCamEffectorInfo& info)
 {
 	// skeep a few frames before counting
 	if (Device.dwPrecacheFrame)	return	TRUE;
-	stat_Start					()		;
+
+	if (stat_started)
+	{
+		//g_SASH.DisplayFrame(Device.fTimeGlobal);
+	}
+	else
+	{
+		//g_SASH.StartBenchmark();
+		stat_Start();
+	}
 
 	// Per-frame statistics
 	{
@@ -180,13 +224,13 @@ BOOL CDemoPlay::Process(Fvector &P, Fvector &D, Fvector &N, float& fFov, float& 
 	{
 		Fvector R;
 		Fmatrix mRotate;
-		m_pMotion->_Evaluate	(m_MParam->Frame(),P,R);
+		m_pMotion->_Evaluate	(m_MParam->Frame(),info.p,R);
 		m_MParam->Update		(Device.fTimeDelta,1.f,true);
 		fLifeTime				-= Device.fTimeDelta;
 		if (m_MParam->bWrapped)	{ stat_Stop(); stat_Start(); }
 		mRotate.setXYZi			(R.x,R.y,R.z);
-		D.set					(mRotate.k);
-		N.set					(mRotate.j);
+		info.d.set				(mRotate.k);
+		info.n.set				(mRotate.j);
 	}
 	else
 	{
@@ -235,9 +279,9 @@ BOOL CDemoPlay::Process(Fvector &P, Fvector &D, Fvector &N, float& fFov, float& 
 		
 		Fmatrix mInvCamera;
 		mInvCamera.invert(Device.mView);
-		N.set( mInvCamera._21, mInvCamera._22, mInvCamera._23 );
-		D.set( mInvCamera._31, mInvCamera._32, mInvCamera._33 );
-		P.set( mInvCamera._41, mInvCamera._42, mInvCamera._43 );
+		info.n.set( mInvCamera._21, mInvCamera._22, mInvCamera._23 );
+		info.d.set( mInvCamera._31, mInvCamera._32, mInvCamera._33 );
+		info.p.set( mInvCamera._41, mInvCamera._42, mInvCamera._43 );
 		
 		fLifeTime-=Device.fTimeDelta;
 	}

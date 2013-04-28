@@ -53,7 +53,7 @@ void CUINewsItemWnd::Setup			(GAME_NEWS_DATA& news_data)
 	string128						_time;
 	u32 years, months, days, hours, minutes, seconds, milliseconds;
 	split_time						(news_data.receive_time, years, months, days, hours, minutes, seconds, milliseconds);
-	sprintf_s							(_time, "%02i/%02i/%04i %02i:%02i", days, months, years, hours, minutes);
+	xr_sprintf							(_time, "%02i/%02i/%04i %02i:%02i", days, months, years, hours, minutes);
 
 	m_UITextDate->SetText			(_time);
 	m_UITextDate->AdjustHeightToText();

@@ -14,9 +14,15 @@ typedef void (*ON_TERM_CALLBACK)(void);
 
 class ENGINE_API CDemoRecord :
 	public CEffectorCam,
-	public IInputReceiver
+	public IInputReceiver,
+	public pureRender
 {
 private:
+	static struct force_position 
+	{
+			bool	set_position;
+			Fvector p;
+	} g_position;
 	int			iCount;
 	IWriter*	file;
 	Fvector		m_HPB;
@@ -31,8 +37,8 @@ private:
 
 	BOOL		m_bMakeCubeMap;
 	BOOL		m_bMakeScreenshot;
+	int			m_iLMScreenshotFragment;
 	BOOL		m_bMakeLevelMap;
-	BOOL		m_bOverlapped;
 
 	float		m_fSpeed0;
 	float		m_fSpeed1;
@@ -49,7 +55,7 @@ private:
 	void		RecordKey				();
 	void		MakeCubemap				();
 	void		MakeScreenshot			();
-	void		MakeLevelMapScreenshot	();
+	void		MakeLevelMapScreenshot	(BOOL);
 
 	ON_TERM_CALLBACK m_callback;
 
@@ -62,8 +68,11 @@ public:
 	virtual void IR_OnMouseMove			(int dx, int dy);
 	virtual void IR_OnMouseHold			(int btn);
 	
-	virtual BOOL Overlapped				(){return m_bOverlapped;}
-	virtual	BOOL Process				(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL ProcessCam				(SCamEffectorInfo& info);
+	static	void SetGlobalPosition		( const Fvector &p ) { g_position.p.set(p), g_position.set_position= true; }
+	static	void GetGlobalPosition		( Fvector &p ) { p.set( g_position.p ); }
+	BOOL		 m_b_redirect_input_to_level;
+	virtual void OnRender				();
 };
 
 #endif // !defined(AFX_FDEMORECORD_H__D7638760_FB61_11D3_B4E3_4854E82A090D__INCLUDED_)

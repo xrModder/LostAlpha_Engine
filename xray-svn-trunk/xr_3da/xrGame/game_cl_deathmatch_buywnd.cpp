@@ -380,7 +380,7 @@ void				game_cl_Deathmatch::LoadDefItemsForRank(IBuyWnd* pBuyMenu)
 			strconcat(sizeof(ItemStr),ItemStr, "def_item_repl_", ItemName.c_str() );
 			if (!pSettings->line_exist(RankStr, ItemStr)) continue;
 
-			strcpy_s(NewItemStr,sizeof(NewItemStr),pSettings->r_string(RankStr, ItemStr));
+			xr_strcpy(NewItemStr,sizeof(NewItemStr),pSettings->r_string(RankStr, ItemStr));
 
 			u8 SlotID, ItemID;
 			pBuyMenu->GetWeaponIndexByName(NewItemStr, SlotID, ItemID);

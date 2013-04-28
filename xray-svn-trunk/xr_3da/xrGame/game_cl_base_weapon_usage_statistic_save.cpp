@@ -41,7 +41,7 @@ void WeaponUsageStatistic::WriteLtx(CInifile& ini)
 	{
 		Player_Statistic& PS = aPlayersStatistic[i];
 		string512			save_sect;
-		sprintf_s			(save_sect,"%s_player_%d",sect,i);
+		xr_sprintf			(save_sect,"%s_player_%d",sect,i);
 		PS.WriteLtx			(ini,save_sect);
 	}
 }
@@ -57,15 +57,15 @@ void WeaponUsageStatistic::SaveData()
 	SYSTEMTIME		Time;	
 	switch (GameID())
 	{
-	case GAME_DEATHMATCH: sprintf_s(GameType, "dm"); break;
-	case GAME_TEAMDEATHMATCH: sprintf_s(GameType, "tdm"); break;
-	case GAME_ARTEFACTHUNT: sprintf_s(GameType, "ah"); break;
+	case GAME_DEATHMATCH: xr_sprintf(GameType, "dm"); break;
+	case GAME_TEAMDEATHMATCH: xr_sprintf(GameType, "tdm"); break;
+	case GAME_ARTEFACTHUNT: xr_sprintf(GameType, "ah"); break;
 	default:
 		return;
 		break;
 	};
 	GetLocalTime(&Time);	
-	sprintf_s(mFileName, "(%s)_(%s)_%02d.%02d.%02d_%02d.%02d.%02d.wus", *(Level().name()), GameType, Time.wMonth, Time.wDay, Time.wYear, Time.wHour, Time.wMinute, Time.wSecond);
+	xr_sprintf(mFileName, "(%s)_(%s)_%02d.%02d.%02d_%02d.%02d.%02d.wus", *(Level().name()), GameType, Time.wMonth, Time.wDay, Time.wYear, Time.wHour, Time.wMinute, Time.wSecond);
 
 
 	//---------------------------------------------------------
@@ -132,7 +132,7 @@ void Player_Statistic::WriteLtx(CInifile& ini, LPCSTR sect)
 	for (u32 i=0; i<aWeaponStats.size(); i++)
 	{
 		string512				save_sect;
-		sprintf_s				(save_sect,"%s_wpn_%d",sect,i);
+		xr_sprintf				(save_sect,"%s_wpn_%d",sect,i);
 		Weapon_Statistic& WS	= aWeaponStats[i];
 		WS.WriteLtx				(ini, save_sect);
 	}
@@ -191,7 +191,7 @@ void Weapon_Statistic::WriteLtx(CInifile& ini, LPCSTR sect)
 		if (!Hit.Completed) continue;
 
 		string512				save_prefix;
-		sprintf_s				(save_prefix,"hit_%d_", i);
+		xr_sprintf				(save_prefix,"hit_%d_", i);
 
 		Hit.WriteLtx			(ini, sect, save_prefix);
 	};

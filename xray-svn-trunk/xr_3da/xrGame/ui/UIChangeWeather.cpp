@@ -42,9 +42,9 @@ void CUIChangeWeather::Init(CUIXml& xml_doc){
 
 	string256 _path;
 	for (int i = 0; i<4; i++){
-		sprintf_s(_path, "change_weather:btn_%d", i + 1);
+		xr_sprintf(_path, "change_weather:btn_%d", i + 1);
 		CUIXmlInit::Init3tButton(xml_doc, _path, 0, btn[i]);
-		sprintf_s(_path, "change_weather:txt_%d", i + 1);
+		xr_sprintf(_path, "change_weather:txt_%d", i + 1);
 		CUIXmlInit::InitStatic(xml_doc, _path, 0, m_data[i].m_static);
 	}
 
@@ -91,7 +91,7 @@ bool CUIChangeWeather::OnKeyboard(int dik, EUIMessages keyboard_action){
 void CUIChangeWeather::OnBtn(int i){
 	game_cl_mp* game		= smart_cast<game_cl_mp*>(&Game());
 	string1024				command;
-	sprintf_s					(command, "cl_votestart changeweather %s %s", *m_data[i].m_weather_name, *m_data[i].m_weather_time);
+	xr_sprintf					(command, "cl_votestart changeweather %s %s", *m_data[i].m_weather_name, *m_data[i].m_weather_time);
 	Console->Execute		(command);
 	game->StartStopMenu(this, true);
 }

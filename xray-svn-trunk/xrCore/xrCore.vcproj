@@ -856,6 +856,60 @@
 				RelativePath="xrMemory_subst_msvc.h"
 				>
 			</File>
+			<Filter
+				Name="dlmalloc"
+				>
+				<Filter
+					Name="wrapper"
+					>
+					<File
+						RelativePath=".\doug_lea_allocator.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\doug_lea_allocator.h"
+						>
+					</File>
+					<File
+						RelativePath=".\memory_allocator_options.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="allocator"
+					>
+					<File
+						RelativePath=".\ptmalloc3\malloc-2.8.3.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ptmalloc3\malloc.c"
+						>
+						<FileConfiguration
+							Name="Mixed|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+								Detect64BitPortabilityProblems="false"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ptmalloc3\sysdeps\win32\win32.c"
+						>
+						<FileConfiguration
+							Name="Mixed|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+								Detect64BitPortabilityProblems="false"
+							/>
+						</FileConfiguration>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Debug core"
@@ -1223,6 +1277,18 @@
 			>
 			<File
 				RelativePath=".\crc32.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\string_concatenations.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\string_concatenations.h"
+				>
+			</File>
+			<File
+				RelativePath=".\string_concatenations_inline.h"
 				>
 			</File>
 			<File

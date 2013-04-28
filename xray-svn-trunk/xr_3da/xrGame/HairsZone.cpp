@@ -68,7 +68,7 @@ void CHairsZone::Affect(SZoneObjectInfo* O)
 #ifdef DEBUG
 	if(bDebug){
 		char l_pow[255]; 
-		sprintf_s(l_pow, "zone hit. %.1f", Power(pGameObject->Position().distance_to(P)));
+		xr_sprintf(l_pow, "zone hit. %.1f", Power(pGameObject->Position().distance_to(P)));
 		Msg("%s %s",*pGameObject->cName(), l_pow);
 	}
 #endif

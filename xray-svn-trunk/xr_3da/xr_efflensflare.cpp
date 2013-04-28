@@ -5,8 +5,13 @@
 
 #include "igame_persistent.h"
 #include "Environment.h"
-#include "SkeletonCustom.h"
+//#include "SkeletonCustom.h"
+//	Instead of SkeletonCustom:
+#include "bone.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "cl_intersect.h"
+
+#include "xrGame/object_broker.h"
 
 #ifdef _EDITOR
     #include "ui_toolscustom.h"
@@ -16,9 +21,9 @@
 	#include "igame_level.h"
 #endif
 
-#define FAR_DIST g_pGamePersistent->Environment().CurrentEnv.far_plane
+#define FAR_DIST g_pGamePersistent->Environment().CurrentEnv->far_plane
 
-#define MAX_Flares	24
+//#define MAX_Flares	24
 //////////////////////////////////////////////////////////////////////////////
 // Globals ///////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -53,22 +58,24 @@ void CLensFlareDescriptor::AddFlare(float fRadius, float fOpacity, float fPositi
 	m_Flares.push_back	(F);
 }
 
+/*
 ref_shader CLensFlareDescriptor::CreateShader(LPCSTR tex_name, LPCSTR sh_name)
 {
 	ref_shader	R;
 	if			(tex_name&&tex_name[0])	R.create(sh_name,tex_name);
 	return		R;
 }
+*/
 
-void CLensFlareDescriptor::load(const CInifile* pIni, LPCSTR sect)
+void CLensFlareDescriptor::load(CInifile* pIni, LPCSTR sect)
 {
 	section		= sect;
-	m_Flags.set	(flSource,pIni->r_bool(sect,"source" ));
+	m_Flags.set	(flSource,pIni->r_bool(sect,"sun" ));
 	if (m_Flags.is(flSource)){
-		LPCSTR S= pIni->r_string 	( sect,"source_shader" );
-		LPCSTR T= pIni->r_string 	( sect,"source_texture" );
-		float r = pIni->r_float		( sect,"source_radius" );
-		BOOL i 	= pIni->r_bool		( sect,"source_ignore_color" );
+		LPCSTR S= pIni->r_string 	( sect,"sun_shader" );
+		LPCSTR T= pIni->r_string 	( sect,"sun_texture" );
+		float r = pIni->r_float		( sect,"sun_radius" );
+		BOOL i 	= pIni->r_bool		( sect,"sun_ignore_color" );
 		SetSource(r,i,T,S);
 	}
 	m_Flags.set	(flFlare,pIni->r_bool ( sect,"flares" ));
@@ -105,17 +112,29 @@ void CLensFlareDescriptor::load(const CInifile* pIni, LPCSTR sect)
 void CLensFlareDescriptor::OnDeviceCreate()
 {
 	// shaders
+	m_Gradient.m_pRender->CreateShader(*m_Gradient.shader,*m_Gradient.texture);
+	m_Source.m_pRender->CreateShader(*m_Source.shader,*m_Source.texture);
+	for (FlareIt it=m_Flares.begin(); it!=m_Flares.end(); it++) 
+		it->m_pRender->CreateShader(*it->shader,*it->texture);
+	/*
 	m_Gradient.hShader	= CreateShader	(*m_Gradient.texture,*m_Gradient.shader);
 	m_Source.hShader	= CreateShader	(*m_Source.texture,*m_Source.shader);
     for (FlareIt it=m_Flares.begin(); it!=m_Flares.end(); it++) it->hShader = CreateShader(*it->texture,*it->shader);
+	*/
 }
 
 void CLensFlareDescriptor::OnDeviceDestroy()
 {
 	// shaders
+	m_Gradient.m_pRender->DestroyShader();
+	m_Source.m_pRender->DestroyShader();
+	for (FlareIt it=m_Flares.begin(); it!=m_Flares.end(); it++)
+		it->m_pRender->DestroyShader();
+	/*
     m_Gradient.hShader.destroy	();
     m_Source.hShader.destroy	();
     for (FlareIt it=m_Flares.begin(); it!=m_Flares.end(); it++) it->hShader.destroy();
+	*/
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +148,7 @@ CLensFlare::CLensFlare()
     LightColor.set				( 0xFFFFFFFF );
 	fGradientValue				= 0.f;
 
-    hGeom						= 0;
+    //hGeom						= 0;
 	m_Current					= 0;
 
     m_State						= lfsNone;
@@ -146,15 +165,11 @@ CLensFlare::CLensFlare()
 
 	OnDeviceCreate				();	
 }
-#ifndef _EDITOR
-#include "xrGame\object_broker.h"
-#endif
+
 CLensFlare::~CLensFlare()
 {
 	OnDeviceDestroy				();
-#ifndef _EDITOR
 	delete_data(m_Palette);	
-#endif
 }
 
 #ifndef _EDITOR
@@ -175,7 +190,7 @@ IC BOOL material_callback(collide::rq_result& result, LPVOID params)
 	if (result.O){
 		vis			= 0.f;
 		//CKinematics*K=PKinematics(result.O->renderable.visual);
-		IKinematics *K=PKinematics(result.O->renderable.visual);
+		IKinematics*K=PKinematics(result.O->renderable.visual);
 		if (K&&(result.element>0))
 			vis		= g_pGamePersistent->MtlTransparent(K->LL_GetData(u16(result.element)).game_mtl_idx);
 	}else{
@@ -204,6 +219,22 @@ IC void	blend_lerp	(float& cur, float tgt, float speed, float dt)
 	cur				+= (diff/diff_a)*mot;
 }
 
+#if 0
+static LPCSTR state_to_string (const CLensFlare::LFState &state)
+{
+	switch (state) {
+		case CLensFlare::lfsNone : return("none");
+		case CLensFlare::lfsIdle : return("idle");
+		case CLensFlare::lfsHide : return("hide");
+		case CLensFlare::lfsShow : return("show");
+		default : NODEFAULT;
+	}
+#ifdef DEBUG
+	return			(0);
+#endif // DEBUG
+}
+#endif
+
 static Fvector2 RayDeltas[CLensFlare::MAX_RAYS] = 
 {
 	{ 0,		0 },
@@ -212,7 +243,7 @@ static Fvector2 RayDeltas[CLensFlare::MAX_RAYS] =
 	{ 0,		-1 },
 	{ 0,		1 },
 };
-void CLensFlare::OnFrame(int id)
+void CLensFlare::OnFrame(shared_str id)
 {
 	if (dwFrame==Device.dwFrame)return;
 #ifndef _EDITOR
@@ -220,17 +251,18 @@ void CLensFlare::OnFrame(int id)
 #endif
 	dwFrame			= Device.dwFrame;
 
-	R_ASSERT		( _valid(g_pGamePersistent->Environment().CurrentEnv.sun_dir) );
-	vSunDir.mul		(g_pGamePersistent->Environment().CurrentEnv.sun_dir,-1);
+	R_ASSERT		( _valid(g_pGamePersistent->Environment().CurrentEnv->sun_dir) );
+	vSunDir.mul		(g_pGamePersistent->Environment().CurrentEnv->sun_dir,-1);
 	R_ASSERT		( _valid(vSunDir) );
 
 	// color
     float tf		= g_pGamePersistent->Environment().fTimeFactor;
-    Fvector& c		= g_pGamePersistent->Environment().CurrentEnv.sun_color;
+    Fvector& c		= g_pGamePersistent->Environment().CurrentEnv->sun_color;
 	LightColor.set	(c.x,c.y,c.z,1.f); 
 
-    CLensFlareDescriptor* desc = (id==-1)?0:&m_Palette[id];
+	CLensFlareDescriptor* desc = id.size() ? g_pGamePersistent->Environment().add_flare(m_Palette, id) : 0;
 
+//	LFState			previous_state = m_State;
     switch(m_State){
     case lfsNone: m_State=lfsShow; m_Current=desc; break;
     case lfsIdle: if (desc!=m_Current) m_State=lfsHide; 	break;
@@ -433,6 +465,9 @@ void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 	if(!m_Current)		return;
 	VERIFY				(m_Current);
 
+	m_pRender->Render(*this, bSun, bFlares, bGradient);
+
+	/*
 	Fcolor				dwLight;
 	Fcolor				color;
 	Fvector				vec, vecSx, vecSy;
@@ -516,36 +551,38 @@ void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 			RCache.Render			(D3DPT_TRIANGLELIST,vBase, 0,4,0,2);
 	    }
 	}
+	*/
 }
 
-int	CLensFlare::AppendDef(const CInifile *pIni, LPCSTR sect)
+shared_str CLensFlare::AppendDef(CEnvironment& environment, CInifile* pIni, LPCSTR sect)
 {
-	if (!sect||(0==sect[0])) return -1;
+	if (!sect||(0==sect[0])) return "";
     for (LensFlareDescIt it=m_Palette.begin(); it!=m_Palette.end(); it++)
-    	if (0==xr_strcmp(*it->section,sect)) return int(it-m_Palette.begin());
-    m_Palette.push_back			(CLensFlareDescriptor());
-    CLensFlareDescriptor& lf 	= m_Palette.back();
-    lf.load						(pIni,sect);
-    return m_Palette.size()-1;
+    	if (0==xr_strcmp(*(*it)->section,sect)) return sect;
+
+	environment.add_flare(m_Palette, sect); 
+    return sect;
 }
 
 void CLensFlare::OnDeviceCreate()
 {
 	// VS
-	hGeom.create		(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.QuadIB);
+	//hGeom.create		(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.QuadIB);
+	m_pRender->OnDeviceCreate();
 
 	// palette
     for (LensFlareDescIt it=m_Palette.begin(); it!=m_Palette.end(); it++)
-        it->OnDeviceCreate();
+        (*it)->OnDeviceCreate();
 }
 
 void CLensFlare::OnDeviceDestroy()
 {
 	// palette
     for (LensFlareDescIt it=m_Palette.begin(); it!=m_Palette.end(); it++)
-        it->OnDeviceDestroy();
+        (*it)->OnDeviceDestroy();
 
 	// VS
-	hGeom.destroy();
+	//hGeom.destroy();
+	m_pRender->OnDeviceDestroy();
 }
 

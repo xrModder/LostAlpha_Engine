@@ -206,7 +206,7 @@ void CStoreHouse::save(IWriter &memory_stream)
 	{
 		luabind::functor<void>		func;
 		string256					func_name;
-		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
+		xr_strcpy(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
 		R_ASSERT					(ai().script_engine().functor<void>(func_name,func));
 		func						();	
 	}
@@ -299,7 +299,7 @@ void CStoreHouse::load(IReader &file_stream)
 	if (pSettings->section_exist("lost_alpha_cfg") && pSettings->line_exist("lost_alpha_cfg","on_load_store_callback"))
 	{
 		string256					func_name;
-		strcpy_s(func_name,pSettings->r_string("lost_alpha_cfg","on_load_store_callback"));
+		xr_strcpy(func_name,pSettings->r_string("lost_alpha_cfg","on_load_store_callback"));
 		R_ASSERT					(ai().script_engine().functor<void>(func_name,func));	
 	}
 	Msg("* Loading Store...");
@@ -375,7 +375,7 @@ void CStoreHouse::save(IWriter &memory_stream)
 
 	string256					fn;
 	luabind::functor<LPCSTR>	callback;
-	strcpy_s					(fn, pSettings->r_string("lost_alpha_cfg", "on_save_store_callback"));
+	xr_strcpy					(fn, pSettings->r_string("lost_alpha_cfg", "on_save_store_callback"));
 	R_ASSERT					(ai().script_engine().functor<LPCSTR>(fn, callback));
 
 	LPCSTR						str = callback();
@@ -407,7 +407,7 @@ void CStoreHouse::load(IReader &file_stream)
 	string256					fn;
 	luabind::functor<void>		callback;
 
-	strcpy_s					(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
+	xr_strcpy					(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
 	R_ASSERT					(ai().script_engine().functor<void>(fn, callback));
 
 	shared_str					str;
@@ -429,7 +429,7 @@ u16 CStoreHouse::OnLoad(IReader &file_stream)
 	string256				fn;
 	luabind::functor<void>	callback;
 	m_lua					      = ai().script_engine().lua();
-	strcpy_s											(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
+	xr_strcpy											(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
 	R_ASSERT											(ai().script_engine().functor<void>(fn, callback));
 
 	luabind::object&		table = UnserializeTable	(file_stream, total);
@@ -522,7 +522,7 @@ void CStoreHouse::OnSave()
 
 	luabind::functor<luabind::object> func;
 	string256					func_name;
-	strcpy_s														(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
+	xr_strcpy														(func_name,pSettings->r_string("lost_alpha_cfg","on_save_store_callback"));
 	R_ASSERT														(ai().script_engine().functor<luabind::object>(func_name,func));
 
 	luabind::object table = func									();	

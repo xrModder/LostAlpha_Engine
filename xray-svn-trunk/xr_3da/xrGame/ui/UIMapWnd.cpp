@@ -498,7 +498,7 @@ void CUIMapWnd::ShowSettingsWindow(LPCSTR type, u16 id, Fvector pos, shared_str 
 	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindowSettings",lua_function),"Can't call la_pda_spot.InitWindowSettings");
 	
 	string256 MapName;
-	strcpy_s(MapName, levelName._get()->value);
+	xr_strcpy(MapName, levelName._get()->value);
 	lua_function								(id,type,pos,MapName);
 }
 
@@ -539,7 +539,7 @@ void CUIMapWnd::CreateSpotWindow(Fvector RealPosition)
 {
 
 	string256 MapName;
-	strcpy_s(MapName, m_tgtMap->MapName()._get()->value);
+	xr_strcpy(MapName, m_tgtMap->MapName()._get()->value);
 
 	luabind::functor<void>	lua_function;
 	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindow",lua_function),"Can't call la_pda_spot.InitWindow");

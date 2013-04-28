@@ -25,6 +25,7 @@ class ENGINE_API CTheoraSurface{
 	u32					tm_total;
 	BOOL				ready;
 	BOOL				bShaderYUV2RGB;
+	int					prefetch;
 public:
 	BOOL				playing;
 	BOOL				looped;

@@ -2,23 +2,23 @@
 #include "igame_level.h"
 #include "xr_collide_form.h"
 #include "xr_object.h"
-#include "xr_area.h"
+#include "../xrcdb/xr_area.h"
 #include "x_ray.h"
 #include "xrLevel.h"
 #include "fmesh.h"
-#include "skeletoncustom.h"
-#include "Kinematics.h"
+#include "../xrCDB/frustum.h"
+
+//#include "skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "bone.h"
-#include "frustum.h"
 #ifdef	DEBUG
-#include "ObjectDump.h"
 IC float DET(const Fmatrix &a){
 	return
 		(( a._11 * ( a._22 * a._33 - a._23 * a._32 ) -
 		a._12 * ( a._21 * a._33 - a._23 * a._31 ) +
 		a._13 * ( a._21 * a._32 - a._22 * a._31 ) ));
 }
-
+#include "objectdump.h"
 #endif
 using namespace	collide;
 //----------------------------------------------------------------------
@@ -105,25 +105,19 @@ IC bool RAYvsCYLINDER(const Fcylinder& c_cylinder, const Fvector &S, const Fvect
 CCF_Skeleton::CCF_Skeleton(CObject* O) : ICollisionForm(O,cftObject)
 {
 	//getVisData
-	IRender_Visual	*pVisual = O->Visual();
+	IRenderVisual	*pVisual = O->Visual();
 	//IKinematics* K	= PKinematics(pVisual); VERIFY3(K,"Can't create skeleton without Kinematics.",*O->cNameVisual());
 	IKinematics* K	= PKinematics(pVisual); VERIFY3(K,"Can't create skeleton without Kinematics.",*O->cNameVisual());
 	//bv_box.set		(K->vis.box);
 	bv_box.set		(pVisual->getVisData().box);
 	bv_box.getsphere(bv_sphere.P,bv_sphere.R);
 	vis_mask		= 0;
-/*
-	CKinematics* K	= PKinematics(O->Visual()); VERIFY3(K,"Can't create skeleton without Kinematics.",*O->cNameVisual());
-	bv_box.set		(K->vis.box);
-	bv_box.getsphere(bv_sphere.P,bv_sphere.R);
-	vis_mask		= 0;
-*/
 }
 
 void CCF_Skeleton::BuildState()
 {
 	dwFrame				= Device.dwFrame;
-	IRender_Visual* pVisual = owner->Visual();
+	IRenderVisual* pVisual = owner->Visual();
 	IKinematics* K		= PKinematics(pVisual);
 	K->CalculateBones();
 	const Fmatrix& L2W	= owner->XFORM();
@@ -196,7 +190,7 @@ void CCF_Skeleton::BuildState()
 void CCF_Skeleton::BuildTopLevel()
 {
 	dwFrameTL			= Device.dwFrame;
-	IRender_Visual* K	= owner->Visual();
+	IRenderVisual* K	= owner->Visual();
 	vis_data &vis = K->getVisData();
 	Fbox& B				= vis.box;
 	bv_box.min.average	(B.min);
@@ -293,7 +287,7 @@ CCF_EventBox::CCF_EventBox( CObject* O ) : ICollisionForm(O,cftShape)
 
 BOOL CCF_EventBox::Contact(CObject* O)
 {
-	IRender_Visual*	V		= O->Visual();
+	IRenderVisual*	V		= O->Visual();
 	vis_data & vis = V->getVisData();
 	Fvector&		P	= vis.sphere.P;
 	float			R	= vis.sphere.R;

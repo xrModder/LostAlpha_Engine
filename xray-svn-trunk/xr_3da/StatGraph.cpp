@@ -30,16 +30,115 @@ CStatGraph::~CStatGraph()
 
 void CStatGraph::OnDeviceCreate()
 {
-	hGeomLine.create			(FVF::F_TL0uv,RCache.Vertex.Buffer(),RCache.Index.Buffer());
-	hGeomTri.create				(FVF::F_TL0uv,RCache.Vertex.Buffer(),RCache.QuadIB);
+	m_pRender->OnDeviceCreate();
+//	hGeomLine.create			(FVF::F_TL0uv,RCache.Vertex.Buffer(),RCache.Index.Buffer());
+//	hGeomTri.create				(FVF::F_TL0uv,RCache.Vertex.Buffer(),RCache.QuadIB);
 }
 
 void CStatGraph::OnDeviceDestroy()
 {
-	hGeomLine.destroy				();
-	hGeomTri.destroy				();
+	m_pRender->OnDeviceDestroy();
+//	hGeomLine.destroy				();
+//	hGeomTri.destroy				();
 }
 
+void CStatGraph::OnRender()
+{
+	m_pRender->OnRender(*this);
+	/*
+	RCache.OnFrameEnd();
+
+	RenderBack();
+
+	u32			TriElem = 0;
+	u32			LineElem = 0;
+	for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
+	{
+		switch (it->style)
+		{
+		case stBar: 
+			{
+				TriElem += it->elements.size()*4;
+			}break;
+		case stCurve: 
+			{
+				LineElem += it->elements.size()*2;
+			}break;
+		case stBarLine: 
+			{
+				LineElem += it->elements.size()*4;
+			}break;
+		case stPoint: 
+			{
+				//				TriElem += it->elements.size()*4;
+			}break;
+		};
+	};
+
+	u32			dwOffsetTri = 0, dwOffsetLine = 0,dwCount;
+	FVF::TL0uv* pv_Tri_start	= NULL;
+	FVF::TL0uv* pv_Tri;
+	FVF::TL0uv* pv_Line_start	= NULL;
+	FVF::TL0uv* pv_Line;
+
+	if (TriElem)
+	{
+		pv_Tri_start = (FVF::TL0uv*)RCache.Vertex.Lock(TriElem,hGeomTri->vb_stride,dwOffsetTri);
+		pv_Tri = pv_Tri_start;
+
+		pv_Tri = pv_Tri_start;
+		for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
+		{
+			switch(it->style)
+			{
+			case stBar:		RenderBars		(&pv_Tri, &(it->elements));		break;
+			};
+		};
+		dwCount 				= u32(pv_Tri-pv_Tri_start);
+		RCache.Vertex.Unlock	(dwCount,hGeomTri->vb_stride);
+		RCache.set_Geometry		(hGeomTri);
+		RCache.Render	   		(D3DPT_TRIANGLELIST,dwOffsetTri,0, dwCount, 0, dwCount/2);
+	};
+
+	if (LineElem)
+	{
+		pv_Line_start = (FVF::TL0uv*)RCache.Vertex.Lock(LineElem,hGeomLine->vb_stride,dwOffsetLine);
+		pv_Line = pv_Line_start;
+
+		for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
+		{
+			switch(it->style)
+			{
+			case stCurve:	RenderLines		(&pv_Line, &(it->elements));	break;
+			case stBarLine:	RenderBarLines	(&pv_Line, &(it->elements));	break;
+			};
+		};
+
+		dwCount 				= u32(pv_Line-pv_Line_start);
+		RCache.Vertex.Unlock	(dwCount,hGeomLine->vb_stride);
+		RCache.set_Geometry		(hGeomLine);
+		RCache.Render	   		(D3DPT_LINELIST,dwOffsetLine,dwCount/2);
+	};
+
+	if (!m_Markers.empty())
+	{
+		dwOffsetLine = 0;
+		LineElem = m_Markers.size()*2;
+
+		pv_Line_start = (FVF::TL0uv*)RCache.Vertex.Lock(LineElem,hGeomLine->vb_stride,dwOffsetLine);
+		pv_Line = pv_Line_start;
+
+		RenderMarkers		(&pv_Line, &(m_Markers));
+
+		dwCount 				= u32(pv_Line-pv_Line_start);
+		RCache.Vertex.Unlock	(dwCount,hGeomLine->vb_stride);
+		RCache.set_Geometry		(hGeomLine);
+		RCache.Render	   		(D3DPT_LINELIST,dwOffsetLine,dwCount/2);
+	}
+	*/
+};
+
+/*
 void CStatGraph::RenderBack	()
 {
 	// draw back
@@ -120,7 +219,8 @@ void CStatGraph::RenderBack	()
 
 
 };
-
+*/
+/*
 void CStatGraph::RenderBars(FVF::TL0uv** ppv, ElementsDeq* pelements)
 {
 	float elem_offs		= float(rb.x-lt.x)/max_item_count;
@@ -151,7 +251,8 @@ void CStatGraph::RenderBars(FVF::TL0uv** ppv, ElementsDeq* pelements)
 		};
 	};	
 };
-
+*/
+/*
 void CStatGraph::RenderLines( FVF::TL0uv** ppv, ElementsDeq* pelements )
 {
 	float elem_offs		= float(rb.x-lt.x)/max_item_count;
@@ -169,7 +270,9 @@ void CStatGraph::RenderLines( FVF::TL0uv** ppv, ElementsDeq* pelements )
 		(*ppv)->set		(X1,Y1,it->color); (*ppv)++;
 	}
 };
+*/
 
+/*
 void CStatGraph::RenderBarLines( FVF::TL0uv** ppv, ElementsDeq* pelements )
 {
 	float elem_offs		= float(rb.x-lt.x)/max_item_count;
@@ -190,6 +293,7 @@ void CStatGraph::RenderBarLines( FVF::TL0uv** ppv, ElementsDeq* pelements )
 		(*ppv)->set		(X1,Y1,it->color); (*ppv)++;
 	}
 };
+*/
 
 /*
 void CStatGraph::RenderPoints( FVF::TL0uv** ppv, ElementsDeq* pelements )
@@ -206,7 +310,7 @@ void CStatGraph::RenderPoints( FVF::TL0uv** ppv, ElementsDeq* pelements )
 	}
 };
 */
-
+/*
 void	CStatGraph::RenderMarkers	( FVF::TL0uv** ppv, MarkersDeq* pmarkers )
 {
 	float elem_offs		= float(rb.x-lt.x)/max_item_count;
@@ -240,96 +344,4 @@ void	CStatGraph::RenderMarkers	( FVF::TL0uv** ppv, MarkersDeq* pmarkers )
 		(*ppv)->set		(X1,Y1,CurMarker.m_dwColor); (*ppv)++;
 	}
 }
-
-void CStatGraph::OnRender()
-{
-	RCache.OnFrameEnd();
-	
-	RenderBack();
-
-	u32			TriElem = 0;
-	u32			LineElem = 0;
-	for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
-	{
-		switch (it->style)
-		{
-		case stBar: 
-			{
-				TriElem += it->elements.size()*4;
-			}break;
-		case stCurve: 
-			{
-				LineElem += it->elements.size()*2;
-			}break;
-		case stBarLine: 
-			{
-				LineElem += it->elements.size()*4;
-			}break;
-		case stPoint: 
-			{
-//				TriElem += it->elements.size()*4;
-			}break;
-		};
-	};
-
-	u32			dwOffsetTri = 0, dwOffsetLine = 0,dwCount;
-	FVF::TL0uv* pv_Tri_start	= NULL;
-	FVF::TL0uv* pv_Tri;
-	FVF::TL0uv* pv_Line_start	= NULL;
-	FVF::TL0uv* pv_Line;
-
-	if (TriElem)
-	{
-		pv_Tri_start = (FVF::TL0uv*)RCache.Vertex.Lock(TriElem,hGeomTri->vb_stride,dwOffsetTri);
-		pv_Tri = pv_Tri_start;
-
-		pv_Tri = pv_Tri_start;
-		for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
-		{
-			switch(it->style)
-			{
-			case stBar:		RenderBars		(&pv_Tri, &(it->elements));		break;
-			};
-		};
-		dwCount 				= u32(pv_Tri-pv_Tri_start);
-		RCache.Vertex.Unlock	(dwCount,hGeomTri->vb_stride);
-		RCache.set_Geometry		(hGeomTri);
-		RCache.Render	   		(D3DPT_TRIANGLELIST,dwOffsetTri,0, dwCount, 0, dwCount/2);
-	};
-
-	if (LineElem)
-	{
-		pv_Line_start = (FVF::TL0uv*)RCache.Vertex.Lock(LineElem,hGeomLine->vb_stride,dwOffsetLine);
-		pv_Line = pv_Line_start;
-
-		for (SubGraphVecIt it=subgraphs.begin(); it!=subgraphs.end(); it++)
-		{
-			switch(it->style)
-			{
-			case stCurve:	RenderLines		(&pv_Line, &(it->elements));	break;
-			case stBarLine:	RenderBarLines	(&pv_Line, &(it->elements));	break;
-			};
-		};
-
-		dwCount 				= u32(pv_Line-pv_Line_start);
-		RCache.Vertex.Unlock	(dwCount,hGeomLine->vb_stride);
-		RCache.set_Geometry		(hGeomLine);
-		RCache.Render	   		(D3DPT_LINELIST,dwOffsetLine,dwCount/2);
-	};
-
-	if (!m_Markers.empty())
-	{
-		dwOffsetLine = 0;
-		LineElem = m_Markers.size()*2;
-
-		pv_Line_start = (FVF::TL0uv*)RCache.Vertex.Lock(LineElem,hGeomLine->vb_stride,dwOffsetLine);
-		pv_Line = pv_Line_start;
-
-		RenderMarkers		(&pv_Line, &(m_Markers));
-
-		dwCount 				= u32(pv_Line-pv_Line_start);
-		RCache.Vertex.Unlock	(dwCount,hGeomLine->vb_stride);
-		RCache.set_Geometry		(hGeomLine);
-		RCache.Render	   		(D3DPT_LINELIST,dwOffsetLine,dwCount/2);
-	}
-};
+*/

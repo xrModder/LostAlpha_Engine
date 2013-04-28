@@ -13,9 +13,9 @@
 	#define XRAY_EXCEPTIONS		1	// XRAY
 #else
 	// "release"
-     	#if defined(_CPPUNWIND)
-     	    	#error Please disable exceptions...
-     	#endif
+	#if defined(_CPPUNWIND) && !defined __BORLANDC__
+		#error Please disable exceptions...
+	#endif
 	#define _HAS_EXCEPTIONS		1	// STL
 	#define XRAY_EXCEPTIONS		0	// XRAY
 	#define LUABIND_NO_EXCEPTIONS
@@ -201,6 +201,7 @@
 #include "xr_resource.h"
 #include "rt_compressor.h"
 #include "xr_shared.h"
+#include "string_concatenations.h"
 
 // stl ext
 struct XRCORE_API xr_rtoken{
@@ -280,5 +281,11 @@ public:
 	void		_destroy	();
 };
 extern XRCORE_API xrCore Core;
+
+//Borland class dll interface
+#define	_BCL			__stdcall	
+
+//Borland global function dll interface
+#define	_BGCL			__stdcall	
 
 #endif

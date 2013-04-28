@@ -1,7 +1,7 @@
 #ifndef XRCDB_H
 #define XRCDB_H
 
-#pragma once
+//#pragma once
 // The following ifdef block is the standard way of creating macros which make exporting
 // from a DLL simpler. All files within this DLL are compiled with the XRCDB_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project
@@ -76,7 +76,9 @@ namespace CDB
 		~MODEL();
 
 		IC Fvector*				get_verts		()			{ return verts;		}
+		IC const Fvector*		get_verts		()	const	{ return verts;		}
 		IC int					get_verts_count	()	const	{ return verts_count;}
+		IC const TRI*			get_tris		()	const 	{ return tris;		}
 		IC TRI*					get_tris		()			{ return tris;		}
 		IC int					get_tris_count	()	const	{ return tris_count;}
 		IC void					syncronize		()	const
@@ -189,10 +191,11 @@ namespace CDB
 	class XRCDB_API CollectorPacked : public non_copyable {
 		typedef xr_vector<u32>		DWORDList;
 		typedef DWORDList::iterator	DWORDIt;
-
-		xr_vector<Fvector>	verts;
+	
+	private:
+		xr_vector<Fvector>			verts;
 		xr_vector<TRI>		faces;
-
+		xr_vector<u32>		flags;
 		Fvector				VMmin, VMscale;
 		DWORDList			VM		[clpMX+1][clpMY+1][clpMZ+1];
 		Fvector				VMeps;
@@ -206,13 +209,16 @@ namespace CDB
 		//			verts
 		//		}
 
-		void				add_face	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u16 material, u16 sector );
-		void				add_face_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy );
-		xr_vector<Fvector>& getV_Vec()	{ return verts;				}
-		Fvector*			getV()		{ return &*verts.begin();	}
-		size_t				getVS()		{ return verts.size();		}
-		TRI*				getT()		{ return &*faces.begin();	}
-		size_t				getTS()		{ return faces.size();		}
+		void				add_face	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u16 material, u16 sector, u32 flags );
+		void				add_face_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy , u32 flags );
+
+		xr_vector<Fvector>& getV_Vec()			{ return verts;				}
+		Fvector*			getV()				{ return &*verts.begin();	}
+		size_t				getVS()				{ return verts.size();		}
+		TRI*				getT()				{ return &*faces.begin();	}
+		u32					getfFlags(u32 index){ return flags[index];		}	
+IC		TRI&				getT(u32 index)		{ return faces[index];		}
+		size_t				getTS()				{ return faces.size();		}
 		void				clear();
 	};
 #pragma warning(pop)

@@ -17,8 +17,8 @@ struct	MSYS_CONFIG
 {
 	u32			sign1;	// 0x12071980;
 	u32			sign2;	// 0x26111975;
-	u32			is_battleye;
 };
+
 struct	MSYS_PING
 {
 	u32			sign1;	// 0x12071980;

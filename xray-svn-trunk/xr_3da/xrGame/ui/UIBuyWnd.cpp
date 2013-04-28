@@ -391,7 +391,7 @@ void CUIBuyWnd::Highlight(int slot)
 void CUIBuyWnd::OnMoneyChange()
 {
 	string16			buff;
-	sprintf_s				(buff,"%d",m_bag.m_money);
+	xr_sprintf				(buff,"%d",m_bag.m_money);
 	m_moneyInfo.SetText	(buff);
 }
 
@@ -612,7 +612,7 @@ void CUIBuyWnd::SetCurrentItem(CUICellItem* itm)
 	{
 		string256					str;
 		m_itemInfo.InitItem			(CurrentIItem());
-		sprintf_s						(str, "%d RU", m_bag.GetItemPrice(itm));
+		xr_sprintf						(str, "%d RU", m_bag.GetItemPrice(itm));
 		m_itemInfo.UICost->SetText	(str);
 
 		string64					tex_name;
@@ -623,7 +623,7 @@ void CUIBuyWnd::SetCurrentItem(CUICellItem* itm)
 		else 
 			strcpy					(team, "green");
 
-		sprintf_s						(tex_name, "ui_hud_status_%s_0%d", team, m_bag.GetItemRank(m_pCurrentCellItem)+1);
+		xr_sprintf						(tex_name, "ui_hud_status_%s_0%d", team, m_bag.GetItemRank(m_pCurrentCellItem)+1);
 				
 		m_rankInfo.InitTexture		(tex_name);
 	}

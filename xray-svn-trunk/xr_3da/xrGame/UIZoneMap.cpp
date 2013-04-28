@@ -83,7 +83,7 @@ void CUIZoneMap::UpdateRadar		(Fvector pos)
 	if(IsGameTypeSingle()){
 		if(m_activeMap->GetPointerDistance()>0.5f){
 			string64	str;
-			sprintf_s		(str,"%.1f m.",m_activeMap->GetPointerDistance());
+			xr_sprintf		(str,"%.1f m.",m_activeMap->GetPointerDistance());
 			m_pointerDistanceText.SetText(str);
 		}else{
 			m_pointerDistanceText.SetText("");

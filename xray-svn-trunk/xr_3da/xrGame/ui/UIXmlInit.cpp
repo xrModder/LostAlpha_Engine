@@ -610,7 +610,7 @@ CUIXmlInit::StaticsVec CUIXmlInit::InitAutoStaticGroup(CUIXml& xml_doc, LPCSTR p
 	{
 		pUIStatic						= xr_new<CUIStatic>();
 		InitStatic						(xml_doc, "auto_static", i, pUIStatic);
-		sprintf_s							(sname,"auto_static_%d", i);
+		xr_sprintf							(sname,"auto_static_%d", i);
 		pUIStatic->SetWindowName		(sname);
 		pUIStatic->SetAutoDelete		(true);
 		pParentWnd->AttachChild			(pUIStatic);

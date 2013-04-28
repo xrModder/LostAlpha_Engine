@@ -73,7 +73,7 @@ CInventory::CInventory()
 	string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i )
 	{
-		sprintf_s(temp, "slot_persistent_%d", i+1);
+		xr_sprintf(temp, "slot_persistent_%d", i+1);
 		if(pSettings->line_exist("inventory",temp))
 			m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
 	};

@@ -231,7 +231,7 @@ void	CUIMapList::SaveMapList()
 		u32 _idx						= (u32)(__int64)(itm->GetData());
 		const shared_str& _map_name		= GetMapNameInt(GetCurGameType(), _idx);
 
-		sprintf_s							(map_name, "sv_addmap %s", _map_name.c_str() );
+		xr_sprintf							(map_name, "sv_addmap %s", _map_name.c_str() );
 
 		pW->w_string					(map_name);
 	}

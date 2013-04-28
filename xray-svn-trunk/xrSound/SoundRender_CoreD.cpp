@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #pragma hdrstop
-
+/*
 #include "soundrender_coreD.h"
 #include "soundrender_targetD.h"
-#include <eax.h>
+#include <eax/eax.h>
 
 CSoundRender_CoreD*	SoundRenderD= 0;
 
@@ -86,12 +86,7 @@ void CSoundRender_CoreD::_initialize	(u64 window)
 	R_CHK						(pDevice->GetCaps (&dsCaps));
 
 	ZeroMemory					( &wfm, sizeof( WAVEFORMATEX ) );
-	switch	( psSoundFreq )
-	{
-	default:
-	case sf_22K:	wfm.nSamplesPerSec = 22050; break;
-	case sf_44K:	wfm.nSamplesPerSec = 44100; break;
-	}
+	wfm.nSamplesPerSec			= 44100;
 	wfm.wFormatTag				= WAVE_FORMAT_PCM;
 	wfm.nChannels				= (dsCaps.dwFlags&DSCAPS_PRIMARYSTEREO)?2:1;
 	wfm.wBitsPerSample			= (dsCaps.dwFlags&DSCAPS_PRIMARY16BIT)?16:8;
@@ -221,3 +216,4 @@ void CSoundRender_CoreD::update_listener( const Fvector& P, const Fvector& D, co
     // commit deffered settings
     pListener->CommitDeferredSettings	();
 }
+*/

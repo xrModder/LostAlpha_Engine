@@ -165,7 +165,7 @@ bool CUIBagWnd::IsBlueTeamItem(CUICellItem* itm)
 	for (int i = 1; i < 20; ++i)
 	{
 		// Имя поля
-		sprintf_s			(wpnSection, "slot%i", i);
+		xr_sprintf			(wpnSection, "slot%i", i);
 
 		if (!pSettings->line_exist(m_sectionName, wpnSection)) 
 			continue;
@@ -248,7 +248,7 @@ void CUIBagWnd::InitWpnSectStorage()
 		wpnOneType.clear();
 
 		// Имя поля
-		sprintf_s			(wpnSection, "slot%i", i);
+		xr_sprintf			(wpnSection, "slot%i", i);
 		if (!pSettings->line_exist(m_sectionName, wpnSection)) 
 		{
 			m_wpnSectStorage.push_back(wpnOneType);
@@ -360,7 +360,7 @@ void	CUIBagWnd::ReloadItemsPrices	()
 
 		for (u32 i=1; i<=g_mp_restrictions.GetRank(); ++i)
 		{
-			sprintf_s						(RankStr, "rank_%d", i);
+			xr_sprintf						(RankStr, "rank_%d", i);
 			if (!pSettings->line_exist	(RankStr, ItemCostStr))	continue;
 			m_info[itm->m_index].price	= pSettings->r_u32(RankStr, ItemCostStr);
 		}
@@ -448,7 +448,7 @@ void CUIBagWnd::PutItemToGroup(CUICellItem* pItem, int iGroup)
 	{
 		++subSection_group3[iActiveSection - GROUP_31];
 		
-		sprintf_s						(tmp_str, "%d", subSection_group3[iActiveSection - GROUP_31]);
+		xr_sprintf						(tmp_str, "%d", subSection_group3[iActiveSection - GROUP_31]);
 		CBuyItemCustomDrawCell* p	= xr_new<CBuyItemCustomDrawCell>(tmp_str, UI()->Font()->pFontLetterica16Russian);
 		pItem->SetCustomDraw		(p);
 

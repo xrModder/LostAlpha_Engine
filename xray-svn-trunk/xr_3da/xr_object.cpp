@@ -2,13 +2,18 @@
 #include "igame_level.h"
 
 #include "xr_object.h"
-#include "xr_area.h"
+#include "../xrcdb/xr_area.h"
 #include "render.h"
 #include "xrLevel.h"
-#include "fbasicvisual.h"
+//#include "fbasicvisual.h"
+#include "../Include/xrRender/RenderVisual.h"
+#include "../Include/xrRender/Kinematics.h"
 
 #include "x_ray.h"
 #include "GameFont.h"
+
+#include "mp_logging.h"
+#include "xr_collide_form.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -59,7 +64,7 @@ void CObject::cNameSect_set		(shared_str N)
 { 
 	NameSection	=	N; 
 }
-#include "Kinematics.h"
+//#include "SkeletonCustom.h"
 void CObject::cNameVisual_set	(shared_str N)
 { 
 	// check if equal
@@ -69,7 +74,7 @@ void CObject::cNameVisual_set	(shared_str N)
 	// replace model
 	if (*N && N[0]) 
 	{
-		IRender_Visual			*old_v = renderable.visual;
+		IRenderVisual			*old_v = renderable.visual;
 		
 		NameVisual				= N;
 		renderable.visual		= Render->model_Create	(*N);
@@ -88,6 +93,7 @@ void CObject::cNameVisual_set	(shared_str N)
 			new_k->SetUpdateCallback(old_k->GetUpdateCallback());
 			new_k->SetUpdateCallbackParam(old_k->GetUpdateCallbackParam());
 		}
+
 		::Render->model_Delete	(old_v);
 	} 
 	else 
@@ -180,7 +186,7 @@ void CObject::Load				(LPCSTR section )
 	// Visual and light-track
 	if (pSettings->line_exist(section,"visual")){
 		string_path					tmp;
-		strcpy_s					(tmp, pSettings->r_string(section,"visual"));
+		xr_strcpy					(tmp, pSettings->r_string(section,"visual"));
 		if(strext(tmp)) 
 			*strext(tmp)			=0;
 		xr_strlwr					(tmp);
@@ -205,7 +211,9 @@ BOOL CObject::net_Spawn			(CSE_Abstract* data)
 			collidable.model	= xr_new<CCF_Skeleton>	(this);
 		}
 	}
-	R_ASSERT(spatial.space);	spatial_register();
+
+	R_ASSERT					(spatial.space);
+	spatial_register			();
 
 	if (register_schedule())
 		shedule_register		();
@@ -407,6 +415,11 @@ void CObject::setDestroy			(BOOL _destroy)
 	{
 		g_pGameLevel->Objects.register_object_to_destroy	(this);
 #ifdef DEBUG
+		extern BOOL debug_destroy;
+		if(debug_destroy)
+			Msg("cl setDestroy [%d][%d]",ID(),Device.dwFrame);
+#endif
+#ifdef MP_LOGGING
 		Msg("cl setDestroy [%d][%d]",ID(),Device.dwFrame);
 #endif
 	}else
@@ -419,7 +432,7 @@ Fvector CObject::get_new_local_point_on_mesh	( u16& bone_id ) const
 	return				Fvector().random_dir().mul(.7f);
 }
 
-Fvector CObject::get_last_local_point_on_mesh	( Fvector const& local_point, const u16 bone_id ) const
+Fvector CObject::get_last_local_point_on_mesh	( Fvector const& local_point, u16 const bone_id ) const
 {
 	//VERIFY				( bone_id == u16(-1) );
 

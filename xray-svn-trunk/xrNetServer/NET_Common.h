@@ -3,6 +3,12 @@
 #pragma once
 //==============================================================================
 
+struct GameDescriptionData
+{
+	string128	map_name;
+	string128	map_version;
+	string512	download_url;
+};
     
 #define NET_MERGE_PACKETS               1
 #define NET_TAG_MERGED                  0xE1
@@ -19,12 +25,16 @@
 #define NET_LOG_COMPRESSION             0
 #define NET_DUMP_COMPRESSION            0
 
+
 #define NET_GUARANTEEDPACKET_DEFAULT    0
 #define NET_GUARANTEEDPACKET_IGNORE     1
 #define NET_GUARANTEEDPACKET_SEPARATE   2
 
 extern XRNETSERVER_API int psNET_GuaranteedPacketMode;
 
+/*#ifdef DEBUG
+void PrintParsedPacket(const char* message, u16 message_type, const void* packet_data, u32 packet_size);
+#endif*/
 
 //==============================================================================
 

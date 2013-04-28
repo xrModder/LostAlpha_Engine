@@ -1,4 +1,5 @@
-#pragma once
+#ifndef XRENGINE_ISHEDULED_H_INCLUDED
+#define XRENGINE_ISHEDULED_H_INCLUDED
 
 class	ENGINE_API	ISheduled
 {
@@ -27,3 +28,5 @@ public:
 	virtual bool						shedule_Needed		()			= 0;
 
 };
+
+#endif // #ifndef XRENGINE_ISHEDULED_H_INCLUDED

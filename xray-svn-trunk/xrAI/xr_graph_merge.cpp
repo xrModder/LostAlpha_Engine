@@ -663,7 +663,7 @@ CGraphMerger::CGraphMerger(
 	for ( ; I != E; ++I) {
 		tLevel.m_offset				= (*I).m_offset;
 		tLevel.m_name				= (*I).m_name;
-		strcpy_s					(S1,sizeof(S1),*(*I).m_name);
+		xr_strcpy					(S1,sizeof(S1),*(*I).m_name);
 		strconcat					(sizeof(S2),S2,name,S1);
 		strconcat					(sizeof(S1),S1,S2,"\\");
 		tLevel.m_id					= (*I).m_id;

@@ -34,7 +34,7 @@ CALifeStorageManager::~CALifeStorageManager	()
 
 void CALifeStorageManager::save	(LPCSTR save_name, bool update_name)
 {
-	strcpy_s					(g_last_saved_game,sizeof(g_last_saved_game),save_name);
+	xr_strcpy					(g_last_saved_game,sizeof(g_last_saved_game),save_name);
 
 	string_path					save;
 	strcpy						(save,m_save_name);
@@ -86,7 +86,7 @@ void CALifeStorageManager::save	(LPCSTR save_name, bool update_name)
 #endif // DEBUG
 
 	if (!update_name)
-		strcpy_s				(m_save_name,save);
+		xr_strcpy				(m_save_name,save);
 }
 
 void CALifeStorageManager::load	(void *buffer, const u32 &buffer_size, LPCSTR file_name)

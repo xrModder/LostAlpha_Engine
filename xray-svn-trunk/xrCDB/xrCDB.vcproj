@@ -968,6 +968,62 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="engine"
+			>
+			<File
+				RelativePath=".\ISpatial.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ISpatial.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ISpatial_q_box.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ISpatial_q_frustum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ISpatial_q_ray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ISpatial_verify.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xr_area.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xr_area.h"
+				>
+			</File>
+			<File
+				RelativePath=".\xr_area_query.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xr_area_raypick.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xr_collide_defs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\xrXRC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xrXRC.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 		<Global

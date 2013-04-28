@@ -13,8 +13,13 @@ unsigned short int mbhMulti2Wide
 extern ENGINE_API BOOL g_bRendering; 
 ENGINE_API Fvector2		g_current_font_scale={1.0f,1.0f};
 
+#include "../Include/xrAPI/xrAPI.h"
+#include "../Include/xrRender/RenderFactory.h"
+#include "../Include/xrRender/FontRender.h"
+
 CGameFont::CGameFont(LPCSTR section, u32 flags)
 {
+	pFontRender					= RenderFactory->CreateFontRender();
 	fCurrentHeight				= 0.0f;
 	fXStep						= 0.0f;
 	fYStep						= 0.0f;
@@ -33,6 +38,7 @@ CGameFont::CGameFont(LPCSTR section, u32 flags)
 
 CGameFont::CGameFont(LPCSTR shader, LPCSTR texture, u32 flags)
 {
+	pFontRender					= RenderFactory->CreateFontRender();
 	fCurrentHeight				= 0.0f;
 	fXStep						= 0.0f;
 	fYStep						= 0.0f;
@@ -53,7 +59,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 	if(_lang && !is_di)
 		strconcat				(sizeof(cTexture),cTexture, cTextureName, _lang);
 	else
-		strcpy_s				(cTexture, sizeof(cTexture), cTextureName);
+		xr_strcpy				(cTexture, sizeof(cTexture), cTextureName);
 
 	uFlags						&=~fsValid;
 	vTS.set						(1.f,1.f); // обязательно !!!
@@ -65,7 +71,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 
 	// check ini exist
 	string_path fn,buf;
-	strcpy_s		(buf,cTexture); if (strext(buf)) *strext(buf)=0;
+	xr_strcpy		(buf,cTexture); if (strext(buf)) *strext(buf)=0;
 	R_ASSERT2	(FS.exist(fn,"$game_textures$",buf,".ini"),fn);
 	CInifile* ini				= CInifile::Create(fn);
 
@@ -80,6 +86,8 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 		
 		fXStep = ceil( fHeight / 2.0f );
 
+		// Searching for the first valid character
+
 		Fvector vFirstValid = {0,0,0};
 
 		if ( ini->line_exist( "mb_symbol_coords" , "09608" ) ) {
@@ -87,7 +95,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 			vFirstValid.set( v.x , v.y , 1 + v[2] - v[0] );
 		} else 
 		for ( u32 i=0 ; i < nNumChars ; i++ ) {
-			sprintf_s( buf ,sizeof(buf), "%05d" , i );
+			xr_sprintf( buf ,sizeof(buf), "%05d" , i );
 			if ( ini->line_exist( "mb_symbol_coords" , buf ) ) {
 				Fvector v = ini->r_fvector3( "mb_symbol_coords" , buf );
 				vFirstValid.set( v.x , v.y , 1 + v[2] - v[0] );
@@ -98,7 +106,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 		// Filling entire character table
 
 		for ( u32 i=0 ; i < nNumChars ; i++ ) {
-			sprintf_s( buf ,sizeof(buf), "%05d" , i );
+			xr_sprintf( buf ,sizeof(buf), "%05d" , i );
 			if ( ini->line_exist( "mb_symbol_coords" , buf ) ) {
 				Fvector v = ini->r_fvector3( "mb_symbol_coords" , buf );
 				TCMap[i].set( v.x , v.y , 1 + v[2] - v[0] );
@@ -116,9 +124,12 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 	if (ini->section_exist("symbol_coords"))
 	{
 		float d						= 0.0f;
+//.		if(ini->section_exist("width_correction"))
+//.			d						= ini->r_float("width_correction", "value");
+
 		fHeight						= ini->r_float("symbol_coords","height");
 		for (u32 i=0; i<nNumChars; i++){
-			sprintf_s				(buf,sizeof(buf),"%03d",i);
+			xr_sprintf				(buf,sizeof(buf),"%03d",i);
 			Fvector v				= ini->r_fvector3("symbol_coords",buf);
 			TCMap[i].set			(v.x,v.y,v[2]-v[0]+d);
 		}
@@ -127,7 +138,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 		fHeight					= ini->r_float("char widths","height");
 		int cpl					= 16;
 		for (u32 i=0; i<nNumChars; i++){
-			sprintf_s			(buf,sizeof(buf),"%d",i);
+			xr_sprintf			(buf,sizeof(buf),"%d",i);
 			float w				= ini->r_float("char widths",buf);
 			TCMap[i].set		((i%cpl)*fHeight,(i/cpl)*fHeight,w);
 		}
@@ -146,8 +157,7 @@ void CGameFont::Initialize		(LPCSTR cShader, LPCSTR cTextureName)
 	CInifile::Destroy			(ini);
 
 	// Shading
-	pShader.create				(cShader,cTexture);
-	pGeom.create				(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+	pFontRender->Initialize(cShader, cTexture);
 }
 
 CGameFont::~CGameFont()
@@ -156,8 +166,7 @@ CGameFont::~CGameFont()
 		xr_free( TCMap );
 
 	// Shading
-	pShader.destroy		();
-	pGeom.destroy		();
+	RenderFactory->DestroyFontRender(pFontRender);
 }
 
 #define DI2PX(x) float(iFloor((x+1)*float(::Render->getTarget()->get_width())*0.5f))
@@ -181,131 +190,8 @@ u32 CGameFont::smart_strlen( const char* S )
 
 void CGameFont::OnRender()
 {
-	VERIFY				(g_bRendering);
-
-	if (pShader)		RCache.set_Shader	(pShader);
-
-	if (!(uFlags&fsValid)){
-		CTexture* T		= RCache.get_ActiveTexture(0);
-		vTS.set			((int)T->get_Width(),(int)T->get_Height());
-		fTCHeight		= fHeight/float(vTS.y);
-		uFlags			|= fsValid;
-	}
-
-	for (u32 i=0; i<strings.size(); ){
-		// calculate first-fit
-		int		count	=	1;
-
-		int length = smart_strlen( strings[ i ].string );
-
-		while	((i+count)<strings.size()) {
-			int L = smart_strlen( strings[ i + count ].string );
-
-			if ((L+length)<MAX_MB_CHARS){
-				count	++;
-				length	+=	L;
-			}
-			else		break;
-		}
-
-		// lock AGP memory
-		u32	vOffset;
-		FVF::TL* v		= (FVF::TL*)RCache.Vertex.Lock	(length*4,pGeom.stride(),vOffset);
-		FVF::TL* start	= v;
-
-		// fill vertices
-		u32 last		= i+count;
-		for (; i<last; i++) {
-			String		&PS	= strings[i];
-			wide_char wsStr[ MAX_MB_CHARS ];
-
-			int	len	= IsMultibyte() ? 
-				mbhMulti2Wide( wsStr , NULL , MAX_MB_CHARS , PS.string ) :
-				xr_strlen( PS.string );
-
-			if (len) {
-				float	X	= float(iFloor(PS.x));
-				float	Y	= float(iFloor(PS.y));
-				float	S	= PS.height*g_current_font_scale.y;
-				float	Y2	= Y+S;
-				float fSize = 0;
-
-				if ( PS.align )
-					fSize = IsMultibyte() ? SizeOf_( wsStr ) : SizeOf_( PS.string );
-
-				switch ( PS.align )
-				{
-				case alCenter:	
-						X	-= ( iFloor( fSize * 0.5f ) ) * g_current_font_scale.x;	
-						break;
-				case alRight:	
-						X	-=	iFloor( fSize );
-						break;
-				}
-
-				u32	clr,clr2;
-				clr2 = clr	= PS.c;
-				if (uFlags&fsGradient){
-					u32	_R	= color_get_R	(clr)/2;
-					u32	_G	= color_get_G	(clr)/2;
-					u32	_B	= color_get_B	(clr)/2;
-					u32	_A	= color_get_A	(clr);
-					clr2	= color_rgba	(_R,_G,_B,_A);
-				}
-
-#if defined(USE_DX10) || defined(USE_DX11)		//	Vertex shader will cancel a DX9 correction, so make fake offset
-				X			-= 0.5f;
-				Y			-= 0.5f;
-				Y2			-= 0.5f;
-#endif	//	USE_DX10
-
-				float	tu,tv;
-				for (int j=0; j<len; j++)
-				{
-					Fvector l;
-
-					l = IsMultibyte() ? GetCharTC( wsStr[ 1 + j ] ) : GetCharTC( ( u16 ) ( u8 ) PS.string[j] );
-
-					float scw		= l.z * g_current_font_scale.x;
-
-					float fTCWidth	= l.z/vTS.x;
-
-					if (!fis_zero(l.z))
-					{
-//						tu			= ( l.x / vTS.x ) + ( 0.5f / vTS.x );
-//						tv			= ( l.y / vTS.y ) + ( 0.5f / vTS.y );
-						tu			= ( l.x / vTS.x );
-						tv			= ( l.y / vTS.y );
-#ifndef	USE_DX10
-						//	Make half pixel offset for 1 to 1 mapping
-						tu			+=( 0.5f / vTS.x );
-						tv			+=( 0.5f / vTS.y );
-#endif	//	USE_DX10
-
-						v->set( X , Y2 , clr2 , tu , tv + fTCHeight );						v++;
-						v->set( X ,	Y , clr , tu , tv );									v++;
-						v->set( X + scw , Y2 , clr2 , tu + fTCWidth , tv + fTCHeight );		v++;
-						v->set( X + scw , Y , clr , tu + fTCWidth , tv );					v++;
-					}
-					X += scw * vInterval.x;
-					if ( IsMultibyte() ) {
-						X -= 2;
-						if ( IsNeedSpaceCharacter( wsStr[ 1 + j ] ) )
-							X += fXStep;
-					}
-				}
-			}
-		}
-
-		// Unlock and draw
-		u32 vCount = (u32)(v-start);
-		RCache.Vertex.Unlock		(vCount,pGeom.stride());
-		if (vCount){
-			RCache.set_Geometry		(pGeom);
-			RCache.Render			(D3DPT_TRIANGLELIST,vOffset,0,vCount,0,vCount/2);
-		}
-	}
-	strings.clear_not_free			();
+	pFontRender->OnRender(*this);
+	strings.clear_not_free();
 }
 
 u16 CGameFont::GetCutLengthPos( float fTargetWidth , const char * pszText )
@@ -371,7 +257,7 @@ void CGameFont::MasterOut(
 	BOOL bCheckDevice , BOOL bUseCoords , BOOL bScaleCoords , BOOL bUseSkip , 
 	float _x , float _y , float _skip , LPCSTR fmt , va_list p )
 {
-	if ( bCheckDevice && ( ! Device.b_is_Active ) )
+	if ( bCheckDevice && ( ! RDEVICE.b_is_Active ) )
 		return;
 
 	String rs;
@@ -381,13 +267,18 @@ void CGameFont::MasterOut(
 	rs.c = dwCurrentColor;
 	rs.height = fCurrentHeight;
 	rs.align = eCurrentAlignment;
+#ifndef	_EDITOR
+	int vs_sz = vsprintf_s( rs.string , fmt , p );
+#else
+	int vs_sz = vsprintf( rs.string , fmt , p );
+#endif
+	//VERIFY( ( vs_sz != -1 ) && ( rs.string[ vs_sz ] == '\0' ) );
 
-	int vs_sz = _vsnprintf( rs.string , sizeof( rs.string ) - 1 , fmt , p );
-
-	VERIFY( ( vs_sz != -1 ) && ( rs.string[ vs_sz ] == '\0' ) );
-
+	rs.string[ sizeof(rs.string)-1 ] = 0;
 	if ( vs_sz == -1 )
+	{
 		return;
+	}
 
 	if ( vs_sz )
 		strings.push_back( rs );
@@ -416,11 +307,6 @@ void __cdecl CGameFont::OutNext( LPCSTR fmt , ... )
 	MASTER_OUT( TRUE , FALSE , FALSE , TRUE , 0.0f , 0.0f , 1.0f , fmt );
 };
 
-void __cdecl CGameFont::OutPrev( LPCSTR fmt , ... )
-{
-	MASTER_OUT( TRUE , FALSE , FALSE , TRUE , 0.0f , 0.0f , -1.0f , fmt );
-};
-
 
 void CGameFont::OutSkip( float val )
 {
@@ -429,9 +315,7 @@ void CGameFont::OutSkip( float val )
 
 float CGameFont::SizeOf_( const char cChar )
 {
-	VERIFY( ! IsMultibyte() );
-
-	return ( ( GetCharTC( ( u16 ) ( u8 ) cChar ).z * vInterval.x ) );
+	return ( GetCharTC( ( u16 ) ( u8 ) ( ( ( IsMultibyte() && cChar == ' ' ) ) ? 0 : cChar) ).z * vInterval.x );
 }
 
 float CGameFont::SizeOf_( LPCSTR s )
@@ -483,7 +367,7 @@ float CGameFont::CurrentHeight_	()
 void CGameFont::SetHeightI(float S)
 {
 	VERIFY			( uFlags&fsDeviceIndependent );
-	fCurrentHeight	= S*Device.dwHeight;
+	fCurrentHeight	= S*RDEVICE.dwHeight;
 };
 
 void CGameFont::SetHeight(float S)

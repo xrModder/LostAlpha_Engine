@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IRENDERABLE_H_INCLUDED
+#define IRENDERABLE_H_INCLUDED
 
 #include "render.h"
 
@@ -9,7 +10,7 @@ public:
 	struct 
 	{
 		Fmatrix							xform						;
-		IRender_Visual*					visual						;
+		IRenderVisual*					visual						;
 		IRender_ObjectSpecific*			pROS						;
 		BOOL							pROS_Allowed				;
 	}	renderable;
@@ -21,3 +22,5 @@ public:
 	virtual	BOOL						renderable_ShadowGenerate	()	{ return FALSE; };
 	virtual	BOOL						renderable_ShadowReceive	()	{ return FALSE; };
 };
+
+#endif // IRENDERABLE_H_INCLUDED

@@ -709,16 +709,16 @@ bool xrServer::CheckAdminRights(const shared_str& user, const shared_str& pass, 
 		{
 			if (ini.r_string ("radmins",user.c_str()) == pass)
 			{
-				strcpy_s			(reason, sizeof(reason),"Access permitted.");
+				xr_strcpy			(reason, sizeof(reason),"Access permitted.");
 				res				= true;
 			}else
 			{
-				strcpy_s			(reason, sizeof(reason),"Access denied. Wrong password.");
+				xr_strcpy			(reason, sizeof(reason),"Access denied. Wrong password.");
 			}
 		}else
-			strcpy_s			(reason, sizeof(reason),"Access denied. No such user.");
+			xr_strcpy			(reason, sizeof(reason),"Access denied. No such user.");
 	}else
-		strcpy_s				(reason, sizeof(reason),"Access denied.");
+		xr_strcpy				(reason, sizeof(reason),"Access denied.");
 
 	return				res;
 }
@@ -901,7 +901,7 @@ void xrServer::create_direct_client()
 {
 	SClientConnectData cl_data;
 	cl_data.clientID.set(1);
-	strcpy_s( cl_data.name, "single_player" );
+	xr_strcpy( cl_data.name, "single_player" );
 	cl_data.process_id = GetCurrentProcessId();
 	
 	new_client( &cl_data );
@@ -983,7 +983,7 @@ void xrServer::GetServerInfo( CServerInfo* si )
 	LPCSTR time = InventoryUtilities::GetTimeAsString( Device.dwTimeGlobal, InventoryUtilities::etpTimeToSecondsAndDay ).c_str();
 	si->AddItem( "Uptime", time, RGB(255,228,0) );
 
-	strcpy_s( tmp256, get_token_name(game_types, game->Type() ) );
+	xr_strcpy( tmp256, get_token_name(game_types, game->Type() ) );
 	if ( game->Type() == GAME_DEATHMATCH || game->Type() == GAME_TEAMDEATHMATCH )
 	{
 		strcat_s( tmp256, " [" );
