@@ -716,11 +716,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dedicated_server_only.h"
+				>
+			</File>
+			<File
 				RelativePath=".\defines.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\defines.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mp_logging.h"
+				>
+			</File>
+			<File
+				RelativePath=".\no_single.h"
 				>
 			</File>
 			<File
@@ -847,6 +859,14 @@
 					RelativePath=".\xr_input.h"
 					>
 				</File>
+				<File
+					RelativePath=".\xr_input_xinput.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\xr_input_xinput.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Sheduler"
@@ -880,10 +900,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\IRenderDetailModel.h"
-					>
-				</File>
-				<File
 					RelativePath="Render.cpp"
 					>
 				</File>
@@ -891,6 +907,10 @@
 					RelativePath=".\Render.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="SPATIAL"
+				>
 			</Filter>
 			<Filter
 				Name="Collidable"
@@ -901,6 +921,30 @@
 				</File>
 				<File
 					RelativePath=".\ICollidable.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Physics"
+				>
+				<File
+					RelativePath=".\IObjectPhysicsCollision.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IPHdebug.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IPhysicsGeometry.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IPhysicsShell.h"
+					>
+				</File>
+				<File
+					RelativePath=".\phdebug.cpp"
 					>
 				</File>
 			</Filter>
@@ -1177,6 +1221,22 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="GameMaterials"
+				>
+				<File
+					RelativePath=".\GameMtlLib.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\GameMtlLib.h"
+					>
+				</File>
+				<File
+					RelativePath=".\GameMtlLib_Engine.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="Debug"
 				>
 				<File
@@ -1195,14 +1255,6 @@
 			<Filter
 				Name="Visuals"
 				>
-				<File
-					RelativePath=".\fmesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Fmesh.h"
-					>
-				</File>
 				<Filter
 					Name="Skeleton"
 					>
@@ -1384,14 +1436,6 @@
 				Name="Console"
 				>
 				<File
-					RelativePath=".\xr_ioc_cmd.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\xr_ioc_cmd.h"
-					>
-				</File>
-				<File
 					RelativePath=".\XR_IOConsole.cpp"
 					>
 				</File>
@@ -1399,6 +1443,30 @@
 					RelativePath=".\XR_IOConsole.h"
 					>
 				</File>
+				<File
+					RelativePath=".\XR_IOConsole_callback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XR_IOConsole_control.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XR_IOConsole_get.cpp"
+					>
+				</File>
+				<Filter
+					Name="commands"
+					>
+					<File
+						RelativePath=".\xr_ioc_cmd.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\xr_ioc_cmd.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Core"
@@ -1429,10 +1497,6 @@
 				</File>
 				<File
 					RelativePath="mailSlot.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\xrCPU_Pipe.h"
 					>
 				</File>
 				<Filter
@@ -1476,10 +1540,134 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="text_editor"
+				>
+				<Filter
+					Name="line_editor"
+					>
+					<File
+						RelativePath=".\line_editor.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\line_editor.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="line_editor_control"
+					>
+					<File
+						RelativePath=".\line_edit_control.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\line_edit_control.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="edit_actions"
+					>
+					<File
+						RelativePath=".\edit_actions.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\edit_actions.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="RenderRef"
 			>
+			<Filter
+				Name="Execution &amp; 3D"
+				>
+				<Filter
+					Name="Device"
+					>
+					<File
+						RelativePath=".\device.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\device.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_create.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_destroy.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_Initialize.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_Misc.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_overdraw.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Device_wndproc.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StatGraph.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StatGraph.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Stats.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Stats.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Visuals"
+					>
+					<File
+						RelativePath=".\fmesh.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Fmesh.h"
+						>
+					</File>
+					<Filter
+						Name="Skeleton"
+						>
+						<File
+							RelativePath=".\SkeletonMotionDefs.h"
+							>
+						</File>
+						<File
+							RelativePath=".\SkeletonMotions.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\SkeletonMotions.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+			</Filter>
 			<Filter
 				Name="doug_lea_memory_allocator"
 				>
@@ -1487,11 +1675,57 @@
 					RelativePath=".\doug_lea_memory_allocator.c"
 					>
 					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Mixed|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Dedicated|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Mixed_Dedicated|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_Dedicated|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+							DisableSpecificWarnings="4127, 4267"
 						/>
 					</FileConfiguration>
 				</File>
@@ -1500,290 +1734,414 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Device"
-				>
-				<File
-					RelativePath=".\device.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\device.h"
-					>
-				</File>
-				<File
-					RelativePath="Device_create.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Device_destroy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Device_Initialize.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Device_Misc.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Device_overdraw.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Device_wndproc.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\StatGraph.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\StatGraph.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Stats.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Stats.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="editor"
 			>
-			<File
-				RelativePath=".\edit_actions.cpp"
+			<Filter
+				Name="engine_impl"
 				>
-			</File>
-			<File
-				RelativePath=".\edit_actions.h"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_ambient.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_ambient.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_effect_id.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_effect_id.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_sound_id.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_ambients_sound_id.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_detail.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_detail.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_effects_effect.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_effects_effect.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_effects_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_effects_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_levels_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_levels_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_manager_properties.cpp"
-				>
-				<FileConfiguration
-					Name="Mixed|Win32"
-					ExcludedFromBuild="true"
+				<File
+					RelativePath=".\engine_impl.cpp"
 					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_channel.cpp"
+				</File>
+				<File
+					RelativePath=".\engine_impl.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="environment"
 				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_channel.hpp"
+				<Filter
+					Name="suns_manager"
+					>
+					<File
+						RelativePath=".\editor_environment_suns_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_suns_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="sun"
+						>
+						<File
+							RelativePath=".\editor_environment_suns_sun.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_suns_sun.hpp"
+							>
+						</File>
+						<Filter
+							Name="gradient"
+							>
+							<File
+								RelativePath=".\editor_environment_suns_gradient.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_suns_gradient.hpp"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="blend"
+							>
+							<File
+								RelativePath=".\editor_environment_suns_blend.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_suns_blend.hpp"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="flares"
+							>
+							<File
+								RelativePath=".\editor_environment_suns_flares.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_suns_flares.hpp"
+								>
+							</File>
+							<Filter
+								Name="flare"
+								>
+								<File
+									RelativePath=".\editor_environment_suns_flare.cpp"
+									>
+								</File>
+								<File
+									RelativePath=".\editor_environment_suns_flare.hpp"
+									>
+								</File>
+							</Filter>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="levels_manager"
+					>
+					<File
+						RelativePath=".\editor_environment_levels_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_levels_manager.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="effects_manager"
+					>
+					<File
+						RelativePath=".\editor_environment_effects_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_effects_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="effect"
+						>
+						<File
+							RelativePath=".\editor_environment_effects_effect.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_effects_effect.hpp"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="sound_channels_manager"
+					>
+					<File
+						RelativePath=".\editor_environment_sound_channels_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_sound_channels_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="channel"
+						>
+						<File
+							RelativePath=".\editor_environment_sound_channels_channel.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_sound_channels_channel.hpp"
+							>
+						</File>
+						<Filter
+							Name="source"
+							>
+							<File
+								RelativePath=".\editor_environment_sound_channels_source.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_sound_channels_source.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="manager"
+					>
+					<File
+						RelativePath=".\editor_environment_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_manager.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_manager_properties.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Mixed|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug_Dedicated|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Mixed_Dedicated|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_Dedicated|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="ambients"
+					>
+					<File
+						RelativePath=".\editor_environment_ambients_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_ambients_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="ambient"
+						>
+						<File
+							RelativePath=".\editor_environment_ambients_ambient.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_ambients_ambient.hpp"
+							>
+						</File>
+						<Filter
+							Name="effect_id"
+							>
+							<File
+								RelativePath=".\editor_environment_ambients_effect_id.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_ambients_effect_id.hpp"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="sound_id"
+							>
+							<File
+								RelativePath=".\editor_environment_ambients_sound_id.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_ambients_sound_id.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="thunderbolts"
+					>
+					<File
+						RelativePath=".\editor_environment_thunderbolts_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_thunderbolts_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="thunderbolt"
+						>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_thunderbolt.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_thunderbolt.hpp"
+							>
+						</File>
+						<Filter
+							Name="gradient"
+							>
+							<File
+								RelativePath=".\editor_environment_thunderbolts_gradient.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_thunderbolts_gradient.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="thunderbolt_id"
+						>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_thunderbolt_id.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_thunderbolt_id.hpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="collection"
+						>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_collection.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_thunderbolts_collection.hpp"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="weathers"
+					>
+					<File
+						RelativePath=".\editor_environment_weathers_manager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_weathers_manager.hpp"
+						>
+					</File>
+					<Filter
+						Name="weather"
+						>
+						<File
+							RelativePath=".\editor_environment_weathers_weather.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\editor_environment_weathers_weather.hpp"
+							>
+						</File>
+						<Filter
+							Name="time"
+							>
+							<File
+								RelativePath=".\editor_environment_weathers_time.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\editor_environment_weathers_time.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="detail"
+					>
+					<File
+						RelativePath=".\editor_environment_detail.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\editor_environment_detail.hpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="property_collection"
 				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_manager.cpp"
+				<File
+					RelativePath=".\property_collection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\property_collection_forward.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\property_collection_inline.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ide"
 				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_source.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_sound_channels_source.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_blend.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_blend.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_flare.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_flare.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_flares.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_flares.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_gradient.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_gradient.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_sun.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_suns_sun.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_collection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_collection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_gradient.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_gradient.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_thunderbolt.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_thunderbolt.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_thunderbolt_id.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_thunderbolts_thunderbolt_id.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_manager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_manager.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_time.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_time.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_weather.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\editor_environment_weathers_weather.hpp"
-				>
-			</File>
+				<File
+					RelativePath=".\ide.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ClientServer.txt"

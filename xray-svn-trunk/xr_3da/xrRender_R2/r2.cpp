@@ -1,24 +1,40 @@
 #include "stdafx.h"
 #include "r2.h"
-#include "..\fbasicvisual.h"
-#include "..\xr_object.h"
-#include "..\CustomHUD.h"
-#include "..\igame_persistent.h"
-#include "..\environment.h"
-#include "..\SkeletonCustom.h"
-#include "..\xrRender\LightTrack.h"
-
-#include "..\ConstantDebug.h"
-
-#pragma todo("cjayho to all: Hello all in this chat :)")
+#include "../xrRender/fbasicvisual.h"
+#include "../../xr_3da/xr_object.h"
+#include "../../xr_3da/CustomHUD.h"
+#include "../../xr_3da/igame_persistent.h"
+#include "../../xr_3da/environment.h"
+#include "../xrRender/SkeletonCustom.h"
+#include "../xrRender/LightTrack.h"
+#include "../xrRender/dxRenderDeviceRender.h"
+#include "../xrRender/dxWallMarkArray.h"
+#include "../xrRender/dxUIShader.h"
+//#include "../../xrServerEntities/smart_cast.h"
 
 CRender										RImplementation;
 
 //////////////////////////////////////////////////////////////////////////
-
+/*
+class CGlow				: public IRender_Glow
+{
+public:
+	bool				bActive;
+public:
+	CGlow() : bActive(false)		{ }
+	virtual void					set_active			(bool b)					{ bActive=b;		}
+	virtual bool					get_active			()							{ return bActive;	}
+	virtual void					set_position		(const Fvector& P)			{ }
+	virtual void					set_direction		(const Fvector& D)			{ }
+	virtual void					set_radius			(float R)					{ }
+	virtual void					set_texture			(LPCSTR name)				{ }
+	virtual void					set_color			(const Fcolor& C)			{ }
+	virtual void					set_color			(float r, float g, float b)	{ }
+};
+*/
 float		r_dtex_range		= 50.f;
 //////////////////////////////////////////////////////////////////////////
-ShaderElement*			CRender::rimp_select_sh_dynamic	(IRender_Visual	*pVisual, float cdist_sq)
+ShaderElement*			CRender::rimp_select_sh_dynamic	(dxRender_Visual	*pVisual, float cdist_sq)
 {
 	int		id	= SE_R2_SHADOW;
 	if	(CRender::PHASE_NORMAL == RImplementation.phase)
@@ -28,7 +44,7 @@ ShaderElement*			CRender::rimp_select_sh_dynamic	(IRender_Visual	*pVisual, float
 	return pVisual->shader->E[id]._get();
 }
 //////////////////////////////////////////////////////////////////////////
-ShaderElement*			CRender::rimp_select_sh_static	(IRender_Visual	*pVisual, float cdist_sq)
+ShaderElement*			CRender::rimp_select_sh_static	(dxRender_Visual	*pVisual, float cdist_sq)
 {
 	int		id	= SE_R2_SHADOW;
 	if	(CRender::PHASE_NORMAL == RImplementation.phase)
@@ -37,42 +53,28 @@ ShaderElement*			CRender::rimp_select_sh_static	(IRender_Visual	*pVisual, float 
 	}
 	return pVisual->shader->E[id]._get();
 }
-static class cl_parallax		: public R_constant_setup		
-{	
-	virtual void setup	(R_constant* C)
-	{
-		float			h			=	ps_r2_df_parallax_h;
-		RCache.set_c	(C,h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
-#ifdef LA_SHADERS_DEBUG
-		g_pConstantsDebug->Add("cl_parallax", Fvector4().set(h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range));
-#endif	
-	}
-}	binder_parallax;
-
-static class cl_pos_decompress_params		: public R_constant_setup		
+static class cl_parallax		: public R_constant_setup		{	virtual void setup	(R_constant* C)
 {
-	virtual void setup	(R_constant* C)
-	{
-		float VertTan =  -1.0f * tanf( deg2rad(Device.fFOV/2.0f ) );
-		float HorzTan =  - VertTan / Device.fASPECT;
+	float			h			=	ps_r2_df_parallax_h;
+	RCache.set_c	(C,h,-h/2.f,1.f/r_dtex_range,1.f/r_dtex_range);
+}}	binder_parallax;
 
-		RCache.set_c	( C, HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight );
-#ifdef LA_SHADERS_DEBUG
-		g_pConstantsDebug->Add("cl_pos_decompress_params", Fvector4().set(HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight));
-#endif	
-	}
-}	binder_pos_decompress_params;
+static class cl_pos_decompress_params		: public R_constant_setup		{	virtual void setup	(R_constant* C)
+{
+	float VertTan =  -1.0f * tanf( deg2rad(Device.fFOV/2.0f ) );
+	float HorzTan =  - VertTan / Device.fASPECT;
+
+	RCache.set_c	( C, HorzTan, VertTan, ( 2.0f * HorzTan )/(float)Device.dwWidth, ( 2.0f * VertTan ) /(float)Device.dwHeight );
+
+}}	binder_pos_decompress_params;
 
 static class cl_water_intensity : public R_constant_setup		
 {	
 	virtual void setup	(R_constant* C)
 	{
-		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
+		CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fWaterIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
-#ifdef LA_SHADERS_DEBUG
-		g_pConstantsDebug->Add("cl_water_intensity", Fvector4().set(fValue, fValue, fValue, 0));
-#endif	
 	}
 }	binder_water_intensity;
 
@@ -80,12 +82,9 @@ static class cl_sun_shafts_intensity : public R_constant_setup
 {	
 	virtual void setup	(R_constant* C)
 	{
-		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
+		CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fSunShaftsIntensity;
 		RCache.set_c	(C, fValue, fValue, fValue, 0);
-#ifdef LA_SHADERS_DEBUG
-		g_pConstantsDebug->Add("cl_sun_shafts_intensity", Fvector4().set(fValue, fValue, fValue, 0));
-#endif	
 	}
 }	binder_sun_shafts_intensity;
 
@@ -226,8 +225,6 @@ void					CRender::create					()
 	if (strstr(Core.Params,"-smap3072"))	o.smapsize	= 3072;
 	if (strstr(Core.Params,"-smap4096"))	o.smapsize	= 4096;
 
-	Msg("* smap pool size is %d", o.smapsize);
-
 	// gloss
 	char*	g			= strstr(Core.Params,"-gloss ");
 	o.forcegloss		= g?	TRUE	:FALSE	;
@@ -264,10 +261,10 @@ void					CRender::create					()
 	}
 
 	// constants
-	::Device.Resources->RegisterConstantSetup	("parallax",					&binder_parallax);
-	::Device.Resources->RegisterConstantSetup	("water_intensity",				&binder_water_intensity);
-	::Device.Resources->RegisterConstantSetup	("sun_shafts_intensity",		&binder_sun_shafts_intensity);
-	::Device.Resources->RegisterConstantSetup	("pos_decompression_params",	&binder_pos_decompress_params);
+	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
+	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("water_intensity",	&binder_water_intensity);
+	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("sun_shafts_intensity",	&binder_sun_shafts_intensity);
+	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("pos_decompression_params",	&binder_pos_decompress_params);
 
 	c_lmaterial					= "L_material";
 	c_sbase						= "s_base";
@@ -377,10 +374,15 @@ void CRender::OnFrame()
 // Implementation
 IRender_ObjectSpecific*	CRender::ros_create				(IRenderable* parent)				{ return xr_new<CROS_impl>();			}
 void					CRender::ros_destroy			(IRender_ObjectSpecific* &p)		{ xr_delete(p);							}
-IRender_Visual*			CRender::model_Create			(LPCSTR name, IReader* data)		{ return Models->Create(name,data);		}
-IRender_Visual*			CRender::model_CreateChild		(LPCSTR name, IReader* data)		{ return Models->CreateChild(name,data);}
-IRender_Visual*			CRender::model_Duplicate		(IRender_Visual* V)					{ return Models->Instance_Duplicate(V);	}
-void					CRender::model_Delete			(IRender_Visual* &V, BOOL bDiscard)	{ Models->Delete(V, bDiscard);	V = 0;	}
+IRenderVisual*			CRender::model_Create			(LPCSTR name, IReader* data)		{ return Models->Create(name,data);		}
+IRenderVisual*			CRender::model_CreateChild		(LPCSTR name, IReader* data)		{ return Models->CreateChild(name,data);}
+IRenderVisual*			CRender::model_Duplicate		(IRenderVisual* V)					{ return Models->Instance_Duplicate((dxRender_Visual*)V);	}
+void					CRender::model_Delete			(IRenderVisual* &V, BOOL bDiscard)	
+{ 
+	dxRender_Visual* pVisual = (dxRender_Visual*)V;
+	Models->Delete(pVisual, bDiscard);
+	V = 0;
+}
 IRender_DetailModel*	CRender::model_CreateDM			(IReader*	F)
 {
 	CDetail*	D		= xr_new<CDetail> ();
@@ -397,12 +399,12 @@ void					CRender::model_Delete			(IRender_DetailModel* & F)
 		F				= NULL;
 	}
 }
-IRender_Visual*			CRender::model_CreatePE			(LPCSTR name)	
+IRenderVisual*			CRender::model_CreatePE			(LPCSTR name)	
 { 
 	PS::CPEDef*	SE			= PSLibrary.FindPED	(name);		R_ASSERT3(SE,"Particle effect doesn't exist",name);
 	return					Models->CreatePE	(SE);
 }
-IRender_Visual*			CRender::model_CreateParticles	(LPCSTR name)	
+IRenderVisual*			CRender::model_CreateParticles	(LPCSTR name)	
 { 
 	PS::CPEDef*	SE			= PSLibrary.FindPED	(name);
 	if (SE) return			Models->CreatePE	(SE);
@@ -418,7 +420,7 @@ ref_shader				CRender::getShader				(int id)			{ VERIFY(id<int(Shaders.size()));
 IRender_Portal*			CRender::getPortal				(int id)			{ VERIFY(id<int(Portals.size()));	return Portals[id];	}
 IRender_Sector*			CRender::getSector				(int id)			{ VERIFY(id<int(Sectors.size()));	return Sectors[id];	}
 IRender_Sector*			CRender::getSectorActive		()					{ return pLastSector;									}
-IRender_Visual*			CRender::getVisual				(int id)			{ VERIFY(id<int(Visuals.size()));	return Visuals[id];	}
+IRenderVisual*			CRender::getVisual				(int id)			{ VERIFY(id<int(Visuals.size()));	return Visuals[id];	}
 D3DVERTEXELEMENT9*		CRender::getVB_Format			(int id, BOOL	_alt)	{ 
 	if (_alt)	{ VERIFY(id<int(xDC.size()));	return xDC[id].begin();	}
 	else		{ VERIFY(id<int(nDC.size()));	return nDC[id].begin(); }
@@ -443,13 +445,26 @@ BOOL					CRender::occ_visible			(vis_data& P)		{ return HOM.visible(P);								}
 BOOL					CRender::occ_visible			(sPoly& P)			{ return HOM.visible(P);								}
 BOOL					CRender::occ_visible			(Fbox& P)			{ return HOM.visible(P);								}
 
-void					CRender::add_Visual				(IRender_Visual*		V )	{ add_leafs_Dynamic(V);								}
-void					CRender::add_Geometry			(IRender_Visual*		V )	{ add_Static(V,View->getMask());					}
+void					CRender::add_Visual				(IRenderVisual*		V )	{ add_leafs_Dynamic((dxRender_Visual*)V);								}
+void					CRender::add_Geometry			(IRenderVisual*		V )	{ add_Static((dxRender_Visual*)V,View->getMask());					}
 void					CRender::add_StaticWallmark		(ref_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* verts)
 {
 	if (T->suppress_wm)	return;
 	VERIFY2							(_valid(P) && _valid(s) && T && verts && (s>EPS_L), "Invalid static wallmark params");
 	Wallmarks->AddStaticWallmark	(T,verts,P,&*S,s);
+}
+
+void CRender::add_StaticWallmark			(IWallMarkArray *pArray, const Fvector& P, float s, CDB::TRI* T, Fvector* V)
+{
+	dxWallMarkArray *pWMA = (dxWallMarkArray *)pArray;
+	ref_shader *pShader = pWMA->dxGenerateWallmark();
+	if (pShader) add_StaticWallmark		(*pShader, P, s, T, V);
+}
+
+void CRender::add_StaticWallmark			(const wm_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* V)
+{
+	dxUIShader* pShader = (dxUIShader*)&*S;
+	add_StaticWallmark		(pShader->hShader, P, s, T, V);
 }
 
 void					CRender::clear_static_wallmarks	()
@@ -464,6 +479,12 @@ void					CRender::add_SkeletonWallmark	(intrusive_ptr<CSkeletonWallmark> wm)
 void					CRender::add_SkeletonWallmark	(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size)
 {
 	Wallmarks->AddSkeletonWallmark				(xf, obj, sh, start, dir, size);
+}
+void					CRender::add_SkeletonWallmark	(const Fmatrix* xf, IKinematics* obj, IWallMarkArray *pArray, const Fvector& start, const Fvector& dir, float size)
+{
+	dxWallMarkArray *pWMA = (dxWallMarkArray *)pArray;
+	ref_shader *pShader = pWMA->dxGenerateWallmark();
+	if (pShader) add_SkeletonWallmark(xf, (CKinematics*)obj, *pShader, start, dir, size);
 }
 void					CRender::add_Occluder			(Fbox2&	bb_screenspace	)
 {
@@ -505,7 +526,7 @@ CRender::~CRender()
 {
 }
 
-#include "..\GameFont.h"
+#include "../../xr_3da/GameFont.h"
 void	CRender::Statistics	(CGameFont* _F)
 {
 	CGameFont&	F	= *_F;
@@ -669,8 +690,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition	=	c_smapsize;
 		def_it						++	;
 		VERIFY							( xr_strlen(c_smapsize) == 4 );
-		strcat_s						(sh_name, c_smapsize); 
-		len							+=4	;
+		xr_strcat(sh_name, c_smapsize); len+=4;
 	}
 	if (o.fp16_filter)		{
 		defines[def_it].Name		=	"FP16_FILTER";
@@ -928,15 +948,15 @@ HRESULT	CRender::shader_compile			(
 
 	string_path	folder_name, folder;
 	xr_strcpy		( folder, "r2\\objects\\r2\\" );
-	strcat_s		( folder, name );
-	strcat_s		( folder, "." );
+	xr_strcat		( folder, name );
+	xr_strcat		( folder, "." );
 
 	char extension[3];
 	strncpy_s		( extension, pTarget, 2 );
-	strcat_s		( folder, extension );
+	xr_strcat		( folder, extension );
 
 	FS.update_path	( folder_name, "$game_shaders$", folder );
-	strcat_s		( folder_name, "\\" );
+	xr_strcat		( folder_name, "\\" );
 	
 	m_file_set.clear( );
 	FS.file_list	( m_file_set, folder_name, FS_ListFiles | FS_RootOnly, "*");
@@ -946,16 +966,16 @@ HRESULT	CRender::shader_compile			(
 //		Msg				( "no library shader found" );
 		string_path file;
 		xr_strcpy		( file, "shaders_cache\\r2\\" );
-		strcat_s		( file, name );
-		strcat_s		( file, "." );
-		strcat_s		( file, extension );
-		strcat_s		( file, "\\" );
-		strcat_s		( file, sh_name );
+		xr_strcat		( file, name );
+		xr_strcat		( file, "." );
+		xr_strcat		( file, extension );
+		xr_strcat		( file, "\\" );
+		xr_strcat		( file, sh_name );
 		FS.update_path	( file_name, "$app_data_root$", file);
 	}
 	else {
 		xr_strcpy		( file_name, folder_name );
-		strcat_s		( file_name, temp_file_name );
+		xr_strcat		( file_name, temp_file_name );
 	}
 
 	if (FS.exist(file_name))

@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "r2.h"
-#include "../resourcemanager.h"
-#include "../fbasicvisual.h"
-#include "../fmesh.h"
-#include "../xrLevel.h"
-#include "../x_ray.h"
-#include "../IGame_Persistent.h"
-#include "../xrCore/stream_reader.h"
+#include "../xrRender/ResourceManager.h"
+#include "../xrRender/fbasicvisual.h"
+#include "../../xr_3da/fmesh.h"
+#include "../../xr_3da/xrLevel.h"
+#include "../../xr_3da/x_ray.h"
+#include "../../xr_3da/IGame_Persistent.h"
+#include "../../xrCore/stream_reader.h"
+
+#include "../xrRender/dxRenderDeviceRender.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -20,7 +22,7 @@ void CRender::level_Load(IReader* fs)
 
 	// Begin
 	pApp->LoadBegin					();
-	Device.Resources->DeferredLoad	(TRUE);
+	dxRenderDeviceRender::Instance().Resources->DeferredLoad	(TRUE);
 	IReader*						chunk;
 
 	// Shaders
@@ -40,7 +42,7 @@ void CRender::level_Load(IReader* fs)
 			LPSTR			delim	= strchr(n_sh,'/');
 			*delim					= 0;
 			xr_strcpy					(n_tlist,delim+1);
-			Shaders[i]				= Device.Resources->Create(n_sh,n_tlist);
+			Shaders[i]				= dxRenderDeviceRender::Instance().Resources->Create(n_sh,n_tlist);
 		}
 		chunk->close();
 	}
@@ -145,11 +147,31 @@ void CRender::level_Unload()
 	SWIs.clear				();
 
 	//*** VB/IB
-	for (I=0; I<nVB.size(); I++)	_RELEASE(nVB[I]);
-	for (I=0; I<xVB.size(); I++)	_RELEASE(xVB[I]);
+	for (I=0; I<nVB.size(); I++)	
+	{
+		HW.stats_manager.decrement_stats_vb (nVB[I]);
+		_RELEASE(nVB[I]);
+	}
+
+	for (I=0; I<xVB.size(); I++)	
+	{
+		HW.stats_manager.decrement_stats_vb (xVB[I]);
+		_RELEASE(xVB[I]);
+	}
 	nVB.clear(); xVB.clear();
-	for (I=0; I<nIB.size(); I++)	_RELEASE(nIB[I]);
-	for (I=0; I<xIB.size(); I++)	_RELEASE(xIB[I]);
+
+	for (I=0; I<nIB.size(); I++)	
+	{
+		HW.stats_manager.decrement_stats_ib (nIB[I]);
+		_RELEASE(nIB[I]);
+	}
+
+	for (I=0; I<xIB.size(); I++)	
+	{
+		HW.stats_manager.decrement_stats_ib (xIB[I]);
+		_RELEASE(xIB[I]);
+	}
+
 	nIB.clear(); xIB.clear();
 	nDC.clear(); xDC.clear();
 
@@ -161,12 +183,19 @@ void CRender::level_Unload()
 	//*** Shaders
 	Shaders.clear_and_free		();
 	b_loaded					= FALSE;
+/*	
+	Models->ClearPool( true );
+	Visuals.clear_and_free();
+	dxRenderDeviceRender::Instance().Resources->Dump(false);
+	static int unload_counter = 0;
+	Msg("The Level Unloaded.======================== %d", ++unload_counter);
+*/
 }
 
 void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 {
 	R_ASSERT2					(base_fs,"Could not load geometry. File not found.");
-	Device.Resources->Evict		();
+	dxRenderDeviceRender::Instance().Resources->Evict		();
 	u32	dwUsage					= D3DUSAGE_WRITEONLY;
 
 	xr_vector<VertexDeclarator>				&_DC	= _alternative?xDC:nDC;
@@ -201,7 +230,8 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 
 			// Create and fill
 			BYTE*	pData		= 0;
-			R_CHK				(HW.pDevice->CreateVertexBuffer(vCount*vSize,dwUsage,0,D3DPOOL_MANAGED,&_VB[i],0));
+			R_CHK				(HW.pDevice->CreateVertexBuffer		( vCount*vSize, dwUsage, 0, D3DPOOL_MANAGED, &_VB[i], 0 ));
+			HW.stats_manager.increment_stats_vb						( _VB[i] );
 			R_CHK				(_VB[i]->Lock(0,0,(void**)&pData,0));
 //			CopyMemory			(pData,fs().pointer(),vCount*vSize);
 			fs->r				(pData,vCount*vSize);
@@ -224,7 +254,8 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 
 			// Create and fill
 			BYTE*	pData		= 0;
-			R_CHK				(HW.pDevice->CreateIndexBuffer(iCount*2,dwUsage,D3DFMT_INDEX16,D3DPOOL_MANAGED,&_IB[i],0));
+			R_CHK				(HW.pDevice->CreateIndexBuffer	(iCount*2,dwUsage,D3DFMT_INDEX16,D3DPOOL_MANAGED,&_IB[i],0));
+			HW.stats_manager.increment_stats_ib					(_IB[i]);
 			R_CHK				(_IB[i]->Lock(0,0,(void**)&pData,0));
 //			CopyMemory			(pData,fs().pointer(),iCount*2);
 			fs->r				(pData,iCount*2);
@@ -240,7 +271,7 @@ void CRender::LoadVisuals(IReader *fs)
 {
 	IReader*		chunk	= 0;
 	u32			index	= 0;
-	IRender_Visual*		V		= 0;
+	dxRender_Visual*		V		= 0;
 	ogf_header		H;
 
 	while ((chunk=fs->open_chunk(index))!=0)

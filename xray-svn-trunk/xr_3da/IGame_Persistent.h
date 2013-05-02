@@ -63,11 +63,11 @@ public:
 
 #ifndef _EDITOR
 	IGame_ObjectPool				ObjectPool;
+	CEnvironment*					pEnvironment;
+	CEnvironment&					Environment()	{return *pEnvironment;};
 #endif
 	IMainMenu*						m_pMainMenu;	
 
-	CEnvironment*					pEnvironment;
-	CEnvironment&					Environment()	{return *pEnvironment;};
 
 	virtual bool					OnRenderPPUI_query	() { return FALSE; };	// should return true if we want to have second function called
 	virtual void					OnRenderPPUI_main	() {};

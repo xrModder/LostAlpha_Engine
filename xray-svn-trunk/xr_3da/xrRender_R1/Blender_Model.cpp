@@ -11,6 +11,8 @@ CBlender_Model::CBlender_Model()
 {
 	description.CLS		= B_MODEL;
 	description.version	= 2;
+	oTessellation.Count         = 4;
+	oTessellation.IDselected	= 0;
 	oAREF.value			= 32;
 	oAREF.min			= 0;
 	oAREF.max			= 255;
@@ -27,6 +29,12 @@ void	CBlender_Model::Save	( IWriter& fs	)
 	IBlender::Save		(fs);
 	xrPWRITE_PROP		(fs,"Use alpha-channel",	xrPID_BOOL,		oBlend);
 	xrPWRITE_PROP		(fs,"Alpha ref",			xrPID_INTEGER,	oAREF);
+	xrP_TOKEN::Item	I;
+	xrPWRITE_PROP	(fs,"Tessellation",	xrPID_TOKEN, oTessellation);
+	I.ID = 0; xr_strcpy(I.str,"NO_TESS");	fs.w		(&I,sizeof(I));
+	I.ID = 1; xr_strcpy(I.str,"TESS_PN");	fs.w		(&I,sizeof(I));
+	I.ID = 2; xr_strcpy(I.str,"TESS_HM");	fs.w		(&I,sizeof(I));
+	I.ID = 3; xr_strcpy(I.str,"TESS_PN+HM");	fs.w		(&I,sizeof(I));
 }
 
 void	CBlender_Model::Load	( IReader& fs, u16 version)
@@ -46,6 +54,10 @@ void	CBlender_Model::Load	( IReader& fs, u16 version)
 		xrPREAD_PROP	(fs,xrPID_BOOL,		oBlend);
 		xrPREAD_PROP	(fs,xrPID_INTEGER,	oAREF);
 		break;
+	}
+	if (version>1)
+	{
+		xrPREAD_PROP(fs,xrPID_TOKEN,oTessellation);
 	}
 }
 

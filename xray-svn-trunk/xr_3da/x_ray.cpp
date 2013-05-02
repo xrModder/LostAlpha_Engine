@@ -680,7 +680,7 @@ ENGINE_API	bool g_dedicated_server	= false;
 
 #ifndef DEDICATED_SERVER
 	// forward declaration for Parental Control checks
-	BOOL IsPCAccessAllowed(); 
+//	BOOL IsPCAccessAllowed(); 
 #endif // DEDICATED_SERVER
 
 int APIENTRY WinMain_impl(HINSTANCE hInstance,
@@ -723,15 +723,15 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 	// Check for virtual memory
 	if ( ( strstr( lpCmdLine , "--skipmemcheck" ) == NULL ) && IsOutOfVirtualMemory() )
 		return 0;
-
+/*
 	// Parental Control for Vista and upper
 	if ( ! IsPCAccessAllowed() ) {
 		MessageBox( NULL , "Access restricted" , "Parental Control" , MB_OK | MB_ICONERROR );
 		return 1;
 	}
-
+*/
 	// Check for another instance
-#ifdef NO_MULTI_INSTANCES
+//#ifdef NO_MULTI_INSTANCES
 	#define STALKER_PRESENCE_MUTEX "STALKER-SoC"
 	
 	HANDLE hCheckPresenceMutex = INVALID_HANDLE_VALUE;
@@ -747,7 +747,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		CloseHandle( hCheckPresenceMutex );
 		return 1;
 	}
-#endif
+//#endif
 #else // DEDICATED_SERVER
 	g_dedicated_server			= true;
 #endif // DEDICATED_SERVER
@@ -1426,7 +1426,7 @@ void CApplication::LoadAllArchives()
 #ifndef DEDICATED_SERVER
 // Parential control for Vista and upper
 typedef BOOL (*PCCPROC)( CHAR* ); 
-
+/*
 BOOL IsPCAccessAllowed()
 {
 	CHAR szPCtrlChk[ MAX_PATH ] , szGDF[ MAX_PATH ] , *pszLastSlash;
@@ -1442,9 +1442,9 @@ BOOL IsPCAccessAllowed()
 
 	*pszLastSlash = '\0';
 
-	strcpy_s( szGDF , szPCtrlChk );
+	xr_strcpy( szGDF , szPCtrlChk );
 
-	strcat_s( szPCtrlChk , "\\pctrlchk.dll" );
+	xr_strcat( szPCtrlChk , MAX_PATH "\\pctrlchk.dll" );
 	if ( GetFileAttributes( szPCtrlChk ) == INVALID_FILE_ATTRIBUTES )
 		return TRUE;
 
@@ -1453,7 +1453,7 @@ BOOL IsPCAccessAllowed()
 
 	*pszLastSlash = '\0';
 
-	strcat_s( szGDF , "\\Stalker-COP.exe" );
+	xr_strcat( szGDF , MAX_PATH, "\\xr_3da.exe" );
 	if ( GetFileAttributes( szGDF ) == INVALID_FILE_ATTRIBUTES )
 		return TRUE;
 
@@ -1471,6 +1471,7 @@ BOOL IsPCAccessAllowed()
 
 	return bAllowed;
 }
+*/
 #endif // DEDICATED_SERVER
 
 //launcher stuff----------------------------

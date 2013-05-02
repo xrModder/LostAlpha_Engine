@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "..\fhierrarhyvisual.h"
-#include "..\SkeletonCustom.h"
-#include "..\fmesh.h"
-#include "..\irenderable.h"
+#include "fhierrarhyvisual.h"
+#include "SkeletonCustom.h"
+#include "../../xr_3da/fmesh.h"
+#include "../../xr_3da/irenderable.h"
 
 #include "flod.h"
 #include "particlegroup.h"
@@ -20,7 +20,7 @@ float		r_ssaLOD_A,			r_ssaLOD_B;
 float		r_ssaGLOD_start,	r_ssaGLOD_end;
 float		r_ssaHZBvsTEX;
 
-ICF	float	CalcSSA				(float& distSQ, Fvector& C, IRender_Visual* V)
+ICF	float	CalcSSA				(float& distSQ, Fvector& C, dxRender_Visual* V)
 {
 	float R	= V->vis.sphere.R + 0;
 	distSQ	= Device.vCameraPosition.distance_to_sqr(C)+EPS;
@@ -32,7 +32,7 @@ ICF	float	CalcSSA				(float& distSQ, Fvector& C, float R)
 	return	R/distSQ;
 }
 
-void R_dsgraph_structure::r_dsgraph_insert_dynamic	(IRender_Visual *pVisual, Fvector& Center)
+void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fvector& Center)
 {
 	CRender&	RI			=	RImplementation;
 
@@ -177,6 +177,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(IRender_Visual *pVisual, Fve
 		mapMatrixPS::TNode*			Nps		= Nvs->val.insert	(pass.ps->ps);
 	#endif	//	USE_DX10
 #endif
+
 #ifdef USE_DX11
 #	ifdef USE_RESOURCE_DEBUGGER
 		Nps->val.hs = pass.hs;
@@ -225,7 +226,7 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(IRender_Visual *pVisual, Fve
 #endif
 }
 
-void R_dsgraph_structure::r_dsgraph_insert_static	(IRender_Visual *pVisual)
+void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 {
 	CRender&	RI				=	RImplementation;
 
@@ -298,6 +299,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(IRender_Visual *pVisual)
 	if	(val_feedback && counter_S==val_feedback_breakp)	val_feedback->rfeedback_static(pVisual);
 
 	counter_S					++;
+
 	for ( u32 iPass = 0; iPass<sh->passes.size(); ++iPass)
 	{
 		//SPass&						pass	= *sh->passes.front	();
@@ -385,15 +387,16 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(IRender_Visual *pVisual)
 #endif
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void CRender::add_leafs_Dynamic	(IRender_Visual *pVisual)
+void CRender::add_leafs_Dynamic	(dxRender_Visual *pVisual)
 {
 	if (0==pVisual)				return;
 
 	// Visual is 100% visible - simply add it
-	xr_vector<IRender_Visual*>::iterator I,E;	// it may be useful for 'hierrarhy' visual
+	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be useful for 'hierrarhy' visual
 
 	switch (pVisual->Type) {
 	case MT_PARTICLE_GROUP:
@@ -403,8 +406,8 @@ void CRender::add_leafs_Dynamic	(IRender_Visual *pVisual)
 			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++)	{
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (I._effect)		add_leafs_Dynamic		(I._effect);
-				for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-				for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
 			}
 		}
 		return;
@@ -454,12 +457,12 @@ void CRender::add_leafs_Dynamic	(IRender_Visual *pVisual)
 	}
 }
 
-void CRender::add_leafs_Static(IRender_Visual *pVisual)
+void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 {
 	if (!HOM.visible(pVisual->vis))		return;
 
 	// Visual is 100% visible - simply add it
-	xr_vector<IRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
+	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
 
 	switch (pVisual->Type) {
 	case MT_PARTICLE_GROUP:
@@ -469,8 +472,8 @@ void CRender::add_leafs_Static(IRender_Visual *pVisual)
 			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++){
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (I._effect)		add_leafs_Dynamic		(I._effect);
-				for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-				for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
 			}
 		}
 		return;
@@ -539,7 +542,7 @@ void CRender::add_leafs_Static(IRender_Visual *pVisual)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-BOOL CRender::add_Dynamic(IRender_Visual *pVisual, u32 planes)
+BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 {
 	// Check frustum visibility and calculate distance to visual's center
 	Fvector		Tpos;	// transformed position
@@ -550,7 +553,7 @@ BOOL CRender::add_Dynamic(IRender_Visual *pVisual, u32 planes)
 	if (fcvNone==VIS) return FALSE	;
 
 	// If we get here visual is visible or partially visible
-	xr_vector<IRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
+	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
 
 	switch (pVisual->Type) {
 	case MT_PARTICLE_GROUP:
@@ -563,13 +566,13 @@ BOOL CRender::add_Dynamic(IRender_Visual *pVisual, u32 planes)
 				if (fcvPartial==VIS) 
 				{
 					if (I._effect)		add_Dynamic				(I._effect,planes);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
 				} else 
 				{
 					if (I._effect)		add_leafs_Dynamic		(I._effect);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
 				}
 			}
 		}
@@ -633,7 +636,7 @@ BOOL CRender::add_Dynamic(IRender_Visual *pVisual, u32 planes)
 	return TRUE;
 }
 
-void CRender::add_Static(IRender_Visual *pVisual, u32 planes)
+void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 {
 	// Check frustum visibility and calculate distance to visual's center
 	EFC_Visible	VIS;
@@ -646,7 +649,7 @@ void CRender::add_Static(IRender_Visual *pVisual, u32 planes)
 		return;
 
 	// If we get here visual is visible or partially visible
-	xr_vector<IRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
+	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be usefull for 'hierrarhy' visuals
 
 	switch (pVisual->Type) {
 	case MT_PARTICLE_GROUP:
@@ -657,12 +660,12 @@ void CRender::add_Static(IRender_Visual *pVisual, u32 planes)
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (fcvPartial==VIS) {
 					if (I._effect)		add_Dynamic				(I._effect,planes);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
 				} else {
 					if (I._effect)		add_leafs_Dynamic		(I._effect);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-					for (xr_vector<IRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
 				}
 			}
 		}

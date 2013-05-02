@@ -4,10 +4,10 @@
 
 #include "stdafx.h"
 #include "LightShadows.h"
-#include "..\xrRender\LightTrack.h"
-#include "..\xr_object.h"
-#include "..\fbasicvisual.h"
-#include "..\CustomHUD.h"
+#include "../xrRender/LightTrack.h"
+#include "../../xr_3da/xr_object.h"
+#include "../xrRender/fbasicvisual.h"
+#include "../../xr_3da/CustomHUD.h"
  
 const	float		S_distance		= 48;
 const	float		S_distance2		= S_distance*S_distance;
@@ -92,8 +92,9 @@ void CLightShadows::set_object	(IRenderable* O)
 			return;
 		}
 
-		Fvector		C;	O->renderable.xform.transform_tiny		(C,O->renderable.visual->vis.sphere.P);
-		float		R				= O->renderable.visual->vis.sphere.R;
+		const vis_data	&vis = O->renderable.visual->getVisData();
+		Fvector		C;	O->renderable.xform.transform_tiny		(C,vis.sphere.P);
+		float		R				= vis.sphere.R;
 		float		D				= C.distance_to(Device.vCameraPosition)+R;
 					// D=0 -> P=0; 
 					// R<S_ideal_size -> P=max, R>S_ideal_size -> P=min
@@ -191,7 +192,7 @@ void CLightShadows::calculate	()
 					if (_dist>EPS_L)		break;
 					Lpos.y					+=	.01f;	//. hack to avoid light-in-the-center-of-object
 				}
-				float		_R		=	C.O->renderable.visual->vis.sphere.R+0.1f;
+				float		_R		=	C.O->renderable.visual->getVisData().sphere.R+0.1f;
 				//Msg	("* o-r: %f",_R);
 				if (_dist<_R)		{
 					Fvector			Ldir;
@@ -205,7 +206,7 @@ void CLightShadows::calculate	()
 			// calculate projection-matrix
 			Fmatrix		mProject,mProjectR;
 			float		p_dist	=	C.C.distance_to(Lpos);
-			float		p_R		=	C.O->renderable.visual->vis.sphere.R;
+			float		p_R		=	C.O->renderable.visual->getVisData().sphere.R;
 			float		p_hat	=	p_R/p_dist;
 			float		p_asp	=	1.f;
 			float		p_near	=	p_dist-p_R-eps;									
@@ -256,7 +257,7 @@ void CLightShadows::calculate	()
 			for (u32 n_it=0; n_it<C.nodes.size(); n_it++)
 			{
 				NODE& N					=	C.nodes[n_it];
-				IRender_Visual *V		=	N.pVisual;
+				dxRender_Visual *V		=	N.pVisual;
 				RCache.set_Element		(V->shader->E[SE_R1_LMODELS]);
 				RCache.set_xform_world	(N.Matrix);
 				V->Render				(-1.0f);
@@ -355,8 +356,6 @@ IC int PLC_calc	(Fvector& P, Fvector& N, light* L, float energy, Fvector& O)
 	return			iCeil(255.f*A);
 }
 
-#define UNPACK_LIGHT(L) L->flags.type==IRender_Light::DIRECT,L->position,L->direction,L->range
-
 void CLightShadows::render	()
 {
 	// Gain access to collision-DB
@@ -380,6 +379,7 @@ void CLightShadows::render	()
 	Device.mProject._43			-=	fMinNearBias + (fMaxNearBias-fMinNearBias) * fLerpCoeff;
 	//Device.mProject._43			-=	0.0002f; 
 	Device.mProject._43			-=	0.002f; 
+	//Device.mProject._43			-=	0.0008f; 
 	RCache.set_xform_world		(Fidentity);
 	RCache.set_xform_project	(Device.mProject);
 	Fvector	View				= Device.vCameraPosition;
@@ -510,7 +510,7 @@ void CLightShadows::render	()
 			*/
 			int	c0,c1,c2;
 
-			PSGP.PLC_calc3(c0,c1,c2,Device.vCameraPosition,v,TT.N,UNPACK_LIGHT(S.L),Le,S.C);
+			PSGP.PLC_calc3(c0,c1,c2,Device,v,TT.N,S.L,Le,S.C);
 
 			if (c0>S_clip && c1>S_clip && c2>S_clip)		continue;	
 			clamp		(c0,S_ambient,255);
@@ -557,5 +557,3 @@ void CLightShadows::render	()
 	Device.mProject._43			= _43;
 	RCache.set_xform_project	(Device.mProject);
 }
-
-#undef UNPACK_LIGHT

@@ -7,9 +7,11 @@
 #	include "igame_persistent.h"
 #	include "environment.h"
 #else
-#	include "..\igame_persistent.h"
-#	include "..\environment.h"
+#	include "../../xr_3da/igame_persistent.h"
+#	include "../../xr_3da/environment.h"
 #endif
+
+#include "../xrRenderDX10/dx10BufferUtils.h"
 
 const int			quant	= 16384;
 const int			c_hdr	= 10;
@@ -38,6 +40,12 @@ short QC (float v)
 
 void CDetailManager::hw_Load	()
 {
+	hw_Load_Geom();
+	hw_Load_Shaders();
+}
+
+void CDetailManager::hw_Load_Geom()
+{
 	// Analyze batch-size
 	hw_BatchSize	= (u32(HW.Caps.geometry.dwRegisters)-c_hdr)/c_size;
 	clamp			(hw_BatchSize,(u32)0,(u32)64);
@@ -55,18 +63,29 @@ void CDetailManager::hw_Load	()
 	u32			vSize		= sizeof(vertHW);
 	Msg("* [DETAILS] %d v(%d), %d p",dwVerts,vSize,dwIndices/3);
 
+#if !defined(USE_DX10) && !defined(USE_DX11)
 	// Determine POOL & USAGE
 	u32 dwUsage		=	D3DUSAGE_WRITEONLY;
 
 	// Create VB/IB
-	R_CHK			(HW.pDevice->CreateVertexBuffer(dwVerts*vSize,dwUsage,0,D3DPOOL_MANAGED,&hw_VB,0));
-	R_CHK			(HW.pDevice->CreateIndexBuffer(dwIndices*2,dwUsage,D3DFMT_INDEX16,D3DPOOL_MANAGED,&hw_IB,0));
+	R_CHK			(HW.pDevice->CreateVertexBuffer	(dwVerts*vSize,dwUsage,0,D3DPOOL_MANAGED,&hw_VB,0));
+	HW.stats_manager.increment_stats_vb				(hw_VB);
+	R_CHK			(HW.pDevice->CreateIndexBuffer	(dwIndices*2,dwUsage,D3DFMT_INDEX16,D3DPOOL_MANAGED,&hw_IB,0));
+	HW.stats_manager.increment_stats_ib				(hw_IB);
+
+#endif	//	USE_DX10
 	Msg("* [DETAILS] Batch(%d), VB(%dK), IB(%dK)",hw_BatchSize,(dwVerts*vSize)/1024, (dwIndices*2)/1024);
 
 	// Fill VB
 	{
 		vertHW*			pV;
+#if defined(USE_DX10) || defined(USE_DX11)
+		vertHW*			pVOriginal;
+		pVOriginal	=	xr_alloc<vertHW>(dwVerts);
+		pV = pVOriginal;		
+#else	//	USE_DX10
 		R_CHK			(hw_VB->Lock(0,0,(void**)&pV,0));
+#endif	//	USE_DX10
 		for (o=0; o<objects.size(); o++)
 		{
 			const CDetail& D		=	*objects[o];
@@ -87,13 +106,25 @@ void CDetailManager::hw_Load	()
 				}
 			}
 		}
+#if defined(USE_DX10) || defined(USE_DX11)
+		R_CHK(dx10BufferUtils::CreateVertexBuffer(&hw_VB, pVOriginal, dwVerts*vSize));
+		HW.stats_manager.increment_stats_vb		( hw_VB);
+		xr_free(pVOriginal);
+#else	//	USE_DX10
 		R_CHK			(hw_VB->Unlock());
+#endif	//	USE_DX10
 	}
 
 	// Fill IB
 	{
 		u16*			pI;
+#if defined(USE_DX10) || defined(USE_DX11)
+		u16*			pIOriginal;
+		pIOriginal = xr_alloc<u16>(dwIndices);
+		pI	= pIOriginal;
+#else	//	USE_DX10
 		R_CHK			(hw_IB->Lock(0,0,(void**)(&pI),0));
+#endif	//	USE_DX10
 		for (o=0; o<objects.size(); o++)
 		{
 			const CDetail& D		=	*objects[o];
@@ -105,9 +136,32 @@ void CDetailManager::hw_Load	()
 				offset		=	u16(offset+u16(D.number_vertices));
 			}
 		}
+#if defined(USE_DX10) || defined(USE_DX11)
+		R_CHK(dx10BufferUtils::CreateIndexBuffer(&hw_IB, pIOriginal, dwIndices*2));
+		HW.stats_manager.increment_stats_ib		(hw_IB);
+		xr_free(pIOriginal);
+#else	//	USE_DX10
 		R_CHK			(hw_IB->Unlock());
+#endif	//	USE_DX10
 	}
 
+	// Declare geometry
+	hw_Geom.create		(dwDecl, hw_VB, hw_IB);
+}
+
+void CDetailManager::hw_Unload()
+{
+	// Destroy VS/VB/IB
+	hw_Geom.destroy				();
+	HW.stats_manager.decrement_stats_vb		( hw_VB);
+	HW.stats_manager.decrement_stats_ib		( hw_IB);
+	_RELEASE					(hw_IB);
+	_RELEASE					(hw_VB);
+}
+
+#if !defined(USE_DX10) && !defined(USE_DX11)
+void CDetailManager::hw_Load_Shaders()
+{
 	// Create shader to access constant storage
 	ref_shader		S;	S.create("details\\set");
 	R_constant_table&	T0	= *(S->E[0]->passes[0]->constants);
@@ -119,17 +173,6 @@ void CDetailManager::hw_Load	()
 	hwc_s_consts		= T1.get("consts");
 	hwc_s_xform			= T1.get("xform");
 	hwc_s_array			= T1.get("array");
-
-	// Declare geometry
-	hw_Geom.create		(dwDecl, hw_VB, hw_IB);
-}
-
-void CDetailManager::hw_Unload()
-{
-	// Destroy VS/VB/IB
-	hw_Geom.destroy				();
-	_RELEASE					(hw_IB);
-	_RELEASE					(hw_VB);
 }
 
 void CDetailManager::hw_Render()
@@ -137,16 +180,16 @@ void CDetailManager::hw_Render()
 	// Render-prepare
 	//	Update timer
 	//	Can't use RDEVICE.fTimeDelta since it is smoothed! Don't know why, but smoothed value looks more choppy!
-	float fDelta = Device.fTimeGlobal-m_global_time_old;
+	float fDelta = RDEVICE.fTimeGlobal-m_global_time_old;
 	if ( (fDelta<0) || (fDelta>1))	fDelta = 0.03;
-	m_global_time_old = Device.fTimeGlobal;
+	m_global_time_old = RDEVICE.fTimeGlobal;
 
 	m_time_rot_1	+= (PI_MUL_2*fDelta/swing_current.rot1);
 	m_time_rot_2	+= (PI_MUL_2*fDelta/swing_current.rot2);
 	m_time_pos		+= fDelta*swing_current.speed;
 
-	//float		tm_rot1		= (PI_MUL_2*Device.fTimeGlobal/swing_current.rot1);
-	//float		tm_rot2		= (PI_MUL_2*Device.fTimeGlobal/swing_current.rot2);
+	//float		tm_rot1		= (PI_MUL_2*RDEVICE.fTimeGlobal/swing_current.rot1);
+	//float		tm_rot2		= (PI_MUL_2*RDEVICE.fTimeGlobal/swing_current.rot2);
 	float		tm_rot1		= m_time_rot_1;
 	float		tm_rot2		= m_time_rot_2;
 
@@ -160,7 +203,7 @@ void CDetailManager::hw_Render()
 	// Wave0
 	float		scale			=	1.f/float(quant);
 	Fvector4	wave;
-	//wave.set				(1.f/5.f,		1.f/7.f,	1.f/3.f,	Device.fTimeGlobal*swing_current.speed);
+	//wave.set				(1.f/5.f,		1.f/7.f,	1.f/3.f,	RDEVICE.fTimeGlobal*swing_current.speed);
 	wave.set				(1.f/5.f,		1.f/7.f,	1.f/3.f,	m_time_pos);
 	RCache.set_c			(&*hwc_consts,	scale,		scale,		ps_r__Detail_l_aniso,	ps_r__Detail_l_ambient);				// consts
 	RCache.set_c			(&*hwc_wave,	wave.div(PI_MUL_2));	// wave
@@ -168,7 +211,7 @@ void CDetailManager::hw_Render()
 	hw_Render_dump			(&*hwc_array,	1, 0, c_hdr );
 
 	// Wave1
-	//wave.set				(1.f/3.f,		1.f/7.f,	1.f/5.f,	Device.fTimeGlobal*swing_current.speed);
+	//wave.set				(1.f/3.f,		1.f/7.f,	1.f/5.f,	RDEVICE.fTimeGlobal*swing_current.speed);
 	wave.set				(1.f/3.f,		1.f/7.f,	1.f/5.f,	m_time_pos);
 	RCache.set_c			(&*hwc_wave,	wave.div(PI_MUL_2));	// wave
 	RCache.set_c			(&*hwc_wind,	dir2);																					// wind-dir
@@ -176,12 +219,13 @@ void CDetailManager::hw_Render()
 
 	// Still
 	RCache.set_c			(&*hwc_s_consts,scale,		scale,		scale,				1.f);
-	RCache.set_c			(&*hwc_s_xform,	Device.mFullTransform);
+	RCache.set_c			(&*hwc_s_xform,	RDEVICE.mFullTransform);
 	hw_Render_dump			(&*hwc_s_array,	0, 1, c_hdr );
 }
+
 void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_id, u32 c_offset)
 {
-	Device.Statistic->RenderDUMP_DT_Count	= 0;
+	RDEVICE.Statistic->RenderDUMP_DT_Count	= 0;
 
 	// Matrices and offsets
 	u32		vOffset	=	0;
@@ -189,11 +233,19 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 
 	vis_list& list	=	m_visibles	[var_id];
 
-	CEnvDescriptor&	desc	= g_pGamePersistent->Environment().CurrentEnv;
 	Fvector					c_sun,c_ambient,c_hemi;
+#ifndef _EDITOR
+	CEnvDescriptor&	desc	= *g_pGamePersistent->Environment().CurrentEnv;
 	c_sun.set				(desc.sun_color.x,	desc.sun_color.y,	desc.sun_color.z);	c_sun.mul(.5f);
 	c_ambient.set			(desc.ambient.x,	desc.ambient.y,		desc.ambient.z);
 	c_hemi.set				(desc.hemi_color.x, desc.hemi_color.y,	desc.hemi_color.z);
+#else
+	c_sun.set				(1,1,1);	c_sun.mul(.5f);
+	c_ambient.set			(1,1,1);
+	c_hemi.set				(1,1,1);
+#endif    
+
+	VERIFY(objects.size()<=list.size());
 
 	// Iterate
 	for (u32 O=0; O<objects.size(); O++){
@@ -249,7 +301,7 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 					dwBatch	++;
 					if (dwBatch == hw_BatchSize)	{
 						// flush
-						Device.Statistic->RenderDUMP_DT_Count					+=	dwBatch;
+						RDEVICE.Statistic->RenderDUMP_DT_Count					+=	dwBatch;
 						u32 dwCNT_verts			= dwBatch * Object.number_vertices;
 						u32 dwCNT_prims			= (dwBatch * Object.number_indices)/3;
 						RCache.get_ConstantCache_Vertex().b_dirty				=	TRUE;
@@ -265,7 +317,7 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 			// flush if nessecary
 			if (dwBatch)
 			{
-				Device.Statistic->RenderDUMP_DT_Count	+= dwBatch;
+				RDEVICE.Statistic->RenderDUMP_DT_Count	+= dwBatch;
 				u32 dwCNT_verts			= dwBatch * Object.number_vertices;
 				u32 dwCNT_prims			= (dwBatch * Object.number_indices)/3;
 				RCache.get_ConstantCache_Vertex().b_dirty				=	TRUE;
@@ -274,9 +326,11 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 				RCache.stat.r.s_details.add	(dwCNT_verts);
 			}
 			// Clean up
-			//vis.clear_not_free			();
+			vis.clear_not_free			();
 		}
 		vOffset		+=	hw_BatchSize * Object.number_vertices;
 		iOffset		+=	hw_BatchSize * Object.number_indices;
 	}
 }
+
+#endif	//	USE_DX10

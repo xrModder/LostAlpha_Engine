@@ -4,10 +4,10 @@
 
 class light;
 
-#define DU_SPHERE_NUMVERTEX 92
-#define DU_SPHERE_NUMFACES	180
-#define DU_CONE_NUMVERTEX	18
-#define DU_CONE_NUMFACES	32
+//#define DU_SPHERE_NUMVERTEX 92
+//#define DU_SPHERE_NUMFACES	180
+//#define DU_CONE_NUMVERTEX	18
+//#define DU_CONE_NUMFACES	32
 //	no less than 2
 #define	VOLUMETRIC_SLICES	100
 
@@ -61,7 +61,8 @@ public:
 
 	//	Igor: for async screenshots
 	IDirect3DSurface9*			pFB;				//32bit		(r,g,b,a) is situated in the system memory
-	ref_rt						rt_LUM_pool	[4]	;	// 1xfp32,1x1,		exp-result -> scaler
+
+	ref_rt						rt_LUM_pool	[CHWCaps::MAX_GPUS*2]	;	// 1xfp32,1x1,		exp-result -> scaler
 	ref_texture					t_LUM_src		;	// source
 	ref_texture					t_LUM_dest		;	// destination & usage for current frame
 
@@ -267,6 +268,42 @@ public:
 		dbg_lines.back().P0		= P0;
 		dbg_lines.back().P1		= P1;
 		dbg_lines.back().color	= c;
+	}
+	IC void						dbg_addbox(const Fbox &box, const u32 &color)
+	{
+		Fvector c, r;
+		box.getcenter(c);
+		box.getradius(r);
+		dbg_addbox(c, r.x, r.y, r.z, color);
+	}
+	IC void						dbg_addbox(const Fvector &c, float rx, float ry, float rz, u32 color)
+	{
+		Fvector p1, p2, p3, p4, p5, p6, p7, p8;
+		
+		p1.set(c.x+rx, c.y+ry, c.z+rz);
+		p2.set(c.x+rx, c.y-ry, c.z+rz);
+		p3.set(c.x-rx, c.y-ry, c.z+rz);
+		p4.set(c.x-rx, c.y+ry, c.z+rz);
+		
+		p5.set(c.x+rx, c.y+ry, c.z-rz);
+		p6.set(c.x+rx, c.y-ry, c.z-rz);
+		p7.set(c.x-rx, c.y-ry, c.z-rz);
+		p8.set(c.x-rx, c.y+ry, c.z-rz);
+
+		dbg_addline(p1, p2, color);
+		dbg_addline(p2, p3, color);
+		dbg_addline(p3, p4, color);
+		dbg_addline(p4, p1, color);
+
+		dbg_addline(p5, p6, color);
+		dbg_addline(p6, p7, color);
+		dbg_addline(p7, p8, color);
+		dbg_addline(p8, p5, color);
+
+		dbg_addline(p1, p5, color);
+		dbg_addline(p2, p6, color);
+		dbg_addline(p3, p7, color);
+		dbg_addline(p4, p8, color);
 	}
 	IC void						dbg_addplane			(Fplane& P0,  u32 c)								{
 		dbg_planes.push_back(P0);

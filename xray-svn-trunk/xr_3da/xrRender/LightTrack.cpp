@@ -4,14 +4,15 @@
 
 #include "stdafx.h"
 #include "LightTrack.h"
-#include "..\xr_object.h"
+#include "../../include/xrRender/RenderVisual.h"
+#include "../../xr_3da/xr_object.h"
 
 #ifdef _EDITOR
-#include "igame_persistent.h"
-#include "environment.h"
+#	include "igame_persistent.h"
+#	include "environment.h"
 #else
-#include "..\igame_persistent.h"
-#include "..\environment.h"
+#	include "../../xr_3da/igame_persistent.h"
+#	include "../../xr_3da/environment.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////
@@ -206,7 +207,7 @@ void	CROS_impl::update	(IRenderable* O)
 
 	// Process ambient lighting and approximate average lighting
 	// Process our lights to find average luminescences
-	CEnvDescriptor&	desc	=	g_pGamePersistent->Environment().CurrentEnv;
+	CEnvDescriptor&	desc	=	*g_pGamePersistent->Environment().CurrentEnv;
 	Fvector			accum	=	{ desc.ambient.x,		desc.ambient.y,		desc.ambient.z		};
 	Fvector			hemi	=	{ desc.hemi_color.x,	desc.hemi_color.y,	desc.hemi_color.z	};
 	Fvector			sun_	=	{ desc.sun_color.x,		desc.sun_color.y,	desc.sun_color.z	};
@@ -400,8 +401,8 @@ void CROS_impl::calc_sky_hemi_value(Fvector& position, CObject* _object)
 		}
 	}
 	// hemi & sun: update and smooth
-//	float	l_f				=	dt*lt_smooth;
-//	float	l_i				=	1.f-l_f;
+	//	float	l_f				=	dt*lt_smooth;
+	//	float	l_i				=	1.f-l_f;
 	int		_pass			=	0;
 	for (int it=0; it<result_count; it++)	if (result[it])	_pass	++;
 	hemi_value				=	float	(_pass)/float(result_count?result_count:1);

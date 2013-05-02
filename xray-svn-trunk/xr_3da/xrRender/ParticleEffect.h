@@ -5,13 +5,20 @@
 
 #include "ParticleEffectDef.h"
 
+#ifdef _EDITOR
+#	include "../../Layers/xrRender/FBasicVisual.h"
+#	include "../../Layers/xrRender/dxParticleCustom.h"
+#else // _EDITOR
+#	include "../xrRender/FBasicVisual.h"
+#	include "../xrRender/dxParticleCustom.h"
+#endif // _EDITOR
+
 namespace PS
 {
-	class ECORE_API CParticleEffect: public IParticleCustom
+	class ECORE_API CParticleEffect: public dxParticleCustom
 	{
+//		friend void ParticleRenderStream( LPVOID lpvParams );
 		friend class CPEDef;
-	public:
-		CPEDef*				m_Def;
 	protected:
 		float				m_fElapsedLimit;
 
@@ -22,6 +29,7 @@ namespace PS
 
 		Fvector				m_InitialPosition;
 	public:
+		CPEDef*				m_Def;
         Fmatrix				m_XFORM;
     protected:
     	DestroyCallback		m_DestroyCallback;
@@ -47,7 +55,7 @@ namespace PS
 
 		u32					RenderTO			();
 		virtual void		Render				(float LOD);
-		virtual void		Copy				(IRender_Visual* pFrom);
+		virtual void		Copy				(dxRender_Visual* pFrom);
 
 		virtual void 		OnDeviceCreate		();
 		virtual void 		OnDeviceDestroy		();
@@ -77,7 +85,6 @@ namespace PS
 
 	    virtual u32			ParticlesCount		();
 	};
-	DEFINE_VECTOR				(PS::CPEDef*,PEDVec,PEDIt);
     void OnEffectParticleBirth	(void* owner, u32 param, PAPI::Particle& m, u32 idx);
     void OnEffectParticleDead	(void* owner, u32 param, PAPI::Particle& m, u32 idx);
 

@@ -68,7 +68,6 @@ public:
 	BOOL						bReady;
 
 	CInifile*					pLevel;
-	CCustomHUD*					pHUD;
 public:	// deferred sound events
 	struct	_esound_delegate	{
 		Feel::Sound*			dest	;

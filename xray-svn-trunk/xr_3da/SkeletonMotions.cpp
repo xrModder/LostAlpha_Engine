@@ -3,10 +3,10 @@
 #pragma hdrstop
 
 #include 	"SkeletonMotions.h"
-#include 	"SkeletonAnimated.h"
-#include	"fmesh.h"
+//#include 	"SkeletonAnimated.h"
+#include	"Fmesh.h"
 #include	"motion.h"
-#include	"Kinematics.h"
+#include	"..\Include\xrRender\Kinematics.h"
 
 motions_container*	g_pMotionsContainer	= 0;
 
@@ -25,10 +25,10 @@ u16 CPartition::part_id(const shared_str& name) const
 void CPartition::load(IKinematics* V, LPCSTR model_name)
 {
 	string_path fn, fn_full;
-	strcpy_s(fn, sizeof(fn), model_name);
+	xr_strcpy(fn, sizeof(fn), model_name);
 	if(strext(fn))
 		*strext(fn) = 0;
-	strcat_s(fn, sizeof(fn), ".ltx");
+	xr_strcat(fn, sizeof(fn), ".ltx");
 	
 	FS.update_path(fn_full,"$game_meshes$", fn);
 
@@ -39,7 +39,7 @@ void CPartition::load(IKinematics* V, LPCSTR model_name)
 	for(u32 i=0; i<MAX_PARTS; ++i)
 	{
 		string64			buff;
-		sprintf_s			(buff,sizeof(buff), "part_%d", i);
+		xr_sprintf			(buff,sizeof(buff), "part_%d", i);
 		
 		CInifile::Sect S		= ini.r_section(buff);
 		CInifile::SectCIt it	= S.Data.begin();
@@ -104,7 +104,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 			{
 				MP->r_stringZ	(buf,sizeof(buf));
 				u16 m_idx 		= u16			(MP->r_u32());
-				*b_it			= find_bone_id	(bones,buf); 
+				*b_it			= find_bone_id	(bones,buf);
 #ifdef _EDITOR
 				if (*b_it==BI_NONE )
                 {

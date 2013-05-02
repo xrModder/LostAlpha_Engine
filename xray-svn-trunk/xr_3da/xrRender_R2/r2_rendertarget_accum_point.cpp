@@ -18,9 +18,9 @@ void CRenderTarget::accum_point		(light* L)
 		Pold				= Device.mProject;
 		FTold				= Device.mFullTransform;
 		Device.mProject.build_projection(
-			deg2rad(psHUD_FOV*Device.fFOV ), // *Device.fASPECT ), 
+			deg2rad(psHUD_FOV*Device.fFOV /* *Device.fASPECT*/ ), 
 			Device.fASPECT, VIEWPORT_NEAR, 
-			g_pGamePersistent->Environment().CurrentEnv.far_plane);
+			g_pGamePersistent->Environment().CurrentEnv->far_plane);
 
 		Device.mFullTransform.mul	(Device.mProject, Device.mView);
 		RCache.set_xform_project	(Device.mProject);
@@ -30,8 +30,8 @@ void CRenderTarget::accum_point		(light* L)
 	// Common
 	Fvector		L_pos;
 	float		L_spec;
-	float		L_R					= L->range;
-	//float		L_R					= L->range*0.95f;
+	//float		L_R					= L->range;
+	float		L_R					= L->range*0.95f;
 	Fvector		L_clr;				L_clr.set		(L->color.r,L->color.g,L->color.b);
 	L_spec							= u_diffuse2s	(L_clr);
 	Device.mView.transform_tiny		(L_pos,L->position);

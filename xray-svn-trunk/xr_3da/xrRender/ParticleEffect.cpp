@@ -3,6 +3,12 @@
 
 #include "ParticleEffect.h"
 
+#ifndef _EDITOR
+#include <xmmintrin.h>
+#include "../xrCPU_Pipe/ttapi.h"
+#pragma comment(lib,"xrCPU_Pipe.lib")
+#endif
+
 using namespace PAPI;
 using namespace PS;
 
@@ -22,8 +28,8 @@ static void ApplyTexgen( const Fmatrix &mVP )
 		0.5f,				0.5f,				0.0f,			1.0f
 	};
 #else	//	USE_DX10
-	float	_w						= float(Device.dwWidth);
-	float	_h						= float(Device.dwHeight);
+	float	_w						= float(RDEVICE.dwWidth);
+	float	_h						= float(RDEVICE.dwHeight);
 	float	o_w						= (.5f / _w);
 	float	o_h						= (.5f / _h);
 	Fmatrix			mTexelAdjust		= 
@@ -204,7 +210,7 @@ u32 CParticleEffect::ParticlesCount()
 //------------------------------------------------------------------------------
 // Render
 //------------------------------------------------------------------------------
-void CParticleEffect::Copy(IRender_Visual* )
+void CParticleEffect::Copy(dxRender_Visual* )
 {
 	FATAL	("Can't duplicate particle system - NOT IMPLEMENTED");
 }
@@ -270,7 +276,7 @@ __forceinline void fsincos( const float angle , float &sine , float &cosine )
     fstp		DWORD PTR [eax]
 } }
 
-#include <xmmintrin.h>
+
 IC void FillSprite	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float sina , float cosa )
 {
 	__m128 Vr, Vt, _T , _R , _pos , _zz , _sa , _ca , a , b , c , d;
@@ -341,8 +347,8 @@ IC void FillSprite	(FVF::LIT*& pv, const Fvector& pos, const Fvector& dir, const
 	_t = _mm_load_ss( (float*) &T.x );
 	_t = _mm_loadh_pi( _t , (__m64*) &T.y );
 
-	_r = _mm_load_ss( (float*) &Device.vCameraDirection.x );
-	_r = _mm_loadh_pi( _r , (__m64*) &Device.vCameraDirection.y );
+	_r = _mm_load_ss( (float*) &RDEVICE.vCameraDirection.x );
+	_r = _mm_loadh_pi( _r , (__m64*) &RDEVICE.vCameraDirection.y );
 
 	_t1 = _mm_shuffle_ps( _t , _t , _MM_SHUFFLE( 0 , 3 , 1 , 2 ) );
 	_t2 = _mm_shuffle_ps( _t , _t , _MM_SHUFFLE( 2 , 0 , 1 , 3 ) );
@@ -401,7 +407,7 @@ __forceinline void magnitude_sse( Fvector &vec , float &res )
 	tv = _mm_sqrt_ss( tv );						// tv = zz | yy | 0 | sqrt( xx + yy + zz )
 	_mm_store_ss( (float*) &res , tv );
 }
-#pragma warning(disable:4701)
+
 void ParticleRenderStream( LPVOID lpvParams )
 {
 			float sina = 0.0f , cosa = 0.0f;
@@ -495,15 +501,14 @@ void ParticleRenderStream( LPVOID lpvParams )
 					if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
 						Fvector p;
 						pPE.m_XFORM.transform_tiny	(p,m.pos);
-						FillSprite	(pv,Device.vCameraTop,Device.vCameraRight,p,lt,rb,r_x,r_y,m.color,sina,cosa);
+						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,p,lt,rb,r_x,r_y,m.color,sina,cosa);
 					}else{
-						FillSprite	(pv,Device.vCameraTop,Device.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,sina,cosa);
+						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,sina,cosa);
 					}
 				}
 			}
 }
-#pragma warning(default:4701)
-#include "../xrCPU_Pipe/ttapi.h"
+
 void CParticleEffect::Render(float )
 {
 	u32			dwOffset,dwCount;
@@ -551,10 +556,10 @@ void CParticleEffect::Render(float )
 				Fmatrix FTold						= Device.mFullTransform;
 				if(GetHudMode())
 				{
-					Device.mProject.build_projection(	deg2rad(psHUD_FOV*Device.fFOV), 
+					RDEVICE.mProject.build_projection(	deg2rad(psHUD_FOV*Device.fFOV), 
 														Device.fASPECT, 
 														VIEWPORT_NEAR, 
-														g_pGamePersistent->Environment().CurrentEnv.far_plane);
+														g_pGamePersistent->Environment().CurrentEnv->far_plane);
 
 					Device.mFullTransform.mul	(Device.mProject, Device.mView);
 					RCache.set_xform_project	(Device.mProject);
@@ -616,7 +621,7 @@ IC void FillSprite	(FVF::LIT*& pv, const Fvector& pos, const Fvector& dir, const
 	float sa	= _sin(angle);  
 	float ca	= _cos(angle);  
 	const Fvector& T 	= dir;
-	Fvector R; 	R.crossproduct(T,Device.vCameraDirection).normalize_safe();
+	Fvector R; 	R.crossproduct(T,RDEVICE.vCameraDirection).normalize_safe();
 	Fvector Vr, Vt;
 	Vr.x 		= T.x*r1*sa+R.x*r1*ca;
 	Vr.y 		= T.y*r1*sa+R.y*r1*ca;
@@ -644,7 +649,7 @@ void CParticleEffect::Render(float )
     PAPI::Particle* particles;
     u32 			p_cnt;
     ParticleManager()->GetParticles(m_HandleEffect,particles,p_cnt);
-    
+
 	if(p_cnt>0){
 		if (m_Def&&m_Def->m_Flags.is(CPEDef::dfSprite)){
 			FVF::LIT* pv_start	= (FVF::LIT*)RCache.Vertex.Lock(p_cnt*4*4,geom->vb_stride,dwOffset);
@@ -708,9 +713,9 @@ void CParticleEffect::Render(float )
 					if (m_RT_Flags.is(flRT_XFORM)){
 						Fvector p;
 						m_XFORM.transform_tiny	(p,m.pos);
-						FillSprite	(pv,Device.vCameraTop,Device.vCameraRight,p,lt,rb,r_x,r_y,m.color,m.rot.x);
+						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,p,lt,rb,r_x,r_y,m.color,m.rot.x);
 					}else{
-						FillSprite	(pv,Device.vCameraTop,Device.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,m.rot.x);
+						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,m.rot.x);
 					}
 				}
 			}

@@ -2,10 +2,14 @@
 #pragma hdrstop
 
 #include "ParticleEffectDef.h"
+#include "ParticleEffect.h"
 #ifdef _EDITOR
 	#include "UI_ToolsCustom.h"
 	#include "ParticleEffectActions.h"
+#else
+
 #endif
+
 //---------------------------------------------------------------------------
 using namespace PAPI;
 using namespace PS;
@@ -319,4 +323,25 @@ void CPEDef::Save(IWriter& F)
 #endif
 }
 
+#ifdef _EDITOR
+void PS::CPEDef::Compile(EPAVec& v)
+{
+	m_Actions.clear	();
+    m_Actions.w_u32	(v.size());
+    int cnt			= 0;
+	EPAVecIt it		= v.begin();
+	EPAVecIt it_e	= v.end();
+    
+	for(; it!=it_e; ++it)
+	{
+		if ((*it)->flags.is(EParticleAction::flEnabled))
+		{
+    	    (*it)->Compile(m_Actions);
+            cnt++;
+        }
+    }
+    m_Actions.seek	(0);
+    m_Actions.w_u32 (cnt);
+}
+#endif
 

@@ -1,5 +1,6 @@
 #include "StdAfx.h"
-#include "..\xrRender\light.h"
+#include "../xrRender/light.h"
+#include "../xrRender/FBasicVisual.h"
 
 		smapvis::smapvis	()
 {
@@ -112,7 +113,7 @@ void	smapvis::mark				()
 		invisible[it]->vis.marker	= marker;				// this effectively disables processing
 }
 
-void	smapvis::rfeedback_static	(IRender_Visual* V)
+void	smapvis::rfeedback_static	(dxRender_Visual* V)
 {
 	testQ_V							= V;
 	RImplementation.set_Feedback	(0,0);

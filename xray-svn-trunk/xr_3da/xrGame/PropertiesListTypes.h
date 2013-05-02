@@ -389,13 +389,13 @@ public:
     bool				ApplyValue		(LPCSTR val)
     {
         if (0!=xr_strcmp(value,val)){
-            strcpy		(value,val);
+            xr_strcpy		(value,val);
             return		true;
         }
         return 			false;
     }
     LPSTR				GetValue		(){return value;}
-    virtual void		ResetValue		(){strcpy(value,init_value.c_str());}
+    virtual void		ResetValue		(){xr_strcpy(value,init_value.c_str());}
 };
 //------------------------------------------------------------------------------
 

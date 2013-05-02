@@ -281,7 +281,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\Include&quot;;X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCPU_PIPE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"

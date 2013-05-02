@@ -2,7 +2,7 @@
 #ifndef ParticleGroupH
 #define ParticleGroupH
 
-#include "..\ParticleCustom.h"
+#include "../xrRender/dxParticleCustom.h"
 
 namespace PS
 {
@@ -65,22 +65,22 @@ namespace PS
 	};
 	DEFINE_VECTOR(CPGDef*,PGDVec,PGDIt);
 
-	class ECORE_API CParticleGroup: public IParticleCustom
+	class ECORE_API CParticleGroup: public dxParticleCustom
 	{
 		const CPGDef*		m_Def;
 		float				m_CurrentTime;
 		Fvector				m_InitialPosition;
 	public:
-    	DEFINE_VECTOR(IRender_Visual*,VisualVec,VisualVecIt);
+    	DEFINE_VECTOR(dxRender_Visual*,VisualVec,VisualVecIt);
     	struct SItem		{
-        	IRender_Visual*	_effect;
+        	dxRender_Visual*	_effect;
             VisualVec		_children_related;
             VisualVec		_children_free;
         public:
-        	void			Set				(IRender_Visual* e);
+        	void			Set				(dxRender_Visual* e);
             void			Clear			();
 
-            IC u32			GetVisuals		(xr_vector<IRender_Visual*>& visuals)
+            IC u32			GetVisuals		(xr_vector<dxRender_Visual*>& visuals)
             {
             	visuals.reserve				(_children_related.size()+_children_free.size()+1);
                 if (_effect)				visuals.push_back(_effect);
@@ -117,7 +117,7 @@ namespace PS
 		virtual				~CParticleGroup	();
 		virtual void	 	OnFrame			(u32 dt);
 
-		virtual void		Copy			(IRender_Visual* pFrom) {FATAL("Can't duplicate particle system - NOT IMPLEMENTED");}
+		virtual void		Copy			(dxRender_Visual* pFrom) {FATAL("Can't duplicate particle system - NOT IMPLEMENTED");}
 
 		virtual void 		OnDeviceCreate	();
 		virtual void 		OnDeviceDestroy	();

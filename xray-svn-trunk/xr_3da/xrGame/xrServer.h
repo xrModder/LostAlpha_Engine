@@ -10,7 +10,10 @@
 #include "../../xrNetServer/net_server.h"
 #include "game_sv_base.h"
 #include "id_generator.h"
-#include "battleye.h"
+#include "../xr_3da/mp_logging.h"
+#include "secure_messaging.h"
+#include "xrServer_updates_compressor.h"
+#include "xrClientsPool.h"
 
 #ifdef DEBUG
 //. #define SLOW_VERIFY_ENTITIES
@@ -182,8 +185,6 @@ public:
 	u32						GetEntitiesNum		()			{ return entities.size(); };
 	CSE_Abstract*			GetEntity			(u32 Num);
 
-	IC void					clients_Lock		()			{	csPlayers.Enter();	}
-	IC void					clients_Unlock		()			{   csPlayers.Leave();	}
 
 	xrClientData*			ID_to_client		(ClientID ID, bool ScanAll = false ) { return (xrClientData*)(IPureServer::ID_to_client( ID, ScanAll)); }
 	CSE_Abstract*			ID_to_entity		(u16 ID);

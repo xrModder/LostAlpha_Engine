@@ -15795,22 +15795,6 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="Game Materials"
-					>
-					<File
-						RelativePath="GameMtlLib.cpp"
-						>
-					</File>
-					<File
-						RelativePath="GameMtlLib.h"
-						>
-					</File>
-					<File
-						RelativePath="GameMtlLib_Engine.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Game Persistent"
 					>
 					<File

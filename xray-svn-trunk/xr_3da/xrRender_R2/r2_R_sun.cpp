@@ -1,12 +1,14 @@
 #include "stdafx.h"
-#include "..\igame_persistent.h"
-#include "..\irenderable.h"
-
-extern float	ps_r2_sun_far;
+#include "../../xr_3da/igame_persistent.h"
+#include "../../xr_3da/irenderable.h"
+#include "../xrRender/FBasicVisual.h"
 
 const	float	tweak_COP_initial_offs			= 1200.f	;
 const	float	tweak_ortho_xform_initial_offs	= 1000.f	;	//. ?
 const	float	tweak_guaranteed_range			= 20.f		;	//. ?
+
+//float			OLES_SUN_LIMIT_27_01_07			= 180.f		;
+float			OLES_SUN_LIMIT_27_01_07			= 100.f		;
 
 const	float	MAP_SIZE_START					= 6.f		;
 const	float	MAP_GROW_FACTOR					= 4.f		;
@@ -727,7 +729,7 @@ void CRender::render_sun				()
 	// calculate view-frustum bounds in world space
 	Fmatrix	ex_project, ex_full, ex_full_inverse;
 	{
-		float _far_	= min(ps_r2_sun_far, g_pGamePersistent->Environment().CurrentEnv.far_plane);
+		float _far_	= min(OLES_SUN_LIMIT_27_01_07, g_pGamePersistent->Environment().CurrentEnv->far_plane);
 		//ex_project.build_projection	(deg2rad(Device.fFOV/* *Device.fASPECT*/),Device.fASPECT,ps_r2_sun_near,_far_);
 		ex_project.build_projection	(deg2rad(Device.fFOV/* *Device.fASPECT*/),Device.fASPECT,VIEWPORT_NEAR,_far_);
 		ex_full.mul					(ex_project,Device.mView);
@@ -767,7 +769,7 @@ void CRender::render_sun				()
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
 			CSector*			S		= (CSector*)Sectors[s]	;
-			IRender_Visual*		V		= S->root()				;
+			dxRender_Visual*		V		= S->root()				;
 			float				vol		= V->vis.box.getvolume();
 			if (vol>largest_sector_vol)	{
 				largest_sector_vol		= vol;
@@ -831,7 +833,7 @@ void CRender::render_sun				()
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
 			CSector*			S		= (CSector*)Sectors[s]	;
-			IRender_Visual*		root	= S->root()				;
+			dxRender_Visual*		root	= S->root()				;
 
 			set_Frustum			(&cull_frustum);
 			add_Geometry		(root);
@@ -1225,7 +1227,7 @@ void CRender::render_sun_near	()
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
 			CSector*			S		= (CSector*)Sectors[s]	;
-			IRender_Visual*		V		= S->root()				;
+			dxRender_Visual*		V		= S->root()				;
 			float				vol		= V->vis.box.getvolume();
 			if (vol>largest_sector_vol)	{
 				largest_sector_vol		= vol;
@@ -1477,7 +1479,7 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
 			CSector*			S		= (CSector*)Sectors[s]	;
-			IRender_Visual*		V		= S->root()				;
+			dxRender_Visual*		V		= S->root()				;
 			float				vol		= V->vis.box.getvolume();
 			if (vol>largest_sector_vol)	{
 				largest_sector_vol		= vol;

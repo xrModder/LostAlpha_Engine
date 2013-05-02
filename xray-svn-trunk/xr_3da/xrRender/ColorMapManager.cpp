@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "ColorMapManager.h"
 
-#include "..\device.h"
+#include "dxRenderDeviceRender.h"
 
 
 ColorMapManager::ColorMapManager()
 {
-	m_CMap[0]	= Device.Resources->_CreateTexture("$user$cmap0");
-	m_CMap[1]	= Device.Resources->_CreateTexture("$user$cmap1");
+	m_CMap[0]	= dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$cmap0");
+	m_CMap[1]	= dxRenderDeviceRender::Instance().Resources->_CreateTexture("$user$cmap1");
 }
 
 void ColorMapManager::SetTextures(const shared_str &tex0, const shared_str &tex1)
@@ -28,7 +28,7 @@ void ColorMapManager::UpdateTexture(const shared_str &strTexName, int iTex)
 		map_TexIt I = m_TexCache.find(strTexName);
 		if (I!=m_TexCache.end())
 		{
-			IDirect3DBaseTexture9*	e0	= I->second->surface_get();
+			ID3DBaseTexture*	e0	= I->second->surface_get();
 			m_CMap[iTex]->surface_set(e0);
 			_RELEASE(e0);
 		}
@@ -39,7 +39,7 @@ void ColorMapManager::UpdateTexture(const shared_str &strTexName, int iTex)
 
 			m_TexCache.insert	(mk_pair(strTexName,tmp));
 
-			IDirect3DBaseTexture9*	e0	= tmp->surface_get();
+			ID3DBaseTexture*	e0	= tmp->surface_get();
 			m_CMap[iTex]->surface_set(e0);
 			_RELEASE(e0);
 		}

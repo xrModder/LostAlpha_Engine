@@ -3,16 +3,16 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "..\igame_persistent.h"
-#include "..\environment.h"
-#include "..\x_ray.h"
-#include "..\GameFont.h"
+#include "../../xr_3da/igame_persistent.h"
+#include "../../xr_3da/environment.h"
+#include "../../xr_3da/x_ray.h"
+#include "../../xr_3da/GameFont.h"
 #include "GlowManager.h"
-#include "..\xr_object.h"
+#include "../../xr_3da/xr_object.h"
 
 #define FADE_SCALE_UP		4096.f
 #define FADE_SCALE_DOWN		1024.f
-#define MAX_GlowsDist1		float(g_pGamePersistent->Environment().CurrentEnv.far_plane)
+#define MAX_GlowsDist1		float(g_pGamePersistent->Environment().CurrentEnv->far_plane)
 #define MAX_GlowsDist2		float(MAX_GlowsDist1*MAX_GlowsDist1)
 
 

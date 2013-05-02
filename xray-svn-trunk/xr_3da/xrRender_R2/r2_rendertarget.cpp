@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\resourcemanager.h"
+#include "../xrRender/resourcemanager.h"
 #include "blender_light_occq.h"
 #include "blender_light_mask.h"
 #include "blender_light_direct.h"
@@ -11,6 +11,8 @@
 #include "blender_bloom_build.h"
 #include "blender_luminance.h"
 #include "blender_ssao.h"
+
+#include "../xrRender/dxRenderDeviceRender.h"
 
 void	CRenderTarget::u_setrt			(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, IDirect3DSurface9* zb)
 {
@@ -194,7 +196,7 @@ CRenderTarget::CRenderTarget		()
 	param_color_add.set( 0.0f, 0.0f, 0.0f );
 
 	dwAccumulatorClearMark			= 0;
-	Device.Resources->Evict			();
+	dxRenderDeviceRender::Instance().Resources->Evict			();
 
 	// Blenders
 	b_occq							= xr_new<CBlender_light_occq>			();
@@ -417,7 +419,7 @@ CRenderTarget::CRenderTarget		()
 		{
 			// Surface
 			R_CHK						(D3DXCreateVolumeTexture(HW.pDevice,TEX_material_LdotN,TEX_material_LdotH,4,1,0,D3DFMT_A8L8,D3DPOOL_MANAGED,&t_material_surf));
-			t_material					= Device.Resources->_CreateTexture(r2_material);
+			t_material					= dxRenderDeviceRender::Instance().Resources->_CreateTexture(r2_material);
 			t_material->surface_set		(t_material_surf);
 
 			// Fill it (addr: x=dot(L,N),y=dot(L,H))
@@ -481,9 +483,9 @@ CRenderTarget::CRenderTarget		()
 			for (int it1=0; it1<TEX_jitter_count-1; it1++)
 			{
 				string_path					name;
-				xr_sprintf					(name,"%s%d",r2_jitter,it1);
+				xr_sprintf						(name,"%s%d",r2_jitter,it1);
 				R_CHK	(D3DXCreateTexture	(HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_Q8W8V8U8,D3DPOOL_MANAGED,&t_noise_surf[it1]));
-				t_noise[it1]					= Device.Resources->_CreateTexture	(name);
+				t_noise[it1]					= dxRenderDeviceRender::Instance().Resources->_CreateTexture	(name);
 				t_noise[it1]->surface_set	(t_noise_surf[it1]);
 				R_CHK						(t_noise_surf[it1]->LockRect	(0,&R[it1],0,0));
 			}
@@ -502,6 +504,7 @@ CRenderTarget::CRenderTarget		()
 					}
 				}
 			}
+			
 			for (int it3=0; it3<TEX_jitter_count-1; it3++)	{
 				R_CHK						(t_noise_surf[it3]->UnlockRect(0));
 			}		
@@ -510,7 +513,7 @@ CRenderTarget::CRenderTarget		()
 			string_path					name;
 			xr_sprintf					(name,"%s%d",r2_jitter,it);
 			R_CHK	(D3DXCreateTexture	(HW.pDevice,TEX_jitter,TEX_jitter,1,0,D3DFMT_A32B32G32R32F,D3DPOOL_MANAGED,&t_noise_surf[it]));
-			t_noise[it]					= Device.Resources->_CreateTexture	(name);
+			t_noise[it]					= dxRenderDeviceRender::Instance().Resources->_CreateTexture	(name);
 			t_noise[it]->surface_set	(t_noise_surf[it]);
 			R_CHK						(t_noise_surf[it]->LockRect	(0,&R[it],0,0));
 			// Fill it,
@@ -580,7 +583,7 @@ CRenderTarget::~CRenderTarget	()
 	t_LUM_dest->surface_set		(NULL);
 
 #ifdef DEBUG
-	IDirect3DBaseTexture9*	pSurf = 0;
+	ID3DBaseTexture*	pSurf = 0;
 
 	pSurf = t_envmap_0->surface_get();
 	if (pSurf) pSurf->Release();
@@ -689,7 +692,7 @@ bool CRenderTarget::need_to_render_sunshafts()
 		return false;
 
 	{
-		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
+		CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fSunShaftsIntensity;
 		//	TODO: add multiplication by sun color here
 		if (fValue<0.0001) return false;

@@ -7,7 +7,9 @@ struct	ENGINE_API	vertRender;
 struct	ENGINE_API	vertBoned1W;
 struct	ENGINE_API	vertBoned2W;
 class	ENGINE_API	CBoneInstance;
+class	light;
 struct	ENGINE_API	CKey;
+class	ENGINE_API CRenderDevice;
 struct	ENGINE_API	CKeyQR;
 struct	ENGINE_API	CKeyQT;
 
@@ -49,8 +51,7 @@ typedef void	__stdcall	xrMemFill_32b	(LPVOID ptr,  u32 count, u32 value);
 typedef void	__stdcall	xrMemFill_8b	(LPVOID ptr,  u32 count, u32 value);
 typedef void	__stdcall	xrMemCopy_8b	(LPVOID dest, const void* src,  u32 count);
 
-typedef void	__stdcall	xrPLC_calc3		(int& c0, int& c1, int& c2, Fvector3 camera_position, Fvector* P, Fvector& N, bool light_direct,
-											 Fvector3 light_position, Fvector3 light_direction, float light_range, float energy, Fvector& O);
+typedef void	__stdcall	xrPLC_calc3		(int& c0, int& c1, int& c2, CRenderDevice& Device, Fvector* P, Fvector& N, light* L, float energy, Fvector& O);
 
 #pragma pack(push,8)
 struct xrDispatchTable

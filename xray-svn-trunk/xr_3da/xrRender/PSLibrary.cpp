@@ -6,6 +6,12 @@
 
 #include "PSLibrary.h"
 #include "ParticleEffect.h"
+#include "ParticleGroup.h"
+
+#ifdef _EDITOR
+#	include "ParticleEffectActions.h"
+#include "../ECore/Editor/ui_main.h"
+#endif
 
 #define _game_data_			"$game_data$"
 
@@ -113,6 +119,12 @@ void CPSLibrary::Remove(const char* nm)
 
 bool CPSLibrary::Load(const char* nm)
 {
+    if (!FS.exist(nm))
+    {
+        Msg("Can't find file: '%s'",nm);
+        return 				false;
+    }
+    
 	IReader*	F			= FS.r_open(nm);
 	bool bRes 				= true;
     R_ASSERT(F->find_chunk(PS_CHUNK_VERSION));
@@ -153,8 +165,11 @@ bool CPSLibrary::Load(const char* nm)
 
 	std::sort			(m_PEDs.begin(),m_PEDs.end(),ped_sort_pred);
 	std::sort			(m_PGDs.begin(),m_PGDs.end(),pgd_sort_pred);
-   
-    return bRes;
+
+	for (PS::PEDIt e_it = m_PEDs.begin(); e_it!=m_PEDs.end(); e_it++)
+    	(*e_it)->CreateShader();
+
+    return			bRes;
 }
 //----------------------------------------------------
 void CPSLibrary::Reload()
@@ -165,3 +180,27 @@ void CPSLibrary::Reload()
 }
 //----------------------------------------------------
 
+using PS::CPGDef;
+
+CPGDef const* const* CPSLibrary::particles_group_begin	() const
+{
+	return	(m_PGDs.size() ? &*m_PGDs.begin() : 0);
+}
+
+CPGDef const* const* CPSLibrary::particles_group_end	() const
+{
+	return	(m_PGDs.size() ? &*m_PGDs.end() : 0);
+}
+
+void CPSLibrary::particles_group_next			(PS::CPGDef const* const*& iterator) const
+{
+	VERIFY	(iterator);
+	VERIFY	(iterator >= particles_group_begin());
+	VERIFY	(iterator <  particles_group_end());
+	++iterator;
+}
+
+shared_str const& CPSLibrary::particles_group_id(CPGDef const& particles_group) const
+{
+	return	(particles_group.m_Name);
+}

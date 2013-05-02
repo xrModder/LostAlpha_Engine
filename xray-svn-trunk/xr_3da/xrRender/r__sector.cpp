@@ -4,10 +4,11 @@
 
 #include "stdafx.h"
 #include "r__sector.h"
-#include "..\xrLevel.h"
-#include "..\xr_object.h"
-#include "..\fbasicvisual.h"
-#include "..\IGame_Persistent.h"
+#include "../../xr_3da/xrLevel.h"
+#include "../../xr_3da/xr_object.h"
+#include "fbasicvisual.h"
+#include "../../xr_3da/IGame_Persistent.h"
+#include "dxRenderDeviceRender.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -42,7 +43,7 @@ void CPortal::OnRender	()
 
 		RCache.set_xform_world(Fidentity);
 		// draw solid
-		RCache.set_Shader	(Device.m_SelectionShader);
+		RCache.set_Shader	(dxRenderDeviceRender::Instance().m_SelectionShader);
 		RCache.dbg_Draw		(D3DPT_TRIANGLEFAN,&*V.begin(),V.size()-2);
 
 		// draw wire
@@ -51,7 +52,7 @@ void CPortal::OnRender	()
 		}else{
 			Device.SetNearer(TRUE);
 		}
-		RCache.set_Shader	(Device.m_WireShader);
+		RCache.set_Shader	(dxRenderDeviceRender::Instance().m_WireShader);
 		RCache.dbg_Draw		(D3DPT_LINESTRIP,&*(V.begin()+1),V.size()-2);
 		if (bDebug){
 			RImplementation.rmNormal();
@@ -255,6 +256,6 @@ void CSector::load		(IReader& fs)
 	else {
 		// Assign visual
 		size	= fs.find_chunk(fsP_Root);	R_ASSERT(size==4);
-		m_root	= RImplementation.getVisual	(fs.r_u32());
+		m_root	= (dxRender_Visual*)RImplementation.getVisual	(fs.r_u32());
 	}
 }

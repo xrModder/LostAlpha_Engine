@@ -2,12 +2,9 @@
 #pragma hdrstop
 
 #ifdef _EDITOR
-#include "skeletonX.h"
-#include "skeletoncustom.h"
-#else
-#include "..\skeletonX.h"
-#include "..\skeletoncustom.h"
-#endif
+#	include "skeletonX.h"
+#	include "skeletoncustom.h"
+#endif // _EDITOR
 
 /*
 struct vertBoned2W	// (1+3+3 + 1+3+3 + 2)*4 = 16*4 = 64 bytes

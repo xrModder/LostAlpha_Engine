@@ -2,13 +2,7 @@
 #ifndef ParticleEffectDefH
 #define ParticleEffectDefH
 
-#ifdef _EDITOR
-    #include "FBasicVisual.h"
-    #include "ParticleCustom.h"
-#else
-    #include "..\FBasicVisual.h"
-    #include "..\ParticleCustom.h"
-#endif
+#include "Shader.h"
 
 namespace PAPI
 {
@@ -140,10 +134,11 @@ namespace PS
 		void				Copy				(const CPEDef& src);
 		BOOL				Equal				(const CPEDef* pe);
 		void 				Render				(const Fmatrix& parent);
-		void 				Compile				();
 		static PFunction*	FindCommandPrototype(LPCSTR src, LPCSTR& dest);
 		void __stdcall  	FillActionList		(ChooseItemVec& items, void* param);
         bool 				Validate 			(bool bMsg);
+		void 				Compile				(EPAVec& v);
+		void				Compile				();
 #endif
 	};
 };

@@ -2,10 +2,9 @@
 #ifndef SkeletonMotionsH
 #define SkeletonMotionsH
 
-#include		"skeletoncustom.h"
-#include 		"bone.h"
-#include		"KinematicsDefs.h"
-
+//#include		"skeletoncustom.h"
+#include "bone.h"
+#include "skeletonmotiondefs.h"	
 // refs
 class CKinematicsAnimated;
 class CBlend;

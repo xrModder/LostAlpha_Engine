@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "light.h"
 
-//static const float	SQRT2		=	1.4142135623730950488016887242097f;
+static const float	SQRT2		=	1.4142135623730950488016887242097f;
 static const float	RSQRTDIV2	=	0.70710678118654752440084436210485f;
 
 light::light		(void)	: ISpatial(g_SpatialSpace)
@@ -27,7 +27,7 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 
 	frame_render	= 0;
 
-#if RENDER==R_R2
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	ZeroMemory		(omnipart,sizeof(omnipart));
 	s_spot			= NULL;
 	s_point			= NULL;
@@ -36,24 +36,24 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 	vis.query_order	= 0;
 	vis.visible		= true;
 	vis.pending		= false;
-#endif
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 }
 
 light::~light	()
 {
-#if RENDER==R_R2 
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	for (int f=0; f<6; f++)	xr_delete(omnipart[f]);
-#endif
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	set_active		(false);
 
 	// remove from Lights_LastFrame
-#if RENDER==R_R2 
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	for (u32 it=0; it<RImplementation.Lights_LastFrame.size(); it++)
 		if (this==RImplementation.Lights_LastFrame[it])	RImplementation.Lights_LastFrame[it]=0;
-#endif
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 }
 
-#if RENDER==R_R2 
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 void light::set_texture		(LPCSTR name)
 {
 	if ((0==name) || (0==name[0]))
@@ -194,10 +194,10 @@ void	light::spatial_move			()
 	// update spatial DB
 	ISpatial::spatial_move			();
 
-#if RENDER==R_R2
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 	if (flags.bActive) gi_generate	();
 	svis.invalidate					();
-#endif
+#endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 }
 
 vis_data&	light::get_homdata		()
@@ -215,7 +215,7 @@ Fvector	light::spatial_sector_point	()
 }
 
 //////////////////////////////////////////////////////////////////////////
-#if RENDER==R_R2
+#if (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4)
 // Xforms
 void	light::xform_calc			()
 {
@@ -309,11 +309,31 @@ void	light::export		(light_Package& package)
 						L->spatial.sector	= spatial.sector;	//. dangerous?
 						L->s_spot			= s_spot	;
 						L->s_point			= s_point	;
+						
+						// Holger - do we need to export msaa stuff as well ?
+#if	(RENDER==R_R3) || (RENDER==R_R4)
+						if( RImplementation.o.dx10_msaa )
+						{
+							int bound = 1;
+
+							if( !RImplementation.o.dx10_msaa_opt )
+								bound = RImplementation.o.dx10_msaa_samples;
+
+							for( int i = 0; i < bound; ++i )
+							{
+								L->s_point_msaa[i] = s_point_msaa[i];
+								L->s_spot_msaa[i] = s_spot_msaa[i];
+								//L->s_volumetric_msaa[i] = s_volumetric_msaa[i];
+							}
+						}
+#endif	//	(RENDER==R_R3) || (RENDER==R_R4)
+
 						//	Igor: add volumetric support
 						L->set_volumetric(flags.bVolumetric);
 						L->set_volumetric_quality(m_volumetric_quality);
 						L->set_volumetric_intensity(m_volumetric_intensity);
 						L->set_volumetric_distance(m_volumetric_distance);
+
 						package.v_shadowed.push_back	(L);
 					}
 				}

@@ -4,10 +4,10 @@
 
 #include "stdafx.h"
 #include "LightPPA.h"
-#include "..\igame_persistent.h"
-#include "..\environment.h"
-#include "..\fbasicvisual.h"
-#include "..\CustomHUD.h"
+#include "../../xr_3da/igame_persistent.h"
+#include "../../xr_3da/environment.h"
+#include "../xrRender/fbasicvisual.h"
+#include "../../xr_3da/CustomHUD.h"
 
 const u32	MAX_POLYGONS			=	1024*8;
 const float MAX_DISTANCE			=	50.f;
@@ -213,7 +213,7 @@ void CLightR_Manager::render_point	(u32 _priority)
 
 		//		5. Dump sorting tree
 		RCache.set_Constants((R_constant_table*)0);
-		if (bHUD&&_priority == 0)			g_pGameLevel->pHUD->Render_Last		();	
+		if (bHUD&&_priority == 0)			g_hud->Render_Last		();	
 		RImplementation.r_dsgraph_render_graph					(_priority);
 		if (bHUD&&_priority == 0)			RImplementation.r_dsgraph_render_hud();	
 	}
@@ -293,12 +293,12 @@ void CLightR_Manager::render_spot	(u32 _priority)
 		//		4. Dump sorting tree
 		//	RCache.set_ClipPlanes					(true,	&L_combine);
 		RCache.set_Constants	((R_constant_table*)0);
-		if (bHUD&&_priority == 0)	g_pGameLevel->pHUD->Render_Last		();	
+		if (bHUD&&_priority == 0)	g_hud->Render_Last		();	
 		RImplementation.r_dsgraph_render_graph			(_priority);
 		if (bHUD&&_priority == 0)	RImplementation.r_dsgraph_render_hud();	
 		//	RCache.set_ClipPlanes					(false,	&L_combine);
 	}
-	//		??? grass ???
+	//		??? grass ???l
 }
 
 void CLightR_Manager::render		(u32 _priority)

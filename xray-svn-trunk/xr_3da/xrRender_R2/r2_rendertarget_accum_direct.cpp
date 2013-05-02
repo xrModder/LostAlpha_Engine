@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "..\igame_persistent.h"
-#include "..\environment.h"
-
+#include "../../xr_3da/igame_persistent.h"
+#include "../../xr_3da/environment.h"
 
 //////////////////////////////////////////////////////////////////////////
 // tables to calculate view-frustum bounds in world space
@@ -138,8 +137,8 @@ void CRenderTarget::accum_direct		(u32 sub_phase)
 			static	float	w_shift		= 0;
 			Fmatrix			m_xform;
 			Fvector			direction	= fuckingsun->direction	;
-			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv.wind_direction	;
-			//float	w_speed				= g_pGamePersistent->Environment().CurrentEnv.wind_velocity	;
+			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv->wind_direction	;
+			//float	w_speed				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity	;
 			Fvector			normal	;	normal.setHP(w_dir,0);
 							w_shift		+=	0.003f*Device.fTimeDelta;
 			Fvector			position;	position.set(0,0,0);
@@ -182,9 +181,9 @@ void CRenderTarget::accum_direct		(u32 sub_phase)
 			zMin = 0;
 			zMax = ps_r2_sun_near;
 		} else {
-			extern float	ps_r2_sun_far;
+			extern float	OLES_SUN_LIMIT_27_01_07;
 			zMin = ps_r2_sun_near;
-			zMax = ps_r2_sun_far;
+			zMax = OLES_SUN_LIMIT_27_01_07;
 		}
 		center_pt.mad(Device.vCameraPosition,Device.vCameraDirection,zMin);	Device.mFullTransform.transform	(center_pt);
 		zMin = center_pt.z	;
@@ -336,7 +335,7 @@ void CRenderTarget::accum_direct_cascade	( u32 sub_phase, Fmatrix& xform, Fmatri
 			static	float	w_shift		= 0;
 			Fmatrix			m_xform;
 			Fvector			direction	= fuckingsun->direction	;
-			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv.wind_direction	;
+			float	w_dir				= g_pGamePersistent->Environment().CurrentEnv->wind_direction	;
 			//float	w_speed				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity	;
 			Fvector			normal	;	normal.setHP(w_dir,0);
 							w_shift		+=	0.003f*Device.fTimeDelta;
@@ -426,9 +425,9 @@ void CRenderTarget::accum_direct_cascade	( u32 sub_phase, Fmatrix& xform, Fmatri
 			zMin = 0;
 			zMax = ps_r2_sun_near;
 		} else {
-			extern float	ps_r2_sun_far;
+			extern float	OLES_SUN_LIMIT_27_01_07;
 			zMin = ps_r2_sun_near;
-			zMax = ps_r2_sun_far;
+			zMax = OLES_SUN_LIMIT_27_01_07;
 		}
 		center_pt.mad(Device.vCameraPosition,Device.vCameraDirection,zMin);	Device.mFullTransform.transform	(center_pt);
 		zMin = center_pt.z	;
@@ -740,7 +739,7 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 		return;
 
 	{
-		CEnvDescriptor&	E = g_pGamePersistent->Environment().CurrentEnv;
+		CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 		float fValue = E.m_fSunShaftsIntensity;
 		//	TODO: add multiplication by sun color here
 		if (fValue<0.0001) return;
@@ -833,13 +832,13 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 			zMin = 0;
 			zMax = ps_r2_sun_near;
 		} else {
-			extern float	ps_r2_sun_far;
+			extern float	OLES_SUN_LIMIT_27_01_07;
 			if( ps_r2_ls_flags_ext.is(R2FLAGEXT_SUN_OLD))
 				zMin = ps_r2_sun_near;
 			else
 				zMin = 0; /////*****************************************************************************************
 
-			zMax = ps_r2_sun_far;
+			zMax = OLES_SUN_LIMIT_27_01_07;
 		}
 
 		RCache.set_c("volume_range", zMin, zMax, 0, 0);

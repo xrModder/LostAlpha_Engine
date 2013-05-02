@@ -4,8 +4,9 @@
 
 #include "stdafx.h"
 #include "LightProjector.h"
-#include "..\xr_object.h"
-#include "..\xrRender\lighttrack.h"
+#include "../../include/xrRender/RenderVisual.h"
+#include "../../xr_3da/xr_object.h"
+#include "../xrRender/lighttrack.h"
 
 // tir2.xrdemo		-> 45.2
 // tir2.xrdemo		-> 61.8
@@ -60,8 +61,9 @@ void CLightProjector::set_object	(IRenderable* O)
 			return;
 		}
 
-		Fvector		C;	O->renderable.xform.transform_tiny		(C,O->renderable.visual->vis.sphere.P);
-		float		R	= O->renderable.visual->vis.sphere.R;
+		const vis_data &vis = O->renderable.visual->getVisData();
+		Fvector		C;	O->renderable.xform.transform_tiny		(C,vis.sphere.P);
+		float		R	= vis.sphere.R;
 		float		D	= C.distance_to	(Device.vCameraPosition)+R;
 
 		if (D < clipD(R))	current	= O;
@@ -95,7 +97,7 @@ void CLightProjector::setup		(int id)
 		return;
 	}
 	recv&			R			= cache[id];
-	float			Rd			= R.O->renderable.visual->vis.sphere.R;
+	float			Rd			= R.O->renderable.visual->getVisData().sphere.R;
 	float			dist		= R.C.distance_to	(Device.vCameraPosition)+Rd;
 	float			factor		= _sqr(dist/clipD(Rd))*(1-ps_r1_lmodel_lerp) + ps_r1_lmodel_lerp;
 	RCache.set_c	(c_xform,	R.UVgen);
@@ -117,7 +119,7 @@ void CLightProjector::OnAppActivate()
 }
 
 //
-#include "../SkeletonCustom.h"
+#include "../xrRender/SkeletonCustom.h"
 void CLightProjector::calculate	()
 {
 	if (receivers.empty())		return;
@@ -134,7 +136,7 @@ void CLightProjector::calculate	()
 		else if (cache[slot].O!=O)									bValid = FALSE;	// not the same object
 		else {
 			// seems to be valid
-			Fbox	bb;		bb.xform		(O->renderable.visual->vis.box,O->renderable.xform);
+			Fbox	bb;		bb.xform		(O->renderable.visual->getVisData().box,O->renderable.xform);
 			if (cache[slot].BB.contains(bb))	{
 				// inside, but maybe timelimit exceeded?
 				if (Device.dwTimeGlobal > cache[slot].dwTimeValid)	bValid = FALSE;	// timeout
@@ -168,23 +170,25 @@ void CLightProjector::calculate	()
 		int				tid		= taskid.back();	taskid.pop_back();
 		recv&			R		= cache		[c_it];
 		IRenderable*	O		= receivers	[tid];
+		const vis_data& vis = O->renderable.visual->getVisData();
 		CROS_impl*	LT		= (CROS_impl*)O->renderable_ROS();
 		VERIFY2			(_valid(O->renderable.xform),"Invalid object transformation");
-		VERIFY2			(_valid(O->renderable.visual->vis.sphere.P),"Invalid object's visual sphere");
+		VERIFY2			(_valid(vis.sphere.P),"Invalid object's visual sphere");
 
-		Fvector			C;		O->renderable.xform.transform_tiny		(C,O->renderable.visual->vis.sphere.P);
+		Fvector			C;		O->renderable.xform.transform_tiny		(C,vis.sphere.P);
 		R.O						= O;
 		R.C						= C;
-		R.C.y					+= O->renderable.visual->vis.sphere.R*0.1f;		//. YURA: 0.1 can be more
-		R.BB.xform				(O->renderable.visual->vis.box,O->renderable.xform).scale(0.1f);
+		R.C.y					+= vis.sphere.R*0.1f;		//. YURA: 0.1 can be more
+		R.BB.xform				(vis.box,O->renderable.xform).scale(0.1f);
 		R.dwTimeValid			= Device.dwTimeGlobal + ::Random.randI(time_min,time_max);
 		LT->shadow_recv_slot	= c_it; 
 
 		// Msg					("[%f,%f,%f]-%f",C.C.x,C.C.y,C.C.z,C.O->renderable.visual->vis.sphere.R);
 		// calculate projection-matrix
 		Fmatrix		mProject;
-		float		p_R			=	R.O->renderable.visual->vis.sphere.R * 1.1f;
-		VERIFY2		(p_R>EPS_L,"Object has no physical size");
+		float		p_R			=	R.O->renderable.visual->getVisData().sphere.R * 1.1f;
+		//VERIFY2		(p_R>EPS_L,"Object has no physical size");
+		VERIFY3		(p_R>EPS_L,"Object has no physical size", R.O->renderable.visual->getDebugName().c_str());
 		float		p_hat		=	p_R/P_cam_dist;
 		float		p_asp		=	1.f;
 		float		p_near		=	P_cam_dist-EPS_L;									
@@ -212,7 +216,7 @@ void CLightProjector::calculate	()
 			OO->Center(cc);
 			Log("center=",cc);
 
-			Log("visual_center=",OO->Visual()->vis.sphere.P);
+			Log("visual_center=",OO->Visual()->getVisData().sphere.P);
 			
 			Log("full_matrix=",OO->XFORM());
 

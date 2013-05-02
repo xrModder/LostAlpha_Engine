@@ -2,9 +2,13 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "..\psystem.h"
+#include "../../xr_3da/psystem.h"
+
+
+
 #include "ParticleGroup.h"
 #include "PSLibrary.h"
+#include "ParticleEffect.h"
 
 using namespace PS;
 
@@ -145,7 +149,7 @@ void CPGDef::Save(IWriter& F)
 //------------------------------------------------------------------------------
 // Particle Group item
 //------------------------------------------------------------------------------
-void CParticleGroup::SItem::Set(IRender_Visual* e)
+void CParticleGroup::SItem::Set(dxRender_Visual* e)
 {
 	_effect=e;
 }
@@ -156,7 +160,7 @@ void CParticleGroup::SItem::Clear()
     for (VisualVecIt it=visuals.begin(); it!=visuals.end(); it++)
 	{
 	    //::Render->model_Delete(*it);
-		IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+		IRenderVisual *pVisual = dynamic_cast<IRenderVisual*>(*it);
 		::Render->model_Delete(pVisual);
 		*it = 0;
 	}
@@ -189,7 +193,7 @@ void CParticleGroup::SItem::StartRelatedChild(CParticleEffect* emitter, LPCSTR e
 void CParticleGroup::SItem::StopRelatedChild(u32 idx)
 {
 	VERIFY(idx<_children_related.size());
-    IRender_Visual*& V 			= _children_related[idx];
+    dxRender_Visual*& V 			= _children_related[idx];
     ((CParticleEffect*)V)->Stop	(TRUE);
     _children_free.push_back	(V);
     _children_related[idx]		= _children_related.back();
@@ -242,14 +246,14 @@ void CParticleGroup::SItem::Stop(BOOL def_stop)
         for (it=_children_related.begin(); it!=_children_related.end(); it++)	
 		{
 			//::Render->model_Delete(*it);
-			IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+			IRenderVisual *pVisual = dynamic_cast<IRenderVisual*>(*it);
 			::Render->model_Delete(pVisual);
 			*it = 0;
 		}
         for (it=_children_free.begin(); it!=_children_free.end(); it++)			
 		{
 			//::Render->model_Delete(*it);
-			IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+			IRenderVisual *pVisual = dynamic_cast<IRenderVisual*>(*it);
 			::Render->model_Delete(pVisual);
 			*it = 0;
 		}
@@ -295,9 +299,9 @@ void OnGroupParticleDead(void* owner, u32 param, PAPI::Particle& m, u32 idx)
     	PG->items[param].StartFreeChild			(PE,*eff->m_OnDeadChildName,m);
 }
 //------------------------------------------------------------------------------
-struct zero_vis_pred : public std::unary_function<IRender_Visual*, bool>
+struct zero_vis_pred : public std::unary_function<dxRender_Visual*, bool>
 {
-	bool operator()(const IRender_Visual* x){ return x==0; }
+	bool operator()(const dxRender_Visual* x){ return x==0; }
 };
 void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& box, bool& bPlaying)
 {
@@ -353,7 +357,7 @@ void CParticleGroup::SItem::OnFrame(u32 u_dt, const CPGDef::SEffect& def, Fbox& 
                 }else{
                 	rem_cnt++	;
 					//::Render->model_Delete(*it);
-					IRender_Visual *pVisual = dynamic_cast<IRender_Visual*>(*it);
+					IRenderVisual *pVisual = dynamic_cast<IRenderVisual*>(*it);
 					::Render->model_Delete(pVisual);
 					*it = 0;                    
                 }

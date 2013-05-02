@@ -85,10 +85,10 @@ void	CEffect_Rain::Born		(Item& dest, float radius)
 	Fvector		axis;	
     axis.set			(0,-1,0);
 	float gust			= g_pGamePersistent->Environment().wind_strength_factor/10.f;
-	float k				= g_pGamePersistent->Environment().CurrentEnv.wind_velocity*gust/params->drop_max_wind_vel;
+	float k				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity*gust/params->drop_max_wind_vel;
 	clamp				(k,0.f,1.f);
 	float	pitch		= params->drop_max_angle*k-PI_DIV_2;
-    axis.setHP			(g_pGamePersistent->Environment().CurrentEnv.wind_direction,pitch);
+    axis.setHP			(g_pGamePersistent->Environment().CurrentEnv->wind_direction,pitch);
     
 	Fvector&	view	= Device.vCameraPosition;
 	float		angle	= ::Random.randF	(0,PI_MUL_2);
@@ -199,7 +199,7 @@ void	CEffect_Rain::Render	()
 	if (!g_pGameLevel)			return;
 #endif
 
-	m_pRender->Render(*this);
+	m_pRender->Render(*this, params);
 
 	/*
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
@@ -411,7 +411,7 @@ void	CEffect_Rain::Hit		(Fvector& pos)
 
 	const Fsphere &bv_sphere = m_pRender->GetDropBounds();
 
-	P->time						= particles_time;
+	P->time						= params->particles_time;
 	P->mXForm.rotateY			(::Random.randF(PI_MUL_2));
 	P->mXForm.translate_over	(pos);
 	P->mXForm.transform_tiny	(P->bounds.P, bv_sphere.P);
@@ -423,7 +423,7 @@ void	CEffect_Rain::Hit		(Fvector& pos)
 void CEffect_Rain::p_create		()
 {
 	// pool
-	particle_pool.resize	(max_particles);
+	particle_pool.resize	(params->max_particles);
 	for (u32 it=0; it<particle_pool.size(); it++)
 	{
 		Particle&	P	= particle_pool[it];

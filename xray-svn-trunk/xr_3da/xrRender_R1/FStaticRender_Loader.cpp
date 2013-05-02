@@ -1,10 +1,12 @@
 #include "stdafx.h"
-#include "../fbasicvisual.h"
-#include "../fmesh.h"
-#include "../xrLevel.h"
-#include "../x_ray.h"
-#include "../IGame_Persistent.h"
-#include "../xrCore/stream_reader.h"
+#include "../xrRender/fbasicvisual.h"
+#include "../../xr_3da/fmesh.h"
+#include "../../xr_3da/xrLevel.h"
+#include "../../xr_3da/x_ray.h"
+#include "../../xr_3da/IGame_Persistent.h"
+#include "../../xrCore/stream_reader.h"
+
+#include "../xrRender/dxRenderDeviceRender.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -18,7 +20,7 @@ void CRender::level_Load(IReader *fs)
 
 	// Begin
 	pApp->LoadBegin					();
-	Device.Resources->DeferredLoad	(TRUE);
+	dxRenderDeviceRender::Instance().Resources->DeferredLoad	(TRUE);
 	IReader*						chunk;
 
 	// Shaders
@@ -34,11 +36,11 @@ void CRender::level_Load(IReader *fs)
 			LPCSTR			n		= LPCSTR(chunk->pointer());
 			chunk->skip_stringZ		();
 			if (0==n[0])			continue;
-			strcpy					(n_sh,n);
+			xr_strcpy					(n_sh,n);
 			LPSTR			delim	= strchr(n_sh,'/');
 			*delim					= 0;
-			strcpy					(n_tlist,delim+1);
-			Shaders[i]				= Device.Resources->Create(n_sh,n_tlist);
+			xr_strcpy					(n_tlist,delim+1);
+			Shaders[i]				= dxRenderDeviceRender::Instance().Resources->Create(n_sh,n_tlist);
 		}
 		chunk->close();
 	}
@@ -154,16 +156,16 @@ void CRender::level_Unload		()
 
 	//. dbg
 #ifdef DEBUG
-	// Device.Resources->_DumpMemoryUsage	();
-	Device.Resources->DBG_VerifyGeoms	();
-	Device.Resources->DBG_VerifyTextures();
+	// dxRenderDeviceRender::Instance().Resources->_DumpMemoryUsage	();
+	dxRenderDeviceRender::Instance().Resources->DBG_VerifyGeoms	();
+	dxRenderDeviceRender::Instance().Resources->DBG_VerifyTextures();
 #endif
 	b_loaded					= FALSE;
 }
 
 void CRender::LoadBuffers	(CStreamReader *base_fs)
 {
-	Device.Resources->Evict	();
+	dxRenderDeviceRender::Instance().Resources->Evict	();
 	u32	dwUsage				= D3DUSAGE_WRITEONLY | (HW.Caps.geometry.bSoftware?D3DUSAGE_SOFTWAREPROCESSING:0);
 
 	// Vertex buffers
@@ -198,6 +200,7 @@ void CRender::LoadBuffers	(CStreamReader *base_fs)
 			// Create and fill
 			BYTE*	pData		= 0;
 			R_CHK				(HW.pDevice->CreateVertexBuffer(vCount*vSize,dwUsage,0,D3DPOOL_MANAGED,&VB[i],0));
+			HW.stats_manager.increment_stats		( vCount*vSize, enum_stats_buffer_type_vertex, D3DPOOL_MANAGED);
 			R_CHK				(VB[i]->Lock(0,0,(void**)&pData,0));
 			fs->r				(pData,vCount*vSize);
 //			CopyMemory			(pData,fs->pointer(),vCount*vSize);	//.???? copy while skip T&B
@@ -224,6 +227,7 @@ void CRender::LoadBuffers	(CStreamReader *base_fs)
 			// Create and fill
 			BYTE*	pData		= 0;
 			R_CHK				(HW.pDevice->CreateIndexBuffer(iCount*2,dwUsage,D3DFMT_INDEX16,D3DPOOL_MANAGED,&IB[i],0));
+			HW.stats_manager.increment_stats		( iCount*2, enum_stats_buffer_type_index, D3DPOOL_MANAGED);
 			R_CHK				(IB[i]->Lock(0,0,(void**)&pData,0));
 //			CopyMemory			(pData,fs->pointer(),iCount*2);
 			fs->r				(pData,iCount*2);
@@ -239,7 +243,7 @@ void CRender::LoadVisuals(IReader *fs)
 {
 	IReader*		chunk	= 0;
 	u32				index	= 0;
-	IRender_Visual*	V		= 0;
+	dxRender_Visual*	V		= 0;
 	ogf_header		H;
 
 	while ((chunk=fs->open_chunk(index))!=0)

@@ -12,7 +12,7 @@
 #include "phmovementcontrol.h"
 #include "entity_alive.h"
 #include "CharacterPhysicsSupport.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 
 CMaterialManager::CMaterialManager	(CObject *object, CPHMovementControl *movement_control)
 {
@@ -29,11 +29,29 @@ CMaterialManager::CMaterialManager	(CObject *object, CPHMovementControl *movemen
 CMaterialManager::~CMaterialManager	()
 {
 }
+#ifdef	DEBUG
+BOOL debug_character_material_load = FALSE;
+#endif
 
 void CMaterialManager::Load			(LPCSTR section)
 {
 	R_ASSERT3				(pSettings->line_exist(section,"material"),"Material not found in the section ",*(m_object->cNameSect()));
 	m_my_material_idx		= GMLib.GetMaterialIdx(pSettings->r_string(section,"material"));
+
+#ifdef	DEBUG
+		if( debug_character_material_load )
+		{
+			CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(m_object);
+			if( entity_alive )
+				{	
+				VERIFY( GAMEMTL_NONE_IDX != m_my_material_idx );
+				SGameMtl *m = GMLib.GetMaterialByIdx( m_my_material_idx );
+
+				VERIFY( m );
+				Msg( "(CMaterialManager::Load(LPCSTR section)) material: %s loaded for %s, from section: %s ", m->m_Name.c_str(), entity_alive->cName().c_str(), section ); 
+			}
+		}
+#endif
 }
 
 void CMaterialManager::reinit		()
@@ -44,15 +62,24 @@ void CMaterialManager::reinit		()
 
 	CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(m_object);
 	if (entity_alive) {
-		if(entity_alive->character_physics_support()->movement()->CharacterExist())
-			entity_alive->character_physics_support()->movement()->SetPLastMaterialIDX	(&m_last_material_idx);
+		//VERIFY( entity_alive->character_physics_support()->movement()->CharacterExist() );
+		entity_alive->character_physics_support()->movement()->SetPLastMaterialIDX	(&m_last_material_idx);
 
 //		if (entity_alive->use_simplified_visual()) {
-//			CKinematics			*kinematics = smart_cast<CKinematics*>(entity_alive->Visual());
+//			IKinematics			*kinematics = smart_cast<IKinematics*>(entity_alive->Visual());
 //			m_my_material_idx	= kinematics->LL_GetData(kinematics->LL_GetBoneRoot()).game_mtl_idx;
 //		}
 
 		entity_alive->character_physics_support()->movement()->SetMaterial		(m_my_material_idx);
+#ifdef	DEBUG
+		if( debug_character_material_load )
+		{
+			VERIFY( GAMEMTL_NONE_IDX != m_my_material_idx );
+			SGameMtl *m = GMLib.GetMaterialByIdx( m_my_material_idx );
+			VERIFY( m );
+			Msg( "(CMaterialManager::reinit) material: %s loaded for %s ", m->m_Name.c_str(), entity_alive->cName().c_str() ); 
+		}
+#endif
 	}
 }
 

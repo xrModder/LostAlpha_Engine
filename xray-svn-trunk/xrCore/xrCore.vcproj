@@ -1523,6 +1523,18 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="os clipboard"
+			>
+			<File
+				RelativePath=".\os_clipboard.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\os_clipboard.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\xrSyncronize.cpp"
 			>

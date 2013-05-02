@@ -1,7 +1,8 @@
 #include "pch_script.h"
 #include "GameObject.h"
-#include "../fbasicvisual.h"
-#include "PhysicsShell.h"
+//#include "../Include/xrRender/RenderVisual.h"
+#include "../Include/xrRender/RenderVisual.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "ai_space.h"
 #include "CustomMonster.h" 
 #include "physicobject.h"
@@ -15,19 +16,23 @@
 #include "xrServer_Objects_ALife_Items.h"
 #include "game_cl_base.h"
 #include "object_factory.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "ai_object_location_impl.h"
 #include "game_graph.h"
 #include "ai_debug.h"
-#include "../igame_level.h"
+#include "../xr_3da/igame_level.h"
 #include "level.h"
 #include "../../xrNetServer/net_utils.h"
 #include "script_callback_ex.h"
 #include "MathUtils.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#include "game_cl_mp.h"
+#include "reward_event_generator.h"
 #include "game_level_cross_table.h"
+#include "ai_obstacle.h"
+#include "magic_box3.h"
 #include "animation_movement_controller.h"
-#include "game_object_space.h"
+#include "../xr_3da/xr_collide_form.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -644,6 +649,7 @@ void CGameObject::renderable_Render	()
 	inherited::renderable_Render();
 	::Render->set_Transform		(&XFORM());
 	::Render->add_Visual		(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 }
 
 /*

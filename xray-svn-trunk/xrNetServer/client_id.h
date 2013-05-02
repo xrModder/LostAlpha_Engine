@@ -2,9 +2,9 @@
 #define client_idH
 #pragma once
 
-class ClientID
-{
-	u32  id;
+#pragma pack(push,1)
+class ClientID {
+	u32 id;
 public:
 			ClientID		():id(0)			{};
 			ClientID		(u32 val):id(val)	{};
@@ -17,5 +17,6 @@ public:
 	bool	operator !=		(const ClientID& other)const	{ return value() != other.value();};
 	bool	operator <		(const ClientID& other)const	{ return value() < other.value();};
 };
+#pragma pack(pop)
 
 #endif

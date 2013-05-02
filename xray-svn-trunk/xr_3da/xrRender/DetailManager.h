@@ -6,13 +6,21 @@
 #define DetailManagerH
 #pragma once
 
-#include "xrpool.h"
+#include "../../xrCore/xrpool.h"
 #include "detailformat.h"
 #include "detailmodel.h"
 
 #ifdef _EDITOR
-	#include	"ESceneClassList.h"
+//.	#include	"ESceneClassList.h"
 	const int	dm_max_decompress	= 14;
+	class CCustomObject;
+	typedef u32	ObjClassID;
+
+    typedef xr_list<CCustomObject*> 		ObjectList;
+    typedef ObjectList::iterator 			ObjectIt;
+    typedef xr_map<ObjClassID,ObjectList> 	ObjectMap;
+    typedef ObjectMap::iterator 			ObjectPairIt;
+
 #else
 	const int	dm_max_decompress	= 7;
 #endif
@@ -133,8 +141,8 @@ public:
 	// Hardware processor
 	ref_geom						hw_Geom;
 	u32								hw_BatchSize;
-	IDirect3DVertexBuffer9*			hw_VB;
-	IDirect3DIndexBuffer9*			hw_IB;
+	ID3DVertexBuffer*			hw_VB;
+	ID3DIndexBuffer*			hw_IB;
 	ref_constant					hwc_consts;
 	ref_constant					hwc_wave;
 	ref_constant					hwc_wind;
@@ -143,9 +151,15 @@ public:
 	ref_constant					hwc_s_xform;
 	ref_constant					hwc_s_array;
 	void							hw_Load			();
+	void							hw_Load_Geom	();
+	void							hw_Load_Shaders	();
 	void							hw_Unload		();
 	void							hw_Render		();
+#if defined(USE_DX10) || defined(USE_DX11)
+	void							hw_Render_dump	(const Fvector4 &consts, const Fvector4 &wave, const Fvector4 &wind, u32 var_id, u32 lod_id);
+#else	//	USE_DX10
 	void							hw_Render_dump	(ref_constant array, u32 var_id, u32 lod_id, u32 c_base);
+#endif	//	USE_DX10
 
 public:
 	// get unpacked slot
@@ -175,7 +189,7 @@ public:
 
 	void	__stdcall				MT_CALC			() ;
 	ICF	void						MT_SYNC			() {
-		if (m_frame_calc == Device.dwFrame)
+		if (m_frame_calc == RDEVICE.dwFrame)
 			return;
 
 		MT_CALC						(); 

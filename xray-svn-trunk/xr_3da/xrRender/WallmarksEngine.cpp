@@ -5,10 +5,10 @@
 #include "stdafx.h"
 #include "WallmarksEngine.h"
 
-#include "..\xr_object.h"
-#include "..\x_ray.h"
-#include "..\GameFont.h"
-#include "..\SkeletonCustom.h"
+#include "../../xr_3da/xr_object.h"
+#include "../../xr_3da/x_ray.h"
+#include "../../xr_3da/GameFont.h"
+#include "SkeletonCustom.h"
 
 u32 g_r = 1;
 
@@ -239,19 +239,22 @@ void CWallmarksEngine::AddWallmark_internal	(CDB::TRI* pTri, const Fvector* pVer
 		FVF::LIT* I=&*W->verts.begin	();
 		FVF::LIT* E=&*W->verts.end		();
 		for (; I!=E; I++)	bb.modify	(I->p);
-		bb.getsphere					(W->bounds.P,W->bounds.R);
+		bb.getsphere					(W->bounds.P, W->bounds.R);
 	}
 
-	if (W->bounds.R < 1.f)	
+//	if (W->bounds.R < 1.f)	
 	{
 		// search if similar wallmark exists
 		wm_slot* slot			= FindSlot	(hShader);
-		if (slot){
+		if (slot)
+		{
 			StaticWMVecIt it	=	slot->static_items.begin	();
 			StaticWMVecIt end	=	slot->static_items.end	();
-			for (; it!=end; it++)	{
+			for (; it!=end; it++)	
+			{
 				static_wallmark* wm		=	*it;
-				if (wm->bounds.P.similar(W->bounds.P,0.02f)){ // replace
+				if (wm->bounds.P.similar(W->bounds.P,0.02f))
+				{ // replace
 					static_wm_destroy	(wm);
 					*it					=	W;
 					return;
@@ -264,12 +267,17 @@ void CWallmarksEngine::AddWallmark_internal	(CDB::TRI* pTri, const Fvector* pVer
 		// no similar - register _new_
 		slot->static_items.push_back(W);
 	}
+	//else
+	//{
+	//	static_wm_destroy(W);
+	//}
 }
 
 void CWallmarksEngine::AddStaticWallmark	(CDB::TRI* pTri, const Fvector* pVerts, const Fvector &contact_point, ref_shader hShader, float sz)
 {
-	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
-	if (contact_point.distance_to_sqr(Device.vCameraPosition) > _sqr(100.f))	return;
+	// optimization cheat: don't allow wallmarks more than 100 m from viewer/actor
+	if (contact_point.distance_to_sqr(Device.vCameraPosition) > _sqr(100.f))	
+		return;
 
 	// Physics may add wallmarks in parallel with rendering
 	lock.Enter				();
@@ -279,8 +287,7 @@ void CWallmarksEngine::AddStaticWallmark	(CDB::TRI* pTri, const Fvector* pVerts,
 
 void CWallmarksEngine::AddSkeletonWallmark	(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size)
 {	
-	if(::RImplementation.phase != CRender::PHASE_NORMAL)				return;
-//	if( 0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL)				return;
+	if( 0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL)				return;
 	// optimization cheat: don't allow wallmarks more than 50 m from viewer/actor
 	if (xf->c.distance_to_sqr(Device.vCameraPosition) > _sqr(50.f))				return;
 
@@ -292,8 +299,7 @@ void CWallmarksEngine::AddSkeletonWallmark	(const Fmatrix* xf, CKinematics* obj,
 
 void CWallmarksEngine::AddSkeletonWallmark(intrusive_ptr<CSkeletonWallmark> wm)
 {
-//	if(0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL) return;
-if(::RImplementation.phase != CRender::PHASE_NORMAL) return;
+	if(0==g_r || ::RImplementation.phase != CRender::PHASE_NORMAL) return;
 
 	if (!::RImplementation.val_bHUD)
 	{

@@ -2,6 +2,7 @@
 #pragma hdrstop
 
 #include "xrdebug.h"
+#include "os_clipboard.h"
 
 #include <sal.h>
 #include "dxerr.h"
@@ -57,58 +58,6 @@ extern bool shared_str_initialized;
 XRCORE_API	xrDebug		Debug;
 
 static bool	error_after_dialog = false;
-
-extern void copy_to_clipboard	(LPCSTR buf);
-
-void copy_to_clipboard	(LPCSTR buf)
-{
-	if ( !OpenClipboard(0) )
-		return;
-	u32 handle_size = ( xr_strlen(buf) + 1 ) * sizeof(char);
-	HGLOBAL handle = GlobalAlloc( GHND, handle_size );
-	if ( !handle )
-	{
-		CloseClipboard		();
-		return;
-	}
-
-	char* memory			= (char*)GlobalLock( handle );
-	xr_strcpy				( memory, handle_size, buf );
-	GlobalUnlock			( handle );
-	EmptyClipboard			();
-	SetClipboardData		( CF_TEXT, handle );
-	CloseClipboard			();
-}
-
-void update_clipboard	(const char *string)
-{
-#ifdef DEBUG
-	if (IsDebuggerPresent())
-		return;
-
-	if (!OpenClipboard(0))
-		return;
-
-	HGLOBAL				handle = GetClipboardData(CF_TEXT);
-	if (!handle) {
-		CloseClipboard		();
-		copy_to_clipboard	(string);
-		return;
-	}
-
-	LPSTR				memory			= (char*)GlobalLock(handle);
-	u32					memory_length	= xr_strlen(memory);
-	u32					string_length	= xr_strlen(string);
-	int					buffer_size		= (memory_length + string_length + 1) * sizeof(char);
-	LPSTR				buffer = (LPSTR)_alloca((memory_length + string_length + 1)*sizeof(char));
-	xr_strcpy				(buffer,buffer_size,memory);
-	GlobalUnlock		(handle);
-
-	xr_strcat				(buffer,buffer_size,string);
-	CloseClipboard		();
-	copy_to_clipboard	(buffer);
-#endif // DEBUG
-}
 
 extern void BuildStackTrace();
 extern char g_stackTrace[100][4096];
@@ -210,7 +159,7 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 		if (shared_str_initialized)
 			FlushLog	();
 
-		copy_to_clipboard	(assertion_info);
+		os_clipboard::copy_to_clipboard	(assertion_info);
 	}
 }
 
@@ -234,7 +183,8 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 	error_after_dialog	= true;
 
 	string4096			assertion_info;
-	gather_info			(expression, description, argument0, argument1, file, line, function, assertion_info);
+
+	gather_info			(expression, description, argument0, argument1, file, line, function, assertion_info, sizeof(assertion_info) );
 
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 	LPCSTR				endline = "\r\n";
@@ -664,14 +614,14 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 
 		if (shared_str_initialized)
 			Msg				("stack trace:\n");
-		copy_to_clipboard	("stack trace:\r\n\r\n");
+			os_clipboard::copy_to_clipboard	("stack trace:\r\n\r\n");
 
 		string4096			buffer;
 		for (int i=0; i<g_stackTraceCount; ++i) {
 			if (shared_str_initialized)
 				Msg			("%s",g_stackTrace[i]);
 			xr_sprintf			(buffer, sizeof(buffer), "%s\r\n",g_stackTrace[i]);
-			update_clipboard(buffer);
+				os_clipboard::update_clipboard(buffer);
 		}
 
 		if (*error_message) {
@@ -679,7 +629,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 				Msg			("\n%s",error_message);
 
 			xr_strcat			(error_message,sizeof(error_message),"\r\n");
-			update_clipboard(error_message);
+				os_clipboard::update_clipboard(buffer);
 		}
 	}
 
