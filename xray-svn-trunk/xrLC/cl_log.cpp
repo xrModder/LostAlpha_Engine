@@ -158,7 +158,7 @@ void logThread(void *dummy)
 
 	if ((0==xr_strcmp(u_name,"oles"))||(0==xr_strcmp(u_name,"alexmx")))	bHighPriority	= TRUE;
 */
-	if (strstr(GetCommandLine(), "-lox") != NULL)	bHighPriority	= TRUE; 
+	if (strstr(GetCommandLine(), "-high") != NULL)	bHighPriority	= TRUE; 
 
 	// Main cycle
 	u32		LogSize = 0;
