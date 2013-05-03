@@ -114,7 +114,7 @@ void TfrmSoundLib::AppendModif(LPCSTR nm)
     string_path		fname;
     FS.update_path	(fname,_sounds_,ChangeFileExt(nm,".wav").c_str());
 	BOOL bFind		= FS.file_find(fname,dest); R_ASSERT(bFind);
-    modif_map.insert(dest);
+    modif_map.insert(FS_File(nm));
 }
 //---------------------------------------------------------------------------
 
