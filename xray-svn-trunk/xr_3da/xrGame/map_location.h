@@ -1,13 +1,14 @@
-
 #pragma once
+
 #include "object_interfaces.h"
 #include "alife_space.h"
 #include "game_graph_space.h"
-#include "map_spot.h"
-
 
 class CUICustomMap;
 class CInventoryOwner;
+class CMapSpot;
+class CMapSpotPointer;
+class CMiniMapSpot;
 
 class CMapLocation :public IPureDestroyableObject
 {
@@ -71,7 +72,7 @@ public:
 	void					DisablePointer					()					{m_flags.set(ePointerEnabled,FALSE);};
 	LPCSTR					GetType							() const			{return m_type; };
 	
-	Fvector2				SpotSize						()					{return m_level_spot->GetWndSize();};
+	Fvector2				SpotSize						();
 
 	bool					SpotEnabled						()					{return !!m_flags.test(eSpotEnabled);};
 	void					EnableSpot						()					{m_flags.set(eSpotEnabled,TRUE);};

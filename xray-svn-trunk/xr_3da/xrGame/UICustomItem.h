@@ -6,7 +6,7 @@ enum EUIMirroring{
 	tmMirrorVertical,
 	tmMirrorBoth
 };
-
+/*
 class CUICustomItem
 {
 protected:
@@ -58,3 +58,4 @@ public:
 	IC void			SetMirrorMode			(EUIMirroring m)			{ eMirrorMode = m; }
 	IC EUIMirroring GetMirrorMode			()							{ return eMirrorMode; }
 };
+*/

@@ -520,13 +520,18 @@ void CMapLocation::load(IReader &stream)
 void CMapLocation::SetHint	(const shared_str& hint)		
 {
 	m_hint = hint;
-};
+}
 
 LPCSTR CMapLocation::GetHint	()					
 {
 	CStringTable	stbl;
 	return *stbl.translate(m_hint);
-};
+}
+
+Fvector2 CMapLocation::SpotSize()
+{
+	return m_level_spot->GetWndSize();
+}
 
 CMapSpotPointer* CMapLocation::GetSpotPointer(CMapSpot* sp)
 {
