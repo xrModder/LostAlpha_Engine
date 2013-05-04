@@ -204,6 +204,8 @@ public:
 
 public:
 	virtual bool						register_schedule	() const {return true;}
+
+	virtual	const IObjectPhysicsCollision	*physics_collision	()					{ return  0; }
 };
 
 #pragma pack(pop)

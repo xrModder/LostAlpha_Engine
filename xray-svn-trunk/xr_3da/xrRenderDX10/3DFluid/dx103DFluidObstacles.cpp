@@ -2,10 +2,10 @@
 #include "dx103DFluidObstacles.h"
 
 #include "../../xrRender/dxRenderDeviceRender.h"
-#include "../../../xrEngine/xr_object.h"
-#include "../../../xrEngine/IPhysicsShell.h"
-#include "../../../xrEngine/IObjectPhysicsCollision.h"
-#include "../../../xrEngine/IPhysicsGeometry.h"
+#include "../../xr_object.h"
+#include "../../IPhysicsShell.h"
+#include "../../IObjectPhysicsCollision.h"
+#include "../../IPhysicsGeometry.h"
 
 #include "dx103DFluidBlenders.h"
 #include "dx103DFluidData.h"
@@ -209,7 +209,7 @@ void dx103DFluidObstacles::ProcessDynamicObstacles( const dx103DFluidData &Fluid
 		//if (0==renderable)				continue;					// unknown, but renderable object (r1_glow???)
 		CObject*		pObject = spatial->dcast_CObject();
 		if (!pObject) continue;
-
+#pragma todo("gr1ph to gr1ph: check physics here!")
 		const IObjectPhysicsCollision* pCollision = pObject->physics_collision();
 		if (!pCollision) continue;
 
