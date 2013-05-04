@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "level.h"
 #include "../xrCDB/frustum.h"
+
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
@@ -93,8 +94,11 @@ void dbg_draw_frustum	(float FOV, float _FAR, float A, Fvector &P, Fvector &D, F
 	ProjDirs[2].sub(sPts[2],COP);
 	ProjDirs[3].sub(sPts[3],COP);
 
-	RCache.set_CullMode	(CULL_NONE);
-	CHK_DX(HW.pDevice->SetRenderState	(D3DRS_AMBIENT,		0xffffffff			));
+	//RCache.set_CullMode	(CULL_NONE);
+	DRender->CacheSetCullMode(IDebugRender::cmNONE);
+	//CHK_DX(HW.pDevice->SetRenderState	(D3DRS_AMBIENT,		0xffffffff			));
+	DRender->SetAmbient(0xffffffff);
+	
 
 	Fvector _F[4];
 	_F[0].mad(COP, ProjDirs[0], _FAR); 
@@ -103,10 +107,11 @@ void dbg_draw_frustum	(float FOV, float _FAR, float A, Fvector &P, Fvector &D, F
 	_F[3].mad(COP, ProjDirs[3], _FAR); 
 
 //	u32 CT	= color_rgba(255,255,255,64);
-	u32 CL	= color_rgba(255,0,0,255);
+	u32 CL	= color_rgba(0,255,255,255);
 	Fmatrix& M	= Fidentity;
-	ref_shader				l_tShaderReference = Level().ObjectSpace.dbgGetShader();
-	RCache.set_Shader		(l_tShaderReference);
+	//ref_shader				l_tShaderReference = Level().ObjectSpace.dbgGetShader();
+	//RCache.set_Shader		(l_tShaderReference);
+	(*Level().ObjectSpace.m_pRender)->SetShader();
 //	RCache.dbg_DrawTRI	(M,COP,_F[0],_F[1],CT);
 //	RCache.dbg_DrawTRI	(M,COP,_F[1],_F[2],CT);
 //	RCache.dbg_DrawTRI	(M,COP,_F[2],_F[3],CT);
@@ -121,7 +126,9 @@ void dbg_draw_frustum	(float FOV, float _FAR, float A, Fvector &P, Fvector &D, F
 	Level().debug_renderer().draw_line	(M,_F[2],_F[3],CL);
 	Level().debug_renderer().draw_line	(M,_F[3],_F[0],CL);
 
-	RCache.set_CullMode			(CULL_CCW);
-	CHK_DX(HW.pDevice->SetRenderState	(D3DRS_AMBIENT,	0						));
+	//RCache.set_CullMode			(CULL_CCW);
+	DRender->CacheSetCullMode(IDebugRender::cmCCW);
+	//CHK_DX(HW.pDevice->SetRenderState	(D3DRS_AMBIENT,	0						));
+	DRender->SetAmbient(0);
 }
 #endif
