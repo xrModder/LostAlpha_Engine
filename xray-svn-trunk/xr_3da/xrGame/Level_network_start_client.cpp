@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../resourcemanager.h"
 #include "HUDmanager.h"
 #include "PHdynamicdata.h"
 #include "Physics.h"

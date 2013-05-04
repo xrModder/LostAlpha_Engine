@@ -10,9 +10,9 @@
 #include "extendedgeom.h"
 #include "level.h"
 #include "xrMessages.h"
-#include "gamemtllib.h"
+#include "../gamemtllib.h"
 #include "tri-colliderknoopc/dTriList.h"
-#include "../fbasicvisual.h"
+#include "../../Include/xrRender/RenderVisual.h"
 #include "CalculateTriangle.h"
 #include "actor.h"
 #ifdef DEBUG

@@ -63,12 +63,12 @@ public:
 	virtual void		OnAppEnd				();
 	virtual	void		OnGameStart				();
 	virtual void		OnGameEnd				();
-	virtual void		OnFrame					();
+	virtual void _BCL	OnFrame					();
 	virtual void		OnEvent					(EVENT E, u64 P1, u64 P2);
 
 	virtual void		UpdateGameType			();
 
-	virtual void		RegisterModel			(IRender_Visual* V);
+	virtual void		RegisterModel			(IRenderVisual* V);
 	virtual	float		MtlTransparent			(u32 mtl_idx);
 	virtual	void		Statistics				(CGameFont* F);
 

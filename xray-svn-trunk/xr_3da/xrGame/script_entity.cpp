@@ -12,7 +12,7 @@
 #include "CustomMonster.h"
 #include "../feel_vision.h"
 #include "../motion.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "script_entity_action.h"
 #include "weapon.h"
 #include "ParticlesObject.h"

@@ -6,7 +6,7 @@
 #include "PHCapture.h"
 #include "entity_alive.h"
 #include "phmovementcontrol.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "../bone.h"
 #include "../device.h"
 #include "mathutilsode.h"

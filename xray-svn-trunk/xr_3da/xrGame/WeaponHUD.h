@@ -1,7 +1,6 @@
 #pragma once
 #define WPN_BOBBING // comment out this line to exclude the feature
-#include "../KinematicsAnimated.h"
-#include "../animation_motion.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 class CHudItem;
 #ifdef WPN_BOBBING
 #include "weapon_bobbing.h"
@@ -87,7 +86,7 @@ public:
 	void				net_DestroyHud	();
 	void				Init			();
 
-	IC IRender_Visual*	Visual			()	{ return m_shared_data.animations()->dcast_RenderVisual(); }
+	IC IRenderVisual*	Visual			()	{ return m_shared_data.animations()->dcast_RenderVisual(); }
 	IC Fmatrix&			Transform		()	{ return m_Transform;							}
 
 	int					FireBone		()	{return m_shared_data.get_value()->m_fire_bone;	}

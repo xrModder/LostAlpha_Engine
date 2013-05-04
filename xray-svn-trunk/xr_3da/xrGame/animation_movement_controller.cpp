@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "animation_movement_controller.h"
-#include "../Kinematics.h" 
+#include "../Include/xrRender/Kinematics.h" 
 #include "../bone.h"
-#include "../animation_blend.h"
+#include "../Include/xrRender/animation_blend.h"
 #include "game_object_space.h"
 
 animation_movement_controller::animation_movement_controller( Fmatrix *_pObjXForm, IKinematics* _pKinematicsC, CBlend* b ):

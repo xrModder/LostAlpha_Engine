@@ -4,7 +4,7 @@
 #include "../LightAnimLibrary.h"
 #include "script_entity_action.h"
 #include "xrServer_Objects_ALife.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"

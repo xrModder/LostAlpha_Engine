@@ -16,7 +16,7 @@
 #include "ActorEffector.h"
 #include "level.h"
 #include "../cl_intersect.h"
-#include "gamemtllib.h"
+#include "../gamemtllib.h"
 #include "elevatorstate.h"
 #include "CharacterPhysicsSupport.h"
 #include "EffectorShot.h"

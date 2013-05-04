@@ -3,7 +3,6 @@
 #pragma once
 
 #include "../vis_common.h"
-
 #include "../../Include/xrRender/RenderVisual.h"
 
 #define VLOAD_NOVERTICES		(1<<0)

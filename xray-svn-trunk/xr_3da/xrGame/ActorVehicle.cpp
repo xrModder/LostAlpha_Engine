@@ -13,7 +13,7 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
-#include "../skeletonanimated.h"
+#include "../xrRender/skeletonanimated.h"
 #include "PHShellSplitter.h"
 
 #include "actor_anim_defs.h"

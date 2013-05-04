@@ -1,6 +1,6 @@
 // --  includes -----------------------------------------------------
 #include "stdafx.h"
-#include "..\skeletonanimated.h"
+#include "../xrRender/skeletonanimated.h"
 
 //;******************************************************************************
 // A "magic" type to allow initialization with any type

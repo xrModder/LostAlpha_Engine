@@ -3,7 +3,7 @@
 #pragma hdrstop
 
 #include 	"SkeletonMotions.h"
-//#include 	"SkeletonAnimated.h"
+//#include 	"xrRender/SkeletonAnimated.h"
 #include	"Fmesh.h"
 #include	"motion.h"
 #include	"..\Include\xrRender\Kinematics.h"

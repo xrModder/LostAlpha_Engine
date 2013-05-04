@@ -23,7 +23,7 @@
     #include "ParticleGroup.h"
 	#include "fskinned.h"
     #include "fhierrarhyvisual.h"
-    #include "SkeletonAnimated.h"
+    #include "xrRender/SkeletonAnimated.h"
 	#include "IGame_Persistent.h"
 #endif
 

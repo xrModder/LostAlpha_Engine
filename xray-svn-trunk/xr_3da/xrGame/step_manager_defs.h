@@ -1,11 +1,10 @@
 #pragma once
 
 #include "associative_vector.h"
+#include "../../include/xrRender/animation_motion.h"
 
 #define MIN_LEGS_COUNT	1
 #define MAX_LEGS_COUNT	4 
-
-#include "../animation_motion.h"
 
 struct SStepParam {
 	struct{

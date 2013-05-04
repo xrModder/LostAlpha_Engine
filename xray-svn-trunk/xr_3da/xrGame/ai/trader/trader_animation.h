@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../KinematicsAnimated.h"
+#include "../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../animation_motion.h"
-#include "../../../animation_blend.h"
+#include "../../../Include/xrRender/animation_blend.h"
 
 
 class CAI_Trader;

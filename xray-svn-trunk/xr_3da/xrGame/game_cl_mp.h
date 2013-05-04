@@ -6,6 +6,7 @@
 #include "../../xrSound/Sound.h"
 #include "ui/UISpeechMenu.h"
 #include "Spectator.h"
+#include "ui_defs.h"
 
 class CUISpeechMenu;
 class CUIMessageBoxEx;
@@ -36,8 +37,8 @@ struct cl_TeamStruct
 {
 	shared_str			caSection;		// имя секции комманды
 	//-----------------------------------
-	ref_shader			IndicatorShader;
-	ref_shader			InvincibleShader;
+	ui_shader			IndicatorShader;
+	ui_shader			InvincibleShader;
 
 	Fvector				IndicatorPos;
 	float				Indicator_r1;
@@ -75,7 +76,7 @@ struct Bonus_Struct
 	shared_str	BonusTypeName;
 	shared_str	MoneyStr;
 	int			Money;	
-	ref_shader	IconShader;
+	ui_shader	IconShader;
 	xr_vector<Frect>	IconRects;
 	Bonus_Struct()
 	{
@@ -132,17 +133,17 @@ protected:
 
 	virtual void			UpdateMapLocations		() {};
 
-	ref_shader				m_EquipmentIconsShader;
-	ref_shader				m_KillEventIconsShader;
-	ref_shader				m_RadiationIconsShader;
-	ref_shader				m_BloodLossIconsShader;
-	ref_shader				m_RankIconsShader;
+	ui_shader				m_EquipmentIconsShader;
+	ui_shader				m_KillEventIconsShader;
+	ui_shader				m_RadiationIconsShader;
+	ui_shader				m_BloodLossIconsShader;
+	ui_shader				m_RankIconsShader;
 
-	virtual ref_shader		GetEquipmentIconsShader	();
-	virtual ref_shader		GetKillEventIconsShader	();
-	virtual ref_shader		GetRadiationIconsShader	();
-	virtual ref_shader		GetBloodLossIconsShader	();
-	virtual ref_shader		GetRankIconsShader();
+	virtual ui_shader		GetEquipmentIconsShader	();
+	virtual ui_shader		GetKillEventIconsShader	();
+	virtual ui_shader		GetRadiationIconsShader	();
+	virtual ui_shader		GetBloodLossIconsShader	();
+	virtual ui_shader		GetRankIconsShader();
 
 	virtual void			OnPlayerKilled			(NET_Packet& P);
 

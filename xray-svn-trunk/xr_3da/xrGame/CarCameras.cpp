@@ -9,7 +9,7 @@
 #include "alife_space.h"
 #include "hit.h"
 #include "PHDestroyable.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "car.h"
 #include "actor.h"
 #include "cameralook.h"

@@ -1410,7 +1410,7 @@ public:
 			return;
 		}
 
-		IRender_Visual			*visual = Render->model_Create(arguments);
+		IRenderVisual			*visual = Render->model_Create(arguments);
 		IKinematics				*kinematics = smart_cast<IKinematics*>(visual);
 		if (!kinematics) {
 			Render->model_Delete(visual);

@@ -1,7 +1,7 @@
 #pragma once
 #include "control_combase.h"
-#include "../../../KinematicsAnimated.h"
-#include "../../../animation_motion.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
+
 struct SControlJumpData : public ControlCom::IComData {
 	CObject					*target_object;
  	Fvector					target_position;

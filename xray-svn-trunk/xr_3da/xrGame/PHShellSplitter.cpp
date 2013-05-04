@@ -6,8 +6,9 @@
 #include "PHJointDestroyInfo.h"
 #include "Geometry.h"
 #include "MathUtils.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "PHCollideValidator.h"
+
 CPHShellSplitterHolder::CPHShellSplitterHolder(CPHShell* shell)
 {
 	m_pShell=shell;

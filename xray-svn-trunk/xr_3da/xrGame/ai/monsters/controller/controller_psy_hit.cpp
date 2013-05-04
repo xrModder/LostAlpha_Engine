@@ -11,6 +11,7 @@
 #include "../../../../CameraBase.h"
 #include "../../../CharacterPhysicsSupport.h"
 #include "../../../level_debug.h"
+#include "../../../../../Include/xrRender/KinematicsAnimated.h"
 
 void CControllerPsyHit::load(LPCSTR section)
 {

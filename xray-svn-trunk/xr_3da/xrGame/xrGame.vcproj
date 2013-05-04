@@ -23060,9 +23060,29 @@
 						>
 					</File>
 					<File
+						RelativePath=".\traffic_optimization.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\traffic_optimization.h"
+						>
+					</File>
+					<File
 						RelativePath=".\xrMessages.h"
 						>
 					</File>
+					<Filter
+						Name="SecureMessages"
+						>
+						<File
+							RelativePath=".\secure_messaging.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\secure_messaging.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="ObjectBroker"
@@ -23653,6 +23673,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\xrClientsPool.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\xrClientsPool.h"
+					>
+				</File>
+				<File
 					RelativePath=".\xrServer.cpp"
 					>
 					<FileConfiguration
@@ -23720,6 +23748,14 @@
 				</File>
 				<File
 					RelativePath="xrServer_Space.h"
+					>
+				</File>
+				<File
+					RelativePath=".\xrServer_updates_compressor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\xrServer_updates_compressor.h"
 					>
 				</File>
 				<Filter
@@ -27157,6 +27193,10 @@
 			</File>
 			<File
 				RelativePath=".\ui_base.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ui_defs.h"
 				>
 			</File>
 			<File

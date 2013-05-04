@@ -12,7 +12,7 @@
 #include "stalker_animation_data_storage.h"
 #include "stalker_animation_data.h"
 #include "stalker_movement_manager.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 
 // TODO:
 // stalker animation manager consists of 5 independent managers,

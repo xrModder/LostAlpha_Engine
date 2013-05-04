@@ -4,8 +4,8 @@
 #include "PhysicsShell.h"
 #include "level.h"
 #include "ai_sounds.h"
-#include "../Kinematics.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #include "clsid_game.h"
 
 #include "script_callback_ex.h"

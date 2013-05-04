@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "step_manager_defs.h"
 #include "step_manager.h"
 #include "entity_alive.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #include "level.h"
 #include "gamepersistent.h"
 #include "material_manager.h"
 #include "profiler.h"
 #include "IKLimbsController.h"
-#include "../animation_blend.h"
+#include "../Include/xrRender/animation_blend.h"
 
 CStepManager::CStepManager()
 {

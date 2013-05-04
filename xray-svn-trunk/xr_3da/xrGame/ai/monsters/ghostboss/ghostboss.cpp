@@ -4,7 +4,7 @@
 #include "../../../characterphysicssupport.h"
 #include "../../../actor.h"
 #include "ghostboss_state_manager.h"
-#include "../../../../skeletonanimated.h"
+#include "../../../../xrRender/skeletonanimated.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
 #include "../../../ai_monster_space.h"

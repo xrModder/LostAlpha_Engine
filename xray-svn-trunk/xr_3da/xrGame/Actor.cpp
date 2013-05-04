@@ -48,7 +48,7 @@
 #include "../cl_intersect.h"
 #include "ExtendedGeom.h"
 #include "alife_registry_wrappers.h"
-#include "../skeletonanimated.h"
+#include "../xrRender/skeletonanimated.h"
 #include "artifact.h"
 #include "CharacterPhysicsSupport.h"
 #include "material_manager.h"

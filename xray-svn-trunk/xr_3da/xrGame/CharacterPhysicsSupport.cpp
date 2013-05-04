@@ -6,10 +6,10 @@
 #include "PHMovementControl.h"
 #include "CustomMonster.h"
 
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 
 #include "PhysicsShell.h"
-//#include "../skeletonanimated.h"
+//#include "../xrRender/skeletonanimated.h"
 #include "Actor.h"
 #include "CustomZone.h"
 #include "Extendedgeom.h"
@@ -196,7 +196,7 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 	}
 
 	CPHDestroyable::Init();//this zerows colbacks !!;
-	IRender_Visual *pVisual = m_EntityAlife.Visual();
+	IRenderVisual *pVisual = m_EntityAlife.Visual();
 	IKinematicsAnimated*ka= smart_cast<IKinematicsAnimated*>( pVisual );
 	IKinematics*pK= smart_cast<IKinematics*>( pVisual );
 	if(!m_EntityAlife.g_Alive())

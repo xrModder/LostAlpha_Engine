@@ -8,9 +8,8 @@
 #include "PHCollideValidator.h"
 #include "Level.h"
 #include "physicsshellholder.h"
-
-	#include "PhysicsShellAnimator.h"
-#include "../Kinematics.h"
+#include "PhysicsShellAnimator.h"
+#include "../Include/xrRender/Kinematics.h"
 
 ///////////////////////////////////////////////////////////////
 ///#pragma warning(disable:4995)

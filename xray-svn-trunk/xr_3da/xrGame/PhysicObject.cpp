@@ -4,8 +4,8 @@
 #include "Physics.h"
 #include "xrserver_objects_alife.h"
 #include "Level.h"
-#include "../Kinematics.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #include "../xr_collide_form.h"
 #include "game_object_space.h"
 

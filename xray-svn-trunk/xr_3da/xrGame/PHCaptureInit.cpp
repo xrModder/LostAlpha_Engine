@@ -6,7 +6,7 @@
 #include "PHCapture.h"
 #include "Entity.h"
 #include "inventory_item.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "Actor.h"
 #include "Inventory.h"
 #include "../bone.h"
@@ -174,7 +174,7 @@ CPHCapture::CPHCapture(CPHCharacter   *a_character,CPhysicsShellHolder	*a_taget_
 		
 
 
-	IRender_Visual* V=m_taget_object->Visual();
+	IRenderVisual* V=m_taget_object->Visual();
 
 	if(!V)
 	{

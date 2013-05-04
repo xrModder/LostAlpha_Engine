@@ -1,9 +1,8 @@
 #pragma once
 
 #include "control_combase.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 
-#include "../../../KinematicsAnimated.h"
-#include "../../../animation_motion.h"
 struct SAnimationPart {
 	MotionID		motion;
 	CBlend			*blend;
@@ -77,7 +76,7 @@ public:
 			void	unfreeze				();
 
 		// Services
-		IC	float	motion_time				(MotionID motion_id, IRender_Visual *visual);
+		IC	float	motion_time				(MotionID motion_id, IRenderVisual *visual);
 
 
 private:
@@ -96,7 +95,7 @@ public:
 };
 
 // get motion time, when just MotionID available
-IC float CControlAnimation::motion_time(MotionID motion_id, IRender_Visual *visual)
+IC float CControlAnimation::motion_time(MotionID motion_id, IRenderVisual *visual)
 {
 	IKinematicsAnimated	*skeleton_animated	= smart_cast<IKinematicsAnimated*>(visual);
 	VERIFY				(skeleton_animated);

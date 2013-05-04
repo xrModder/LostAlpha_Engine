@@ -2,7 +2,7 @@
 #include "bolt.h"
 #include "WeaponKnife.h"
 #include "script_export_space.h"
-#include "gamemtllib.h"
+#include "../gamemtllib.h"
 #include "level.h"
 
 class CFireball :

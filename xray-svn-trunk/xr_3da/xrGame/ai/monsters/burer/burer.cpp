@@ -4,7 +4,7 @@
 #include "../../../characterphysicssupport.h"
 #include "../../../actor.h"
 #include "burer_state_manager.h"
-#include "../../../../skeletonanimated.h"
+#include "../../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
 #include "../../../ai_monster_space.h"
@@ -254,7 +254,7 @@ void CBurer::UpdateGraviObject()
 	pos.translate_over(m_gravi_object.cur_pos);
 
 	ps->UpdateParent(pos, zero_vel);
-	ps->Play();
+	ps->Play(false);
 	
 	// hit objects
 	m_nearest.clear_not_free		();

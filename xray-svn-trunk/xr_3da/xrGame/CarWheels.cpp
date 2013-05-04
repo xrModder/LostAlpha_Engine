@@ -8,7 +8,7 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "car.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "ExtendedGeom.h"
 #include "mathutilsode.h"
 

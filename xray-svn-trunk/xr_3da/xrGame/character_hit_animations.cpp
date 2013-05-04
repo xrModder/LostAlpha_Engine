@@ -1,10 +1,8 @@
 #include "stdafx.h"
-
 #include "character_hit_animations.h"
-
 #include "entity_alive.h"
-#include "../Kinematics.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
@@ -69,7 +67,7 @@ IC void	play_cycle(IKinematicsAnimated* CA,const MotionID &m,u8 channel,u32 &tim
 
 void character_hit_animation_controller::PlayHitMotion(const Fvector &dir,const Fvector &bone_pos, u16 bi, CEntityAlive &ea)const
 {
-	IRender_Visual *pV = ea.Visual( );
+	IRenderVisual *pV = ea.Visual( );
 	IKinematicsAnimated* CA = smart_cast<IKinematicsAnimated*>( pV );
 	IKinematics* K = smart_cast<IKinematics*>( pV );
 	

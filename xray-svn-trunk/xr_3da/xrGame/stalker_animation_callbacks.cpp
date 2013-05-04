@@ -13,7 +13,7 @@
 #include "stalker_movement_manager.h"
 #include "game_object_space.h"
 #include "effectorshot.h"
-#include "../animation_blend.h"
+#include "../Include/xrRender/animation_blend.h"
 
 #if 0
 

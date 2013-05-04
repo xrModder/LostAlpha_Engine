@@ -16,16 +16,16 @@
 #include "../../../squad_hierarchy_holder.h"
 #include "../../../group_hierarchy_holder.h"
 #include "../../../phdestroyable.h"
-#include "../../../../KinematicsAnimated.h"
+#include "../../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../detail_path_manager.h"
-#include "../../../hudmanager.h"
+//#include "../../../hudmanager.h"
 #include "../../../memory_manager.h"
 #include "../../../visual_memory_manager.h"
 #include "../monster_velocity_space.h"
 #include "../../../entitycondition.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
-#include "../../../ui/UIMainIngameWnd.h"
+//#include "../../../ui/UIMainIngameWnd.h"
 #include "../state_manager.h"
 #include "../controlled_entity.h"
 #include "../control_animation_base.h"
@@ -472,7 +472,7 @@ CParticlesObject* CBaseMonster::PlayParticles(const shared_str& name, const Fvec
 	matrix.translate_over	(position);
 	
 	(xformed) ?				ps->SetXFORM (matrix) : ps->UpdateParent(matrix,zero_vel); 
-	ps->Play				();
+	ps->Play				(false);
 
 	return ps;
 }

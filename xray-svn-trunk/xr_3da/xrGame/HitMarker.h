@@ -2,6 +2,8 @@
 #define __XR_HITMARKER_H__
 #pragma once
 
+#include "ui_defs.h"
+
 class CUIStaticItem;
 class CLAItem;
 
@@ -11,7 +13,7 @@ struct SHitMark{
 	float			m_HitDirection;
 	CLAItem*		m_lanim;
 
-					SHitMark		(const ref_shader& sh, const Fvector& dir);
+					SHitMark		(const ui_shader& sh, const Fvector& dir);
 					~SHitMark		();
 	bool			IsActive		();
 	void			UpdateAnim		();
@@ -28,7 +30,7 @@ public:
 	ref_geom				hGeom;
 */	
 	typedef xr_deque<SHitMark*> HITMARKS;
-	ref_shader				hShader2;
+	FactoryPtr<IUIShader>	hShader2;
 	HITMARKS				m_HitMarks;
 
 public:

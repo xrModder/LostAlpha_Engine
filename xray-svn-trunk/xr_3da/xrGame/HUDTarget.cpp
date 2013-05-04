@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "hudtarget.h"
 #include "hudmanager.h"
-#include "GameMtlLib.h"
+#include "../GameMtlLib.h"
 
 #include "../Environment.h"
 #include "../CustomHUD.h"

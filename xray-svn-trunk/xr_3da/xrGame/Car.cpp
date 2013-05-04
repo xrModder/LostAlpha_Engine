@@ -23,12 +23,12 @@
 #include "script_entity_action.h"
 #include "inventory.h"
 #include "xrserver_objects_alife_items.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "level.h"
 #include "ui/UIMainIngameWnd.h"
 #include "CarWeapon.h"
 #include "game_object_space.h"
-#include "GameMtlLib.h"
+#include "../GameMtlLib.h"
 #include "PHActivationShape.h"
 #include "CharacterPhysicsSupport.h"
 #include "car_memory.h"
@@ -900,7 +900,7 @@ void CCar::CreateSkeleton(CSE_Abstract	*po)
 {
 
 	if (!Visual()) return;
-	IRender_Visual *pVis = Visual();
+	IRenderVisual *pVis = Visual();
 	IKinematics* pK = smart_cast<IKinematics*>(pVis);
 	IKinematicsAnimated* pKA = smart_cast<IKinematicsAnimated*>(pVis);
 	if(pKA)

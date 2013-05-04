@@ -8,7 +8,7 @@
 #include "SpaceUtils.h"
 #include "MathUtilsOde.h"
 #include "MathUtils.h"
-#include "GameMtlLib.h"
+#include "../GameMtlLib.h"
 #include "Level.h"
 #include "PHWorld.h"
 #include "../../xrODE/ode/src/util.h"

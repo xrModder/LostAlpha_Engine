@@ -1,19 +1,18 @@
 #include "stdafx.h"
 #include "IKLimb.h"
-
 #include "../ode_include.h"
-#include "../../Kinematics.h"
-#include "../../KinematicsAnimated.h"
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 #include "../GameObject.h"
 #include "../Level.h"
 #include "../game_object_space.h"
 #include "../ik_anim_state.h"
-
 #include "../matrix_utils.h"
-#include "../../animation_blend.h"
+#include "../../Include/xrRender/animation_blend.h"
 #ifdef DEBUG
-#include "../PHDebug.h"
+#  include "../PHDebug.h"
 #endif
+
 int			ik_blend_free_foot	= 1;
 int			ik_local_blending	= 0;
 int			ik_collide_blend	= 0;
@@ -664,7 +663,7 @@ void CIKLimb::Collide( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot,
 			cld.clamp_down = R.range > pick_dist + EPS_L;
 		} else {
 			
-			IRender_Visual* V =R.O->Visual();
+			IRenderVisual* V =R.O->Visual();
 			if( V )
 			{
 				IKinematics *K = V->dcast_PKinematics( );

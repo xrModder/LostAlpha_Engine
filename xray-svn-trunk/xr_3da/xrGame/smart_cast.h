@@ -35,17 +35,17 @@
 
 #	ifdef XRGAME_EXPORTS
 
-		DECLARE_SPECIALIZATION			(IKinematics,		IRender_Visual,		dcast_PKinematics);
+		DECLARE_SPECIALIZATION			(IKinematics,		IRenderVisual,		dcast_PKinematics);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IKinematics,		IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematics,		IRenderVisual)
 
-		DECLARE_SPECIALIZATION			(IKinematicsAnimated,	IRender_Visual,		dcast_PKinematicsAnimated);
+		DECLARE_SPECIALIZATION			(IKinematicsAnimated,	IRenderVisual,		dcast_PKinematicsAnimated);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IKinematicsAnimated,	IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematicsAnimated,	IRenderVisual)
 
-		DECLARE_SPECIALIZATION			(IParticleCustom,	IRender_Visual,		dcast_ParticleCustom);
+		DECLARE_SPECIALIZATION			(IParticleCustom,	IRenderVisual,		dcast_ParticleCustom);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IParticleCustom,	IRender_Visual)
+#		define cast_type_list save_cast_list	(IParticleCustom,	IRenderVisual)
 
 		DECLARE_SPECIALIZATION			(IKinematics,		IKinematicsAnimated,		dcast_PKinematics);
 #		undef cast_type_list
@@ -55,13 +55,13 @@
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(IKinematicsAnimated,	IKinematics)
 
-		DECLARE_SPECIALIZATION			(IRender_Visual,		IKinematicsAnimated,		dcast_RenderVisual);
+		DECLARE_SPECIALIZATION			(IRenderVisual,		IKinematicsAnimated,		dcast_RenderVisual);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematicsAnimated)
+#		define cast_type_list save_cast_list	(IRenderVisual,		IKinematicsAnimated)
 
-		DECLARE_SPECIALIZATION			(IRender_Visual,		IKinematics,		dcast_RenderVisual);
+		DECLARE_SPECIALIZATION			(IRenderVisual,		IKinematics,		dcast_RenderVisual);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematics)
+#		define cast_type_list save_cast_list	(IRenderVisual,		IKinematics)
 
 #		ifndef DO_NOT_DECLARE_TYPE_LIST
 			class ENGINE_API ISpatial;

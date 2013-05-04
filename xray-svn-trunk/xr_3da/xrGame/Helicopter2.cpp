@@ -3,7 +3,7 @@
 #include "level.h"
 #include "script_game_object.h"
 #include "game_object_space.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "../LightAnimLibrary.h"
 #include "PhysicsShell.h"
 #include "clsid_game.h"
@@ -142,8 +142,6 @@ void CHelicopter::SetEnemy(Fvector* pos)
 	m_enemy.type			= eEnemyPoint;
 	m_enemy.destEnemyPos	= *pos;
 }
-
-
 
 float CHelicopter::GetCurrVelocity()
 {

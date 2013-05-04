@@ -9,11 +9,11 @@
 #include "stdafx.h"
 #include "../../physicsshell.h"
 #include "ai_crow.h"
-#include "../../hudmanager.h"
+//#include "../../hudmanager.h"
 #include "../../level.h"
-#include "../../../KinematicsAnimated.h"
-#include "../../../Kinematics.h"
-#include "../../../animation_blend.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../../Include/xrRender/Kinematics.h"
+#include "../../../../Include/xrRender/animation_blend.h"
 #include "../../actor.h"
 
 

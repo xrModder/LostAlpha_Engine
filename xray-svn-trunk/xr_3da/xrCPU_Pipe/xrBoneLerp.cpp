@@ -2,9 +2,9 @@
 #pragma hdrstop
 
 #ifdef _EDITOR
- 	#include "SkeletonAnimated.h"
+ 	#include "xrRender/SkeletonAnimated.h"
 #else
- 	#include "..\SkeletonAnimated.h"
+ 	#include "../xrRender/SkeletonAnimated.h"
 #endif
 
 IC float myasin(const float x)

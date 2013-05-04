@@ -4,7 +4,7 @@
 
 #include "../../xr_3da/SkeletonMotions.h"
 #include "animation_blend.h"
-#include "KinematicAnimatedDefs.h"
+#include "../../xr_3da/xrRender/KinematicAnimatedDefs.h"
 
 class	 IKinematics;
 class    CBlend;

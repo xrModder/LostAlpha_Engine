@@ -17,9 +17,9 @@
 #include "PHShell.h"
 #include "MathUtils.h"
 #ifdef DEBUG
-#include "PHWorld.h"
+#  include "PHWorld.h"
 #endif
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 /*
 [impulse_transition_to_parts]
 random_min              =1       ; х массу объекта = величина случайно направленного импульса 

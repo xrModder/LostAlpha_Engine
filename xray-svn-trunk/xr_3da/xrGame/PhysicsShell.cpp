@@ -11,7 +11,7 @@
 #include "gameobject.h"
 #include "physicsshellholder.h"
 
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "../xr_object.h"
 #include "../bone.h"
 extern CPHWorld			*ph_world;

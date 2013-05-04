@@ -1,10 +1,6 @@
 #include	"stdafx.h"
-
 #include	"ik_anim_state.h"
-
-#include	"../KinematicsAnimated.h"
-#include	"../animation_blend.h"
-#include	"../animation_motion.h"
+#include	"../Include/xrRender/KinematicsAnimated.h"
 #include	"../motion.h"
 
 IC bool is_in( const motion_marks::interval &i, float v )

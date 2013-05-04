@@ -97,7 +97,7 @@ IC	bool						Processing						()							{return b_processing;}
 #ifdef DEBUG
 	virtual void 				OnRender						()							;
 #endif
-	virtual void				OnFrame							()							;
+	virtual void	_BCL		OnFrame							()							;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

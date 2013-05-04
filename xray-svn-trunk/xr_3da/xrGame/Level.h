@@ -242,7 +242,7 @@ public:
 
 	// Events
 	virtual void				OnEvent					( EVENT E, u64 P1, u64 P2 );
-	virtual void				OnFrame					( void );
+	virtual void	_BCL		OnFrame					( void );
 	virtual void				OnRender				( );
 	void						cl_Process_Event		(u16 dest, u16 type, NET_Packet& P);
 	void						cl_Process_Spawn		(NET_Packet& P);
@@ -360,9 +360,6 @@ add_to_type_list(CLevel)
 IC CLevel&				Level()		{ return *((CLevel*) g_pGameLevel);			}
 IC game_cl_GameState&	Game()		{ return *Level().game;					}
 	u32					GameID();
-
-
-IC CHUDManager&			HUD()		{ return *((CHUDManager*)Level().pHUD);	}
 
 #ifdef DEBUG
 IC CLevelDebug&			DBG()		{return *((CLevelDebug*)Level().m_level_debug);}

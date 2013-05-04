@@ -3,7 +3,7 @@
 
 #include "limb.h"
 #include "../mathutilsode.h"
-#include "../../KinematicsAnimated.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 #include "../ik_anim_state.h"
 class	IKinematics	;
 class	CDB::TRI	;

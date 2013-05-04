@@ -13,7 +13,7 @@
 #include "ai_sounds.h"
 #include "level.h"
 #include "xr_level_controller.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "game_object_space.h"
 
 //----------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 #include "Weapon.h"
 #include "actor.h"
 #include "../Motion.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "level.h"
 #include "MathUtils.h"
 #include "hudmanager.h"
@@ -26,7 +26,7 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 
 	// Visual
 	LPCSTR visual_name			= pSettings->r_string(section, "visual");
-	IRender_Visual *pV			= ::Render->model_Create(visual_name);
+	IRenderVisual *pV			= ::Render->model_Create(visual_name);
 	m_animations				= smart_cast<IKinematicsAnimated*>(pV);
 	IKinematics *pK				= smart_cast<IKinematics*>(pV);
 
@@ -57,7 +57,7 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 weapon_hud_value::~weapon_hud_value()
 {
 	//::Render->model_Delete		(m_animations);
-	IRender_Visual *pVisual = smart_cast<IRender_Visual*>(m_animations);
+	IRenderVisual *pVisual = smart_cast<IRenderVisual*>(m_animations);
 	::Render->model_Delete		(pVisual);
 	//	model_Delete clears the pointer
 	m_animations = 0;
@@ -153,7 +153,7 @@ MotionID CWeaponHUD::animGet(LPCSTR name)
 void CWeaponHUD::animDisplay(MotionID M, BOOL bMixIn)
 {
 	if(m_bVisible){
-		IRender_Visual *pV = Visual();
+		IRenderVisual *pV = Visual();
 		IKinematicsAnimated* PKinematicsAnimated		= smart_cast<IKinematicsAnimated*>(pV);
 		IKinematics* pK									= smart_cast<IKinematics*>(pV);
 		VERIFY											(PKinematicsAnimated);

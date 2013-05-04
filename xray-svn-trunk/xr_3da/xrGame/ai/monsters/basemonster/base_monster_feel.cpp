@@ -13,7 +13,7 @@
 #include "../ai_monster_effector.h"
 #include "../../../hudmanager.h"
 #include "../../../clsid_game.h"
-#include "../../../../KinematicsAnimated.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
 #include "../../../script_callback_ex.h"

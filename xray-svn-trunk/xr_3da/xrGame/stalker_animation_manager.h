@@ -61,7 +61,7 @@ private:
 
 private:
 	CAI_Stalker						*m_object;
-	IRender_Visual					*m_visual;
+	IRenderVisual					*m_visual;
 	IKinematicsAnimated				*m_skeleton_animated;
 
 private:

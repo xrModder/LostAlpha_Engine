@@ -2,8 +2,8 @@
 #include "gamepersistent.h"
 #include "../fmesh.h"
 #include "../xr_ioconsole.h"
-#include "gamemtllib.h"
-#include "../Kinematics.h"
+#include "../gamemtllib.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "profiler.h"
 #include "MainMenu.h"
 #include "UICursor.h"
@@ -100,7 +100,7 @@ CGamePersistent::~CGamePersistent(void)
 	Engine.Event.Handler_Detach	(eQuickLoad,this);
 }
 
-void CGamePersistent::RegisterModel(IRender_Visual* V)
+void CGamePersistent::RegisterModel(IRenderVisual* V)
 {
 	// Check types
 	switch (V->getType()){

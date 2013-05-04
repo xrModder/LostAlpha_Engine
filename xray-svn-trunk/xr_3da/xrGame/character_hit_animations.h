@@ -1,10 +1,12 @@
 #pragma once
+
+//#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
+//#include "../Include/xrRender/animation_blend.h"
+
 class CEntityAlive;
 class IKinematics;
 
-//#include "../Include/xrRender/KinematicsAnimated.h"
-#include "../KinematicsAnimated.h"
-#include "../animation_blend.h"
 class character_hit_animation_controller
 {
 public:

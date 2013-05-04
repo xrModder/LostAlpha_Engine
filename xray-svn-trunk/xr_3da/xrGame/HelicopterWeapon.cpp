@@ -3,7 +3,7 @@
 #include "ExplosiveRocket.h"
 #include "xrMessages.h"
 #include "../../xrNetServer/net_utils.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "Level.h"
 
 void  

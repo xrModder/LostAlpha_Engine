@@ -2,10 +2,7 @@
 
 #include "entity.h"
 
-
-DEFINE_VECTOR(ref_shader, SHADER_VECTOR, SHADER_VECTOR_IT);
 DEFINE_VECTOR(shared_str, STR_VECTOR, STR_VECTOR_IT);
-
 
 class MONSTER_COMMUNITY;
 class CEntityCondition;
@@ -118,17 +115,17 @@ public:
 protected:
 	virtual void				PlaceBloodWallmark		(const Fvector& dir, const Fvector& start_pos, 
 														float trace_dist, float wallmark_size,
-														SHADER_VECTOR& wallmarks_vector);
+														IWallMarkArray *pwallmarks_vector);
 
 	//информация о кровавых отметках на стенах, общая для всех CEntityAlive
-	static SHADER_VECTOR*		m_pBloodMarksVector;
+	static FactoryPtr<IWallMarkArray>	*m_pBloodMarksVector;
 	static float				m_fBloodMarkSizeMax;
 	static float				m_fBloodMarkSizeMin;
 	static float				m_fBloodMarkDistance;
 	static float				m_fNominalHit;
 
 	//текстурки капель крови
-	static SHADER_VECTOR*		m_pBloodDropsVector;
+	static FactoryPtr<IWallMarkArray>		*m_pBloodDropsVector;
 	//список ран с которых капает кровь
 	
 	DEFINE_VECTOR				(CWound*, WOUND_VECTOR, WOUND_VECTOR_IT);

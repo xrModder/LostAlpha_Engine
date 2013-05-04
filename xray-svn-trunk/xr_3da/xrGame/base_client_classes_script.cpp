@@ -11,11 +11,11 @@
 #include "base_client_classes_wrappers.h"
 #include "../feel_sound.h"
 #include "../fbasicvisual.h"
-#include "../Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "ai/stalker/ai_stalker.h"
 #include "../../xrNetServer/net_utils.h"
-#include "../animation_blend.h"
-#include "../KinematicsAnimated.h"
+#include "../Include/xrRender/animation_blend.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 
 using namespace luabind;
 
@@ -152,13 +152,13 @@ void CObjectScript::script_register		(lua_State *L)
 	];
 }
 
-void IRender_VisualScript::script_register		(lua_State *L)
+void IRenderVisualScript::script_register		(lua_State *L)
 {
 	module(L)
 	[
-		class_<IRender_Visual>("IRender_Visual")
+		class_<IRenderVisual>("IRenderVisual")
 			.def(constructor<>())
-//			.def("dcast_PKinematicsAnimated",&IRender_Visual::dcast_PKinematicsAnimated)
+//			.def("dcast_PKinematicsAnimated",&IRenderVisual::dcast_PKinematicsAnimated)
 	];
 }
 

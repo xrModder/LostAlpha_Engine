@@ -1,9 +1,7 @@
 #pragma once
 
 #include "../../entity.h"
-#include "../../../KinematicsAnimated.h"
-#include "../../../animation_motion.h"
-
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../actor.h"
 
 

@@ -9,7 +9,7 @@
 #include "../xr_collide_form.h"
 #include "../../xrNetServer/net_utils.h"
 #include "clsid_game.h"
-#include "../skeletoncustom.h"
+#include "../../Include/xrRender/Kinematics.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
