@@ -1,12 +1,14 @@
 #pragma once
 
+#include "ui_defs.h"
+
 enum EUIMirroring{
 	tmNone,
 	tmMirrorHorisontal,
 	tmMirrorVertical,
 	tmMirrorBoth
 };
-/*
+
 class CUICustomItem
 {
 protected:
@@ -27,7 +29,7 @@ protected:
 	Fvector2		iHeadingPivot;
 
 	u32				uFlags;
-	u32				uAlign;
+	EUIItemAlign	uAlign;
 	EUIMirroring	eMirrorMode;
 
 public:
@@ -45,17 +47,16 @@ public:
 	   Fvector2		GetHeadingPivot			()						{return iHeadingPivot;}
 	   
 
-	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color, 
+/*	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color, 
 														float x1, float y1, 
 														float x2, float y2);
 	
 	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color);
 	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color, float angle);
-
-	IC void			SetAlign				(u32 align)					{uAlign=align;};
+*/
+	IC void			SetAlign				(EUIItemAlign align)		{uAlign=align;};
 	IC u32			GetAlign				()							{return uAlign;}
 
 	IC void			SetMirrorMode			(EUIMirroring m)			{ eMirrorMode = m; }
 	IC EUIMirroring GetMirrorMode			()							{ return eMirrorMode; }
 };
-*/

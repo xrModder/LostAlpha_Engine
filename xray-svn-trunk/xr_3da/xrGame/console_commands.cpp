@@ -533,7 +533,7 @@ public:
 #ifdef DEBUG
 		Msg						("Game save overhead  : %f milliseconds",timer.GetElapsed_sec()*1000.f);
 #endif
-		SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
+		SDrawStaticStruct* _s		= CurrentGameUI()->AddCustomStatic("game_saved", true);
 		_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 		string_path					save_name;
 		strconcat					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);

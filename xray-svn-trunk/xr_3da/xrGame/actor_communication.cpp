@@ -66,8 +66,8 @@ void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
 		n = *(article.data()->name);
 		callback(GameObject::eArticleInfo)(lua_game_object(), g, n, _atype);
 
-		if( HUD().GetUI() ){
-			CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		if(CurrentGameUI()){
+			CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 			pda_section::part p = pda_section::encyclopedia;
 			switch (article.data()->articleType){
 				case ARTICLE_DATA::eEncyclopediaArticle:	p = pda_section::encyclopedia;	break;
@@ -104,9 +104,9 @@ void  CActor::AddGameNews			 (GAME_NEWS_DATA& news_data)
 	news_data.receive_time			= Level().GetGameTime();
 	news_vector.push_back			(news_data);
 
-	if(HUD().GetUI()){
-		HUD().GetUI()->UIMainIngameWnd->ReceiveNews(&news_data);
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(CurrentGameUI()){
+		CurrentGameUI()->UIMainIngameWnd->ReceiveNews(&news_data);
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP) 
 			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::news);
 	}
@@ -128,10 +128,10 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 
 	callback(GameObject::eInventoryInfo)(lua_game_object(), *info_id);
 
-	if(!HUD().GetUI())
+	if(!CurrentGameUI())
 		return false;
 	//только если находимся в режиме single
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return false;
 
 	if(pGameSP->TalkMenu->IsShown())
@@ -143,16 +143,15 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 	return true;
 }
 
-
 void CActor::OnDisableInfo(shared_str info_id) const
 {
 	CInventoryOwner::OnDisableInfo(info_id);
 
-	if(!HUD().GetUI())
+	if(!CurrentGameUI())
 		return;
 
 	//только если находимся в режиме single
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return;
 
 	if(pGameSP->TalkMenu->IsShown())
@@ -162,7 +161,7 @@ void CActor::OnDisableInfo(shared_str info_id) const
 void  CActor::ReceivePhrase		(DIALOG_SHARED_PTR& phrase_dialog)
 {
 	//только если находимся в режиме single
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return;
 
 	if(pGameSP->TalkMenu->IsShown())
@@ -219,7 +218,7 @@ void CActor::RunTalkDialog(CInventoryOwner* talk_partner)
 	{	
 		StartTalk(talk_partner);
 		//только если находимся в режиме single
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP)
 		{
 			if(pGameSP->MainInputReceiver())
@@ -262,12 +261,12 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 	if(!IsGameTypeSingle()) return;
 
 	bool b_alive = !!(smart_cast<CEntityAlive*>(pInvOwner))->g_Alive();
-	HUD().GetUI()->UIMainIngameWnd->AnimateContacts(b_alive);
+	CurrentGameUI()->UIMainIngameWnd->AnimateContacts(b_alive);
 
 	Level().MapManager().AddRelationLocation		( pInvOwner );
 
-	if( HUD().GetUI() ){
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(CurrentGameUI()){
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 
 		if(pGameSP)
 			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::contacts);
@@ -286,8 +285,8 @@ void CActor::LostPdaContact		(CInventoryOwner* pInvOwner)
 		Level().MapManager().RemoveMapLocation("deadbody_location",	GO->ID());
 	};
 
-	if( HUD().GetUI() ){
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if( CurrentGameUI() ){
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP){
 			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::contacts);
 		}

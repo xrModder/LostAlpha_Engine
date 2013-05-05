@@ -51,7 +51,7 @@ BOOL CLevel::Load_GameSpecific_After()
 			OBJ->r						(&transform,sizeof(Fmatrix));transform.c.y+=0.01f;
 			pStaticParticles			= CParticlesObject::Create(ref_name,FALSE,false);
 			pStaticParticles->UpdateParent	(transform,zero_vel);
-			pStaticParticles->Play			();
+			pStaticParticles->Play			(false);
 			m_StaticParticles.push_back		(pStaticParticles);
 		}
 		FS.r_close		(F);

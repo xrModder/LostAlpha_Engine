@@ -289,7 +289,7 @@ void game_cl_GameState::shedule_Update		(u32 dt)
 
 	if(!m_game_ui_custom){
 		if( HUD().GetUI() )
-			m_game_ui_custom = HUD().GetUI()->UIGame();
+			m_game_ui_custom = CurrentGameUI();
 	} 
 	//---------------------------------------
 	switch (Phase())
@@ -406,7 +406,7 @@ void game_cl_GameState::reset_ui()
 	if(g_dedicated_server)	return;
 
 	if(!m_game_ui_custom)
-		m_game_ui_custom = HUD().GetUI()->UIGame();
+		m_game_ui_custom = CurrentGameUI();
 
 	m_game_ui_custom->reset_ui					();
 

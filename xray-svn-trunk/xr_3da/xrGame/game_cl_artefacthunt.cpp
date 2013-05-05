@@ -340,7 +340,7 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 {
 	CStringTable st;
 	string1024 msg;
-	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameAHunt*>( HUD().GetUI()->UIGame() );
+	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameAHunt*>( CurrentGameUI() );
 
 	inherited::shedule_Update		(dt);
 

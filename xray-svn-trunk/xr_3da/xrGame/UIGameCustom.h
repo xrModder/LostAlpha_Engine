@@ -14,6 +14,7 @@ class CUICaption;
 class CUIStatic;
 class CUIWindow;
 class CUIXml;
+class CUIMainIngameWnd;
 
 struct SDrawStaticStruct :public IPureDestroyableObject{
 	SDrawStaticStruct	();
@@ -81,6 +82,8 @@ protected:
 	CUIXml*				m_msgs_xml;
 	st_vec										m_custom_statics;
 public:
+	CUIMainIngameWnd*	UIMainIngameWnd;
+
 	virtual void		SetClGame				(game_cl_GameState* g){};
 
 	virtual				float					shedule_Scale		();

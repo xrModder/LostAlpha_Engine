@@ -4,8 +4,8 @@
 #include "UICursor.h"
 #include "HUDManager.h"
 
-CUICursor*	GetUICursor		()	{return UI()->GetUICursor();};
-ui_core*	UI				()	{return GamePersistent().m_pUI_core;};
+CUICursor*	GetUICursor		()	{return UI().GetUICursor();};
+ui_core&	UI				()	{return *GamePersistent().m_pUI_core;};
 extern ENGINE_API Fvector2		g_current_font_scale;
 
 void S2DVert::rotate_pt(const Fvector2& pivot, float cosA, float sinA, float kx)
@@ -165,7 +165,7 @@ void ui_core::PushScissor(const Frect& r_tgt, bool overlapped)
 	r.x2 				= iFloor(result.x2+0.5f);
 	r.y1 				= iFloor(result.y1);
 	r.y2 				= iFloor(result.y2+0.5f);
-	RCache.set_Scissor	(&r);
+	UIRender->SetScissor(&r);
 }
 
 void ui_core::PopScissor()
@@ -175,7 +175,7 @@ void ui_core::PopScissor()
 	m_Scissors.pop		();
 	
 	if(m_Scissors.empty())
-		RCache.set_Scissor(NULL);
+		UIRender->SetScissor(NULL);
 	else{
 		const Frect& top= m_Scissors.top();
 		Irect tgt;
@@ -184,7 +184,7 @@ void ui_core::PopScissor()
 		tgt.rb.x 		= iFloor(ClientToScreenScaledX(top.rb.x));
 		tgt.rb.y 		= iFloor(ClientToScreenScaledY(top.rb.y));
 
-		RCache.set_Scissor(&tgt);
+		UIRender->SetScissor(&tgt);
 	}
 }
 
@@ -243,7 +243,7 @@ void ui_core::pp_stop()
 
 void ui_core::RenderFont()
 {
-	Font()->Render();
+	Font().Render();
 }
 
 bool ui_core::is_16_9_mode()
@@ -256,22 +256,22 @@ shared_str	ui_core::get_xml_name(LPCSTR fn)
 	string_path				str;
 	if(!is_16_9_mode()){
 		xr_sprintf(str, "%s", fn);
-		if ( NULL==strext(fn) ) strcat(str, ".xml");
+		if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 	}else{
 
 		string_path			str_;
 		if ( strext(fn) )
 		{
-			strcpy	(str, fn);
+			xr_strcpy	(str, fn);
 			*strext(str)	= 0;
-			strcat	(str, "_16.xml");
+			xr_strcat	(str, "_16.xml");
 		}else
 			xr_sprintf				(str, "%s_16", fn);
 
 		if(NULL==FS.exist(str_, "$game_config$", "ui\\" , str) )
 		{
 			xr_sprintf(str, "%s", fn);
-			if ( NULL==strext(fn) ) strcat(str, ".xml");
+			if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 		}
 //		Msg("[16-9] get_xml_name for[%s] returns [%s]", fn, str);
 	}

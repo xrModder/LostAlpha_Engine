@@ -384,7 +384,7 @@ void game_cl_TeamDeathmatch::shedule_Update			(u32 dt)
 	CStringTable st;
 	string512	msg;
 
-	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameTDM*>( HUD().GetUI()->UIGame() );
+	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameTDM*>( CurrentGameUI() );
 	inherited::shedule_Update(dt);
 
 	if (!m_game_ui) return;

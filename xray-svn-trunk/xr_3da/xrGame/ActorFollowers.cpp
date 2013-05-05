@@ -15,13 +15,13 @@ CActorFollowerMngr::CActorFollowerMngr()
 
 	m_uiPanel = xr_new<CUIFollowerPanel>	();
 	m_uiPanel->Init							(&uiXml,"followers_panel",0);
-	HUD().GetUI()->UIGame()->AddDialogToRender(m_uiPanel);
+	CurrentGameUI()->AddDialogToRender(m_uiPanel);
 	m_uiPanel->Show							(false);
 }
 
 CActorFollowerMngr::~CActorFollowerMngr()
 {
-	HUD().GetUI()->UIGame()->RemoveDialogToRender(m_uiPanel);
+	CurrentGameUI()->RemoveDialogToRender(m_uiPanel);
 	xr_delete(m_uiPanel);
 }
 

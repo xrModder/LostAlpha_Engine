@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "uicustomitem.h"
-#include "hudmanager.h"
+//#include "hudmanager.h"
 
 CUICustomItem::CUICustomItem()
 {    
@@ -17,7 +17,7 @@ CUICustomItem::~CUICustomItem()
 {
 }
 
-void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos, u32 color, 
+/*void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos, u32 color, 
 						   float x1, float y1, float x2, float y2)
 {
 	CTexture* T		= RCache.get_ActiveTexture(0);
@@ -148,7 +148,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 			Pointer->set						((*R)[k].pt.x, (*R)[k].pt.y,	color, (*R)[k].uv.x, (*R)[k].uv.y); 
 		}
 }
-
+*/
 Frect CUICustomItem::GetOriginalRectScaled()
 {
 	Frect rect = iOriginalRect;

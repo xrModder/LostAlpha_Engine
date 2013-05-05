@@ -8,7 +8,8 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "BoneProtections.h"
-
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/RenderVisual.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -152,8 +153,8 @@ void	CCustomOutfit::OnMoveToSlot		()
 							NewVisual = pSettings->r_string(TeamSection, *cNameSect());
 							string256 SkinName;
 							xr_strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
-							strcat_s(SkinName, *NewVisual);
-							strcat_s(SkinName, ".ogf");
+							xr_strcat(SkinName, *NewVisual);
+							xr_strcat(SkinName, ".ogf");
 							NewVisual._set(SkinName);
 						}
 					}

@@ -240,9 +240,9 @@ void CActor::PickupInfoDraw(CObject* object)
 	float x = (1.f + v_res.x)/2.f * (Device.dwWidth);
 	float y = (1.f - v_res.y)/2.f * (Device.dwHeight);
 
-	HUD().Font().pFontLetterica16Russian->SetAligment	(CGameFont::alCenter);
-	HUD().Font().pFontLetterica16Russian->SetColor		(PICKUP_INFO_COLOR);
-	HUD().Font().pFontLetterica16Russian->Out			(x,y,draw_str);
+	UI().Font().pFontLetterica16Russian->SetAligment	(CGameFont::alCenter);
+	UI().Font().pFontLetterica16Russian->SetColor		(PICKUP_INFO_COLOR);
+	UI().Font().pFontLetterica16Russian->Out			(x,y,draw_str);
 }
 
 void CActor::feel_sound_new(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector& Position, float power)

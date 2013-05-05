@@ -65,9 +65,9 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				CUI* ui = HUD().GetUI();
 				if( ui&&ui->UIGame() )
 				{
-					pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+					pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 					if (Level().CurrentViewEntity() == this)
-							HUD().GetUI()->UIGame()->ReInitShownUI();
+							CurrentGameUI()->ReInitShownUI();
 				};
 				
 				//добавить отсоединенный аддон в инвентарь
@@ -112,8 +112,8 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 
 			SelectBestWeapon(O);
 
-			if (Level().CurrentViewEntity() == this && HUD().GetUI() && HUD().GetUI()->UIGame())
-				HUD().GetUI()->UIGame()->ReInitShownUI();
+			if (Level().CurrentViewEntity() == this && HUD().GetUI() && CurrentGameUI())
+				CurrentGameUI()->ReInitShownUI();
 		}
 		break;
 	case GE_INV_ACTION:

@@ -416,7 +416,7 @@ void	game_sv_Deathmatch::Update()
 				if (!m_pSM_CurViewEntity || m_pSM_CurViewEntity->CLS_ID != CLSID_OBJECT_ACTOR || m_dwSM_LastSwitchTime<Level().timeServer())
 					SM_SwitchOnNextActivePlayer();
 				
-				CUIGameDM* GameDM = smart_cast<CUIGameDM*>(HUD().GetUI()->UIGame());
+				CUIGameDM* GameDM = smart_cast<CUIGameDM*>(CurrentGameUI());
 				if(GameDM)
 				{
 					CObject* pObject				= Level().CurrentViewEntity();

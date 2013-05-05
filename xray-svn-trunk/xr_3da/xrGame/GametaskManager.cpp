@@ -119,7 +119,7 @@ CGameTask*	CGameTaskManager::GiveGameTaskToActor(CGameTask* t, u32 timeToComplet
 
 	//установить флажок необходимости прочтения тасков в PDA
 	if(HUD().GetUI()){
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP) 
 			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::quests);
 	}
@@ -167,7 +167,7 @@ void CGameTaskManager::SetTaskState(CGameTask* t, u16 objective_num, ETaskState 
 		t->m_FinishTime = Level().GetGameTime();
 
 
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(pGameSP) {
 		pGameSP->PdaMenu->PdaContentsChanged	(pda_section::quests);
 	}

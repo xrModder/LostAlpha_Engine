@@ -2,6 +2,7 @@
 
 #include "control_combase.h"
 #include "../../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../../Include/xrRender/RenderVisual.h"
 
 struct SAnimationPart {
 	MotionID		motion;

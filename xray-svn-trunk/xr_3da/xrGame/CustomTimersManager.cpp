@@ -44,12 +44,12 @@ void CTimersManager::OnHud(CTimerCustom *t,bool b)
 			FATAL("Trying to add more than one HUD timer");
 		} else {
 			b_HUDTimerActive = true;
-			ui_hud_timer = HUD().GetUI()->UIGame()->AddCustomStatic("hud_timer", true)->wnd();
+			ui_hud_timer = CurrentGameUI()->AddCustomStatic("hud_timer", true)->wnd();
 			hud_timer = t;
 		}
 	} else {
 		if (IsAnyHUDTimerActive()) {
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("hud_timer");
+			CurrentGameUI()->RemoveCustomStatic("hud_timer");
 			ui_hud_timer = NULL;
 			b_HUDTimerActive = false;
 			hud_timer = NULL;

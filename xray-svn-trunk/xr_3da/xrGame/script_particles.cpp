@@ -90,7 +90,7 @@ CScriptParticles::~CScriptParticles()
 void CScriptParticles::Play()
 {
 	VERIFY						(m_particles);
-	m_particles->Play			();
+	m_particles->Play			(false);
 }
 
 void CScriptParticles::PlayAtPos(const Fvector &position)
@@ -127,7 +127,7 @@ void CScriptParticles::SetDir(const Fvector &dir, const Fvector &vel)
 	xform.k.normalize(dir);
 	Fvector::generate_orthonormal_basis(xform.k, xform.j, xform.i);
 	m_particles->UpdateParent(xform, vel);
-	m_particles->Play();
+	m_particles->Play(false);
 }
 
 bool CScriptParticles::IsPlaying() const
@@ -168,5 +168,5 @@ void CScriptParticles::Play(const Fvector &pos, const Fvector &dir, const Fvecto
 	xform.c.set(pos);
 	m_particles->UpdateParent(xform, vel);
 	if (!(m_particles->IsPlaying()))
-		m_particles->Play();
+		m_particles->Play(false);
 }

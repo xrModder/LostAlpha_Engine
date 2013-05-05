@@ -140,7 +140,7 @@ void CUISequenceSimpleItem::Update			()
 	}
 	
 	if (g_pGameLevel){
-	CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 
 	if(ui_game_sp)
 	{
@@ -181,7 +181,7 @@ void CUISequenceSimpleItem::Start()
 
 	if (g_pGameLevel){
 			bool bShowPda			= false;
-			CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+			CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 			if(!stricmp(m_pda_section,"pda_contacts")){
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptContacts);
 				bShowPda = true;
@@ -233,7 +233,7 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 		Device.Pause			(FALSE, FALSE, TRUE, "simpleitem_stop");
 
 	if (g_pGameLevel){
-		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 		if( ui_game_sp && ui_game_sp->PdaMenu->IsShown() ) 
 			HUD().GetUI()->StartStopMenu			(ui_game_sp->PdaMenu, true);
 	}

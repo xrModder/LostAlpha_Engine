@@ -23,8 +23,8 @@ BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 	{
 		string512 tmp;
 		xr_strcpy(tmp, op_client);
-		strcat_s(tmp, "/name=");
-		strcat_s(tmp, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
+		xr_strcat(tmp, "/name=");
+		xr_strcat(tmp, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
 		m_caClientOptions			= tmp;
 	} else {
 		string1024	ret="";
@@ -35,10 +35,10 @@ BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 			string1024 tmpstr;
 			xr_strcpy(tmpstr, op_client);
 			*(strstr(tmpstr, "name=")+5) = 0;
-			strcat_s(tmpstr, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
+			xr_strcat(tmpstr, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
 			const char* ptmp = strstr(strstr(op_client, "name="), "/");
 			if (ptmp)
-				strcat_s(tmpstr, ptmp);
+				xr_strcat(tmpstr, ptmp);
 			m_caClientOptions = tmpstr;
 		}
 		else
@@ -288,7 +288,6 @@ bool CLevel::net_start6()
 
 	return false;
 }
-
 
 void CLevel::InitializeClientGame	(NET_Packet& P)
 {

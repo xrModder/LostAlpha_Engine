@@ -1,23 +1,25 @@
 #include "stdafx.h"
 #include "uistaticitem.h"
-#include "hudmanager.h"
+//#include "hudmanager.h"
 
-ref_geom		hGeom_fan = NULL;	
+//ref_geom		hGeom_fan = NULL;	
 
 void CreateUIGeom()
 {
-	hGeom_fan.create(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+	//hGeom_fan.create(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+	UIRender->CreateUIGeom();
 }
 
 void DestroyUIGeom()
 {
-	hGeom_fan = NULL;
+	//hGeom_fan = NULL;
+	UIRender->DestroyUIGeom();
 }
 
-ref_geom	GetUIGeom()
-{
-	return hGeom_fan;
-}
+//ref_geom	GetUIGeom()
+//{
+//	return hGeom_fan;
+//}
 
 CUIStaticItem::CUIStaticItem()
 {    
@@ -27,7 +29,7 @@ CUIStaticItem::CUIStaticItem()
 	iRemX			= 0.0f;
 	iRemY			= 0.0f;
 	alpha_ref		= -1;
-	hShader			= NULL;
+	//hShader			= NULL;
 #ifdef DEBUG
 	dbg_tex_name = NULL;
 #endif
@@ -39,7 +41,7 @@ CUIStaticItem::~CUIStaticItem()
 
 void CUIStaticItem::CreateShader(LPCSTR tex, LPCSTR sh)
 {
-	hShader.create(sh,tex);
+	hShader->create(sh,tex);
 
 #ifdef DEBUG
 	dbg_tex_name = tex;
@@ -47,12 +49,12 @@ void CUIStaticItem::CreateShader(LPCSTR tex, LPCSTR sh)
 	uFlags &= !flValidRect;
 }
 
-void CUIStaticItem::SetShader(const ref_shader& sh)
+void CUIStaticItem::SetShader(const ui_shader& sh)
 {
 	hShader = sh;
 }
 
-void CUIStaticItem::Init(LPCSTR tex, LPCSTR sh, float left, float top, u32 align)
+void CUIStaticItem::Init(LPCSTR tex, LPCSTR sh, float left, float top, EUIItemAlign align)
 {
 	uFlags &= !flValidRect;
 
@@ -61,14 +63,9 @@ void CUIStaticItem::Init(LPCSTR tex, LPCSTR sh, float left, float top, u32 align
 	SetAlign		(align);
 }
 
-void CUIStaticItem::Render()
+
+void CUIStaticItem::RenderInternal()
 {
-	VERIFY(g_bRendering);
-	// установить обязательно перед вызовом CustomItem::Render() !!!
-	VERIFY(hShader);
-	RCache.set_Shader			(hShader);
-	if(alpha_ref!=-1)
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,alpha_ref));
 	// convert&set pos
 	Fvector2		bp;
 	UI()->ClientToScreenScaled	(bp,float(iPos.x),float(iPos.y));
@@ -85,6 +82,7 @@ void CUIStaticItem::Render()
 	int tile_y					= fis_zero(iRemY)?iTileY:iTileY+1;
 	int							x,y;
 	if (!(tile_x&&tile_y))		return;
+
 	// render
 	FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.Lock	(8*tile_x*tile_y,hGeom_fan.stride(),vOffset);
 	FVF::TL* pv					= start_pv;
@@ -103,8 +101,28 @@ void CUIStaticItem::Render()
 	RCache.set_Geometry			(hGeom_fan);
 	if (p_cnt!=0)RCache.Render	(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
 	if(alpha_ref!=-1)
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,0));
+	{
+		//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,0));
+		UIRender->SetAlphaRef(alpha_ref);
+	}
 	UI()->PopScissor			();
+}
+
+void CUIStaticItem::Render()
+{
+	VERIFY(g_bRendering);
+	UIRender->SetShader			(*hShader);
+	// установить обязательно перед вызовом CustomItem::Render() !!!
+	//VERIFY(hShader);
+	//RCache.set_Shader			(hShader);
+	if(alpha_ref!=-1) {
+		//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,alpha_ref));
+		UIRender->SetAlphaRef(alpha_ref);
+	}
+
+	UIRender->StartPrimitive	(8, IUIRender::ptTriList, UI()->m_currentPointType);
+	RenderInternal();
+	UIRender->FlushPrimitive	();
 }
 
 void CUIStaticItem::Render(float angle)

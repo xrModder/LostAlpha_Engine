@@ -11,7 +11,7 @@
 IC	u32	CScriptSound::Length				()
 {
 	VERIFY2					(m_sound._handle(), *m_caSoundToPlay);
-	return					(m_sound._handle()->length_ms());
+	return					(m_sound._handle()->length_sec() * 1000);
 }
 
 IC	void CScriptSound::Play					(CScriptGameObject *object)

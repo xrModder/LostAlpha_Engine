@@ -14,7 +14,7 @@
 #include "level_graph.h"
 #include "level.h"
 #include "game_base_space.h"
-#include "hudmanager.h"
+//#include "hudmanager.h"
 #include "xrserver_objects_alife_monsters.h"
 #include "alife_simulator.h"
 #include "alife_graph_registry.h"
@@ -22,7 +22,7 @@
 #include "alife_human_brain.h"
 #include "alife_monster_movement_manager.h"
 #include "alife_monster_detail_path_manager.h"
-
+#include "ui_base.h"
 #include "debug_renderer.h"
 
 void CLevelGraph::setup_current_level	(const int &level_id)
@@ -52,8 +52,8 @@ void CLevelGraph::render	()
 	if (psAI_Flags.test(aiCover))
 		draw_covers			();
 
-	if (!psHUD_Flags.test(HUD_DRAW))
-		return;
+	//if (!psHUD_Flags.test(HUD_DRAW))
+	//	return;
 
 	if (psAI_Flags.test(aiMotion))
 		draw_objects		();
@@ -155,7 +155,7 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 	const float					radius = .0105f;
 	const u32					color = D3DCOLOR_XRGB(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
-	CGameFont					&font = *HUD().Font().pFontDI;
+	CGameFont					&font = *UI().Font().pFontDI;
 	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(D3DCOLOR_XRGB(255,255,0));
@@ -299,7 +299,7 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 	const float					radius = .0105f;
 	const u32					color = D3DCOLOR_XRGB(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
-	CGameFont					&font = *HUD().Font().pFontDI;
+	CGameFont					&font = *UI().Font().pFontDI;
 	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(D3DCOLOR_XRGB(255,255,0));
@@ -441,7 +441,7 @@ void CLevelGraph::draw_game_graph	()
 		return;
 
 //	Fvector					camera_position = Level().CurrentEntity()->Position();
-//	CGameFont				*font = HUD().Font().pFontDI;
+//	CGameFont				*font = UI().Font().pFontDI;
 
 	const Fmatrix			&xform = Level().CurrentEntity()->XFORM();
 	Fvector					center = Fvector().set(0.f,5.f,0.f);

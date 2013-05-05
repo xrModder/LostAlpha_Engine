@@ -13,7 +13,7 @@
 #include "../ai_monster_effector.h"
 #include "../../../hudmanager.h"
 #include "../../../clsid_game.h"
-#include "../../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
 #include "../../../script_callback_ex.h"
@@ -108,7 +108,7 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 		
 		if (pEntityNC == Actor()) {
 			START_PROFILE("BaseMonster/Animation/HitEntity");
-			SDrawStaticStruct* s = HUD().GetUI()->UIGame()->AddCustomStatic("monster_claws", false);
+			SDrawStaticStruct* s = CurrentGameUI()->AddCustomStatic("monster_claws", false);
 			s->m_endTime = Device.fTimeGlobal+3.0f;// 3sec
 			
 			float h1,p1;
