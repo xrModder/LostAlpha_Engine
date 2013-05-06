@@ -12,6 +12,9 @@
 #include "specific_character.h"
 #include "alife_registry_wrappers.h"
 
+#include "HudManager.h"
+#include "UIGameSP.h"
+
 
 CPda::CPda(void)						
 {										
@@ -177,12 +180,25 @@ void CPda::save(NET_Packet &output_packet)
 {
 	inherited::save	(output_packet);
 	save_data		(m_sFullName, output_packet);
+	save_data		(m_bUpgraded, output_packet);
 }
 
 void CPda::load(IReader &input_packet)
 {
 	inherited::load	(input_packet);
 	load_data		(m_sFullName, input_packet);
+	load_data		(m_bUpgraded, input_packet);
+}
+
+void CPda::UpgradePda(bool val)
+{
+	if (val == m_bUpgraded) return;
+
+	m_bUpgraded = val;
+
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(pGameSP)
+		pGameSP->ReloadPdaWnd();
 }
 
 CObject* CPda::GetOwnerObject()

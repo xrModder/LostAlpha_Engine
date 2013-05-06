@@ -21176,6 +21176,64 @@
 								>
 							</File>
 							<File
+								RelativePath=".\PdaScript.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Mixed|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Mixed_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release_Priquel|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
 								RelativePath=".\pda_space.h"
 								>
 							</File>

@@ -5,6 +5,7 @@
 
 #include "InfoPortionDefs.h"
 #include "character_info_defs.h"
+#include "script_export_space.h"
 
 #include "PdaMsg.h"
 
@@ -60,6 +61,9 @@ public:
 
 	virtual LPCSTR							Name					();
 
+	void									UpgradePda 				(bool val);
+	bool									IsUpgraded 				() {return m_bUpgraded;}
+
 protected:
 	void									UpdateActiveContacts	();
 
@@ -72,4 +76,12 @@ protected:
 	xr_string								m_sFullName;
 
 	bool									m_bTurnedOff;
+	bool									m_bUpgraded;
+
+public:
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CPda)
+#undef script_type_list
+#define script_type_list save_type_list(CPda)

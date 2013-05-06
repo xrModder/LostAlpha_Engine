@@ -27,10 +27,14 @@
 #include "UIMainIngameWnd.h"
 #include "UITabButton.h"
 
+#include "../pch_script.h"
+#include "../script_engine.h"
+#include "../ai_space.h"
+
 #define		PDA_XML					"pda.xml"
 u32			g_pda_info_state		= 0;
 
-void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places);
+void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool m_bUpgraded);
 
 CUIPdaWnd::CUIPdaWnd()
 {
@@ -71,6 +75,10 @@ void CUIPdaWnd::Init()
 	
 	m_pActiveDialog			= NULL;
 
+	//if(GameID()!=GAME_SINGLE) //<= need to uncomment it when will be done
+		m_bUpgraded = false;
+
+	//m_bUpgraded = true; //skyloader: you can enable it to activate upgraded pda
 
 	xml_init.InitWindow		(uiXml, "main", 0, this);
 
@@ -97,7 +105,6 @@ void CUIPdaWnd::Init()
 
 	if( IsGameTypeSingle() )
 	{
-
 		// Oкно коммуникaции
 		UIPdaContactsWnd		= xr_new<CUIPdaContactsWnd>();
 		UIPdaContactsWnd->Init	();
@@ -121,11 +128,15 @@ void CUIPdaWnd::Init()
 
 		UIEventsWnd				= xr_new<CUIEventsWnd>();
 		UIEventsWnd->Init		();
+
 	}
 	// Tab control
 	UITabControl				= xr_new<CUITabControl>(); UITabControl->SetAutoDelete(true);
 	UIMainPdaFrame->AttachChild	(UITabControl);
-	xml_init.InitTabControl		(uiXml, "tab", 0, UITabControl);
+	if (!m_bUpgraded)
+		xml_init.InitTabControl		(uiXml, "tab", 0, UITabControl);
+	else
+		xml_init.InitTabControl		(uiXml, "tab_upg", 0, UITabControl);
 	UITabControl->SetMessageTarget(this);
 
 	if(GameID()!=GAME_SINGLE){
@@ -145,7 +156,7 @@ void CUIPdaWnd::Init()
 
 	m_pActiveSection				= eptNoActiveTab;
 
-	RearrangeTabButtons			(UITabControl, m_sign_places_main);
+	RearrangeTabButtons			(UITabControl, m_sign_places_main, m_bUpgraded);
 
 	
 }
@@ -208,6 +219,10 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		m_pActiveDialog->Show(false);
 	}
 
+	luabind::functor<CUIWindow*>	lua_function;
+	R_ASSERT2 (ai().script_engine().functor<CUIWindow*>("ui_pda_base.InitPdaWindows",lua_function),"Can't call ui_pda_base.InitPdaWindows");
+	CUIWindow* w = NULL;
+
 	switch (section) 
 	{
 	case eptDiary:
@@ -216,13 +231,19 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		g_pda_info_state		&= ~pda_section::diary;
 		break;
 	case eptContacts:
-		m_pActiveDialog			= smart_cast<CUIWindow*>(UIPdaContactsWnd);
+		if (!m_bUpgraded)
+			m_pActiveDialog			= smart_cast<CUIWindow*>(UIPdaContactsWnd);
+		else {
+			w 				= lua_function("contacts");
+			m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		}
 		InventoryUtilities::SendInfoToActor("ui_pda_contacts");
 		g_pda_info_state		&= ~pda_section::contacts;
 		break;
 	case eptMap:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIMapWnd);
 		g_pda_info_state		&= ~pda_section::map;
+		InventoryUtilities::SendInfoToActor("ui_pda_map");
 		break;
 	case eptEncyclopedia:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIEncyclopediaWnd);
@@ -242,6 +263,31 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 	case eptQuests:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIEventsWnd);
 		g_pda_info_state		&= ~pda_section::quests;
+		InventoryUtilities::SendInfoToActor("ui_pda_quests");
+		break;
+	case eptSkills:
+		w				= lua_function("skills");
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::skills;
+		InventoryUtilities::SendInfoToActor("ui_pda_skills");
+		break;
+	case eptDownloads:
+		w				= lua_function("downloads");
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::downloads;
+		InventoryUtilities::SendInfoToActor("ui_pda_downloads");
+		break;
+	case eptGames:
+		w				= lua_function("games");
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::games;
+		InventoryUtilities::SendInfoToActor("ui_pda_games");
+		break;
+	case eptMPlayer:
+		w				= lua_function("mplayer");
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::mplayer;
+		InventoryUtilities::SendInfoToActor("ui_pda_mplayer");
 		break;
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
@@ -276,7 +322,7 @@ void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 	if(type==pda_section::quests){
 		UIEventsWnd->Reload					();
 	}else
-	if(type==pda_section::contacts){
+	if(type==pda_section::contacts && !m_bUpgraded){
 		UIPdaContactsWnd->Reload		();
 		b = false;
 	}
@@ -351,6 +397,37 @@ void CUIPdaWnd::DrawUpdatedSections				()
 		draw_sign								(m_updatedSectionImage, pos);
 	else
 		draw_sign								(m_oldSectionImage, pos);
+
+	if (m_bUpgraded)
+	{
+		pos = m_sign_places_main[eptSkills];
+		pos.add(tab_pos);
+		if(g_pda_info_state&pda_section::skills)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	
+		pos = m_sign_places_main[eptDownloads];
+		pos.add(tab_pos);
+		if(g_pda_info_state&pda_section::downloads)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	
+		pos = m_sign_places_main[eptGames];
+		pos.add(tab_pos);
+		if(g_pda_info_state&pda_section::games)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	
+		pos = m_sign_places_main[eptMPlayer];
+		pos.add(tab_pos);
+		if(g_pda_info_state&pda_section::mplayer)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 	
 }
 
@@ -366,7 +443,7 @@ void CUIPdaWnd::Reset()
 	if (UIEventsWnd)		UIEventsWnd->Reset		();
 }
 
-void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places)
+void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool m_bUpgraded)
 {
 	TABS_VECTOR *	btn_vec		= pTab->GetButtonsVector();
 	TABS_VECTOR::iterator it	= btn_vec->begin();
@@ -389,7 +466,10 @@ void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_plac
 			st = xr_new<CUIStatic>(); st->SetAutoDelete(true);pTab->AttachChild(st);
 			st->SetFont((*it)->GetFont());
 			st->SetTextColor	(color_rgba(90,90,90,255));
-			st->SetText("//");
+			if (!m_bUpgraded)
+				st->SetText("//");
+			else
+				st->SetText("  ");
 			st->SetWndSize		((*it)->GetWndSize());
 			st->AdjustWidthToText();
 			st->SetWndPos		(pos);

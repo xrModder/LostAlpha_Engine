@@ -36,6 +36,7 @@
 #include "../CameraBase.h"
 #include "ai/stalker/ai_stalker.h"
 #include "car.h"
+#include "pda.h"
 #include "mounted_turret.h"
 #include "movement_manager.h"
 #include "detail_path_manager.h"
@@ -594,6 +595,16 @@ CCar* CScriptGameObject::get_car	()
 	}
 	return car;
 }
+
+/*CPda* CScriptGameObject::get_pda	()
+{
+	CPda		*pda = smart_cast<CPda*>(&object());
+	if (!pda) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member get_pda!");
+		NODEFAULT;
+	}
+	return pda;
+}*/
 
 #ifdef DEBUG
 void CScriptGameObject::debug_planner				(const script_planner *planner)
