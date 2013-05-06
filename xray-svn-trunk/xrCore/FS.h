@@ -265,10 +265,10 @@ protected:
 public:
 	IC int			elapsed		()	const		{	return Size-Pos;		};
 	IC int			tell		()	const		{	return Pos;				};
-	IC void			seek		(int ptr)		{	Pos=ptr; VERIFY((Pos<=Size) && (Pos>=0));};
+	IC void			seek		(int ptr)		{	Pos=ptr; VERIFY2((Pos<=Size) && (Pos>=0),make_string("Pos=[%d], Size=[%d]", Pos, Size));};
 	IC int			length		()	const		{	return Size;			};
 	IC void*		pointer		()	const		{	return &(data[Pos]);	};
-	IC void			advance		(int cnt)		{	Pos+=cnt;VERIFY((Pos<=Size) && (Pos>=0));};
+	IC void			advance		(int cnt)		{	Pos+=cnt;VERIFY2((Pos<=Size) && (Pos>=0),make_string("Pos=[%d], Size=[%d]", Pos, Size));};
 
 public:
 	void			r			(void *p,int cnt);
