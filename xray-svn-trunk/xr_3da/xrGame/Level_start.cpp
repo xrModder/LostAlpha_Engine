@@ -158,7 +158,7 @@ bool CLevel::net_start3				()
 
 		string4096	tmp;
 		xr_strcpy(tmp, m_caClientOptions.c_str());
-		strcat_s(tmp, PortStr);
+		xr_strcat(tmp, PortStr);
 		
 		m_caClientOptions = tmp;
 	}

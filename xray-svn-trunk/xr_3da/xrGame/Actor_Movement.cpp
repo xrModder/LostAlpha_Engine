@@ -20,6 +20,8 @@
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
+#include "UIGameCustom.h"
+
 static const float	s_fLandingTime1		= 0.1f;// через сколько снять флаг Landing1 (т.е. включить следующую анимацию)
 static const float	s_fLandingTime2		= 0.3f;// через сколько снять флаг Landing2 (т.е. включить следующую анимацию)
 static const float	s_fJumpTime			= 0.3f;
@@ -578,7 +580,7 @@ bool	CActor::CanMove				()
 	{
 		if(mstate_wishful&mcAnyMove)
 		{
-			HUD().GetUI()->AddInfoMessage("cant_walk");
+			CurrentGameUI()->AddCustomStatic("cant_walk", true);
 		}
 		return false;
 	}else
@@ -586,7 +588,7 @@ bool	CActor::CanMove				()
 	{
 		if(mstate_wishful&mcAnyMove)
 		{
-			HUD().GetUI()->AddInfoMessage("cant_walk_weight");
+			CurrentGameUI()->AddCustomStatic("cant_walk_weight", true);
 		}
 		return false;
 	

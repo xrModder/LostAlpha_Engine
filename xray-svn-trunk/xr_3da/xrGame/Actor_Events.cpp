@@ -62,8 +62,7 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				inventory().Take(_GO, false, true);
 
 				CUIGameSP* pGameSP = NULL;
-				CUI* ui = HUD().GetUI();
-				if( ui&&ui->UIGame() )
+				if(CurrentGameUI())
 				{
 					pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 					if (Level().CurrentViewEntity() == this)
@@ -112,7 +111,7 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 
 			SelectBestWeapon(O);
 
-			if (Level().CurrentViewEntity() == this && HUD().GetUI() && CurrentGameUI())
+			if (Level().CurrentViewEntity() == this && CurrentGameUI())
 				CurrentGameUI()->ReInitShownUI();
 		}
 		break;

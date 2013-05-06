@@ -17,7 +17,8 @@
 #include "AI/Stalker/ai_stalker.h"
 #include "character_info.h"
 #include "game_cl_base_weapon_usage_statistic.h"
-#include "../xrCDB/xr_collide_defs.h"
+#include "../../xrCDB/xr_collide_defs.h"
+#include "../xr_3da/xr_collide_form.h"
 #include "weapon.h"
 
 //константы shoot_factor, определ€ющие 
@@ -211,17 +212,14 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 		//на текущем актере отметок не ставим
 		if(Level().CurrentEntity() && Level().CurrentEntity()->ID() == R.O->ID())  return;
 
-		ref_shader* pWallmarkShader = (!mtl_pair || mtl_pair->CollideMarks.empty())?
-		NULL:&mtl_pair->CollideMarks[::Random.randI(0,mtl_pair->CollideMarks.size())];;
-
 	//	fprintf (log11,"Section works! (!mtl_pair || mtl_pair->CollideMarks.empty()) \n");
-		if (pWallmarkShader && ShowMark)
+		if (mtl_pair && !mtl_pair->m_pCollideMarks->empty() && ShowMark)
 		{
 			//добавить отметку на материале
 			Fvector p;
 			p.mad(bullet->pos,bullet->dir,R.range-0.01f);
 			::Render->add_SkeletonWallmark	(&R.O->renderable.xform, 
-							PCKinematics(R.O->Visual()), *pWallmarkShader,
+							PKinematics(R.O->Visual()), &*mtl_pair->m_pCollideMarks,
 							p, bullet->dir, bullet->wallmark_size);
 
 //Fvector*    pVerts    = Level().ObjectSpace.GetStaticVerts();
@@ -237,15 +235,12 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 		Fvector*	pVerts	= Level().ObjectSpace.GetStaticVerts();
 		CDB::TRI*	pTri	= Level().ObjectSpace.GetStaticTris()+R.element;
 
-		ref_shader* pWallmarkShader =	(!mtl_pair || mtl_pair->CollideMarks.empty())?
-										NULL:&mtl_pair->CollideMarks[::Random.randI(0,mtl_pair->CollideMarks.size())];;
-
 	//			fprintf (log11,"Section works! ref_shader* pWallmarkShader \n");
 
-		if (pWallmarkShader && ShowMark)
+		if (mtl_pair && !mtl_pair->m_pCollideMarks->empty() && ShowMark)
 		{
 			//добавить отметку на материале
-			::Render->add_StaticWallmark	(*pWallmarkShader, vEnd, bullet->wallmark_size, pTri, pVerts);
+			::Render->add_StaticWallmark	(&*mtl_pair->m_pCollideMarks, vEnd, bullet->wallmark_size, pTri, pVerts);
 									//	fprintf (log11,"Section works! add_StaticWallmark \n");
 		}
 								//				fclose(log11);

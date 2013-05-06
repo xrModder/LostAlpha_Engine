@@ -12,9 +12,9 @@
 #include "ui/UIMainIngameWnd.h"
 #include "Grenade.h"
 #include "clsid_game.h"
-
 #include "game_cl_base.h"
 #include "Level.h"
+#include "UIGameCustom.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 //AAAAAA
@@ -144,7 +144,7 @@ void	CActor::PickupModeUpdate_COD	()
 		
 	if (!g_Alive() || eacFreeLook == cam_active) 
 	{
-		HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(NULL);
+		CurrentGameUI()->UIMainIngameWnd->SetPickUpItem(NULL);
 		return;
 	};
 	
@@ -204,7 +204,7 @@ void	CActor::PickupModeUpdate_COD	()
 				pNearestItem = NULL;
 	}
 
-	HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
+	CurrentGameUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
 
 	if (pNearestItem && m_bPickupMode)
 	{
