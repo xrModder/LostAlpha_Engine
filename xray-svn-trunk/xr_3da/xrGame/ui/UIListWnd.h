@@ -129,6 +129,10 @@ protected:
 	//индекс первого показанного элемента
 	int		m_iFirstShownIndex;
 
+	//skyloader: время и фрейм для отсчета даблклика
+	u32		m_dwLastClickTime;
+	u32		m_dwLastClickFrame;
+
 	//элемент над которым курсор в данный момент или -1, если такого нет
 	int		m_iFocusedItem;
 	int		m_iFocusedItemGroupID;
