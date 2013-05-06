@@ -68,7 +68,7 @@ void CUIStaticItem::RenderInternal()
 {
 	// convert&set pos
 	Fvector2		bp;
-	UI()->ClientToScreenScaled	(bp,float(iPos.x),float(iPos.y));
+	UI().ClientToScreenScaled	(bp,float(iPos.x),float(iPos.y));
 	bp.x						= (float)iFloor(bp.x);
 	bp.y						= (float)iFloor(bp.y);
 
@@ -76,7 +76,7 @@ void CUIStaticItem::RenderInternal()
 	u32							vOffset;
 	Fvector2					pos;
 	Fvector2					f_len;
-	UI()->ClientToScreenScaled	(f_len, iVisRect.x2, iVisRect.y2 );
+	UI().ClientToScreenScaled	(f_len, iVisRect.x2, iVisRect.y2 );
 
 	int tile_x					= fis_zero(iRemX)?iTileX:iTileX+1;
 	int tile_y					= fis_zero(iRemY)?iTileY:iTileY+1;

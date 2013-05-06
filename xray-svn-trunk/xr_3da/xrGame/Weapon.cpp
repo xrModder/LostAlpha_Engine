@@ -1709,10 +1709,10 @@ void CWeapon::WeaponCamEffector(LPCSTR name)
 	if(pActor)
 	{
 		string256 fname;
-		strcpy(fname, "camera_effects\\weapon\\");
-		strcat(fname, cNameSect().c_str());
-		strcat(fname, name);
-		strcat(fname, ".anm");
+		xr_strcpy(fname, "camera_effects\\weapon\\");
+		xr_strcat(fname, cNameSect().c_str());
+		xr_strcat(fname, name);
+		xr_strcat(fname, ".anm");
 
 		string_path	full_path;
 		if (!FS.exist( full_path, "$game_anims$", fname))

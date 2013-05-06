@@ -68,13 +68,13 @@ private:
 	CUIDragDropListEx*		m_back_list;
 public:
 							CUIDragItem(CUICellItem* parent);
-	virtual		void		Init(const ref_shader& sh, const Frect& rect, const Frect& text_rect);
+	virtual		void		Init(const ui_shader& sh, const Frect& rect, const Frect& text_rect);
 	virtual					~CUIDragItem();
 			CUIStatic*		wnd						() {return &m_static;}
 	virtual		bool		OnMouse					(float x, float y, EUIMessages mouse_action);
 	virtual		void		Draw					();
 	virtual		void		OnRender				();
-	virtual		void		OnFrame					();
+	virtual		void _BCL	OnFrame					();
 		CUICellItem*		ParentItem				()							{return m_pParent;}
 				void		SetBackList				(CUIDragDropListEx*l);
 	CUIDragDropListEx*		BackList				()							{return m_back_list;}

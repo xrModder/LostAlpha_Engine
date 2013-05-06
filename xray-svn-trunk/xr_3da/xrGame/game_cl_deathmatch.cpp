@@ -760,7 +760,7 @@ void game_cl_Deathmatch::OnVoteStart(NET_Packet& P)
 	if(m_game_ui)
 	{
 		string4096 CmdName = "";
-		string1024 NewCmd; strcpy(NewCmd, Command);
+		string1024 NewCmd; xr_strcpy(NewCmd, Command);
 		string1024 CmdParams[MAX_VOTE_PARAMS] = {"", "", "", "", ""};
 		sscanf	(Command,"%s %s %s %s %s %s", CmdName, CmdParams[0], CmdParams[1], CmdParams[2], CmdParams[3], CmdParams[4]);
 
@@ -786,8 +786,8 @@ void game_cl_Deathmatch::OnVoteStart(NET_Packet& P)
 			{
 				if (xr_strlen(CmdParams[i]))
 				{
-					strcat(NewCmd, " ");
-					strcat(NewCmd, CmdParams[i]);
+					xr_strcat(NewCmd, " ");
+					xr_strcat(NewCmd, CmdParams[i]);
 				}
 			}
 		}
@@ -801,8 +801,8 @@ void game_cl_Deathmatch::OnVoteStart(NET_Packet& P)
 			{
 				if (xr_strlen(CmdParams[i]))
 				{
-					strcat(NewCmd, " ");
-					strcat(NewCmd, CmdParams[i]);
+					xr_strcat(NewCmd, " ");
+					xr_strcat(NewCmd, CmdParams[i]);
 				}
 			}
 		}

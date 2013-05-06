@@ -161,7 +161,7 @@ void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone
 	GetBonePos(object,pBoneInfo->index,pBoneInfo->offset,m.c);
 	particles_info.ps->UpdateParent(m,zero_vel);
 	if(!particles_info.ps->IsPlaying())
-		particles_info.ps->Play		();
+		particles_info.ps->Play		(false);
 
 	m_bActiveBones = true;
 }
@@ -183,7 +183,7 @@ void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fmatrix& 
 		GetBonePos(object,it->index,it->offset,m.c);
 		particles_info.ps->UpdateParent(m,zero_vel);
 		if(!particles_info.ps->IsPlaying())
-			particles_info.ps->Play	();
+			particles_info.ps->Play	(false);
 	}
 
 	m_bActiveBones = true;

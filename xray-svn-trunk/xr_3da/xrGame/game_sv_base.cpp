@@ -254,14 +254,14 @@ void game_sv_GameState::net_Export_State						(NET_Packet& P, ClientID to)
 		xrClientData*	C		=	(xrClientData*)	m_server->client_Get	(p_it);
 		game_PlayerState* A		=	get_it			(p_it);
 		if (!C->net_Ready || (A->IsSkip() && C->ID != to)) continue;
-		if (0==C)	strcpy(p_name,"Unknown");
+		if (0==C)	xr_strcpy(p_name,"Unknown");
 		else 
 		{
 			CSE_Abstract* C_e		= C->owner;
-			if (0==C_e)		strcpy(p_name,"Unknown");
+			if (0==C_e)		xr_strcpy(p_name,"Unknown");
 			else 
 			{
-				strcpy	(p_name,C_e->name_replace());
+				xr_strcpy	(p_name,C_e->name_replace());
 			}
 		}
 
@@ -710,7 +710,7 @@ bool game_sv_GameState::NewPlayerName_Exists( void* pClient, LPCSTR NewName )
 		IClient*	pIC	= m_server->client_Get(it);
 		if ( !pIC || pIC == CL ) continue;
 		string64 xName;
-		strcpy( xName, pIC->name.c_str() );
+		xr_strcpy( xName, pIC->name.c_str() );
 		if ( !xr_strcmp(NewName, xName) ) return true;
 	};
 	return false;
@@ -726,7 +726,7 @@ void game_sv_GameState::NewPlayerName_Generate( void* pClient, LPSTR NewPlayerNa
 		xr_sprintf( NewXName, "%s_%d", NewPlayerName, i );
 		if ( !NewPlayerName_Exists( pClient, NewXName ) )
 		{
-			strcpy( NewPlayerName, NewXName );
+			xr_strcpy( NewPlayerName, NewXName );
 			return;
 		}
 	}

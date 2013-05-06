@@ -670,7 +670,7 @@ LPCSTR PH_DBG_ObjectTrack()
 }
 void PH_DBG_SetTrackObject(LPCSTR obj)
 {
-	strcpy( s_dbg_tsrace_obj,obj);
+	xr_strcpy( s_dbg_tsrace_obj,obj);
 	dbg_trace_object=s_dbg_tsrace_obj;
 }
 #endif

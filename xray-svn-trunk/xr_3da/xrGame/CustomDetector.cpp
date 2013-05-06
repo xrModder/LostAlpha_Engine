@@ -9,6 +9,8 @@
 #include "cameraEffector.h"
 #include "actor.h"
 #include "ai_sounds.h"
+#include "clsid_game.h"
+#include "game_base_space.h"
 
 ZONE_INFO::ZONE_INFO	()
 {
@@ -272,8 +274,6 @@ void CCustomDetector::UpdateMapLocations() // called on turn on/off only
 		AddRemoveMapSpot(it->first,IsWorking());
 }
 
-#include "clsid_game.h"
-#include "game_base_space.h"
 void CCustomDetector::UpdateNightVisionMode()
 {
 //	CObject* tmp = Level().CurrentViewEntity();	
@@ -314,7 +314,7 @@ void CCustomDetector::UpdateNightVisionMode()
 			
 			zone_info.pParticle->UpdateParent(pZone->XFORM(),zero_vector);
 			if(!zone_info.pParticle->IsPlaying())
-				zone_info.pParticle->Play();
+				zone_info.pParticle->Play(false);
 		}else{
 			if(zone_info.pParticle){
 				zone_info.pParticle->Stop			();

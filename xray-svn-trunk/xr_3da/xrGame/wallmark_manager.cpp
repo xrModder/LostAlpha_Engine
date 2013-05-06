@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "wallmark_manager.h"
 #include "Level.h"
-#include "../xrEngine/gamemtllib.h"
+#include "../gamemtllib.h"
 #include "../xrphysics/CalculateTriangle.h"
 #include "profiler.h"
 #ifdef DEBUG

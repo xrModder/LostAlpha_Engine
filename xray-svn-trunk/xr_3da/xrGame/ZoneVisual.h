@@ -1,5 +1,6 @@
 #pragma once
-//#include "..\animation_motion.h"
+
+#include "../../Include/xrRender/animation_motion.h "
 
 class CVisualZone :
 	public CCustomZone

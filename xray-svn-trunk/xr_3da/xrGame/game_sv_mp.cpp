@@ -475,7 +475,7 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 	if (!pV) return;
 	//-------------------------------------------
 	string256 SkinName;
-	std::strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
+	xr_strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
 	//загружены ли скины для этой комманды
 
 	if (!TeamList.empty()	&&
@@ -485,10 +485,10 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 		//загружено ли достаточно скинов для этой комманды
 		if (TeamList[Team].aSkins.size() > ID)
 		{
-			std::strcat(SkinName, TeamList[Team].aSkins[ID].c_str());
+			xr_strcat(SkinName, TeamList[Team].aSkins[ID].c_str());
 		}
 		else
-			std::strcat(SkinName, TeamList[Team].aSkins[0].c_str());
+			xr_strcat(SkinName, TeamList[Team].aSkins[0].c_str());
 	}
 	else
 	{
@@ -496,20 +496,20 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 		switch (Team)
 		{
 		case 0:
-			std::strcat(SkinName, "stalker_hood_multiplayer");
+			xr_strcat(SkinName, "stalker_hood_multiplayer");
 			break;
 		case 1:
-			std::strcat(SkinName, "soldat_beret");
+			xr_strcat(SkinName, "soldat_beret");
 			break;
 		case 2:
-			std::strcat(SkinName, "stalker_black_mask");
+			xr_strcat(SkinName, "stalker_black_mask");
 			break;
 		default:
 			R_ASSERT2(0,"Unknown Team");
 			break;
 		};
 	};
-	std::strcat(SkinName, ".ogf");
+	xr_strcat(SkinName, ".ogf");
 //.	Msg("* Skin - %s", SkinName);
 	int len = xr_strlen(SkinName);
 	R_ASSERT2(len < 64, "Skin Name is too LONG!!!");
@@ -704,18 +704,18 @@ void game_sv_mp::OnVoteStart				(LPCSTR VoteCommand, ClientID sender)
 			string256 WeatherTime = "", WeatherName = "";
 			sscanf(CommandParams, "%s %s", WeatherName, WeatherTime );
 
-			m_pVoteCommand.sprintf("%s %s", votecommands[i].command, WeatherTime);
+			m_pVoteCommand.printf("%s %s", votecommands[i].command, WeatherTime);
 			xr_sprintf(resVoteCommand, "%s %s", votecommands[i].name, WeatherName);
 		}
 		else
 		{
-			m_pVoteCommand.sprintf("%s %s", votecommands[i].command, CommandParams);
-			strcpy(resVoteCommand, VoteCommand);
+			m_pVoteCommand.printf("%s %s", votecommands[i].command, CommandParams);
+			xr_strcpy(resVoteCommand, VoteCommand);
 		}		
 	}
 	else
 	{
-		m_pVoteCommand.sprintf("%s", VoteCommand+1);
+		m_pVoteCommand.printf("%s", VoteCommand+1);
 	};
 
 	xrClientData *pStartedPlayer = NULL;
@@ -913,7 +913,7 @@ void	game_sv_mp::SetPlayersDefItems		(game_PlayerState* ps)
 		if (pSettings->line_exist(WeaponName, "ammo_class"))
 		{
 			string1024 wpnAmmos, BaseAmmoName;
-			std::strcpy(wpnAmmos, pSettings->r_string(WeaponName, "ammo_class"));
+			xr_strcpy(wpnAmmos, pSettings->r_string(WeaponName, "ammo_class"));
 			_GetItem(wpnAmmos, 0, BaseAmmoName);
 			AmmoID = u16(m_strWeaponsData->GetItemIdx(BaseAmmoName)&0xffff);
 		};
@@ -1329,8 +1329,8 @@ void	game_sv_mp::ReadOptions				(shared_str &options)
 	g_sv_dwMaxClientPing = get_option_i(*options,"maxping",g_sv_dwMaxClientPing);
 
 	string64	StartTime, TimeFactor;
-	strcpy(StartTime,get_option_s		(*options,"estime","12:00:00"));
-	strcpy(TimeFactor,get_option_s		(*options,"etimef","1"));
+	xr_strcpy(StartTime,get_option_s		(*options,"estime","12:00:00"));
+	xr_strcpy(TimeFactor,get_option_s		(*options,"etimef","1"));
 
 	u32 year = 1, month = 1, day = 1, hours = 0, mins = 0, secs = 0, milisecs = 0;
 	sscanf				(StartTime,"%d:%d:%d.%d",&hours,&mins,&secs,&milisecs);
@@ -1356,13 +1356,13 @@ void game_sv_mp::DumpOnlineStatistic()
 
 	string_path					fn;
 	FS.update_path				(fn,"$logs$","mp_stats\\");
-	strcat_s					(fn, srv->HostName.c_str());
-	strcat_s					(fn, "\\online\\dmp" );
+	xr_strcat					(fn, srv->HostName.c_str());
+	xr_strcat					(fn, "\\online\\dmp" );
 
 	string64					t_stamp;
 	timestamp					(t_stamp);
-	strcat_s					(fn, t_stamp );
-	strcat_s					(fn, ".ltx" );
+	xr_strcat					(fn, t_stamp );
+	xr_strcat					(fn, ".ltx" );
 
 	CInifile					ini(fn, FALSE, FALSE, TRUE);
 	shared_str					current_section = "global";
@@ -1451,10 +1451,10 @@ void game_sv_mp::DumpRoundStatistics()
 	FS.update_path				(fn,"$logs$","mp_stats\\");
 	string64					t_stamp;
 	timestamp					(t_stamp);
-	strcat_s					(fn, srv->HostName.c_str() );
-	strcat_s					(fn, "\\games\\dmp" );
-	strcat_s					(fn, t_stamp );
-	strcat_s					(fn, ".ltx" );
+	xr_strcat					(fn, srv->HostName.c_str() );
+	xr_strcat					(fn, "\\games\\dmp" );
+	xr_strcat					(fn, t_stamp );
+	xr_strcat					(fn, ".ltx" );
 
 	CInifile					ini(fn, FALSE, FALSE, TRUE);
 	shared_str					current_section = "global";

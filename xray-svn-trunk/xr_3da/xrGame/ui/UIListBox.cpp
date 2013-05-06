@@ -309,7 +309,7 @@ float CUIListBox::GetLongestLength()
 		if (item)
 		{
 			float tmp_len = item->GetFont()->SizeOf_(item->GetText()); //all ok
-			UI()->ClientToScreenScaledWidth(tmp_len);
+			UI().ClientToScreenScaledWidth(tmp_len);
 
 			if (tmp_len > len)
 				len = tmp_len;

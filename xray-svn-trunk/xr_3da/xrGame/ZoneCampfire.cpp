@@ -38,7 +38,7 @@ void CZoneCampfire::GoEnabledState()
 	LPCSTR str						= pSettings->r_string(cNameSect(),"enabling_particles");
 	m_pEnablingParticles			= CParticlesObject::Create(str,FALSE);
 	m_pEnablingParticles->UpdateParent(XFORM(),zero_vel);
-	m_pEnablingParticles->Play		();
+	m_pEnablingParticles->Play		(false);
 }
 
 void CZoneCampfire::GoDisabledState()
@@ -49,7 +49,7 @@ void CZoneCampfire::GoDisabledState()
 	LPCSTR str						= pSettings->r_string(cNameSect(),"disabled_particles");
 	m_pDisabledParticles			= CParticlesObject::Create(str,FALSE);
 	m_pDisabledParticles->UpdateParent	(XFORM(),zero_vel);
-	m_pDisabledParticles->Play			();
+	m_pDisabledParticles->Play			(false);
 	
 	
 	str = pSettings->r_string		(cNameSect(),"disabled_sound");

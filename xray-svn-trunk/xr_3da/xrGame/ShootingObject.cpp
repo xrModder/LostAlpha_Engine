@@ -4,18 +4,16 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-
 #include "ShootingObject.h"
-
 #include "ParticlesObject.h"
 #include "WeaponAmmo.h"
-
 #include "actor.h"
 #include "game_cl_base.h"
 #include "level.h"
 #include "level_bullet_manager.h"
 #include "clsid_game.h"
 #include "game_cl_single.h"
+#include "spectator.h"
 
 #define HIT_POWER_EPSILON 0.05f
 #define WALLMARK_SIZE 0.04f
@@ -186,18 +184,16 @@ void CShootingObject::StartParticles (CParticlesObject*& pParticles, LPCSTR part
 									 const Fvector& pos, const  Fvector& vel, bool auto_remove_flag)
 {
 	if(!particles_name) return;
-
 	if(pParticles != NULL) 
 	{
 		UpdateParticles(pParticles, pos, vel);
 		return;
 	}
-
 	pParticles = CParticlesObject::Create(particles_name,(BOOL)auto_remove_flag);
-	
 	UpdateParticles(pParticles, pos, vel);
 	pParticles->Play();
 }
+
 void CShootingObject::StopParticles (CParticlesObject*&	pParticles)
 {
 	if(pParticles == NULL) return;

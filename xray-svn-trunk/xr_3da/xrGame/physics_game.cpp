@@ -11,6 +11,9 @@
 #include "PHCommander.h"
 #include "MathUtils.h"
 #include "PHWorld.h"
+#include "../../Include/xrRender/FactoryPtr.h"
+#include "../../Include/xrRender/WallMarkArray.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 static const float PARTICLE_EFFECT_DIST=70.f;
@@ -49,11 +52,10 @@ public:
 	virtual bool 			obsolete						()const{return false;}
 };
 
-
 class CPHWallMarksCall :
 	public CPHAction
 {
-	ref_shader pWallmarkShader;
+	wm_shader pWallmarkShader;
 	Fvector pos;
 	CDB::TRI* T;
 public:

@@ -1203,7 +1203,7 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 	xr_strcpy			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
 
 	if ( HasFireModes() )
-		strcat_s(sItemName, GetCurrentFireModeStr());
+		xr_strcat(sItemName, GetCurrentFireModeStr());
 
 	str_name		= sItemName;
 

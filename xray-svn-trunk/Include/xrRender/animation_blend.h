@@ -1,6 +1,8 @@
 #pragma once
 
-#include	"animation_motion.h"
+#include "animation_motion.h"
+#include "../../xr_3da/SkeletonMotions.h"
+
 //*** Run-time Blend definition *******************************************************************
 #ifdef	DEBUG
 class	bnon_copy

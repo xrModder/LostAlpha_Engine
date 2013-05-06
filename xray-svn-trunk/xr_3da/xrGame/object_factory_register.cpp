@@ -10,11 +10,9 @@
 #pragma hdrstop
 
 #include "object_factory_impl.h"
-
 // server entities includes
 #include "xrServer_Objects_ALife_All.h"
 #include "clsid_game.h"
-
 // client entities includes
 #ifndef NO_XR_GAME
 #	include "../std_classes.h"
@@ -23,7 +21,6 @@
 #	include "hudmanager.h"
 #	include "actor.h"
 #	include "spectator.h"
-
 #	include "ai/monsters/karlik/karlik.h"
 #	include "ai/monsters/flesh/flesh.h"
 #	include "ai/monsters/chimera/chimera.h"
@@ -43,24 +40,17 @@
 #	include "ai/monsters/snork/snork.h"
 #	include "ai/monsters/cat/cat.h"
 #	include "ai/monsters/tushkano/tushkano.h"
-
 #	include "ai/phantom/phantom.h"
-
 #	include "ai/trader/ai_trader.h"
-
 #	include "ai/crow/ai_crow.h"
-
 #	ifdef DEBUG
 #		include "../StatGraph.h"
 #		include "PHDebug.h"
 #	endif // DEBUG
-
 #	include "hit.h"
 #	include "PHDestroyable.h"
 #	include "car.h"
-
 #	include "helicopter.h"
-
 #	include "MercuryBall.h"
 #	include "BlackDrops.h"
 #	include "BlackGraviArtifact.h"
@@ -98,36 +88,27 @@
 #	include "WeaponMounted.h"
 #	include "WeaponStatMgun.h"
 #	include "Fireball.h"
-
 #	include "scope.h"
 #	include "silencer.h"
 #	include "grenadelauncher.h"
-
 #	include "bolt.h"
 #	include "medkit.h"
 #	include "antirad.h"
 #	include "fooditem.h"
 #	include "bottleitem.h"
 #	include "explosiveitem.h"
-
 #	include "infodocument.h"
 #	include "attachable_item.h"
-
 #	include "ScientificOutfit.h"
 #	include "StalkerOutfit.h"
 #	include "MilitaryOutfit.h"
 #	include "ExoOutfit.h"
-
 #	include "f1.h"
 #	include "rgd5.h"
-
 #	include "CustomTimersManager.h"
 #	include "CustomTimer.h"
-
 #	include "explosiverocket.h"
-
 #	include "MPPlayersBag.h"
-
 #	include "customzone.h"
 #	include "mosquitobald.h"
 #	include "zonemine.h"
@@ -145,39 +126,31 @@
 #	include "amebazone.h"
 #	include "nogravityzone.h"
 #	include "simpledetector.h"
-
 #	include "torch.h"
 #	include "battery.h"
 #	include "pda.h"
-
 #	include "mounted_turret.h"
-
 #	include "searchlight.h"
-
 #	include "HangingLamp.h"
 #	include "physicobject.h"
 #	include "script_object.h"
 #	include "BreakableObject.h"
 #	include "PhysicsSkeletonObject.h"
 #	include "DestroyablePhysicsObject.h"
-
 #	include "game_sv_single.h"
 #	include "game_sv_deathmatch.h"
 #	include "game_sv_teamdeathmatch.h"
 #	include "game_sv_ArtefactHunt.h"
-
 #	include "game_cl_single.h"
 #	include "game_cl_deathmatch.h"
 #	include "game_cl_teamdeathmatch.h"
 #	include "game_cl_ArtefactHunt.h"
-
 #	include "UIGameSP.h"
 #	include "UIGameAHunt.h"
 #	include	"climableobject.h"
 #	include "space_restrictor.h"
 #	include "smart_zone.h"
 #	include "InventoryBox.h"
-
 #	include "actor_mp_server.h"
 #	include "actor_mp_client.h"
 #endif // NO_XR_GAME

@@ -4,6 +4,8 @@
 #include "ParticlesObject.h"
 #include "level.h"
 #include "physicsshellholder.h"
+#include "../xr_collide_form.h"
+
 CZoneMine::CZoneMine(void) 
 {
 	m_dwDeltaTime			= 0;

@@ -7,7 +7,7 @@
 #include "clsid_game.h"
 #include "game_base_space.h"
 #include "Hit.h"
-
+#include "../xr_collide_form.h"
 
 CRadioactiveZone::CRadioactiveZone(void) 
 {}

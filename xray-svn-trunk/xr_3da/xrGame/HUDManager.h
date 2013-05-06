@@ -47,3 +47,5 @@ public:
 	virtual void			OnConnected			();
 	virtual void			net_Relcase			(CObject *object);
 };
+
+IC CHUDManager&			HUD()		{ return *((CHUDManager*)g_hud);}

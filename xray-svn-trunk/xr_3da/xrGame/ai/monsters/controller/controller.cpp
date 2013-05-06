@@ -535,7 +535,7 @@ void CController::draw_fire_particles()
 	//if(!m_sndShockEffector)
 	//	m_sndShockEffector = xr_new<SndShockEffector>();
 
-	//m_sndShockEffector->Start(m_sound_hit_fx._handle()->length_ms(), 10.f );
+	//m_sndShockEffector->Start(m_sound_hit_fx._handle()->length_sec()  *1000, 10.f );
 	//m_sound_hit_fx.play_at_pos(this, Level().CurrentEntity()->Position());
 }
 

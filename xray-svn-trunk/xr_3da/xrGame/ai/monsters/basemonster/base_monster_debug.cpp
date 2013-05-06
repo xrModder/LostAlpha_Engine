@@ -72,28 +72,28 @@ CBaseMonster::SDebugInfo CBaseMonster::show_debug_info()
 		string128	s_type;
 
 		switch(sound_elem.type){
-			case WEAPON_SHOOTING:			strcpy(s_type,"WEAPON_SHOOTING"); break;
-			case MONSTER_ATTACKING:			strcpy(s_type,"MONSTER_ATTACKING"); break;
-			case WEAPON_BULLET_RICOCHET:	strcpy(s_type,"WEAPON_BULLET_RICOCHET"); break;
-			case WEAPON_RECHARGING:			strcpy(s_type,"WEAPON_RECHARGING"); break;
+			case WEAPON_SHOOTING:			xr_strcpy(s_type,"WEAPON_SHOOTING"); break;
+			case MONSTER_ATTACKING:			xr_strcpy(s_type,"MONSTER_ATTACKING"); break;
+			case WEAPON_BULLET_RICOCHET:	xr_strcpy(s_type,"WEAPON_BULLET_RICOCHET"); break;
+			case WEAPON_RECHARGING:			xr_strcpy(s_type,"WEAPON_RECHARGING"); break;
 
-			case WEAPON_TAKING:				strcpy(s_type,"WEAPON_TAKING"); break;
-			case WEAPON_HIDING:				strcpy(s_type,"WEAPON_HIDING"); break;
-			case WEAPON_CHANGING:			strcpy(s_type,"WEAPON_CHANGING"); break;
-			case WEAPON_EMPTY_CLICKING:		strcpy(s_type,"WEAPON_EMPTY_CLICKING"); break;
+			case WEAPON_TAKING:				xr_strcpy(s_type,"WEAPON_TAKING"); break;
+			case WEAPON_HIDING:				xr_strcpy(s_type,"WEAPON_HIDING"); break;
+			case WEAPON_CHANGING:			xr_strcpy(s_type,"WEAPON_CHANGING"); break;
+			case WEAPON_EMPTY_CLICKING:		xr_strcpy(s_type,"WEAPON_EMPTY_CLICKING"); break;
 
-			case MONSTER_DYING:				strcpy(s_type,"MONSTER_DYING"); break;
-			case MONSTER_INJURING:			strcpy(s_type,"MONSTER_INJURING"); break;
-			case MONSTER_WALKING:			strcpy(s_type,"MONSTER_WALKING"); break;
-			case MONSTER_JUMPING:			strcpy(s_type,"MONSTER_JUMPING"); break;
-			case MONSTER_FALLING:			strcpy(s_type,"MONSTER_FALLING"); break;
-			case MONSTER_TALKING:			strcpy(s_type,"MONSTER_TALKING"); break;
+			case MONSTER_DYING:				xr_strcpy(s_type,"MONSTER_DYING"); break;
+			case MONSTER_INJURING:			xr_strcpy(s_type,"MONSTER_INJURING"); break;
+			case MONSTER_WALKING:			xr_strcpy(s_type,"MONSTER_WALKING"); break;
+			case MONSTER_JUMPING:			xr_strcpy(s_type,"MONSTER_JUMPING"); break;
+			case MONSTER_FALLING:			xr_strcpy(s_type,"MONSTER_FALLING"); break;
+			case MONSTER_TALKING:			xr_strcpy(s_type,"MONSTER_TALKING"); break;
 
-			case DOOR_OPENING:				strcpy(s_type,"DOOR_OPENING"); break;
-			case DOOR_CLOSING:				strcpy(s_type,"DOOR_CLOSING"); break;
-			case OBJECT_BREAKING:			strcpy(s_type,"OBJECT_BREAKING"); break;
-			case OBJECT_FALLING:			strcpy(s_type,"OBJECT_FALLING"); break;
-			case NONE_DANGEROUS_SOUND:		strcpy(s_type,"NONE_DANGEROUS_SOUND"); break;
+			case DOOR_OPENING:				xr_strcpy(s_type,"DOOR_OPENING"); break;
+			case DOOR_CLOSING:				xr_strcpy(s_type,"DOOR_CLOSING"); break;
+			case OBJECT_BREAKING:			xr_strcpy(s_type,"OBJECT_BREAKING"); break;
+			case OBJECT_FALLING:			xr_strcpy(s_type,"OBJECT_FALLING"); break;
+			case NONE_DANGEROUS_SOUND:		xr_strcpy(s_type,"NONE_DANGEROUS_SOUND"); break;
 		}
 
 		if (sound_elem.who)

@@ -13,6 +13,7 @@
 #include "actor.h"
 #include "inventory.h"
 #include "physicsshellholder.h"
+#include "../xr_collide_form.h"
 
 #define DEFAULT_RUST_DAMAGE 0.15f
 

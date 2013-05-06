@@ -26,12 +26,12 @@ xrServer::EConnect xrServer::Connect(shared_str &session_name)
 
 	string1024				options;
 	R_ASSERT2(xr_strlen(session_name) <= sizeof(options), "session_name too BIIIGGG!!!");
-	strcpy					(options,strchr(*session_name,'/')+1);
+	xr_strcpy					(options,strchr(*session_name,'/')+1);
 	
 	// Parse game type
 	string1024				type;
 	R_ASSERT2(xr_strlen(options) <= sizeof(type), "session_name too BIIIGGG!!!");
-	strcpy					(type,options);
+	xr_strcpy					(type,options);
 	if (strchr(type,'/'))	*strchr(type,'/') = 0;
 	game					= NULL;
 

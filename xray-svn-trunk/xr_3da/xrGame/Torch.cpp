@@ -6,17 +6,16 @@
 #include "PhysicsShell.h"
 #include "xrserver_objects_alife_items.h"
 #include "ai_sounds.h"
-
 #include "HUDManager.h"
 #include "level.h"
 #include "../../Include/xrRender/Kinematics.h"
 #include "../camerabase.h"
 #include "inventory.h"
 #include "game_base_space.h"
-
 #include "UIGameCustom.h"
 #include "actorEffector.h"
 #include "CustomOutfit.h"
+#include "../xr_collide_form.h"
 
 static const float		TIME_2_HIDE					= 5.f;
 static const float		TORCH_INERTION_CLAMP		= PI_DIV_6;

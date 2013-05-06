@@ -402,9 +402,9 @@ void CControl_Manager::dump(CControl_Com *com, LPCSTR action, ControlCom::EContr
 		if (it->second->ced()) {
 			string128 str;
 			if (it->second->ced()->capturer()) 
-				strcpy(str, dbg_control_name_table[com_type(it->second->ced()->capturer())]);
+				xr_strcpy(str, dbg_control_name_table[com_type(it->second->ced()->capturer())]);
 			else 
-				strcpy(str, "NONE");
+				xr_strcpy(str, "NONE");
 
 			xr_sprintf(st, "Locked[%u] Capturer[%s]", it->second->ced()->is_locked(), str);
 		}

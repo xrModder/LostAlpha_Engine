@@ -3,7 +3,6 @@
 
 #include "actor.h"
 #include "../CameraBase.h"
-
 #include "ActorEffector.h"
 #include "holder_custom.h"
 #ifdef DEBUG
@@ -13,9 +12,9 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
-#include "../xrRender/skeletonanimated.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "PHShellSplitter.h"
-
 #include "actor_anim_defs.h"
 #include "game_object_space.h"
 #include "characterphysicssupport.h"
@@ -77,7 +76,7 @@ void CActor::detach_Vehicle()
 
 	IKinematics*	pKinematics	= smart_cast<IKinematics*>(Visual()); R_ASSERT(pKinematics);
 	u16	head_bone		= pKinematics->LL_BoneID("bip01_head");
-	pKinematics->LL_HideBoneVisible(head_bone,TRUE);
+	pKinematics->LL_SetBoneVisible(head_bone, FALSE, TRUE);
 
 
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();

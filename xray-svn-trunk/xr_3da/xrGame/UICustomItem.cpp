@@ -35,10 +35,10 @@ CUICustomItem::~CUICustomItem()
 	Fvector2 LTp,RBp;
 	Fvector2 LTt,RBt;
 	//координаты на экране в пикселях
-	UI()->ClientToScreenScaled	(LTp, x1,y1);
+	UI().ClientToScreenScaled	(LTp, x1,y1);
 	LTp.add						(pos);
 
-	UI()->ClientToScreenScaled	(RBp, x2,y2);
+	UI().ClientToScreenScaled	(RBp, x2,y2);
 	RBp.add						(pos);
 
 	//текстурные координаты
@@ -93,7 +93,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 	Fvector2							pivot,offset,SZ;
 	SZ.set								(iVisRect.rb);
 
-//	UI()->ClientToScreenScaled			(SZ, iVisRect.x2, iVisRect.y2);
+//	UI().ClientToScreenScaled			(SZ, iVisRect.x2, iVisRect.y2);
 
 	float cosA							= _cos(angle);
 	float sinA							= _sin(angle);
@@ -102,7 +102,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 	if(!(uFlags&flValidHeadingPivot))	pivot.set(iVisRect.x2/2.f, iVisRect.y2/2.f);
 	else								pivot.set(iHeadingPivot.x, iHeadingPivot.y);
 
-//.	UI()->ClientToScreenScaled			(pivot, pivot.x, pivot.y);
+//.	UI().ClientToScreenScaled			(pivot, pivot.x, pivot.y);
 	pivot.set							(pivot);
 	offset.set							(pos_ns);
 
@@ -135,7 +135,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 	S[3].pt.add		(offset);
 
 	for(int i=0; i<4;++i)
-		UI()->ClientToScreenScaled		(S[i].pt);
+		UI().ClientToScreenScaled		(S[i].pt);
 
 	sPoly2D D;
 	sPoly2D* R		= UI()->ScreenFrustum().ClipPoly(S,D);
@@ -143,7 +143,7 @@ void CUICustomItem::Render(FVF::TL*& Pointer, const Fvector2& pos_ns, u32 color,
 		for (u32 k=0; k<R->size(); k++,Pointer++)
 		{
 //.			Fvector2 _pt;
-//.			UI()->ClientToScreenScaled			(_pt, (*R)[k].pt.x, (*R)[k].pt.y);
+//.			UI().ClientToScreenScaled			(_pt, (*R)[k].pt.x, (*R)[k].pt.y);
 //.			Pointer->set						(_pt.x, _pt.y,	color, (*R)[k].uv.x, (*R)[k].uv.y); 
 			Pointer->set						((*R)[k].pt.x, (*R)[k].pt.y,	color, (*R)[k].uv.x, (*R)[k].uv.y); 
 		}

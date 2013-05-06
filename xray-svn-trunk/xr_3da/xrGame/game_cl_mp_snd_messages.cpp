@@ -9,7 +9,7 @@ void	game_cl_mp::LoadSndMessage			(LPCSTR caSection, LPCSTR caLine, u32 ID)
 	if (!pSettings->line_exist(caSection, caLine)) return;
 
 	string4096			Line;
-	std::strcpy(Line, pSettings->r_string(caSection, caLine));
+	xr_strcpy(Line, pSettings->r_string(caSection, caLine));
 	u32 count	= _GetItemCount(Line);
 	if (count < 2) return;
 	string4096 Name, Prior;
@@ -29,7 +29,7 @@ void	game_cl_mp::PlaySndMessage			(u32 ID)
 	};
 	SND_Message& SndMsg = *it;
 	
-//	if (Level().timeServer()<pSndMgs->pSound._handle()->length_ms() + pSndMgs->LastStarted) return;
+//	if (Level().timeServer()<pSndMgs->pSound._handle()->length_sec() * 1000 + pSndMgs->LastStarted) return;
 	if (SndMsg.pSound._feedback()) return;
 
 	u32 MaxDelay = 0;
@@ -45,9 +45,9 @@ void	game_cl_mp::PlaySndMessage			(u32 ID)
 		}
 		if (pSndMsgIP->priority == SndMsg.priority)
 		{
-			if (Level().timeServer_Async()>pSndMsgIP->LastStarted + pSndMsgIP->pSound._handle()->length_ms()) continue;
+			if (Level().timeServer_Async()>pSndMsgIP->LastStarted + pSndMsgIP->pSound._handle()->length_sec() * 1000) continue;
 
-			u32 Delay = pSndMsgIP->LastStarted + pSndMsgIP->pSound._handle()->length_ms() - Level().timeServer_Async();
+			u32 Delay = pSndMsgIP->LastStarted + pSndMsgIP->pSound._handle()->length_sec() * 1000 - Level().timeServer_Async();
 			if (Delay > MaxDelay)
 			{
 				MaxDelay = Delay;

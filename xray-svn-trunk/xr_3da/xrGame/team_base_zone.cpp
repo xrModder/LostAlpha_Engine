@@ -19,10 +19,10 @@
 #include "map_manager.h"
 #include "map_location.h"
 #include "../IGame_Persistent.h"
-
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
+#include "../xr_collide_form.h"
 
 CTeamBaseZone::CTeamBaseZone		()
 {

@@ -2,6 +2,7 @@
 
 #include "../inventory_item.h"
 #include "../character_info_defs.h"
+#include "../ui_defs.h"
 
 class CUIStatic;
 
@@ -31,13 +32,12 @@ bool GreaterRoomInRuck	(PIItem item1, PIItem item2);
 //для проверки свободного места
 bool FreeRoom_inBelt	(TIItemContainer& item_list, PIItem item, int width, int height);
 
-
 // get shader for BuyWeaponWnd
-ref_shader&	GetBuyMenuShader();
+ui_shader&	GetBuyMenuShader();
 //получить shader на иконки инвенторя
-ref_shader& GetEquipmentIconsShader();
+ui_shader& GetEquipmentIconsShader();
 // shader на иконки персонажей в мультиплеере
-ref_shader&	GetMPCharIconsShader();
+ui_shader&	GetMPCharIconsShader();
 //удаляем все шейдеры
 void DestroyShaders();
 void CreateShaders();
