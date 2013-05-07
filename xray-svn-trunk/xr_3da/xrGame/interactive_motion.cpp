@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "interactive_motion.h"
-#include "../../Include/xrRender/animation_blend.h"
 #include "../../Include/xrRender/animation_motion.h"
 #include "physicsshell.h"
 #include "PhysicsShellHolder.h"

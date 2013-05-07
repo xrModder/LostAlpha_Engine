@@ -3,13 +3,11 @@
 #include "step_manager_defs.h"
 #include "step_manager.h"
 #include "entity_alive.h"
-#include "../Include/xrRender/KinematicsAnimated.h"
 #include "level.h"
 #include "gamepersistent.h"
 #include "material_manager.h"
 #include "profiler.h"
 #include "IKLimbsController.h"
-#include "../Include/xrRender/animation_blend.h"
 
 CStepManager::CStepManager()
 {
