@@ -114,7 +114,7 @@ void CMainMenu::ReadTextureInfo()
 		for (int i = 0; i < itemsCount; i++)
 		{
 			_GetItem(itemsList.c_str(), i, single_item);
-			strcat(single_item,".xml");
+			xr_strcat(single_item,".xml");
 			CUITextureMaster::ParseShTexInfo(single_item);
 		}		
 	}
@@ -340,7 +340,7 @@ void CMainMenu::OnRender	()
 	if(!OnRenderPPUI_query())
 	{
 		DoRenderDialogs();
-		UI()->RenderFont();
+		UI().RenderFont();
 		draw_wnds_rects();
 	}
 }
@@ -352,15 +352,15 @@ void CMainMenu::OnRenderPPUI_main	()
 	if(m_Flags.test(flGameSaveScreenshot))
 		return;
 
-	UI()->pp_start();
+	UI().pp_start();
 
 	if(OnRenderPPUI_query())
 	{
 		DoRenderDialogs();
-		UI()->RenderFont();
+		UI().RenderFont();
 	}
 
-	UI()->pp_stop();
+	UI().pp_stop();
 }
 
 void CMainMenu::OnRenderPPUI_PP	()
@@ -369,14 +369,14 @@ void CMainMenu::OnRenderPPUI_PP	()
 
 	if(m_Flags.test(flGameSaveScreenshot))	return;
 
-	UI()->pp_start();
+	UI().pp_start();
 	
 	xr_vector<CUIWindow*>::iterator it = m_pp_draw_wnds.begin();
 	for(; it!=m_pp_draw_wnds.end();++it)
 	{
 		(*it)->Draw();
 	}
-	UI()->pp_stop();
+	UI().pp_stop();
 }
 
 void CMainMenu::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
@@ -432,7 +432,7 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		::Render->Screenshot		(mode,name);
 	}else{
 		m_Flags.set					(flGameSaveScreenshot, TRUE);
-		strcpy(m_screenshot_name,name);
+		xr_strcpy(m_screenshot_name,name);
 		if(g_pGameLevel && m_Flags.test(flActive)){
 			Device.seqFrame.Add		(g_pGameLevel);
 			Device.seqRender.Add	(g_pGameLevel);
@@ -498,7 +498,7 @@ void CMainMenu::OnNewPatchFound(LPCSTR VersionName, LPCSTR URL)
 		INIT_MSGBOX(m_pMB_ErrDlgs[NewPatchFound], "msg_box_new_patch");
 
 		shared_str tmpText;
-		tmpText.sprintf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
+		tmpText.printf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
 		m_pMB_ErrDlgs[NewPatchFound]->SetText(*tmpText);		
 	}
 	m_sPatchURL = URL;
@@ -544,7 +544,7 @@ void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
 		m_sPatchFileName = fname;
 	}
 	else
-		m_sPatchFileName.sprintf	("downloads\\%s", FileName);	
+		m_sPatchFileName.printf	("downloads\\%s", FileName);	
 	
 	m_sPDProgress.IsInProgress	= true;
 	m_sPDProgress.Progress		= 0;
@@ -575,7 +575,7 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 	m_start_time = Device.dwTimeGlobal;
 	string1024 Text;
 	xr_strcpy(Text, sizeof(Text), "Client disconnected. ");
-	strcat_s(Text,sizeof(Text),reason);
+	xr_strcat(Text,sizeof(Text),reason);
 	m_pMB_ErrDlgs[SessionTerminate]->SetText(Text);
 	SetErrorDialog(CMainMenu::SessionTerminate);
 }
@@ -584,7 +584,7 @@ void	CMainMenu::OnLoadError(LPCSTR module)
 {
 	string1024 Text;
 	xr_strcpy(Text, sizeof(Text),"Error loading (not found) ");
-	strcat_s(Text,sizeof(Text), module);
+	xr_strcat(Text,sizeof(Text), module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);
 }
@@ -598,8 +598,8 @@ extern ENGINE_API string512  g_sLaunchOnExit_app;
 extern ENGINE_API string512  g_sLaunchOnExit_params;
 void	CMainMenu::OnRunDownloadedPatch			(CUIWindow*, void*)
 {
-	strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
-	strcpy					(g_sLaunchOnExit_params,"");
+	xr_strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
+	xr_strcpy					(g_sLaunchOnExit_params,"");
 	Console->Execute		("quit");
 }
 
@@ -675,7 +675,7 @@ LPCSTR CMainMenu::GetGSVer()
 	static string256	buff2;
 	if(m_pGameSpyFull)
 	{
-		strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
 	}else
 	{
 		buff[0]		= 0;

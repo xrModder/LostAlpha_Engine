@@ -198,6 +198,7 @@ public:
 	void					SLS_Save			(IWriter&	fs);
 	void					SLS_Load			(IReader&	fs);	
 			shared_str		level_name			(const shared_str &server_options) const;
+			shared_str		level_version		(const shared_str &server_options) const;
 
 	void					create_direct_client();
 	BOOL					IsDedicated			() const	{return m_bDedicated;};

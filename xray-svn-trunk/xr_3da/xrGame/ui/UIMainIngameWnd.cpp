@@ -4,7 +4,7 @@
 #include "UIMainIngameWnd.h"
 #include "UIMessagesWindow.h"
 #include "../UIZoneMap.h"
-
+#include "../../Include/xrRender/Kinematics.h"
 
 #include <dinput.h>
 #include "../actor.h"

@@ -112,7 +112,7 @@ void CUIMMShniaga::Init(CUIXml& xml_doc, LPCSTR path)
 
 void CUIMMShniaga::OnDeviceReset()
 {
-	if(UI()->is_16_9_mode())
+	if(UI().is_16_9_mode())
 	{
 		m_anims[0]->SetWndSize(m_wheel_size[1]);
 		m_anims[1]->SetWndSize(m_wheel_size[1]);
@@ -278,7 +278,7 @@ void CUIMMShniaga::Update(){
 
 bool CUIMMShniaga::OnMouse(float x, float y, EUIMessages mouse_action){
 	
-	Fvector2 pos = UI()->GetUICursor()->GetCursorPosition();
+	Fvector2 pos = UI().GetUICursor()->GetCursorPosition();
     Frect r;
 	m_magnifier->GetAbsoluteRect(r);
 	if (WINDOW_LBUTTON_DOWN == mouse_action && r.in(pos.x, pos.y))

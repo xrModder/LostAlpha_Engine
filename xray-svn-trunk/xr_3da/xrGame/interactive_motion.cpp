@@ -1,10 +1,9 @@
 #include "stdafx.h"
 
 #include "interactive_motion.h"
-#include "../../Include/xrRender/animation_motion.h"
 #include "physicsshell.h"
 #include "PhysicsShellHolder.h"
-#include "../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "game_object_space.h"
 #include "MathUtils.h"
 

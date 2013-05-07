@@ -152,6 +152,8 @@ public:
 	enum EConnect
 	{
 		ErrConnect,
+		ErrBELoad,
+		ErrNoLevel,
 		ErrMax,
 		ErrNoError = ErrMax,
 	};

@@ -108,6 +108,7 @@ bool CLevel::net_start1				()
 		if (xr_strcmp(p.m_alife,"alife"))
 		{
 			string64			l_name = "";
+			string64            l_ver  = "";
 			const char* SOpts = *m_caServerOptions;
 			strncpy(l_name, *m_caServerOptions, strchr(SOpts, '/') - SOpts);
 			// Activate level
@@ -116,7 +117,7 @@ bool CLevel::net_start1				()
 
 			m_name					= l_name;
 
-			int						id = pApp->Level_ID(l_name);
+			int						id = pApp->Level_ID(l_name, l_ver, true);
 
 			if (id<0) {
 				pApp->LoadEnd				();

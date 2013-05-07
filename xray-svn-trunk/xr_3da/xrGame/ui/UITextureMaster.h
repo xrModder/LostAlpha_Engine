@@ -7,6 +7,8 @@
 //
 // copyright 2005 GSC Game World
 
+#include "../ui_defs.h"
+
 #pragma once
 
 class IUISimpleTextureControl;
@@ -29,7 +31,7 @@ public:
 	static float	GetTextureWidth		(LPCSTR texture_name);
 	static Frect	GetTextureRect		(LPCSTR texture_name);
 	static LPCSTR	GetTextureFileName	(LPCSTR texture_name);
-	static void		GetTextureShader	(LPCSTR texture_name, ui_shader& sh);
+	static void		GetTextureShader	(const shared_str&  texture_name, ui_shader& sh);
 	static TEX_INFO	FindItem			(LPCSTR texture_name, LPCSTR def_texture_name);
 	static void WriteLog();
 

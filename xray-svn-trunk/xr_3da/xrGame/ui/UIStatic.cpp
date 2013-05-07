@@ -108,7 +108,7 @@ void CUIStatic::CreateShader(const char* tex, const char* sh){
 	m_UIStaticItem.CreateShader(tex,sh);	
 }
 
-ref_shader& CUIStatic::GetShader(){
+ui_shader& CUIStatic::GetShader(){
 	return m_UIStaticItem.GetShader();
 }
 
@@ -152,14 +152,14 @@ void  CUIStatic::Draw()
 		}else				
 			clip_rect		= m_ClipRect;
 
-		UI()->PushScissor	(clip_rect);
+		UI().PushScissor	(clip_rect);
 	}
 
 	DrawTexture				();	
 	inherited::Draw			();
 	DrawText				();
 
-	if(m_bClipper)	UI()->PopScissor();
+	if(m_bClipper)	UI().PopScissor();
 }
 
 
@@ -414,7 +414,7 @@ void CUIStatic::ClipperOff()
 	ClipperOff(m_UIStaticItem);
 }
 
-void  CUIStatic::SetShader(const ref_shader& sh)
+void  CUIStatic::SetShader(const ui_shader& sh)
 {
 	m_UIStaticItem.SetShader(sh);
 	m_bAvailableTexture = true;

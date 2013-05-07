@@ -53,14 +53,18 @@ bool	CLevel::net_start_client3				()
 {
 	if(connected_to_server){
 		LPCSTR					level_name = NULL;
+		LPCSTR					level_ver = NULL;
 		if(psNET_direct_connect)
 		{
+			shared_str const & server_options = Server->GetConnectOptions();
 			level_name	= ai().get_alife() ? *name() : Server->level_name( Server->GetConnectOptions() ).c_str();
+			level_ver	= Server->level_version		(server_options).c_str(); //1.0
 		}else
 			level_name	= ai().get_alife() ? *name() : net_SessionName	();
+		    level_ver   = 0;
 
 		// Determine internal level-ID
-		int						level_id = pApp->Level_ID(level_name);
+		int						level_id = pApp->Level_ID(level_name, level_ver, true);
 		if (level_id<0)	{
 			Disconnect			();
 			pApp->LoadEnd		();
@@ -141,7 +145,7 @@ bool	CLevel::net_start_client5				()
 		// Textures
 		if	(!g_dedicated_server)
 		{
-			pHUD->Load							();
+			g_hud->Load							();
 			g_pGamePersistent->LoadTitle				("st_loading_textures");
 			Device.m_pRender->DeferredLoad		(FALSE);
 			Device.m_pRender->ResourcesDeferredUpload();

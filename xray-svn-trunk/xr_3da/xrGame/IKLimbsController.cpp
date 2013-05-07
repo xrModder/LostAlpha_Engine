@@ -6,11 +6,10 @@
 #include "mathutils.h"
 #include "../../Include/xrRender/RenderVisual.h"
 #include "../ennumerateVertices.h"
-#include "../Include/xrRender/Kinematics.h"
-#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 #include "characterphysicssupport.h"
 #include "../motion.h"
-#include "../Include/xrRender/animation_blend.h"
 #ifdef DEBUG
 #  include "PHDebug.h"
 #endif

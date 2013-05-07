@@ -33,7 +33,7 @@ protected:
 			bool			GetOptBoolValue		();
 			void			SaveOptBoolValue	(bool val);
 			// token
-			char*			GetOptTokenValue	();
+			LPCSTR			GetOptTokenValue	();
 			xr_token*		GetOptToken			();
 			void			SaveOptTokenValue	(const char* val);
 			bool			IsLanguangeItem		() { return (0==xr_strcmp(m_entry.c_str(), "language"));}

@@ -94,7 +94,7 @@ const char* CUIStatsPlayerInfo::GetInfoByID(const char* id){
 	CStringTable st;
 
 	if (0 == xr_strcmp(id,"name"))
-		strcpy(ans,m_pPlayerInfo->name);
+		xr_strcpy(ans,m_pPlayerInfo->name);
 	else if (0 == xr_strcmp(id,"frags"))
 		xr_sprintf(ans,"%d",(int)m_pPlayerInfo->frags());
 	else if (0 == xr_strcmp(id,"deaths"))
@@ -118,26 +118,26 @@ const char* CUIStatsPlayerInfo::GetInfoByID(const char* id){
 	else if (0 == xr_strcmp(id, "death_atf"))
 	{		
 		if (m_pPlayerInfo->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD))
-			strcpy(ans,"death");
+			xr_strcpy(ans,"death");
 		else if (GameID() == GAME_ARTEFACTHUNT)
 		{
 			game_cl_ArtefactHunt* pGameAHunt = smart_cast<game_cl_ArtefactHunt*>(&(Game()));
 			R_ASSERT(pGameAHunt);
 			if (m_pPlayerInfo->GameID == pGameAHunt->artefactBearerID)
-				strcpy(ans,"artefact");
+				xr_strcpy(ans,"artefact");
 			else
-				strcpy(ans,"");
+				xr_strcpy(ans,"");
 		}
 		else
-			strcpy(ans,"");
+			xr_strcpy(ans,"");
 		
 	}
 	else if (0 == xr_strcmp(id, "status"))
 	{
 		if (m_pPlayerInfo->testFlag(GAME_PLAYER_FLAG_READY))
-			strcpy(ans,*st.translate("st_mp_ready"));
+			xr_strcpy(ans,*st.translate("st_mp_ready"));
 		else
-			strcpy(ans,"");
+			xr_strcpy(ans,"");
 	}
 	else
 		R_ASSERT2(false, "invalid info ID");

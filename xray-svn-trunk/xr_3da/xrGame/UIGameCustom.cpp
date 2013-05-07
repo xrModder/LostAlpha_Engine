@@ -87,6 +87,11 @@ bool CUIGameCustom::IR_OnKeyboardRelease(int dik)
 	return false;
 }
 
+bool CUIGameCustom::IR_OnKeyboardHold(int dik) 
+{
+	return false;
+}
+
 bool CUIGameCustom::IR_OnMouseMove(int dx,int dy)
 {
 	return false;
@@ -105,6 +110,11 @@ void CUIGameCustom::AddDialogToRender(CUIWindow* pDialog)
 void CUIGameCustom::RemoveDialogToRender(CUIWindow* pDialog)
 {
 	HUD().GetUI()->RemoveDialogToRender(pDialog);
+}
+
+void CUIGameCustom::StartStopMenu(CUIWindow* pDialog, bool)
+{
+	HUD().GetUI()->StartStopMenu(pDialog, bool);
 }
 
 CUIDialogWnd* CUIGameCustom::MainInputReceiver	()
