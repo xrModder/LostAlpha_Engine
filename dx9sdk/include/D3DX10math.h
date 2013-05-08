@@ -612,7 +612,7 @@ D3DXFLOAT16* WINAPI D3DXFloat32To16Array
 
 // Converts an array 16-bit floats to 32-bit floats
 FLOAT* WINAPI D3DXFloat16To32Array
-    ( FLOAT *pOut, CONST D3DXFLOAT16 *pIn, UINT n );
+    ( __out_ecount(n) FLOAT *pOut, __in_ecount(n) CONST D3DXFLOAT16 *pIn, UINT n );
 
 #ifdef __cplusplus
 }
@@ -1489,7 +1489,7 @@ FLOAT* WINAPI D3DXSHEvalDirection
 //============================================================================
 
 FLOAT* WINAPI D3DXSHRotate
-    ( FLOAT *pOut, UINT Order, CONST D3DXMATRIX *pMatrix, CONST FLOAT *pIn );
+    ( __out_ecount(Order*Order) FLOAT *pOut, UINT Order, CONST D3DXMATRIX *pMatrix, CONST FLOAT *pIn );
     
 //============================================================================
 //
@@ -1534,7 +1534,7 @@ FLOAT* WINAPI D3DXSHRotateZ
 //============================================================================
 
 FLOAT* WINAPI D3DXSHAdd
-    ( FLOAT *pOut, UINT Order, CONST FLOAT *pA, CONST FLOAT *pB );
+    ( __out_ecount(Order*Order) FLOAT *pOut, UINT Order, CONST FLOAT *pA, CONST FLOAT *pB );
 
 //============================================================================
 //
@@ -1556,7 +1556,7 @@ FLOAT* WINAPI D3DXSHAdd
 //============================================================================
 
 FLOAT* WINAPI D3DXSHScale
-    ( FLOAT *pOut, UINT Order, CONST FLOAT *pIn, CONST FLOAT Scale );
+    ( __out_ecount(Order*Order) FLOAT *pOut, UINT Order, CONST FLOAT *pIn, CONST FLOAT Scale );
     
 //============================================================================
 //
@@ -1647,7 +1647,9 @@ __out_ecount(36) FLOAT* WINAPI D3DXSHMultiply6(__out_ecount(36) FLOAT *pOut,__in
 HRESULT WINAPI D3DXSHEvalDirectionalLight
     ( UINT Order, CONST D3DXVECTOR3 *pDir, 
       FLOAT RIntensity, FLOAT GIntensity, FLOAT BIntensity,
-      FLOAT *pROut, FLOAT *pGOut, FLOAT *pBOut );
+      __out_ecount_opt(Order*Order) FLOAT *pROut, 
+      __out_ecount_opt(Order*Order) FLOAT *pGOut, 
+      __out_ecount_opt(Order*Order) FLOAT *pBOut );
 
 //============================================================================
 //
@@ -1684,7 +1686,9 @@ HRESULT WINAPI D3DXSHEvalDirectionalLight
 HRESULT WINAPI D3DXSHEvalSphericalLight
     ( UINT Order, CONST D3DXVECTOR3 *pPos, FLOAT Radius,
       FLOAT RIntensity, FLOAT GIntensity, FLOAT BIntensity,
-      FLOAT *pROut, FLOAT *pGOut, FLOAT *pBOut );
+      __out_ecount_opt(Order*Order) FLOAT *pROut, 
+      __out_ecount_opt(Order*Order) FLOAT *pGOut, 
+      __out_ecount_opt(Order*Order) FLOAT *pBOut );
 
 //============================================================================
 //
@@ -1722,7 +1726,9 @@ HRESULT WINAPI D3DXSHEvalSphericalLight
 HRESULT WINAPI D3DXSHEvalConeLight
     ( UINT Order, CONST D3DXVECTOR3 *pDir, FLOAT Radius,
       FLOAT RIntensity, FLOAT GIntensity, FLOAT BIntensity,
-      FLOAT *pROut, FLOAT *pGOut, FLOAT *pBOut );
+      __out_ecount_opt(Order*Order) FLOAT *pROut, 
+      __out_ecount_opt(Order*Order) FLOAT *pGOut, 
+      __out_ecount_opt(Order*Order) FLOAT *pBOut );
       
 //============================================================================
 //
@@ -1758,7 +1764,9 @@ HRESULT WINAPI D3DXSHEvalConeLight
 
 HRESULT WINAPI D3DXSHEvalHemisphereLight
     ( UINT Order, CONST D3DXVECTOR3 *pDir, D3DXCOLOR Top, D3DXCOLOR Bottom,
-      FLOAT *pROut, FLOAT *pGOut, FLOAT *pBOut );
+      __out_ecount_opt(Order*Order) FLOAT *pROut, 
+      __out_ecount_opt(Order*Order) FLOAT *pGOut, 
+      __out_ecount_opt(Order*Order) FLOAT *pBOut );
 
 // Math intersection functions
 

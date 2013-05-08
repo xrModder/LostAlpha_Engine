@@ -68,6 +68,7 @@ extern "C" {
 #define DSETUP_RESTOREDRIVERS   0x20000000      /* OBSOLETE. restore display/audio drivers */
 
 
+
 //******************************************************************
 // DirectX Setup Callback mechanism
 //******************************************************************
@@ -79,6 +80,10 @@ extern "C" {
 #define DSETUP_CB_MSG_BEGIN_INSTALL_RUNTIME         14
 #define DSETUP_CB_MSG_PROGRESS                      18
 #define DSETUP_CB_MSG_WARNING_DISABLED_COMPONENT    19
+
+
+
+
 
 
 typedef struct _DSETUP_CB_PROGRESS
@@ -180,18 +185,18 @@ typedef LPDIRECTXREGISTERAPP2A LPDIRECTXREGISTERAPP2;
 INT
 WINAPI
 DirectXSetupA(
-    HWND  hWnd,
-    LPSTR lpszRootPath,
-    DWORD dwFlags
+             HWND  hWnd,
+    __in_opt LPSTR lpszRootPath,
+             DWORD dwFlags
     );
 #endif //!UNICODE_ONLY
 #ifndef ANSI_ONLY
 INT
 WINAPI
 DirectXSetupW(
-    HWND   hWnd,
-    LPWSTR lpszRootPath,
-    DWORD  dwFlags
+             HWND   hWnd,
+    __in_opt LPWSTR lpszRootPath,
+             DWORD  dwFlags
     );
 #endif //!ANSI_ONLY
 #ifdef UNICODE
@@ -253,18 +258,18 @@ INT WINAPI DirectXSetupShowEULA(HWND hWndParent);
 UINT
 WINAPI
 DirectXSetupGetEULAA(
-    LPSTR lpszEULA,
-    UINT  cchEULA,
-    WORD LangID
+    __out_ecount(cchEULA) LPSTR lpszEULA,
+                          UINT  cchEULA,
+                          WORD  LangID
     );
 #endif //!UNICODE_ONLY
 #ifndef ANSI_ONLY
 UINT
 WINAPI
 DirectXSetupGetEULAW(
-    LPWSTR lpszEULA,
-    UINT   cchEULA,
-    WORD  LangID
+    __out_ecount(cchEULA) LPWSTR lpszEULA,
+                          UINT   cchEULA,
+                          WORD   LangID
     );
 #endif //!ANSI_ONLY
 #ifdef UNICODE
@@ -283,4 +288,3 @@ typedef UINT (WINAPI * LPDIRECTXSETUPGETEULA)(LPSTR, UINT, WORD);
 #endif
 
 #endif
-

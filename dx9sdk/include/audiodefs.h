@@ -5,6 +5,17 @@
  *  File:     audiodefs.h
  *  Content:  Basic constants and data types for audio work.
  *
+ *  Remarks:  This header file defines all of the audio format constants and
+ *            structures required for XAudio2 and XACT work.  Providing these
+ *            in a single location avoids certain dependency problems in the
+ *            legacy audio headers (mmreg.h, mmsystem.h, ksmedia.h).
+ *
+ *            NOTE: Including the legacy headers after this one may cause a
+ *            compilation error, because they define some of the same types
+ *            defined here without preprocessor guards to avoid multiple
+ *            definitions.  If a source file needs one of the old headers,
+ *            it must include it before including audiodefs.h.
+ *
  ***************************************************************************/
 
 #ifndef __AUDIODEFS_INCLUDED__
@@ -12,7 +23,7 @@
 
 #include <windef.h>  // For WORD, DWORD, etc.
 
-#pragma pack(push, 1) // Pack structures to 1-byte boundaries
+#pragma pack(push, 1)  // Pack structures to 1-byte boundaries
 
 
 /**************************************************************************
@@ -35,10 +46,15 @@
         WORD nBlockAlign;       // Size in bytes of a sample block (all channels)
         WORD wBitsPerSample;    // Size in bits of a single per-channel sample
         WORD cbSize;            // Bytes of extra data appended to this struct
-    } WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
-    typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
+    } WAVEFORMATEX;
 
 #endif
+
+// Defining pointer types outside of the #if block to make sure they are
+// defined even if mmreg.h or mmsystem.h is #included before this file
+
+typedef WAVEFORMATEX *PWAVEFORMATEX, *NPWAVEFORMATEX, *LPWAVEFORMATEX;
+typedef const WAVEFORMATEX *PCWAVEFORMATEX, *LPCWAVEFORMATEX;
 
 
 /**************************************************************************
@@ -67,22 +83,23 @@
         } Samples;
         DWORD dwChannelMask;          // Positions of the audio channels
         GUID SubFormat;               // Format identifier GUID
-    } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE, *LPPWAVEFORMATEXTENSIBLE;
-    typedef const WAVEFORMATEXTENSIBLE* LPCWAVEFORMATEXTENSIBLE;
+    } WAVEFORMATEXTENSIBLE;
 
 #endif
+
+typedef WAVEFORMATEXTENSIBLE *PWAVEFORMATEXTENSIBLE, *LPWAVEFORMATEXTENSIBLE;
+typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENSIBLE;
+
 
 
 /**************************************************************************
  *
  *  Define the most common wave format tags used in WAVEFORMATEX formats.
- *  Note that including the mmreg.h header after this one may cause build
- *  problems; this cannot be avoided, since mmreg.h defines these macros
- *  without preprocessor guards.
  *
  ***************************************************************************/
 
-#ifndef WAVE_FORMAT_PCM
+#ifndef WAVE_FORMAT_PCM  // Pulse Code Modulation
+
     // If WAVE_FORMAT_PCM is not defined, we need to define some legacy types
     // for compatibility with the Windows mmreg.h / mmsystem.h header files.
 
@@ -103,11 +120,40 @@
         WORD wBitsPerSample;
     } PCMWAVEFORMAT, *PPCMWAVEFORMAT, NEAR *NPPCMWAVEFORMAT, FAR *LPPCMWAVEFORMAT;
 
-    #define WAVE_FORMAT_PCM             0x0001 // Pulse code modulation
+    #define WAVE_FORMAT_PCM 0x0001
+
 #endif
 
-#ifndef WAVE_FORMAT_ADPCM
-    #define WAVE_FORMAT_ADPCM           0x0002 // Adaptive differental PCM
+#ifndef WAVE_FORMAT_ADPCM  // Microsoft Adaptive Differental PCM
+
+    // Replicate the Microsoft ADPCM type definitions from mmreg.h.
+
+    typedef struct adpcmcoef_tag
+    {
+        short iCoef1;
+        short iCoef2;
+    } ADPCMCOEFSET;
+
+    #pragma warning(push)
+    #pragma warning(disable:4200)  // Disable zero-sized array warnings
+
+    typedef struct adpcmwaveformat_tag {
+        WAVEFORMATEX wfx;
+        WORD wSamplesPerBlock;
+        WORD wNumCoef;
+        ADPCMCOEFSET aCoef[];  // Always 7 coefficient pairs for MS ADPCM
+    } ADPCMWAVEFORMAT;
+
+    #pragma warning(pop)
+
+    #define WAVE_FORMAT_ADPCM 0x0002
+
+#endif
+
+// Other frequently used format tags
+
+#ifndef WAVE_FORMAT_UNKNOWN
+    #define WAVE_FORMAT_UNKNOWN         0x0000 // Unknown or invalid format tag
 #endif
 
 #ifndef WAVE_FORMAT_IEEE_FLOAT
@@ -120,6 +166,14 @@
 
 #ifndef WAVE_FORMAT_DOLBY_AC3_SPDIF
     #define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092 // Dolby Audio Codec 3 over S/PDIF
+#endif
+
+#ifndef WAVE_FORMAT_WMAUDIO2
+    #define WAVE_FORMAT_WMAUDIO2        0x0161 // Windows Media Audio
+#endif
+
+#ifndef WAVE_FORMAT_WMAUDIO3
+    #define WAVE_FORMAT_WMAUDIO3        0x0162 // Windows Media Audio Pro
 #endif
 
 #ifndef WAVE_FORMAT_WMASPDIF
