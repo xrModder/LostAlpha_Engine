@@ -331,7 +331,7 @@ void MD5Print (unsigned char digest[16], char output[OUTPUT_BUFFER_SIZE])
 {
   unsigned int i;
   for (i = 0; i < 16; i++)
-	sprintf_s(output + i * 2, OUTPUT_BUFFER_SIZE - i*2, "%02x", digest[i]);
+	printf(output + i * 2, OUTPUT_BUFFER_SIZE - i*2, "%02x", digest[i]);
 }
 
 void MD5Digest (unsigned char *input, unsigned int len, char output[OUTPUT_BUFFER_SIZE])

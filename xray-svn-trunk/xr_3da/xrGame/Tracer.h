@@ -21,7 +21,14 @@ public:
 						CTracer		();
 						~CTracer	();
 
-	//void				Render		(FVF::LIT*&verts, const Fvector& pos, const Fvector& center, const Fvector& dir, float length, float width, u8 colorID);
+	void				Render		(	const Fvector& pos, 
+										const Fvector& center, 
+										const Fvector& dir, 
+										float length, 
+										float width, 
+										u8 colorID, 
+										bool bActor);
+
 };
 
 #endif // !defined(AFX_TRACER_H__AC263474_060A_489E_B84A_E879CD630A1E__INCLUDED_)

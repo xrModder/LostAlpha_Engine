@@ -342,7 +342,8 @@ void CBulletManager::Render	()
 		extern FvectorVec g_hit[];
 		FvectorIt it;
 		u32 C[3] = {0xffff0000,0xff00ff00,0xff0000ff};
-		RCache.set_xform_world(Fidentity);
+		DRender->CacheSetXformWorld(Fidentity);
+		//RCache.set_xform_world(Fidentity);
 		for(int i=0; i<3; ++i)
 			for(it=g_hit[i].begin();it!=g_hit[i].end();++it){
 				Level().debug_renderer().draw_aabb(*it,0.01f,0.01f,0.01f,C[i]);
@@ -355,19 +356,20 @@ void CBulletManager::Render	()
 	u32	vOffset			=	0	;
 	u32 bullet_num		=	m_BulletsRendered.size();
 
-	FVF::LIT	*verts		=	(FVF::LIT	*) RCache.Vertex.Lock((u32)bullet_num*8,
-										tracers.sh_Geom->vb_stride,
-										vOffset);
-	FVF::LIT	*start		=	verts;
+	UIRender->StartPrimitive((u32)bullet_num*8, IUIRender::ptTriList, IUIRender::pttLIT);
 
 	for(BulletVecIt it = m_BulletsRendered.begin(); it!=m_BulletsRendered.end(); it++){
 		SBullet* bullet					= &(*it);
-		if(!bullet->flags.allow_tracer)	continue;
-		if (!bullet->flags.skipped_frame)  continue;
+		if(!bullet->flags.allow_tracer)	
+			continue;
+
+		if (!bullet->flags.skipped_frame)  
+			continue;
 
 		float length	= bullet->speed*float(m_dwStepTime)/1000.f;//dist.magnitude();
 
-		if(length<m_fTracerLengthMin) continue;
+		if(length<m_fTracerLengthMin) 
+			continue;
 
 		if(length>m_fTracerLengthMax)
 			length			= m_fTracerLengthMax;
@@ -405,22 +407,19 @@ void CBulletManager::Render	()
 
 
 		Fvector center;
-		center.mad				(bullet->pos, bullet->dir,  -length*.5f);
-		tracers.Render			(verts, bullet->pos, center, bullet->dir, length, width, bullet->m_u8ColorID);
-	}
+		bool bActor				= false;
+		if(Level().CurrentViewEntity())
+		{
+			bActor				= ( bullet->parent_id == Level().CurrentViewEntity()->ID() );
+		}
+		tracers.Render			(bullet->pos, center, bullet->dir, length, width, bullet->m_u8ColorID, bActor);
 
-	u32 vCount					= (u32)(verts-start);
-	RCache.Vertex.Unlock		(vCount,tracers.sh_Geom->vb_stride);
-
-	if (vCount)
-	{
-		RCache.set_CullMode			(CULL_NONE);
-		RCache.set_xform_world		(Fidentity);
-		RCache.set_Shader			(tracers.sh_Tracer);
-		RCache.set_Geometry			(tracers.sh_Geom);
-		RCache.Render				(D3DPT_TRIANGLELIST,vOffset,0,vCount,0,vCount/2);
-		RCache.set_CullMode			(CULL_CCW);
 	}
+		UIRender->CacheSetCullMode		(IUIRender::cmNONE);
+		UIRender->CacheSetXformWorld	(Fidentity);
+		UIRender->SetShader				(*tracers.sh_Tracer);
+		UIRender->FlushPrimitive		();
+		UIRender->CacheSetCullMode		(IUIRender::cmCCW);
 }
 
 void CBulletManager::CommitRenderSet		()	// @ the end of frame

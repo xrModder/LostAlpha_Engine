@@ -117,7 +117,7 @@ const shared_str CParticlesObject::Name()
 //----------------------------------------------------
 void CParticlesObject::Play		(bool bHudMode)
 {
-	#error TODO bHudMode
+	#pragma todo("TODO bHudMode")
 	if(g_dedicated_server)		return;
 
 	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
