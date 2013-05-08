@@ -59,21 +59,15 @@ void CUIProgressShape::Draw()
 	if(m_bText)
 		m_pTexture->DrawText		();
 
-	ref_shader sh					= m_pTexture->GetShader();
-	ref_geom	gm					= GetUIGeom();
-	RCache.set_Shader				(sh);
-	CTexture* T						= RCache.get_ActiveTexture(0);
+	UIRender->SetShader				(*GetShader());
 	Fvector2						tsize;
-	tsize.set						(float(T->get_Width()),float(T->get_Height()));
+	UIRender->GetActiveTextureResolution(tsize);
 
 	
-	u32	offset;
-	//FVF::TL*	pv					= (FVF::TL*)RCache.Vertex.DEBUG_LOCK	(m_sectorCount*3, gm.stride(), offset);
-	FVF::TL*	pv					= (FVF::TL*)RCache.Vertex.Lock	(m_sectorCount*3, gm.stride(), offset);
-
+	UIRender->StartPrimitive		(m_sectorCount*3,IUIRender::ptTriList, UI().m_currentPointType);
 
 	Frect pos_rect;
-	m_pTexture->GetAbsoluteRect		(pos_rect);
+	GetAbsoluteRect		(pos_rect);
 	UI().ClientToScreenScaled		(pos_rect.lt, pos_rect.x1, pos_rect.y1);
 	UI().ClientToScreenScaled		(pos_rect.rb, pos_rect.x2, pos_rect.y2);
 
@@ -146,15 +140,18 @@ void CUIProgressShape::Draw()
 		std::swap					(*(pv-1), *(pv-2));
 	}
 
+		if (m_bClockwise)
+		{
+			UIRender->PushPoint(tp1.x,	tp1.y,	0,	color, tx1.x,	tx1.y);
+			UIRender->PushPoint(tp.x,	tp.y,	0,	color, tx.x,	tx.y);
+		}
+		else
+		{
+			UIRender->PushPoint(tp.x,	tp.y,	0, color, tx.x,		tx.y);
+			UIRender->PushPoint(tp1.x,	tp1.y,	0, color, tx1.x,	tx1.y);
+		}
+	}
 
-	RCache.Vertex.Unlock		(m_sectorCount*3, gm.stride());
-	RCache.set_Geometry			(gm);
-	
-//	if(!m_bClockwise)
-//		RCache.set_CullMode			(CULL_NONE);
 
-	RCache.Render				(D3DPT_TRIANGLELIST, offset, m_sectorCount);
-
-//	if(!m_bClockwise)
-//		RCache.set_CullMode			(CULL_CCW);
+	UIRender->FlushPrimitive();
 }

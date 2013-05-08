@@ -49,23 +49,17 @@ void draw_rect(Frect& r, u32 color)
 
 	if(!dbg_draw_sh){
 		dbg_draw_sh->create("hud\\default","ui\\ui_pop_up_active_back");
-		dbg_draw_gm.create(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+		//dbg_draw_gm.create(FVF::F_TL, RCache.Vertex.Buffer(), 0);
+	   UIRender->StartPrimitive	(5, IUIRender::ptLineStrip, UI().m_currentPointType);
 	}
-	RCache.set_Shader			(dbg_draw_sh);
-	u32							vOffset;
-	//FVF::TL* pv					= (FVF::TL*)RCache.Vertex.DEBUG_LOCK	(5,dbg_draw_gm.stride(),vOffset);
-	FVF::TL* pv					= (FVF::TL*)RCache.Vertex.Lock	(5,dbg_draw_gm.stride(),vOffset);
 
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
 
-	pv->set(r.lt.x, r.lt.y, color, 0,0); ++pv;
-	pv->set(r.rb.x, r.lt.y, color, 0,0); ++pv;
-	pv->set(r.rb.x, r.rb.y, color, 0,0); ++pv;
-	pv->set(r.lt.x, r.rb.y, color, 0,0); ++pv;
-	pv->set(r.lt.x, r.lt.y, color, 0,0); ++pv;
-
-	RCache.Vertex.Unlock		(5,dbg_draw_gm.stride());
-	RCache.set_Geometry			(dbg_draw_gm);
-	RCache.Render				(D3DPT_LINESTRIP,vOffset,4);
+	UIRender->FlushPrimitive();
 
 }
 void draw_wnds_rects()

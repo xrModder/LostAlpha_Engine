@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "../ui_defs.h"
+
 struct PlayerInfo{
     shared_str	m_name;
 	u32			m_color;

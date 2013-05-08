@@ -13,9 +13,9 @@ xr_string xrServer::ent_name_safe(u16 eid)
 	string1024						buff;
 	CSE_Abstract*	e_dest			= game->get_entity_from_eid	(eid);
 	if(e_dest)
-		sprintf(buff,"[%d][%s:%s]",eid,e_dest->name(),e_dest->name_replace());
+		printf(buff,"[%d][%s:%s]",eid,e_dest->name(),e_dest->name_replace());
 	else
-		sprintf(buff,"[%d][%s]",eid,"NOTFOUND");
+		printf(buff,"[%d][%s]",eid,"NOTFOUND");
 
 	return buff;
 }

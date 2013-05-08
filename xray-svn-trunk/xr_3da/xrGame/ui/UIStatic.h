@@ -43,7 +43,7 @@ public:
 
 	// IUISingleTextureOwner--------------------------------------------------------------------------------
 	virtual void		CreateShader				(const char* tex, const char* sh = "hud\\default");
-	virtual ui_shader& GetShader					();
+	ui_shader&			GetShader				()							{return m_UIStaticItem.GetShader();};
 	virtual void		SetTextureColor				(u32 color);
 	virtual u32			GetTextureColor				() const;
 	virtual void		SetOriginalRect				(const Frect& r)			{m_UIStaticItem.SetOriginalRect(r);}

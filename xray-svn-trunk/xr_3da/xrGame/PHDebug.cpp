@@ -258,7 +258,7 @@ string64 s;
 bool	 rendered;
 	SPHDBGOutText(LPCSTR t)
 	{
-		strcpy(s,t);
+		xr_strcpy(s,t);
 		rendered=false;
 	}
 	virtual void render()

@@ -182,7 +182,7 @@ void CUIScrollView::Draw				()
 	GetAbsoluteRect		(visible_rect);
 	visible_rect.top	+= m_upIndent;
 	visible_rect.bottom -= m_downIndent;
-	UI()->PushScissor					(visible_rect);
+	UI().PushScissor					(visible_rect);
 	
 	WINDOW_LIST_it it					= m_pad->GetChildWndList().begin();
 //	WINDOW_LIST_it it_e					= m_pad->GetChildWndList().end();
@@ -216,7 +216,7 @@ void CUIScrollView::Draw				()
 			if(m_visible_rgn.x != -1)
 				break;
 	}
-	UI()->PopScissor					();
+	UI().PopScissor					();
 
 	if(NeedShowScrollBar())
 		m_VScrollBar->Draw					();

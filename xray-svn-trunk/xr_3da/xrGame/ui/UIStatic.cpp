@@ -108,11 +108,6 @@ void CUIStatic::CreateShader(const char* tex, const char* sh){
 	m_UIStaticItem.CreateShader(tex,sh);	
 }
 
-ui_shader& CUIStatic::GetShader(){
-	return m_UIStaticItem.GetShader();
-}
-
-
 void CUIStatic::SetTextureColor(u32 color){
 	m_UIStaticItem.SetColor(color);
 }

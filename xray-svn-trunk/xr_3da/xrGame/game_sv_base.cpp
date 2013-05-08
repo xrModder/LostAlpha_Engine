@@ -213,7 +213,7 @@ string64&			game_sv_GameState::get_option_s				(LPCSTR lst, LPCSTR name, LPCSTR 
 	}
 	else			
 	{
-		if (def)	strcpy		(ret,def);
+		if (def)	xr_strcpy		(ret,def);
 		else		ret[0]=0;
 	}
 	return ret;

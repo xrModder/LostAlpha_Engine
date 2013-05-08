@@ -735,7 +735,7 @@ void CUICellContainer::Draw()
 	std::ptrdiff_t p_cnt		= (pv-start_pv)/3;
 	RCache.Vertex.Unlock		(u32(pv-start_pv),hGeom.stride());
 
-	UI()->PushScissor					(clientArea);
+	UI().PushScissor					(clientArea);
 
 	if (p_cnt!=0){
 		// draw grid
@@ -753,5 +753,5 @@ void CUICellContainer::Draw()
 			}
 	}
 
-	UI()->PopScissor			();
+	UI().PopScissor			();
 }

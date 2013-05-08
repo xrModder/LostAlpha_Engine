@@ -191,11 +191,11 @@ void CUIDragItem::Draw()
 	tmp.sub					(m_pos_offset);
 	tmp.mul					(-1.0f);
 	MoveWndDelta			(tmp);
-	UI()->PushScissor		(UI()->ScreenRect(),true);
+	UI().PushScissor		(UI()->ScreenRect(),true);
 
 	inherited::Draw();
 
-	UI()->PopScissor();
+	UI().PopScissor();
 }
 
 void CUIDragItem::SetBackList(CUIDragDropListEx*l)

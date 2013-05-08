@@ -92,7 +92,7 @@ float CUIPdaKillMessage::InitIcon(CUIStatic& refStatic, float x, IconInfo& info)
 	if ( 0 == info.m_rect.width())
 		return 0;
 
-	if (info.m_shader == NULL)
+	if (!info.m_shader->inited())
 		return 0;
 
 	float		y = 0;

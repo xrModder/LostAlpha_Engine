@@ -14,6 +14,7 @@
 #include "game_sv_artefacthunt.h"
 #include "date_time.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#include "gp.h"
 
 extern	float	g_cl_lvInterp;
 extern	int		g_cl_InterpolationType; //0 - Linear, 1 - BSpline, 2 - HSpline
@@ -246,6 +247,35 @@ public:
 	virtual void		Save			(IWriter *F)	{};
 };
 
+//most useful predicates 
+struct SearcherClientByName
+{
+	string512 player_name;
+	SearcherClientByName(LPCSTR name)
+	{
+		strncpy_s(player_name, sizeof(player_name), name, sizeof(player_name) - 1);
+		xr_strlwr(player_name);
+	}
+	bool operator()(IClient* client)
+	{
+		xrClientData*	temp_client = smart_cast<xrClientData*>(client);
+		LPSTR tmp_player = NULL;
+		if (!temp_client->ps)
+			return false;
+
+		STRCONCAT(tmp_player, temp_client->ps->getName());
+		xr_strlwr(tmp_player);
+
+		if (!xr_strcmp(player_name, tmp_player))
+		{
+			return true;
+		}
+		return false;
+	}
+};
+
+#define STRING_KICKED_BY_SERVER "st_kicked_by_server"
+
 class CCC_KickPlayerByName : public IConsole_Command {
 public:
 					CCC_KickPlayerByName(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = false; };
@@ -260,48 +290,76 @@ public:
 			return;
 		}
 		string4096 PlayerName	= "";
-		if (xr_strlen(args)>17)
+		u32 const max_name_length	=	GP_UNIQUENICK_LEN - 1;
+		if (xr_strlen(args)>max_name_length)
 		{
-			strncpy				(PlayerName, args, 17);
-			PlayerName[17]		= 0;
+			strncpy_s				(PlayerName, args, max_name_length);
+			PlayerName[max_name_length]		= 0;
 		}else
 			xr_strcpy(PlayerName, args);
 
 		xr_strlwr			(PlayerName);
-
-		Level().Server->clients_Lock();
-		u32	cnt					= Level().Server->game->get_players_count();
-		for(u32 it=0; it<cnt; it++)	
+		IClient*	tmp_client = Level().Server->FindClient(SearcherClientByName(PlayerName));
+		if (tmp_client && (tmp_client != Level().Server->GetServerClient()))
 		{
-			xrClientData *l_pC = (xrClientData*)	Level().Server->client_Get	(it);
-			if (l_pC)
+			Msg("Disconnecting : %s", PlayerName);
+			xrClientData* tmpxrclient = static_cast<xrClientData*>(tmp_client);
+			if (!tmpxrclient->m_admin_rights.m_has_admin_rights)
 			{
-				string64			_low_name;
-				xr_strcpy				(_low_name,l_pC->ps->getName());
-				xr_strlwr			(_low_name);
-
-				if (!xr_strcmp(_low_name, PlayerName))
-				{
-					if (Level().Server->GetServerClient() != l_pC)
-					{
-						Msg("Disconnecting : %s", l_pC->ps->getName());
-						Level().Server->DisconnectClient(l_pC);
-						break;
-					}else
-						Msg("! Can't disconnect server's client");
-				}
-			}			
-		};
-		if (it == cnt) 
+				Level().Server->DisconnectClient( tmp_client, STRING_KICKED_BY_SERVER );
+			} else
+			{
+				Msg("! Can't disconnect client with admin rights");
+			}
+		} else
 		{
-			Msg("! No such player found : %s", PlayerName);
+			Msg("! Can't disconnect player [%s]", PlayerName);
 		}
-		Level().Server->clients_Unlock();		
 	};
 
 	virtual void	Info	(TInfo& I)	{xr_strcpy(I,"Kick Player by name"); }
 };
 
+static ClientID last_printed_player;
+#define LAST_PRINTED_PLAYER_STR "last_printed"
+static u32		last_printed_player_banned;
+#define LAST_PRINTED_PLAYER_BANNED_STR "last_printed_banned"
+
+#define RAPREFIX "raid:"
+static xrClientData* exclude_command_initiator(LPCSTR args)
+{
+	LPCSTR tmp_str = strrchr(args, ' ');
+	if (!tmp_str)
+		tmp_str = args;
+	LPCSTR clientidstr = strstr(tmp_str, RAPREFIX);
+	if (clientidstr)
+	{
+		clientidstr += sizeof(RAPREFIX) - 1;
+		u32 client_id = static_cast<u32>(strtoul(clientidstr, NULL, 10));
+		ClientID tmp_id;
+		tmp_id.set(client_id);
+		if (g_pGameLevel && Level().Server)
+			return Level().Server->ID_to_client(tmp_id);
+	}
+	return NULL;
+};
+static char const * exclude_raid_from_args(LPCSTR args, LPSTR dest, size_t dest_size)
+{
+	strncpy_s(dest, dest_size, args, dest_size - 1);
+	char* tmp_str = strrchr(dest, ' ');
+	if (!tmp_str)
+		tmp_str = dest;
+	char* raidstr = strstr(tmp_str, RAPREFIX);
+	if (raidstr)
+	{
+		if (raidstr <= tmp_str)
+			*raidstr		= 0;
+		else
+			*(raidstr - 1)	= 0;	//with ' '
+	}
+	dest[dest_size - 1] = 0;
+	return dest;
+}
 
 class CCC_BanPlayerByName : public IConsole_Command {
 public:
@@ -331,6 +389,7 @@ public:
 			Msg("incorrect parameter passed. bad name.");
 			return;
 		}
+		
 		u32 ban_time			= atol(digits);
 		if(ban_time==0)
 		{
@@ -338,52 +397,31 @@ public:
 			return;
 		}
 		string4096 PlayerName		= "";
-		if (xr_strlen(buff)>17)
+		u32 const max_name_length	=	GP_UNIQUENICK_LEN - 1;
+		if (xr_strlen(buff)>max_name_length)
 		{
 
-			strncpy				(PlayerName, buff, 17);
-			PlayerName[17]		= 0;
+			strncpy_s				(PlayerName, buff, max_name_length);
+			PlayerName[max_name_length]		= 0;
 		}else
 			xr_strcpy				(PlayerName, buff);
 
 		xr_strlwr			(PlayerName);
 
-		Level().Server->clients_Lock();
-		u32	cnt					= Level().Server->game->get_players_count();
-		for(u32 it=0; it<cnt; it++)	
+		IClient*	tmp_client = Level().Server->FindClient(SearcherClientByName(PlayerName));
+		if (tmp_client && (tmp_client != Level().Server->GetServerClient()))
 		{
-			xrClientData *l_pC = (xrClientData*)	Level().Server->client_Get	(it);
-			if (l_pC)
-			{
-				string64			_low_name;
-				xr_strcpy				(_low_name,l_pC->ps->getName());
-				xr_strlwr			(_low_name);
-
-				if (!xr_strcmp(_low_name, PlayerName))
-				{
-					if (Level().Server->GetServerClient() != l_pC)
-					{
-						Msg("Disconnecting and Banning: %s", l_pC->ps->getName());
-						Level().Server->BanClient(l_pC, ban_time);
-						Level().Server->DisconnectClient(l_pC);
-						break;
-					}else
-					{
-						Msg("! Can't disconnect server's client");
-						break;
-					}
-				}
-			}			
-		};
-		if (it == cnt)
-			Msg("! No such player found : %s", PlayerName);
-
-		Level().Server->clients_Unlock();	
+			Msg("Disconnecting and Banning: %s", PlayerName);
+			Level().Server->BanClient(tmp_client, ban_time);
+			Level().Server->DisconnectClient(tmp_client, STRING_KICKED_BY_SERVER );
+		} else
+		{
+			Msg("! Can't disconnect player [%s]", PlayerName);
+		}
 	};
 
 	virtual void	Info	(TInfo& I){xr_strcpy(I,"Ban Player by Name"); }
 };
-
 
 class CCC_BanPlayerByIP : public IConsole_Command {
 public:
@@ -392,10 +430,10 @@ public:
 	{
 		if (!g_pGameLevel || !Level().Server) return;
 //-----------
-		string4096				buff;
-		xr_strcpy					(buff, args_);
-		u32 len					= xr_strlen(buff);
+		string4096					buff;
+		exclude_raid_from_args		(args_, buff, sizeof(buff)); //xr_strcpy(buff, args_);
 		
+		u32 len					= xr_strlen(buff);
 		if (0==len) 
 			return;
 
@@ -427,14 +465,12 @@ public:
 
 		ip_address							Address;
 		Address.set							(s_ip_addr);
-		Level().Server->clients_Lock		();
 		Msg									("Disconnecting and Banning: %s",Address.to_string().c_str() ); 
 		Level().Server->BanAddress			(Address, ban_time);
-		Level().Server->DisconnectAddress	(Address);
-		Level().Server->clients_Unlock		();
+		Level().Server->DisconnectAddress	(Address, STRING_KICKED_BY_SERVER);
 	};
 
-	virtual void	Info	(TInfo& I){xr_strcpy(I,"Ban Player by IP"); }
+	virtual void	Info	(TInfo& I){xr_strcpy(I,"Ban Player by IP. Format: \"sb_banplayer_ip <ip address>\""); }
 };
 
 class CCC_UnBanPlayerByIP : public IConsole_Command {
@@ -446,14 +482,17 @@ public:
 
 		if (!xr_strlen(args)) return;
 
+		string4096					buff;
+		exclude_raid_from_args		(args, buff, sizeof(buff)); //xr_strcpy(buff, args_);
+		if (!xr_strlen(buff)) 
+			return;
+
 		ip_address						Address;
-		Address.set						(args);
-		Level().Server->clients_Lock	();
+		Address.set						(buff);
 		Level().Server->UnBanAddress	(Address);
-		Level().Server->clients_Unlock	();
 	};
 
-	virtual void	Info	(TInfo& I){xr_strcpy(I,"UnBan Player by IP");}
+	virtual void	Info	(TInfo& I){xr_strcpy(I,"UnBan Player by IP. Format: \"sv_unbanplayer_ip <ip address>\"");}
 };
 
 class CCC_ListPlayers : public IConsole_Command {
@@ -461,28 +500,63 @@ public:
 					CCC_ListPlayers	(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
 	virtual void	Execute			(LPCSTR args) 
 	{
-		if (!OnServer())	return;
-		
-		u32	cnt = Level().Server->game->get_players_count();
-		Msg("------------------------");
-		Msg("- Total Players : %d", cnt);
-		for(u32 it=0; it<cnt; it++)	
-		{
-			xrClientData *l_pC	= (xrClientData*)	Level().Server->client_Get	(it);
-			if (!l_pC)			continue;
-			ip_address			Address;
-			DWORD dwPort		= 0;
+		if (!g_pGameLevel || !Level().Server || !Level().Server->game) return;
 
-			Level().Server->GetClientAddress(l_pC->ID, Address, &dwPort);
-			Msg("%d : %s - %s port[%u] ping[%u]", it+1, l_pC->ps->getName(),
-				Address.to_string().c_str(),
-				dwPort,
-				l_pC->ps->ping);
+		u32	cnt = Level().Server->game->get_players_count();
+		Msg("- Total Players : %d", cnt);
+		Msg("- ----player list begin-----");
+		struct PlayersEnumerator
+		{
+			LPCSTR filter_string;
+			PlayersEnumerator()
+			{
+				filter_string = NULL;
+			}
+			void operator()(IClient* client)
+			{
+				xrClientData *l_pC	= (xrClientData*)client;
+				if (!l_pC)
+					return;
+				ip_address			Address;
+				DWORD dwPort		= 0;
+				Level().Server->GetClientAddress(client->ID, Address, &dwPort);
+				string512 tmp_string;
+				xr_sprintf(tmp_string, "- (player session id : %u), (name : %s), (ip: %s), (ping: %u);",
+					client->ID.value(),
+					l_pC->ps->getName(),
+					Address.to_string().c_str(),
+					l_pC->ps->ping);
+				if (filter_string)
+				{
+					if (strstr(tmp_string, filter_string))
+					{
+						Msg(tmp_string);
+						last_printed_player = client->ID;
+					}
+				} else
+				{
+					Msg(tmp_string);
+					last_printed_player = client->ID;
+				}
+			}
 		};
-		Msg("------------------------");
+		PlayersEnumerator tmp_functor;
+		string512 filter_string;
+		string512 tmp_dest;
+		if (xr_strlen(args))
+		{
+			exclude_raid_from_args(args, tmp_dest, sizeof(tmp_dest));
+			if (xr_strlen(tmp_dest))
+			{
+				sscanf_s(tmp_dest, "%s", filter_string);
+				tmp_functor.filter_string = filter_string;
+			}
+		}
+		Level().Server->ForEachClientDo(tmp_functor);
+		Msg("- ----player list end-------");
 	};
 
-	virtual void	Info	(TInfo& I){xr_strcpy(I,"List Players"); }
+	virtual void	Info	(TInfo& I){xr_strcpy(I,"List Players. Format: \"sv_listplayers [ filter string ]\""); }
 };
 
 class CCC_ListPlayers_Banned : public IConsole_Command {
