@@ -1279,9 +1279,6 @@ DECLARE_INTERFACE(ID3D10EffectTechnique)
 
 typedef struct _D3D10_EFFECT_DESC
 {
-    //TODO: do we need these?
-    //LPCSTR  Creator;
-    //UINT    Version;
     
     BOOL    IsChildEffect;          // TRUE if this is a child effect, 
                                     // FALSE if this is standalone or an effect pool.
@@ -1384,21 +1381,14 @@ extern "C" {
 //
 // [in]
 //
-//  TODO: Unicode support
-//  TODO: Support for binary (and not just ASCII)
-//
-//  pFileName
-//      Name of the ASCII (uncompiled) or binary (compiled) Effect file to load
-//
-//  hModule
-//      Handle to the module containing the resource to compile from
-//  pResourceName
-//      Name of the resource within hModule to compile from
 //
 //  pData
-//      Blob of effect data, either ASCII (uncompiled) or binary (compiled)
+//      Blob of effect data, either ASCII (uncompiled, for D3D10CompileEffectFromMemory) or binary (compiled, for D3D10CreateEffect*)
 //  DataLength
 //      Length of the data blob
+//
+//  pSrcFileName
+//      Name of the ASCII Effect file pData was obtained from
 //
 //  pDefines
 //      Optional NULL-terminated array of preprocessor macro definitions.

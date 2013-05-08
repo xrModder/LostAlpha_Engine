@@ -15,8 +15,8 @@
 // Current name of the DLL shipped in the same SDK as this header.
 
 
-#define D3DX10_DLL_W L"d3dx10_35.dll"
-#define D3DX10_DLL_A "d3dx10_35.dll"
+#define D3DX10_DLL_W L"d3dx10_41.dll"
+#define D3DX10_DLL_A "d3dx10_41.dll"
 
 #ifdef UNICODE
     #define D3DX10_DLL D3DX10_DLL_W 
@@ -39,7 +39,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////
 
 
-#define D3DX10_SDK_VERSION 35
+#define D3DX10_SDK_VERSION 41
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -65,11 +65,10 @@ typedef interface ID3D10Device1 ID3D10Device1;
 HRESULT WINAPI D3DX10GetFeatureLevel1(ID3D10Device *pDevice, ID3D10Device1 **ppDevice1);
 
 
-#ifdef D3D10_DEBUG
+#ifdef D3D_DIAG_DLL
 BOOL WINAPI D3DX10DebugMute(BOOL Mute);  
 #endif
 HRESULT WINAPI D3DX10CheckVersion(UINT D3DSdkVersion, UINT D3DX10SdkVersion);
-UINT WINAPI D3DX10GetDriverLevel(ID3D10Device *pDevice);
 
 #ifdef __cplusplus
 }
@@ -427,70 +426,6 @@ HRESULT WINAPI
 #endif
 
 HRESULT WINAPI D3DX10UnsetAllDeviceObjects(ID3D10Device *pDevice);
-
-//////////////////////////////////////////////////////////////////////////////
-// D3DX10ReflectShader
-// ----------
-// Shader code contains metadata that can be inspected via the
-// reflection APIs.
-//
-// Parameters:
-//  ppReflector -
-//    Returns a reflection API interface for the given shader code.
-//
-//////////////////////////////////////////////////////////////////////////////
-
-HRESULT WINAPI
-     D3DX10ReflectShader(
-         CONST void *pShaderBytecode,
-         SIZE_T BytecodeLength,
-         interface ID3D10ShaderReflection1 **ppReflector);
-
-//----------------------------------------------------------------------------
-// D3DX10DisassembleShader:
-// ----------------------
-// Takes a binary shader, and returns a buffer containing text assembly.
-//
-// Parameters:
-//  pShader
-//      Pointer to the shader byte code.
-//  BytecodeLength
-//      Size of the shader byte code in bytes.
-//  EnableColorCode
-//      Emit HTML tags for color coding the output?
-//  pComments
-//      Pointer to a comment string to include at the top of the shader.
-//  ppDisassembly
-//      Returns a buffer containing the disassembled shader.
-//----------------------------------------------------------------------------
-
-HRESULT WINAPI
-    D3DX10DisassembleShader(
-        CONST void *pShader,
-        SIZE_T BytecodeLength,
-        BOOL EnableColorCode,
-        LPCSTR pComments,
-        interface ID3D10Blob** ppDisassembly);
-
-//----------------------------------------------------------------------------
-// D3DX10DisassembleEffect:
-// -----------------------
-// Takes an effect interface, and returns a buffer containing text assembly.
-//
-// Parameters:
-//  pEffect
-//      Pointer to the runtime effect interface.
-//  EnableColorCode
-//      Emit HTML tags for color coding the output?
-//  ppDisassembly
-//      Returns a buffer containing the disassembled effect.
-//----------------------------------------------------------------------------
-
-HRESULT WINAPI
-    D3DX10DisassembleEffect(
-        interface ID3D10Effect *pEffect,
-        BOOL EnableColorCode,
-        interface ID3D10Blob **ppDisassembly);
 
 #ifdef __cplusplus
 }
