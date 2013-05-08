@@ -96,7 +96,7 @@ void CUIStaticItem::RenderInternal()
 	RCache.Vertex.Unlock		(u32(pv-start_pv),hGeom_fan.stride());
 	// set scissor
 	Frect clip_rect				= {iPos.x,iPos.y,iPos.x+iVisRect.x2*iTileX+iRemX,iPos.y+iVisRect.y2*iTileY+iRemY};
-	UI()->PushScissor			(clip_rect);
+	UI().PushScissor			(clip_rect);
 	// set geom
 	RCache.set_Geometry			(hGeom_fan);
 	if (p_cnt!=0)RCache.Render	(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
@@ -105,7 +105,7 @@ void CUIStaticItem::RenderInternal()
 		//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,0));
 		UIRender->SetAlphaRef(alpha_ref);
 	}
-	UI()->PopScissor			();
+	UI().PopScissor			();
 }
 
 void CUIStaticItem::Render()

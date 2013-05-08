@@ -668,7 +668,7 @@ void game_sv_mp::OnVoteStart				(LPCSTR VoteCommand, ClientID sender)
 	sscanf	(VoteCommand,"%s ", CommandName);
 	if (xr_strlen(CommandName)+1 < xr_strlen(VoteCommand))
 	{
-		strcpy(CommandParams, VoteCommand + xr_strlen(CommandName)+1);
+		xr_strcpy(CommandParams, VoteCommand + xr_strlen(CommandName)+1);
 	}
 
 	if (CommandName[0] == '$' && !IsVotingEnabled(flVoteText))
