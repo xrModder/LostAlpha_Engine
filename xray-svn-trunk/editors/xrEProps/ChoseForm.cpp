@@ -4,7 +4,8 @@
 #pragma hdrstop
 
 #include "ChoseForm.h"
-#include "PropertiesList.h"               
+#include "PropertiesList.h" 
+            
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "ElXPThemedControl"
@@ -102,34 +103,44 @@ int __fastcall TfrmChoseItem::SelectItem(u32 choose_ID, LPCSTR& dest, int sel_cn
 
 void __fastcall TfrmChoseItem::AppendItem(SChooseItem* item, bool b_check_duplicate)
 {
-    TElTreeItem* node				= FHelper.AppendObject(form->tvItems,item->name.c_str(), !b_check_duplicate/*false*/,true);
-    node->Tag						= (int)item;
-    node->Hint						= item->hint.size()?item->hint.c_str():"-";
-    node->CheckBoxEnabled 			= form->m_Flags.is(cfMultiSelect);
-    node->ShowCheckBox 				= form->m_Flags.is(cfMultiSelect);
+	AnsiString full_name = item->name.c_str();
+	if (full_name.Length())
+	{
+	    TElTreeItem* node				= FHelper.AppendObject(form->tvItems,full_name, !b_check_duplicate/*false*/,true);
+	    node->Tag						= (int)item;
+	    node->Hint						= item->hint.size()?item->hint.c_str():"-";
+	    node->CheckBoxEnabled 			= form->m_Flags.is(cfMultiSelect);
+	    node->ShowCheckBox 				= form->m_Flags.is(cfMultiSelect);
+	}
 }
 
 void __fastcall TfrmChoseItem::FillItems(u32 choose_id)
 {
 	form->tvItems->IsUpdating		= true;
-    tvItems->Items->Clear			();
+	tvItems->Items->Clear			();
     
-    if (m_Flags.is(cfAllowNone)&&!m_Flags.is(cfMultiSelect))	
-         FHelper.AppendObject(tvItems,NONE_CAPTION,false,true);
+	if (m_Flags.is(cfAllowNone)&&!m_Flags.is(cfMultiSelect))	
+		FHelper.AppendObject(tvItems,NONE_CAPTION,false,true);
          
 	u32 ss = m_Items.size();
-    ChooseItemVecIt  it				= m_Items.begin();
-    ChooseItemVecIt  _E				= m_Items.end();
+	ChooseItemVecIt  it				= m_Items.begin();
+	ChooseItemVecIt  _E				= m_Items.end();
     
+	//SPBItem* pb	= UI->ProgressStart(ss,"Fill items..."); //sky to all: no idea how to do it
 
-    bool b_check_duplicate = (choose_id!=15);// smSkeletonAnimations is already unique set !!!
-    for (; it!=_E; it++)   			
-    	AppendItem(&(*it), b_check_duplicate);
+	bool b_check_duplicate = (choose_id!=15);// smSkeletonAnimations is already unique set !!!
+	for (; it!=_E; it++)
+	{
+		AppendItem(&(*it), b_check_duplicate);
+		//pb->Inc();
+	}
+
+	//UI->ProgressEnd(pb);
         
-    //for (; it!=_E; it++)   			AppendItem(&(*it));
-    form->tvItems->Sort				(true);
+	form->tvItems->Sort				(true);
 	form->tvItems->IsUpdating 		= false;
-    if (m_Flags.is(cfFullExpand))	form->tvItems->FullExpand		();
+	if (m_Flags.is(cfFullExpand))
+		form->tvItems->FullExpand ();
 }
 
 //---------------------------------------------------------------------------
