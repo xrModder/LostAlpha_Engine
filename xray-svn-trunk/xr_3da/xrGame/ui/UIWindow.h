@@ -231,6 +231,7 @@ protected:
 	//для определения DoubleClick
 	u32						m_dwLastClickTime;
 	u32						m_dwFocusReceiveTime;
+	u32						m_dwLastClickFrame;
 
 	//флаг автоматического удаления во время вызова деструктора
 	bool					m_bAutoDelete;

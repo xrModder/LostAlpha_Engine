@@ -28,7 +28,8 @@ CUIListWnd::CUIListWnd()
 	m_iLastUniqueID				= 0;
 	m_bAlwaysShowScroll			= false;
 	m_bAlwaysShowScroll_enable	= false;
-	
+	m_dwLastClickTime		= 0;
+	m_dwLastClickFrame		= 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -260,7 +261,8 @@ void CUIListWnd::UpdateList()
 }
 
 //////////////////////////////////////////////////////////////////////////
-
+#define DOUBLE_CLICK_TIME 250
+//////////////////////////////////////////////////////////////////////////
 void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
 	if(pWnd == m_ScrollBar)
@@ -305,7 +307,17 @@ void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 						pListItem2->SendMessage(this, LIST_ITEM_UNSELECT, pData);
 					}
 				}
-				GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pListItem);
+
+				//skyloader: db click for list item
+				u32 dwCurTime		= Device.dwTimeContinual;
+
+				if((m_dwLastClickFrame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME) )
+					GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, pListItem);
+				else
+					GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pListItem);
+
+				m_dwLastClickTime = dwCurTime;
+				m_dwLastClickFrame	= Device.dwFrame;
 			}
 			
 			else if(STATIC_FOCUS_RECEIVED == msg)

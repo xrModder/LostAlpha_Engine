@@ -5,7 +5,7 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2003                *
+ * THE Theora SOURCE CODE IS COPYRIGHT (C) 2002-2009                *
  * by the Xiph.Org Foundation http://www.xiph.org/                  *
  *                                                                  *
  ********************************************************************
@@ -23,28 +23,102 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-#ifndef LIBOGG2
-#include <ogg/ogg.h>
-#else
-#include <ogg2/ogg.h>
-/* This is temporary until libogg2 is more complete */
-ogg_buffer_state *ogg_buffer_create(void);
-#endif
+#include <stddef.h>	/* for size_t */
 
-/** \mainpage
- * 
- * \section intro Introduction
- *
- * This is the documentation for the libtheora C API.
- * libtheora is the reference implementation for
- * <a href="http://www.theora.org/">Theora</a>, a free video codec.
- * Theora is derived from On2's VP3 codec with improved integration for
- * Ogg multimedia formats by <a href="http://www.xiph.org/">Xiph.Org</a>.
- */
+#include <ogg/ogg.h>
 
 /** \file
- * The libtheora C API.
+ * The libtheora pre-1.0 legacy C API.
+ *
+ * \ingroup oldfuncs
+ *
+ * \section intro Introduction
+ *
+ * This is the documentation for the libtheora legacy C API, declared in 
+ * the theora.h header, which describes the old interface used before
+ * the 1.0 release. This API was widely deployed for several years and
+ * remains supported, but for new code we recommend the cleaner API 
+ * declared in theoradec.h and theoraenc.h.
+ *
+ * libtheora is the reference implementation for
+ * <a href="http://www.theora.org/">Theora</a>, a free video codec.
+ * Theora is derived from On2's VP3 codec with improved integration with
+ * Ogg multimedia formats by <a href="http://www.xiph.org/">Xiph.Org</a>.
+ * 
+ * \section overview Overview
+ *
+ * This library will both decode and encode theora packets to/from raw YUV 
+ * frames.  In either case, the packets will most likely either come from or
+ * need to be embedded in an Ogg stream.  Use 
+ * <a href="http://xiph.org/ogg/">libogg</a> or 
+ * <a href="http://www.annodex.net/software/liboggz/index.html">liboggz</a>
+ * to extract/package these packets.
+ *
+ * \section decoding Decoding Process
+ *
+ * Decoding can be separated into the following steps:
+ * -# initialise theora_info and theora_comment structures using 
+ *    theora_info_init() and theora_comment_init():
+ \verbatim
+ theora_info     info;
+ theora_comment  comment;
+   
+ theora_info_init(&info);
+ theora_comment_init(&comment);
+ \endverbatim
+ * -# retrieve header packets from Ogg stream (there should be 3) and decode 
+ *    into theora_info and theora_comment structures using 
+ *    theora_decode_header().  See \ref identification for more information on 
+ *    identifying which packets are theora packets.
+ \verbatim
+ int i;
+ for (i = 0; i < 3; i++)
+ {
+   (get a theora packet "op" from the Ogg stream)
+   theora_decode_header(&info, &comment, op);
+ }
+ \endverbatim
+ * -# initialise the decoder based on the information retrieved into the
+ *    theora_info struct by theora_decode_header().  You will need a 
+ *    theora_state struct.
+ \verbatim
+ theora_state state;
+ 
+ theora_decode_init(&state, &info);
+ \endverbatim
+ * -# pass in packets and retrieve decoded frames!  See the yuv_buffer 
+ *    documentation for information on how to retrieve raw YUV data.
+ \verbatim
+ yuf_buffer buffer;
+ while (last packet was not e_o_s) {
+   (get a theora packet "op" from the Ogg stream)
+   theora_decode_packetin(&state, op);
+   theora_decode_YUVout(&state, &buffer);
+ }
+ \endverbatim
+ *  
+ *
+ * \subsection identification Identifying Theora Packets
+ *
+ * All streams inside an Ogg file have a unique serial_no attached to the 
+ * stream.  Typically, you will want to 
+ *  - retrieve the serial_no for each b_o_s (beginning of stream) page 
+ *    encountered within the Ogg file; 
+ *  - test the first (only) packet on that page to determine if it is a theora 
+ *    packet;
+ *  - once you have found a theora b_o_s page then use the retrieved serial_no 
+ *    to identify future packets belonging to the same theora stream.
+ * 
+ * Note that you \e cannot use theora_packet_isheader() to determine if a 
+ * packet is a theora packet or not, as this function does not perform any
+ * checking beyond whether a header bit is present.  Instead, use the
+ * theora_decode_header() function and check the return value; or examine the
+ * header bytes at the beginning of the Ogg page.
  */
+
+
+/** \defgroup oldfuncs Legacy pre-1.0 C API */
+/*  @{ */
 
 /**
  * A YUV buffer for passing uncompressed frames to and from the codec.
@@ -59,14 +133,24 @@ ogg_buffer_state *ogg_buffer_create(void);
  * All samples are 8 bits. Within each plane samples are ordered by
  * row from the top of the frame to the bottom. Within each row samples
  * are ordered from left to right.
+ *
+ * During decode, the yuv_buffer struct is allocated by the user, but all
+ * fields (including luma and chroma pointers) are filled by the library.  
+ * These pointers address library-internal memory and their contents should 
+ * not be modified.
+ *
+ * Conversely, during encode the user allocates the struct and fills out all
+ * fields.  The user also manages the data addressed by the luma and chroma
+ * pointers.  See the encoder_example.c and dump_video.c example files in
+ * theora/examples/ for more information.
  */
 typedef struct {
     int   y_width;      /**< Width of the Y' luminance plane */
     int   y_height;     /**< Height of the luminance plane */
     int   y_stride;     /**< Offset in bytes between successive rows */
 
-    int   uv_width;     /**< Height of the Cb and Cr chroma planes */
-    int   uv_height;    /**< Width of the chroma planes */
+    int   uv_width;     /**< Width of the Cb and Cr chroma planes */
+    int   uv_height;    /**< Height of the chroma planes */
     int   uv_stride;    /**< Offset between successive chroma rows */
     unsigned char *y;   /**< Pointer to start of luminance data */
     unsigned char *u;   /**< Pointer to start of Cb data */
@@ -101,23 +185,23 @@ typedef enum {
 /**
  * Theora bitstream info.
  * Contains the basic playback parameters for a stream,
- * corresponds to the initial 'info' header packet.
+ * corresponding to the initial 'info' header packet.
  * 
- * Encoded theora frames must be a multiple of 16 is size;
- * this is what the width and height members represent. To
- * handle other sizes, a crop rectangle is specified in 
- * frame_height and frame_width, offset_x and offset_y. The
- * offset and size should still be a multiple of 2 to avoid
- * chroma sampling shifts. Offset values in this structure
- * are measured from the  upper left of the image.
+ * Encoded theora frames must be a multiple of 16 in width and height.
+ * To handle other frame sizes, a crop rectangle is specified in
+ * frame_height and frame_width, offset_x and * offset_y. The offset
+ * and size should still be a multiple of 2 to avoid chroma sampling
+ * shifts. Offset values in this structure are measured from the
+ * upper left of the image.
  *
  * Frame rate, in frames per second, is stored as a rational
- * fraction. So is the aspect ratio. Note that this refers
- * to the aspect ratio of the frame pixels, not of the
+ * fraction. Aspect ratio is also stored as a rational fraction, and
+ * refers to the aspect ratio of the frame pixels, not of the
  * overall frame itself.
  * 
- * see the example code for use of the other parameters and
- * good default settings for the encoder parameters.
+ * See <a href="http://svn.xiph.org/trunk/theora/examples/encoder_example.c">
+ * examples/encoder_example.c</a> for usage examples of the
+ * other paramters and good default settings for the encoder parameters.
  */
 typedef struct {
   ogg_uint32_t  width;		/**< encoded frame width  */
@@ -179,8 +263,8 @@ typedef struct{
  * length-encoded string vectors. The first occurence of the 
  * '=' character delimits the tag and value. A particular tag
  * may occur more than once. The character set encoding for
- * the strings is always utf-8, but the tag names are limited
- * to case-insensitive ascii. See the spec for details.
+ * the strings is always UTF-8, but the tag names are limited
+ * to case-insensitive ASCII. See the spec for details.
  *
  * In filling in this structure, theora_decode_header() will
  * null-terminate the user_comment strings for safety. However,
@@ -195,6 +279,139 @@ typedef struct theora_comment{
   char  *vendor;                /**< The vendor string identifying the encoder, null terminated */
 
 } theora_comment;
+
+
+/**\name theora_control() codes */
+/* \anchor decctlcodes_old
+ * These are the available request codes for theora_control()
+ * when called with a decoder instance.
+ * By convention decoder control codes are odd, to distinguish 
+ * them from \ref encctlcodes_old "encoder control codes" which
+ * are even.
+ *
+ * Note that since the 1.0 release, both the legacy and the final
+ * implementation accept all the same control codes, but only the
+ * final API declares the newer codes.
+ *
+ * Keep any experimental or vendor-specific values above \c 0x8000.*/
+
+/*@{*/
+
+/**Get the maximum post-processing level.
+ * The decoder supports a post-processing filter that can improve
+ * the appearance of the decoded images. This returns the highest
+ * level setting for this post-processor, corresponding to maximum
+ * improvement and computational expense.
+ */
+#define TH_DECCTL_GET_PPLEVEL_MAX (1)
+
+/**Set the post-processing level.
+ * Sets the level of post-processing to use when decoding the 
+ * compressed stream. This must be a value between zero (off)
+ * and the maximum returned by TH_DECCTL_GET_PPLEVEL_MAX.
+ */
+#define TH_DECCTL_SET_PPLEVEL (3)
+
+/**Sets the maximum distance between key frames.
+ * This can be changed during an encode, but will be bounded by
+ *  <tt>1<<th_info#keyframe_granule_shift</tt>.
+ * If it is set before encoding begins, th_info#keyframe_granule_shift will
+ *  be enlarged appropriately.
+ *
+ * \param[in]  buf <tt>ogg_uint32_t</tt>: The maximum distance between key
+ *                   frames.
+ * \param[out] buf <tt>ogg_uint32_t</tt>: The actual maximum distance set.
+ * \retval OC_FAULT  \a theora_state or \a buf is <tt>NULL</tt>.
+ * \retval OC_EINVAL \a buf_sz is not <tt>sizeof(ogg_uint32_t)</tt>.
+ * \retval OC_IMPL   Not supported by this implementation.*/
+#define TH_ENCCTL_SET_KEYFRAME_FREQUENCY_FORCE (4)
+
+/**Set the granule position.
+ * Call this after a seek, to update the internal granulepos
+ * in the decoder, to insure that subsequent frames are marked
+ * properly. If you track timestamps yourself and do not use
+ * the granule postion returned by the decoder, then you do
+ * not need to use this control.
+ */
+#define TH_DECCTL_SET_GRANPOS (5)
+
+/**\anchor encctlcodes_old */
+
+/**Sets the quantization parameters to use.
+ * The parameters are copied, not stored by reference, so they can be freed
+ *  after this call.
+ * <tt>NULL</tt> may be specified to revert to the default parameters.
+ *
+ * \param[in] buf #th_quant_info
+ * \retval OC_FAULT  \a theora_state is <tt>NULL</tt>.
+ * \retval OC_EINVAL Encoding has already begun, the quantization parameters
+ *                    are not acceptable to this version of the encoder, 
+ *                    \a buf is <tt>NULL</tt> and \a buf_sz is not zero, 
+ *                    or \a buf is non-<tt>NULL</tt> and \a buf_sz is 
+ *                    not <tt>sizeof(#th_quant_info)</tt>.
+ * \retval OC_IMPL   Not supported by this implementation.*/
+#define TH_ENCCTL_SET_QUANT_PARAMS (2)
+
+/**Disables any encoder features that would prevent lossless transcoding back
+ *  to VP3.
+ * This primarily means disabling block-level QI values and not using 4MV mode
+ *  when any of the luma blocks in a macro block are not coded.
+ * It also includes using the VP3 quantization tables and Huffman codes; if you
+ *  set them explicitly after calling this function, the resulting stream will
+ *  not be VP3-compatible.
+ * If you enable VP3-compatibility when encoding 4:2:2 or 4:4:4 source
+ *  material, or when using a picture region smaller than the full frame (e.g.
+ *  a non-multiple-of-16 width or height), then non-VP3 bitstream features will
+ *  still be disabled, but the stream will still not be VP3-compatible, as VP3
+ *  was not capable of encoding such formats.
+ * If you call this after encoding has already begun, then the quantization
+ *  tables and codebooks cannot be changed, but the frame-level features will
+ *  be enabled or disabled as requested.
+ *
+ * \param[in]  buf <tt>int</tt>: a non-zero value to enable VP3 compatibility,
+ *                   or 0 to disable it (the default).
+ * \param[out] buf <tt>int</tt>: 1 if all bitstream features required for
+ *                   VP3-compatibility could be set, and 0 otherwise.
+ *                  The latter will be returned if the pixel format is not
+ *                   4:2:0, the picture region is smaller than the full frame,
+ *                   or if encoding has begun, preventing the quantization
+ *                   tables and codebooks from being set.
+ * \retval OC_FAULT  \a theora_state or \a buf is <tt>NULL</tt>.
+ * \retval OC_EINVAL \a buf_sz is not <tt>sizeof(int)</tt>.
+ * \retval OC_IMPL   Not supported by this implementation.*/
+#define TH_ENCCTL_SET_VP3_COMPATIBLE (10)
+
+/**Gets the maximum speed level.
+ * Higher speed levels favor quicker encoding over better quality per bit.
+ * Depending on the encoding mode, and the internal algorithms used, quality
+ *  may actually improve, but in this case bitrate will also likely increase.
+ * In any case, overall rate/distortion performance will probably decrease.
+ * The maximum value, and the meaning of each value, may change depending on
+ *  the current encoding mode (VBR vs. CQI, etc.).
+ *
+ * \param[out] buf int: The maximum encoding speed level.
+ * \retval OC_FAULT  \a theora_state or \a buf is <tt>NULL</tt>.
+ * \retval OC_EINVAL \a buf_sz is not <tt>sizeof(int)</tt>.
+ * \retval OC_IMPL   Not supported by this implementation in the current
+ *                    encoding mode.*/
+#define TH_ENCCTL_GET_SPLEVEL_MAX (12)
+
+/**Sets the speed level.
+ * By default a speed value of 1 is used.
+ *
+ * \param[in] buf int: The new encoding speed level.
+ *                      0 is slowest, larger values use less CPU.
+ * \retval OC_FAULT  \a theora_state or \a buf is <tt>NULL</tt>.
+ * \retval OC_EINVAL \a buf_sz is not <tt>sizeof(int)</tt>, or the
+ *                    encoding speed level is out of bounds.
+ *                   The maximum encoding speed level may be
+ *                    implementation- and encoding mode-specific, and can be
+ *                    obtained via #TH_ENCCTL_GET_SPLEVEL_MAX.
+ * \retval OC_IMPL   Not supported by this implementation in the current
+ *                    encoding mode.*/
+#define TH_ENCCTL_SET_SPLEVEL (14)
+
+/*@}*/
 
 #define OC_FAULT       -1       /**< General failure */
 #define OC_EINVAL      -10      /**< Library encountered invalid internal data */
@@ -235,7 +452,9 @@ extern int theora_encode_init(theora_state *th, theora_info *ti);
 /**
  * Submit a YUV buffer to the theora encoder.
  * \param t A theora_state handle previously initialized for encoding.
- * \param yuv A buffer of YUV data to encode.
+ * \param yuv A buffer of YUV data to encode.  Note that both the yuv_buffer
+ *            struct and the luma/chroma buffers within should be allocated by
+ *            the user.
  * \retval OC_EINVAL Encoder is not ready, or is finished.
  * \retval -1 The size of the given frame differs from those previously input
  * \retval 0 Success
@@ -361,6 +580,10 @@ extern int theora_decode_packetin(theora_state *th,ogg_packet *op);
  * Output the next available frame of decoded YUV data.
  * \param th A theora_state handle previously initialized for decoding.
  * \param yuv A yuv_buffer in which libtheora should place the decoded data.
+ *            Note that the buffer struct itself is allocated by the user, but
+ *            that the luma and chroma pointers will be filled in by the 
+ *            library.  Also note that these luma and chroma regions should be 
+ *            considered read-only by the user.
  * \retval 0 Success
  */
 extern int theora_decode_YUVout(theora_state *th,yuv_buffer *yuv);
@@ -419,12 +642,17 @@ extern int theora_packet_iskeyframe(ogg_packet *op);
 int theora_granule_shift(theora_info *ti);
 
 /**
- * Convert a granulepos to an absolute frame number. The granulepos is
- * interpreted in the context of a given theora_state handle.
+ * Convert a granulepos to an absolute frame index, starting at 0.
+ * The granulepos is interpreted in the context of a given theora_state handle.
+ * 
+ * Note that while the granulepos encodes the frame count (i.e. starting
+ * from 1) this call returns the frame index, starting from zero. Thus
+ * One can calculate the presentation time by multiplying the index by
+ * the rate.
  *
  * \param th A previously initialized theora_state handle (encode or decode)
  * \param granulepos The granulepos to convert.
- * \returns The frame number corresponding to \a granulepos.
+ * \returns The frame index corresponding to \a granulepos.
  * \retval -1 The given granulepos is undefined (i.e. negative)
  *
  * Thus function was added in the 1.0alpha4 release.
@@ -433,10 +661,15 @@ extern ogg_int64_t theora_granule_frame(theora_state *th,ogg_int64_t granulepos)
 
 /**
  * Convert a granulepos to absolute time in seconds. The granulepos is
- * interpreted in the context of a given theora_state handle.
+ * interpreted in the context of a given theora_state handle, and gives
+ * the end time of a frame's presentation as used in Ogg mux ordering.
+ *
  * \param th A previously initialized theora_state handle (encode or decode)
  * \param granulepos The granulepos to convert.
  * \returns The absolute time in seconds corresponding to \a granulepos.
+ *          This is the "end time" for the frame, or the latest time it should
+ *           be displayed.
+ *          It is not the presentation time.
  * \retval -1. The given granulepos is undefined (i.e. negative), or
  * \retval -1. The function has been disabled because floating 
  *              point support is not available.
@@ -531,6 +764,18 @@ extern int   theora_comment_query_count(theora_comment *tc, char *tag);
  * \param tc An allocated theora_comment structure.
  **/
 extern void  theora_comment_clear(theora_comment *tc);
+
+/**Encoder control function.
+ * This is used to provide advanced control the encoding process.
+ * \param th     A #theora_state handle.
+ * \param req    The control code to process.
+ *                See \ref encctlcodes_old "the list of available 
+ *			control codes" for details.
+ * \param buf    The parameters for this control code.
+ * \param buf_sz The size of the parameter buffer.*/
+extern int theora_control(theora_state *th,int req,void *buf,size_t buf_sz);
+
+/* @} */ /* end oldfuncs doxygen group */
 
 #ifdef __cplusplus
 }

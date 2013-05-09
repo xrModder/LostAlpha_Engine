@@ -12,6 +12,7 @@ extern BOOL					LogExecCB		= TRUE;
 static string_path			logFName		= "engine.log";
 static string_path			log_file_name	= "engine.log";
 static BOOL 				no_log			= TRUE;
+static BOOL 				no_log_owerflow			= TRUE;
 #ifdef PROFILE_CRITICAL_SECTIONS
 	static xrCriticalSection	logCS(MUTEX_PROFILE_ID(log));
 #else // PROFILE_CRITICAL_SECTIONS
@@ -87,6 +88,11 @@ void Log				(const char *s)
 
 void __cdecl Msg		( const char *format, ...)
 {
+	if (!no_log_owerflow && LogFile->size()>5000)  //skyloader: clear log
+	{
+		LogFile->clear();
+		Log("Log overflow! Log cleared successfully.");
+	}
 	va_list		mark;
 	string2048	buf;
 	va_start	(mark, format );
@@ -178,9 +184,11 @@ void InitLog()
 	LogFile->reserve	(1000);
 }
 
-void CreateLog			(BOOL nl)
+void CreateLog			(BOOL nl, BOOL nlo)
 {
-    no_log				= nl;
+	no_log				= nl;
+	no_log_owerflow			= nlo;
+
 	strconcat			(sizeof(log_file_name),log_file_name,Core.ApplicationName,"_",Core.UserName,".log");
 	if (FS.path_exist("$logs$"))
 		FS.update_path	(logFName,"$logs$",log_file_name);

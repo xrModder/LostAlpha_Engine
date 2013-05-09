@@ -112,6 +112,8 @@ CUIWindow::CUIWindow()
 	m_bClickable			= false;
 	m_bPP					= false;
 	m_dwFocusReceiveTime	= 0;
+	m_dwLastClickTime	= 0;
+	m_dwLastClickFrame	= 0;
 #ifdef LOG_ALL_WNDS
 	ListWndCount++;
 	m_dbg_id = ListWndCount;
@@ -225,9 +227,15 @@ void CUIWindow::AttachChild(CUIWindow* pChild)
 
 void CUIWindow::DetachChild(CUIWindow* pChild)
 {
-	R_ASSERT(pChild);
-	if(NULL==pChild)
+#ifdef DEBUG
+	R_ASSERT2(pChild, make_string("Can't find child to detach [%s]",*m_windowName));
+#else
+	if(!pChild)
+	{
+		Msg("! Can't find child to detach in window [%s]",*m_windowName);
 		return;
+	}
+#endif
 	
 	if(m_pMouseCapturer == pChild)
 		SetCapture(pChild, false);
@@ -282,13 +290,14 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 
 	if( WINDOW_LBUTTON_DOWN == mouse_action )
 	{
-		static u32 _last_db_click_frame		= 0;
 		u32 dwCurTime						= Device.dwTimeContinual;
 
-		if( (_last_db_click_frame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME) )
+		if( (m_dwLastClickFrame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME) )
 		{
-            mouse_action			= WINDOW_LBUTTON_DB_CLICK;
-			_last_db_click_frame	= Device.dwFrame;
+			//Msg("WINDOW_LBUTTON_DB_CLICK[%d][%d]",(dwCurTime-m_dwLastClickTime), Device.dwFrame); //skyloader: working ok now
+
+			mouse_action			= WINDOW_LBUTTON_DB_CLICK;
+			m_dwLastClickFrame	= Device.dwFrame;
 		}
 
 		m_dwLastClickTime = dwCurTime;
@@ -317,40 +326,36 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 	// handle any action
 	switch (mouse_action){
 		case WINDOW_MOUSE_MOVE:
-		{
-			OnMouseMove();		
+			OnMouseMove();	
 			break;
-		}
+
 		case WINDOW_MOUSE_WHEEL_DOWN:
-		{
-			OnMouseScroll(WINDOW_MOUSE_WHEEL_DOWN); 
+			OnMouseScroll(WINDOW_MOUSE_WHEEL_DOWN);
 			break;
-		}
+
 		case WINDOW_MOUSE_WHEEL_UP:
-		{
-			OnMouseScroll(WINDOW_MOUSE_WHEEL_UP);	
+			OnMouseScroll(WINDOW_MOUSE_WHEEL_UP);
 			break;
-		}
+
 		case WINDOW_LBUTTON_DOWN:
-		{
-			if(OnMouseDown(MOUSE_1))	
-				return true;	
-		}
+			if(OnMouseDown(MOUSE_1))
+				return true;
+			break;
+
 		case WINDOW_RBUTTON_DOWN:
-		{
 			if(OnMouseDown(MOUSE_2))
-				return true;	
-		}
+				return true;
+			break;	
+
 		case WINDOW_CBUTTON_DOWN:
-		{
 			if(OnMouseDown(MOUSE_3))	
-				return true;	
-		}
+				return true;
+			break;
+
 		case WINDOW_LBUTTON_DB_CLICK:
-		{
-			if (OnDbClick())			
-				return true;	
-		}
+			if (OnDbClick())
+				return true;
+			break;
 		default:
             break;
 	}
@@ -536,17 +541,16 @@ void CUIWindow::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	//оповестить дочерние окна
 	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end()!=it; ++it)
 	{
-		if (*it)
-		{
-			if ((*it)->IsEnabled())
-			{
-				(*it)->SendMessage(pWnd,msg,pData);
-			}
-		}
-		else
-		{
+
+#ifdef DEBUG
+		R_ASSERT2((*it), make_string("'%s' has a null child(%d) registered!", *m_windowName, m_ChildWndList.end() - it));
+#else
+		if(!(*it))
 			Msg("! '%s' has a null child(%d) registered!", *m_windowName, m_ChildWndList.end() - it);
-		}
+		else
+#endif
+		if ((*it)->IsEnabled())
+			(*it)->SendMessage(pWnd,msg,pData);
 	}
 }
 

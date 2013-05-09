@@ -837,7 +837,7 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 	rec_files.clear	();
 	//-----------------------------------------------------------
 
-	CreateLog		(0!=strstr(Core.Params,"-nolog"));
+	CreateLog		(0!=strstr(Core.Params,"-no_log"),0!=strstr(Core.Params,"-no_log_overflow"));
 
 }
 

@@ -180,6 +180,12 @@ void CUIGameSP::ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_ver
 	}
 }
 
+void CUIGameSP::ReloadPdaWnd()
+{
+	delete_data(PdaMenu);
+	PdaMenu = xr_new<CUIPdaWnd>();
+}
+
 void CUIGameSP::reset_ui()
 {
 	inherited::reset_ui				();

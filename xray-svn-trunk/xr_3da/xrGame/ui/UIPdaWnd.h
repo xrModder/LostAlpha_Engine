@@ -45,6 +45,8 @@ protected:
 	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
 
+	bool				m_bUpgraded;
+
 public:
 	// Поддиалоги PDA
 	CUIMapWnd*				UIMapWnd;

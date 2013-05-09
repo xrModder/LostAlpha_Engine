@@ -40,6 +40,8 @@ public:
 
 	virtual void		HideShownDialogs		();
 
+	void				ReloadPdaWnd		();
+
 	CUIInventoryWnd*	InventoryMenu;
 	CUIPdaWnd*			PdaMenu;
 	CUITalkWnd*			TalkMenu;

@@ -387,7 +387,7 @@ IReader*	IReader::open_chunk_iterator	(u32& ID, IReader* _prev)
 
 void	IReader::r	(void *p,int cnt)
 {
-	VERIFY				(Pos+cnt<=Size);
+	VERIFY2				(Pos+cnt<=Size, make_string("Pos+cnt=[%d], Size=[%d]", (Pos+cnt), Size));
 	CopyMemory		(p,pointer(),cnt);
 	advance				(cnt);
 #ifdef DEBUG

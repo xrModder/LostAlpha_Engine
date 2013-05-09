@@ -79,6 +79,7 @@ class CHolderCustom;
 struct ScriptCallbackInfo;
 struct STasks;
 class CCar;
+//class CPda;
 class CMountedTurret;
 class CDangerObject;
 class CScriptGameObject;
@@ -532,6 +533,8 @@ public:
 			CHelicopter*		get_helicopter			();
 			//CAR
 			CCar*				get_car					();
+			//PDA
+			//CPda*				get_pda					();
 			//LAMP
 			CHangingLamp*		get_hanging_lamp		();
 			CHolderCustom*		get_custom_holder		();
