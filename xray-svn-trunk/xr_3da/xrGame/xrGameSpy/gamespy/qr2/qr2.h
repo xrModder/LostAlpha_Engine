@@ -194,10 +194,20 @@ typedef void (*qr2_adderrorcallback_t)(qr2_error_t error, gsi_char *errmsg, void
 typedef void (*qr2_natnegcallback_t)(int cookie, void *userdata);	
 typedef void (*qr2_clientmessagecallback_t)(gsi_char *data, int len, void *userdata);	
 typedef void (*qr2_publicaddresscallback_t)(unsigned int ip, unsigned short port, void *userdata);
+typedef void (*qr2_clientconnectedcallback_t)(SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userdata);
+
+//#if defined(QR2_IP_FILTER)
+typedef void (*qr2_denyqr2responsetoipcallback_t)(void *userdata, unsigned int sender_ip, int * result);
+//#endif //#if defined(QR2_IP_FILTER)
 
 void qr2_register_natneg_callback(qr2_t qrec, qr2_natnegcallback_t nncallback);
 void qr2_register_clientmessage_callback(qr2_t qrec, qr2_clientmessagecallback_t cmcallback);
 void qr2_register_publicaddress_callback(qr2_t qrec, qr2_publicaddresscallback_t pacallback);
+void qr2_register_clientconnected_callback(qr2_t qrec, qr2_clientconnectedcallback_t cccallback);
+
+//#if defined(QR2_IP_FILTER)
+void qr2_register_denyresponsetoip_callback(qr2_t qrec, qr2_denyqr2responsetoipcallback_t dertoipcallback);
+//#endif //#if defined(QR2_IP_FILTER)
 
 
 /*****************
@@ -361,8 +371,9 @@ gsi_bool qr2_buffer_add_int(qr2_buffer_t outbuf, int value);
 typedef void (*cdkey_process_t)(char *buf, int len, struct sockaddr *fromaddr);
 
 /* ip verification / spoof prevention */
-#define QR2_IPVERIFY_TIMEOUT    4000  // timeout after 4 seconds round trip time
-#define QR2_IPVERIFY_ARRAY_SIZE 40    // allow 40 outstanding queryies in those 4 seconds
+#define QR2_IPVERIFY_TIMEOUT        4000  // timeout after 4 seconds round trip time
+#define QR2_IPVERIFY_ARRAY_SIZE     200   // allowed outstanding queryies in those 4 seconds
+#define QR2_IPVERIFY_MAXDUPLICATES  5     // allow maximum of 5 requests per IP/PORT
 struct qr2_ipverify_info_s
 {
 	struct sockaddr_in addr;      // addr = 0 when not in use
@@ -385,6 +396,11 @@ struct qr2_implementation_s
 	qr2_natnegcallback_t nn_callback;
 	qr2_clientmessagecallback_t cm_callback;
 	qr2_publicaddresscallback_t pa_callback;
+	qr2_clientconnectedcallback_t cc_callback;
+//#if defined(QR2_IP_FILTER)
+	qr2_denyqr2responsetoipcallback_t denyresp2_ip_callback;
+//#endif //#if defined(QR2_IP_FILTER)
+
 
 	gsi_time lastheartbeat;
 	gsi_time lastka;

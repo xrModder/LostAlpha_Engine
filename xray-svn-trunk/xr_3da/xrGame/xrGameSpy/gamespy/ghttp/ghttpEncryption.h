@@ -34,8 +34,16 @@ typedef enum
 struct GHIEncryptor; // forward declare for callbacks
 struct GHIConnection;
 
-// Called to start the encryption engine
+// Called to init the encryption engine
 typedef GHIEncryptionResult (*GHTTPEncryptorInitFunc)   (struct GHIConnection * theConnection, 
+											   struct GHIEncryptor * theEncryptor);
+
+// Called to connect the socket (some engines do this internally)
+typedef GHIEncryptionResult (*GHTTPEncryptorConnectFunc)(struct GHIConnection * theConnection, 
+											   struct GHIEncryptor * theEncryptor);
+
+// Called to start the handshake process engine
+typedef GHIEncryptionResult (*GHTTPEncryptorStartFunc)(struct GHIConnection * theConnection, 
 											   struct GHIEncryptor * theEncryptor);
 
 // Called to destroy the encryption engine
@@ -51,7 +59,7 @@ typedef GHIEncryptionResult (*GHTTPEncryptorEncryptFunc)(struct GHIConnection * 
 											   char *       theEncryptedBuffer,
 											   int *        theEncryptedLength); // [in/out]
 
-// Called when data needs to be descrypted 
+// Called when data needs to be decrypted 
 //    - encrypted data may be left in the buffer
 //    - decrypted buffer is appended to, not overwritten
 typedef GHIEncryptionResult (*GHTTPEncryptorDecryptFunc)(struct GHIConnection * theConnection, 
@@ -69,35 +77,60 @@ typedef struct GHIEncryptor
 	void*     mInterface;   // only SSL is currently supported
 	GHTTPEncryptionEngine mEngine;
 	GHTTPBool mInitialized;
-	GHTTPBool mSessionEstablished;
+	GHTTPBool mSessionStarted;      // handshake started?
+	GHTTPBool mSessionEstablished;  // handshake completed?
+	
+	// (As coded, these two are exclusive!)
+	//    pattern 1 = manually encrypt the buffer, then send using normal socket functions
+	//    pattern 2 = send plain text through the encryption engine, it will send
+	GHTTPBool mEncryptOnBuffer;  // engine encrypts when writing to a buffer? (pattern 1)
+	GHTTPBool mEncryptOnSend;    // engine encrypts when sending over socket? (pattern 2)
+
+	// If GHTTPTrue, the SSL library handles sending/receiving handshake messages
+	GHTTPBool mLibSendsHandshakeMessages;  
 
 	// Functions for engine use
-	GHTTPEncryptorInitFunc mInitFunc;
-	GHTTPEncryptorCleanupFunc mCleanupFunc;
-	GHTTPEncryptorEncryptFunc mEncryptFunc;
-	GHTTPEncryptorDecryptFunc mDecryptFunc;
+	GHTTPEncryptorInitFunc      mInitFunc;
+	GHTTPEncryptorCleanupFunc   mCleanupFunc;
+	GHTTPEncryptorStartFunc     mStartFunc;  // start the handshake process
+	GHTTPEncryptorEncryptFunc   mEncryptFunc;
+	GHTTPEncryptorDecryptFunc   mDecryptFunc;
 } GHIEncryptor;
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // ssl encryption
-GHIEncryptionResult ghttpEncryptorSslInitFunc(struct GHIConnection * connection,
+GHIEncryptionResult ghiEncryptorSslInitFunc(struct GHIConnection * connection,
 									struct GHIEncryptor  * theEncryptor);
-GHIEncryptionResult ghttpEncryptorSslCleanupFunc(struct GHIConnection * connection,
+GHIEncryptionResult ghiEncryptorSslCleanupFunc(struct GHIConnection * connection,
 									   struct GHIEncryptor  * theEncryptor);
-GHIEncryptionResult ghttpEncryptorSslEncryptFunc(struct GHIConnection * connection,
+
+GHIEncryptionResult ghiEncryptorSslStartFunc(struct GHIConnection * connection,
+								struct GHIEncryptor * theEncryptor);
+									   
+GHIEncryptionResult ghiEncryptorSslEncryptFunc(struct GHIConnection * connection,
 									   struct GHIEncryptor  * theEncryptor,
 									   const char * thePlainTextBuffer,
 									   int          thePlainTextLength,
 									   char *       theEncryptedBuffer,
 									   int *        theEncryptedLength);
-GHIEncryptionResult ghttpEncryptorSslDecryptFunc(struct GHIConnection * connection,
+GHIEncryptionResult ghiEncryptorSslDecryptFunc(struct GHIConnection * connection,
 									   struct GHIEncryptor  * theEncryptor,
 									   const char * theEncryptedBuffer,
 									   int *        theEncryptedLength,
 									   char *       theDecryptedBuffer,
 									   int *        theDecryptedLength);
+GHIEncryptionResult ghiEncryptorSslEncryptSend(struct GHIConnection * connection,
+                                 struct GHIEncryptor * theEncryptor,
+                                 const char * thePlainTextBuffer,
+                                 int thePlainTextLength,
+                                 int * theBytesSent);
+GHIEncryptionResult ghiEncryptorSslDecryptRecv(struct GHIConnection * connection,
+                                 struct GHIEncryptor * theEncryptor,
+                                 char * theDecryptedBuffer,
+                                 int * theDecryptedLength);
+                                 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

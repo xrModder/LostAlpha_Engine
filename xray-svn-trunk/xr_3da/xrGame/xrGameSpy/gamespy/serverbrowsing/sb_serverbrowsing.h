@@ -1,12 +1,8 @@
 /******
 GameSpy Server Browsing SDK
   
-Copyright 1999-2002 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 
 ******
@@ -20,12 +16,12 @@ devsupport@gamespy.com
 #ifndef _SB_SERVERBROWSING_H
 #define _SB_SERVERBROWSING_H
 
+#include "../common/gsCommon.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 	
-#include "../common/gsCommon.h"
-
 	
 
 /*******************
@@ -75,9 +71,18 @@ typedef enum
 	sbc_serverchallengereceived // received ip verification challenge from server
 } SBCallbackReason;	
 
+//Passed to callback to indicate state of attempt to connect to server
+typedef enum
+{
+	sbcs_succeeded,
+	sbcs_failed
+} SBConnectToServerState;
 
 //Prototype for the callback function you need to provide
 typedef void (*ServerBrowserCallback)(ServerBrowser sb, SBCallbackReason reason, SBServer server, void *instance);
+
+//Prototype for the callback function used when connecting to a server
+typedef void (*SBConnectToServerCallback)(ServerBrowser sb, SBConnectToServerState state, SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *instance);
 
 //Maximum length for the SQL filter string
 #define MAX_FILTER_LEN 256
@@ -327,6 +332,11 @@ SBError ServerBrowserSendNatNegotiateCookieToServer(ServerBrowser sb, const gsi_
 ------------------
 Sends a game-specific message to a server  */
 SBError ServerBrowserSendMessageToServer(ServerBrowser sb, const gsi_char *ip, unsigned short port, const char *data, int len);
+
+/* ServerBrowserConnectToServer
+------------------
+Attempts to connect to the server, using natneg if necessary */
+SBError ServerBrowserConnectToServer(ServerBrowser sb, SBServer server, SBConnectToServerCallback callback);
 
 
 /* Comparision types for the ServerBrowserSort function

@@ -4,8 +4,8 @@
 
 #include "xrGameSpy_CDKey.h"
 
-#include "GameSpy/CDKey/gcdkeyc.h"
-#include "GameSpy/CDKey/gcdkeys.h"
+#include "GameSpy/gcdkey/gcdkeyc.h"
+#include "GameSpy/gcdkey/gcdkeys.h"
 
 
 

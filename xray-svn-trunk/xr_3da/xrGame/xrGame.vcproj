@@ -21160,6 +21160,14 @@
 								>
 							</File>
 							<File
+								RelativePath=".\pda_space.h"
+								>
+							</File>
+							<File
+								RelativePath=".\PdaMsg.h"
+								>
+							</File>
+							<File
 								RelativePath=".\PdaScript.cpp"
 								>
 								<FileConfiguration
@@ -21216,14 +21224,6 @@
 										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
 									/>
 								</FileConfiguration>
-							</File>
-							<File
-								RelativePath=".\pda_space.h"
-								>
-							</File>
-							<File
-								RelativePath=".\PdaMsg.h"
-								>
 							</File>
 						</Filter>
 						<Filter
@@ -24695,6 +24695,14 @@
 					</File>
 					<File
 						RelativePath=".\GameSpy\GameSpy_GCD_Server.h"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\gamespy\GameSpy_GP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\gamespy\GameSpy_GP.h"
 						>
 					</File>
 					<File

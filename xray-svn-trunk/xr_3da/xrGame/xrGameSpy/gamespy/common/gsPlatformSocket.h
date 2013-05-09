@@ -135,6 +135,7 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 	#define AF_INET     SCE_NET_INET_AF_INET
 	#define SOCK_STREAM SCE_NET_INET_SOCK_STREAM
 	#define SOCK_DGRAM  SCE_NET_INET_SOCK_DGRAM
+	#define SOCK_RAW    SCE_NET_INET_SOCK_RAW
 	#define INADDR_ANY  SCE_NET_INET_INADDR_ANY
 	#define SOL_SOCKET  SCE_NET_INET_SOL_SOCKET
 	#define SO_SNDBUF   SCE_NET_INET_SO_SNDBUF
@@ -146,7 +147,7 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 
 	#define IPPROTO_TCP SCE_NET_INET_IPPROTO_TCP // protocol defined by SOCK_STREAM
 	#define IPPROTO_UDP SCE_NET_INET_IPPROTO_UDP // protocol defined by SOCK_DGRAM
-	
+	#define IPPROTO_ICMP SCE_NET_INET_IPPROTO_ICMP // protocol for ICMP pings
 
 	// structures
 	#define in_addr     SceNetInetInAddr
@@ -161,12 +162,14 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 		#undef FD_CLR
 		#undef FD_ZERO
 		#undef timeval
+		#undef FD_SETSIZE	
 	#endif
 	#define fd_set  SceNetInetFdSet
 	#define timeval SceNetInetTimeval
 	#define FD_SET  SceNetInetFD_SET
 	#define FD_CLR  SceNetInetFD_CLR
 	#define FD_ZERO SceNetInetFD_ZERO
+	#define FD_SETSIZE SCE_NET_INET_FD_SETSIZE
 
 	// functions
 	#define htonl		sceNetHtonl
@@ -225,7 +228,23 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 
 // XBOX doesn't have host lookup
 #if defined(_XBOX)
-	typedef int HOSTENT;
+	#if defined(_X360)
+		// hostent support
+		struct hostent
+		{
+			char* h_name;       
+			char** h_aliases;    
+			gsi_u16 h_addrtype; // AF_INET
+			gsi_u16 h_length;   
+			char** h_addr_list; 
+		};
+
+		typedef struct hostent HOSTENT;
+		struct hostent * gethostbyname(const char* name);
+	#else
+		typedef int HOSTENT;
+	#endif
+
 	char * inet_ntoa(IN_ADDR in_addr);
 #endif
 
@@ -236,7 +255,38 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 #endif
 
 // SOCKET ERROR CODES
-#if defined(_NITRO)
+#if defined(_REVOLUTION) //not sure if Wii uses this or _REV
+	#define WSAEWOULDBLOCK      SO_EWOULDBLOCK             
+	#define WSAEINPROGRESS      SO_EINPROGRESS             
+	#define WSAEALREADY         SO_EALREADY                
+	#define WSAENOTSOCK         SO_ENOTSOCK                
+	#define WSAEDESTADDRREQ     SO_EDESTADDRREQ            
+	#define WSAEMSGSIZE         SO_EMSGSIZE                
+	#define WSAEPROTOTYPE       SO_EPROTOTYPE              
+	#define WSAENOPROTOOPT      SO_ENOPROTOOPT             
+	#define WSAEPROTONOSUPPORT  SO_EPROTONOSUPPORT         
+	#define WSAEOPNOTSUPP       SO_EOPNOTSUPP              
+	#define WSAEAFNOSUPPORT     SO_EAFNOSUPPORT            
+	#define WSAEADDRINUSE       SO_EADDRINUSE              
+	#define WSAEADDRNOTAVAIL    SO_EADDRNOTAVAIL           
+	#define WSAENETDOWN         SO_ENETDOWN                
+	#define WSAENETUNREACH      SO_ENETUNREACH             
+	#define WSAENETRESET        SO_ENETRESET               
+	#define WSAECONNABORTED     SO_ECONNABORTED            
+	#define WSAECONNRESET       SO_ECONNRESET              
+	#define WSAENOBUFS          SO_ENOBUFS                 
+	#define WSAEISCONN          SO_EISCONN                 
+	#define WSAENOTCONN         SO_ENOTCONN                
+	#define WSAETIMEDOUT        SO_ETIMEDOUT               
+	#define WSAECONNREFUSED     SO_ECONNREFUSED            
+	#define WSAELOOP            SO_ELOOP                   
+	#define WSAENAMETOOLONG     SO_ENAMETOOLONG            
+	#define WSAEHOSTUNREACH     SO_EHOSTUNREACH            
+	#define WSAENOTEMPTY        SO_ENOTEMPTY               
+	#define WSAEDQUOT           SO_EDQUOT                  
+	#define WSAESTALE           SO_ESTALE                  
+	#define WSAEINVAL           SO_EINVAL
+#elif defined(_NITRO)
 	#define WSAEWOULDBLOCK      SOC_EWOULDBLOCK             
 	#define WSAEINPROGRESS      SOC_EINPROGRESS             
 	#define WSAEALREADY         SOC_EALREADY                
@@ -348,7 +398,7 @@ gsiSocketGethostbyname(n) SOC_GetHostByName(n)
 #endif
 
 // make caps types interchangeable on all platforms
-#if !defined(_WIN32) && !defined(_NITRO)
+#if !defined(_WIN32) && !defined(_NITRO) && !defined(_REVOLUTION) // necessary for Wii??
 	typedef int SOCKET;
 	typedef struct sockaddr    SOCKADDR;
 	typedef struct sockaddr_in SOCKADDR_IN;
@@ -388,6 +438,75 @@ int gsiShutdown(SOCKET s, int how);
 	#define GOAGetLastError(s) WSAGetLastError()
 #endif
 
+#if defined(_REVOLUTION)
+	#define AF_INET SO_PF_INET
+	#define SOCK_DGRAM SO_SOCK_DGRAM
+	#define SOCK_STREAM SO_SOCK_STREAM
+	#define IPPROTO_UDP SO_IPPROTO_UDP
+	#define IPPROTO_TCP SO_IPPROTO_TCP
+	#define INADDR_ANY SO_INADDR_ANY
+	#define SOL_SOCKET SO_SOL_SOCKET
+	#define SO_SNDBUF SO_SO_SNDBUF
+	#define SO_RCVBUF SO_SO_RCVBUF
+	#define SO_REUSEADDR SO_SO_REUSEADDR
+
+	typedef int SOCKET;
+	typedef struct SOSockAddr SOCKADDR;
+	#define sockaddr SOSockAddr
+	typedef struct SOSockAddrIn SOCKADDR_IN;
+	#define sockaddr_in SOSockAddrIn
+		#define sin_family family
+		#define sin_port port
+		#define sin_addr addr
+	typedef struct SOInAddr IN_ADDR;
+	#define in_addr SOInAddr
+		#define s_addr addr
+	typedef struct SOHostEnt HOSTENT;
+	#define hostent SOHostEnt
+		#define h_name name
+		#define h_aliases aliases
+		#define h_addrtype addrType
+		#define h_length length
+		#define h_addr_list addrList
+		#define h_addr addrList[0]
+
+	int socket(int pf, int type, int protocol);
+	int closesocket(SOCKET sock);
+	int shutdown(SOCKET sock, int how);
+	int bind(SOCKET sock, const SOCKADDR* addr, int len);
+
+	int connect(SOCKET sock, const SOCKADDR* addr, int len);
+	int listen(SOCKET sock, int backlog);
+	SOCKET accept(SOCKET sock, SOCKADDR* addr, int* len);
+
+	int recv(SOCKET sock, char* buf, int len, int flags);
+	int recvfrom(SOCKET sock, char* buf, int len, int flags, SOCKADDR* addr, int* fromlen);
+	int send(SOCKET sock, const char* buf, int len, int flags);
+	int sendto(SOCKET sock, const char* buf, int len, int flags, const SOCKADDR* addr, int tolen);
+
+	int getsockopt(SOCKET sock, int level, int optname, char* optval, int* optlen);
+	int setsockopt(SOCKET sock, int level, int optname, const char* optval, int optlen);
+
+	#define gethostbyaddr(a,l,t)	SOGetHostByAddr(a,l,t)
+	#define gethostbyname(n)		SOGetHostByName(n)
+
+	// thread safe DNS lookups
+	#define getaddrinfo(n,s,h,r)	SOGetAddrInfo(n,s,h,r)
+	#define freeaddrinfo(a)			SOFreeAddrInfo(a)
+	
+	
+	int getsockname(SOCKET sock, SOCKADDR* addr, int* len);
+
+	#define htonl(l) SOHtoNl((u32)l)
+	#define ntohl(l) SONtoHl((u32)l)
+	#define htons(s) SOHtoNs((u16)s)
+	#define ntohs(s) SONtoHs((u16)s)
+
+	#define inet_ntoa(n) SOInetNtoA(n)
+	unsigned long inet_addr(const char * name);
+
+	int GOAGetLastError(SOCKET sock);
+#endif
 
 #if defined(_NITRO)
 	#define AF_INET SOC_PF_INET

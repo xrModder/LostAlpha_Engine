@@ -78,8 +78,8 @@ gsi_i32 gsCryptRSADecryptBuffer(const gsCryptRSAKey *privateKey, const unsigned 
 //           SignFirst: Decryption must take place before the signature is validated.  This is a high overhead for invalid signatures.
 //           EncryptFirst: Signature validation takes place before decryption, but the MAC is unencrypted to packet sniffers.  (Exposes it to attack)
 //     We use SignFirst since it's unlikely a client will receive a invalid signature DOS attack.
-gsi_i32 gsCryptRSASignData(const gsCryptRSAKey *privateKey, const unsigned char *plainText, gsi_u32 plainTextLen, const unsigned char *signedDataOut, gsi_u32 *lenOut);
-
+gsi_i32 gsCryptRSASignData(const gsCryptRSAKey *privateKey, const unsigned char *plainText, gsi_u32 plainTextLen, unsigned char *signedDataOut, gsi_u32 *lenOut);
+gsi_i32 gsCryptRSASignHash(const gsCryptRSAKey *privateKey, const unsigned char *hash, gsi_u32 hashLen, unsigned char *signedDataOut, gsi_u32 *lenOut);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

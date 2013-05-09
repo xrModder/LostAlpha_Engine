@@ -3,24 +3,20 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
 #ifndef _GHTTPCOMMON_H_
 #define _GHTTPCOMMON_H_
 
+#include "ghttp.h"
+#include "ghttpConnection.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ghttp.h"
-#include "ghttpConnection.h"
 
 // HTTP Line-terminator.
 ////////////////////////

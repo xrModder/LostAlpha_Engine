@@ -12,6 +12,7 @@
 #include "UITextureMaster.h"
 #include "uiabstract.h"
 #include "xrUIXmlParser.h"
+#include "../../Include/xrRender/UIShader.h"
 
 xr_map<shared_str, TEX_INFO>	CUITextureMaster::m_textures;
 #ifdef DEBUG
@@ -164,5 +165,5 @@ void CUITextureMaster::GetTextureShader(const shared_str&  texture_name, ui_shad
 
 	R_ASSERT3(it != m_textures.end(), "can't find texture", texture_name.c_str());
 
-	sh.create("hud\\default", *((*it).second.file));	
+	sh->create("hud\\default", *((*it).second.file));	
 }

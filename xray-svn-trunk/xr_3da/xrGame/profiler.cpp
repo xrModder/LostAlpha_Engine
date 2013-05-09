@@ -78,10 +78,10 @@ IC	void CProfiler::convert_string	(LPCSTR str, shared_str &out, u32 max_string_s
 		j = i					= i + 1;
 		++count;
 	}
-	strcpy						(m_temp,"");
+	xr_strcpy						(m_temp,"");
 	for (u32 k = 0; k<count; ++k)
-		strcat					(m_temp,indent);
-	strcat						(m_temp,j);
+	xr_strcat					(m_temp,indent);
+	xr_strcat					(m_temp,j);
 	count						= xr_strlen(m_temp);
 	for ( ; count < max_string_size; ++count)
 		m_temp[count]			= white_character;
@@ -95,7 +95,7 @@ void CProfiler::setup_timer			(LPCSTR timer_id, const u64 &timer_time, const u32
 	float						_time = float(timer_time)*1000.f/CPU::qpc_freq;
 	TIMERS::iterator			i = m_timers.find(timer_id);
 	if (i == m_timers.end()) {
-		strcpy					(m_temp,timer_id);
+		xr_strcpy				(m_temp,timer_id);
 		LPSTR					j,k = m_temp;
 		while ((j = strchr(k,'/')) != 0) {
 			*j					= 0;

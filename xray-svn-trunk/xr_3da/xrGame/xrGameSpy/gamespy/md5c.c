@@ -325,16 +325,20 @@ static void MD5_memset (POINTER output, int value, unsigned int len)
 
 #endif
 
-#define OUTPUT_BUFFER_SIZE 33
-
-void MD5Print (unsigned char digest[16], char output[OUTPUT_BUFFER_SIZE])
+void MD5Print (unsigned char digest[16], char output[33])
 {
-  unsigned int i;
-  for (i = 0; i < 16; i++)
-	printf(output + i * 2, OUTPUT_BUFFER_SIZE - i*2, "%02x", digest[i]);
+	static const char hex_digits[] = "0123456789abcdef";
+	unsigned int i;
+
+	for (i = 0; i < 16; i++)
+	{
+		output[i*2  ] = hex_digits[digest[i] / 16];
+		output[i*2+1] = hex_digits[digest[i] % 16];
+	}
+	output[32] = '\0';
 }
 
-void MD5Digest (unsigned char *input, unsigned int len, char output[OUTPUT_BUFFER_SIZE])
+void MD5Digest (unsigned char *input, unsigned int len, char output[33])
 {
 	MD5_CTX ctx;
 	unsigned char digest[16];
@@ -345,9 +349,6 @@ void MD5Digest (unsigned char *input, unsigned int len, char output[OUTPUT_BUFFE
 	MD5Print(digest, output);
 
 }
-
-#undef OUTPUT_BUFFER_SIZE
-
 #ifdef __cplusplus
 }
 #endif

@@ -64,10 +64,10 @@ CUIMapList::~CUIMapList(){
 }
 
 void CUIMapList::StartDedicatedServer(){
-	strcpy					(g_sLaunchOnExit_app,"dedicated\\xr_3da.exe");
+	xr_strcpy				(g_sLaunchOnExit_app,"dedicated\\xr_3da.exe");
 
-	strcpy					(g_sLaunchOnExit_params,"-i -nosound -");
-	strcat					(g_sLaunchOnExit_params,GetCommandLine(""));
+	xr_strcpy				(g_sLaunchOnExit_params,"-i -nosound -");
+	xr_strcat				(g_sLaunchOnExit_params,GetCommandLine(""));
 	Msg						("%s","-- Going to quit before starting dedicated server");
 	Msg						("%s %s",g_sLaunchOnExit_app, g_sLaunchOnExit_params);
 	Console->Execute		("quit");

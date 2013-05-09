@@ -10,6 +10,11 @@
 //    (don't put this above the header includes or VC will whine
 #ifdef GSI_COMMON_DEBUG
 
+#if defined(_NITRO)
+#include "../../common/nitro/screen.h"
+#define printf Printf
+#define vprintf VPrintf
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +24,7 @@ static struct GSIDebugInstance gGSIDebugInstance; // simple singleton "class"
 // Line prefixes, e.g. "[ cat][type][ lev] text"
 char* gGSIDebugCatStrings[GSIDebugCat_Count] =
 {
-	" APP", " GP ", "PEER", " QR2", "  SB", "  V2", "  AD", "  NN", "HTTP", " CMN", "CDKY"
+	" APP", " GP ", "PEER", " QR2", "  SB", "  V2", "  AD", "  NN", "HTTP", "CDKY", " CMN"
 };
 char* gGSIDebugTypeStrings[GSIDebugType_Count] =
 {
@@ -29,7 +34,10 @@ char* gGSIDebugLevelStrings[GSIDebugLevel_Count] =
 {
 	"*ERR", "****", "----", "    ", "    ", "    ", "  ->"
 };
-
+char* gGSIDebugLevelDescriptionStrings[8] =
+{
+	"None", "<None+1>", "<Normal>", "<Debug>", "<Verbose>", "<Verbose+1>", "<Verbose+2>", "<Hardcore>"
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,15 +72,20 @@ static void gsiDebugCallback(GSIDebugCategory category, GSIDebugType type,
 		vprintf(format, params);
 
 	#elif defined(_WIN32)
-		static char    string[256];
+		static char string[256];
 		vsprintf(string, format, params); 			
-		OutputDebugString(string);
+		OutputDebugStringA(string);
 
-	#elif defined(_LINUX) || defined(_NITRO)
+	#elif defined(_LINUX) || defined(_MACOSX)
 		//static char    string[256];
 		//vsprintf(string, format, params); 			
 		vprintf(format, params);
-
+	#elif defined(_NITRO)
+		VPrintf(format, params);
+	#elif defined(_REVOLUTION)
+		static char string[256];
+		vsprintf(string, format, params);
+		OSReport(string);
 	#else
 		va_list argptr;
 		static char    string[256];
@@ -266,6 +279,12 @@ void gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType,
 		int i=0;
 		for (; i<GSIDebugCat_Count; i++)
 			gsSetDebugLevel((GSIDebugCategory)i, theType, theLevel);
+
+		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
+			GSIDebugLevel_Debug,
+			"Debug level set to %s for all categories (SDKs)\r\n",
+			gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)]);
+
 		return;
 	}
 	
@@ -275,6 +294,11 @@ void gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType,
 		int i=0;
 		for (; i<GSIDebugType_Count; i++)
 			gsSetDebugLevel(theCat, (GSIDebugType)i, theLevel);
+
+		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
+			GSIDebugLevel_Debug,
+			"Debug level set to %s for all types\r\n",
+			gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)]);
 		return;
 	}
 

@@ -23,7 +23,7 @@ gsi_u32 gsiHasThreadShutdown(GSIThreadID theThreadID)
 
 GSISemaphoreID gsiCreateSemaphore(gsi_i32 theInitialCount, gsi_i32 theMaxCount, char* theName)
 {
-	GSISemaphoreID aSemaphore = CreateSemaphore(NULL, theInitialCount, theMaxCount, theName);
+	GSISemaphoreID aSemaphore = CreateSemaphoreA(NULL, theInitialCount, theMaxCount, theName);
 	if (aSemaphore == NULL)
 	{
 		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, GSIDebugLevel_WarmError,
@@ -74,25 +74,14 @@ void gsiCancelThread(GSIThreadID id)
 	TerminateThread(id, 0);
 }
 
-// This must be called from INSIDE the thread you wish to exit
 void gsiExitThread(GSIThreadID id)
 {
-	unsigned long status = 0;
-
-	// exit thread to free up resources - nonzero exit status indicates success
-	ExitThread(1);
-
-	// check exit code status to make sure nothing went wrong
-	GetExitCodeThread(id, &status);
-
-	if (status < 0)
-		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, GSIDebugLevel_WarmError,
-					"Exiting thread failed, status = %d\r\n", status);
+	GSI_UNUSED(id);
 }
 
 void gsiCleanupThread(GSIThreadID id)
 {
-	GSI_UNUSED(id);
+	CloseHandle(id);
 }
 
 

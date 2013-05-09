@@ -1,12 +1,8 @@
 /******
 GameSpy Server Browsing SDK
   
-Copyright 1999-2002 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 
 ******
@@ -23,11 +19,11 @@ devsupport@gamespy.com
 #ifndef _SB_ASCII_H
 #define _SB_ASCII_H
 
+#include "../common/gsCommon.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-#include "../common/gsCommon.h"
 
 /*
 ServerBrowserNew

@@ -15,7 +15,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Thread types
-#if defined(_WIN32) && !defined(_XBOX)
+#if defined(_WIN32)
 	typedef CRITICAL_SECTION   GSICriticalSection;
 	typedef HANDLE GSISemaphoreID;
 	typedef HANDLE GSIThreadID;
@@ -49,6 +49,16 @@ extern "C" {
 	} GSIThreadID;
 	typedef void (*GSThreadFunc)(void *arg);
 
+#elif defined(_REVOLUTION)
+	typedef OSMutex GSICriticalSection;
+	typedef OSSemaphore GSISemaphoreID;
+	typedef struct
+	{
+		OSThread mThread;
+		void * mStack;
+	} GSIThreadID;
+	typedef void *(*GSThreadFunc)(void *arg);
+
 #elif defined(_PSP)
 	// Todo: Test PSP thread code, then remove this define
 	#define GSI_NO_THREADS
@@ -79,7 +89,7 @@ extern "C" {
 	} GSICriticalSection;
 	typedef void (*GSThreadFunc)(void *arg);
 
-#elif defined(_LINUX)
+#elif defined(_UNIX) //_LINUX || _MACOSX
 	typedef pthread_mutex_t GSICriticalSection;
 	typedef struct
 	{
@@ -107,7 +117,7 @@ extern "C" {
 
 #if !defined(GSI_NO_THREADS)
 	// The increment/read operations must not be preempted
-	#if defined(_WIN32) && !defined(_XBOX)
+	#if defined(_WIN32)
 		#define gsiInterlockedIncrement(a) InterlockedIncrement((long*)a)
 		#define gsiInterlockedDecrement(a) InterlockedDecrement((long*)a)
 	#elif defined(_PS2)
@@ -118,7 +128,10 @@ extern "C" {
 	#elif defined(_NITRO)
 		gsi_u32 gsiInterlockedIncrement(gsi_u32* num);
 		gsi_u32 gsiInterlockedDecrement(gsi_u32* num);
-	#elif defined(_LINUX)
+	#elif defined(_REVOLUTION)
+		gsi_u32 gsiInterlockedIncrement(gsi_u32* num);
+		gsi_u32 gsiInterlockedDecrement(gsi_u32* num);
+	#elif defined(_UNIX)
 		gsi_u32 gsiInterlockedIncrement(gsi_u32* num);
 		gsi_u32 gsiInterlockedDecrement(gsi_u32* num);
 	#endif

@@ -434,8 +434,11 @@ static void ParseSingleQR2Reply(SBQueryEngine *engine, SBServer server, char *da
 			dlen = NTSLengthSB(data, len);
 			if (dlen < 0)
 				break;
-			//add the value
-			SBServerAddKeyValue(server, qr2_registered_key_list[engine->serverkeys[i]], data);
+			//add the value if its not a Query-From-Master-Only key
+			if (!qr2_internal_is_master_only_key(qr2_registered_key_list[engine->serverkeys[i]]))
+			{
+				SBServerAddKeyValue(server, qr2_registered_key_list[engine->serverkeys[i]], data);
+			}
 			data += dlen;
 			len -= dlen;
 		}
@@ -494,7 +497,7 @@ static SBBool ParseSingleICMPReply(SBQueryEngine *engine, SBServer server, char 
 	goa_uint32 packetpublicip;
 	unsigned short packetpublicport;
 	//todo: byte alignment on PS2
-	ipheaderlen = (u_char)(ipheader->ip_hl_ver & 15);
+	ipheaderlen = (gsi_u8)(ipheader->ip_hl_ver & 15);
 	ipheaderlen *= 4;
 	icmpheader = (SBICMPHeader *)(data + ipheaderlen);
 	if (icmpheader->type != SB_ICMP_ECHO_REPLY)

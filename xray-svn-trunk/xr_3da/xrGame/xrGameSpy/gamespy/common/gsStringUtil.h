@@ -46,7 +46,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 // Prototypes
 //		'_' denotes internal use functions
-int _ReadUCS2CharFromUTF8String (const UTF8String  theUTF8String, UCS2Char* theUnicodeChar);
+int _ReadUCS2CharFromUTF8String (const UTF8String  theUTF8String, UCS2Char* theUnicodeChar, int theMaxLength);
 int _UCS2CharToUTF8String       (UCS2Char          theUCS2Char,   UTF8String theUTF8String);
 int _UCS2ToUTF8ConversionLengthOnly (const UCS2String theUCS2String);
 int _UTF8ToUCS2ConversionLengthOnly (const UTF8String theUTF8String);
@@ -62,8 +62,8 @@ int AsciiToUCS2String(const char*      theAsciiString, UCS2String theUCS2String 
 // Convert with maximum buffer length
 // similar to strncpy
 //int UCS2ToUTF8StringLength(const UCS2String theUCS2String, UTF8String theUTF8String, int theMaxLength);
-//int UTF8ToUCS2StringLength(const UTF8String theUTF8String, UCS2String theUCS2String, int theMaxLength);
-
+int UTF8ToUCS2StringLen(const UTF8String theUTF8String, UCS2String theUCS2String, int theMaxLength);
+    
 // Convert a string, allocate space for the new string
 UTF8String UCS2ToUTF8StringAlloc(const UCS2String theUCS2String);
 UCS2String UTF8ToUCS2StringAlloc(const UTF8String theUTF8String);

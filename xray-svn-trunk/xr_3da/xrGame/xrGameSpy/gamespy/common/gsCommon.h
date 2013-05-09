@@ -9,7 +9,6 @@
 //#define GS_MEM_MANAGED       // use GameSpy memory manager for SDK allocations
 //#define GS_COMMON_DEBUG      // use GameSpy debug utilities for SDK debug output
 //#define GS_WINSOCK2          // use winsock2
-//#define GS_UNDER_CE          // build for windows CE
 //#define GS_UNICODE           // Use widechar (UCS2) SDK interface.
 //#define GS_NO_FILE           // disable file storage (on by default for PS2/DS)
 //#define GS_NO_THREAD         // no multi-thread support

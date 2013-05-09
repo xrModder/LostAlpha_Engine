@@ -44,6 +44,13 @@ extern "C" {
 #define TEAM_T_KEY			28
 #define SCORE_T_KEY			29
 #define NN_GROUP_ID_KEY		30
+
+// Query-From-Master-Only keys
+// - these two values are retrieved only from the master server so we need to make
+//   sure not to overwrite them when querying servers directly
+#define COUNTRY_KEY			31
+#define REGION_KEY			32
+
 	
 #ifndef GSI_UNICODE
 	#define qr2_register_key	qr2_register_keyA
@@ -61,6 +68,13 @@ void qr2_register_key(int keyid, const gsi_char *key);
 void qr2_internal_key_list_append(char* theKey);
 void qr2_internal_key_list_free(); // call this at qr2 shutdown
 
+// internal function used by ServerBrowser to check if a key is Query-Master-Only
+gsi_bool qr2_internal_is_master_only_key(const char * keyname);
+
+
+// Always define for direct access
+void qr2_register_keyA(int keyid, const char *key);
+void qr2_register_keyW(int keyid, const unsigned short *key);
 
 #ifdef __cplusplus
 }

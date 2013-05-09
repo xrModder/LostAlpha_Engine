@@ -33,6 +33,7 @@ typedef gsi_u8 GSIDebugLevel;
 #define GSIDebugLevel_Count      7   // 7 reporting levels
 
 // Output levels (a mask for the levels you want to receive)
+// (update string table in gsiDebug.c!)
 #define GSIDebugLevel_None       (GSIDebugLevel)(0)    //    No output
 #define GSIDebugLevel_Normal     (GSIDebugLevel)(0x07) //    Warnings and above
 #define GSIDebugLevel_Debug      (GSIDebugLevel)(0x0F) //    Notice and above
@@ -71,10 +72,12 @@ typedef enum
 	GSIDebugCat_AD,
 	GSIDebugCat_NatNeg,
 	GSIDebugCat_HTTP,
-	GSIDebugCat_Common,
 	GSIDebugCat_CDKey,
 	// Add new ones here (update string table in gsiDebug.c!)
-	
+
+
+	GSIDebugCat_Common, // Common should be last to prevent display weirdness
+	                    // resulting from initialization order
 	GSIDebugCat_Count,
 	GSIDebugCat_All = GSIDebugCat_Count
 } GSIDebugCategory;

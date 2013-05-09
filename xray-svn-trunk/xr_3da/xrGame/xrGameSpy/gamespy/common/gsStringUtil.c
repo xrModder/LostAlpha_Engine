@@ -20,8 +20,10 @@ extern "C" {
 //
 // [in]		theUTF8String	:	UTF8String, doesn't need to be null terminated
 // [out]	theUCS2Char		:	The 2 byte UCS2 equivalent
+// [in]     theMaxLength    :   Maximum number of *bytes* to read (not UTF8 characters)
 //
 // return value				:	The number of bytes read from theUTF8String
+//                              0 = error when parsing
 //
 //  Remarks:
 //		If theUTF8String is invalid, theUnicodeChar will be set to '?'
@@ -32,11 +34,18 @@ extern "C" {
 //		called, embedded NULLs are stripped and hence, this function does not check for them
 //		For example, the UTF-8 byte :1000 0000, would convert to a UCS2 NULL character
 //		If this appeared in the middle of a stream, it could cause undesired operation
-int _ReadUCS2CharFromUTF8String(const UTF8String theUTF8String,  UCS2Char* theUnicodeChar)
+int _ReadUCS2CharFromUTF8String(const UTF8String theUTF8String,  UCS2Char* theUnicodeChar, int theMaxLength)
 {
 #ifndef _PS2
 	assert(theUnicodeChar != NULL);
 #endif
+
+	if (theMaxLength == 0)
+	{
+		// assert?
+		*theUnicodeChar = (UCS2Char)REPLACE_INVALID_CHAR;
+		return 0; // not enough data
+	}
 
 	// Check for normal ascii range (includes NULL terminator)
 	if (UTF8_IS_SINGLE_BYTE(theUTF8String[0]))
@@ -49,6 +58,12 @@ int _ReadUCS2CharFromUTF8String(const UTF8String theUTF8String,  UCS2Char* theUn
 	// Check for 2 byte UTF8
 	else if (UTF8_IS_TWO_BYTE(theUTF8String[0]))
 	{
+		if (theMaxLength < 2)
+		{
+			*theUnicodeChar = (UCS2Char)REPLACE_INVALID_CHAR;
+			return 0; // not enough data
+		}
+
 		// Make sure the second byte is valid 
 		if (UTF8_IS_FOLLOW_BYTE(theUTF8String[1]))
 		{
@@ -65,6 +80,12 @@ int _ReadUCS2CharFromUTF8String(const UTF8String theUTF8String,  UCS2Char* theUn
 	// Check for 3 byte UTF8
 	else if (UTF8_IS_THREE_BYTE(theUTF8String[0]))
 	{
+		if (theMaxLength < 3)
+		{
+			*theUnicodeChar = (UCS2Char)REPLACE_INVALID_CHAR;
+			return 0; // not enough data
+		}
+
 		// Make sure the second and third bytes are valid
 		if (UTF8_IS_FOLLOW_BYTE(theUTF8String[1]) &&
 			UTF8_IS_FOLLOW_BYTE(theUTF8String[2]))
@@ -282,39 +303,7 @@ int UCS2ToUTF8String(const UCS2String theUCS2String, UTF8String theUTF8String)
 //		UTF8String will be NULL terminated
 int UTF8ToUCS2String(const UTF8String theUTF8String, UCS2String theUCS2String)
 {
-	int aNumCharsWritten	= 0;
-	int aNumBytesRead		= 0;
-	const unsigned char* anInStream	= (const unsigned char*)theUTF8String;
-	UCS2Char*            anOutStream= theUCS2String;
-
-	// Allow for NULL here since SDKs allow for NULL string arrays
-	if (theUTF8String == NULL)
-	{
-		*anOutStream = 0x0000;
-		return 1;
-	}
-
-	// Loop until we find the NULL terminator
-	while (*anInStream != '\0')
-	{
-		// Convert one character
-		aNumBytesRead = _ReadUCS2CharFromUTF8String((UTF8String)anInStream, anOutStream);
-
-		// Move InStream position to new data
-		anInStream += aNumBytesRead;
-
-		// Keep track of characters written
-		aNumCharsWritten++;
-
-		// Move OutStream to next write position
-		anOutStream++;
-	}
-
-	// NULL terminate the UCS2String
-	*anOutStream = 0x0000;
-	aNumCharsWritten++;
-	
-	return aNumCharsWritten;
+	return UTF8ToUCS2StringLen(theUTF8String, theUCS2String, (gsi_i32)strlen(theUTF8String));
 }
 
 
@@ -624,7 +613,7 @@ int UCS2ToUTF8StringLength(const UCS2String theUCS2String, UTF8String theUTF8Str
 {
 	return 0;
 }
-
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -638,11 +627,51 @@ int UCS2ToUTF8StringLength(const UCS2String theUCS2String, UTF8String theUTF8Str
 //
 //	  Remarks:
 //		The length of theUCS2String will not exceed theMaxLength supplied.
-int UTF8ToUCS2StringLength(const UTF8String theUTF8String, UCS2String theUCS2String, int theMaxLength)
+int UTF8ToUCS2StringLen(const UTF8String theUTF8String, UCS2String theUCS2String, int theMaxLength)
 {
-	return 0;
+	int aNumCharsWritten	= 0;
+	int aNumBytesRead		= 0;
+	int aTotalBytesRead     = 0;
+	const unsigned char* anInStream	= (const unsigned char*)theUTF8String;
+	UCS2Char*            anOutStream= theUCS2String;
+
+	// Allow for NULL here since SDKs allow for NULL string arrays
+	if (theUTF8String == NULL)
+	{
+		*anOutStream = 0x0000;
+		return 1;
+	}
+
+	// Loop until we find the NULL terminator
+	while (*anInStream != '\0' && theMaxLength > aTotalBytesRead)
+	{
+		// Convert one character
+		aNumBytesRead = _ReadUCS2CharFromUTF8String((UTF8String)anInStream, anOutStream, theMaxLength-aTotalBytesRead);
+		if (aNumBytesRead == 0)
+		{
+			// Error, read past end of buffer
+			theUCS2String[0] = 0x0000;
+			return 0;
+		}
+		aTotalBytesRead += aNumBytesRead;
+
+		// Move InStream position to new data
+		anInStream += aNumBytesRead;
+
+		// Keep track of characters written
+		aNumCharsWritten++;
+
+		// Move OutStream to next write position
+		anOutStream++;
+	}
+
+	// NULL terminate the UCS2String
+	*anOutStream = 0x0000;
+	aNumCharsWritten++;
+	
+	return aNumCharsWritten;
 }
-*/
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

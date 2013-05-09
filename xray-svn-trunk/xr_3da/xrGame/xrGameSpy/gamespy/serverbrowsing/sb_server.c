@@ -250,15 +250,12 @@ SBBool SBServerGetBoolValueW(SBServer server, const unsigned short *key, SBBool 
 }
 #endif
 
-#define BUFFER_SIZE 128
-
 const char *SBServerGetPlayerStringValueA(SBServer server, int playernum, const char *key, const char *sdefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_%d", key, playernum);
+	char keyname[128];
+	sprintf(keyname, "%s_%d", key, playernum);
 	return SBServerGetStringValueA(server, keyname, sdefault);
 }
-
 #ifdef GSI_UNICODE
 const unsigned short *SBServerGetPlayerStringValueW(SBServer server, int playernum, const unsigned short *key, const unsigned short *sdefault)
 {
@@ -286,8 +283,8 @@ const unsigned short *SBServerGetPlayerStringValueW(SBServer server, int playern
 
 int SBServerGetPlayerIntValueA(SBServer server, int playernum, const char *key, int idefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_%d", key, playernum);
+	char keyname[128];
+	sprintf(keyname, "%s_%d", key, playernum);
 	return SBServerGetIntValueA(server, keyname, idefault);
 }
 #ifdef GSI_UNICODE
@@ -301,8 +298,8 @@ int SBServerGetPlayerIntValueW(SBServer server, int playernum, const unsigned sh
 
 double SBServerGetPlayerFloatValueA(SBServer server, int playernum, const char *key, double fdefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_%d", key, playernum);
+	char keyname[128];
+	sprintf(keyname, "%s_%d", key, playernum);
 	return SBServerGetFloatValueA(server, keyname, fdefault);
 }
 #ifdef GSI_UNICODE
@@ -316,8 +313,8 @@ double SBServerGetPlayerFloatValueW(SBServer server, int playernum, const unsign
 
 const char *SBServerGetTeamStringValueA(SBServer server, int teamnum, const char *key, const char *sdefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_t%d", key, teamnum);
+	char keyname[128];
+	sprintf(keyname, "%s_t%d", key, teamnum);
 	return SBServerGetStringValueA(server, keyname, sdefault);
 }
 #ifdef GSI_UNICODE
@@ -347,8 +344,8 @@ const unsigned short *SBServerGetTeamStringValueW(SBServer server, int teamnum, 
 
 int SBServerGetTeamIntValueA(SBServer server, int teamnum, const char *key, int idefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_t%d", key, teamnum);
+	char keyname[128];
+	sprintf(keyname, "%s_t%d", key, teamnum);
 	return SBServerGetIntValueA(server, keyname, idefault);
 }
 #ifdef GSI_UNICODE
@@ -362,8 +359,8 @@ int SBServerGetTeamIntValueW(SBServer server, int teamnum, const unsigned short 
 
 double SBServerGetTeamFloatValueA(SBServer server, int teamnum, const char *key, double fdefault)
 {
-	char keyname[BUFFER_SIZE];
-	sprintf_s(keyname,BUFFER_SIZE, "%s_t%d", key, teamnum);
+	char keyname[128];
+	sprintf(keyname, "%s_t%d", key, teamnum);
 	return SBServerGetFloatValueA(server, keyname, fdefault);
 }
 #ifdef GSI_UNICODE
@@ -493,7 +490,13 @@ void SBServerParseKeyVals(SBServer server, char *keyvals)
 		if (v == NULL)
 			v = "";
 		if (CheckValidKey(k))
-			SBServerAddKeyValue(server, k, v);
+		{
+			//add the value if its not a Query-From-Master-Only key
+			if (!qr2_internal_is_master_only_key(k))
+			{
+				SBServerAddKeyValue(server, k, v);
+			}	
+		}
 		k = mytok(NULL,'\\');		
 	}
 }
@@ -533,7 +536,7 @@ void SBServerParseQR2FullKeysSingle(SBServer server, char *data, int len)
 	unsigned short nunits;
 	int pflag;
 	int i,j;
-	char tempkey[BUFFER_SIZE];
+	char tempkey[128];
 	//first pull out all the server keys/values
 	while (*data)
 	{
@@ -549,7 +552,12 @@ void SBServerParseQR2FullKeysSingle(SBServer server, char *data, int len)
 		v = data;
 		data += dlen;
 		len -= dlen;
-		SBServerAddKeyValue(server, k, v);
+		
+		//add the value if its not a Query-From-Master-Only key
+		if (!qr2_internal_is_master_only_key(k))
+		{
+			SBServerAddKeyValue(server, k, v);
+		}	
 	}
 	//skip the NUL
 	data++;
@@ -590,7 +598,7 @@ void SBServerParseQR2FullKeysSingle(SBServer server, char *data, int len)
 				dlen = NTSLengthSB(data, len);
 				if (dlen < 0)
 					return; //not all there
-				sprintf_s(tempkey,BUFFER_SIZE, "%s%d", k, i);
+				sprintf(tempkey, "%s%d", k, i);
 				SBServerAddKeyValue(server, tempkey, data);
 				data += dlen;
 				len -= dlen;
@@ -700,7 +708,12 @@ void SBServerParseQR2FullKeysSplit(SBServer server, char *data, int len)
 				v = data;
 				data += dlen;
 				len -= dlen;
-				SBServerAddKeyValue(server, k, v);
+
+				//add the value if its not a Query-From-Master-Only key
+				if (!qr2_internal_is_master_only_key(k))
+				{
+					SBServerAddKeyValue(server, k, v);
+				}	
 			}
 			else
 			{
@@ -725,7 +738,7 @@ void SBServerParseQR2FullKeysSplit(SBServer server, char *data, int len)
 					data += dlen;
 					len -= dlen;
 					// append team or player index before adding
-					sprintf_s(tempkey,BUFFER_SIZE, "%s%d", k, nindex);
+					sprintf(tempkey, "%s%d", k, nindex);
 					SBServerAddKeyValue(server, tempkey, v);
 					nindex++; // index increments from start
 				}
@@ -753,8 +766,6 @@ void SBServerParseQR2FullKeysSplit(SBServer server, char *data, int len)
 		}
 	}
 }
-
-#undef BUFFER_SIZE
 
 /***********
  * UTILITY FUNCTIONS

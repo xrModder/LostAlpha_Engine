@@ -149,6 +149,12 @@ typedef enum {sl_lanbrowse, sl_disconnected, sl_connected, sl_mainlist} SBServer
 //maximum length of a sortkey string
 #define SORTKEY_LENGTH 255
 
+//include ICMP support by default
+#ifndef SB_NO_ICMP_SUPPORT
+	#undef SB_ICMP_SUPPORT
+	#define SB_ICMP_SUPPORT
+#endif
+
 //a key/value pair
 typedef struct _SBKeyValuePair
 {
@@ -194,7 +200,7 @@ typedef struct _SBServerList SBServerList;
 
 #ifdef VENGINE_SUPPORT
 	#define FTABLE_TYPES
-	#include "../VEngine/ve_gm3ftable.h"
+	#include "../../VEngine/ve_gm3ftable.h"
 #endif
 
 
@@ -252,7 +258,7 @@ struct _SBServerList
 	
 #ifdef VENGINE_SUPPORT
 	#define FTABLE_IMPLEMENT
-	#include "../VEngine/ve_gm3ftable.h"
+	#include "../../VEngine/ve_gm3ftable.h"
 #endif
 
 };
@@ -315,6 +321,7 @@ struct _ServerBrowser
 	goa_uint32 triggerIP;
 	unsigned short triggerPort;
 	ServerBrowserCallback BrowserCallback;
+	SBConnectToServerCallback ConnectCallback;
 	void *instance;
 };
 

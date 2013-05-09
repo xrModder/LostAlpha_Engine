@@ -3,14 +3,14 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
+
+#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
+#pragma warning(disable: 4267) //lines: 1334, 1344, 1400, 1410
+#endif //#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
 
 #include "ghttpPost.h"
 #include "ghttpMain.h"
@@ -294,8 +294,8 @@ GHTTPBool ghiPostAddString
 
 	// Copy the strings.
 	////////////////////
-	name = strdup(name);
-	string = strdup(string);
+	name = goastrdup(name);
+	string = goastrdup(string);
 	if(!name || !string)
 	{
 		gsifree((char *)name);
@@ -353,10 +353,10 @@ GHTTPBool ghiPostAddFileFromDisk
 
 	// Copy the strings.
 	////////////////////
-	name = strdup(name);
-	filename = strdup(filename);
-	reportFilename = strdup(reportFilename);
-	contentType = strdup(contentType);
+	name = goastrdup(name);
+	filename = goastrdup(filename);
+	reportFilename = goastrdup(reportFilename);
+	contentType = goastrdup(contentType);
 	if(!name || !filename || !reportFilename || !contentType)
 	{
 		gsifree((char *)name);
@@ -405,9 +405,9 @@ GHTTPBool ghiPostAddFileFromMemory
 
 	// Copy the strings.
 	////////////////////
-	name = strdup(name);
-	reportFilename = strdup(reportFilename);
-	contentType = strdup(contentType);
+	name = goastrdup(name);
+	reportFilename = goastrdup(reportFilename);
+	contentType = goastrdup(contentType);
 	if(!name || !reportFilename || !contentType)
 	{
 		gsifree((char *)name);
@@ -887,9 +887,13 @@ GHTTPBool ghiPostInitState
 	connection->postingState.totalBytes = ghiPostGetContentLength(connection);
 
 	// Wait for continue before posting.
+	//	  -- Enabled for Soap messages only
+	//    -- Disabled for all other content because many web servers do not support it
 	//////////////////////////////////////////////////////
-	connection->postingState.waitPostContinue = GHTTPTrue;
-	//connection->postingState.waitPostContinue = GHTTPFalse;
+	if (connection->post->hasSoap == GHTTPTrue)
+		connection->postingState.waitPostContinue = GHTTPTrue;
+	else
+		connection->postingState.waitPostContinue = GHTTPFalse;
 
 	return GHTTPTrue;
 }
@@ -1046,20 +1050,8 @@ static GHIPostingResult ghiPostXmlStateDoPosting
 			padlen = 0;
 	}
 
-	if (connection->encryptor.mEngine == GHTTPEncryptionEngine_None)
-	{
-		GHITrySendResult result;
-
-		// plain text - send immediately
-		result = ghiTrySendThenBuffer(connection, gsXmlWriterGetData(xml), gsXmlWriterGetDataLength(xml));
-		if (result == GHITrySendError)
-			return GHIPostingError;
-		result = ghiTrySendThenBuffer(connection, pad, padlen);
-		if (result == GHITrySendError)
-			return GHIPostingError;
-		return GHIPostingDone;
-	}
-	else
+	if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+		connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 	{
 		// Copy to encode buffer before encrypting
 		GS_ASSERT(connection->encodeBuffer.len >= 0); // there must be a header for this soap data!
@@ -1082,6 +1074,19 @@ static GHIPostingResult ghiPostXmlStateDoPosting
 		if (connection->sendBuffer.pos == connection->sendBuffer.len)
 			ghiResetBuffer(&connection->sendBuffer);
 
+		return GHIPostingDone;
+	}
+	else
+	{
+		GHITrySendResult result;
+
+		// plain text - send immediately
+		result = ghiTrySendThenBuffer(connection, gsXmlWriterGetData(xml), gsXmlWriterGetDataLength(xml));
+		if (result == GHITrySendError)
+			return GHIPostingError;
+		result = ghiTrySendThenBuffer(connection, pad, padlen);
+		if (result == GHITrySendError)
+			return GHIPostingError;
 		return GHIPostingDone;
 	}
 }
@@ -1433,8 +1438,26 @@ static GHIPostingResult ghiPostStateDoPosting
 			}
 		}
 
+		// SSL: encrypt and send
+		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+			connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
+		{
+			if (len == 0)
+				len = (int)strlen(buffer);
+			if (GHTTPFalse == ghiEncryptDataToBuffer(&connection->sendBuffer, buffer, len))
+				return GHIPostingError;
+			if (GHTTPFalse == ghiSendBufferedData(connection))
+				return GHIPostingError;
+
+			// any data remaining?
+			if (connection->sendBuffer.pos < connection->sendBuffer.len)
+				return GHIPostingPosting;
+
+			// We sent everything, reset the send buffer to conserve space
+			ghiResetBuffer(&connection->sendBuffer);
+		}
 		// If sending plain text, send right away
-		if (connection->encryptor.mEngine == GHTTPEncryptionEngine_None)
+		else
 		{
 			// Try sending. (the one-time header)
 			/////////////////////////////////////
@@ -1447,23 +1470,6 @@ static GHIPostingResult ghiPostStateDoPosting
 			// If it was buffered, don't try anymore.
 			/////////////////////////////////////////
 			if(result == GHITrySendBuffered)
-				return GHIPostingPosting;
-
-			// We sent everything, reset the send buffer to conserve space
-			ghiResetBuffer(&connection->sendBuffer);
-		}
-		// SSL: encrypt and send
-		else
-		{
-			if (len == 0)
-				len = (int)strlen(buffer);
-			if (GHTTPFalse == ghiEncryptDataToBuffer(&connection->sendBuffer, buffer, len))
-				return GHIPostingError;
-			if (GHTTPFalse == ghiSendBufferedData(connection))
-				return GHIPostingError;
-
-			// any data remaining?
-			if (connection->sendBuffer.pos < connection->sendBuffer.len)
 				return GHIPostingPosting;
 
 			// We sent everything, reset the send buffer to conserve space

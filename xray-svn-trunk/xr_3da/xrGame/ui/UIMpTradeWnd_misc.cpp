@@ -142,10 +142,10 @@ void CUIMpTradeWnd::SetCurrentItem(CUICellItem* itm)
 
 		if (m_store_hierarchy->FindItem(current_sect_name) )
 		{// our team
-			strcpy						(team, _team_names[m_store_hierarchy->TeamIdx()]);
+			xr_strcpy						(team, _team_names[m_store_hierarchy->TeamIdx()]);
 		}else 
 		{
-			strcpy						(team, _team_names[m_store_hierarchy->TeamIdx()%1]);
+			xr_strcpy						(team, _team_names[m_store_hierarchy->TeamIdx()%1]);
 		}
 		xr_sprintf							(tex_name, "ui_hud_status_%s_0%d", team, 1+get_rank(current_sect_name.c_str()) );
 				
@@ -410,7 +410,7 @@ void CUIMpTradeWnd::SetRank(u32 rank)
 	string64			tex_name;
 	string64			team;
 
-	strcpy				(team, _team_names[m_store_hierarchy->TeamIdx()]);
+	xr_strcpy				(team, _team_names[m_store_hierarchy->TeamIdx()]);
 	xr_sprintf				(tex_name, "ui_hud_status_%s_0%d", team, 1+rank );
 			
 	m_static_player_rank->InitTexture(tex_name);

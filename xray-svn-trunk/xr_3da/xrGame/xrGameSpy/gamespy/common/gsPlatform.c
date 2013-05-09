@@ -6,7 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Include standard network lib
-#if defined(_WIN32) && !defined(UNDER_CE) && !defined(_XBOX)
+#if defined(_WIN32) && !defined(_XBOX)
 	#if defined(GSI_WINSOCK2)
 		#pragma comment(lib, "ws2_32")
 	#else
@@ -15,14 +15,38 @@
 	#pragma comment(lib, "advapi32")
 #endif
 
-#ifdef UNDER_CE
-	#pragma comment(lib, "platutil")
-	#pragma comment(lib, "winsock")
-#endif
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+// Floating point specific byte reversal functions
+// stores the result in a 4-byte character array
+unsigned char * gsiFloatSwap(unsigned char buf[4], float f)
+{
+	unsigned char *dst = (unsigned char *)buf;
+	unsigned char *src = (unsigned char *)&f;
+
+	dst[0] = src[3];
+	dst[1] = src[2];
+	dst[2] = src[1];
+	dst[3] = src[0];
+
+	return buf;
+}
+
+// unswap using char pointers
+float gsiFloatUnswap(unsigned char buf[4]) 
+{
+	float f;
+	unsigned char *src = (unsigned char *)buf;
+	unsigned char *dst = (unsigned char *)&f;
+
+	dst[0] = src[3];
+	dst[1] = src[2];
+	dst[2] = src[1];
+	dst[3] = src[0];
+
+	return f;
+}
 
 gsi_u16 gsiByteOrderSwap16(gsi_u16 _in)
 {

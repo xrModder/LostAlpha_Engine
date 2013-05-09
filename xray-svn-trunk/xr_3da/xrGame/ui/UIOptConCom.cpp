@@ -16,7 +16,7 @@ xr_token g_GameModes	[] = {
 
 CUIOptConCom::CUIOptConCom()
 {
-	strcpy(m_playerName, "");
+	xr_strcpy(m_playerName, "");
 }
 
 class CCC_UserName: public CCC_String{
@@ -25,7 +25,7 @@ public:
 	virtual void Execute(LPCSTR arguments)
 	{
 		string512 str;
-		strcpy(str, arguments);
+		xr_strcpy(str, arguments);
 		if(xr_strlen(str)>17)
 			str[17] = 0;
 
@@ -67,7 +67,7 @@ void CUIOptConCom::Init()
 	m_fNetWeatherRate = 1.0f;
 	CMD4(CCC_Float,		"mm_net_weather_rateofchange",		&m_fNetWeatherRate,	0.0, 100.0f);
 
-	strcpy(m_serverName, Core.CompName);
+	xr_strcpy(m_serverName, Core.CompName);
 	CMD3(CCC_String,	"mm_net_srv_name",					m_serverName,	sizeof(m_serverName));
 
 	m_uNetFilter.one	();

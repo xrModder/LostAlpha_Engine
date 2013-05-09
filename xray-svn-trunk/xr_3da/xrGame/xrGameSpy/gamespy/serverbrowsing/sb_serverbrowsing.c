@@ -1,5 +1,6 @@
 #include "sb_internal.h"
 #include "sb_ascii.h"
+#include "../natneg/natneg.h"
 
 //Future Versions:
 //ICMP Ping support (icmp engine)
@@ -113,6 +114,7 @@ ServerBrowser ServerBrowserNewA(const char *queryForGamename, const char *queryF
 	if (sb == NULL)
 		return NULL;
 	sb->BrowserCallback = callback;
+	sb->ConnectCallback = NULL;
 	sb->instance = instance;
 	sb->dontUpdate = SBFalse;
 	SBServerListInit(&sb->list, queryForGamename, queryFromGamename, queryFromKey, queryFromVersion, lanBrowse, ListCallback, sb);
@@ -141,6 +143,7 @@ void ServerBrowserFree(ServerBrowser sb)
 {
 	SBServerListCleanup(&sb->list);
 	SBEngineCleanup(&sb->engine);
+    NNFreeNegotiateList();
 	gsifree(sb);
 }
 
@@ -162,7 +165,7 @@ SBError ServerBrowserBeginUpdate2(ServerBrowser sb, SBBool async, SBBool disconn
 		keylen = (int)strlen(qr2_registered_key_list[basicFields[i]]);
 		if (listLen + keylen + 1 >= MAX_FIELD_LIST_LEN)
 			break; //can't add this field, too long
-		listLen += sprintf_s(keyList + listLen, MAX_FIELD_LIST_LEN-listLen, "\\%s", qr2_registered_key_list[basicFields[i]]);
+		listLen += sprintf(keyList + listLen, "\\%s", qr2_registered_key_list[basicFields[i]]);
 		//add to the engine query list
 		SBQueryEngineAddQueryKey(&sb->engine, basicFields[i]);
 	}
@@ -279,6 +282,62 @@ SBError ServerBrowserSendNatNegotiateCookieToServerW(ServerBrowser sb, const uns
 }
 #endif
 
+static void NatNegProgressCallback(NegotiateState state, void *userdata)
+{
+	// we don't do anything here
+	GSI_UNUSED(state);
+	GSI_UNUSED(userdata);
+}
+
+static void NatNegCompletedCallback(NegotiateResult result, SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userdata)
+{
+	ServerBrowser sb = (ServerBrowser)userdata;
+
+	if(result == nr_success)
+	{
+		sb->ConnectCallback(sb, sbcs_succeeded, gamesocket, remoteaddr, sb->instance);
+	}
+	else
+	{
+		sb->ConnectCallback(sb, sbcs_failed, INVALID_SOCKET, NULL, sb->instance);
+	}
+
+	sb->ConnectCallback = NULL;
+
+	GSI_UNUSED(remoteaddr);
+}
+
+SBError ServerBrowserConnectToServer(ServerBrowser sb, SBServer server, SBConnectToServerCallback callback)
+{
+	SBError sbError;
+	NegotiateError nnError;
+	int cookie;
+
+	if((sb == NULL) || (server == NULL) || (callback == NULL))
+		return sbe_paramerror;
+
+	if(sb->ConnectCallback != NULL)
+		return sbe_connecterror;
+
+	// for now, always do natneg
+
+	// send a cookie to the server
+	Util_RandSeed((unsigned long)current_time());
+	cookie = Util_RandInt(GSI_MIN_I32, GSI_MAX_I32);
+	sbError = ServerBrowserSendNatNegotiateCookieToServerA(sb, SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server), cookie);
+	if(sbError != sbe_noerror)
+		return sbError;
+
+	// start the nn
+	nnError = NNBeginNegotiation(cookie, 0, NatNegProgressCallback, NatNegCompletedCallback, sb);
+	if(nnError != ne_noerror)
+		return sbe_connecterror;
+
+	sb->ConnectCallback = callback;
+
+	return sbe_noerror;
+}
+
 SBError ServerBrowserAuxUpdateIPA(ServerBrowser sb, const char *ip, unsigned short port, SBBool viaMaster, SBBool async, SBBool fullUpdate)
 {
 	
@@ -299,15 +358,15 @@ SBError ServerBrowserAuxUpdateIPA(ServerBrowser sb, const char *ip, unsigned sho
 			SBServerListAppendServer(&sb->list, server);
 		}
 		else
-		{
-			// Don't overwrite the existing update, otherwise the response for the first update
-			// will be mistaken as the response for the second update.  (Which is bad if they have different update parameters.)
-			return sbe_duplicateupdateerror;
+			server = SBServerListNth(&sb->list, i);
 
-			//server = SBServerListNth(&sb->list, i);
-			//SBQueryEngineRemoveServerFromFIFOs(&sb->engine, server); // Remove FIFO entry (if exists)
-			//SBQueryEngineUpdateServer(&sb->engine, server, 1, (fullUpdate) ? QTYPE_FULL : QTYPE_BASIC, usequerychallenge);
-		}
+		// Don't overwrite the existing update, otherwise the response for the first update
+		// will be mistaken as the response for the second update.  (Which is bad if they have different update parameters.)
+		if (server->state & (STATE_PENDINGBASICQUERY|STATE_PENDINGFULLQUERY|STATE_PENDINGICMPQUERY))
+			return sbe_duplicateupdateerror;
+		else
+			SBQueryEngineUpdateServer(&sb->engine, server, 1, (fullUpdate) ? QTYPE_FULL : QTYPE_BASIC, usequerychallenge);
+
 	} else //do a master update
 	{
 		err = SBGetServerRulesFromMaster(&sb->list, inet_addr(ip), htons(port));	
@@ -384,6 +443,7 @@ void ServerBrowserRemoveServer(ServerBrowser sb, SBServer server)
 
 SBError ServerBrowserThink(ServerBrowser sb)
 {
+	NNThink();
 	SBQueryEngineThink(&sb->engine);
 	return SBListThink(&sb->list);
 }

@@ -3,25 +3,21 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
 #ifndef _GHTTPPOST_H_
 #define _GHTTPPOST_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "ghttp.h"
 #include "ghttpBuffer.h"
 #include "../darray.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef enum
 {

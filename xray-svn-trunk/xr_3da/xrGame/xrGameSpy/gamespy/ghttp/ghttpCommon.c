@@ -3,12 +3,8 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
@@ -301,7 +297,24 @@ GHIRecvResult ghiDoReceive
 
 	// Receive some data.
 	/////////////////////
-	rcode = recv(connection->socket, buffer, len, 0);
+	if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+		connection->encryptor.mSessionEstablished == GHTTPTrue &&
+		connection->encryptor.mEncryptOnSend == GHTTPTrue )
+	{
+		GHIEncryptionResult result;
+		int recvLength = len;
+		
+		result = ghiEncryptorSslDecryptRecv(connection, &connection->encryptor, buffer, &recvLength);
+		if (result == GHIEncryptionResult_Success)
+			rcode = recvLength;
+		else
+			rcode = -1; // signal termination of connection
+	}
+	else
+	{
+		rcode = recv(connection->socket, buffer, len, 0);
+	}
+	
 
 	// There was an error.
 	//////////////////////
@@ -368,7 +381,28 @@ int ghiDoSend
 	
 	// Do the send.
 	///////////////
-	rcode = send(connection->socket, buffer, len, 0);
+	if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+		connection->encryptor.mSessionEstablished == GHTTPTrue &&
+		connection->encryptor.mEncryptOnSend == GHTTPTrue)
+	{
+		int bytesSent = 0;
+		GHIEncryptionResult result;
+		
+		// send through encryption engine
+		result = ghiEncryptorSslEncryptSend(connection, &connection->encryptor, buffer, len, &bytesSent);
+	
+		// Check for an error.
+		//////////////////////
+		if(result != GHIEncryptionResult_Success)
+			rcode = -1; // signal termination of connection
+		else
+			rcode = bytesSent;
+	}
+	else
+	{
+		// send directly to socket
+		rcode = send(connection->socket, buffer, len, 0);
+	}
 
 	// Check for an error.
 	//////////////////////
@@ -408,9 +442,10 @@ GHITrySendResult ghiTrySendThenBuffer
 {
 	int rcode = 0;
 
-	// **SSL: buffer everything into an SSL record**
+	// **SSL pattern 1: buffer everything into an SSL record**
 	if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
-		connection->encryptor.mSessionEstablished == GHTTPTrue)
+		connection->encryptor.mSessionEstablished == GHTTPTrue &&
+		connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 	{
 		if (!ghiEncryptDataToBuffer(&connection->sendBuffer, buffer + rcode, len - rcode))
 			return GHITrySendError;
@@ -426,7 +461,7 @@ GHITrySendResult ghiTrySendThenBuffer
 		return GHITrySendBuffered;
 	}
 
-	// **Plain text**
+	// **Plain text or SSL encrypt on send**
 
 	// If we already have something buffered, don't send.
 	/////////////////////////////////////////////////////

@@ -3,14 +3,15 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
+
+#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
+#pragma warning(disable: 4244) //lines: 980, 1202, 1207, 1298, 1447, 1451
+#pragma warning(disable: 4267) //lines: 1071
+#endif //#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
 
 #include "ghttpProcess.h"
 #include "ghttpCallbacks.h"
@@ -67,7 +68,7 @@ static GHTTPBool ghiParseURL
 	nIndex = (int)strcspn(URL, ":/");
 	tempChar = URL[nIndex];
 	URL[nIndex] = '\0';
-	connection->serverAddress = strdup(URL);
+	connection->serverAddress = goastrdup(URL);
 	if(!connection->serverAddress)
 		return GHTTPFalse;
 	URL[nIndex] = tempChar;
@@ -98,7 +99,7 @@ static GHTTPBool ghiParseURL
 	/////////////////
 	if(!*URL)
 		URL = "/";
-	connection->requestPath = strdup(URL);
+	connection->requestPath = goastrdup(URL);
 	while((str = strchr(connection->requestPath, ' ')) != NULL)
 		*str = '+';
 	if(!connection->requestPath)
@@ -139,10 +140,13 @@ void ghiDoSocketInit
 	if((connection->protocol == GHIHttps) && (connection->encryptor.mEngine == GHTTPEncryptionEngine_None))
 	{
 		// default to gamespy engine
-		ghttpSetRequestEncryptionEngine(connection->request, GHTTPEncryptionEngine_GameSpy);
-
+		//ghttpSetRequestEncryptionEngine(connection->request, GHTTPEncryptionEngine_GameSpy);
+		
+		// 02OCT07 BED: Design changed so that only one engine can be active at a time
+		//              Use the active engine rather than GameSpy
 		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Network, GSIDebugLevel_WarmError,
-			"Encryption engine not set for HTTPS.  Defaulting to GameSpy engine\r\n");
+			"Encryption engine not set for HTTPS.  Using default engine\r\n");
+		ghttpSetRequestEncryptionEngine(connection->request, GHTTPEncryptionEngine_Default);
 	}
 	else if ((connection->protocol != GHIHttps) && (connection->encryptor.mEngine != GHTTPEncryptionEngine_None))
 	{
@@ -151,6 +155,23 @@ void ghiDoSocketInit
 
 		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Network, GSIDebugLevel_WarmError,
 			"Encryption engine set for unsecured URL. Removing encryption.\r\n");
+	}
+	
+	// Init the encryption engine.
+	//////////////////////////////
+	if ((connection->protocol == GHIHttps) && connection->encryptor.mInitialized == GHTTPFalse)
+	{
+		GHIEncryptionResult aResult;
+			
+		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Debug, "Initializing SSL engine\n");
+		aResult = (connection->encryptor.mInitFunc)(connection, &connection->encryptor);
+		if (aResult == GHIEncryptionResult_Error)
+		{
+			gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_WarmError, "Failed to initialize SSL engine\n");
+			connection->completed = GHTTPTrue;
+			connection->result = GHTTPEncryptionError;
+			return;
+		}
 	}
 
 	// Progress.
@@ -167,17 +188,19 @@ void ghiDoHostLookup
 	GHIConnection * connection
 )
 {
-	HOSTENT * host;
-	const char * server;
+	HOSTENT * host = NULL;
+	const char * server = NULL;
 
 #if !defined(GSI_NO_THREADS)
-	//check to see if asynch lookup is taking place
-	if (connection->handle != NULL)
+	// Check to see if asynch lookup is taking place
+    ////////////////////////////////////////////////
+	if (connection->handle)
 	{
 		GSI_UNUSED(host);
 		GSI_UNUSED(server);
 		
-		//lookup incomplete - set to lookupPending state
+		// Lookup incomplete - set to lookupPending state
+        /////////////////////////////////////////////////
 		connection->state = GHTTPLookupPending;
 		ghiCallProgressCallback(connection, NULL, 0);
 		return;
@@ -186,10 +209,6 @@ void ghiDoHostLookup
 
 	gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, "Host Lookup\n");
 
-#if !defined(GSI_NO_THREADS)
-	//allocate memory for the handle used for asynch DNS Lookup
-	connection->handle = (GSIResolveHostnameHandle *)gsimalloc(sizeof(GSIResolveHostnameHandle));
-#endif
 
 	// Check for using a proxy.
 	///////////////////////////
@@ -227,13 +246,12 @@ void ghiDoHostLookup
 #else
 		
 		//threaded version
-		if (gsiStartResolvingHostname(server, connection->handle) == -1)
+		if (gsiStartResolvingHostname(server, &(connection->handle)) == -1)
 		{
 			gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_HotError, 
 				"Thread Creation Failed\n");
 
-			//make sure to free handle memory and set it back to NULL
-			gsifree(connection->handle);
+			//make sure to set it back to NULL
 			connection->handle = NULL;
 
 			//exit with Host Lookup Failed error message
@@ -277,7 +295,7 @@ void ghiDoLookupPending
 {
 #if !defined(GSI_NO_THREADS)
 	//check if lookup is complete
-	connection->serverIP = gsiGetResolvedIP(*connection->handle);
+	connection->serverIP = gsiGetResolvedIP(connection->handle);
 
 	//make sure there were no problems with the IP
 	if (connection->serverIP == GSI_ERROR_RESOLVING_HOSTNAME)
@@ -285,8 +303,7 @@ void ghiDoLookupPending
 		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_HotError, 
 			"Error resolving hostname\n");
 
-		//free handle memory and set to NULL
-		gsifree(connection->handle);
+		//set to NULL
 		connection->handle = NULL;
 
 		//notify that the lookup failed
@@ -303,8 +320,7 @@ void ghiDoLookupPending
 	}
 	else
 	{
-		//free handle memory and set to NULL
-		gsifree(connection->handle);
+		//set to NULL
 		connection->handle = NULL;
 		
 		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
@@ -375,7 +391,6 @@ void ghiDoConnecting
 
 		// Start the connect.
 		/////////////////////
-		//rcode = connect(connection->socket, (SOCKADDR *)&address, sizeof(SOCKADDR_IN));
 		rcode = connect(connection->socket, (SOCKADDR *)&address, sizeof(address));
 		if(gsiSocketIsError(rcode))
 		{
@@ -441,71 +456,111 @@ void ghiDoSecuringSession
 	char buffer[1025];
 	int bufferLen;
 
-	// Setup the encryptor if it hasn't been already
-	if (connection->encryptor.mInitialized == GHTTPFalse)
+	// Start the handshake process
+	if (connection->encryptor.mSessionStarted == GHTTPFalse)
 	{
 		GHIEncryptionResult aResult;
 		
 		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, "Securing Session\n");
 
-		aResult = (connection->encryptor.mInitFunc)(connection, &connection->encryptor);
-		if (aResult == GHIEncryptionResult_Error)
+		GS_ASSERT(connection->encryptor.mStartFunc != NULL);
+		if (connection->encryptor.mStartFunc != NULL)
 		{
-			connection->completed = GHTTPTrue;
-			connection->result = GHTTPEncryptionError;
-			return;
+			aResult = (connection->encryptor.mStartFunc)(connection, &connection->encryptor);
+			if (aResult == GHIEncryptionResult_Error)
+			{
+				connection->completed = GHTTPTrue;
+				connection->result = GHTTPEncryptionError;
+				return;
+			}
 		}
-	}
-
-	// Send any session messages
-	if (connection->sendBuffer.pos < connection->sendBuffer.len)
-	{
-		if (!ghiSendBufferedData(connection))
-			return; // Todo: handle error?
-
-		// Check for data still buffered.
-		/////////////////////////////////
-		if(connection->sendBuffer.pos < connection->sendBuffer.len)
-			return;
-
-		ghiResetBuffer(&connection->sendBuffer);
-	}
-
-	// Get data
-	bufferLen = sizeof(buffer);
-	result = ghiDoReceive(connection, buffer, &bufferLen);
-	
-	// Handle error or conn closed.
-	///////////////////////////////
-	if((result == GHIError) || (result == GHIConnClosed))
-	{
-		connection->completed = GHTTPTrue;
-		connection->result = GHTTPEncryptionError;
-		return;
-	}
-
-	// check for received data
-	if(result == GHIRecvData)
-	{
-		// Append new encrypted data to anything we've held over
-		//    We have to do this because we can't decrypt partial SSL messages
-		if (!ghiAppendDataToBuffer(&connection->decodeBuffer, buffer, bufferLen))
-			return;
-
-		// Decrypt as much as we can
-		if (!ghiDecryptReceivedData(connection))
-		{
-			connection->completed = GHTTPTrue;
-			connection->result = GHTTPEncryptionError;
-			return;
-		}
-
+		
 		// Check for session established
 		if (connection->encryptor.mSessionEstablished)
 		{
 			connection->state = GHTTPSendingRequest;
 			ghiCallProgressCallback(connection, NULL, 0);
 			return;
+		}
+	}
+	
+	// if the SSL lib controls the handshake, just keep calling
+	// start until the session has been established
+	GS_ASSERT(connection->encryptor.mSessionEstablished == GHTTPFalse);
+	if (connection->encryptor.mLibSendsHandshakeMessages)
+	{
+		GS_ASSERT(connection->encryptor.mStartFunc != NULL);
+		if (connection->encryptor.mStartFunc != NULL)
+		{
+			GHIEncryptionResult aResult = (connection->encryptor.mStartFunc)(connection, &connection->encryptor);
+			if (aResult == GHIEncryptionResult_Error)
+			{
+				connection->completed = GHTTPTrue;
+				connection->result = GHTTPEncryptionError;
+				return;
+			}
+		}
+		
+		// Check for session established
+		if (connection->encryptor.mSessionEstablished)
+		{
+			connection->state = GHTTPSendingRequest;
+			ghiCallProgressCallback(connection, NULL, 0);
+		}
+	}
+	else
+	{
+		// Continue to send and receive handshake messages until the session has been secured
+		// Send any session messages
+		if (connection->sendBuffer.pos < connection->sendBuffer.len)
+		{
+			if (!ghiSendBufferedData(connection))
+				return; // Todo: handle error?
+
+			// Check for data still buffered.
+			/////////////////////////////////
+			if(connection->sendBuffer.pos < connection->sendBuffer.len)
+				return;
+
+			ghiResetBuffer(&connection->sendBuffer);
+		}
+
+		// Get data
+		bufferLen = sizeof(buffer);
+		result = ghiDoReceive(connection, buffer, &bufferLen);
+		
+		// Handle error or conn closed.
+		///////////////////////////////
+		if((result == GHIError) || (result == GHIConnClosed))
+		{
+			connection->completed = GHTTPTrue;
+			connection->result = GHTTPEncryptionError;
+			return;
+		}
+
+		// check for received data
+		if(result == GHIRecvData)
+		{
+			// Append new encrypted data to anything we've held over
+			//    We have to do this because we can't decrypt partial SSL messages
+			if (!ghiAppendDataToBuffer(&connection->decodeBuffer, buffer, bufferLen))
+				return;
+
+			// Decrypt as much as we can
+			if (!ghiDecryptReceivedData(connection))
+			{
+				connection->completed = GHTTPTrue;
+				connection->result = GHTTPEncryptionError;
+				return;
+			}
+
+			// Check for session established (handshake complete)
+			if (connection->encryptor.mSessionEstablished)
+			{
+				connection->state = GHTTPSendingRequest;
+				ghiCallProgressCallback(connection, NULL, 0);
+				return;
+			}
 		}
 	}
 }
@@ -531,10 +586,17 @@ void ghiDoSendingRequest
 		// Using a pointer so we can pipe output to a different destination
 		//    (e.g. for efficiency and testing purposes we may want to encrypt in larger blocks)
 		GHIBuffer* writeBuffer = NULL;
-		if (connection->encryptor.mEngine == GHTTPEncryptionEngine_None)
-			writeBuffer = &connection->sendBuffer; // write directly to send buffer
+		if (connection->encryptor.mEngine == GHTTPEncryptionEngine_None ||
+			connection->encryptor.mEncryptOnBuffer == GHTTPFalse)
+		{
+		    // write directly to send buffer
+			writeBuffer = &connection->sendBuffer;
+		}
 		else
+		{
+			// write to temp buffer so it can be encrypted before sending
 			writeBuffer = &connection->encodeBuffer;
+		}
 
 		// Fill in the request line.
 		////////////////////////////
@@ -552,7 +614,7 @@ void ghiDoSendingRequest
 		ghiAppendDataToBuffer(writeBuffer, " HTTP/1.1" CRLF, 0);
 
 		// Add the host header.
-		///////////////////////
+ 		///////////////////////
 		if(connection->serverPort == GHI_DEFAULT_PORT)
 		{
 			ghiAppendHeaderToBuffer(writeBuffer, "Host", connection->serverAddress);
@@ -607,7 +669,8 @@ void ghiDoSendingRequest
 		ghiAppendDataToBuffer(writeBuffer, CRLF, 2);
 
 		// Encrypt it, if necessary.  This copy is unfortunate since matrixSsl can't encrypt in place
-		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None)
+		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+			connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 		{
 			GS_ASSERT(writeBuffer == &connection->encodeBuffer);
 			if (!ghiEncryptDataToBuffer(&connection->sendBuffer, writeBuffer->data, writeBuffer->len))
@@ -796,6 +859,12 @@ static GHTTPBool ghiParseStatus
 	GS_ASSERT(connection);
 	GS_ASSERT(connection->recvBuffer.len > 0);
 
+#if defined(_X360)
+	//Xbox 360 needs "%n" to be manually enabled
+	{
+	int oldPrintCountValue = _set_printf_count_output(1);
+#endif
+
 	// Parse the string.
 	////////////////////
 	rcode = sscanf(connection->recvBuffer.data, "HTTP/%d.%d %d%n",
@@ -803,6 +872,11 @@ static GHTTPBool ghiParseStatus
 		&minorVersion,
 		&statusCode,
 		&statusStringIndex);
+
+#if defined(_X360)
+	_set_printf_count_output(oldPrintCountValue);
+	}
+#endif
 
 	// Check what we got.
 	/////////////////////
@@ -865,7 +939,8 @@ void ghiDoReceivingStatus
 	{
 		// Check for encryption.
 		////////////////////////
-		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None)
+		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+			connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 		{
 			// Append new encrypted data to anything we've held over
 			//    We have to do this because we can't decrypt partial SSL messages
@@ -1298,7 +1373,8 @@ void ghiDoReceivingHeaders
 	{
 		// Check for encryption.
 		////////////////////////
-		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None)
+		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+			connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 		{
 			// Append new encrypted data to anything we've held over
 			//    We have to do this because we can't decrypt partial SSL messages
@@ -1471,7 +1547,7 @@ void ghiDoReceivingHeaders
 				{
 					// Set the redirect URL.
 					////////////////////////
-					connection->redirectURL = strdup(location);
+					connection->redirectURL = goastrdup(location);
 					if(!connection->redirectURL)
 					{
 						connection->completed = GHTTPTrue;
@@ -1622,7 +1698,8 @@ void ghiDoReceivingFile
 
 		// Check for encryption.
 		////////////////////////
-		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None)
+		if (connection->encryptor.mEngine != GHTTPEncryptionEngine_None &&
+			connection->encryptor.mEncryptOnBuffer == GHTTPTrue)
 		{
 			char * decryptedData;
 			int decryptedLen;

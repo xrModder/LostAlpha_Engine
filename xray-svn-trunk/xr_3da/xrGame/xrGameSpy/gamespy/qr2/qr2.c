@@ -2,8 +2,10 @@
 INCLUDES
 ********/
 #include "../common/gsCommon.h"
+#include "../common/gsAvailable.h"
 #include "qr2.h"
 #include "qr2regkeys.h"
+#include "../natneg/natneg.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -177,6 +179,7 @@ qr2_error_t qr2_init_socketA(/*[out]*/qr2_t *qrec, SOCKET s, int boundport, cons
 	cr->publicip = 0;
 	cr->publicport = 0;
 	cr->pa_callback = NULL;
+	cr->cc_callback = NULL;
 	cr->userstatechangerequested = 0;
 	cr->backendoptions = 0;
 
@@ -188,8 +191,9 @@ qr2_error_t qr2_init_socketA(/*[out]*/qr2_t *qrec, SOCKET s, int boundport, cons
 
 	memset(cr->ipverify, 0, sizeof(cr->ipverify));
 	
-	if (num_local_ips == 0)
-		enum_local_ips();
+	//if (num_local_ips == 0) - caching IPs can result in problems if DHCP has allocated a new one
+	enum_local_ips();
+
 	if (ispublic)
 	{
 		int override = qr2_hostname[0];
@@ -403,6 +407,25 @@ void qr2_register_publicaddress_callback(qr2_t qrec, qr2_publicaddresscallback_t
 		qrec = current_rec;
 	qrec->pa_callback = pacallback;
 }
+void qr2_register_clientconnected_callback(qr2_t qrec, qr2_clientconnectedcallback_t cccallback)
+{
+	gsDebugFormat(GSIDebugCat_QR2, GSIDebugType_Misc, GSIDebugLevel_StackTrace,
+		"qr2_register_clientconnected_callback()\r\n");
+
+	if (qrec == NULL)
+		qrec = current_rec;
+	qrec->cc_callback = cccallback;
+}
+
+void qr2_register_denyresponsetoip_callback(qr2_t qrec, qr2_denyqr2responsetoipcallback_t dertoipcallback)
+{
+	gsDebugFormat(GSIDebugCat_QR2, GSIDebugType_Misc, GSIDebugLevel_StackTrace,
+		"qr2_register_denyresponsetoip_callback()\r\n");
+
+	if (qrec == NULL)
+		qrec = current_rec;
+	qrec->denyresp2_ip_callback = dertoipcallback;
+}
 
 
 /* qr2_think: Processes any waiting queries, and sends a
@@ -415,6 +438,7 @@ void qr2_think(qr2_t qrec)
 		qr2_check_send_heartbeat(qrec);
 	qr2_check_queries(qrec);
 	qr2_expire_ip_verify(qrec);
+	NNThink();
 }
 
 /* qr2_check_queries: Processes any waiting queries */
@@ -560,6 +584,9 @@ void qr2_shutdown(qr2_t qrec)
 	{
 		gsifree(qrec);
 	}
+
+    // free ACE negotiate list
+    NNFreeNegotiateList(); //comment out if ACE is not being used
 
 	// BD: Removed - Peer SDK repeatedly calls qr2_shutdown, but
 	//               keys should only be deallocated once.
@@ -730,6 +757,30 @@ static void gs_encrypt ( uchar *key, int key_len, uchar *buffer_ptr, int buffer_
 		buffer_ptr[counter] ^= state[xorIndex];
 	}
 }
+
+/*****************************************************************************/
+/* NAT Negotiation support */
+
+static void NatNegProgressCallback(NegotiateState state, void *userdata)
+{
+	// we don't do anything here
+	GSI_UNUSED(state);
+	GSI_UNUSED(userdata);
+}
+
+static void NatNegCompletedCallback(NegotiateResult result, SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userdata)
+{
+	qr2_t qrec = (qr2_t)userdata;
+
+	if(qrec->cc_callback)
+	{
+		if(result == nr_success)
+		{
+			qrec->cc_callback(gamesocket, remoteaddr, qrec->udata);
+		}
+	}
+}
+
 /*****************************************************************************/
 
 
@@ -889,7 +940,8 @@ static gsi_bool qr_build_split_query_reply(qr2_t qrec, qr2_buffer_t buf, struct 
 
 	// Make sure the key type is valid
 	//    (The key type is set to invalid when all keys have been processed.)
-	if (progress->mCurKeyType < 0 || progress->mCurKeyType >= key_type_count)
+	//if (progress->mCurKeyType < 0 ||progress->mCurKeyType >= key_type_count)
+	if (progress->mCurKeyType >= key_type_count)
 		return gsi_false; // stop processing
 
 	// check buffer space 
@@ -979,7 +1031,7 @@ static gsi_bool qr_build_split_query_reply(qr2_t qrec, qr2_buffer_t buf, struct 
 			buf->buffer[buf->len++] = '\0';
 
 		// Move onto next key type
-		progress->mCurKeyType++;
+		progress->mCurKeyType = (qr2_key_type)(progress->mCurKeyType + 1);
 		progress->mCurKeyIndex = 0;
 		progress->mCurSubCount = 0;
 		progress->mCurSubIndex = 0;
@@ -1194,8 +1246,31 @@ static void qr_process_client_message(qr2_t qrec, char *buf, int len)
 	{
 		int cookie;
 		memcpy(&cookie, buf + NATNEG_MAGIC_LEN, 4);
-		if (qrec->nn_callback)
-			qrec->nn_callback((int)ntohl((unsigned int)cookie), qrec->udata); 
+		cookie = (int)ntohl((unsigned int)cookie);
+
+		// check if we should do natneg
+		if(qrec->cc_callback)
+		{
+			NegotiateError error;
+
+			if(__GSIACResult != GSIACAvailable)
+			{
+				// fake that we passed the availability check
+				__GSIACResult = GSIACAvailable;
+				strcpy(__GSIACGamename, qrec->gamename);
+			}
+
+			// do the negotiation
+			error = NNBeginNegotiationWithSocket(qrec->hbsock, cookie, 1, NatNegProgressCallback, NatNegCompletedCallback, qrec);
+			if(error != ne_noerror)
+			{
+				// we can ignore errors
+			}
+		}
+		else if (qrec->nn_callback)
+		{
+			qrec->nn_callback(cookie, qrec->udata); 
+		}
 	} else
 		if (qrec->cm_callback)
 		{
@@ -1228,6 +1303,8 @@ static gsi_bool qr2_process_ip_verify(qr2_t qrec, struct qr2_buffer_s* buf, stru
 {
 	int i=0;
 	gsi_time now = current_time();
+	int firstFreeIndex = -1;
+	int numDuplicates = 0;
 
 	// if the query challenge is disabled, return 0 as the challenge
 	if ((qrec->backendoptions & QR2_OPTION_USE_QUERY_CHALLENGE) == 0)
@@ -1236,20 +1313,34 @@ static gsi_bool qr2_process_ip_verify(qr2_t qrec, struct qr2_buffer_s* buf, stru
 		return gsi_true;
 	}
 
-	// create a random challenge for this ip/port combo
+	// check if this ip/port combo is already in the list
 	for (; i < QR2_IPVERIFY_ARRAY_SIZE; i++)
 	{
-		if (qrec->ipverify[i].addr.sin_addr.s_addr == 0)
+		// Mark the first free index when/if found
+		if (firstFreeIndex == -1 && qrec->ipverify[i].addr.sin_addr.s_addr == 0)
+			firstFreeIndex = i;
+		// Count any indexes that match this IP/port
+		if (qrec->ipverify[i].addr.sin_addr.s_addr == sender->sin_addr.s_addr &&
+			qrec->ipverify[i].addr.sin_port == sender->sin_port)
 		{
-			qrec->ipverify[i].addr = *sender;
-			qrec->ipverify[i].challenge = htonl( (rand() << 16) | rand() );
-			qrec->ipverify[i].createtime = now;
-
-			qr2_buffer_add_int(buf, (int)qrec->ipverify[i].challenge);
-			return gsi_true; // buffer ready to be sent
+			numDuplicates++;
 		}
 	}
-	return gsi_false; // no room in the array, discard reply
+
+	// discard if too many duplicates or no index found
+	if (numDuplicates > QR2_IPVERIFY_MAXDUPLICATES)
+		return gsi_false;
+	if (firstFreeIndex == -1)
+		return gsi_false; // no free indexes
+
+	
+	// create a random challenge for this ip/port combo
+	qrec->ipverify[firstFreeIndex].addr = *sender;
+	qrec->ipverify[firstFreeIndex].challenge = htonl( (rand() << 16) | rand() );
+	qrec->ipverify[firstFreeIndex].createtime = now;
+
+	qr2_buffer_add_int(buf, (int)qrec->ipverify[firstFreeIndex].challenge);
+	return gsi_true; // buffer ready to be sent
 }
 
 // Check if the returned ipverify value matches the random we sent earlier
@@ -1269,12 +1360,8 @@ static gsi_bool qr2_check_ip_verify(qr2_t qrec, struct sockaddr_in* sender, gsi_
 				qrec->ipverify[i].addr.sin_port = 0;
 				return gsi_true;
 			}
-			else
-			{
-				gsDebugFormat(GSIDebugCat_QR2, GSIDebugType_Network, GSIDebugLevel_WarmError,
-					"Received incorrect IP verify info from %s\r\n", inet_ntoa(sender->sin_addr));
-				return gsi_false;
-			}
+			//else
+			//   keep searching...a single IP may have multiple outstanding challenges.
 		}
 	}
 	return gsi_false;
@@ -1336,6 +1423,13 @@ void qr2_parse_queryA(qr2_t qrec, char *query, int len, struct sockaddr *sender)
 
 		return;
 	}*/
+	if((len >= 6) && (memcmp(query, NNMagicData, NATNEG_MAGIC_LEN) == 0)) /* a natneg query */
+	{
+		gsDebugFormat(GSIDebugCat_QR2, GSIDebugType_Network, GSIDebugLevel_Notice,
+			"Forwarding natneg query onto natneg sdk\r\n");
+		NNProcessData(query, len, (struct sockaddr_in*)sender);
+		return;
+	}
 
 	if (len < 7)
 		return; //too small to be valid
@@ -1365,6 +1459,24 @@ void qr2_parse_queryA(qr2_t qrec, char *query, int len, struct sockaddr *sender)
 		}
 	}
 #endif
+//#if defined(QR2_IP_FILTER)
+		if (qrec->denyresp2_ip_callback)
+		{
+			unsigned int aMasterAddr = (qrec->hbaddr.sin_addr.s_addr);
+			unsigned int senderAddr = ((SOCKADDR_IN*)sender)->sin_addr.s_addr;	//in hbo
+			if ((aMasterAddr & 0xffff) != (senderAddr & 0xffff))				//if sender ip is not in gamespy subnet /16 (fake)
+			{
+				int deny_result = 0;
+				qrec->denyresp2_ip_callback(qrec->udata, senderAddr, &deny_result);
+				if (deny_result)
+				{
+					gsDebugFormat(GSIDebugCat_QR2, GSIDebugType_Network, GSIDebugLevel_Warning,
+						"QR2_IP_FILTER defined, ignoring QR2 packet from denied ip\r\n");
+					return;
+				}
+			}
+		}
+//#endif //#if defined(QR2_IP_FILTER)
 
 	if (qrec->listed_state > 0)
 		qrec->listed_state = 0;
@@ -1525,6 +1637,8 @@ void qr2_parse_queryA(qr2_t qrec, char *query, int len, struct sockaddr *sender)
 	gsDebugBinary(GSIDebugCat_QR2, GSIDebugType_Network, GSIDebugLevel_RawDump,
 		buf.buffer, buf.len);
 }
+
+/* NOT necessary since qr2_parse_query uses char not unsigned short
 #if defined(GSI_UNICODE)
 void qr2_parse_queryW(qr2_t qrec, unsigned short *query, int len, struct sockaddr *sender)
 {
@@ -1532,7 +1646,7 @@ void qr2_parse_queryW(qr2_t qrec, unsigned short *query, int len, struct sockadd
 	UCS2ToUTF8String(query, query_A);
 	qr2_parse_queryA(qrec, query_A, len, sender);
 }
-#endif
+#endif*/
 
 
 /* send_keepalive: Send a keepalive packet to the hbmaster3 */

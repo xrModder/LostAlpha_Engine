@@ -14,7 +14,8 @@
 #include "game_sv_artefacthunt.h"
 #include "date_time.h"
 #include "game_cl_base_weapon_usage_statistic.h"
-#include "gp.h"
+#include "xrGameSpy/xrGameSpy_MainDefs.h"
+#include "gamespy/GameSpy_GP.h"
 
 extern	float	g_cl_lvInterp;
 extern	int		g_cl_InterpolationType; //0 - Linear, 1 - BSpline, 2 - HSpline

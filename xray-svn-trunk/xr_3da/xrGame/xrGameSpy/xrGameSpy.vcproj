@@ -425,6 +425,22 @@
 					>
 				</File>
 				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsCore.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsCore.h"
+					>
+				</File>
+				<File
 					RelativePath=".\GameSpy\common\gsCrypt.c"
 					>
 					<FileConfiguration
@@ -678,6 +694,22 @@
 					>
 				</File>
 				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsSoap.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsSoap.h"
+					>
+				</File>
+				<File
 					RelativePath=".\GameSpy\common\gsSSL.c"
 					>
 					<FileConfiguration
@@ -723,6 +755,22 @@
 				</File>
 				<File
 					RelativePath=".\GameSpy\common\gsStringUtil.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsUdpEngine.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\gsUdpEngine.h"
 					>
 				</File>
 				<File
@@ -788,6 +836,19 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\common\win32\gsUtilWin32.c"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -993,10 +1054,10 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="CD-Key"
+				Name="gcdkey"
 				>
 				<File
-					RelativePath=".\GameSpy\CDKey\gcdkeyc.c"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gcdkey\gcdkeyc.c"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1004,25 +1065,15 @@
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"
-							WarningLevel="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-							WarningLevel="0"
 						/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\GameSpy\CDKey\gcdkeyc.h"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gcdkey\gcdkeyc.h"
 					>
 				</File>
 				<File
-					RelativePath=".\GameSpy\CDKey\gcdkeys.c"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gcdkey\gcdkeys.c"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1030,21 +1081,11 @@
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"
-							Detect64BitPortabilityProblems="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-							Detect64BitPortabilityProblems="false"
 						/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\GameSpy\CDKey\gcdkeys.h"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gcdkey\gcdkeys.h"
 					>
 				</File>
 			</Filter>
@@ -1052,11 +1093,11 @@
 				Name="Patching"
 				>
 				<File
-					RelativePath=".\GameSpy\Patching\pt.h"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\pt\pt.h"
 					>
 				</File>
 				<File
-					RelativePath=".\GameSpy\Patching\ptMain.c"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\pt\ptMain.c"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1064,16 +1105,6 @@
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"
-							Detect64BitPortabilityProblems="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-							Detect64BitPortabilityProblems="false"
 						/>
 					</FileConfiguration>
 				</File>
@@ -1286,6 +1317,702 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="GP"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gp.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gp.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpi.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpi.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiBuddy.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiBuddy.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiBuffer.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiCallback.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiConnect.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiConnect.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiInfo.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiKeys.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiKeys.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiOperation.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiOperation.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiPeer.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiPeer.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiProfile.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiProfile.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiPS3.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiPS3.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiSearch.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiTransfer.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiTransfer.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiUnique.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiUnique.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiUtility.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\GP\gpiUtility.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gstats"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gstats\gbucket.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gstats\gbucket.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gstats\gpersist.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gstats\gstats.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gstats\gstats.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="qt2"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Auth.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Auth.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Buffer.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Buffer.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Callback.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Callback.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Connection.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Connection.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Encode.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Encode.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Filter.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Filter.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Main.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Main.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Message.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Message.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Socket.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Socket.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Utility.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\gt2\gt2Utility.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sake"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sake.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeMain.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeMain.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequest.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequest.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequestInternal.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequestMisc.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequestModify.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sake\sakeRequestRead.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="natneg"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\natneg\NATify.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\natneg\NATify.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\natneg\natneg.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\natneg\natneg.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\natneg\nninternal.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sc"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sc.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sci.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciInterface.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciInterface.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciMain.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciReport.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciReport.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciSerialize.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciSerialize.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciWebServices.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\sc\sciWebServices.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="webservices"
+				>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\webservices\AuthService.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\gamespy\webservices\AuthService.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="xrGameSpy_ServerBrowser"
@@ -1356,6 +2083,18 @@
 			</File>
 			<File
 				RelativePath=".\xrGameSpy_HTTP.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="xrGameSpy_GP"
+			>
+			<File
+				RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\xrGameSpy_GP.cpp"
+				>
+			</File>
+			<File
+				RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrGameSpy\xrGameSpy_GP.h"
 				>
 			</File>
 		</Filter>

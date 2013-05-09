@@ -66,21 +66,26 @@ void  gsDebugAssert				(const char *szError,const char *szText, const char *szFi
 			};
 
 		#else
-		{
-			int rcode;
-		
-			OutputDebugString( string);
-			rcode = MessageBox(NULL,string,"Assert Failed",MB_ABORTRETRYIGNORE|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
+		{		
+			OutputDebugStringA( string);
 
-			if(rcode == IDABORT)
+			#ifndef GS_ASSERT_NO_MESSAGEBOX
 			{
-				exit(0);
+				int rcode = MessageBoxA(NULL,string,"Assert Failed",MB_ABORTRETRYIGNORE|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);
+
+				if(rcode == IDABORT)
+				{
+					exit(0);
+				}
+				if(rcode == IDRETRY)
+				{
+					DebugBreak();
+					return;
+				}
 			}
-			if(rcode == IDRETRY)
-			{
+			#else
 				DebugBreak();
-				return;
-			}
+			#endif
 		}
 		#endif
 	}

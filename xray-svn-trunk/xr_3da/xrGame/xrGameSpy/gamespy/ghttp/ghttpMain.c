@@ -335,7 +335,7 @@ GHTTPRequest ghttpGetExA
 	// Fill in the necessary info.
 	//////////////////////////////
 	connection->type = GHIGET;
-	connection->URL = strdup(URL);
+	connection->URL = goastrdup(URL);
 	if(!connection->URL)
 	{
 		ghiFreeConnection(connection);
@@ -448,10 +448,10 @@ GHTTPRequest ghttpSaveW
 }
 #endif
 
-GHTTPRequest ghttpSaveExA
+static GHTTPRequest _ghttpSaveEx
 (
 	const char * URL,
-	const char * filename,
+	const gsi_char * filename,
 	const char * headers,
 	GHTTPPost post,
 	GHTTPBool throttle,
@@ -487,7 +487,7 @@ GHTTPRequest ghttpSaveExA
 	// Fill in the necessary info.
 	//////////////////////////////
 	connection->type = GHISAVE;
-	connection->URL = strdup(URL);
+	connection->URL = goastrdup(URL);
 	if(!connection->URL)
 	{
 		ghiFreeConnection(connection);
@@ -522,7 +522,7 @@ GHTTPRequest ghttpSaveExA
 #ifdef NOFILE
 	connection->saveFile = NULL;
 #else
-	connection->saveFile = fopen(filename, "wb");
+	connection->saveFile = _tfopen(filename, _T("wb"));
 #endif
 	if(!connection->saveFile)
 	{
@@ -546,6 +546,29 @@ GHTTPRequest ghttpSaveExA
 
 	return connection->request;
 }
+
+GHTTPRequest ghttpSaveExA
+(
+	const char * URL,
+	const char * filename,
+	const char * headers,
+	GHTTPPost post,
+	GHTTPBool throttle,
+	GHTTPBool blocking,
+	ghttpProgressCallback progressCallback,
+	ghttpCompletedCallback completedCallback,
+	void * param
+)
+{
+	#ifdef GSI_UNICODE
+		unsigned short filename_W[1024];
+		AsciiToUCS2String(filename, filename_W);
+		return _ghttpSaveEx(URL, filename_W, headers, post, throttle, blocking, progressCallback, completedCallback, param);
+	#else
+		return _ghttpSaveEx(URL, filename, headers, post, throttle, blocking, progressCallback, completedCallback, param);
+	#endif
+}
+
 #ifdef GSI_UNICODE
 GHTTPRequest ghttpSaveExW
 (
@@ -561,17 +584,17 @@ GHTTPRequest ghttpSaveExW
 )
 {
 	char URL_A[1024];
-	char filename_A[1024] = { '\0' };
+	//char filename_A[1024] = { '\0' };
 	char headers_A[1024] = { '\0' };
 
 	assert(URL_A != NULL);
 	UCS2ToAsciiString(URL, URL_A);
-	if (filename != NULL)
-		UCS2ToAsciiString(filename, filename_A);
+	//if (filename != NULL)
+	//	UCS2ToAsciiString(filename, filename_A);
 	if (headers != NULL)
 		UCS2ToAsciiString(headers, headers_A);
 
-	return ghttpSaveExA(URL_A, filename_A, headers_A, post, throttle, blocking, progressCallback, completedCallback, param);
+	return _ghttpSaveEx(URL_A, filename, headers_A, post, throttle, blocking, progressCallback, completedCallback, param);
 }
 #endif
 
@@ -637,7 +660,7 @@ GHTTPRequest ghttpStreamExA
 	// Fill in the necessary info.
 	//////////////////////////////
 	connection->type = GHISTREAM;
-	connection->URL = strdup(URL);
+	connection->URL = goastrdup(URL);
 	if(!connection->URL)
 	{
 		ghiFreeConnection(connection);
@@ -764,7 +787,7 @@ GHTTPRequest ghttpHeadExA
 	// Fill in the necessary info.
 	//////////////////////////////
 	connection->type = GHIHEAD;
-	connection->URL = strdup(URL);
+	connection->URL = goastrdup(URL);
 	if(!connection->URL)
 	{
 		ghiFreeConnection(connection);
@@ -888,7 +911,7 @@ GHTTPRequest ghttpPostExA
 	// Fill in the necessary info.
 	//////////////////////////////
 	connection->type = GHIPOST;
-	connection->URL = strdup(URL);
+	connection->URL = goastrdup(URL);
 	if(!connection->URL)
 	{
 		ghiFreeConnection(connection);
@@ -1419,10 +1442,10 @@ GHTTPBool ghttpPostAddFileFromMemoryW
 	char contentType_A[1024] = { '\0' };
 	if (name != NULL)
 		UCS2ToAsciiString(name, name_A);
-	if (name != NULL)
-		UCS2ToAsciiString(name, name_A);
-	if (name != NULL)
-		UCS2ToAsciiString(name, name_A);
+	if (reportFilename != NULL)
+		UCS2ToAsciiString(reportFilename, reportFilename_A);
+	if (contentType != NULL)
+		UCS2ToAsciiString(contentType, contentType_A);
 
 	
 	return ghttpPostAddFileFromMemoryA(post, name_A, buffer, bufferLen, reportFilename_A, contentType_A);

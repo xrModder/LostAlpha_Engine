@@ -3,12 +3,8 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
@@ -224,6 +220,17 @@ GHTTPBool ghiFreeConnection
 	ghiFreeBuffer(&connection->getFileBuffer);
 	if(connection->postingState.states)
 		ghiPostCleanupState(connection);
+   
+#if !defined(GSI_NO_THREADS)
+    // Cancel and free asychronous lookup if it has not already been done
+    /////////////////////////////////////////////////////////////////////
+    if (connection->handle)
+    {
+        gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
+            "Cancelling Thread and freeing memory\n");
+        gsiCancelResolvingHostname(connection->handle);
+    }
+#endif
 
 	// Check for an auto-free post.
 	///////////////////////////////
@@ -319,16 +326,15 @@ void ghiRedirectConnection
 	///////////////
 	connection->state = GHTTPSocketInit;
 
-	// Cancel asychronous lookup if it has not already been done
 #if !defined(GSI_NO_THREADS)
-	if (connection->handle != NULL)
-	{
-		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
-			"Cancelling Thread and freeing memory\n");
-		gsiCancelResolvingHostname(*connection->handle);
-		gsifree(connection->handle);
-		connection->handle = NULL;
-	}
+    // Cancel and free asychronous lookup if it has not already been done
+    /////////////////////////////////////////////////////////////////////
+    if (connection->handle)
+    {
+        gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
+            "Cancelling Thread and freeing memory\n");
+        gsiCancelResolvingHostname(connection->handle);
+    }
 #endif
 
 	// New URL.

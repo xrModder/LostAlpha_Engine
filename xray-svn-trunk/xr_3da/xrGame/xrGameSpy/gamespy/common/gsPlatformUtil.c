@@ -3,25 +3,33 @@
 #include "gsCommon.h"
 #include "gsPlatformUtil.h"
 
+#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
+#pragma warning(disable: 4244) //lines: 1368, 1372
+#pragma warning(disable: 4267) //lines: 1861
+#endif //#ifdef XRAY_DISABLE_GAMESPY_WARNINGS
+
+
 // Include platform separated functions
-#if defined(_WIN32) && defined(_XBOX)
-	#include "xbox/gsUtilXBox.c"
+#if defined(_X360)
+	//#include "x360/gsUtilX360.c"
+#elif defined(_XBOX)
+	//#include "xbox/gsUtilXBox.c"
 #elif defined(_WIN32)
-	//#include "win32/gsUtilWin32.c"
+	#include "win32/gsUtilWin32.c"
 #elif defined(_LINUX)
-	//#include "linux/gsUtilLinux.c"
+	#include "linux/gsUtilLinux.c"
 #elif defined(_MACOSX)
-	//#include "macosx/gsUtilMacOSX.c"
+	#include "macosx/gsUtilMacOSX.c"
 #elif defined(_NITRO)
-	//#include "nitro/gsUtilNitro.c"
+	#include "nitro/gsUtilNitro.c"
 #elif defined(_PS2)
-	//#include "ps2/gsUtilPs2.c"
+	#include "ps2/gsUtilPs2.c"
 #elif defined(_PS3)
 	#include "ps3/gsUtilPs3.c"
 #elif defined(_PSP)
 	#include "psp/gsUtilPSP.c"
 #elif defined(_REVOLUTION)
-	//#include "wii/gsUtilRevolution.c"
+	#include "revolution/gsUtilRevolution.c"
 #else
 	#error "Missing or unsupported platform"
 #endif
@@ -31,31 +39,42 @@ extern "C" {
 #endif
 
 	
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-	// ********** ASYNC DNS ********** //
-#if !defined(GSI_NO_THREADS)
+// ********** ASYNC DNS ********** //
 
-	typedef struct GSIResolveHostnameInfo
-	{
-		char * hostname;
-		unsigned int ip;
-		#if defined(_WIN32) /*|| defined(_PS2)*/ || defined(_LINUX)
-			int finishedResolving;
-			GSIThreadID threadID;
-		#endif
-		#if defined(_PSP)
-			int finishedResolving;
-			GSIThreadID threadID;
-			int resolverID;
-		#endif
-	} GSIResolveHostnameInfo;
+//struct is used in both threaded and non-threaded versions
+typedef struct GSIResolveHostnameInfo
+{
+    char * hostname;
+    unsigned int ip;
 
-#if defined(_WIN32) /*|| defined(_PS2)*/	
+#if defined(_WIN32) /*|| defined(_PS2)*/ || defined(_UNIX) || defined (_REVOLUTION)
+    int finishedResolving;
+    GSIThreadID threadID;
+#endif
+
+/*#if defined(_PSP)
+    int finishedResolving;
+    GSIThreadID threadID;
+#endif*/
+} GSIResolveHostnameInfo;
+
+////////////////////////////////////////////////////////////////////////////////
+// for asynch DNS, must have:
+// * platform that supports threaded lookup AND
+// * threading enabled
+// * and async lookup enabled
+////////////////////////////////////////////////////////////////////////////////
+#if	(defined(_WIN32) || /*defined(_PS2) ||*/ defined(_UNIX) || defined (_REVOLUTION)) && !defined(GSI_NO_THREADS) && !defined(GSI_NO_ASYNC_DNS)
+
+////////////////////////////////////////////////////////////////////////////////
+#if defined(_WIN32) /*|| defined(_PS2)*/
 	#if defined(_WIN32)
-	DWORD WINAPI gsiResolveHostnameThread(void * arg)
+		DWORD WINAPI gsiResolveHostnameThread(void * arg)
 	/*#elif defined(_PS2)
-	static void gsiResolveHostnameThread(void * arg)*/
+		static void gsiResolveHostnameThread(void * arg)*/
 	#endif
 	{
 		HOSTENT * hostent;
@@ -95,236 +114,252 @@ extern "C" {
 		#if defined(_WIN32)
 		return 0;
 		#endif
-	}
-#endif
+}
+#endif //defined _WIN32
+////////////////////////////////////////////////////////////////////////////////
 
-//This PSP "thread" code is contained in gsUtilPSP.c
-/*
-#if defined(_PSP)
-	static void gsiResolveHostnameThread(void * arg)
-	{
-		int result = 0;
-		int resolverID = 0;
-		char buf[1024]; // PSP documentation recommends 1024
-		GSIResolveHostnameHandle * info = (GSIResolveHostnameHandle)arg;
 
-		result = sceNetResolverCreate(&resolverID, buf, sizeof(buf));
-		if (result < 0)
-		{
-			// failed to create resolver, did you call sceNetResolverInit() ?
-			info->ip = GSI_ERROR_RESOLVING_HOSTNAME;
-			return -1;
-		}
-		else
-		{
-			// this will block until completed
-			result = sceNetResolverStartNtoA(resolverID, info->hostname, &info->ip, GSI_RESOLVER_TIMEOUT, GSI_RESOLVER_RETRY);
-			if (result < 0)
-				info->ip = GSI_ERROR_RESOLVING_HOSTNAME;
-			sceNetResolverDelete(resolverID);
-		}
-	}
-#endif
-*/
-
-#if defined(_WIN32) /*|| defined(_PS2)*/ || defined(_LINUX)
-
-	//
-	// Linux implementation of multithreaded DNS lookup
-	// Uses getaddrinfo instead of gethostbyname - since the latter
-	// has static declarations and is thus un-safe for pthreads
-	//
-	// NOTE: The compiler option "-lpthread" must used for this
-	#if defined(_LINUX)
-	static void gsiResolveHostnameThread(void * arg)
-	{
-		GSIResolveHostnameHandle handle = (GSIResolveHostnameHandle)arg;
-		struct addrinfo hints, *result = NULL;
-		int error;
-		char *ip;
-
-		SocketStartUp();
-
-		memset(&hints, 0, sizeof(hints));
-		hints.ai_family = PF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-
-		// DNS lookup (works with pthreads)
-		error = getaddrinfo(handle->hostname, "http", &hints, &result);
-
-		if (!error)
-		{
-			// first convert to character string for debug output
-			ip = inet_ntoa((*(struct sockaddr_in*)result->ai_addr).sin_addr);
-
-			gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment,
-				"Resolved host '%s' to ip '%s'\n", handle->hostname, ip);
-
-			// now convert to unsigned int and store it
-			handle->ip = inet_addr(ip);
-
-			// free the memory used
-			freeaddrinfo(result);
-		}
-		else
-		{
-			// couldnt reach host - debug output is printed later
-			handle->ip = GSI_ERROR_RESOLVING_HOSTNAME;
-		}
-
-		SocketShutDown();
-
-		// finished resolving
-		handle->finishedResolving = 1;
-
-		// explicitly exit the thread to free resources
-		gsiExitThread(handle->threadID);
-	}
-	#endif
-
-	int gsiStartResolvingHostname(const char * hostname, GSIResolveHostnameHandle * handle)
-	{
-		GSIResolveHostnameInfo * info;
-
-		//PS2 Threading unsupported in current build - this should never be reached
-	#if defined(_PS2)
-		GS_ASSERT_STR(gsi_false, "PS2 Threading unsupported in current version of the SDK\n");
-	#endif
-
-		// allocate a handle
-		info = (GSIResolveHostnameInfo *)gsimalloc(sizeof(GSIResolveHostnameInfo));
-		if(!info)
-			return -1;
-
-		// make a copy of the hostname so the thread has access to it
-		info->hostname = goastrdup(hostname);
-		if(!info->hostname)
-		{
-			gsifree(info);
-			return -1;
-		}
-
-		// not resolved yet
-		info->finishedResolving = 0;
-
-		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
-			"(Asynchrounous) DNS lookup starting\n");
-
-		// start the thread
-		if(gsiStartThread(gsiResolveHostnameThread, (0x1000), info, &info->threadID) == -1)
-		{
-			gsifree(info->hostname);
-			info->hostname = NULL;
-			gsifree(info);
-			info = NULL;
-			return -1;
-		}
-
-		// set the handle to the info
-		*handle = info;
-
-		return 0;
-	}
-
-	void gsiCancelResolvingHostname(GSIResolveHostnameHandle handle)
-	{
-		// cancel the thread
-		gsiCancelThread(handle->threadID);
-
-		gsifree(handle->hostname);
-		handle->hostname = NULL;
-		gsifree(handle);
-		handle = NULL;
-	}
-
-	unsigned int gsiGetResolvedIP(GSIResolveHostnameHandle handle)
-	{
-		unsigned int ip;
-
-		// check if we haven't finished
-		if(!handle->finishedResolving)
-			return GSI_STILL_RESOLVING_HOSTNAME;
-
-		// save the ip
-		ip = handle->ip;
-
-		// free resources
-		gsiCleanupThread(handle->threadID);
-		gsifree(handle->hostname);
-		gsifree(handle);
-
-		return ip;
-	}
-#elif defined(_PSP)
-	// look in gsUtilPSP.c
-#else // (_NITRO || _MACOSX || _XBOX || _PS3) && !(GSI_NO_THREADS) 
-	  // || defined (_PS2) - for current build this is unsupported
-	int gsiStartResolvingHostname(const char * hostname, GSIResolveHostnameHandle * handle)
-	{
-		GSIResolveHostnameInfo * info;
-		HOSTENT * hostent;
-
-		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
-			"(NON-Asynchrounous) DNS lookup starting\n");
+#ifdef _REVOLUTION
+///////////////////////////////////////////////////////////////////////////////
+static void *gsiResolveHostnameThread(void * arg)
+{
+	static GSICriticalSection aHostnameCrit;
+	static int aInitialized = 0;
+	//SOAddrInfo *aHostAddr;
+	HOSTENT *aHostAddr;
+	//int retval;
+	GSIResolveHostnameHandle handle = (GSIResolveHostnameHandle)arg;
 		
-		// do the lookup now
-		hostent = gethostbyname(hostname);
-		if(hostent == NULL)
-			return -1;
-
-		// allocate info to store the result
-		info = (GSIResolveHostnameHandle)gsimalloc(sizeof(GSIResolveHostnameInfo));
-		if(!info)
-			return -1;
-
-		// we already have the ip
-		info->ip = *(unsigned int *)hostent->h_addr_list[0];
-
-		// set the handle to the info
-		*handle = info;
-
-		return 0;
-	}
-
-	void gsiCancelResolvingHostname(GSIResolveHostnameHandle handle)
+	if (!aInitialized)
 	{
-		gsifree(handle);
+		gsiInitializeCriticalSection(&aHostnameCrit);
+		aInitialized = 1;
+	}
+	gsiEnterCriticalSection(&aHostnameCrit);
+	
+	//retval = getaddrinfo(handle->hostname, NULL, NULL, &aHostAddr);
+	aHostAddr = gethostbyname(handle->hostname);
+	if (aHostAddr != 0)
+	{
+		char * ip;
+		// first convert to character string for debug output
+		ip = inet_ntoa(*(in_addr *)aHostAddr->addrList[0]);
+
+		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment,
+				"Resolved host '%s' to ip '%s'\n", handle->hostname, ip);
+		
+		handle->ip = inet_addr(ip);
+		//freeaddrinfo(aHostAddr);
+	}
+	else
+	{
+		// couldnt reach host - debug output is printed later
+		handle->ip = GSI_ERROR_RESOLVING_HOSTNAME;
+	}
+	
+	
+	// finished resolving
+	handle->finishedResolving = 1;
+	
+	gsiLeaveCriticalSection(&aHostnameCrit);	
+}
+#endif // _REVOLUTION
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Linux/MacOSX implementation of multithreaded DNS lookup
+// Uses getaddrinfo instead of gethostbyname - since the latter
+// has static declarations and is thus un-safe for pthreads
+//
+// NOTE: The compiler option "-lpthread" must used for this
+#if defined(_UNIX)
+////////////////////////////////////////////////////////////////////////////////
+static void gsiResolveHostnameThread(void * arg)
+{
+	GSIResolveHostnameHandle handle = (GSIResolveHostnameHandle)arg;
+	struct addrinfo hints, *result = NULL;
+	int error;
+	char *ip;
+
+	SocketStartUp();
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = PF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+
+	// DNS lookup (works with pthreads)
+	error = getaddrinfo(handle->hostname, "http", &hints, &result);
+
+	if (!error)
+	{
+		// first convert to character string for debug output
+		ip = inet_ntoa((*(struct sockaddr_in*)result->ai_addr).sin_addr);
+
+		gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment,
+			"Resolved host '%s' to ip '%s'\n", handle->hostname, ip);
+
+		// now convert to unsigned int and store it
+		handle->ip = inet_addr(ip);
+
+		// free the memory used
+		freeaddrinfo(result);
+	}
+	else
+	{
+		// couldnt reach host - debug output is printed later
+		handle->ip = GSI_ERROR_RESOLVING_HOSTNAME;
 	}
 
-	unsigned int gsiGetResolvedIP(GSIResolveHostnameHandle handle)
-	{
-		// we always to the resolve in the initial call for systems without
-		// an async version, so we'll always have the IP at this point
-		unsigned int ip = handle->ip;
-		gsifree(handle);
-		return ip;
-	}
+	SocketShutDown();
+
+	// finished resolving
+	handle->finishedResolving = 1;
+
+	// explicitly exit the thread to free resources
+	gsiExitThread(handle->threadID);
+}
+#endif //_UNIX
+////////////////////////////////////////////////////////////////////////////////
+
+
+int gsiStartResolvingHostname(const char * hostname, GSIResolveHostnameHandle * handle)
+{
+	GSIResolveHostnameInfo * info;
+
+	//PS2 Threading unsupported in current build - this should never be reached
+#if defined(_PS2)
+	GS_ASSERT_STR(gsi_false, "PS2 Threading unsupported in current version of the SDK\n");
 #endif
-///////////////////////////
-#endif // !(GSI_NO_THREADS)
+
+	// allocate a handle
+	info = (GSIResolveHostnameInfo *)gsimalloc(sizeof(GSIResolveHostnameInfo));
+	if(!info)
+		return -1;
+
+	// make a copy of the hostname so the thread has access to it
+	info->hostname = goastrdup(hostname);
+	if(!info->hostname)
+	{
+		gsifree(info);
+		return -1;
+	}
+
+	// not resolved yet
+	info->finishedResolving = 0;
+
+	gsDebugFormat(GSIDebugCat_Common, GSIDebugType_State, GSIDebugLevel_Comment, 
+		"(Asynchrounous) DNS lookup starting\n");
+
+	// start the thread
+	if(gsiStartThread(gsiResolveHostnameThread, (0x1000), info, &info->threadID) == -1)
+	{
+		gsifree(info->hostname);
+		info->hostname = NULL;
+		gsifree(info);
+		info = NULL;
+		return -1;
+	}
+
+	// set the handle to the info
+	*handle = info;
+
+	return 0;
+}
+
+void gsiCancelResolvingHostname(GSIResolveHostnameHandle handle)
+{
+    // cancel the thread
+	gsiCancelThread(handle->threadID);
+
+    if (handle->hostname)
+    {
+	    gsifree(handle->hostname);
+	    handle->hostname = NULL;
+    }
+	gsifree(handle);
+	handle = NULL;
+}
+
+unsigned int gsiGetResolvedIP(GSIResolveHostnameHandle handle)
+{
+	unsigned int ip;
+
+	// check if we haven't finished
+	if(!handle->finishedResolving)
+		return GSI_STILL_RESOLVING_HOSTNAME;
+
+	// save the ip
+	ip = handle->ip;
+
+	// free resources
+	gsiCleanupThread(handle->threadID);
+	gsifree(handle->hostname);
+	gsifree(handle);
+    handle = NULL;
+
+	return ip;
+}
+
+
+#else	// if * not a supported platform OR * no threads allowed OR * no async lookup allowed
+		///////////////////////////////////////////////////////////////////////////////////
+		// if !(_WIN32 ||_PS2 || _LINUX || _MACOSX || _REVOLUTION) || GSI_NO_THREADS || GSI_NO_ASYNC_DNS
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#if defined(UNDER_CE)
-int strcasecmp(const char *string1, const char *string2)
+// ********** NON-ASYNC DNS ********** //
+// 
+// These are the non-threaded version of the above functions.
+// The following platforms have synchronous DNS lookups:
+// _NITRO || _XBOX || _X360 || _PS3 || _PS2 || _PSP
+///////////////////////////////////////////////////////////////////////////////
+
+int gsiStartResolvingHostname(const char * hostname, GSIResolveHostnameHandle * handle)
 {
-	while (tolower(*string1) == tolower(*string2) && *string1 != 0 && *string2 != 0)
-	{
-		string1++; string2++;
-	}
-	return tolower(*string1) - tolower(*string2);
+	GSIResolveHostnameInfo * info;
+	HOSTENT * hostent;
+
+	gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_State, GSIDebugLevel_Comment, 
+		"(NON-Asynchrounous) DNS lookup starting\n");
+	
+	// do the lookup now
+	hostent = gethostbyname(hostname);
+	if(hostent == NULL)
+		return -1;
+
+	// allocate info to store the result
+	info = (GSIResolveHostnameHandle)gsimalloc(sizeof(GSIResolveHostnameInfo));
+	if(!info)
+		return -1;
+
+	// we already have the ip
+	info->ip = *(unsigned int *)hostent->h_addr_list[0];
+
+	// set the handle to the info
+	*handle = info;
+
+	return 0;
 }
 
-int strncasecmp(const char *string1, const char *string2, size_t count)
+void gsiCancelResolvingHostname(GSIResolveHostnameHandle handle)
 {
-	while (--count > 0 && tolower(*string1) == tolower(*string2) && *string1 != 0 && *string2 != 0)
-	{
-		string1++; string2++;
-	}
-	return tolower(*string1) - tolower(*string2);
+	gsifree(handle);
+    handle = NULL;
 }
-#endif
+
+unsigned int gsiGetResolvedIP(GSIResolveHostnameHandle handle)
+{
+	// we always do the resolve in the initial call for systems without
+	// an async version, so we'll always have the IP at this point
+	unsigned int ip = handle->ip;
+	gsifree(handle);
+    handle = NULL;
+	return ip;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+#endif // synch DNS lookup
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -340,7 +375,18 @@ char * goastrdup(const char *src)
 	return res;
 }
 
-#if !defined(_WIN32) || defined(UNDER_CE)
+unsigned short * goawstrdup(const unsigned short *src)
+{
+	unsigned short *res;
+	if(src == NULL)      
+		return NULL;
+	res = (unsigned short *)gsimalloc((wcslen((wchar_t*)src) + 1) * sizeof(unsigned short));
+	if(res != NULL)      
+		wcscpy((wchar_t*)res, (const wchar_t*)src);
+	return res;
+}
+
+#if !defined(_WIN32)
 
 char *_strlwr(char *string)
 {
@@ -374,8 +420,20 @@ void SocketStartUp()
 {
 #if defined(_WIN32) 
 	WSADATA data;
+
+	#if defined(_X360)
+		XNetStartupParams xnsp;
+		memset(&xnsp,0,sizeof(xnsp));
+		xnsp.cfgSizeOfStruct=sizeof(xnsp);
+		xnsp.cfgFlags=XNET_STARTUP_BYPASS_SECURITY;
+		if(0 != XNetStartup(&xnsp))
+		{
+			OutputDebugString("XNetStartup failed\n");
+		}
+	#endif
+
 	// added support for winsock2
-	#if !defined(_XBOX) && !defined(UNDER_CE) && defined(GSI_WINSOCK2)
+	#if (!defined(_XBOX) || defined(_X360)) && (defined(GSI_WINSOCK2) || defined(_X360))
 		WSAStartup(MAKEWORD(2,2), &data);
 	#else
 		WSAStartup(MAKEWORD(1,1), &data);
@@ -388,6 +446,9 @@ void SocketShutDown()
 {
 #if defined(_WIN32)
 	WSACleanup();
+	#if defined(_X360)
+		XNetCleanup();
+	#endif
 #endif
 }
 
@@ -488,64 +549,6 @@ time_t time(time_t *timer)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#if defined(_PS3)
-// PS3 time() support is not yet available
-time_t time(time_t *timer)
-{
-	time_t now = 0;
-
-	assert(timer == NULL);
-
-	// Get tick count, and normalize to January 1, 1970 (universal coordinated time)
-	now = current_time() / 1000;
-	return now;
-}
-#endif // _PS3
-
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-#ifdef UNDER_CE
-time_t time(time_t *timer)
-{
-	static time_t ret;
-	SYSTEMTIME systime;
-	FILETIME ftime;
-	LONGLONG holder;
-
-	GetLocalTime(&systime);
-	SystemTimeToFileTime(&systime, &ftime);
-	holder = (ftime.dwHighDateTime << 32) + ftime.dwLowDateTime;
-	if (timer == NULL)
-		timer = &ret;
-	*timer = (time_t)((holder - 116444736000000000) / 10000000);
-	return *timer; 
-}
-
-int isdigit( int c )
-{
-	return (c >= '0' && c <= '9');
-}
-
-int isxdigit( int c )
-{
-	return ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9'));
-}
-
-int isalnum( int c )
-{
-	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'));
-}
-
-int isspace(int c)
-{
-	return ((c >= 0x9 && c <= 0xD) || (c == 0x20)); 
-}
-#endif
-
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
 gsi_time current_time()  //returns current time in milliseconds
 { 
 #if defined(_WIN32)
@@ -606,10 +609,10 @@ gsi_time current_time()  //returns current time in milliseconds
 #elif defined(_PS3)
 	return (gsi_time)(sys_time_get_system_time()/1000);
 
-#elif defined(_EVOLUTION)
+#elif defined(_REVOLUTION)
 	OSTick aTickNow= OSGetTick();
 	gsi_time aMilliseconds = (gsi_time)OSTicksToMilliseconds(aTickNow);
-	return aMillisecondsd;
+	return aMilliseconds;
 #else
 	// unrecognized platform! contact devsupport
 	assert(0);
@@ -741,12 +744,354 @@ void msleep(gsi_time msec)
 #elif defined(_PS3)
 	sys_timer_usleep(msec* 1000);
 #elif defined (_REVOLUTION)
-
+	OSSleepMilliseconds(msec);
 #else
 	assert(0); // missing platform handler, contact devsupport
 #endif
 }
 
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Cross-platform GSI wrapper time conversion functions
+// 
+// NOTE: some portions of this copied from standard C library
+#if defined(_NITRO) || defined(_REVOLUTION)
+
+// if an error occurs when calling mktime, return -1
+#define MKTIME_ERROR	  (time_t)(-1)
+
+// define common conversions for mktime
+#define DAY_SEC           (24L * 60L * 60L)    /* secs in a day */
+#define YEAR_SEC          (365L * DAY_SEC)    /* secs in a year */
+#define FOUR_YEAR_SEC     (1461L * DAY_SEC)   /* secs in a 4 year interval */
+#define DEC_SEC           315532800L           /* secs in 1970-1979 */
+#define BASE_DOW          4                    /* 01-01-70 was a Thursday */
+#define BASE_YEAR         70L                  /* 1970 is the base year */
+#define LEAP_YEAR_ADJUST  17L                  /* Leap years 1900 - 1970 */
+#define MAX_YEAR          138L                 /* 2038 is the max year */
+
+// ChkAdd evaluates to TRUE if dest = src1 + src2 has overflowed
+#define ChkAdd(dest, src1, src2)   ( ((src1 >= 0L) && (src2 >= 0L) \
+    && (dest < 0L)) || ((src1 < 0L) && (src2 < 0L) && (dest >= 0L)) )
+
+// ChkMul evaluates to TRUE if dest = src1 * src2 has overflowed
+#define ChkMul(dest, src1, src2)   ( src1 ? (dest/src1 != src2) : 0 )
+
+int _lpdays[] = { -1, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+int _days[] = { -1, 30, 58, 89, 119, 150, 180, 211, 242, 272, 303, 333, 364 };
+
+const char _dnames[] = { "SunMonTueWedThuFriSat" };
+/*  Month names must be Three character abbreviations strung together */
+const char _mnames[] = { "JanFebMarAprMayJunJulAugSepOctNovDec" };
+
+static struct tm tb = { 0 };    /* time block used in SecondsToDate */
+
+static char buf[26];			/* buffer used to store string in SecondsToString */
+
+
+static char * store_dt(char *, int);
+static char * store_dt(char *p, int val)
+{
+        *p++ = (char)(_T('0') + val / 10);
+        *p++ = (char)(_T('0') + val % 10);
+        return(p);
+}
+#endif //_NITRO || _REVOLUTION
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// GSI equivalent of Standard C-lib "gmtime function"
+struct tm * gsiSecondsToDate(const time_t *timp)
+{
+#if !defined(_NITRO) && !defined(_REVOLUTION)
+
+	// for all platforms that support the standard C 'gmtime' use that
+	return gmtime(timp);
+
+#else
+	time_t caltim = *timp;            /* calendar time to convert */
+	int islpyr = 0;                 /* is-current-year-a-leap-year flag */
+	int tmptim;
+	int *mdays;                /* pointer to days or lpdays */
+	struct tm *ptb = &tb;
+
+
+	if ( caltim < 0L )
+		return(NULL);
+
+	/*
+	 * Determine years since 1970. First, identify the four-year interval
+	 * since this makes handling leap-years easy (note that 2000 IS a
+	 * leap year and 2100 is out-of-range).
+	 */
+	tmptim = (int)(caltim / FOUR_YEAR_SEC);
+	caltim -= ((long)tmptim * FOUR_YEAR_SEC);
+
+	/*
+	 * Determine which year of the interval
+	 */
+	tmptim = (tmptim * 4) + 70;         /* 1970, 1974, 1978,...,etc. */
+
+	if ( caltim >= YEAR_SEC ) 
+	{
+		tmptim++;                       /* 1971, 1975, 1979,...,etc. */
+		caltim -= YEAR_SEC;
+
+		if ( caltim >= YEAR_SEC ) 
+		{
+			tmptim++;                   /* 1972, 1976, 1980,...,etc. */
+			caltim -= YEAR_SEC;
+
+			/*
+			 * Note, it takes 366 days-worth of seconds to get past a leap
+			 * year.
+			 */
+			if ( caltim >= (YEAR_SEC + DAY_SEC) ) 
+			{
+				tmptim++;           /* 1973, 1977, 1981,...,etc. */
+				caltim -= (YEAR_SEC + DAY_SEC);
+			}
+			else 
+			{
+				/*
+				 * In a leap year after all, set the flag.
+				 */
+				islpyr++;
+			}
+		}
+	}
+
+	/*
+	 * tmptim now holds the value for tm_year. caltim now holds the
+	 * number of elapsed seconds since the beginning of that year.
+	 */
+	ptb->tm_year = tmptim;
+
+	/*
+	 * Determine days since January 1 (0 - 365). This is the tm_yday value.
+	 * Leave caltim with number of elapsed seconds in that day.
+	 */
+	ptb->tm_yday = (int)(caltim / DAY_SEC);
+	caltim -= (long)(ptb->tm_yday) * DAY_SEC;
+
+	/*
+	 * Determine months since January (0 - 11) and day of month (1 - 31)
+	 */
+	if ( islpyr )
+		mdays = _lpdays;
+	else
+		mdays = _days;
+
+
+	for ( tmptim = 1 ; mdays[tmptim] < ptb->tm_yday ; tmptim++ ) ;
+
+	ptb->tm_mon = --tmptim;
+
+	ptb->tm_mday = ptb->tm_yday - mdays[tmptim];
+
+	/*
+	 * Determine days since Sunday (0 - 6)
+	 */
+	ptb->tm_wday = ((int)(*timp / DAY_SEC) + BASE_DOW) % 7;
+
+	/*
+	 *  Determine hours since midnight (0 - 23), minutes after the hour
+	 *  (0 - 59), and seconds after the minute (0 - 59).
+	 */
+	ptb->tm_hour = (int)(caltim / 3600);
+	caltim -= (long)ptb->tm_hour * 3600L;
+
+	ptb->tm_min = (int)(caltim / 60);
+	ptb->tm_sec = (int)(caltim - (ptb->tm_min) * 60);
+
+	ptb->tm_isdst = 0;
+	return( (struct tm *)ptb );
+#endif
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// GSI equivalent of Standard C-lib "mktime function"
+time_t gsiDateToSeconds(struct tm *tb)
+{
+#if !defined(_NITRO) && !defined(_REVOLUTION)
+
+	// for all platforms that support the standard C 'mktime' use that
+	return mktime(tb);
+
+#else
+	time_t tmptm1, tmptm2, tmptm3;
+	struct tm *tbtemp;
+	/*
+	 * First, make sure tm_year is reasonably close to being in range.
+	 */
+	if ( ((tmptm1 = tb->tm_year) < BASE_YEAR - 1) || (tmptm1 > MAX_YEAR + 1) )
+		return MKTIME_ERROR;
+
+
+	/*
+     * Adjust month value so it is in the range 0 - 11.  This is because
+	 * we don't know how many days are in months 12, 13, 14, etc.
+	 */
+
+	if ( (tb->tm_mon < 0) || (tb->tm_mon > 11) ) {
+
+		/*
+		 * no danger of overflow because the range check above.
+		 */
+		tmptm1 += (tb->tm_mon / 12);
+
+		if ( (tb->tm_mon %= 12) < 0 ) {
+			tb->tm_mon += 12;
+			tmptm1--;
+		}
+
+		/*
+         * Make sure year count is still in range.
+         */
+		if ( (tmptm1 < BASE_YEAR - 1) || (tmptm1 > MAX_YEAR + 1) )
+			return MKTIME_ERROR;
+	}
+
+	/***** HERE: tmptm1 holds number of elapsed years *****/
+
+	/*
+	 * Calculate days elapsed minus one, in the given year, to the given
+     * month. Check for leap year and adjust if necessary.
+     */
+	tmptm2 = _days[tb->tm_mon];
+	if ( !(tmptm1 & 3) && (tb->tm_mon > 1) )
+                tmptm2++;
+
+	/*
+	 * Calculate elapsed days since base date (midnight, 1/1/70, UTC)
+	 *
+	 *
+	 * 365 days for each elapsed year since 1970, plus one more day for
+	 * each elapsed leap year. no danger of overflow because of the range
+	 * check (above) on tmptm1.
+	 */
+    tmptm3 = (tmptm1 - BASE_YEAR) * 365L + ((tmptm1 - 1L) >> 2)
+			 - LEAP_YEAR_ADJUST;
+
+	/*
+	 * elapsed days to current month (still no possible overflow)
+	 */
+	tmptm3 += tmptm2;
+
+	/*
+	 * elapsed days to current date. overflow is now possible.
+	 */
+	tmptm1 = tmptm3 + (tmptm2 = (long)(tb->tm_mday));
+	if ( ChkAdd(tmptm1, tmptm3, tmptm2) )
+		return MKTIME_ERROR;
+
+	/***** HERE: tmptm1 holds number of elapsed days *****/
+
+	/*
+	 * Calculate elapsed hours since base date
+	 */
+	tmptm2 = tmptm1 * 24L;
+	if ( ChkMul(tmptm2, tmptm1, 24L) )
+		return MKTIME_ERROR;
+
+	tmptm1 = tmptm2 + (tmptm3 = (long)tb->tm_hour);
+	if ( ChkAdd(tmptm1, tmptm2, tmptm3) )
+		return MKTIME_ERROR;
+
+	/***** HERE: tmptm1 holds number of elapsed hours *****/
+
+	/*
+	 * Calculate elapsed minutes since base date
+	 */
+
+	tmptm2 = tmptm1 * 60L;
+	if ( ChkMul(tmptm2, tmptm1, 60L) )
+		return MKTIME_ERROR;
+
+	tmptm1 = tmptm2 + (tmptm3 = (long)tb->tm_min);
+	if ( ChkAdd(tmptm1, tmptm2, tmptm3) )
+		return MKTIME_ERROR;
+
+	/***** HERE: tmptm1 holds number of elapsed minutes *****/
+
+	/*
+	 * Calculate elapsed seconds since base date
+	 */
+
+	tmptm2 = tmptm1 * 60L;
+	if ( ChkMul(tmptm2, tmptm1, 60L) )
+		return MKTIME_ERROR;
+
+	tmptm1 = tmptm2 + (tmptm3 = (long)tb->tm_sec);
+	if ( ChkAdd(tmptm1, tmptm2, tmptm3) )
+		return MKTIME_ERROR;
+
+	/***** HERE: tmptm1 holds number of elapsed seconds *****/
+
+	if ( (tbtemp = gsiSecondsToDate(&tmptm1)) == NULL )
+		return MKTIME_ERROR;
+        
+
+	/***** HERE: tmptm1 holds number of elapsed seconds, adjusted *****/
+	/*****       for local time if requested                      *****/
+
+	*tb = *tbtemp;
+	return (time_t)tmptm1;
+#endif
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// GSI equivalent of Standard C-lib "ctime function"
+char * gsiSecondsToString(const time_t *timp)
+{
+#if !defined(_NITRO) && !defined(_REVOLUTION)
+
+	// for all platforms that support the standard C 'ctime' use that
+	return ctime(timp);
+
+#else
+	char *p = buf;
+	int day, mon;
+	int i;
+	struct tm *ptm;
+
+	ptm = gsiSecondsToDate(timp);	 /* parse seconds into date structure */
+
+    p = buf;						 /* use static buffer */
+
+	/* copy day and month names into the buffer */
+
+	day = ptm->tm_wday * 3;          /* index to correct day string */
+	mon = ptm->tm_mon * 3;           /* index to correct month string */
+
+	for (i=0; i < 3; i++,p++) {
+		*p = *(_dnames + day + i);
+		*(p+4) = *(_mnames + mon + i);
+	}
+
+	*p = _T(' ');                   /* blank between day and month */
+
+	p += 4;
+
+	*p++ = _T(' ');
+	p = store_dt(p, ptm->tm_mday);   /* day of the month (1-31) */
+	*p++ = _T(' ');
+	p = store_dt(p, ptm->tm_hour);   /* hours (0-23) */
+	*p++ = _T(':');
+	p = store_dt(p, ptm->tm_min);    /* minutes (0-59) */
+	*p++ = _T(':');
+	p = store_dt(p, ptm->tm_sec);    /* seconds (0-59) */
+	*p++ = _T(' ');
+	p = store_dt(p, 19 + (ptm->tm_year/100)); /* year (after 1900) */
+	p = store_dt(p, ptm->tm_year%100);
+	*p++ = _T('\n');
+	*p = _T('\0');
+
+	return ((char *) buf);
+#endif
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1122,7 +1467,11 @@ char * gsiXxteaAlg(const char *sIn, int nIn, char key[XXTEA_KEY_SIZE], int bEnc,
 	
 	// Convert stream length to a round number of 32-bit words
 	// Convert byte	count to 32-bit	word count
-	nIn	= (nIn + 3)/4;
+	if (nIn % 4 == 0)			// Fix for null terminated strings divisible by 4
+		nIn	= (nIn/4)+1;
+	else
+		nIn	= (nIn + 3)/4;
+
 	if ( nIn <=	1 )		// XXTEA requires at least 64 bits
 		nIn	= 2;
 
@@ -1196,8 +1545,9 @@ char * gsiXxteaAlg(const char *sIn, int nIn, char key[XXTEA_KEY_SIZE], int bEnc,
 		*pStr++ = (char)(( q >> 24 ) & 0xFF);
 	}
 	*pStr = '\0';
-	return oStr;
-	
+	gsifree(sIn2);
+
+	return oStr;	
 }
 
 
@@ -1277,26 +1627,6 @@ int GOAGetLastError(SOCKET s)
 		return val;
 }
 #endif
-
-#ifdef UNDER_CE
-const char * GOAGetUniqueID_Internal(void)
-{
-	static char keyval[17];
-	unsigned char buff[8];
-	DWORD size;
-
-	size = 0;
-	for (size = 0 ; size < sizeof(buff) ; size++)
-		buff[size] = 0;
-	size = sizeof(buff);
-	FirmwareGetSerialNumber(buff, &size);
-	for (size = 0 ; size < sizeof(buff) ; size++)
-	{
-		sprintf(keyval + (size * 2),"%02x",buff[size]);
-	}
-	return keyval;
-}
-#endif //UNDER_CE
 
 #ifdef _NITRO
 static const char * GOAGetUniqueID_Internal(void)
@@ -1457,7 +1787,7 @@ static const char * GOAGetUniqueID_Internal(void)
 #endif // _PS2
 
 
-#if ((defined(_WIN32) && !defined(_XBOX) && !defined(UNDER_CE)) || defined(_UNIX))
+#if ((defined(_WIN32) && !defined(_XBOX)) || defined(_UNIX))
 
 static void GenerateID(char *keyval)
 {
@@ -1470,7 +1800,7 @@ static void GenerateID(char *keyval)
 		seed = (l1.LowPart ^ l1.HighPart);
 	else
 		seed = 0;
-	Util_RandSeed(seed ^ GetTickCount() ^ time(NULL) ^ clock());
+	Util_RandSeed(seed ^ GetTickCount() ^ (unsigned long)time(NULL) ^ clock());
 #else
 	Util_RandSeed(time(NULL) ^ clock());
 #endif

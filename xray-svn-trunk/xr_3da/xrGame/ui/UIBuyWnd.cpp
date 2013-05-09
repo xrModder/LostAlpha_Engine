@@ -612,18 +612,18 @@ void CUIBuyWnd::SetCurrentItem(CUICellItem* itm)
 	{
 		string256					str;
 		m_itemInfo.InitItem			(CurrentIItem());
-		xr_sprintf						(str, "%d RU", m_bag.GetItemPrice(itm));
+		xr_sprintf					(str, "%d RU", m_bag.GetItemPrice(itm));
 		m_itemInfo.UICost->SetText	(str);
 
 		string64					tex_name;
 		string64					team;
 
 		if (m_bag.IsBlueTeamItem(itm))
-			strcpy					(team, "blue");
+			xr_strcpy				(team, "blue");
 		else 
-			strcpy					(team, "green");
+			xr_strcpy				(team, "green");
 
-		xr_sprintf						(tex_name, "ui_hud_status_%s_0%d", team, m_bag.GetItemRank(m_pCurrentCellItem)+1);
+		xr_sprintf					(tex_name, "ui_hud_status_%s_0%d", team, m_bag.GetItemRank(m_pCurrentCellItem)+1);
 				
 		m_rankInfo.InitTexture		(tex_name);
 	}

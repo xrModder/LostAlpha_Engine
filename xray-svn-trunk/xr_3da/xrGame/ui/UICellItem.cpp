@@ -150,7 +150,7 @@ CUIDragItem::~CUIDragItem()
 	Device.seqFrame.Remove			(this);
 }
 
-void CUIDragItem::Init(const ref_shader& sh, const Frect& rect, const Frect& text_rect)
+void CUIDragItem::Init(const ui_shader& sh, const Frect& rect, const Frect& text_rect)
 {
 	SetWndRect						(rect);
 	m_static.SetShader				(sh);
@@ -191,7 +191,7 @@ void CUIDragItem::Draw()
 	tmp.sub					(m_pos_offset);
 	tmp.mul					(-1.0f);
 	MoveWndDelta			(tmp);
-	UI().PushScissor		(UI()->ScreenRect(),true);
+	UI().PushScissor		(UI().ScreenRect(),true);
 
 	inherited::Draw();
 

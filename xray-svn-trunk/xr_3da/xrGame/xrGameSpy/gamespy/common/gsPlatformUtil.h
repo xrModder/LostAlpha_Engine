@@ -15,7 +15,6 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Async DNS lookup
-#if !defined(GSI_NO_THREADS)
 
 // async way to resolve a hostname to an IP
 typedef struct GSIResolveHostnameInfo * GSIResolveHostnameHandle;
@@ -31,19 +30,6 @@ void gsiCancelResolvingHostname(GSIResolveHostnameHandle handle);
 // returns GSI_ERROR_RESOLVING if it was unable to resolve the hostname
 // on success, returns the IP of the host in network byte order
 unsigned int gsiGetResolvedIP(GSIResolveHostnameHandle handle);
-
-#endif // (GSI_NO_THREADS)
-
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-#if defined(GS_UNDER_CE)
-int isdigit(int c);
-int isxdigit(int c);
-int isalnum(int c);
-int isspace(int c);
-int isgraph(int c);
-#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,23 +97,40 @@ gsi_i8 * gsXxteaDecrypt(const gsi_i8 * iStr, gsi_i32 iLength, gsi_i8 key[XXTEA_K
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+// time functions
+
 gsi_time current_time();         // milliseconds
 gsi_time current_time_hires();   // microseconds
 void msleep(gsi_time msec);      // milliseconds
+
+// GSI equivalent of common C-lib time functions
+struct tm * gsiSecondsToDate(const time_t *timp);		//gmtime
+time_t  gsiDateToSeconds(struct tm *tb);				//mktime
+char * gsiSecondsToString(const time_t *timp);			//ctime
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Misc utilities
 
-
-
 	
-#if defined(GS_UNDER_CE) || defined(_NITRO)
+#if defined(_NITRO) 
 	time_t time(time_t *timer);
-#elif ! defined _PS3
+	
+	#define gmtime(t)	gsiSecondsToDate(t)
+	#define ctime(t)	gsiSecondsToString(t)
+	#define mktime(t)	gsiDateToSeconds(t)	
+#elif defined(_REVOLUTION)
+	time_t gsiTimeInSec(time_t *timer);
+	struct tm *gsiGetGmTime(time_t *theTime);
+	char *gsiCTime(time_t *theTime);
+	#define time(t) gsiTimeInSec(t)
+	#define gmtime(t) gsiGetGmTime(t)
+	#define ctime(t) gsiCTime(t)
+#else
 	#include <time.h>
 #endif
+
 
 	#ifndef SOMAXCONN
 	#define SOMAXCONN 5
@@ -143,6 +146,9 @@ extern int wprintf(const wchar_t*,...);
 #endif
 
 
+// 64-bit Integer reads and writes
+gsi_i64 gsiStringToInt64(const char *theNumberStr);
+void gsiInt64ToString(char theNumberStr[33], gsi_i64 theNumber);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus

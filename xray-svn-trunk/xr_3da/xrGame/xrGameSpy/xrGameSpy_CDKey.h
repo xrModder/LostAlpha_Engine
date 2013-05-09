@@ -1,7 +1,7 @@
 #pragma once
 #include "xrGameSpy_MainDefs.h"
 #include "GameSpy/QR2/qr2.h"
-#include "GameSpy/CDKey/gcdkeys.h"
+#include "GameSpy/gcdkey/gcdkeys.h"
 
 extern "C"
 {

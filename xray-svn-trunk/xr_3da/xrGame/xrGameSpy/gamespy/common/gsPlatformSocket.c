@@ -9,7 +9,9 @@
 // remove all plat specific code from here, move it to the platspecific files.
 
 // Include platform separated functions
-#if defined(_WIN32) && defined(_XBOX)
+#if defined(_X360)
+	#include "x360/gsSocketX360.c"
+#elif defined(_XBOX)
 	#include "xbox/gsSocketXBox.c"
 #elif defined(_WIN32)
 	#include "win32/gsSocketWin32.c"
@@ -26,6 +28,8 @@
 	#include <sys/select.h>
 #elif defined(_PSP)
 	#include "psp/gsSocketPSP.c"
+#elif defined(_REVOLUTION)
+	#include "revolution/gsSocketRevolution.c"
 #else
 	#error "Missing or unsupported platform"
 #endif
@@ -46,8 +50,19 @@
 int SetSockBlocking(SOCKET sock, int isblocking)
 {
 	int rcode;
+
+#if defined(_REVOLUTION)
+	int val;
 	
-#ifdef _NITRO
+	val = SOFcntl(sock, SO_F_GETFL, 0);
+	
+	if(isblocking)
+		val &= ~SO_O_NONBLOCK;
+	else
+		val |= SO_O_NONBLOCK;
+	
+	rcode = SOFcntl(sock, SO_F_SETFL, val);
+#elif defined(_NITRO)
 	int val;
 	
 	val = SOC_Fcntl(sock, SOC_F_GETFL, 0);
@@ -87,7 +102,7 @@ int SetSockBlocking(SOCKET sock, int isblocking)
 			if (isblocking)
 				argp = -1;
 			else
-				argp = 3; //added longer timeout to 3ms
+				argp = 5; //added longer timeout to 5ms
 			sceInsockSetRecvTimeout(sock, argp);
 			sceInsockSetSendTimeout(sock, argp);
 			sceInsockSetShutdownTimeout(sock, argp);
@@ -117,7 +132,7 @@ int SetSockBlocking(SOCKET sock, int isblocking)
 
 int SetSockBroadcast(SOCKET sock)
 {
-#if !defined(INSOCK) && !defined(_NITRO)
+#if !defined(INSOCK) && !defined(_NITRO) && !defined(_REVOLUTION)
 	int optval = 1;
 	if(setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char *)&optval, sizeof(optval)) != 0)
 		return 0;
@@ -201,7 +216,7 @@ int DisableNagle(SOCKET sock)
 #endif
 #endif
 
-#if !defined(_NITRO) && !defined(INSOCK)
+#if !defined(_NITRO) && !defined(INSOCK) && !defined(_REVOLUTION)
 	int GSISocketSelect(SOCKET theSocket, int* theReadFlag, int* theWriteFlag, int* theExceptFlag)
 	{
 		fd_set aReadSet;
@@ -288,7 +303,7 @@ int DisableNagle(SOCKET sock)
 		}
 		return aResult; // 0 or 1 at this point
 	}
-#endif // !nitro
+#endif // !nitro && !revolution && !insock
 	
 
 // Return 1 for immediate recv, otherwise 0
@@ -473,8 +488,81 @@ HOSTENT * getlocalhost(void)
 	ipPtrs[count] = NULL;
 
 	return &localhost;
+
+#elif defined(_REVOLUTION)
+	#define MAX_IPS  5
+	static HOSTENT aLocalHost;
+	static char * aliases = NULL;
+	int aNumOfIps, i;
+	int aSizeNumOfIps;
+	static IPAddrEntry aAddrs[MAX_IPS];
+	int aAddrsSize, aAddrsSizeInitial;
+	static u8 * ipPtrs[MAX_IPS + 1];
+	static unsigned int ips[MAX_IPS];
+	int ret;
+	aSizeNumOfIps = sizeof(aNumOfIps);
+	ret = SOGetInterfaceOpt(NULL, SO_SOL_CONFIG, SO_CONFIG_IP_ADDR_NUMBER, &aNumOfIps, &aSizeNumOfIps);
+	if (ret != 0)
+		return NULL;
+	
+	aAddrsSize = (int)(MAX_IPS * sizeof(IPAddrEntry));
+	aAddrsSizeInitial = aAddrsSize;
+	ret = SOGetInterfaceOpt(NULL, SO_SOL_CONFIG, SO_CONFIG_IP_ADDR_TABLE, &aAddrs, &aAddrsSize);
+	if (ret != 0)
+		return NULL;
+	
+	if (aAddrsSize != aAddrsSizeInitial)
+	{
+		aNumOfIps = aAddrsSize / (int)sizeof(IPAddrEntry);
+	}
+	
+	aLocalHost.h_name = "localhost";
+	aLocalHost.h_aliases = &aliases;
+	aLocalHost.h_addrtype = AF_INET;
+	aLocalHost.h_length = SO_IP4_ALEN;
+
+	for (i = 0; i < MAX_IPS; i++)
+	{
+		if (i < aNumOfIps)
+		{
+			memcpy(&ips[i], &aAddrs[i].addr, sizeof(aAddrs[i].addr));
+			ipPtrs[i] = (u8 *)&ips[i];
+		}			
+		else 
+			ipPtrs[i] = NULL;
+	}
+	aLocalHost.h_addr_list = ipPtrs;
+	
+	return &aLocalHost;
+
+#elif defined(_X360)
+	XNADDR addr;
+	DWORD rcode;
+	static HOSTENT localhost;
+	static char * ipPtrs[2];
+	static IN_ADDR ip;
+
+	while((rcode = XNetGetTitleXnAddr(&addr)) == XNET_GET_XNADDR_PENDING)
+		msleep(1);
+
+	if((rcode == XNET_GET_XNADDR_NONE) || (rcode == XNET_GET_XNADDR_TROUBLESHOOT))
+		return NULL;
+
+	localhost.h_name = "localhost";
+	localhost.h_aliases = NULL;
+	localhost.h_addrtype = AF_INET;
+	localhost.h_length = (gsi_u16)sizeof(IN_ADDR);
+	localhost.h_addr_list = (gsi_i8 **)ipPtrs;
+
+	ip = addr.ina;
+	ipPtrs[0] = (char *)&ip;
+	ipPtrs[1] = NULL;
+
+	return &localhost;
+
 #elif defined(_XBOX)
-	return 0;
+	return NULL;
+
 
 #else
 	char hostname[256] = "";
@@ -520,6 +608,65 @@ gsi_u32 gsiGetBroadcastIP(void)
 	gsi_u32 ip;
 	IP_GetBroadcastAddr(NULL, (u8*)&ip);
 	return ip;
+
+#elif defined(_REVOLUTION)
+	/*
+	int length;
+	gsi_u32 ip;
+	
+	length = (gsi_u32)sizeof(ip);
+
+	// IP_GetBroadcastAddr replaced by SOGetInterfaceOpt
+	// IP_GetBroadcastAddr(NULL, (u8*)&ip);
+	SOGetInterfaceOpt(NULL, SO_SOL_IP, SO_INADDR_BROADCAST, (u8*)&ip, &length);
+	*/
+	 IPAddrEntry* addrtbl; 
+    int addrnum;
+    int ret;
+	int length;
+	gsi_u32 ip;
+    length = (int)sizeof( addrnum );
+
+    ret = SOGetInterfaceOpt(NULL,
+                            SO_SOL_CONFIG,
+                            SO_CONFIG_IP_ADDR_NUMBER,
+                            (u8*)&addrnum, &length);
+
+    if( ret >= 0 )
+        return 0xFFFFFFFF;
+
+
+    length = (int)(sizeof( IPAddrEntry ) * addrnum);
+
+    addrtbl = (IPAddrEntry*)gsimalloc( (u32)length );
+
+    if( addrtbl == NULL )
+        return 0xFFFFFFFF;
+
+    ret = SOGetInterfaceOpt(NULL,
+                            SO_SOL_CONFIG, 
+                            SO_CONFIG_IP_ADDR_TABLE, 
+                            (u8*)addrtbl, 
+                            &length);
+
+    if( ret < 0 )
+    {
+        gsifree( addrtbl );
+        return 0xFFFFFFFF;
+    }
+
+    ip = (u32)(addrtbl->bcastAddr[3]
+            | (addrtbl->bcastAddr[2] << 8)
+            | (addrtbl->bcastAddr[1] << 16)
+            | (addrtbl->bcastAddr[0] << 24));
+
+    gsifree( addrtbl );
+    
+
+    return ip;
+
+	return ip;
+	
 #else
 	return 0xFFFFFFFF;
 #endif

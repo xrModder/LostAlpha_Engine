@@ -3,26 +3,22 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
 #ifndef _GHTTPCONNECTION_H_
 #define _GHTTPCONNECTION_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "ghttpMain.h"
 #include "ghttpEncryption.h"
 #include "ghttpBuffer.h"
 #include "ghttpPost.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Initial size and increment amount for the send buffer.
 /////////////////////////////////////////////////////////
@@ -163,7 +159,7 @@ typedef struct GHIConnection
 	struct GHIEncryptor encryptor;
 
 #if !defined(GSI_NO_THREADS)
-	GSIResolveHostnameHandle * handle; //handle used for asychronous DNS lookups
+	GSIResolveHostnameHandle handle; //handle used for asychronous DNS lookups
 #endif
 	
 } GHIConnection;

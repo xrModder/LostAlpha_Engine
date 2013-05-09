@@ -3,12 +3,8 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
@@ -17,12 +13,11 @@ devsupport@gamespy.com
 #ifndef _GHTTPASCII_H_
 #define _GHTTPASCII_H_
 
+#include "../common/gsCommon.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../common/gsCommon.h"
-
 
 // Get a file from an http server.
 // Returns GHTTPRequestError if an error occurs.

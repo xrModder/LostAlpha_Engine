@@ -5,8 +5,10 @@
 
 
 // Include platform separated functions
-#if defined(_WIN32) && defined(_XBOX)
-//	#include "xbox/gsThreadXBox.c"
+#if defined(_X360)
+	#include "x360/gsThreadX360.c"
+#elif defined(_XBOX)
+	//#include "xbox/gsThreadXBox.c"
 #elif defined(_WIN32)
 	#include "win32/gsThreadWin32.c"
 #elif defined(_MACOSX)
@@ -22,7 +24,7 @@
 #elif defined(_PSP)
 //  #include "psp/gsThreadPSP.c"
 #elif defined(_REVOLUTION)
-	//#include "wii/gsThreadRevoulution.c"
+	#include "revolution/gsThreadRevoulution.c"
 #else
 	#error "Missing or unsupported platform"
 #endif

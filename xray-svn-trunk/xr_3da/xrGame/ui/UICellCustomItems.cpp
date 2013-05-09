@@ -279,7 +279,7 @@ CBuyItemCustomDrawCell::CBuyItemCustomDrawCell	(LPCSTR str, CGameFont* pFont)
 {
 	m_pFont		= pFont;
 	VERIFY		(xr_strlen(str)<16);
-	strcpy		(m_string,str);
+	xr_strcpy	(m_string,str);
 }
 
 void CBuyItemCustomDrawCell::OnDraw(CUICellItem* cell)

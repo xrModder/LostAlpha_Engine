@@ -325,13 +325,13 @@ void SBReleaseStr(SBServerList *slist, const char *str)
 
 #ifdef VENGINE_SUPPORT
 	#define FTABLE_ASSIGN
-	#include "../VEngine/ve_gm3ftable.h"
+	#include "../../VEngine/ve_gm3ftable.h"
 #endif
 
 
 #ifdef VENGINE_SUPPORT
 #define FTABLE_DEFINES
-#include "../VEngine/ve_gm3ftable.h"
+#include "../../VEngine/ve_gm3ftable.h"
 #endif
 
 
@@ -439,13 +439,12 @@ static int StringHash(const char *s, int numbuckets)
 }
 
 
-#define BUFFER_SIZE 256
 
 static SBError ServerListConnect(SBServerList *slist)
 {
 	struct   sockaddr_in saddr;
 	struct hostent *hent;
-	char masterHostname[BUFFER_SIZE];
+	char masterHostname[128];
 	int masterIndex;
 	
 
@@ -453,7 +452,7 @@ static SBError ServerListConnect(SBServerList *slist)
 	if (SBOverrideMasterServer != NULL)
 		strcpy(masterHostname, SBOverrideMasterServer);
 	else //use the default format...
-		sprintf_s(masterHostname,BUFFER_SIZE,"%s.ms%d." GSI_DOMAIN_NAME, slist->queryforgamename, masterIndex);
+		sprintf(masterHostname,"%s.ms%d." GSI_DOMAIN_NAME, slist->queryforgamename, masterIndex);
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(MSPORT2);
 	saddr.sin_addr.s_addr = inet_addr(masterHostname);
@@ -482,8 +481,6 @@ static SBError ServerListConnect(SBServerList *slist)
 	return sbe_noerror;
 
 }
-
-#undef BUFFER_SIZE
 
 static void BufferAddNTS(char **buffer, const char *str, int *len)
 {
@@ -561,10 +558,13 @@ static SBError SendWithRetry(SBServerList *slist, char *data, int len)
 	while (retryCount >= 0)
 	{
 		retryCount--;
-		ret = send(slist->slsocket, data, len, 0);
+        ret = send(slist->slsocket, data, len, 0);
 		if (ret <= 0 && retryCount >= 0) //error! try to reconnect
 		{
-			SBServerListDisconnect(slist);
+			if (slist->inbufferlen > 0)
+				break;
+			else 
+				SBServerListDisconnect(slist);
 			err = SBServerListConnectAndQuery(slist, NULL, NULL, NO_SERVER_LIST, 0);
 			if (err != sbe_noerror)
 			{
@@ -700,7 +700,7 @@ SBError SBServerListGetLANList(SBServerList *slist, unsigned short startport, un
 		return sbe_socketerror;
 
 // enable broadcasting where needed
-#if !defined(INSOCK) && !defined(_NITRO)
+#if !defined(INSOCK) && !defined(_NITRO) && !defined(_REVOLUTION)
 	{
 	int optval = 1;
 	if (setsockopt(slist->slsocket, SOL_SOCKET, SO_BROADCAST, (char *)&optval, sizeof(optval)) != 0)
@@ -1036,8 +1036,14 @@ static int ParseServer(SBServerList *slist, SBServer server, char *buf, int len,
 	
 	// the server was an empty server message, thus it should be cleared of 
 	// basic key and full key states
-	if ((flags & (HAS_FULL_RULES_FLAG|HAS_KEYS_FLAG)) == 0 && ((server->state & STATE_BASICKEYS) | (server->state & STATE_FULLKEYS)))
-		server->state &= (unsigned char)~(STATE_BASICKEYS|STATE_FULLKEYS);
+	{
+		unsigned char state = SBServerGetState(server);
+		if ((flags & (HAS_FULL_RULES_FLAG|HAS_KEYS_FLAG)) == 0 && ((state & STATE_BASICKEYS) | (state & STATE_FULLKEYS)))
+		{
+			state &= (unsigned char)~(STATE_BASICKEYS|STATE_FULLKEYS);
+			SBServerSetState(server, state);
+		}
+	}
 	return holdlen - len;
 }
 

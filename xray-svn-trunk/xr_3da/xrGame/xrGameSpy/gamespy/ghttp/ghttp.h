@@ -3,26 +3,22 @@ GameSpy GHTTP SDK
 Dan "Mr. Pants" Schoenblum
 dan@gamespy.com
 
-Copyright 1999-2001 GameSpy Industries, Inc
+Copyright 1999-2007 GameSpy Industries, Inc
 
-18002 Skypark Circle
-Irvine, California 92614
-949.798.4200 (Tel)
-949.798.4299 (Fax)
 devsupport@gamespy.com
 */
 
 #ifndef _GHTTP_H_
 #define _GHTTP_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdlib.h>
 
 #include "../common/gsCommon.h"
 #include "../common/gsXML.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifndef GSI_UNICODE
 #define ghttpGet	ghttpGetA
@@ -117,7 +113,11 @@ typedef enum
 {
 	GHTTPEncryptionEngine_None,
 	GHTTPEncryptionEngine_GameSpy,   // must add /common/gsSSL.h and /common/gsSSL.c to project
-	GHTTPEncryptionEngine_MatrixSsl  // must define MATRIXSSL and include matrixssl source files
+	GHTTPEncryptionEngine_MatrixSsl, // must define MATRIXSSL and include matrixssl source files
+	GHTTPEncryptionEngine_RevoEx,    // must define REVOEXSSL and include RevoEX SSL source files
+	
+	GHTTPEncryptionEngine_Default    // Will use GameSpy unless another engine is defined
+	                                 //   using MATRIXSSL or REVOEXSSL
 } GHTTPEncryptionEngine;
 
 // Represents an http file request.
