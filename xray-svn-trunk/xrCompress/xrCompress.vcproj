@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -50,7 +50,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;"
+				AdditionalIncludeDirectories="../xrCore"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -96,7 +96,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -125,8 +125,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -152,7 +152,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;"
+				AdditionalIncludeDirectories="../xrCore"
 				PreprocessorDefinitions="WIN32,DEBUG,_CONSOLE;_SECURE_SCL=0"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -196,7 +196,7 @@
 				MapFileName=""
 				SubSystem="1"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -225,8 +225,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -257,7 +257,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;"
+				AdditionalIncludeDirectories="../xrCore"
 				PreprocessorDefinitions="WIN32;DEBUG;_CONSOLE;MIXED;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -297,7 +297,7 @@
 				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="1"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

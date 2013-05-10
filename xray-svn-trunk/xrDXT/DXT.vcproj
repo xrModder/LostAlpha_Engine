@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -54,7 +54,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include"
+				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DXT_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -91,7 +91,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib"
+				AdditionalLibraryDirectories="../../SDK/dxsdk/lib"
 				IgnoreDefaultLibraryNames="libcmt.lib msvcp71.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -101,7 +101,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,8 +130,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -161,7 +161,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include"
+				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;DXT_EXPORTS;_SECURE_SCL=0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -195,13 +195,13 @@
 				AdditionalOptions="/MACHINE:I386 /NODEFAULTLIB:LIBCMT"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib"
+				AdditionalLibraryDirectories="../../SDK/dxsdk/lib"
 				IgnoreDefaultLibraryNames="libcmt.lib msvcp80.lib"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -230,8 +230,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -267,7 +267,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include"
+				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="DEBUG;WIN32;NDEBUG;_WINDOWS;_USRDLL;DXT_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -301,7 +301,7 @@
 				AdditionalOptions="/MACHINE:I386 /NODEFAULTLIB:msvcp"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib"
+				AdditionalLibraryDirectories="../../SDK/dxsdk/lib"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
@@ -309,7 +309,7 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -116,8 +116,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -147,6 +147,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRCORE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -180,6 +181,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../SDK/dxsdk/Lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -189,7 +191,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -219,8 +221,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -248,7 +250,7 @@
 				FavorSizeOrSpeed="0"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCORE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="2"
@@ -281,12 +283,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="../../SDK/dxsdk/Lib"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -857,7 +860,7 @@
 				RelativePath="xrMemory_subst_msvc.h"
 				>
 			</File>
-		</Filter>
+			</Filter>
 		<Filter
 			Name="Debug core"
 			>

@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -51,7 +51,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;X:\STALKER\SDK\boost_1_30_0;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -95,13 +95,13 @@
 				ShowProgress="0"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries"
+				AdditionalLibraryDirectories="../../../../libraries;../../../SDK/dxsdk/lib"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
 				MapExports="false"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -240,8 +240,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -278,7 +278,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -320,7 +320,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries_release"
+				AdditionalLibraryDirectories="../../../../libraries_release;../../../SDK/dxsdk/lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -330,7 +330,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries_release\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

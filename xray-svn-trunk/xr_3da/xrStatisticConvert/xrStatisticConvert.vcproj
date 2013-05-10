@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -72,7 +72,7 @@
 				MapFileName=""
 				SubSystem="1"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -102,8 +102,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -171,7 +171,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

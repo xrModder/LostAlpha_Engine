@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="dynasm\;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\boost_1_30_0\boost;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="dynasm;src;../../SDK/luabind/luabind;../xrCore;../../SDK/boost_1_30_0;../../SDK/boost_1_30_0/boost;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUABIND_BUILDING;DEBUG;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -75,7 +75,7 @@
 				MapFileName=""
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -105,8 +105,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -136,7 +136,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="dynasm;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\boost_1_30_0\boost;&quot;X:\STALKER\xray-svn-trunk\xr_3da&quot;"
+				AdditionalIncludeDirectories="dynasm;src;../../SDK/luabind/luabind;../xrCore;../../SDK/boost_1_30_0;../../SDK/boost_1_30_0/boost;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUABIND_NO_ERROR_CHECKING;LUABIND_BUILDING;_SECURE_SCL=0"
 				IgnoreStandardIncludePath="false"
 				StringPooling="true"
@@ -178,7 +178,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -208,8 +208,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -235,7 +235,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="dynasm;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\boost_1_30_0\boost;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="dynasm;src;../../SDK/luabind/luabind;../xrCore;../../SDK/boost_1_30_0;../../SDK/boost_1_30_0/boost;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUABIND_BUILDING;DEBUG;MIXED;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="1"
@@ -272,7 +272,7 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
