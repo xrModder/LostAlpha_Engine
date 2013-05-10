@@ -70,6 +70,8 @@ public:
 	DRAG_DROP_EVENT			m_f_item_selected;
 	DRAG_DROP_EVENT			m_f_item_rbutton_click;
 
+	u32						back_color;
+
 	const	Ivector2&		CellsCapacity		();
 			void			SetCellsCapacity	(const Ivector2 c);
 			void			SetStartCellsCapacity(const Ivector2 c){m_orig_cell_capacity=c;SetCellsCapacity(c);};
