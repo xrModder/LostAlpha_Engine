@@ -154,7 +154,7 @@ namespace ETOOLS{
 	}
 	ETOOLS_API void						 __stdcall collectorp_add_face_d	(CDB::CollectorPacked* CL, const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy)
 	{
-		CL->add_face_D					(v0,v1,v2,dummy);
+		CL->add_face_D					(v0,v1,v2,dummy,u32(-1));
 	}
 
 	ETOOLS_API CDB::COLLIDER* __stdcall get_collider	(){return XRC.collider();}

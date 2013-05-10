@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
+				AdditionalIncludeDirectories="../../xrCore;../../../SDK/DPlay;../../../SDK/dxsdk/09_08/Include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
@@ -78,12 +78,13 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dplayx.lib dxerr8.lib dxguid.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="../../../SDK/dxsdk/09_08/lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				MapFileName=""
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -113,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -147,7 +148,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="X:\STALKER\xray-svn-trunk\xrCore"
+				AdditionalIncludeDirectories="../../xrCore;../../../SDK/DPlay;../../../SDK/dxsdk/09_08/Include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -184,6 +185,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="dplayx.lib dxerr8.lib dxguid.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="../../../SDK/dxsdk/09_08/lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -194,7 +196,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

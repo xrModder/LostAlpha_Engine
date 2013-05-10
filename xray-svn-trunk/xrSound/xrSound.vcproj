@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -44,7 +44,7 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\eax\Include;X:\STALKER\SDK\OpenAL\Include;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="../xrCore;../../SDK/eax/Include;../../SDK/dxsdk/include;../../SDK/OpenAL/Include;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRSOUND_EXPORTS;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -83,14 +83,14 @@
 				AdditionalDependencies="vorbisfile_static_d.lib ogg_static_d.lib OpenAL32.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\SDK\OpenAL\libs;X:\STALKER\SDK\eax;X:\STALKER\SDK\Xiph\Libs;X:\libraries"
+				AdditionalLibraryDirectories="../../../libraries;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
 				MapExports="false"
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -120,8 +120,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -151,7 +151,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\eax\Include;X:\STALKER\SDK\OpenAL\Include;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="../xrCore;../../SDK/eax/Include;../../SDK/dxsdk/include;../../SDK/OpenAL/Include;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRSOUND_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -186,7 +186,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="vorbisfile_static.lib ogg_static.lib OpenAL32.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="X:\libraries_release;X:\STALKER\SDK\OpenAL\libs;X:\STALKER\SDK\eax;X:\STALKER\SDK\Xiph\Libs"
+				AdditionalLibraryDirectories="../../../libraries_release;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -196,7 +196,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -226,8 +226,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\binaries"
+			IntermediateDirectory="..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -255,7 +255,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\eax\Include;X:\STALKER\SDK\OpenAL\Include;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="../xrCore;../../SDK/eax/Include;../../SDK/dxsdk/include;../../SDK/OpenAL/Include;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRSOUND_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -288,13 +288,13 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="vorbisfile_static.lib ogg_static.lib OpenAL32.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="X:\STALKER\SDK\OpenAL\libs;X:\STALKER\SDK\eax;X:\STALKER\SDK\Xiph\Libs"
+				AdditionalLibraryDirectories="../../../libraries;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="0"
 			/>
 			<Tool

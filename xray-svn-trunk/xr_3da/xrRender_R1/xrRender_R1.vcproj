@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -77,14 +77,14 @@
 				AdditionalDependencies="nvapi.lib atimgpud_s_x86.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries"
+				AdditionalLibraryDirectories="../../../../libraries;../../../SDK/dxsdk/lib;../../../SDK/NVAPI;../../../SDK/ATI"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName=""
 				SubSystem="2"
 				LargeAddressAware="2"
 				SupportUnloadOfDelayLoadedDLL="false"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -114,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries_release"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries_release"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -145,7 +145,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -179,7 +179,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="nvapi.lib atimgpud_s_x86.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries_release"
+				AdditionalLibraryDirectories="../../../../libraries_release;../../../SDK/dxsdk/lib;../../../SDK/NVAPI;../../../SDK/ATI"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				GenerateMapFile="false"
@@ -190,7 +190,7 @@
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
 				SupportUnloadOfDelayLoadedDLL="false"
-				ImportLibrary="X:\libraries_release\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries_release\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -220,8 +220,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\..\binaries"
+			IntermediateDirectory="..\..\..\..\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -249,7 +249,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\SDK\luabind\luabind;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\NVAPI;X:\STALKER\SDK\ATI;X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\boost_1_30_0"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRRENDER_R1_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -281,14 +281,14 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="nvapi.lib atimgpud_s_x86.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries;X:\STALKER\SDK\NVAPI;X:\STALKER\SDK\ATI"
+				AdditionalLibraryDirectories="../../../../libraries;../../../SDK/dxsdk/lib;../../../SDK/NVAPI;../../../SDK/ATI"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="2"
 				LargeAddressAware="2"
 				SupportUnloadOfDelayLoadedDLL="false"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="..\..\..\..\libraries\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
