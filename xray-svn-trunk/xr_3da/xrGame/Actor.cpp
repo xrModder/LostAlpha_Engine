@@ -1002,6 +1002,8 @@ void CActor::UpdateCL	()
 }
 
 float	NET_Jump = 0;
+
+#include "ai\monsters\ai_monster_utils.h"
 void CActor::shedule_Update	(u32 DT)
 {
 	setSVU(OnServer());
@@ -1202,8 +1204,11 @@ void CActor::shedule_Update	(u32 DT)
 	//что актер видит перед собой
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	
+	float dist_to_obj = RQ.range;
+	if (RQ.O && eacFirstEye != cam_active)
+		dist_to_obj = get_head_position(this).distance_to((smart_cast<CGameObject*>(RQ.O))->Position());
 
-	if(!input_external_handler_installed() && RQ.O &&  RQ.range<inventory().GetTakeDist()) 
+	if(!input_external_handler_installed() && RQ.O && dist_to_obj<inventory().GetTakeDist()) 
 	{
 		m_pObjectWeLookingAt			= smart_cast<CGameObject*>(RQ.O);
 		

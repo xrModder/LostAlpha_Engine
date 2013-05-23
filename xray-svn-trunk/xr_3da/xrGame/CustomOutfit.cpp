@@ -127,9 +127,9 @@ void	CCustomOutfit::OnMoveToSlot		()
 				pTorch->SwitchNightVision(false);
 			}
 
-			if (pActor->IsFirstEye() && IsGameTypeSingle())
+			if (pActor->IsFirstEye() && IsGameTypeSingle() && !pActor->IsActorShadowsOn())
 			{
-				if (m_ActorVisual_legs.size() && !pActor->IsActorShadowsOn())
+				if (m_ActorVisual_legs.size())
 				{
 						shared_str NewVisual = m_ActorVisual_legs;
 						pActor->ChangeVisual(NewVisual);

@@ -374,6 +374,7 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 	for(; it!=m_ChildWndList.rend(); ++it)
 	{
 		CUIWindow* w	= (*it);
+		R_ASSERT2(w, make_string("Incorrect window in childlist - [%s]",*m_windowName));
 		Frect wndRect	= w->GetWndRect();
 		if (wndRect.in(cursor_pos) )
 		{
