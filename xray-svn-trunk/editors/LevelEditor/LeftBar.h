@@ -193,6 +193,22 @@ __published:	// IDE-managed Components
         TMenuItem *SyncTHM1;
         TMenuItem *N26;
         TMenuItem *Makepack1;
+	TExtBtn *btEnableObject;
+	TExtBtn *btEnableLight;
+	TExtBtn *btEnableSoundSrc;
+	TExtBtn *btEnableSoundEnv;
+	TExtBtn *btEnableGlow;
+	TExtBtn *btEnableShape;
+	TExtBtn *btEnableSpawnPoint;
+	TExtBtn *btEnableWay;
+	TExtBtn *btEnableSector;
+	TExtBtn *btEnablePortal;
+	TExtBtn *btEnableGroup;
+	TExtBtn *btEnablePS;
+	TExtBtn *btEnableDO;
+	TExtBtn *btEnableAIMap;
+	TExtBtn *btEnableWallmarks;
+	TBevel *Bevel3;
     void __fastcall ebClearClick(TObject *Sender);
     void __fastcall ebLoadClick(TObject *Sender);
     void __fastcall ebSaveClick(TObject *Sender);
@@ -287,10 +303,13 @@ __published:	// IDE-managed Components
     void __fastcall Editminimap1Click(TObject *Sender);
         void __fastcall SyncTHM1Click(TObject *Sender);
         void __fastcall Makepack1Click(TObject *Sender);
+	void __fastcall ExportObjClick(TObject *Sender);
+	void __fastcall btEnableObjectClick(TObject *Sender);
+	void __fastcall e1Click(TObject *Sender);
 private:	// User declarations
     void RedrawBar();
 	void __fastcall miRecentFilesClick(TObject *Sender);
-    xr_vector<TExtBtn*>	m_TargetButtons;
+    xr_vector<std::pair<TExtBtn*,TExtBtn*> >	m_TargetButtons;
 public:		// User declarations
         __fastcall TfraLeftBar(TComponent* Owner);
 	void ChangeTarget(ObjClassID tgt);

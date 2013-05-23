@@ -26,23 +26,29 @@ __fastcall TfraLeftBar::TfraLeftBar(TComponent* Owner)
         : TFrame(Owner)
 {
 	m_TargetButtons.resize	(OBJCLASS_COUNT);
-    m_TargetButtons[OBJCLASS_GROUP     	]		= ebTargetGroup;
-    m_TargetButtons[OBJCLASS_SCENEOBJECT]		= ebTargetObject;
-    m_TargetButtons[OBJCLASS_LIGHT      ]		= ebTargetLight;
-    m_TargetButtons[OBJCLASS_SHAPE      ]		= ebTargetShape;
-    m_TargetButtons[OBJCLASS_SOUND_SRC  ]		= ebTargetSoundSrc;
-    m_TargetButtons[OBJCLASS_SOUND_ENV  ]		= ebTargetSoundEnv;
-    m_TargetButtons[OBJCLASS_GLOW       ]		= ebTargetGlow;
-    m_TargetButtons[OBJCLASS_SPAWNPOINT ]		= ebTargetSpawnPoint;
-    m_TargetButtons[OBJCLASS_WAY        ]		= ebTargetWay;
-    m_TargetButtons[OBJCLASS_SECTOR     ]		= ebTargetSector;
-    m_TargetButtons[OBJCLASS_PORTAL     ]		= ebTargetPortal;
-    m_TargetButtons[OBJCLASS_PS         ]		= ebTargetPS;
-    m_TargetButtons[OBJCLASS_DO         ]		= ebTargetDO;
-    m_TargetButtons[OBJCLASS_AIMAP      ]		= ebTargetAIMap;
-    m_TargetButtons[OBJCLASS_WM         ]		= ebTargetWallmarks;
+    m_TargetButtons[OBJCLASS_GROUP     	]		= std::make_pair(ebTargetGroup,btEnableGroup);
+    m_TargetButtons[OBJCLASS_SCENEOBJECT]		= std::make_pair(ebTargetObject,btEnableObject);
+    m_TargetButtons[OBJCLASS_LIGHT      ]		= std::make_pair(ebTargetLight,btEnableLight);
+    m_TargetButtons[OBJCLASS_SHAPE      ]		= std::make_pair(ebTargetShape,btEnableShape);
+    m_TargetButtons[OBJCLASS_SOUND_SRC  ]		= std::make_pair(ebTargetSoundSrc,btEnableSoundSrc);
+    m_TargetButtons[OBJCLASS_SOUND_ENV  ]		= std::make_pair(ebTargetSoundEnv,btEnableSoundEnv);
+    m_TargetButtons[OBJCLASS_GLOW       ]		= std::make_pair(ebTargetGlow,btEnableGlow);
+    m_TargetButtons[OBJCLASS_SPAWNPOINT ]		= std::make_pair(ebTargetSpawnPoint,btEnableSpawnPoint);
+    m_TargetButtons[OBJCLASS_WAY        ]		= std::make_pair(ebTargetWay,btEnableWay);
+    m_TargetButtons[OBJCLASS_SECTOR     ]		= std::make_pair(ebTargetSector,btEnableSector);
+    m_TargetButtons[OBJCLASS_PORTAL     ]		= std::make_pair(ebTargetPortal,btEnablePortal);
+    m_TargetButtons[OBJCLASS_PS         ]		= std::make_pair(ebTargetPS,btEnablePS);
+    m_TargetButtons[OBJCLASS_DO         ]		= std::make_pair(ebTargetDO,btEnableDO);
+    m_TargetButtons[OBJCLASS_AIMAP      ]		= std::make_pair(ebTargetAIMap,btEnableAIMap);
+    m_TargetButtons[OBJCLASS_WM         ]		= std::make_pair(ebTargetWallmarks,btEnableWallmarks);
+
+    int startGroupIndex = 999;
     for (ObjClassID k=OBJCLASS_FIRST_CLASS; k<OBJCLASS_COUNT; k++)
-    	m_TargetButtons[k]->Tag					= k;
+    {
+    	m_TargetButtons[k].first->Tag					= k;
+    	m_TargetButtons[k].second->Tag					= k;
+        m_TargetButtons[k].second->GroupIndex			= ++startGroupIndex;
+    }
 
     DEFINE_INI				(fsStorage);
 }
@@ -710,10 +716,20 @@ void TfraLeftBar::RefreshBar()
     }
     miRecentFiles->Enabled = miRecentFiles->Count;
     // refresh target
-    for (ObjClassID k=OBJCLASS_FIRST_CLASS; k<OBJCLASS_COUNT; k++){
-    	m_TargetButtons[k]->Enabled		= Scene->GetMTools(k)->IsEnabled();
-    	m_TargetButtons[k]->NormalColor	= Scene->GetMTools(k)->IsEditable()?clBlack:clGray; 
-    	m_TargetButtons[k]->Font->Style	= Scene->GetMTools(k)->IsForceReadonly()?TFontStyles()<<fsStrikeOut:TFontStyles();
+    for (ObjClassID k=OBJCLASS_FIRST_CLASS; k<OBJCLASS_COUNT; ++k)
+    {
+    	ESceneCustomMTools* t 	= Scene->GetMTools(k);
+        if(!t)
+        {
+        	Msg("unknown tool");
+        }else
+        {
+            m_TargetButtons[k].first->Enabled		= t->IsEnabled();
+            m_TargetButtons[k].first->NormalColor	= t->IsEditable()?clBlack:clGray;
+            m_TargetButtons[k].first->Font->Style	= t->IsForceReadonly()?TFontStyles()<<fsStrikeOut:TFontStyles();
+
+            m_TargetButtons[k].second->Down			= t->IsVisible();
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -755,3 +771,24 @@ void __fastcall TfraLeftBar::Makepack1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TfraLeftBar::ExportObjClick(TObject *Sender)
+{
+        //Scene->ExportObj(false);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfraLeftBar::e1Click(TObject *Sender)
+{
+        //Scene->ExportObj(true);
+}
+//---------------------------------------------------------------------------
+void __fastcall TfraLeftBar::btEnableObjectClick(TObject *Sender)
+{
+    TExtBtn* btn=dynamic_cast<TExtBtn*>(Sender);    VERIFY(btn);
+
+	ESceneCustomMTools* M		= Scene->GetMTools(btn->Tag); 
+    VERIFY					(M);
+    int whatToDo			= M->IsVisible()? 0 : 1;
+	ExecCommand				(COMMAND_SHOW_TARGET, btn->Tag, whatToDo);
+}
+//---------------------------------------------------------------------------

@@ -104,6 +104,18 @@ CCommandVar CLevelTools::CommandEnableTarget(CCommandVar p1, CCommandVar p2)
     ExecCommand				(COMMAND_REFRESH_UI_BAR);
     return res;
 }
+
+CCommandVar CLevelTools::CommandShowTarget(CCommandVar p1, CCommandVar p2)
+{
+	ESceneCustomMTools* M 	= Scene->GetMTools(p1);
+	if(p2)
+		M->m_EditFlags.set(ESceneCustomMTools::flVisible,TRUE);
+	else
+		M->m_EditFlags.set(ESceneCustomMTools::flVisible,FALSE);
+        
+    return TRUE;
+}
+
 CCommandVar CLevelTools::CommandReadonlyTarget(CCommandVar p1, CCommandVar p2)
 {
 	ESceneCustomMTools* M 	= Scene->GetMTools(p1); VERIFY(M);
@@ -803,6 +815,7 @@ void CLevelMain::RegisterCommands()
 		APPEND_SUB_CMD	("Static Wallmark",                 OBJCLASS_WM, 			0);
     REGISTER_SUB_CMD_END;    
 	REGISTER_CMD_C	    (COMMAND_ENABLE_TARGET,           	LTools,CLevelTools::CommandEnableTarget);
+	REGISTER_CMD_C	    (COMMAND_SHOW_TARGET,           	LTools,CLevelTools::CommandShowTarget);
 	REGISTER_CMD_C	    (COMMAND_READONLY_TARGET,          	LTools,CLevelTools::CommandReadonlyTarget);
 	REGISTER_CMD_C	    (COMMAND_MULTI_RENAME_OBJECTS,     	LTools,CLevelTools::CommandMultiRenameObjects);
 

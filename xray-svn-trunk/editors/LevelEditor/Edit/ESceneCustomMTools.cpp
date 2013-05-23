@@ -16,7 +16,7 @@ ESceneCustomMTools::ESceneCustomMTools(ObjClassID cls)
     pCurControl 		= 0;
     pFrame				= 0;
     action				= -1;
-    m_EditFlags.assign	(flEnable);
+    m_EditFlags.assign	(flEnable|flVisible);
     m_ModifName			= "";
     m_ModifTime			= 0;
 }

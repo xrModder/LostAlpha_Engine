@@ -32,7 +32,9 @@ public:
 	virtual int 		SelectionCount          (bool testflag);
 	virtual void		ShowObjects				(bool flag, bool bAllowSelectionFlag=false, bool bSelFlag=true);
 
-    virtual void		Clear					(bool bSpecific=false)=0;       
+    virtual void		Clear					(bool bSpecific=false)=0;   
+
+    virtual BOOL		IsVisible				() {return inherited::IsVisible();}    
 
     // validation
     virtual bool		Valid					();

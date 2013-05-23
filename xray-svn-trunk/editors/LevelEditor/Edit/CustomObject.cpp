@@ -7,6 +7,7 @@
 
 #include "customobject.h"
 #include "../ECore/Editor/ui_main.h"
+#include "ESceneCustomOTools.h"
 #include "d3dutils.h"
 #include "motion.h"
 
@@ -178,6 +179,12 @@ void CCustomObject::OnFrame()
 {
     if (m_Motion) 			AnimationOnFrame();
 	if (m_RT_Flags.is(flRT_UpdateTransform)) OnUpdateTransform();
+}
+
+void CCustomObject::RenderRoot(int priority, bool strictB2F)
+{
+	if(FParentTools->IsVisible())
+		Render(priority, strictB2F);
 }
 
 void CCustomObject::Render(int priority, bool strictB2F)
