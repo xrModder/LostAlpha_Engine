@@ -56,6 +56,7 @@ class CParticleTools: public CToolsCustom
     void				RealRemoveAction	();
 
     void __stdcall		OnControlClick		(ButtonValue* sender, bool& bDataModified, bool& bSafe);
+    void __stdcall		OnFileClick		(ButtonValue* sender, bool& bDataModified, bool& bSafe);
 public:
     void				RemoveAction		(u32 idx, bool bForced=false){remove_action_num=idx;m_Flags.set(flRemoveAction,TRUE); if (bForced) RealRemoveAction();}
 public:
