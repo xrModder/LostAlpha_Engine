@@ -918,6 +918,8 @@ void CCar::CreateSkeleton(CSE_Abstract	*po)
 	m_pPhysicsShell->SetAirResistance(0.f,0.f);
 	m_pPhysicsShell->SetPrefereExactIntegration();
 
+	m_pPhysicsShell->Enable();
+
 	ApplySpawnIniToPhysicShell(&po->spawn_ini(),m_pPhysicsShell,false);
 	ApplySpawnIniToPhysicShell(pK->LL_UserData(),m_pPhysicsShell,false);
 }
