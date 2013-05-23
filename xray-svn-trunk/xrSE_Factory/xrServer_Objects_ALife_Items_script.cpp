@@ -6,9 +6,14 @@
 //	Description : Server items for ALife simulator, script export
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects_ALife_Items.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
 
 using namespace luabind;
@@ -26,8 +31,7 @@ void CSE_ALifeInventoryItem::script_register(lua_State *L)
 void CSE_ALifeItem::script_register(lua_State *L)
 {
 	module(L)[
-//		luabind_class_item2(
-		luabind_class_abstract2(
+		luabind_class_item2(
 			CSE_ALifeItem,
 			"cse_alife_item",
 			CSE_ALifeDynamicObjectVisual,
@@ -66,6 +70,22 @@ void CSE_ALifeItemWeapon::script_register(lua_State *L)
 			"cse_alife_item_weapon",
 			CSE_ALifeItem
 		)
+		.def					("get_addon_flags",						&CSE_ALifeItemWeapon::get_addon_flags)
+		.def					("set_ammo_in_magazine",				&CSE_ALifeItemWeapon::set_ammo_elapsed)
+		.def					("get_ammo_in_magazine",				&CSE_ALifeItemWeapon::get_ammo_elapsed)
+		.def					("get_ammo_magsize",					&CSE_ALifeItemWeapon::get_ammo_magsize)
+		.enum_					("EWeaponAddonStatus")
+		[
+			value				("eAddonDisabled",						int(CSE_ALifeItemWeapon::eAddonDisabled)),
+			value				("eAddonPermanent",						int(CSE_ALifeItemWeapon::eAddonPermanent)),
+			value				("eAddonAttachable",					int(CSE_ALifeItemWeapon::eAddonAttachable))
+		]
+		.enum_					("EWeaponAddonState")
+		[
+			value				("eWeaponAddonScope",					int(CSE_ALifeItemWeapon::eWeaponAddonScope)),
+			value				("eWeaponAddonGrenadeLauncher",			int(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher)),
+			value				("eWeaponAddonSilencer",				int(CSE_ALifeItemWeapon::eWeaponAddonSilencer))
+		]
 	];
 }
 

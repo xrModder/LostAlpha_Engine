@@ -367,6 +367,6 @@ void CObjectFactory::register_classes	()
 	ADD(CPhysicsSkeletonObject	,CSE_ALifePHSkeletonObject		,CLSID_PH_SKELETON_OBJECT		,"obj_phskeleton");
 	ADD(CDestroyablePhysicsObject,CSE_ALifeObjectPhysic			,CLSID_PHYSICS_DESTROYABLE		,"obj_phys_destroyable");
 
-	ADD(CInventoryBox			,CSE_InventoryBox				,CLSID_INVENTORY_BOX			,"inventory_box");
+	ADD(CInventoryBox			,CSE_ALifeInventoryBox				,CLSID_INVENTORY_BOX			,"inventory_box");
 	
 }

@@ -6,9 +6,14 @@
 //	Description : Server monsters for ALife simulator, script export, the second part
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects_ALife_Monsters.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
 
 using namespace luabind;
@@ -72,6 +77,8 @@ void CSE_ALifeCreatureAbstract::script_register(lua_State *L)
 		)
 		.def("health",&CSE_ALifeCreatureAbstract::g_Health)
 		.def("alive",&CSE_ALifeCreatureAbstract::g_Alive)
+		.def("get_visual",&CSE_ALifeCreatureAbstract::get_visual_script)
+		.def("set_visual",&CSE_ALifeCreatureAbstract::set_visual_script)
 		.def_readwrite("team",&CSE_ALifeCreatureAbstract::s_team)
 		.def_readwrite("squad",&CSE_ALifeCreatureAbstract::s_squad)
 		.def_readwrite("group",&CSE_ALifeCreatureAbstract::s_group)

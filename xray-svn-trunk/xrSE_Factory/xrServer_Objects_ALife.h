@@ -317,6 +317,8 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeSpaceRestrictor,CSE_ALifeDynamicObject,CSE
 	virtual ISE_Shape*  __stdcall	shape						();
 	virtual bool					can_switch_offline			() const;
 	virtual bool					used_ai_locations			() const;
+			u8						get_space_restrictor_type	() const;
+			void					set_space_restrictor_type	(u8);
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeSpaceRestrictor)
 #define script_type_list save_type_list(CSE_ALifeSpaceRestrictor)
@@ -448,29 +450,13 @@ SERVER_ENTITY_DECLARE_BEGIN3(CSE_ALifeHelicopter,CSE_ALifeDynamicObjectVisual,CS
 	virtual bool					can_save					() const;
 	virtual bool					used_ai_locations			() const;
 	virtual CSE_Motion*	__stdcall	motion						();
-	virtual CSE_Abstract			*cast_abstract			() {return this;}
-
+			void					set_engine_sound			(LPCSTR);
+			LPCSTR					get_engine_sound			();
+	virtual CSE_Abstract			*cast_abstract				() {return this;}
+	static  CSE_ALifeHelicopter		*cast_helicopter			(CSE_Abstract *e); 
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeHelicopter)
 #define script_type_list save_type_list(CSE_ALifeHelicopter)
-
-
-SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeMountedTurret, CSE_ALifeDynamicObjectVisual, CSE_PHSkeleton)
-	public:
-										CSE_ALifeMountedTurret		(LPCSTR caSection);
-		virtual							~CSE_ALifeMountedTurret		();
-		virtual bool					used_ai_locations			() const;
-		virtual	void					load						(NET_Packet &tNetPacket);
-		virtual bool					can_save					() const;
-		virtual CSE_Abstract			*cast_abstract				() {return this;}
-		
-	protected:
-		virtual void					data_load					(NET_Packet &tNetPacket);
-		virtual void					data_save					(NET_Packet &tNetPacket);
-SERVER_ENTITY_DECLARE_END
-add_to_type_list(CSE_ALifeMountedTurret)
-#define script_type_list save_type_list(CSE_ALifeMountedTurret)
-
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSkeleton)
 	struct SDoorState				
@@ -488,19 +474,43 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSke
 	};
 	xr_vector<SDoorState>			door_states;
 	xr_vector<SWheelState>			wheel_states;
-	float							health;
+	float							health, fuel;
 									CSE_ALifeCar		(LPCSTR caSection);
 	virtual							~CSE_ALifeCar		();
 	virtual bool					used_ai_locations	() const;
 	virtual	void					load				(NET_Packet &tNetPacket);
 	virtual bool					can_save			() const;
 	virtual CSE_Abstract			*cast_abstract		() {return this;}
+
+#ifdef XRGAME_EXPORTS
+	virtual void		add_offline				(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
+	virtual void		add_online				(const bool &update_registries);
+#endif
+
 protected:
 	virtual void					data_load				(NET_Packet &tNetPacket);
 	virtual void					data_save				(NET_Packet &tNetPacket);
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeCar)
 #define script_type_list save_type_list(CSE_ALifeCar)
+
+
+SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeMountedTurret, CSE_ALifeDynamicObjectVisual, CSE_PHSkeleton)
+	public:
+										CSE_ALifeMountedTurret		(LPCSTR caSection);
+		virtual							~CSE_ALifeMountedTurret		();
+		virtual bool					used_ai_locations			() const;
+		virtual	void					load						(NET_Packet &tNetPacket);
+		virtual bool					can_save					() const;
+		virtual CSE_Abstract			*cast_abstract				() {return this;}
+		virtual void					on_spawn					();
+	protected:
+		virtual void					data_load					(NET_Packet &tNetPacket);
+		virtual void					data_save					(NET_Packet &tNetPacket);
+SERVER_ENTITY_DECLARE_END
+add_to_type_list(CSE_ALifeMountedTurret)
+#define script_type_list save_type_list(CSE_ALifeMountedTurret)
+
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeObjectBreakable,CSE_ALifeDynamicObjectVisual)
     float							m_health;
@@ -550,16 +560,19 @@ add_to_type_list(CSE_ALifeTeamBaseZone)
 #define script_type_list save_type_list(CSE_ALifeTeamBaseZone)
 
 
-class CSE_InventoryBox :public CSE_ALifeDynamicObjectVisual
-{
-public:
-						CSE_InventoryBox	(LPCSTR caSection):CSE_ALifeDynamicObjectVisual(caSection){};
-	virtual				~CSE_InventoryBox	(){};
+SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeInventoryBox,CSE_ALifeDynamicObjectVisual)
+
+						CSE_ALifeInventoryBox	(LPCSTR caSection);
+	virtual				~CSE_ALifeInventoryBox	();
+
 #ifdef XRGAME_EXPORTS
-	virtual void		add_offline			(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
-	virtual void		add_online			(const bool &update_registries);
+	virtual void		add_offline				(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
+	virtual void		add_online				(const bool &update_registries);
 #endif
-};
+
+SERVER_ENTITY_DECLARE_END
+add_to_type_list(CSE_ALifeInventoryBox)
+#define script_type_list save_type_list(CSE_ALifeInventoryBox)
 
 #pragma warning(pop)
 

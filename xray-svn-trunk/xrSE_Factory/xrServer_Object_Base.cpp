@@ -170,6 +170,24 @@ CInifile &CSE_Abstract::spawn_ini			()
 #pragma warning(pop)
 	return						(*m_ini_file);
 }
+
+void CSE_Abstract::set_custom_data(LPCSTR data)
+{
+#pragma warning(push)
+#pragma warning(disable:4238)
+	m_ini_string = data;
+	if (m_ini_file && xr_strlen(m_ini_string)) {
+		delete_data(m_ini_file);
+		m_ini_file			= xr_new<CInifile>(
+			&IReader			(
+				(void*)(*(m_ini_string)),
+				m_ini_string.size()
+			),
+			FS.get_path("$game_config$")->m_Path
+		);
+	}
+#pragma warning(pop)
+}
 	
 void CSE_Abstract::Spawn_Write				(NET_Packet	&tNetPacket, BOOL bLocal)
 {
@@ -383,8 +401,8 @@ xr_token game_types[]={
 
 void CSE_Abstract::FillProps				(LPCSTR pref, PropItemVec& items)
 {
-//. #ifdef XRGAME_EXPORTS
-//. #	ifdef DEBUG
+#ifdef XRGAME_EXPORTS
+#	ifdef DEBUG
 	PHelper().CreateToken8		(items,	PrepareKey(pref,"Game Type"),			&s_gameid,		game_types);
     PHelper().CreateU16			(items,	PrepareKey(pref, "Respawn Time (s)"),	&RespawnTime,	0,43200);
 
@@ -396,8 +414,8 @@ void CSE_Abstract::FillProps				(LPCSTR pref, PropItemVec& items)
 //	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn if destroyed only"),	&m_spawn_flags,			flSpawnIfDestroyedOnly);
 //	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn infinite count"),		&m_spawn_flags,			flSpawnInfiniteCount);
 //	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\auto destroy on spawn"),		&m_spawn_flags,			flSpawnDestroyOnSpawn);
-//. #	endif // DEBUG
-//. #endif // XRGAME_EXPORTS
+#	endif // DEBUG
+#endif // XRGAME_EXPORTS
 }
 
 void CSE_Abstract::FillProp					(LPCSTR pref, PropItemVec &items)
