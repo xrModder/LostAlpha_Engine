@@ -12,7 +12,13 @@ class	ENGINE_API	CGammaControl;
 #include "pure.h"
 #include "hw.h"
 #include "ftimer.h"
-#include "stats.h"
+
+#ifdef __BORLANDC__
+#	include "..\editors\ECore\Editor\estats.h"
+#else
+#	include "Stats.h"
+#endif
+
 #include "xr_effgamma.h"
 #include "shader.h"
 #include "R_Backend.h"
@@ -174,6 +180,13 @@ public:
 		if (I != seqParallel.end())
 			seqParallel.erase	(I);
 	}
+
+public:
+			void xr_stdcall		on_idle				();
+
+private:
+			void					message_loop		();
+
 public:
 virtual		void			__stdcall	AddSeqFrame			( pureFrame* f, bool mt );
 virtual		void			__stdcall	RemoveSeqFrame		( pureFrame* f );

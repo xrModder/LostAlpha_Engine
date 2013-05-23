@@ -85,6 +85,8 @@ void CRenderDevice::Reset		(bool precache)
 	u32 tm_end				= TimerAsync();
 	Msg						("*** RESET [%d ms]",tm_end-tm_start);
 
+	Memory.mem_compact();
+
 #ifndef DEDICATED_SERVER
 	ShowCursor	(FALSE);
 #endif

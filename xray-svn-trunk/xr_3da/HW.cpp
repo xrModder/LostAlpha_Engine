@@ -9,6 +9,7 @@
 #pragma warning(default:4995)
 #include "HW.h"
 #include "xr_IOconsole.h"
+#include "IGame_Persistent.h"
 
 #ifndef _EDITOR
 	void	fill_vid_mode_list			(CHW* _hw);
@@ -181,11 +182,14 @@ void		CHW::CreateDevice		(HWND m_hWnd)
 	CreateD3D				();
 
 	// General - select adapter and device
-#ifdef DEDICATED_SERVER
 	BOOL  bWindowed			= TRUE;
+	
+#ifndef _EDITOR
+	if (!g_dedicated_server)
+		bWindowed			= !psDeviceFlags.is(rsFullscreen);
 #else
-	BOOL  bWindowed			= !psDeviceFlags.is(rsFullscreen);
-#endif
+	bWindowed				= 1;
+#endif  
 
 	DevAdapter				= D3DADAPTER_DEFAULT;
 	DevT					= Caps.bForceGPU_REF?D3DDEVTYPE_REF:D3DDEVTYPE_HAL;
@@ -472,12 +476,12 @@ BOOL	CHW::support	(D3DFORMAT fmt, DWORD type, DWORD usage)
 
 void	CHW::updateWindowProps	(HWND m_hWnd)
 {
-//	BOOL	bWindowed				= strstr(Core.Params,"-dedicated") ? TRUE : !psDeviceFlags.is	(rsFullscreen);
-#ifndef DEDICATED_SERVER
-	BOOL	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
-#else
+
 	BOOL	bWindowed				= TRUE;
-#endif
+#ifndef _EDITOR
+	if (!g_dedicated_server)
+		bWindowed			= !psDeviceFlags.is(rsFullscreen);
+#endif	
 	
 	u32		dwWindowStyle			= 0;
 	// Set window properties depending on what mode were in.
@@ -496,8 +500,9 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 		BOOL			bCenter = TRUE; //Screen centering is on by default in COP, it is here now too.
 		if (strstr(Core.Params, "-no_center_screen"))	bCenter = FALSE;
 
-#ifdef DEDICATED_SERVER
-		bCenter			= TRUE;
+#ifndef _EDITOR
+		if (g_dedicated_server)
+			bCenter		= TRUE;
 #endif
 
 		if(bCenter){
@@ -534,9 +539,12 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 		SetWindowLong			( m_hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
 	}
 
-#ifndef DEDICATED_SERVER
+#ifndef _EDITOR
+	if (!g_dedicated_server)
+	{
 		ShowCursor	(FALSE);
 		SetForegroundWindow( m_hWnd );
+	}
 #endif
 }
 
