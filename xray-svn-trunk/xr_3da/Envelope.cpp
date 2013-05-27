@@ -15,6 +15,12 @@ CEnvelope::CEnvelope(CEnvelope* source)
     	keys[i]	= xr_new<st_Key> (*source->keys[i]);
 }
 
+void  CEnvelope::ClearAndFree()
+{
+	Clear();
+    keys.clear();
+}
+
 void CEnvelope::Clear()
 {
 	for (KeyIt k_it=keys.begin(); k_it!=keys.end(); k_it++)
@@ -213,7 +219,10 @@ void CEnvelope::LoadA(IReader& F)
 }
 
 void CEnvelope::Optimize()
-{	
+{
+	if (keys.empty())
+		return;
+
 	KeyIt it 		= keys.begin();
     st_Key K 		= **it;	it++;
     bool equal		= true;
