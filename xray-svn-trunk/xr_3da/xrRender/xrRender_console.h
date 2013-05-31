@@ -7,6 +7,8 @@ extern ECORE_API	u32			ps_r_sun_shafts;	//=	0;
 extern ECORE_API	xr_token	qsun_shafts_token[];
 extern ECORE_API	u32			ps_r_ssao;			//	=	0;
 extern ECORE_API	xr_token	qssao_token[];
+extern ECORE_API	u32			ps_r_smap_size;
+extern ECORE_API	xr_token	qsmap_size_token[];
 extern ECORE_API	u32			ps_r_ssao_mode;
 extern ECORE_API	xr_token	qssao_mode_token[];
 extern ECORE_API	u32			ps_r_sun_quality;	//	=	0;
