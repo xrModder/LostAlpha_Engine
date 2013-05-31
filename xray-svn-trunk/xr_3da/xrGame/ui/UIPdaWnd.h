@@ -16,6 +16,7 @@ class CUIActorInfoWnd;
 class CUIStalkersRankingWnd;
 class CUIEventsWnd;
 class CUIPdaContactsWnd;
+class CUI3tButton;
 
  
 
@@ -46,6 +47,9 @@ protected:
 	xr_vector<Fvector2>		m_sign_places_main;
 
 	bool				m_bUpgraded;
+	bool				m_LedShow;
+	u32				m_dwLedTime;
+	u32				m_dwLedTimer;
 
 public:
 	// Поддиалоги PDA
@@ -56,6 +60,9 @@ public:
 	CUIActorInfoWnd*		UIActorInfo;
 	CUIStalkersRankingWnd*	UIStalkersRanking;
 	CUIEventsWnd*			UIEventsWnd;
+	CUI3tButton*			m_pUIClose;
+	CUIStatic*			m_pUILed;
+
 	virtual void			Reset				();
 public:
 							CUIPdaWnd			();

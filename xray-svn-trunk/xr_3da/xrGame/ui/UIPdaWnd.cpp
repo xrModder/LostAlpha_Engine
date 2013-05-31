@@ -32,6 +32,7 @@
 #include "../ai_space.h"
 
 #define		PDA_XML					"pda.xml"
+#define 	UPDATE_TIME 				500
 u32			g_pda_info_state		= 0;
 
 void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool m_bUpgraded);
@@ -47,6 +48,9 @@ CUIPdaWnd::CUIPdaWnd()
 	UIEventsWnd				= NULL;
 	m_updatedSectionImage	= NULL;
 	m_oldSectionImage		= NULL;
+	m_LedShow			= false;
+	m_dwLedTime			= 0;
+	m_dwLedTimer			= Device.dwTimeContinual + UPDATE_TIME;
 	Init					();
 }
 
@@ -158,11 +162,22 @@ void CUIPdaWnd::Init()
 
 	RearrangeTabButtons			(UITabControl, m_sign_places_main, m_bUpgraded);
 
-	
+	//On\off button
+	m_pUIClose					= xr_new<CUI3tButton>(); m_pUIClose->SetAutoDelete(true);
+	AttachChild						(m_pUIClose);
+	xml_init.Init3tButton				(uiXml, "btn_close", 0, m_pUIClose);
+
+	m_pUILed			= xr_new<CUIStatic>();
+	m_pUILed->SetAutoDelete(true);
+	m_pUILed->SetWindowName("pda_led");
+	AttachChild				(m_pUILed);
 }
 
 void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
+	if (BUTTON_CLICKED == msg && m_pUIClose == pWnd)
+		GetHolder()->StartStopMenu(this,true);
+
 	if(pWnd == UITabControl){
 		if (TAB_CHANGED == msg){
 			SetActiveSubdialog	((EPdaTabs)UITabControl->GetActiveIndex());
@@ -208,6 +223,48 @@ void CUIPdaWnd::Update()
 {
 	inherited::Update		();
 	UpdateDateTime			();
+
+	u32 dwCurTime		= Device.dwTimeContinual;
+	if (dwCurTime-m_dwLedTime < UPDATE_TIME) return;
+	m_dwLedTime = dwCurTime + UPDATE_TIME;
+
+	if (!m_LedShow)
+	{
+		if (m_dwLedTimer < dwCurTime)
+		{
+			if (::Random.randI(1000)%3==2)
+			{
+				m_dwLedTimer = dwCurTime + 3000;
+				u8 num = ::Random.randI(0,4);
+				switch(num)
+				{
+				case 0:
+					m_pUILed->InitEx("ui_dlg_elem_pda_led_yellow","hud\\default",936, 334, 11, 5);
+					break;
+				case 1:
+					m_pUILed->InitEx("ui_dlg_elem_pda_led_blue","hud\\default",936, 354, 11, 5);
+					break;
+				case 2:
+					m_pUILed->InitEx("ui_dlg_elem_pda_led_red","hud\\default",936, 375, 11, 5);
+					break;
+				case 3:
+					m_pUILed->InitEx("ui_dlg_elem_pda_led_yellow","hud\\default",936, 395, 11, 5);
+					break;
+				case 4:
+					m_pUILed->InitEx("ui_dlg_elem_pda_led_orange","hud\\default",936, 416, 11, 5);
+					break;
+				}
+
+				m_LedShow = true;
+			} else
+				m_dwLedTimer = dwCurTime + 5000;
+		}
+	} else if (m_dwLedTimer < dwCurTime) {
+		m_dwLedTimer = dwCurTime + 5000;
+		m_pUILed->Show(false);
+		m_LedShow = false;
+	} else
+		m_pUILed->Show(!m_pUILed->IsShown());
 }
 
 void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
@@ -220,7 +277,9 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 	}
 
 	luabind::functor<CUIWindow*>	lua_function;
-	R_ASSERT2 (ai().script_engine().functor<CUIWindow*>("ui_pda_base.InitPdaWindows",lua_function),"Can't call ui_pda_base.InitPdaWindows");
+	string256			fn;
+	strcpy_s			(fn, pSettings->r_string("lost_alpha_cfg", "on_init_pda_windows"));
+	R_ASSERT2 (ai().script_engine().functor<CUIWindow*>(fn,lua_function),make_string("Can't find function %s",fn));
 	CUIWindow* w = NULL;
 
 	switch (section) 
