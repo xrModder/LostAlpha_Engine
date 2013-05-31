@@ -132,7 +132,7 @@ static float bez2( st_Key *key0, st_Key *key1, float time ){
 //for the BEZ2 case is used when extrapolating a linear pre behavior and
 //when interpolating a non-BEZ2 span.
 //======================================================================
-static float outgoing( st_Key *key0p, st_Key *key0, st_Key *key1 ){
+static float outgoing( st_Key *key0p, st_Key *key0, st_Key *key1){
    float a, b, d, t, out;
 
    switch ( key0->shape ){
@@ -174,6 +174,34 @@ static float outgoing( st_Key *key0p, st_Key *key0, st_Key *key1 ){
          break;
 
       case SHAPE_STEP:
+      default:
+         out = 0.0f;
+         break;
+   }
+
+   return out;
+}
+
+//function adapted for angles by skyloader
+static float outgoing_angle( st_Key *key0p, st_Key *key0, st_Key *key1, float val1, float val2, float val3){
+   float a, b, d, t, out, diff;
+
+   switch ( key0->shape ){
+      case SHAPE_TCB:
+         a = ( 1.0f - key0->tension ) * ( 1.0f + key0->continuity ) * ( 1.0f + key0->bias );
+         b = ( 1.0f - key0->tension ) * ( 1.0f - key0->continuity ) * ( 1.0f - key0->bias );
+         d = val3 - val2;
+
+         if ( key0p ) {
+            t = ( key1->time - key0->time ) / ( key1->time - key0p->time );
+	    diff = angle_difference(val2, val1);
+	    if (val2 < val1)
+		diff *= -1;
+            out = t * ( a * diff + b * d );
+         }else
+            out = b * d;
+         break;
+
       default:
          out = 0.0f;
          break;
@@ -239,6 +267,34 @@ static float incoming( st_Key *key0, st_Key *key1, st_Key *key1n ){
    return in;
 }
 
+//function adapted for angles by skyloader
+static float incoming_angle( st_Key *key0, st_Key *key1, st_Key *key1n, float val1, float val2, float val3){
+   float a, b, d, t, in, diff;
+
+   switch ( key1->shape ){
+      case SHAPE_TCB:
+         a = ( 1.0f - key1->tension ) * ( 1.0f - key1->continuity ) * ( 1.0f + key1->bias );
+         b = ( 1.0f - key1->tension ) * ( 1.0f + key1->continuity ) * ( 1.0f - key1->bias );
+         d = val2 - val1;
+
+         if ( key1n ) {
+            t = ( key1->time - key0->time ) / ( key1n->time - key0->time );
+	    diff = angle_difference(val3, val2);
+	    if (val3 < val2)
+		diff *= -1;
+            in = t * ( b * diff + a * d );
+         }
+         else
+            in = a * d;
+         break;
+
+      default:
+         in = 0.0f;
+         break;
+   }
+
+   return in;
+}
 
 
 //======================================================================
@@ -336,7 +392,275 @@ float evalEnvelope( CEnvelope *env, float time ){
          	out = outgoing( key0_p, key0, key1 );
          	in = incoming( key0, key1, key1_n );
          	hermite( t, &h1, &h2, &h3, &h4 );
+//		Msg("h1=[%f] h2=[%f] h3=[%f] h4=[%f]",h1 * key0->value, h2 * key1->value, h3 * out, h4 * in);
          	return h1 * key0->value + h2 * key1->value + h3 * out + h4 * in + offset;
+      	case SHAPE_BEZ2:         return bez2( key0, key1, time ) + offset;
+      	case SHAPE_LINE:         return key0->value + t * ( key1->value - key0->value ) + offset;
+      	case SHAPE_STEP:         return key0->value + offset;
+      	default:
+         	return offset;
+   	}
+}
+
+//envelope adapted for angles by skyloader
+/*float evalEnvelopeAngle( CEnvelope *env, float time )
+{
+   	st_Key *key0, *key1, *skey, *ekey, *skey_n, *ekey_p, *key0_p=0, *key1_n=0;
+   	float t, h1, h2, h3, h4, in, out, offset = 0.0f;
+   	int noff;
+
+
+   	// if there's no key, the value is 0
+   	if ( env->keys.empty() ) return 0.0f;
+
+   	// if there's only one key, the value is constant
+   	if ( env->keys.size() == 1 )
+      	return env->keys[0]->value;
+
+   // find the first and last keys
+	int sz = env->keys.size();
+   	skey = env->keys[0];
+   	ekey = env->keys[sz-1];
+   	skey_n=env->keys[1];
+   	ekey_p=env->keys[sz-2];
+
+   	// use pre-behavior if time is before first key time
+   	if ( time < skey->time ){
+      	switch ( env->behavior[ 0 ] ){
+         	case BEH_RESET:            return 0.0f;
+         	case BEH_CONSTANT:			return skey->value;
+         	case BEH_REPEAT:
+            	time = range( time, skey->time, ekey->time, NULL );
+            break;
+         	case BEH_OSCILLATE:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	if ( noff % 2 )
+               		time = ekey->time - skey->time - time;
+            break;
+         	case BEH_OFFSET:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	offset = noff * ( ekey->value - skey->value );
+            break;
+         	case BEH_LINEAR:
+            	out = outgoing( 0, skey, skey_n ) / ( skey_n->time - skey->time );
+            	return out * ( time - skey->time ) + skey->value;
+      	}
+   	}
+   	// use post-behavior if time is after last key time
+   	else if ( time > ekey->time ) {
+      	switch ( env->behavior[ 1 ] ){
+         	case BEH_RESET:            return 0.0f;
+         	case BEH_CONSTANT:			return ekey->value;
+         	case BEH_REPEAT:
+            	time = range( time, skey->time, ekey->time, NULL );
+            break;
+         	case BEH_OSCILLATE:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	if ( noff % 2 )
+               		time = ekey->time - skey->time - time;
+            break;
+         	case BEH_OFFSET:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	offset = noff * ( ekey->value - skey->value );
+            break;
+         	case BEH_LINEAR:
+            	in = incoming( ekey_p, ekey, 0 ) / ( ekey->time - ekey_p->time );
+            	return in * ( time - ekey->time ) + ekey->value;
+      	}
+   	}
+   	// get the endpoints of the interval being evaluated
+    int k=0;
+    while (time>env->keys[k+1]->time) k++;
+    VERIFY((k+1)<sz);
+
+    key1 = env->keys[k+1];
+	key0 = env->keys[k];
+    if (k>0)  		key0_p = env->keys[k-1];
+    if ((k+2)<sz) 	key1_n = env->keys[k+2];
+
+   	// check for singularities first
+   	if ( time == key0->time )		return key0->value + offset;
+   	else if ( time == key1->time )	return key1->value + offset;
+
+   	// get interval length, time in [0, 1]
+   	t = ( time - key0->time ) / ( key1->time - key0->time );
+
+	//skyloader: vars for SHAPE_TCB
+	float result, diff, val1, val2, val3;
+
+   	// interpolate
+   	switch ( key1->shape ){
+      	case SHAPE_TCB:
+      	case SHAPE_BEZI:
+      	case SHAPE_HERM:
+
+         	hermite( t, &h1, &h2, &h3, &h4 );
+
+		if (key0_p)
+			val1 = key0_p->value;
+		if (key1_n)
+			val3 = key1_n->value;
+		val2 = key0->value;
+	
+		Msg("key0=%f,key1=%f",key0->value,key1->value);
+		Msg("norm_key0=%f,key1=%f",angle_normalize(key0->value),angle_normalize(key1->value));
+
+		diff = angle_difference(key0->value,key0->value);
+		if ((angle_difference(PI,key0->value) < diff) && (angle_difference(PI,key1->value)<diff))
+		{
+			if (val2<0.f)
+			{
+				val2 = -(key1->value + diff);
+
+				if (!fsimilar(val1,0.f))
+					val1 = -(val2 + diff);
+
+				//if (!fsimilar(val3,0.f) && ((k+3)<sz))
+				//	val3 = -(env->keys[k+3]->value + diff);
+
+			} else {
+				val2 = key1->value + diff;
+
+				if (!fsimilar(val1,0.f))
+					val1 = val2 + diff;
+
+				//if (!fsimilar(val3,0.f) && ((k+3)<sz))
+				//	val3 = env->keys[k+3]->value + diff;
+			}
+
+			val1 *= -1;
+			val2 *= -1;
+
+			result = h1 * val2 + h2 * key1->value;
+		} else
+			result = h1 * key0->value + h2 * key1->value;
+
+         	out = outgoing_angle( key0_p, key0, key1, val1, val2, key1->value);
+         	in = incoming_angle( key0, key1, key1_n, val2, key1->value, val3);
+		result += h3 * out + h4 * in + offset;
+
+//		Msg("h1=[%f] h2=[%f] key0=[%f] key1=[%f]",h1 * key0->value, h2 * key1->value,key0->value,key1->value);
+//		Msg("val1=[%f] val2=[%f] val3=[%f] h1=[%f]",val1,val2,val3,h2 * key1->value);
+
+         	return	result;
+      	case SHAPE_BEZ2:         return bez2( key0, key1, time ) + offset;
+      	case SHAPE_LINE:         return key0->value + t * ( key1->value - key0->value ) + offset;
+      	case SHAPE_STEP:         return key0->value + offset;
+      	default:
+         	return offset;
+   	}
+}*/
+
+float evalEnvelopeAngle( CEnvelope *env, float time ){
+   	st_Key *key0, *key1, *skey, *ekey, *skey_n, *ekey_p, *key0_p=0, *key1_n=0;
+   	float t, h1, h2, h3, h4, in, out, offset = 0.0f;
+   	int noff;
+
+
+   	// if there's no key, the value is 0
+   	if ( env->keys.empty() ) return 0.0f;
+
+   	// if there's only one key, the value is constant
+   	if ( env->keys.size() == 1 )
+      	return env->keys[0]->value;
+
+   // find the first and last keys
+	int sz = env->keys.size();
+   	skey = env->keys[0];
+   	ekey = env->keys[sz-1];
+   	skey_n=env->keys[1];
+   	ekey_p=env->keys[sz-2];
+
+   	// use pre-behavior if time is before first key time
+   	if ( time < skey->time ){
+      	switch ( env->behavior[ 0 ] ){
+         	case BEH_RESET:            return 0.0f;
+         	case BEH_CONSTANT:			return skey->value;
+         	case BEH_REPEAT:
+            	time = range( time, skey->time, ekey->time, NULL );
+            break;
+         	case BEH_OSCILLATE:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	if ( noff % 2 )
+               		time = ekey->time - skey->time - time;
+            break;
+         	case BEH_OFFSET:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	offset = noff * ( ekey->value - skey->value );
+            break;
+         	case BEH_LINEAR:
+            	out = outgoing( 0, skey, skey_n ) / ( skey_n->time - skey->time );
+            	return out * ( time - skey->time ) + skey->value;
+      	}
+   	}
+   	// use post-behavior if time is after last key time
+   	else if ( time > ekey->time ) {
+      	switch ( env->behavior[ 1 ] ){
+         	case BEH_RESET:            return 0.0f;
+         	case BEH_CONSTANT:			return ekey->value;
+         	case BEH_REPEAT:
+            	time = range( time, skey->time, ekey->time, NULL );
+            break;
+         	case BEH_OSCILLATE:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	if ( noff % 2 )
+               		time = ekey->time - skey->time - time;
+            break;
+         	case BEH_OFFSET:
+            	time = range( time, skey->time, ekey->time, &noff );
+            	offset = noff * ( ekey->value - skey->value );
+            break;
+         	case BEH_LINEAR:
+            	in = incoming( ekey_p, ekey, 0 ) / ( ekey->time - ekey_p->time );
+            	return in * ( time - ekey->time ) + ekey->value;
+      	}
+   	}
+   	// get the endpoints of the interval being evaluated
+    int k=0;
+    while (time>env->keys[k+1]->time) k++;
+    VERIFY((k+1)<sz);
+
+    key1 = env->keys[k+1];
+	key0 = env->keys[k];
+    if (k>0)  		key0_p = env->keys[k-1];
+    if ((k+2)<sz) 	key1_n = env->keys[k+2];
+
+   	// check for singularities first
+   	if ( time == key0->time )		return angle_normalize(key0->value) + offset;
+   	else if ( time == key1->time )	return angle_normalize(key1->value) + offset;
+
+   	// get interval length, time in [0, 1]
+   	t = ( time - key0->time ) / ( key1->time - key0->time );
+
+ 	float val1, val2, val3, val4;
+
+	float differ = angle_difference(key0->value,key1->value);
+	float differ2;
+	bool diff = ((angle_difference(PI,key0->value) < differ) && (angle_difference(PI,key1->value)<differ));
+
+	if (key0_p)
+		val1 = diff?angle_normalize(key0_p->value):key0_p->value;
+	if (key0)
+		val2 = diff?angle_normalize(key0->value):key0->value;
+	if (key1_n)
+		val3 = diff?angle_normalize(key1_n->value):key1_n->value;
+	if (key1)
+		val4 = diff?angle_normalize(key1->value):key1->value;
+
+   	// interpolate
+   	switch ( key1->shape ){
+      	case SHAPE_TCB:
+      	case SHAPE_BEZI:
+      	case SHAPE_HERM:
+         	out = outgoing_angle( key0_p, key0, key1, val1, val2, val4);
+         	in = incoming_angle( key0, key1, key1_n, val2, val4, val3);
+		//Msg("out=%f,in=%f",out, in);
+         	hermite( t, &h1, &h2, &h3, &h4 );
+		if (diff)
+         		return h1 * val2 + h2 * val4 + h3 * out + h4 * in + offset;
+		else
+         		return angle_normalize(h1 * val2 + h2 * val4 + h3 * out + h4 * in + offset);
+
       	case SHAPE_BEZ2:         return bez2( key0, key1, time ) + offset;
       	case SHAPE_LINE:         return key0->value + t * ( key1->value - key0->value ) + offset;
       	case SHAPE_STEP:         return key0->value + offset;
