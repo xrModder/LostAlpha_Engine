@@ -354,7 +354,8 @@ public:
 
 	virtual void	Execute	(LPCSTR args)	{
 		CCC_Token::Execute	(args);
-				
+
+#if RENDER==R_R2
 		switch	(*value)
 		{
 			case 0:
@@ -382,6 +383,7 @@ public:
 				break;
 			}
 		}
+#endif
 	}
 };
 
