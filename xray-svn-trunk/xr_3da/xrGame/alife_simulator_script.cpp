@@ -216,7 +216,7 @@ CSE_Abstract *CALifeSimulator__spawn_item3		(CALifeSimulator *self, LPCSTR secti
 	CSE_Abstract			*entity		= NULL;
 	CSE_ALifeDynamicObject	*object		= NULL;
 	THROW																		(self);
-	R_ASSERT																	(!self->story_objects().object(sid, false));
+	//R_ASSERT																	(!self->story_objects().object(sid, false));
 	entity								= self->spawn_item						(section, position, level_vertex_id, game_vertex_id, ALife::_OBJECT_ID(-1), false);
 	object								= smart_cast<CSE_ALifeDynamicObject*>	(entity);
 	R_ASSERT																	(object);
@@ -231,7 +231,7 @@ CSE_Abstract *CALifeSimulator__spawn_item4		(CALifeSimulator *self, LPCSTR secti
 	CSE_Abstract			*entity		= NULL;
 	CSE_ALifeDynamicObject	*object		= NULL;
 	THROW																		(self);
-	R_ASSERT																	(!self->story_objects().object(sid, false));
+	//R_ASSERT																	(!self->story_objects().object(sid, false));
 	entity								= self->spawn_item						(section, position, level_vertex_id, game_vertex_id, ALife::_OBJECT_ID(-1), false);
 	object								= smart_cast<CSE_ALifeDynamicObject*>	(entity);
 	R_ASSERT																	(object);
