@@ -96,7 +96,7 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_fname)
 
 	m_Flags.set		(flReady,TRUE);
 
-	CreateLog		(0!=strstr(Core.Params,"-nolog"),0==strstr(Core.Params,"-cut_overflowed_log"));
+	CreateLog		(0!=strstr(Core.Params,"-nolog"),0==strstr(Core.Params,"-shortlog"));
 }
 
 void CLocatorAPI::_destroy		()
