@@ -17,7 +17,7 @@ XRCORE_API DUMMY_STUFF	*g_dummy_stuff = 0;
 #	define O_SEQUENTIAL 0
 #endif // M_BORLAND
 
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	XRCORE_API	u32								g_file_mapped_memory = 0;
 	u32								g_file_mapped_count	= 0;
 	typedef std::map<u32,std::pair<u32,shared_str> >	FILE_MAPPINGS;
@@ -396,7 +396,7 @@ CTempReader::~CTempReader()
 // pack stream
 CPackReader::~CPackReader()
 {
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	unregister_file_mapping	(base_address,Size);
 #endif // DEBUG
 
@@ -436,14 +436,14 @@ CVirtualFileRW::CVirtualFileRW(const char *cFileName)
 	data			= (char*)MapViewOfFile (hSrcMap, FILE_MAP_ALL_ACCESS, 0, 0, 0);
 	R_ASSERT3		(data,cFileName,Debug.error2string(GetLastError()));
 
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	register_file_mapping	(data,Size,cFileName);
 #endif // DEBUG
 }
 
 CVirtualFileRW::~CVirtualFileRW() 
 {
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	unregister_file_mapping	(data,Size);
 #endif // DEBUG
 
@@ -466,14 +466,14 @@ CVirtualFileReader::CVirtualFileReader(const char *cFileName)
 	data			= (char*)MapViewOfFile (hSrcMap, FILE_MAP_READ, 0, 0, 0);
 	R_ASSERT3		(data,cFileName,Debug.error2string(GetLastError()));
 
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	register_file_mapping	(data,Size,cFileName);
 #endif // DEBUG
 }
 
 CVirtualFileReader::~CVirtualFileReader() 
 {
-#ifdef DEBUG
+#ifdef FS_DEBUG
 	unregister_file_mapping	(data,Size);
 #endif // DEBUG
 
