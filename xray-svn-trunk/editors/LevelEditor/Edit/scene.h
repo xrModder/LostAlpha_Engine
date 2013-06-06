@@ -260,6 +260,7 @@ public:
 
     void			ClearSummaryInfo	();
     void			CollectSummaryInfo	();
+    void			ExportObj			(bool b_selected_only);
     void			ShowSummaryInfo		();
     void			ExportSummaryInfo	(LPCSTR f_name);
 

@@ -3412,6 +3412,17 @@ object fraLeftBar: TfraLeftBar
       Caption = 'Clear Debug Draw'
       OnClick = ClearDebugDraw1Click
     end
+    object N27: TMenuItem
+      Caption = '-'
+    end
+    object ExportObj: TMenuItem
+      Caption = 'Export entire Scene as Obj'
+      OnClick = ExportObjClick
+    end
+    object e1: TMenuItem
+      Caption = 'Export selection as Obj'
+      OnClick = e1Click
+    end
   end
   object pmToolsEdit: TMxPopupMenu
     Alignment = paCenter

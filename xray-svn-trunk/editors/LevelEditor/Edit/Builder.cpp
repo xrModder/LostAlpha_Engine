@@ -37,6 +37,7 @@ SceneBuilder::SceneBuilder()
 	l_vert_it	 		= 0;
 	l_face_it			= 0;
     object_for_render	= 0;
+	m_save_as_object	= false;
 }
 
 SceneBuilder::~SceneBuilder()
@@ -48,17 +49,25 @@ SceneBuilder::~SceneBuilder()
 #define VERIFY_COMPILE(x,c1,c2) CHECK_BREAK \
 							if (!x){error_text.sprintf("ERROR: %s %s", c1,c2); break;}
 //------------------------------------------------------------------------------
-BOOL SceneBuilder::Compile()
+BOOL SceneBuilder::Compile(bool b_selected_only)
 {
-	AnsiString error_text="";
-	UI->ResetBreak();
+	if(m_save_as_object)
+	{
+		EvictResource	();
+        GetBounding		();
+        CompileStatic	(b_selected_only);
+        EvictResource	();
+		return TRUE;
+	}
+
+	AnsiString error_text		= "";
+	UI->ResetBreak				();
 	if(UI->ContainEState(esBuildLevel)) return false;
 	ELog.Msg( mtInformation, "Building started..." );
 
     UI->BeginEState(esBuildLevel);
     try{
         do{
-//.			ExecCommand( COMMAND_RESET_ANIMATION );
 	        // check debug
             bool bTestPortal = Scene->ObjCount(OBJCLASS_SECTOR)||Scene->ObjCount(OBJCLASS_PORTAL);
 	        // validate scene
@@ -72,7 +81,7 @@ BOOL SceneBuilder::Compile()
             VERIFY_COMPILE		(EvictResource(),	  		"Failed to evict resource","");
             VERIFY_COMPILE		(GetBounding(),				"Failed to acquire level bounding volume","");
             VERIFY_COMPILE		(RenumerateSectors(), 		"Failed to renumerate sectors","");
-            VERIFY_COMPILE		(CompileStatic(),	  		"Failed static remote build","");
+            VERIFY_COMPILE		(CompileStatic(false),	  		"Failed static remote build","");
             VERIFY_COMPILE		(EvictResource(),	  		"Failed to evict resource","");
             VERIFY_COMPILE		(BuildLTX(),		  		"Failed to build level description","");
             VERIFY_COMPILE		(BuildGame(),		  		"Failed to build game","");

@@ -114,6 +114,147 @@ public:
     }
 };
 
+void SceneBuilder::SaveBuildAsObject()
+{
+    string512 				tmp, tex_path, tex_name;
+    xr_string 				fn, fn_material;
+
+    if (! EFS.GetSaveName	( _import_, fn ))
+    	return;
+
+    fn 				= EFS.ChangeFileExt(fn,".obj");
+    fn_material 	= EFS.ChangeFileExt(fn,".mtl");
+
+	IWriter* Fm		= FS.w_open(fn_material.c_str());
+
+    for(u32 i=0;i<l_materials.size(); ++i)
+    {
+    	b_material& m		= l_materials[i];
+        b_texture&	t 		= l_textures[m.surfidx];
+	    _splitpath			(t.name, 0, tex_path, tex_name, 0 );
+
+        sprintf				(tmp,"newmtl %s", tex_name);
+		Fm->w_string		(tmp);
+		Fm->w_string		("Ka  0 0 0");
+		Fm->w_string		("Kd  1 1 1");
+		Fm->w_string		("Ks  0 0 0");
+
+        sprintf				(tmp,"map_Kd %s\\\\%s\\%s%s\n",
+        									"T:",
+                                            tex_path,
+                                            tex_name,
+                                            ".tga");
+		Fm->w_string		(tmp);
+    }
+    FS.w_close		(Fm);
+
+	IWriter* F				= FS.w_open(fn.c_str());
+	CMemoryWriter			tmpFaces;
+
+	// writ comment
+    F->w_string				("# This file uses meters as units for non-parametric coordinates.");
+    _splitpath				(fn.c_str(), 0, 0, tex_name, 0 );
+    sprintf					(tmp,"mtllib %s.mtl", tex_name);
+    F->w_string				(tmp);
+
+    F->w_string				("g default");
+
+	//vertices
+	u32						idx;
+	u32						total_vertices = 0;
+	u32						total_tcs = 0;
+	for(idx=0; idx<l_vert_it; ++idx)
+	{
+		const b_vertex& it	= l_verts[idx];
+        sprintf				(tmp,"v %f %f %f",it.x*100.0f, it.y*100.0f, it.z*100.0f);
+		F->w_string			(tmp);
+
+	}
+
+	//TC-s
+	for(idx=0; idx<l_face_it; ++idx)
+	{
+		const b_face& it	= l_faces[idx];
+        sprintf				(tmp,"vt %f %f", it.t[0].x, /*_abs*/(1.f-it.t[0].y));
+		tmpFaces.w_string	(tmp);
+        sprintf				(tmp,"vt %f %f", it.t[1].x, /*_abs*/(1.f-it.t[1].y));
+		tmpFaces.w_string	(tmp);
+        sprintf				(tmp,"vt %f %f", it.t[2].x, /*_abs*/(1.f-it.t[2].y));
+		tmpFaces.w_string	(tmp);
+	}
+    total_tcs				+= idx*3;
+
+	//faces
+    b_texture* last_texture = NULL;
+	for(idx=0; idx<l_face_it; ++idx)
+	{
+		const b_face& it			= l_faces[idx];
+
+        b_material& m				= l_materials[it.dwMaterial];
+        b_texture&	t 				= l_textures[m.surfidx];
+        if(last_texture != &t)
+        {
+	    	_splitpath			(t.name, 0, 0, tex_name, 0 );
+            sprintf				(tmp,"usemtl %s", tex_name);
+            tmpFaces.w_string	(tmp);
+        	last_texture 		= &t;
+        }
+
+        sprintf				(tmp,"f %d/%d %d/%d %d/%d", it.v[0]+1, idx*3+1,
+        												it.v[1]+1, idx*3+2,
+                                                        it.v[2]+1, idx*3+3);
+		tmpFaces.w_string	(tmp);
+	}
+	total_vertices += l_vert_it;
+
+    for (idx=0; idx<l_mu_models.size(); ++idx)
+	{
+        const b_mu_model&	m = l_mu_models[idx];
+
+		for(u32 vi=0; vi<m.vert_cnt; ++vi)
+		{
+			const b_vertex& it	= m.verts[vi];
+			sprintf				(tmp,"v %f %f %f",it.x*100.0f, it.y*100.0f, it.z*100.0f);
+			F->w_string			(tmp);
+		}
+        //TC-s
+		for(u32 fi=0; fi<m.face_cnt; ++fi)
+		{
+			const b_face& it	= m.faces[fi];
+            sprintf				(tmp,"vt %f %f", it.t[0].x, /*_abs*/(1.f-it.t[0].y));
+            tmpFaces.w_string	(tmp);
+            sprintf				(tmp,"vt %f %f", it.t[1].x, /*_abs*/(1.f-it.t[1].y));
+            tmpFaces.w_string	(tmp);
+            sprintf				(tmp,"vt %f %f", it.t[2].x, /*_abs*/(1.f-it.t[2].y));
+            tmpFaces.w_string	(tmp);
+		}
+        //faces
+		for(fi=0; fi<m.face_cnt; ++fi)
+		{
+			const b_face& it		= m.faces[fi];
+
+            b_material& m			= l_materials[it.dwMaterial];
+            b_texture&	t 			= l_textures[m.surfidx];
+            if(last_texture != &t)
+            {
+                _splitpath			(t.name, 0, 0, tex_name, 0 );
+                sprintf				(tmp,"usemtl %s", tex_name);
+                tmpFaces.w_string	(tmp);
+                last_texture 		= &t;
+			}
+        	sprintf			(tmp,"f %d/%d %d/%d %d/%d", it.v[0]+1+total_vertices, fi*3+1+total_tcs,
+        												it.v[1]+1+total_vertices, fi*3+2+total_tcs,
+                                                        it.v[2]+1+total_vertices, fi*3+3+total_tcs);
+			tmpFaces.w_string	(tmp);
+		}
+        total_tcs				+= m.face_cnt*3;
+		total_vertices += m.vert_cnt;
+    }
+	F->w(tmpFaces.pointer(),tmpFaces.size());
+
+    FS.w_close		(F);
+}
+
 void SceneBuilder::SaveBuild()
 {
     xr_string fn	= MakeLevelPath("build.prj");
@@ -261,8 +402,17 @@ float CalcArea(const Fvector& v0, const Fvector& v1, const Fvector& v2)
 	return	_sqrt( p*(p-e1)*(p-e2)*(p-e3) );
 }
 
-BOOL SceneBuilder::BuildMesh(const Fmatrix& parent, CEditableObject* object, CEditableMesh* mesh, int sect_num,
-							b_vertex* verts, int& vert_cnt, int& vert_it, b_face* faces, int& face_cnt, int& face_it)
+BOOL SceneBuilder::BuildMesh(	const Fmatrix& parent,
+								CEditableObject* object,
+                                CEditableMesh* mesh,
+                                int sect_num,
+								b_vertex* verts,
+                                int& vert_cnt,
+                                int& vert_it,
+                                b_face* faces,
+                                int& face_cnt,
+                                int& face_it,
+                                const Fmatrix& real_transform)
 {
 	BOOL bResult = TRUE;
     int point_offs;
@@ -274,12 +424,14 @@ BOOL SceneBuilder::BuildMesh(const Fmatrix& parent, CEditableObject* object, CEd
     	parent.transform_tiny(verts[vert_it++],mesh->m_Verts[pt_id]);
     }
 
-    if (object->IsDynamic()){
+    if (object->IsDynamic())
+	{
 	    // update mesh
 	    mesh->GenerateFNormals();
 	    mesh->GenerateAdjacency();
 		Fvector N;
-		for (u32 pt=0; pt<mesh->GetVCount(); pt++){
+		for (u32 pt=0; pt<mesh->GetVCount(); pt++)
+		{
             N.set(0,0,0);
             IntVec& a_lst = (*mesh->m_Adjs)[pt];
             VERIFY(a_lst.size());
@@ -294,105 +446,137 @@ BOOL SceneBuilder::BuildMesh(const Fmatrix& parent, CEditableObject* object, CEd
 	    mesh->UnloadFNormals();
     }
     // fill faces
-    for (SurfFacesPairIt sp_it=mesh->m_SurfFaces.begin(); sp_it!=mesh->m_SurfFaces.end(); sp_it++){
+    for (SurfFacesPairIt sp_it=mesh->m_SurfFaces.begin(); sp_it!=mesh->m_SurfFaces.end(); sp_it++)
+    {
 		IntVec& face_lst = sp_it->second;
         CSurface* surf 		= sp_it->first;
+        if(surf->m_GameMtlName=="materials\\occ")
+			continue;
+                    	                       	
         int m_id			= BuildMaterial(surf,sect_num,!object->IsMUStatic());
-		int gm_id			= surf->_GameMtl(); 
-        if (m_id<0)			{ 
-        	bResult = FALSE; 
-            break; 
+		int gm_id			= surf->_GameMtl();
+        if (m_id<0)			{
+        	bResult = FALSE;
+            break;
         }
-        if (gm_id<0){ 
+        if (gm_id<0)
+        {
         	ELog.DlgMsg		(mtError,"Surface: '%s' contains bad game material.",surf->_Name());
-        	bResult 		= FALSE; 
-            break; 
+        	bResult 		= FALSE;
+            break;
         }
         SGameMtl* M = GMLib.GetMaterialByID(gm_id);
-        if (0==M){
+        if (0==M)
+        {
         	ELog.DlgMsg		(mtError,"Surface: '%s' contains undefined game material.",surf->_Name());
-        	bResult 		= FALSE; 
-            break; 
+        	bResult 		= FALSE;
+            break;
         }
-        if (M->Flags.is(SGameMtl::flBreakable)){
+        if (M->Flags.is(SGameMtl::flBreakable))
+        {
         	ELog.Msg		(mtInformation,"Surface: '%s' contains breakable game material.",surf->_Name());
             continue;
         }
-        if (M->Flags.is(SGameMtl::flClimable)){
+        if (M->Flags.is(SGameMtl::flClimable))
+        {
         	ELog.Msg		(mtInformation,"Surface: '%s' contains climable game material.",surf->_Name());
             continue;
         }
-        if (M->Flags.is(SGameMtl::flDynamic)){
+        if (M->Flags.is(SGameMtl::flDynamic))
+        {
         	ELog.DlgMsg		(mtError,"Surface: '%s' contains non-static game material.",surf->_Name());
-        	bResult 		= FALSE; 
-            break; 
+        	bResult 		= FALSE;
+            break;
         }
 		u32 dwTexCnt 		= ((surf->_FVF()&D3DFVF_TEXCOUNT_MASK)>>D3DFVF_TEXCOUNT_SHIFT);
-        if (dwTexCnt!=1){ 
+        if (dwTexCnt!=1)
+        {
         	ELog.DlgMsg		(mtError,"Surface: '%s' contains more than 1 texture refs.",surf->_Name());
         	bResult 		= FALSE; 
             break; 
         }
         u32 dwInvalidFaces 	= 0;
-	    for (IntIt f_it=face_lst.begin(); f_it!=face_lst.end(); f_it++){
+	    for (IntIt f_it=face_lst.begin(); f_it!=face_lst.end(); ++f_it)
+        {
 			st_Face& face = mesh->m_Faces[*f_it];
             float _a		= CalcArea(mesh->m_Verts[face.pv[0].pindex],mesh->m_Verts[face.pv[1].pindex],mesh->m_Verts[face.pv[2].pindex]);
-	    	if (!_valid(_a) || (_a<EPS)){
-            	Tools->m_DebugDraw.AppendWireFace(mesh->m_Verts[face.pv[0].pindex],mesh->m_Verts[face.pv[1].pindex],mesh->m_Verts[face.pv[2].pindex]);
+	    	if (!_valid(_a) || (_a<EPS))
+            {
+            	Fvector p0,p1,p2;
+
+    			real_transform.transform_tiny(p0,mesh->m_Verts[face.pv[0].pindex]);
+    			real_transform.transform_tiny(p1,mesh->m_Verts[face.pv[1].pindex]);
+    			real_transform.transform_tiny(p2,mesh->m_Verts[face.pv[2].pindex]);
+            	Tools->m_DebugDraw.AppendWireFace(p0,p1,p2);
+
             	dwInvalidFaces++;
                 continue;
             }
-            R_ASSERT(face_it<face_cnt);
-            b_face& first_face 		= faces[face_it++];
+            R_ASSERT				(face_it<face_cnt);
+            b_face& first_face 		= faces[face_it];
         	{
+
                 first_face.dwMaterial 		= (u16)m_id;
-                first_face.dwMaterialGame 	= gm_id; 
-                for (int k=0; k<3; k++){
+                first_face.dwMaterialGame 	= gm_id;
+                for (int k=0; k<3; ++k)
+                {
                     st_FaceVert& fv = face.pv[k];
                     // vertex index
                     R_ASSERT2((fv.pindex+point_offs)<vert_it,"Index out of range");
                     first_face.v[k] = fv.pindex+point_offs;
                     // uv maps
                     int offs = 0;
-                    for (u32 t=0; t<dwTexCnt; t++){
+                    for (u32 t=0; t<dwTexCnt; ++t)
+                    {
                         st_VMapPt& vm_pt 	= mesh->m_VMRefs[fv.vmref].pts[t];
                         st_VMap& vmap		= *mesh->m_VMaps[vm_pt.vmap_index];
-                        if (vmap.type!=vmtUV){
-                            offs++;
-                            t--;
+                        if (vmap.type!=vmtUV)
+                        {
+                            ++offs;
+                            --t;
                             continue;
                         }
                         first_face.t[k].set(vmap.getUV(vm_pt.index));
                     }
                 }
+            ++face_it;
             }
 
-	        if (surf->m_Flags.is(CSurface::sf2Sided)){
-		    	R_ASSERT(face_it<face_cnt);
-                b_face& second_face 		= faces[face_it++];
+	        if (surf->m_Flags.is(CSurface::sf2Sided))
+            {
+		    	R_ASSERT					(face_it<face_cnt);
+                b_face& second_face 		= faces[face_it];
                 second_face.dwMaterial 		= first_face.dwMaterial;
                 second_face.dwMaterialGame 	= first_face.dwMaterialGame;
-                for (int k=0; k<3; k++){
-                    st_FaceVert& fv = face.pv[2-k];
+
+                for (int k=0; k<3; ++k)
+                {
+                    st_FaceVert& fv 		= face.pv[2-k];
                     // vertex index
-                    second_face.v[k]=fv.pindex+point_offs;
+                    second_face.v[k]		=fv.pindex+point_offs;
                     // uv maps
                     int offs = 0;
-                    for (u32 t=0; t<dwTexCnt; t++){
+                    for (u32 t=0; t<dwTexCnt; t++)
+                    {
                         st_VMapPt& vm_pt 	= mesh->m_VMRefs[fv.vmref].pts[t];
                         st_VMap& vmap		= *mesh->m_VMaps[vm_pt.vmap_index];
-                        if (vmap.type!=vmtUV){
-                            offs++;
-                            t--;
+                        if (vmap.type!=vmtUV)
+                        {
+                            ++offs;
+                            --t;
                             continue;
                         }
                         second_face.t[k].set(vmap.getUV(vm_pt.index));
                     }
                 }
+                ++face_it;
             }
         }
-        if (dwInvalidFaces)	Msg("!Object '%s' - '%s' has %d invalid face(s). Removed.",object->GetName(),mesh->Name().c_str(),dwInvalidFaces);
-        if (!bResult) break;
+        if (dwInvalidFaces)
+        	Msg("!Object '%s' - '%s' has %d invalid face(s). Removed.",object->GetName(),mesh->Name().c_str(),dwInvalidFaces);
+
+        if (!bResult)
+        	break;
     }
     return bResult;
 }
@@ -400,19 +584,42 @@ BOOL SceneBuilder::BuildMesh(const Fmatrix& parent, CEditableObject* object, CEd
 BOOL SceneBuilder::BuildObject(CSceneObject* obj)
 {
 	CEditableObject *O = obj->GetReference();
-    AnsiString temp; temp.sprintf("Building object: %s",obj->Name);
+    AnsiString temp;
+    temp.sprintf("Building object: %s",obj->Name);
     UI->SetStatus(temp.c_str());
 
-    const Fmatrix& T 	= obj->_Transform();
+    Fmatrix T 			= obj->_Transform();
+	
+	Fmatrix cv 			= Fidentity;
+
+	if(m_save_as_object)
+	{
+		cv.k.z 			= -1.f;
+
+		Fmatrix 	TM;
+
+        TM.mul		( Fmatrix().mul(cv,T), cv );
+        TM.mulB_44	( cv );
+		T 			= TM;
+	}
+
 	// parse mesh data
     for(EditMeshIt M=O->FirstMesh();M!=O->LastMesh();M++){
 		CSector* S = PortalUtils.FindSector(obj,*M);
 	    int sect_num = S?S->sector_num:m_iDefaultSectorNum;
-    	if (!BuildMesh(T,O,*M,sect_num,l_verts,l_vert_cnt,l_vert_it,l_faces,l_face_cnt,l_face_it)) return FALSE;
+    	if (!BuildMesh(T,O,*M,sect_num,l_verts,l_vert_cnt,l_vert_it,l_faces,l_face_cnt,l_face_it,obj->_Transform()))
+        	return FALSE;
         // fill DI vertices
-        for (u32 pt_id=0; pt_id<(*M)->GetVCount(); pt_id++){
-        	Fvector v; T.transform_tiny(v,(*M)->m_Verts[pt_id]);
-            l_scene_stat->add_svert(v);
+        for (u32 pt_id=0; pt_id<(*M)->GetVCount(); pt_id++)
+		{
+        	Fvector						v_res1, v_res2;
+        	const Fvector&	v_src 		= (*M)->m_Verts[pt_id];
+
+            Fvector 			tmp;
+            cv.transform_tiny	( tmp , 	v_src );
+            T.transform_tiny	( v_res1, 	tmp );
+
+          	l_scene_stat->add_svert(v_res1);
         }
     }
     return TRUE;
@@ -439,7 +646,7 @@ BOOL SceneBuilder::BuildMUObject(CSceneObject* obj)
     int sect_num 		= S?S->sector_num:m_iDefaultSectorNum;
 
     // build model
-    if (-1==model_idx){
+    if (-1==model_idx || m_save_as_object){
 	    // build LOD
         int	lod_id 		= BuildObjectLOD(Fidentity,O,sect_num);
         if (lod_id==-2) return FALSE;
@@ -455,8 +662,26 @@ BOOL SceneBuilder::BuildMUObject(CSceneObject* obj)
         M.verts			= xr_alloc<b_vertex>(M.vert_cnt);
         M.faces			= xr_alloc<b_face>(M.face_cnt);
 		// parse mesh data
+		Fmatrix T;
+		T.identity();
+
+		if(m_save_as_object)
+		{
+			T 					= obj->_Transform();
+			
+			Fmatrix cv 			= Fidentity;
+
+			cv.k.z 				= -1.f;
+
+			Fmatrix 			TM;
+
+			TM.mul				( Fmatrix().mul(cv,T), cv );
+			TM.mulB_44			( cv );
+			T 					= TM;
+		}
+
 	    for(EditMeshIt MESH=O->FirstMesh();MESH!=O->LastMesh();MESH++)
-	    	if (!BuildMesh(Fidentity,O,*MESH,sect_num,M.verts,M.vert_cnt,vert_it,M.faces,M.face_cnt,face_it)) return FALSE;
+	    	if (!BuildMesh(Fidentity,O,*MESH,sect_num,M.verts,M.vert_cnt,vert_it,M.faces,M.face_cnt,face_it,obj->_Transform())) return FALSE;
         M.face_cnt		= face_it;
         M.vert_cnt		= vert_it;
     }
@@ -901,7 +1126,7 @@ BOOL SceneBuilder::ParseStaticObjects(ObjectList& lst, LPCSTR prefix)
 }
 //------------------------------------------------------------------------------
 
-BOOL SceneBuilder::CompileStatic()
+BOOL SceneBuilder::CompileStatic(bool b_selected_only)
 {
 	BOOL bResult = TRUE;
 
@@ -997,7 +1222,13 @@ BOOL SceneBuilder::CompileStatic()
     }
 
 // save build    
-    if (bResult&&!UI->NeedAbort()) SaveBuild();
+    if (bResult && !UI->NeedAbort())
+	{
+		if(m_save_as_object)
+			SaveBuildAsObject	();
+		else
+			SaveBuild			();
+	}
 
     return bResult;
 }

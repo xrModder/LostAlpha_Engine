@@ -77,7 +77,7 @@ public:
     void    BuildPortal   	(b_portal* b, CPortal* e);
     BOOL    BuildMesh       (const Fmatrix& parent, CEditableObject* object, CEditableMesh* mesh, int sector_num,
     						b_vertex* verts, int& vert_cnt, int& vert_it,
-                            b_face* faces, int& face_cnt, int& face_it);
+                            b_face* faces, int& face_cnt, int& face_it, const Fmatrix& real_transform);
     BOOL    BuildObject     (CSceneObject* obj);
     BOOL    BuildMUObject   (CSceneObject* obj);
 
@@ -111,12 +111,14 @@ public:
 	int 	CalculateSector		(const Fvector& P, float R);
 
     void 	SaveBuild		();
+    void 	SaveBuildAsObject	();
 protected:
 	friend void SaveBuild	();
     friend class TfrmBuildProgress;
 
 	Fbox 	m_LevelBox;
 public:
+	bool		m_save_as_object;
 	string_path	m_LevelPath;
     xr_string	MakeLevelPath		(LPCSTR nm){return xr_string(m_LevelPath)+xr_string(nm);}
 protected:
@@ -136,7 +138,7 @@ protected:
     bool 	BuildSOMModel			();
     bool	BuildAIMap				();
     bool	BuildWallmarks			();
-    BOOL 	CompileStatic		   	();
+    BOOL 	CompileStatic		   	(bool b_selected_only);
 
 	int 	m_iDefaultSectorNum;
 	bool 	RenumerateSectors		();
@@ -144,7 +146,7 @@ public:
 			SceneBuilder            ();
 	virtual ~SceneBuilder           ();
 
-	BOOL	Compile            		();
+	BOOL	Compile            		(bool b_selected_only);
 	BOOL 	MakeGame				();
     BOOL 	MakeDetails				();
     BOOL 	MakeHOM					();

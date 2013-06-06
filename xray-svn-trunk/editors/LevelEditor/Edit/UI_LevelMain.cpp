@@ -512,7 +512,7 @@ CCommandVar CommandBuild(CCommandVar p1, CCommandVar p2)
 {
     if( !Scene->locked() ){
         if (mrYes==ELog.DlgMsg(mtConfirmation, TMsgDlgButtons()<<mbYes<<mbNo, "Are you sure to build level?"))
-            return				Builder.Compile( );
+            return				Builder.Compile(false);
     }else{
         ELog.DlgMsg( mtError, "Scene sharing violation" );
     }

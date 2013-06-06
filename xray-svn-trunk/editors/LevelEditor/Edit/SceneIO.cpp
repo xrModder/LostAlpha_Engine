@@ -9,6 +9,7 @@
 #include "../ECore/Editor/ui_main.h"
 #include "ui_leveltools.h"
 #include "CustomObject.h"
+#include "Builder.h"
 
 // file: SceneChunks.h
 #define CURRENT_FILE_VERSION    	0x00000005
@@ -768,4 +769,10 @@ void EScene::SaveCompilerError(LPCSTR fn)
     FS.w_close		(fs);
 }
 
+void EScene::ExportObj(bool b_selected_only)
+{
+	Builder.m_save_as_object 	= true;
+	Builder.Compile				(b_selected_only);
+	Builder.m_save_as_object 	= false;
 
+}

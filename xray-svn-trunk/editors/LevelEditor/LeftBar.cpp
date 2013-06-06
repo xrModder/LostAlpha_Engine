@@ -773,13 +773,13 @@ void __fastcall TfraLeftBar::Makepack1Click(TObject *Sender)
 
 void __fastcall TfraLeftBar::ExportObjClick(TObject *Sender)
 {
-        //Scene->ExportObj(false);
+        Scene->ExportObj(false);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TfraLeftBar::e1Click(TObject *Sender)
 {
-        //Scene->ExportObj(true);
+        Scene->ExportObj(true);
 }
 //---------------------------------------------------------------------------
 void __fastcall TfraLeftBar::btEnableObjectClick(TObject *Sender)

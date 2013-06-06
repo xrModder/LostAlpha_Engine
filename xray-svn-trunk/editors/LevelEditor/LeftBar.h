@@ -193,6 +193,9 @@ __published:	// IDE-managed Components
         TMenuItem *SyncTHM1;
         TMenuItem *N26;
         TMenuItem *Makepack1;
+	TMenuItem *N27;
+	TMenuItem *ExportObj;
+	TMenuItem *e1;
 	TExtBtn *btEnableObject;
 	TExtBtn *btEnableLight;
 	TExtBtn *btEnableSoundSrc;
