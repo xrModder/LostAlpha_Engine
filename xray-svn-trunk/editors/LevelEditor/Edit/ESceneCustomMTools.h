@@ -114,7 +114,7 @@ public:
     virtual bool		Export          		(LPCSTR path){return true;}
     virtual bool		ExportGame         		(SExportStreams* F){return true;}
 
-    virtual bool		ExportStatic			(SceneBuilder* B){return true;}
+    virtual bool		ExportStatic			(SceneBuilder* B, bool b_selected_only){return true;}
     virtual void		GetStaticDesc			(int& v_cnt, int& f_cnt){}
 
     // properties

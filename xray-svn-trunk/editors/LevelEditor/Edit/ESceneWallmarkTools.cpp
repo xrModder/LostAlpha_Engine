@@ -771,7 +771,7 @@ void ESceneWallmarkTools::GetStaticDesc(int& v_cnt, int& f_cnt)
 }
 //----------------------------------------------------
 
-bool ESceneWallmarkTools::ExportStatic(SceneBuilder* B)
+bool ESceneWallmarkTools::ExportStatic(SceneBuilder* B, bool b_selected_only)
 {
     for (WMSVecIt slot_it=marks.begin(); slot_it!=marks.end(); slot_it++){
         wm_slot* slot		= *slot_it;	

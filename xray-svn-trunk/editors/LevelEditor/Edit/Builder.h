@@ -106,7 +106,7 @@ public:
 	int 	BuildMaterial	(CSurface* surf, int sector_num, bool allow_draft);
 	int 	BuildMaterial	(LPCSTR esh_name, LPCSTR csh_name, LPCSTR tx_name, u32 tx_cnt, int sector_num, bool allow_draft);
 
-    BOOL	ParseStaticObjects	(ObjectList& lst, LPCSTR prefix=0);
+    BOOL	ParseStaticObjects	(ObjectList& lst, LPCSTR prefix, bool b_selected_only);
 
 	int 	CalculateSector		(const Fvector& P, float R);
 

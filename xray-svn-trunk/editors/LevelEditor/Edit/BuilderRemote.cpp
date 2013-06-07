@@ -585,7 +585,10 @@ BOOL SceneBuilder::BuildObject(CSceneObject* obj)
 {
 	CEditableObject *O = obj->GetReference();
     AnsiString temp;
+    if(!m_save_as_object)
+    {
     temp.sprintf("Building object: %s",obj->Name);
+    }else{temp.sprintf("Saving scene to obj");}
     UI->SetStatus(temp.c_str());
 
     Fmatrix T 			= obj->_Transform();
@@ -628,7 +631,13 @@ BOOL SceneBuilder::BuildObject(CSceneObject* obj)
 BOOL SceneBuilder::BuildMUObject(CSceneObject* obj)
 {
 	CEditableObject *O = obj->GetReference();
-    AnsiString temp; temp.sprintf("Building object: %s",obj->Name);
+    AnsiString temp;
+    if(!m_save_as_object)
+    {
+ 	temp.sprintf("Building object: %s",obj->Name);
+    }else{
+	temp.sprintf("Saving MU to obj");
+    }
     UI->SetStatus(temp.c_str());
 
     int model_idx		= -1;
@@ -646,10 +655,15 @@ BOOL SceneBuilder::BuildMUObject(CSceneObject* obj)
     int sect_num 		= S?S->sector_num:m_iDefaultSectorNum;
 
     // build model
-    if (-1==model_idx || m_save_as_object){
+    if (-1==model_idx || m_save_as_object)
+	{
+	 int lod_id = -1;
+     if(!m_save_as_object)
+		{
 	    // build LOD
         int	lod_id 		= BuildObjectLOD(Fidentity,O,sect_num);
         if (lod_id==-2) return FALSE;
+		}
         // build model
         model_idx		= l_mu_models.size();
 	    l_mu_models.push_back(b_mu_model());
@@ -1058,10 +1072,14 @@ int SceneBuilder::BuildMaterial(CSurface* surf, int sector_num, bool allow_draft
 int SceneBuilder::BuildMaterial(LPCSTR esh_name, LPCSTR csh_name, LPCSTR tx_name, u32 tx_cnt, int sector_num, bool allow_draft)
 {
     b_material mtl; ZeroMemory(&mtl,sizeof(mtl));
-    VERIFY(sector_num>=0);
+	if(!m_save_as_object){
+        	VERIFY(sector_num>=0);
+	}else{
+                sector_num = 0;
+	}
     int mtl_idx;
 	VERIFY			(tx_cnt==1);
-    
+
     if (allow_draft&&(Scene->m_LevelOp.m_BuildParams.m_quality==ebqDraft)){
         Shader_xrLC* c_sh	= Device.ShaderXRLC.Get(csh_name);
         if (c_sh->flags.bRendering){
@@ -1088,13 +1106,20 @@ int SceneBuilder::BuildMaterial(LPCSTR esh_name, LPCSTR csh_name, LPCSTR tx_name
 }
 //------------------------------------------------------------------------------
 
-BOOL SceneBuilder::ParseStaticObjects(ObjectList& lst, LPCSTR prefix)
+BOOL SceneBuilder::ParseStaticObjects(ObjectList& lst, LPCSTR prefix, bool b_selected_only)
 {
 	BOOL bResult = TRUE;
-    SPBItem* pb	= UI->ProgressStart(lst.size(),"Parse static objects...");
+	SPBItem* pb;
+ 	if (!m_save_as_object)
+ 	{
+     pb	= UI->ProgressStart(lst.size(),"Parse static objects...");
+ 	}
     for(ObjectIt _F = lst.begin();_F!=lst.end();_F++){
-        pb->Inc((*_F)->Name);
+if (!m_save_as_object) pb->Inc((*_F)->Name);
         if (UI->NeedAbort()) break;
+		if(b_selected_only && !(*_F)->Selected())
+			continue;
+
         switch((*_F)->ClassID){
         case OBJCLASS_LIGHT:
             bResult = BuildLight((CLight*)(*_F));
@@ -1113,7 +1138,7 @@ BOOL SceneBuilder::ParseStaticObjects(ObjectList& lst, LPCSTR prefix)
         }break;
         case OBJCLASS_GROUP:{
             CGroupObject* group = (CGroupObject*)(*_F);
-            bResult = ParseStaticObjects(group->GetObjects(),group->Name);
+            bResult = ParseStaticObjects(group->GetObjects(),group->Name, b_selected_only);
         }break;
         }// end switch
         if (!bResult){
@@ -1121,16 +1146,26 @@ BOOL SceneBuilder::ParseStaticObjects(ObjectList& lst, LPCSTR prefix)
         	break;
         }
     }
-    UI->ProgressEnd(pb);
+   if (!m_save_as_object)
+   {
+	UI->ProgressEnd(pb);
+   }
     return bResult;
 }
 //------------------------------------------------------------------------------
 
 BOOL SceneBuilder::CompileStatic(bool b_selected_only)
 {
+    ObjClassID cls = LTools->CurrentClassID();
+    if(cls==OBJCLASS_DUMMY)	return FALSE;
+	ESceneCustomOTools* pCurrentTools 	= Scene->GetOTools(cls);
+
 	BOOL bResult = TRUE;
 
     Clear		();
+
+    SceneToolsMapPairIt t_it 	= Scene->FirstTools();
+    SceneToolsMapPairIt t_end 	= Scene->LastTools();
 
 	int objcount = Scene->ObjCount();
 	if( objcount <= 0 )	return FALSE;
@@ -1140,12 +1175,17 @@ BOOL SceneBuilder::CompileStatic(bool b_selected_only)
     l_face_cnt 	= 0;
 	l_vert_it 	= 0;
 	l_face_it	= 0;
-    
-    SceneToolsMapPairIt t_it 	= Scene->FirstTools();
-    SceneToolsMapPairIt t_end 	= Scene->LastTools();
+
+    if(b_selected_only)
+    {
+    	if(pCurrentTools)
+           pCurrentTools->GetStaticDesc(l_vert_cnt,l_face_cnt);
+    }else
+    {
     for (; t_it!=t_end; t_it++){
         ESceneCustomMTools* mt = t_it->second;
         if (mt)	mt->GetStaticDesc(l_vert_cnt,l_face_cnt);
+    }
     }
 	l_faces		= xr_alloc<b_face>(l_face_cnt);
 	l_verts		= xr_alloc<b_vertex>(l_vert_cnt);
@@ -1160,15 +1200,29 @@ BOOL SceneBuilder::CompileStatic(bool b_selected_only)
 		BuildHemiLights	(Scene->m_LevelOp.m_LightHemiQuality,LCONTROL_HEMI);
 // make sun
 	BuildSun			(Scene->m_LevelOp.m_LightSunQuality,lt->m_SunShadowDir);
+
+ SPBItem* pb;
+ if (!m_save_as_object){
 // parse scene
-    SPBItem* pb = UI->ProgressStart(Scene->ObjCount(),"Parse scene objects...");
+    pb = UI->ProgressStart(Scene->ObjCount(),"Parse scene objects...");
+    }
+
+    if(b_selected_only)
+    {
+      if(pCurrentTools)
+            if (!pCurrentTools->ExportStatic(this,b_selected_only))
+                {bResult = FALSE;}
+    }else{
     t_it 				= Scene->FirstTools();
     t_end 				= Scene->LastTools();
     for (; t_it!=t_end; t_it++){
    		ESceneCustomMTools* mt = t_it->second;
         if (mt)
-            if (!mt->ExportStatic(this)) {bResult = FALSE; break;}
+            if (!mt->ExportStatic(this,b_selected_only)) {bResult = FALSE; break;}
     }
+}
+if (!m_save_as_object)
+{
 	UI->ProgressEnd(pb);
 // process lods
 	if (bResult&&!l_lods.empty()){
@@ -1220,7 +1274,7 @@ BOOL SceneBuilder::CompileStatic(bool b_selected_only)
         }
         UI->ProgressEnd(pb);
     }
-
+}
 // save build    
     if (bResult && !UI->NeedAbort())
 	{
