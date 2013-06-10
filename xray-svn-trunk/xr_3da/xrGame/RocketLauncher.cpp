@@ -64,7 +64,10 @@ void CRocketLauncher::AttachRocket(u16 rocket_id, CGameObject* parent_rocket_lau
 
 void CRocketLauncher::DetachRocket(u16 rocket_id, bool bLaunch)
 {
-	CCustomRocket *pRocket = smart_cast<CCustomRocket*>(Level().Objects.net_Find(rocket_id));
+	CObject	*O = Level().Objects.net_Find(rocket_id);
+	if (!O)	return;	//skyloader: object can dissapear
+
+	CCustomRocket *pRocket = smart_cast<CCustomRocket*>(O);
 	if (!pRocket && OnClient()) return;
 
 	VERIFY(pRocket);
