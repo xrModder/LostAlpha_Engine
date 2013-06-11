@@ -1,5 +1,12 @@
 #pragma once
 
+#ifdef DEBUG
+IC void CDynamicPatrolPoint::initialized(bool value)
+{
+	m_initialized		= value;
+}
+#endif
+
 IC void CDynamicPatrolPoint::set_name(LPCSTR name)
 {
 	m_name				= name;

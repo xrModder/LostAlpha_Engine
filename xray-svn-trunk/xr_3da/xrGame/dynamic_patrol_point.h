@@ -16,14 +16,15 @@ class CDynamicPatrolPoint : public CPatrolPoint
 
 		
 		virtual	CPatrolPoint			&load_raw				(const CLevelGraph *level_graph, const CGameLevelCrossTable *cross, const CGameGraph *game_graph, IReader &stream);
+#ifdef DEBUG
+		IC		void					initialized				(bool value);
+#endif
 		IC		void					set_name				(LPCSTR name);
 		IC		void					set_position			(Fvector3 pos);
 		IC		void					set_level_vertex_id		(u32 lvid);
 		IC		void					set_game_vertex_id		(GameGraph::_GRAPH_ID gvid);
 		IC		void					set_flags				(u32 flags);
 		IC		void					set_parent				(const CPatrolPath *path);
-				
-
 };
 
 #include "dynamic_patrol_point_inline.h"
