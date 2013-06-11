@@ -42,7 +42,7 @@ void CUIDiaryWnd::Show(bool status)
 		Reload( (EDiaryFilter)m_FilterTab->GetActiveIndex() );
 }
 
-void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool m_bUpgraded);
+void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places);
 
 void CUIDiaryWnd::Init()
 {
@@ -112,7 +112,7 @@ void CUIDiaryWnd::Init()
 	m_oldSectionImage				= xr_new<CUIStatic>();
 	xml_init.InitStatic				(uiXml, "old_section_static", 0, m_oldSectionImage);
 
-	RearrangeTabButtons				(m_FilterTab, m_sign_places, false);
+	RearrangeTabButtons				(m_FilterTab, m_sign_places);
 }
 
 void	CUIDiaryWnd::SendMessage			(CUIWindow* pWnd, s16 msg, void* pData)

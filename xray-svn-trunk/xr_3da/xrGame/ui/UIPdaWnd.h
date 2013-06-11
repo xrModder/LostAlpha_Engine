@@ -46,10 +46,8 @@ protected:
 	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
 
-	bool				m_bUpgraded;
-	bool				m_LedShow;
-	u32				m_dwLedTime;
-	u32				m_dwLedTimer;
+	bool				m_bSkillsEnabled;
+	bool				m_bDownloadsEnabled;
 
 public:
 	// Поддиалоги PDA
@@ -61,7 +59,6 @@ public:
 	CUIStalkersRankingWnd*	UIStalkersRanking;
 	CUIEventsWnd*			UIEventsWnd;
 	CUI3tButton*			m_pUIClose;
-	CUIStatic*			m_pUILed;
 
 	virtual void			Reset				();
 public:
@@ -76,6 +73,11 @@ public:
 	virtual void 			Update				();
 	virtual void 			Show				();
 	virtual void 			Hide				();
+	virtual void 			EnableSkills				(bool val);
+	virtual void 			EnableDownloads				(bool val);
+	virtual bool			IsSkillsEnabled			(){return m_bSkillsEnabled;}
+	virtual bool			IsDownloadsEnabled			(){return m_bDownloadsEnabled;}
+
 	virtual bool			OnMouse				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouse(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
 	
 	void					SetActiveSubdialog	(EPdaTabs section);

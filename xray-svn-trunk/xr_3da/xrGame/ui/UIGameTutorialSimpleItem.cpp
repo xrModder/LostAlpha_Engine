@@ -210,12 +210,6 @@ void CUISequenceSimpleItem::Start()
 			}else if(!stricmp(m_pda_section,"pda_downloads")){
 				ui_game_sp->PdaMenu->SetActiveSubdialog(eptDownloads);
 				bShowPda = true;
-			}else if(!stricmp(m_pda_section,"pda_games")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptGames);
-				bShowPda = true;
-			}else if(!stricmp(m_pda_section,"pda_mplayer")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptMPlayer);
-				bShowPda = true;
 			}
 		}
 		if(ui_game_sp)

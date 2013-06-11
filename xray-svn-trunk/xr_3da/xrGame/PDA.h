@@ -61,8 +61,6 @@ public:
 
 	virtual LPCSTR							Name					();
 
-	void									UpgradePda 				(bool val);
-	bool									IsUpgraded 				() {return m_bUpgraded;}
 
 protected:
 	void									UpdateActiveContacts	();
@@ -76,7 +74,6 @@ protected:
 	xr_string								m_sFullName;
 
 	bool									m_bTurnedOff;
-	bool									m_bUpgraded;
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

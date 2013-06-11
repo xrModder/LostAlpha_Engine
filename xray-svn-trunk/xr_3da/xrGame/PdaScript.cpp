@@ -8,8 +8,6 @@ void CPda::script_register	(lua_State *L)
 	module(L)
 	[
 		class_<CPda,CGameObject>("CPda")
-			.def("upgrade_pda",			&CPda::UpgradePda)
-			.def("is_upgraded",			&CPda::IsUpgraded)
 			.def(constructor<>())
 	];
 }

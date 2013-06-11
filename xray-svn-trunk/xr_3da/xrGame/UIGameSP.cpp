@@ -180,10 +180,14 @@ void CUIGameSP::ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_ver
 	}
 }
 
-void CUIGameSP::ReloadPdaWnd()
+void CUIGameSP::EnableSkills(bool val)
 {
-	delete_data(PdaMenu);
-	PdaMenu = xr_new<CUIPdaWnd>();
+	PdaMenu->EnableSkills(val);
+}
+
+void CUIGameSP::EnableDownloads(bool val)
+{
+	PdaMenu->EnableDownloads(val);
 }
 
 void CUIGameSP::reset_ui()
