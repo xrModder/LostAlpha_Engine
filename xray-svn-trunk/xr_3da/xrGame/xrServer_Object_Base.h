@@ -136,7 +136,7 @@ public:
 	virtual CSE_Abstract			*init			();
 	virtual bool					match_configuration () const {return true;}
 	// end of the virtual inheritance dependant code
-	IC		int						script_clsid	() const					{return (m_script_clsid);}
+	IC		int						script_clsid	() const					{if (m_script_clsid<0) return (0); return (m_script_clsid);}
 			CInifile				&spawn_ini		();
 			void					set_custom_data	(LPCSTR);
 
