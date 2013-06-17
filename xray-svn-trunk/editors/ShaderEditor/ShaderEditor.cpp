@@ -34,7 +34,7 @@ WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int)
         frmSplash->Repaint		();
         frmSplash->SetStatus	("Core initializing...");
 
-    	Core._initialize		("shader",ELogCallback);
+    	Core._initialize		("shader_la",ELogCallback);
 
         Application->Initialize	();
                                        

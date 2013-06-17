@@ -24,6 +24,7 @@ static const char* h_str =
 	"-f<NAME>	== compile level in gamedata\\levels\\<NAME>\\\n"
 	"-o			== modify build options\n"
 	"-t<NUM>			== numbers of threads \n"
+	"-high				== high priority \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 
@@ -71,7 +72,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      int       nCmdShow)
 {
 	// Initialize debugging
-	Core._initialize("xrDO");
+	Core._initialize("xrdo_la");
 	Startup			(lpCmdLine);
 	
 	return 0;

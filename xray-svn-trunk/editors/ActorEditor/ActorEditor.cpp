@@ -29,7 +29,7 @@ WINAPI WinMain(HINSTANCE  hInst, HINSTANCE, LPSTR, int)
         frmSplash->Repaint		();
         frmSplash->SetStatus	("Core initializing...");
 
-    	Core._initialize		("actor",ELogCallback);
+    	Core._initialize		("actor_la",ELogCallback);
 
         Application->Initialize	();
                                        
