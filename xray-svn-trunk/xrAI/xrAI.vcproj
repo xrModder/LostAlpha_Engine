@@ -163,7 +163,7 @@
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\luabind\luabind;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include;X:\STALKER\SDK\loki;X:\STALKER\SDK\FreeImage;X:\STALKER\SDK\MagicSoftware\Sdk\Include"
-				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0"
+				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0;PRIQUEL"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="2"

@@ -49,6 +49,7 @@ static const char* h_str =
 	"-m         == merge level graphs\n"
 #endif // PRIQUEL
 	"-s         == build game spawn data\n"
+	"-t<NUMBER> == numbers of threads\n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 

@@ -15,14 +15,12 @@ xr_vector<b_shader>			g_shader_compile;
 xr_vector<b_BuildTexture>	g_textures		;
 xr_vector<b_rc_face>		g_rc_faces		;
 
-#ifdef PRIQUEL
 	typedef xr_vector<bool>		COVER_NODES;
 	COVER_NODES					g_cover_nodes;
 
 	typedef CQuadTree<CCoverPoint>	CPointQuadTree;
 	CPointQuadTree					*g_covers = 0;
 	typedef xr_vector<CCoverPoint*>	COVERS;
-#endif // PRIQUEL
 
 // -------------------------------- Ray pick
 typedef Fvector	RayCache[3];
@@ -260,7 +258,6 @@ public:
 			thProgress	= float(N-Nstart)/float(Nend-Nstart);
 			vertex&		BaseNode= g_nodes[N];
 
-#ifdef PRIQUEL
 			if (!g_cover_nodes[N]) {
 				BaseNode.cover[0]	= flt_max;
 				BaseNode.cover[1]	= flt_max;
@@ -268,7 +265,6 @@ public:
 				BaseNode.cover[3]	= flt_max;
 				continue;
 			}
-#endif // PRIQUEL
 
 			Fvector&	BasePos	= BaseNode.Pos;
 			Fvector		TestPos = BasePos; TestPos.y+=cover_height;
@@ -322,7 +318,6 @@ public:
 	}
 };
 
-#ifdef PRIQUEL
 bool valid_vertex_id		(const u32 &vertex_id)
 {
 	return					(vertex_id != InvalidNode);
@@ -534,20 +529,20 @@ void compute_non_covers		()
 			clamp						((*I).cover[i], 0.f, 1.f);
 	}
 }
-#endif // PRIQUEL
 
-#define NUM_THREADS	3
 extern	void mem_Optimize();
 void	xrCover	(bool pure_covers)
 {
 	Status("Calculating...");
 
-#ifdef PRIQUEL
 	if (!pure_covers)
 		compute_cover_nodes	();
 	else
 		g_cover_nodes.assign(g_nodes.size(),true);
-#endif // PRIQUEL
+
+	u32 NUM_THREADS = 3;
+	if (strstr(Core.Params,"-t "))
+		sscanf (strstr(Core.Params,"-t ")+3,"%d",&NUM_THREADS);
 
 	// Start threads, wait, continue --- perform all the work
 	u32	start_time		= timeGetTime();
@@ -559,7 +554,6 @@ void	xrCover	(bool pure_covers)
 	Threads.wait			();
 	Msg("%d seconds elapsed.",(timeGetTime()-start_time)/1000);
 
-#ifdef PRIQUEL
 	if (!pure_covers) {
 		compute_non_covers	();
 
@@ -570,7 +564,7 @@ void	xrCover	(bool pure_covers)
 		xr_delete			(g_covers);
 		return;
 	}
-#endif // PRIQUEL
+
 	// Smooth
 	Status			("Smoothing coverage mask...");
 	mem_Optimize	();
