@@ -10,7 +10,7 @@
 CBlender_Model::CBlender_Model()
 {
 	description.CLS		= B_MODEL;
-	description.version	= 2;
+	description.version	= 1;
 	oAREF.value			= 32;
 	oAREF.min			= 0;
 	oAREF.max			= 255;

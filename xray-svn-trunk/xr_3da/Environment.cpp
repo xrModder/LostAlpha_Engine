@@ -338,8 +338,9 @@ void CEnvironment::OnFrame()
 	lerp					(current_weight);
 
 	//	Igor. Dynamic sun position. 
+	/* SkyLoader: disabled because should be shoc calculate
 	if ( !::Render->is_sun_static())
-		calculate_dynamic_sun_dir();
+		calculate_dynamic_sun_dir();*/
 
 	//if(CurrentEnv.sun_dir.y>0)
 //	{

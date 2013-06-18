@@ -14,7 +14,6 @@
 CBlender_default::CBlender_default	()
 {
 	description.CLS		        = B_DEFAULT;
-	description.version         = 1;
 	oTessellation.Count         = 4;
 	oTessellation.IDselected	= 0;
 }
