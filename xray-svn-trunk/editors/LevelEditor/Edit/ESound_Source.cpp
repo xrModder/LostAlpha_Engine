@@ -126,8 +126,8 @@ bool ESoundSource::Load(IReader& F)
 
 	inherited::Load			(F);
 
-    R_ASSERT(F.find_chunk(SOUND_CHUNK_TYPE));
-	m_Type					= ESoundType(F.r_u32());
+	R_ASSERT(F.find_chunk(SOUND_CHUNK_TYPE));
+	m_Type					= ESoundType(F.r_u8());//u32());
 
     R_ASSERT(F.find_chunk(SOUND_CHUNK_SOURCE_NAME));
     F.r_stringZ		(m_WAVName);
@@ -163,7 +163,7 @@ bool ESoundSource::Load(IReader& F)
         m_Params.max_ai_distance= m_Params.max_distance;
     }
 
-    if(F.find_chunk(SOUND_CHUNK_SOURCE_FLAGS))
+	if(F.find_chunk(SOUND_CHUNK_SOURCE_FLAGS))
 		F.r			(&m_Flags,sizeof(m_Flags));
     
 
@@ -176,11 +176,13 @@ bool ESoundSource::Load(IReader& F)
     ResetSource		();
 
     switch (m_Type){
-    case stStaticSource: 
-    	if (m_Flags.is(flPlaying)) 		Play(); 
+	case stStaticSource:
+		if (m_Flags.is(flPlaying)) 		Play();
     	if (m_Flags.is(flSimulating)) 	Simulate(); 
     break;
-    default: THROW;
+	default:
+		ELog.Msg(mtError, "Unknown sound source type: %d\r\n", m_Type);
+		THROW;
     }
     return true;
 }
@@ -193,7 +195,7 @@ void ESoundSource::Save(IWriter& F)
 	F.w_u16			(SOUND_SOURCE_VERSION);
 	F.close_chunk	();
 
-    F.w_chunk		(SOUND_CHUNK_TYPE,&m_Type,sizeof(m_Type));
+	F.w_chunk		(SOUND_CHUNK_TYPE,&m_Type, 1);//sizeof(m_Type));
 
     F.open_chunk	(SOUND_CHUNK_SOURCE_NAME);
     F.w_stringZ		(m_WAVName);
