@@ -119,14 +119,8 @@ u32 CUIStatic::GetTextureColor() const{
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
-
-	string_path buff;
-	u32		v_dev	= CAP_VERSION(HW.Caps.raster_major, HW.Caps.raster_minor);
-	u32		v_need	= CAP_VERSION(2,0);
-	if (/*strstr(Core.Params,"-ps_movie") &&*/ (v_dev >= v_need) && FS.exist(buff,"$game_textures$", tex_name, ".ogm") )
-		CUITextureMaster::InitTexture	(tex_name, "hud\\movie", &m_UIStaticItem);
-	else
-		CUITextureMaster::InitTexture	(tex_name, sh_name, &m_UIStaticItem);
+	LPCSTR res_shname = UIRender->UpdateShaderName(tex_name, sh_name);
+	CUITextureMaster::InitTexture	(tex_name, res_shname, &m_UIStaticItem);
 
 	Fvector2 p						= GetWndPos();
 	m_UIStaticItem.SetPos			(p.x, p.y);

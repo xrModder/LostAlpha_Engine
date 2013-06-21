@@ -160,19 +160,10 @@ void game_sv_Deathmatch::OnRoundStart()
 		Money_SetStart			(get_it_2_id(it));
 		SpawnPlayer				(get_it_2_id(it), "spectator");
 	}
-	//Clear disconnected players
-	cnt							= m_server->disconnected_client_Count();
-	for		(u32 it=0; it<cnt; ++it)	
-	{
-		// init
-		xrClientData *l_pC		= (xrClientData*)m_server->disconnected_client_Get(it);
-		if (!l_pC || !l_pC->ps) continue;
-		game_PlayerState* ps	= l_pC->ps;
 
-		ps->clear				();		
-		SetPlayersDefItems		(ps);
-		Money_SetStart			(l_pC->ID);
-	}
+	fastdelegate::FastDelegate1<IClient*, void> tmp_delegate;
+	tmp_delegate.bind(this, &game_sv_Deathmatch::RespawnPlayerAsSpectator);
+	m_server->ForEachClientDoSender(tmp_delegate);
 }
 
 void game_sv_Deathmatch::OnRoundEnd()

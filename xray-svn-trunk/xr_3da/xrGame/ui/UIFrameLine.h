@@ -44,7 +44,7 @@ protected:
 	void		UpdateSize		();
 public:
 				CUIFrameLine	();
-	void		Init			(LPCSTR base_name, float x, float y, float size, bool horizontal, DWORD align);
+	void		Init			(LPCSTR base_name, float x, float y, float size, bool horizontal, EUIItemAlign align);
 	void		InitTexture		(const char* texture);
 	void		SetColor		(u32 cl);
 	IC void		SetPos			(float left, float top)		{ iPos.set(left,top);	uFlags &=~ flValidSize; }

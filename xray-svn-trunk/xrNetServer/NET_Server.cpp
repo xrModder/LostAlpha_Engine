@@ -240,7 +240,7 @@ IPureServer::~IPureServer	()
 	psNET_direct_connect		= FALSE;
 }
 
-IPureServer::EConnect IPureServer::Connect(LPCSTR options, GameDescriptionData & game_descr)
+IPureServer::EConnect IPureServer::Connect(LPCSTR options)
 {
 	connect_options			= options;
 	psNET_direct_connect = FALSE;
@@ -252,12 +252,15 @@ IPureServer::EConnect IPureServer::Connect(LPCSTR options, GameDescriptionData &
 	string4096				session_name;
 	
 	string64				password_str = "";
+	string4096				session_options = "";
+
 	u32						dwMaxPlayers = 0;
 	
 
 	//sertanly we can use game_descr structure for determinig level_name, but for backward compatibility we save next line...
 	xr_strcpy					(session_name,options);
 	if (strchr(session_name,'/'))	*strchr(session_name,'/')=0;
+	if (strchr(options,'/'))		xr_strcpy(session_options, strchr(options,'/')+1);
 
 	if (strstr(options, "psw="))
 	{
@@ -362,8 +365,8 @@ if(!psNET_direct_connect)
     dpAppDesc.guidApplication	= NET_GUID;
     dpAppDesc.pwszSessionName	= SessionNameUNICODE;
 	dpAppDesc.dwMaxPlayers		= (m_bDedicated) ? (dwMaxPlayers+2) : (dwMaxPlayers+1);
-	dpAppDesc.pvApplicationReservedData	= &game_descr;
-	dpAppDesc.dwApplicationReservedDataSize = sizeof(game_descr);
+	dpAppDesc.pvApplicationReservedData	= session_options;
+	dpAppDesc.dwApplicationReservedDataSize = xr_strlen(session_options)+1;
 
 	WCHAR	SessionPasswordUNICODE[4096];
 	if (xr_strlen(password_str))

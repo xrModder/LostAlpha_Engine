@@ -205,7 +205,7 @@ public:
 	virtual					~IPureServer		();
 	HRESULT					net_Handler			(u32 dwMessageType, PVOID pMessage);
 	
-	virtual EConnect		Connect				(LPCSTR session_name, GameDescriptionData & game_descr);
+	virtual EConnect		Connect				(LPCSTR session_name);
 	virtual void			Disconnect			();
 
 	// send
@@ -279,7 +279,7 @@ public:
 #endif
 	bool					IsPlayerIPDenied(u32 ip_address);
 	//WARNING! very bad method :(
-	//IClient*				client_Get		(u32 index)							{return net_players.GetClientByIndex(index);};
+	IClient*				client_Get		(u32 index)							{return net_players.GetClientByIndex(index);};
 	IClient*				GetClientByID	(ClientID clientId)					{return net_players.GetFoundClient(ClientIdSearchPredicate(clientId));};
 	//IClient*				GetDisconnectedClientByID(ClientID clientId)		{return net_players.GetFoundDisconnectedClient(ClientIdSearchPredicate(clientId));}
 

@@ -3,14 +3,10 @@
 #include "Physics.h"
 #include "PHElement.h"
 #include "PHShell.h"
-#include "../../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
 
-#pragma warning(disable:4995)
-#pragma warning(disable:4267)
-#include "../../xrODE/ode/src/joint.h"
-#pragma warning(default:4995)
-#pragma warning(default:4267)
 extern	class CPHWorld	*ph_world;
+
 static const float torque_factor=10000000.f;
 CPHFracturesHolder::CPHFracturesHolder()
 {
@@ -49,15 +45,11 @@ element_fracture CPHFracturesHolder::SplitFromEnd(CPHElement* element,u16 fractu
 	element->PassEndGeoms(geom_num,end_geom_num,new_element);
 	/////////////////////////////////////////////
 	IKinematics* pKinematics= element->m_shell->PKinematics();
-	const CBoneInstance& new_bi=pKinematics->LL_GetBoneInstance(new_element->m_SelfID);
-	const CBoneInstance& old_bi=pKinematics->LL_GetBoneInstance(element->m_SelfID);
-
-
 
 	Fmatrix shift_pivot;
-	shift_pivot.set		(new_bi.mTransform);
+	shift_pivot.set		(pKinematics->LL_GetTransform(new_element->m_SelfID));
 	shift_pivot.invert	();
-	shift_pivot.mulB_43	(old_bi.mTransform);
+	shift_pivot.mulB_43	(pKinematics->LL_GetTransform(element->m_SelfID));
 	/////////////////////////////////////////////
 	float density=element->getDensity();
 	new_element->SetShell(element->PHShell());

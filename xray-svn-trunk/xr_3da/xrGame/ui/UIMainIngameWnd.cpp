@@ -27,6 +27,7 @@
 #include "../date_time.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
 #include "../../LightAnimLibrary.h"
+#include "../debug_renderer.h"
 
 #include "UIInventoryUtilities.h"
 
@@ -52,8 +53,6 @@
 #include "../game_news.h"
 
 #ifdef DEBUG
-#	include "../debug_renderer.h"
-
 void test_draw	();
 void test_key	(int dik);
 void test_update();
@@ -1501,6 +1500,7 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		else if(g_bHudAdjustMode == 5)
 			F->OutNext			("adjusting fire point 2 for %s",bCamFirstEye?hud_view:_3rd_person_view);
 
+		CDebugRenderer			&render = Level().debug_renderer();
 		if(bCamFirstEye)
 		{
 			CWeaponHUD *pWpnHud = NULL;
@@ -1529,18 +1529,17 @@ void CUIMainIngameWnd::draw_adjust_mode()
 			fire_mat.transform_tiny	(SP,sp);
 			parent.transform_tiny	(SP);
 
-
-			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
-			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
-			RCache.dbg_DrawAABB(SP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(0,255,0));
+			render.draw_aabb(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
+			render.draw_aabb(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
+			render.draw_aabb(SP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(0,255,0));
 		
 		}else{
 			Fvector FP = m_pWeapon->get_CurrentFirePoint();
 			Fvector FP2 = m_pWeapon->get_CurrentFirePoint2();
 			Fvector SP = m_pWeapon->get_LastSP();
-			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
-			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
-			RCache.dbg_DrawAABB(SP,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,255,0));
+			render.draw_aabb(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
+			render.draw_aabb(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
+			render.draw_aabb(SP,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,255,0));
 		}
 	}
 }

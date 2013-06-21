@@ -13,7 +13,6 @@ class CUITabControl;
 class CUIScrollView;
 class CUIListWnd;
 class CEncyclopediaArticle;
-//class CUIVideoPlayerWnd;
 
 class CUIDiaryWnd: public CUIWindow, public CUIWndCallback
 {

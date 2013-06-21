@@ -91,7 +91,7 @@ BattlEyeServer::BattlEyeServer( xrServer* Server )
 
 void BattlEyeServer::AddConnectedPlayers() // if net_Ready
 {
-	Level().Server->clients_Lock();
+	//Level().Server->clients_Lock();
 	u32	cnt	= Level().Server->game->get_players_count();
 	for( u32 it = 0; it < cnt; ++it )
 	{
@@ -101,7 +101,7 @@ void BattlEyeServer::AddConnectedPlayers() // if net_Ready
 			AddConnected_OnePlayer( CL );
 		}
 	}
-	Level().Server->clients_Unlock();
+	//Level().Server->clients_Unlock();
 }
 
 void BattlEyeServer::AddConnected_OnePlayer( xrClientData* CL )
@@ -150,7 +150,7 @@ void BattlEyeServer::SendPacket( int player, void* packet, int len )
 
 void  BattlEyeServer::KickPlayer( int player, char* reason )
 {
-	Level().Server->clients_Lock();
+	//Level().Server->clients_Lock();
 
 	u32	cnt	= Level().Server->game->get_players_count();
 	for( u32 it = 0; it < cnt; ++it )	
@@ -194,7 +194,7 @@ void  BattlEyeServer::KickPlayer( int player, char* reason )
 		Msg( "! No such player found : %i", player );
 	}
 
-	Level().Server->clients_Unlock();
+	//Level().Server->clients_Unlock();
 }
 
 bool BattlEyeServer::Run()

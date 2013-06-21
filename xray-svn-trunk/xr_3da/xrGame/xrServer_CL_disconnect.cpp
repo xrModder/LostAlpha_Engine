@@ -8,7 +8,7 @@
 
 void xrServer::OnCL_Disconnected	(IClient* CL)
 {
-	csPlayers.Enter			();
+	//csPlayers.Enter			();
 
 	// Game config (all, info includes deleted player now, excludes at the next cl-update)
 	NET_Packet P;
@@ -29,7 +29,7 @@ void xrServer::OnCL_Disconnected	(IClient* CL)
 
 	//
 	xrS_entities::iterator	I=entities.begin(),E=entities.end();
-	if (client_Count()>1 && !CL->flags.bLocal)
+	if (GetClientsCount()>1 && !CL->flags.bLocal)
 	{
 		// Migrate entities
 		for (; I!=E; ++I)
@@ -44,7 +44,7 @@ void xrServer::OnCL_Disconnected	(IClient* CL)
 			entity_Destroy	(entity);
 		}
 	}	
-	csPlayers.Leave			();
+	//csPlayers.Leave			();
 
 	Server_Client_Check(CL);
 

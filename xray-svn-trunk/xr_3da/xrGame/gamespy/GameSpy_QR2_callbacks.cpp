@@ -113,7 +113,7 @@ void __cdecl callback_playerkey(int keyid, int index, void* outbuf, void *userda
 {
 	xrGameSpyServer* pServer = (xrGameSpyServer*) userdata;
 	if (!pServer) return;
-	if (u32(index) >= pServer->client_Count()) return;
+	if (u32(index) >= pServer->GetClientsCount()) return;
 	CGameSpy_QR2* pQR2 = pServer->QR2();
 	if (!pQR2) return;
 
@@ -121,7 +121,7 @@ void __cdecl callback_playerkey(int keyid, int index, void* outbuf, void *userda
 	
 	if (pServer->IsDedicated())
 	{
-		if (u32(index+1) >= pServer->client_Count()) return;
+		if (u32(index+1) >= pServer->GetClientsCount()) return;
 		pCD = (xrGameSpyClientData*)pServer->client_Get(index+1);
 	}
 	else

@@ -262,13 +262,13 @@ public:
 	}
 	//WARNING! for iteration in vector use ForEachClientDo !
 	//This function can be used carefully (single call)
-	/*IClient*	GetClientByIndex				(u32 index)
+	IClient*	GetClientByIndex				(u32 index)
 	{
 		csPlayers.Enter();
 		IClient* ret_client = net_Players[index];
 		csPlayers.Leave();
 		return ret_client;
-	}*/
+	}
 }; //class PlayersMonitor
 
 #endif //#ifndef NET_PLAYERS_MONITOR

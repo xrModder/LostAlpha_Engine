@@ -42,6 +42,19 @@ void _make_rot(Fvector2& pt, const Fvector2& src, float sin_a, float cos_a, floa
 	pt.y				= src.y*cos_a - src.x*sin_a;
 }
 
+void _make_rot_pos(Fvector2& pt, float sin_a, float cos_a, float R1, float R2)
+{ 
+	pt.x = -R1*sin_a;
+	pt.y = -R2*cos_a;
+}
+
+void _make_rot_tex(Fvector2& pt, float src, float sin_a, float cos_a)
+{ 
+	pt.x = src*sin_a;
+	pt.y = src*cos_a;
+}
+
+
 float calc_color(u32 idx, u32 total, float stage, float max_stage)
 {
 	float kk			= ( stage/max_stage ) *  (float(total+1));
@@ -59,7 +72,7 @@ void CUIProgressShape::Draw()
 	if(m_bText)
 		m_pTexture->DrawText		();
 
-	UIRender->SetShader				(*GetShader());
+	UIRender->SetShader				(*m_pTexture->GetShader());
 	Fvector2						tsize;
 	UIRender->GetActiveTextureResolution(tsize);
 
@@ -100,12 +113,26 @@ void CUIProgressShape::Draw()
 	start_tex_pt.set				(0.0f, -radius_tex);
 	prev_tex_pt						= start_tex_pt;
 
+
+	float m_angle_begin	= 0.0f;
+	float m_angle_end	= PI_MUL_2;
+
+	float angle_range = PI_MUL_2;
+	if ( m_bClockwise )
+	{
+		angle_range = -abs( m_angle_end - m_angle_begin );
+	}
+	else
+	{
+		angle_range = abs( m_angle_end - m_angle_begin );
+	}
+
 	for(u32 i=0; i<m_sectorCount; ++i)
 	{
 		float ffff					= calc_color		(i+1, m_sectorCount, m_stage, 1.0f);
 		u32 color					= color_argb_f		(ffff,1.0f,1.0f,1.0f); 
 
-		pv->set						(center_pos.x, center_pos.y, color, center_tex.x, center_tex.y);++pv;
+		UIRender->PushPoint(center_pos.x, center_pos.y, 0, color, center_tex.x, center_tex.y);
 
 		Fvector2	tp;
 		tp.set						(prev_pos_pt);
@@ -115,9 +142,14 @@ void CUIProgressShape::Draw()
 		tx.set						(prev_tex_pt);
 		tx.add						(center_tex);
 
-		pv->set						(tp.x, tp.y, color, tx.x, tx.y);++pv;
+		Fvector2	tp1;
+		Fvector2	tx1;
+		tp1.set(tp);
+		tx1.set(tx);
 
-		if(m_bClockwise)
+		//curr_angle					+= angle_range/float(m_sectorCount); //sky: cop
+
+		if(m_bClockwise) 	//shoc
 			curr_angle				-= PI_MUL_2/float(m_sectorCount);
 		else
 			curr_angle				+= PI_MUL_2/float(m_sectorCount);
@@ -125,7 +157,9 @@ void CUIProgressShape::Draw()
 		sin_a						= _sin(curr_angle);
 		cos_a						= _cos(curr_angle);
 
-		_make_rot					(prev_pos_pt, start_pos_pt, sin_a, cos_a, curr_angle);
+		//_make_rot_tex(prev_pos_pt, start_pos_pt.y, sin_a, cos_a); //sky: cop
+		//_make_rot_tex(prev_tex_pt, start_tex_pt.y, sin_a, cos_a);
+		_make_rot					(prev_pos_pt, start_pos_pt, sin_a, cos_a, curr_angle);	//shoc
 		_make_rot					(prev_tex_pt, start_tex_pt, sin_a, cos_a, curr_angle);
 
 		tp.set						(prev_pos_pt);
@@ -133,12 +167,6 @@ void CUIProgressShape::Draw()
 
 		tx.set						(prev_tex_pt);
 		tx.add						(center_tex);
-
-		pv->set						(tp.x, tp.y, color, tx.x, tx.y);++pv;
-
-	if(!m_bClockwise)
-		std::swap					(*(pv-1), *(pv-2));
-	}
 
 		if (m_bClockwise)
 		{

@@ -89,7 +89,7 @@ LPCSTR				game_sv_GameState::get_player_name_id				(ClientID id)
 
 u32					game_sv_GameState::get_players_count		()
 {
-	return				m_server->client_Count();
+	return				m_server->GetClientsCount();
 }
 
 u16					game_sv_GameState::get_id_2_eid				(ClientID id)
@@ -554,7 +554,7 @@ void game_sv_GameState::u_EventSend(NET_Packet& P, u32 dwFlags)
 
 void game_sv_GameState::Update		()
 {
-	for (u32 it=0; it<m_server->client_Count(); ++it) {
+	for (u32 it=0; it<m_server->GetClientsCount(); ++it) {
 		xrClientData*	C			= (xrClientData*)	m_server->client_Get(it);
 		C->ps->ping					= u16(C->stats.getPing());
 	}

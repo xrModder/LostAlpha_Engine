@@ -40,14 +40,14 @@ xrServer::EConnect xrServer::Connect(shared_str &session_name)
 
 	// Options
 	if (0==game)			return ErrConnect;
-	csPlayers.Enter			();
+//	csPlayers.Enter			();
 //	game->type				= type_id;
 #ifdef DEBUG
 	Msg("* Created server_game %s",game->type_name());
 #endif
 
 	game->Create			(session_name);
-	csPlayers.Leave			();
+//	csPlayers.Leave			();
 	
 #ifdef BATTLEYE
 	if ( game->get_option_i( *session_name, "battleye", 1) != 0 ) // default => battleye enable (always)
@@ -111,10 +111,7 @@ IClient* xrServer::new_client( SClientConnectData* cl_data )
 	P.r_pos			= 0;
 	
 	game->AddDelayedEvent( P, GAME_EVENT_CREATE_CLIENT, 0, CL->ID );
-	if ( client_Count() == 1 )
-	{
-		Update();
-	}
+
 	return CL;
 }
 
@@ -123,7 +120,7 @@ void xrServer::AttachNewClient			(IClient* CL)
 	MSYS_CONFIG	msgConfig;
 	msgConfig.sign1 = 0x12071980;
 	msgConfig.sign2 = 0x26111975;
-	msgConfig.is_battleye = 0;
+	//msgConfig.is_battleye = 0;
 
 #ifdef BATTLEYE
 	msgConfig.is_battleye = (g_pGameLevel && Level().battleye_system.server != 0)? 1 : 0;

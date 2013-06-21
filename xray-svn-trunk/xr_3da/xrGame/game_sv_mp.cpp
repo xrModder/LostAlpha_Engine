@@ -1368,7 +1368,7 @@ void game_sv_mp::DumpOnlineStatistic()
 	shared_str					current_section = "global";
 	string256					str_buff;
 
-	ini.w_u32					(current_section.c_str(), "players_total_cnt", m_server->client_Count());
+	ini.w_u32					(current_section.c_str(), "players_total_cnt", m_server->GetClientsCount());
 
 	xr_sprintf					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name", str_buff);
@@ -1386,7 +1386,7 @@ void game_sv_mp::DumpOnlineStatistic()
 		ini.w_string				("map_rotation", num_buf, str_buff);
 	}
 
-	for(u32 idx=0; idx<m_server->client_Count(); ++idx)
+	for(u32 idx=0; idx<m_server->GetClientsCount(); ++idx)
 	{
 		xrClientData *l_pC			= (xrClientData*)m_server->client_Get(idx);
 		
@@ -1471,7 +1471,7 @@ void game_sv_mp::DumpRoundStatistics()
 	xr_sprintf					(str_buff,"\"%s\"",Level().name().c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name_internal", str_buff);
 
-	for(u32 idx=0; idx<m_server->client_Count(); ++idx)
+	for(u32 idx=0; idx<m_server->GetClientsCount(); ++idx)
 	{
 		xrClientData *l_pC			= (xrClientData*)m_server->client_Get(idx);
 		if(m_server->GetServerClient()==l_pC && g_dedicated_server) 

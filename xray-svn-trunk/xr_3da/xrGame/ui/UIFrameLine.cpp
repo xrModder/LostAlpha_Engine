@@ -26,7 +26,7 @@ CUIFrameLine::CUIFrameLine()
 
 //////////////////////////////////////////////////////////////////////////
 
-void CUIFrameLine::Init(LPCSTR base_name, float x, float y, float size, bool horizontal, DWORD align)
+void CUIFrameLine::Init(LPCSTR base_name, float x, float y, float size, bool horizontal, EUIItemAlign align)
 {
 	SetPos			(x, y);
 	SetSize			(size);

@@ -73,7 +73,6 @@ void CUIStaticItem::RenderInternal()
 	bp.y						= (float)iFloor(bp.y);
 
 	// actual rendering
-	u32							vOffset;
 	Fvector2					pos;
 	Fvector2					f_len;
 	UI().ClientToScreenScaled	(f_len, iVisRect.x2, iVisRect.y2 );
@@ -84,43 +83,32 @@ void CUIStaticItem::RenderInternal()
 	if (!(tile_x&&tile_y))		return;
 
 	// render
-	FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.Lock	(8*tile_x*tile_y,hGeom_fan.stride(),vOffset);
-	FVF::TL* pv					= start_pv;
+	UIRender->StartTriList(8*tile_x*tile_y);
 	for (x=0; x<tile_x; ++x){
 		for (y=0; y<tile_y; ++y){
 			pos.set				(bp.x+f_len.x*x,bp.y+f_len.y*y);
-			inherited::Render	(pv,pos,dwColor);
+			//inherited::Render	(pv,pos,dwColor); 
+			//sky: maybe we should copy full class to here
 		}
 	}
-	std::ptrdiff_t p_cnt		= (pv-start_pv)/3;						VERIFY((pv-start_pv)<=8*tile_x*tile_y);
-	RCache.Vertex.Unlock		(u32(pv-start_pv),hGeom_fan.stride());
 	// set scissor
 	Frect clip_rect				= {iPos.x,iPos.y,iPos.x+iVisRect.x2*iTileX+iRemX,iPos.y+iVisRect.y2*iTileY+iRemY};
-	UI().PushScissor			(clip_rect);
-	// set geom
-	RCache.set_Geometry			(hGeom_fan);
-	if (p_cnt!=0)RCache.Render	(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
+	UI().PushScissor			(clip_rect, false);
+	UIRender->FlushTriList();
 	if(alpha_ref!=-1)
-	{
-		//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,0));
 		UIRender->SetAlphaRef(alpha_ref);
-	}
 	UI().PopScissor			();
 }
 
 void CUIStaticItem::Render()
 {
-	VERIFY(g_bRendering);
+	VERIFY						(g_bRendering);
 	UIRender->SetShader			(*hShader);
-	// установить обязательно перед вызовом CustomItem::Render() !!!
-	//VERIFY(hShader);
-	//RCache.set_Shader			(hShader);
-	if(alpha_ref!=-1) {
-		//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,alpha_ref));
-		UIRender->SetAlphaRef(alpha_ref);
-	}
 
-	UIRender->StartPrimitive	(8, IUIRender::ptTriList, UI()->m_currentPointType);
+	if(alpha_ref!=-1)
+		UIRender->SetAlphaRef(alpha_ref);
+
+	UIRender->StartPrimitive	(8, IUIRender::ptTriList, UI().m_currentPointType);
 	RenderInternal();
 	UIRender->FlushPrimitive	();
 }
@@ -128,26 +116,9 @@ void CUIStaticItem::Render()
 void CUIStaticItem::Render(float angle)
 {
 	VERIFY						(g_bRendering);
-	// установить обязательно перед вызовом CustomItem::Render() !!!
-	VERIFY						(hShader);
-	RCache.set_Shader			(hShader);
-	if(alpha_ref!=-1)
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,alpha_ref));
-	// convert&set pos
-	Fvector2		bp_ns;
-	bp_ns.set		(iPos);
 
-
-	// actual rendering
-	u32		vOffset;
-	FVF::TL* start_pv			= (FVF::TL*)RCache.Vertex.Lock	(32,hGeom_fan.stride(),vOffset);
-	FVF::TL* pv					= start_pv;
-	inherited::Render			(pv,bp_ns,dwColor,angle);
-	// unlock VB and Render it as triangle LIST
-	std::ptrdiff_t p_cnt		= pv-start_pv;
-	RCache.Vertex.Unlock		(u32(p_cnt),hGeom_fan.stride());
-	RCache.set_Geometry	 		(hGeom_fan);
-	if (p_cnt>2) RCache.Render	(D3DPT_TRIANGLEFAN,vOffset,u32(p_cnt-2));
-	if(alpha_ref!=-1)
-		CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,0));
+	UIRender->SetShader			(*hShader);
+	UIRender->StartPrimitive	(32, IUIRender::ptTriList, UI().m_currentPointType);
+	RenderInternal();
+	UIRender->FlushPrimitive	();
 }

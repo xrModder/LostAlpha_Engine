@@ -29060,18 +29060,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="VideoPlayer"
-					>
-					<File
-						RelativePath=".\ui\UIVideoPlayerWnd.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ui\UIVideoPlayerWnd.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="DragDrop2"
 					>
 					<File

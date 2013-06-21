@@ -6,6 +6,8 @@
 #include "../../xrNetServer/client_id.h"
 #include "game_sv_base_console_vars.h"
 
+#define MAX_PLAYERS_COUNT 32
+
 enum ERoundEnd_Result
 {
 	eRoundEnd_Finish		= u32(0),

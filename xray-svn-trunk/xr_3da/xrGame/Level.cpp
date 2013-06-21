@@ -50,7 +50,6 @@
 #ifdef DEBUG
 #	include "level_debug.h"
 #	include "ai/stalker/ai_stalker.h"
-#	include "debug_renderer.h"
 #	include "physicobject.h"
 #endif
 
@@ -116,9 +115,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_space_restriction_manager = xr_new<CSpaceRestrictionManager>();
 		m_client_spawn_manager		= xr_new<CClientSpawnManager>();
 		m_autosave_manager			= xr_new<CAutosaveManager>();
-
-	#ifdef DEBUG
 		m_debug_renderer			= xr_new<CDebugRenderer>();
+	#ifdef DEBUG
 		m_level_debug				= xr_new<CLevelDebug>();
 	#endif
 	
@@ -128,8 +126,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_client_spawn_manager		= NULL;
 		m_autosave_manager			= NULL;
 		m_space_restriction_manager = NULL;
-	#ifdef DEBUG
 		m_debug_renderer			= NULL;
+	#ifdef DEBUG
 		m_level_debug				= NULL;
 	#endif
 		
@@ -246,9 +244,7 @@ CLevel::~CLevel()
 
 	xr_delete					(m_autosave_manager);
 	
-#ifdef DEBUG
 	xr_delete					(m_debug_renderer);
-#endif
 
 	if (!g_dedicated_server)
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
@@ -520,7 +516,7 @@ void CLevel::OnFrame	()
 				F->OutNext	("sv_urate/cl_urate : %4d/%4d", psNET_ServerUpdate, psNET_ClientUpdate);
 
 				F->SetColor	(D3DCOLOR_XRGB(255,255,255));
-				for (u32 I=0; I<Server->client_Count(); ++I)	
+				for (u32 I=0; I<Server->GetClientsCount(); ++I)	
 				{
 					IClient*	C = Server->client_Get(I);
 					Server->UpdateClientStatistic(C);
@@ -721,9 +717,11 @@ void CLevel::OnRender()
 		DBG().draw_text						();
 		DBG().draw_level_info				();
 	}
+#endif
 
 	debug_renderer().render					();
 
+#ifdef DEBUG
 	if (psAI_Flags.is(aiVision)) {
 		for (u32 I=0; I < Level().Objects.o_count(); I++) {
 			CObject						*object = Objects.o_get_by_iterator(I);
@@ -1033,7 +1031,7 @@ bool CLevel::IsServer ()
 		return IsServerDemo();
 	};	
 	if (!Server) return false;
-	return (Server->client_Count() != 0);
+	return (Server->GetClientsCount() != 0);
 
 }
 
@@ -1045,7 +1043,7 @@ bool CLevel::IsClient ()
 		return IsClientDemo();
 	};	
 	if (!Server) return true;
-	return (Server->client_Count() == 0);
+	return (Server->GetClientsCount() == 0);
 }
 
 void CLevel::OnSessionTerminate		(LPCSTR reason)

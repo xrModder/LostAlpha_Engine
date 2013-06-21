@@ -291,8 +291,8 @@ void game_sv_TeamDeathmatch::OnPlayerKillPlayer(game_PlayerState* ps_killer, gam
 			{
 				if (ps_killer->m_iTeamKills >= Get_TeamKillLimit())
 				{
-					m_server->clients_Lock		();
-					u32 ClientCount				= m_server->client_Count();
+					//m_server->clients_Lock		();
+					u32 ClientCount				= m_server->GetClientsCount();
 					
 					for (u32 i=0; i<ClientCount; ++i)
 					{
@@ -300,10 +300,10 @@ void game_sv_TeamDeathmatch::OnPlayerKillPlayer(game_PlayerState* ps_killer, gam
 
 						if (!pCL || pCL == m_server->GetServerClient()) continue;
 						if (!pCL->ps || pCL->ps != ps_killer) continue;
-						m_server->DisconnectClient(pCL);
+						m_server->DisconnectClient(pCL, "st_kicked_by_server");
 						break;
 					}					
-					m_server->clients_Unlock();
+					//m_server->clients_Unlock();
 				}
 			}
 		}

@@ -30,7 +30,7 @@ void dxUIRender::SetAlphaRef(int aref)
 	//CHK_DX(HW.pDevice->SetRenderState(D3DRS_ALPHAREF,aref));
 	RCache.set_AlphaRef(aref);
 }
-/*
+
 void dxUIRender::StartTriList(u32 iMaxVerts)
 {
 	VERIFY(PrimitiveType==ptNone);
@@ -53,7 +53,7 @@ void dxUIRender::FlushTriList()
 
 	PrimitiveType = ptNone;
 }
-
+/*
 void dxUIRender::StartTriFan(u32 iMaxVerts)
 {
 	VERIFY(PrimitiveType==ptNone);
