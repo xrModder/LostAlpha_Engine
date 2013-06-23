@@ -21,6 +21,7 @@ public:
 	virtual					~CHUDManager		();
 	virtual		void		OnEvent				(EVENT E, u64 P1, u64 P2);
 
+	virtual void			OnScreenResolutionChanged();
 	virtual		void		Load				();
 	
 	virtual		void		Render_First		();
@@ -45,6 +46,10 @@ public:
 	virtual void			OnScreenRatioChanged();
 	virtual void			OnDisconnected		();
 	virtual void			OnConnected			();
+
+	virtual	void			RenderActiveItemUI	();
+	virtual	bool			RenderActiveItemUIQuery();
+
 	virtual void			net_Relcase			(CObject *object);
 };
 

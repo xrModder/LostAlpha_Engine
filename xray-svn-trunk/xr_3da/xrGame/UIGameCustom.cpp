@@ -112,9 +112,9 @@ void CUIGameCustom::RemoveDialogToRender(CUIWindow* pDialog)
 	HUD().GetUI()->RemoveDialogToRender(pDialog);
 }
 
-void CUIGameCustom::StartStopMenu(CUIWindow* pDialog, bool)
+void CUIGameCustom::StartStopMenu(CUIWindow* pDialog, bool val)
 {
-	HUD().GetUI()->StartStopMenu(pDialog, bool);
+	HUD().GetUI()->StartStopMenu(pDialog, val);
 }
 
 CUIDialogWnd* CUIGameCustom::MainInputReceiver	()

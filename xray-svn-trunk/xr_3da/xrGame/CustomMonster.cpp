@@ -550,9 +550,9 @@ void CCustomMonster::update_range_fov	(float &new_range, float &new_fov, float s
 {
 	const float	standard_far_plane			= eye_range;
 
-	float	current_fog_density				= GamePersistent().Environment().CurrentEnv.fog_density	;	
+	float	current_fog_density				= GamePersistent().Environment().CurrentEnv->fog_density	;	
 	// 0=no_fog, 1=full_fog, >1 = super-fog
-	float	current_far_plane				= GamePersistent().Environment().CurrentEnv.far_plane	;	
+	float	current_far_plane				= GamePersistent().Environment().CurrentEnv->far_plane	;	
 	// 300=standart, 50=super-fog
 
 	new_fov									= start_fov;
@@ -1049,7 +1049,8 @@ void draw_visiblity_rays	(CCustomMonster *self, const CObject *object, collide::
 
 void CCustomMonster::OnRender()
 {
-	RCache.OnFrameEnd				();
+	DRender->OnFrameEnd();
+	//RCache.OnFrameEnd				();
 
 	for (int i=0; i<1; ++i) {
 		const xr_vector<CDetailPathManager::STravelPoint>		&keys	= !i ? movement().detail().m_key_points					: movement().detail().m_key_points;

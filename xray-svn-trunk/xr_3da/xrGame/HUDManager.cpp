@@ -6,6 +6,7 @@
 #include "../igame_level.h"
 #include "clsid_game.h"
 #include "GamePersistent.h"
+#include "UI.h"
 
 
 CFontManager::CFontManager()
@@ -297,3 +298,40 @@ void CHUDManager::net_Relcase	(CObject *object)
 	VERIFY						(m_pHUDTarget);
 	m_pHUDTarget->net_Relcase	(object);
 }
+
+void CHUDManager::OnScreenResolutionChanged()
+{
+	/*
+	pUIGame->HideShownDialogs			();
+
+	xr_delete							(pWpnScopeXml);
+
+	pUIGame->UnLoad						();
+	pUIGame->Load						();
+
+	pUIGame->OnConnected				();
+	*/
+}
+
+/*
+#include "player_hud.h"
+bool   CHUDManager::RenderActiveItemUIQuery()
+{
+	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
+		return false;
+
+	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return false;
+
+	if(!need_render_hud())			return false;
+
+	return (g_player_hud && g_player_hud->render_item_ui_query() );
+}
+
+void   CHUDManager::RenderActiveItemUI()
+{
+	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
+		return;
+
+	g_player_hud->render_item_ui		();
+}
+*/

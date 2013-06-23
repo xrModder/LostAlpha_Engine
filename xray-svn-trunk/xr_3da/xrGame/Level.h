@@ -239,6 +239,10 @@ public:
 	virtual void				OnEvent					( EVENT E, u64 P1, u64 P2 );
 	virtual void	_BCL		OnFrame					( void );
 	virtual void				OnRender				( );
+
+	virtual	shared_str			OpenDemoFile			(LPCSTR demo_file_name);
+	virtual void				net_StartPlayDemo		();
+
 	void						cl_Process_Event		(u16 dest, u16 type, NET_Packet& P);
 	void						cl_Process_Spawn		(NET_Packet& P);
 	void						ProcessGameEvents		( );
@@ -305,7 +309,8 @@ public:
 	float				GetGameTimeFactor		();
 	void				SetGameTimeFactor		(const float fTimeFactor);
 	void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
-	void				SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	virtual void		SetEnvironmentGameTimeFactor	(u64 const& GameTime, float const& fTimeFactor);
+//	void				SetEnvironmentGameTimeFactor	(ALife::_TIME_ID GameTime, const float fTimeFactor);
 //	void				SetGameTime				(ALife::_TIME_ID GameTime);
 
 	// gets current daytime [0..23]

@@ -37,7 +37,7 @@
 #include "MainMenu.h"
 #include "saved_game_wrapper.h"
 #include "level_graph.h"
-#include "../resourcemanager.h"
+#include "../xrRender/resourcemanager.h"
 #include "doug_lea_memory_allocator.h"
 #include "cameralook.h"
 

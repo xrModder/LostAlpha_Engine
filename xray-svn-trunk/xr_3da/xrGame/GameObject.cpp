@@ -2,7 +2,7 @@
 #include "GameObject.h"
 //#include "../Include/xrRender/RenderVisual.h"
 #include "../Include/xrRender/RenderVisual.h"
-#include "../xrphysics/PhysicsShell.h"
+#include "PhysicsShell.h"
 #include "ai_space.h"
 #include "CustomMonster.h" 
 #include "physicobject.h"
