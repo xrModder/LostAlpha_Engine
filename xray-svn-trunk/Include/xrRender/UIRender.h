@@ -39,8 +39,8 @@ public:
 
 	virtual void SetShader(IUIShader &shader) = 0;
 	virtual void SetAlphaRef(int aref) = 0;
-	virtual void StartTriList(u32 iMaxVerts) = 0;
-	virtual void FlushTriList() = 0;
+//	virtual void StartTriList(u32 iMaxVerts) = 0;
+//	virtual void FlushTriList() = 0;
 //.	virtual void StartTriFan(u32 iMaxVerts) = 0;
 //.	virtual void FlushTriFan() = 0;
 	
