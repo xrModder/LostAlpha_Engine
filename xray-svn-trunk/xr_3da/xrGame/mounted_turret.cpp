@@ -10,8 +10,7 @@
 #include "ai_sounds.h"
 #include "level.h"
 #include "xr_level_controller.h"
-#include "../Include/xrRender/Kinematics.h"
-#include "../xrRender/skeletonanimated.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "game_object_space.h"
 #include "PhysicsShell.h"
 #include "Physics.h"
@@ -205,7 +204,7 @@ void CMountedTurret::UpdateCL()
 	if(OwnerActor() && OwnerActor()->IsMyCamera()) 
 	{
 		cam_Update															(Device.fTimeDelta, g_fov);
-		OwnerActor()->Cameras().Update										(Camera());
+		OwnerActor()->Cameras().UpdateFromCamera										(Camera());
 		OwnerActor()->Cameras().ApplyDevice									(VIEWPORT_NEAR);
 	}
 	m_pPhysicsShell->InterpolateGlobalTransform								(&XFORM());
@@ -321,7 +320,7 @@ void CMountedTurret::cam_Update(float dt, float fov)
 	
 
 	Camera()->Update														(P, Da);
-	Level().Cameras().Update												(Camera());
+	Level().Cameras().UpdateFromCamera												(Camera());
 }
 
 bool CMountedTurret::Use(const Fvector& pos, const Fvector& dir, const Fvector& foot_pos)

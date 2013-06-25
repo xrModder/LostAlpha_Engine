@@ -25,14 +25,14 @@
 #define BLOOD_MARKS_SECT		"bloody_marks"
 
 //отметки крови на стенах 
-SHADER_VECTOR* CEntityAlive::m_pBloodMarksVector = NULL;
+FactoryPtr<IWallMarkArray>	* CEntityAlive::m_pBloodMarksVector = NULL;
 float CEntityAlive::m_fBloodMarkSizeMin = 0.f;
 float CEntityAlive::m_fBloodMarkSizeMax = 0.f;
 float CEntityAlive::m_fBloodMarkDistance = 0.f;
 float CEntityAlive::m_fNominalHit = 0.f;
 
 //капание крови
-SHADER_VECTOR* CEntityAlive::m_pBloodDropsVector = NULL;
+FactoryPtr<IWallMarkArray>		*CEntityAlive::m_pBloodDropsVector = NULL;
 float CEntityAlive::m_fStartBloodWoundSize = 0.3f;
 float CEntityAlive::m_fStopBloodWoundSize = 0.1f;
 float CEntityAlive::m_fBloodDropSize = 0.03f;

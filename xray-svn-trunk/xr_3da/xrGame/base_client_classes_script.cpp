@@ -10,12 +10,11 @@
 #include "base_client_classes.h"
 #include "base_client_classes_wrappers.h"
 #include "../feel_sound.h"
-#include "../fbasicvisual.h"
-#include "../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "ai/stalker/ai_stalker.h"
 #include "../../xrNetServer/net_utils.h"
-#include "../Include/xrRender/animation_blend.h"
-#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/animation_blend.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 
 using namespace luabind;
 

@@ -27,9 +27,9 @@
 #include "MathUtils.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "game_cl_mp.h"
-#include "reward_event_generator.h"
+//#include "reward_event_generator.h"
 #include "game_level_cross_table.h"
-#include "ai_obstacle.h"
+//#include "ai_obstacle.h"
 #include "magic_box3.h"
 #include "animation_movement_controller.h"
 #include "../xr_3da/xr_collide_form.h"
@@ -707,7 +707,7 @@ void CGameObject::OnRender()
 	if (bDebug && Visual())
 	{
 		Fvector bc,bd; 
-		Visual()->vis.box.get_CD	(bc,bd);
+		Visual()->getVisData().box.get_CD	(bc,bd);
 		Fmatrix	M = XFORM();		M.c.add (bc);
 		Level().debug_renderer().draw_obb			(M,bd,color_rgba(0,0,255,255));
 	}	

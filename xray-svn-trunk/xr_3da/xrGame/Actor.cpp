@@ -48,7 +48,8 @@
 #include "../cl_intersect.h"
 #include "ExtendedGeom.h"
 #include "alife_registry_wrappers.h"
-#include "../xrRender/skeletonanimated.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "artifact.h"
 #include "CharacterPhysicsSupport.h"
 #include "material_manager.h"
@@ -1348,7 +1349,7 @@ void CActor::OnHUDDraw	(CCustomHUD* /**hud/**/)
 #endif
 }
 
-void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, ref_shader IndShader)
+void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, const ui_shader& IndShader)
 {
 	if (!g_Alive()) return;
 

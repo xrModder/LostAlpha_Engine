@@ -12,7 +12,7 @@ CConsole*	console()
 int get_console_integer(CConsole* c, LPCSTR cmd)
 {
 	int min=0, max=0;
-	c->GetInteger ( cmd, min, max);
+	int val = c->GetInteger ( cmd, min, max);
 	return val;
 }
 
