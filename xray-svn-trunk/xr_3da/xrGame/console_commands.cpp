@@ -37,10 +37,9 @@
 #include "MainMenu.h"
 #include "saved_game_wrapper.h"
 #include "level_graph.h"
-#include "../xrRender/resourcemanager.h"
+//#include "../xrRender/resourcemanager.h"
 #include "doug_lea_memory_allocator.h"
 #include "cameralook.h"
-
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
 
@@ -145,7 +144,9 @@ public:
 		int		_eco_smem		= (int)g_pSharedMemoryContainer->stat_economy	();
 		u32		m_base=0,c_base=0,m_lmaps=0,c_lmaps=0;
 		
-		if (Device.Resources)	Device.Resources->_GetMemoryUsage	(m_base,c_base,m_lmaps,c_lmaps);
+	//if (Device.Resources)	Device.Resources->_GetMemoryUsage	(m_base,c_base,m_lmaps,c_lmaps);
+	//	Resource check moved to m_pRender
+	if (Device.m_pRender) Device.m_pRender->ResourcesGetMemoryUsage(m_base,c_base,m_lmaps,c_lmaps);
 		
 		log_vminfo	();
 		
