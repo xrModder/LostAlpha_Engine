@@ -99,22 +99,26 @@ void CEntityAlive::LoadBloodyWallmarks (LPCSTR section)
 {
 	VERIFY					(0==m_pBloodMarksVector);
 	VERIFY					(0==m_pBloodDropsVector);
-	m_pBloodMarksVector		= xr_new<SHADER_VECTOR>();
-	m_pBloodDropsVector		= xr_new<SHADER_VECTOR>();
+	m_pBloodMarksVector		= xr_new<FactoryPtr<IWallMarkArray> >();
+	m_pBloodDropsVector		= xr_new<FactoryPtr<IWallMarkArray> >();
 	
 	//кровавые отметки на стенах
 	string256	tmp;
 	LPCSTR wallmarks_name = pSettings->r_string(section, "wallmarks"); 
 	
 	int cnt		=_GetItemCount(wallmarks_name);
-	
+
+	for (int k=0; k<cnt; ++k)	
+		(*m_pBloodMarksVector)->AppendMark(_GetItem(wallmarks_name,k,tmp));
+
+/*	
 	ref_shader	s;
 	for (int k=0; k<cnt; ++k)
 	{
 		s.create ("effects\\wallmark",_GetItem(wallmarks_name,k,tmp));
 		m_pBloodMarksVector->push_back	(s);
 	}
-
+*/
 	
 	m_fBloodMarkSizeMin = pSettings->r_float(section, "min_size"); 
 	m_fBloodMarkSizeMax = pSettings->r_float(section, "max_size"); 
@@ -128,11 +132,16 @@ void CEntityAlive::LoadBloodyWallmarks (LPCSTR section)
 	cnt		=_GetItemCount(wallmarks_name);
 
 	for (int k=0; k<cnt; ++k)
+	(*m_pBloodDropsVector)->AppendMark(_GetItem(wallmarks_name,k,tmp));
+
+
+/*
+	for (int k=0; k<cnt; ++k)
 	{
 		s.create ("effects\\wallmark",_GetItem(wallmarks_name,k,tmp));
 		m_pBloodDropsVector->push_back	(s);
 	}
-
+*/
 
 	m_fStartBloodWoundSize  = pSettings->r_float(section, "start_blood_size");
 	m_fStopBloodWoundSize   = pSettings->r_float(section, "stop_blood_size");
@@ -142,11 +151,11 @@ void CEntityAlive::LoadBloodyWallmarks (LPCSTR section)
 void CEntityAlive::UnloadBloodyWallmarks	()
 {
 	if (m_pBloodMarksVector){ 
-		m_pBloodMarksVector->clear	();
+//		m_pBloodMarksVector->clear	();
 		xr_delete					(m_pBloodMarksVector);
 	}
 	if (m_pBloodDropsVector){
-		m_pBloodDropsVector->clear	();
+//		m_pBloodDropsVector->clear	();
 		xr_delete					(m_pBloodDropsVector);
 	}
 }
@@ -387,13 +396,13 @@ void CEntityAlive::BloodyWallmarks (float P, const Fvector &dir, s16 element,
 
 	VERIFY(m_pBloodMarksVector);
 	PlaceBloodWallmark(dir, start_pos, m_fBloodMarkDistance, 
-						wallmark_size, *m_pBloodMarksVector);
+						wallmark_size, &**m_pBloodMarksVector);
 
 }
 
 void CEntityAlive::PlaceBloodWallmark(const Fvector& dir, const Fvector& start_pos, 
 									  float trace_dist, float wallmark_size,
-									  SHADER_VECTOR& wallmarks_vector)
+									  IWallMarkArray *pwallmarks_vector)
 {
 	collide::rq_result	result;
 	BOOL				reach_wall = 
@@ -424,11 +433,12 @@ void CEntityAlive::PlaceBloodWallmark(const Fvector& dir, const Fvector& start_p
 			end_point.set(0,0,0);
 			end_point.mad(start_pos, dir, result.range);
 
-			ref_shader wallmarkShader = wallmarks_vector[::Random.randI(wallmarks_vector.size())];
-
+			//ref_shader wallmarkShader = wallmarks_vector[::Random.randI(wallmarks_vector.size())];
+			VERIFY(!pwallmarks_vector->empty());
 			{
 				//добавить отметку на материале
-				::Render->add_StaticWallmark(wallmarkShader, end_point, wallmark_size, pTri, pVerts);
+				::Render->add_StaticWallmark(pwallmarks_vector, end_point, wallmark_size, pTri, pVerts);
+				//::Render->add_StaticWallmark(wallmarkShader, end_point, wallmark_size, pTri, pVerts);
 			}
 		}
 	}
@@ -575,7 +585,7 @@ void CEntityAlive::UpdateBloodDrops()
 				pos.add(pos_distort);
 				PlaceBloodWallmark(Fvector().set(0.f, -1.f, 0.f),
 								pos, m_fBloodMarkDistance, 
-								m_fBloodDropSize, *m_pBloodDropsVector);
+								m_fBloodDropSize, &**m_pBloodDropsVector);
 			}
 		}
 		it++;

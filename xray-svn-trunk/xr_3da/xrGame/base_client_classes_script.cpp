@@ -156,8 +156,8 @@ void IRenderVisualScript::script_register		(lua_State *L)
 	module(L)
 	[
 		class_<IRenderVisual>("IRenderVisual")
-			.def(constructor<>())
-//			.def("dcast_PKinematicsAnimated",&IRenderVisual::dcast_PKinematicsAnimated)
+//			.def(constructor<>())
+			.def("dcast_PKinematicsAnimated",&IRenderVisual::dcast_PKinematicsAnimated)
 	];
 }
 
