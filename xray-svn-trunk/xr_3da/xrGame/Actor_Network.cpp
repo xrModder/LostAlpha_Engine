@@ -41,6 +41,7 @@
 #include "characterphysicssupport.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "clsid_game.h"
+#include "../xr_collide_form.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -63,20 +64,20 @@ CActor*			Actor()
 //--------------------------------------------------------------------
 void	CActor::ConvState(u32 mstate_rl, string128 *buf)
 {
-	strcpy(*buf,"");
-	if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		strcat(*buf,"Accel ");
-	if (mstate_rl&mcCrouch)		strcat(*buf,"Crouch ");
-	if (mstate_rl&mcFwd)		strcat(*buf,"Fwd ");
-	if (mstate_rl&mcBack)		strcat(*buf,"Back ");
-	if (mstate_rl&mcLStrafe)	strcat(*buf,"LStrafe ");
-	if (mstate_rl&mcRStrafe)	strcat(*buf,"RStrafe ");
-	if (mstate_rl&mcJump)		strcat(*buf,"Jump ");
-	if (mstate_rl&mcFall)		strcat(*buf,"Fall ");
-	if (mstate_rl&mcTurn)		strcat(*buf,"Turn ");
-	if (mstate_rl&mcLanding)	strcat(*buf,"Landing ");
-	if (mstate_rl&mcLLookout)	strcat(*buf,"LLookout ");
-	if (mstate_rl&mcRLookout)	strcat(*buf,"RLookout ");
-	if (m_bJumpKeyPressed)		strcat(*buf,"+Jumping ");
+	xr_strcpy(*buf,"");
+	if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		xr_strcat(*buf,"Accel ");
+	if (mstate_rl&mcCrouch)		xr_strcat(*buf,"Crouch ");
+	if (mstate_rl&mcFwd)		xr_strcat(*buf,"Fwd ");
+	if (mstate_rl&mcBack)		xr_strcat(*buf,"Back ");
+	if (mstate_rl&mcLStrafe)	xr_strcat(*buf,"LStrafe ");
+	if (mstate_rl&mcRStrafe)	xr_strcat(*buf,"RStrafe ");
+	if (mstate_rl&mcJump)		xr_strcat(*buf,"Jump ");
+	if (mstate_rl&mcFall)		xr_strcat(*buf,"Fall ");
+	if (mstate_rl&mcTurn)		xr_strcat(*buf,"Turn ");
+	if (mstate_rl&mcLanding)	xr_strcat(*buf,"Landing ");
+	if (mstate_rl&mcLLookout)	xr_strcat(*buf,"LLookout ");
+	if (mstate_rl&mcRLookout)	xr_strcat(*buf,"RLookout ");
+	if (m_bJumpKeyPressed)		xr_strcat(*buf,"+Jumping ");
 };
 //--------------------------------------------------------------------
 void CActor::net_Export	(NET_Packet& P)					// export to server
@@ -1367,10 +1368,10 @@ void dbg_draw_piramid (Fvector pos, Fvector dir, float size, float xdir, u32 col
 	
 	if (!Double)
 	{
-		RCache.dbg_DrawTRI(t, p0, p1, p4, color);
-		RCache.dbg_DrawTRI(t, p1, p2, p4, color);
-		RCache.dbg_DrawTRI(t, p2, p3, p4, color);
-		RCache.dbg_DrawTRI(t, p3, p0, p4, color);
+		DRender->dbg_DrawTRI(t, p0, p1, p4, color);
+		DRender->dbg_DrawTRI(t, p1, p2, p4, color);
+		DRender->dbg_DrawTRI(t, p2, p3, p4, color);
+		DRender->dbg_DrawTRI(t, p3, p0, p4, color);
 	}
 	else
 	{
@@ -1393,7 +1394,7 @@ void dbg_draw_piramid (Fvector pos, Fvector dir, float size, float xdir, u32 col
 
 void	CActor::OnRender_Network()
 {
-	RCache.OnFrameEnd();
+	DRender->OnFrameEnd();
 
 	//-----------------------------------------------------------------------------------------------------
 	float size = 0.2f;
