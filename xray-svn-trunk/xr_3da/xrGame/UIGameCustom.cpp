@@ -7,6 +7,7 @@
 #include "ui/UIXmlInit.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include "ui/UIDialogWnd.h"
 
 struct predicate_remove_stat {
 	bool	operator() (SDrawStaticStruct& s) {
@@ -114,7 +115,7 @@ void CUIGameCustom::RemoveDialogToRender(CUIWindow* pDialog)
 
 void CUIGameCustom::StartStopMenu(CUIWindow* pDialog, bool val)
 {
-	HUD().GetUI()->StartStopMenu(pDialog, val);
+	HUD().GetUI()->StartStopMenu((CUIDialogWnd *)pDialog, val);
 }
 
 CUIDialogWnd* CUIGameCustom::MainInputReceiver	()

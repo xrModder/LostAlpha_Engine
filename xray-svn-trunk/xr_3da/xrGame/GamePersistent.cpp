@@ -3,7 +3,7 @@
 #include "../fmesh.h"
 #include "../xr_ioconsole.h"
 #include "../gamemtllib.h"
-#include "../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/Kinematics.h"
 #include "profiler.h"
 #include "MainMenu.h"
 #include "UICursor.h"
@@ -21,6 +21,7 @@
 
 #include "../CameraManager.h"
 #include "actor.h"
+#include "script_engine.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -49,10 +50,11 @@ CGamePersistent::CGamePersistent(void)
 {
 	m_bPickableDOF				= false;
 	m_game_params.m_e_game_type	= GAME_ANY;
-	ambient_sound_next_time		= 0;
 	ambient_effect_next_time	= 0;
 	ambient_effect_stop_time	= 0;
 	ambient_particles			= 0;
+
+	ZeroMemory					(ambient_sound_next_time, sizeof(ambient_sound_next_time));
 
 	m_pUI_core					= NULL;
 	m_pMainMenu					= NULL;
@@ -226,22 +228,43 @@ void CGamePersistent::WeathersUpdate()
 		if (actor) bIndoor			= actor->renderable_ROS()->get_luminocity_hemi()<0.05f;
 
 		int data_set				= (Random.randF()<(1.f-Environment().CurrentEnv->weight))?0:1; 
-		CEnvDescriptor* _env		= Environment().Current[data_set]; VERIFY(_env);
+		CEnvDescriptor* const current_env	= Environment().Current[0]; 
+		VERIFY						(current_env);
+
+		CEnvDescriptor* const _env	= Environment().Current[data_set]; 
+		VERIFY						(_env);
+
 		CEnvAmbient* env_amb		= _env->env_ambient;
-		if (env_amb){
+
 			// start sound
-			if (Device.dwTimeGlobal > ambient_sound_next_time){
-				ref_sound* snd			= env_amb->get_rnd_sound();
-				ambient_sound_next_time	= Device.dwTimeGlobal + env_amb->get_rnd_sound_time();
-				if (snd){
+		if (env_amb){
+					CEnvAmbient::SSndChannelVec& vec	= _env->env_ambient->get_snd_channels();
+					CEnvAmbient::SSndChannelVecIt I		= vec.begin();
+					CEnvAmbient::SSndChannelVecIt E		= vec.end();
+
+			for (u32 idx=0; I!=E; ++I,++idx) {
+				CEnvAmbient::SSndChannel& ch = **I;
+				R_ASSERT						(idx<20);
+				if(ambient_sound_next_time[idx]==0)//first
+				{
+					ambient_sound_next_time[idx] = Device.dwTimeGlobal + ch.get_rnd_sound_first_time();
+				}else
+				if (Device.dwTimeGlobal > ambient_sound_next_time[idx])
+				{
+					ref_sound& snd			= ch.get_rnd_sound();
+
 					Fvector	pos;
 					float	angle		= ::Random.randF(PI_MUL_2);
 					pos.x				= _cos(angle);
 					pos.y				= 0;
 					pos.z				= _sin(angle);
-					pos.normalize		().mul(env_amb->get_rnd_sound_dist()).add(Device.vCameraPosition);
+					pos.normalize		().mul(ch.get_rnd_sound_dist()).add(Device.vCameraPosition);
 					pos.y				+= 10.f;
-					snd->play_at_pos	(0,pos);
+					snd.play_at_pos	(0,pos);
+
+					VERIFY							(snd._handle());
+					u32 _length_ms					= iFloor(snd.get_length_sec()*1000.0f);
+					ambient_sound_next_time[idx]	= Device.dwTimeGlobal + _length_ms + ch.get_rnd_sound_time();
 				}
 			}
 
@@ -323,7 +346,8 @@ void CGamePersistent::game_loaded()
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == GAME_SINGLE)
 		{
-			pApp->ClearTitle();
+//	TODO: Clear Title
+			//pApp->ClearTitle();
 
 			if (NULL!=m_intro)	return;
 

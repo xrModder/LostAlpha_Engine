@@ -885,6 +885,34 @@ shared_str game_sv_GameState::level_name		(const shared_str &server_options) con
 	return				(_GetItem(*server_options,0,l_name,'/'));
 }
 
+LPCSTR default_map_version	= "1.0";
+LPCSTR map_ver_string		= "ver=";
+
+shared_str game_sv_GameState::parse_level_version			(const shared_str &server_options)
+{
+	const char* map_ver = strstr(server_options.c_str(), map_ver_string);
+	string128	result_version;
+	if (map_ver)
+	{
+		map_ver += sizeof(map_ver_string);
+		if (strchr(map_ver, '/'))
+			strncpy_s(result_version, map_ver, strchr(map_ver, '/') - map_ver);
+		else
+			xr_strcpy(result_version, map_ver);
+	} else
+	{
+		xr_strcpy(result_version, default_map_version);
+	}
+	return shared_str(result_version);
+}
+
+shared_str game_sv_GameState::parse_level_name(const shared_str &server_options)
+{
+	string64			l_name = "";
+	VERIFY				(_GetItemCount(*server_options,'/'));
+	return				(_GetItem(*server_options,0,l_name,'/'));
+}
+
 void game_sv_GameState::on_death	(CSE_Abstract *e_dest, CSE_Abstract *e_src)
 {
 	CSE_ALifeCreatureAbstract	*creature = smart_cast<CSE_ALifeCreatureAbstract*>(e_dest);

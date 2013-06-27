@@ -161,7 +161,8 @@ CActor::CActor() : CEntityAlive()
 
 	m_fSprintFactor			= 4.f;
 
-	hFriendlyIndicator.create(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.QuadIB);
+//	TODO: Friendly Indicator
+	//hFriendlyIndicator.create(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.QuadIB);
 	m_actor_state.zero		 ();
 	m_pUsableObject			= NULL;
 
@@ -208,7 +209,8 @@ CActor::~CActor()
 
 	xr_delete				(m_pSleepEffector);
 
-	hFriendlyIndicator.destroy();
+//	TODO: Friendly Indicator
+//	hFriendlyIndicator.destroy();
 
 	xr_delete				(m_pPhysics_support);
 
@@ -1349,14 +1351,17 @@ void CActor::OnHUDDraw	(CCustomHUD* /**hud/**/)
 #endif
 }
 
-void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, const ui_shader& IndShader)
+void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, const ui_shader &IndShader)
 {
 	if (!g_Alive()) return;
 
 	u32			dwOffset = 0,dwCount = 0;
 //	FVF::LIT* pv_start				= (FVF::LIT*)RCache.Vertex.DEBUG_LOCK(4,hFriendlyIndicator->vb_stride,dwOffset);
-	FVF::LIT* pv_start				= (FVF::LIT*)RCache.Vertex.Lock(4,hFriendlyIndicator->vb_stride,dwOffset);
-	FVF::LIT* pv					= pv_start;
+//	FVF::LIT* pv_start				= (FVF::LIT*)RCache.Vertex.Lock(4,hFriendlyIndicator->vb_stride,dwOffset);
+//	FVF::LIT* pv					= pv_start;
+	UIRender->StartPrimitive(4, IUIRender::ptTriStrip, IUIRender::pttLIT);
+//TODO: Friendly Indicator
+
 	// base rect
 
 	CBoneInstance& BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(u16(m_head));
@@ -1380,18 +1385,30 @@ void CActor::RenderIndicator			(Fvector dpos, float r1, float r2, const ui_shade
 	b.add           (Vt,Vr);
 	c.invert        (a);
 	d.invert        (b);
+
+	UIRender->PushPoint(d.x+pos.x,d.y+pos.y,d.z+pos.z, 0xffffffff, 0.f,1.f);
+	UIRender->PushPoint(a.x+pos.x,a.y+pos.y,a.z+pos.z, 0xffffffff, 0.f,0.f);
+	UIRender->PushPoint(c.x+pos.x,c.y+pos.y,c.z+pos.z, 0xffffffff, 1.f,1.f);
+	UIRender->PushPoint(b.x+pos.x,b.y+pos.y,b.z+pos.z, 0xffffffff, 1.f,0.f);
+	/*
 	pv->set         (d.x+pos.x,d.y+pos.y,d.z+pos.z, 0xffffffff, 0.f,1.f);        pv++;
 	pv->set         (a.x+pos.x,a.y+pos.y,a.z+pos.z, 0xffffffff, 0.f,0.f);        pv++;
 	pv->set         (c.x+pos.x,c.y+pos.y,c.z+pos.z, 0xffffffff, 1.f,1.f);        pv++;
 	pv->set         (b.x+pos.x,b.y+pos.y,b.z+pos.z, 0xffffffff, 1.f,0.f);        pv++;
-	// render	
-	dwCount 				= u32(pv-pv_start);
-	RCache.Vertex.Unlock	(dwCount,hFriendlyIndicator->vb_stride);
+	*/
+	// render
+//TODO: Friendly Indicator
+	UIRender->CacheSetXformWorld(Fidentity);
+	UIRender->SetShader(*IndShader);
+	UIRender->FlushPrimitive();
 
-	RCache.set_xform_world		(Fidentity);
-	RCache.set_Shader			(IndShader);
-	RCache.set_Geometry			(hFriendlyIndicator);
-	RCache.Render	   			(D3DPT_TRIANGLESTRIP,dwOffset,0, dwCount, 0, 2);
+	//dwCount 				= u32(pv-pv_start);
+	//RCache.Vertex.Unlock	(dwCount,hFriendlyIndicator->vb_stride);
+
+	//RCache.set_xform_world		(Fidentity);
+	//RCache.set_Shader			(IndShader);
+	//RCache.set_Geometry			(hFriendlyIndicator);
+	//RCache.Render	   			(D3DPT_TRIANGLESTRIP,dwOffset,0, dwCount, 0, 2);
 };
 
 static float mid_size = 0.097f;

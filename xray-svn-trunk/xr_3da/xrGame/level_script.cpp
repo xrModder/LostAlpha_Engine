@@ -205,7 +205,7 @@ float cover_in_direction(u32 level_vertex_id, const Fvector &direction)
 
 float rain_factor()
 {
-	return			(g_pGamePersistent->Environment().CurrentEnv.rain_density);
+	return			(g_pGamePersistent->Environment().CurrentEnv->rain_density);
 }
 
 u32	vertex_in_direction(u32 level_vertex_id, Fvector direction, float max_distance)
@@ -437,7 +437,7 @@ CEnvironment *environment()
 
 CEnvDescriptor *current_environment(CEnvironment *self)
 {
-	return		(&self->CurrentEnv);
+	return		(self->CurrentEnv);
 }
 extern bool g_bDisableAllInput;
 extern bool g_bDisableKeyboardInput;
@@ -473,7 +473,7 @@ void iterate_sounds					(LPCSTR prefix, u32 max_count, const CScriptCallbackEx<v
 	for (int j=0, N = _GetItemCount(prefix); j<N; ++j) {
 		string_path					fn, s;
 		LPSTR						S = (LPSTR)&s;
-		_GetItem					(prefix,j,S);
+		_GetItem					(prefix,j,s);
 		if (FS.exist(fn,"$game_sounds$",S,".ogg"))
 			callback				(prefix);
 

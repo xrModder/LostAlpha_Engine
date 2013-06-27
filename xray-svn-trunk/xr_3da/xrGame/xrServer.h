@@ -89,9 +89,9 @@ private:
 	cheaters_t					m_cheaters;
 	
 	file_transfer::server_site*	m_file_transfers;
-	clientdata_proxy*			m_screenshot_proxies[MAX_PLAYERS_COUNT*2];
-	void	initialize_screenshot_proxies();
-	void	deinitialize_screenshot_proxies();
+	//clientdata_proxy*			m_screenshot_proxies[MAX_PLAYERS_COUNT*2];
+	//void	initialize_screenshot_proxies();
+	//void	deinitialize_screenshot_proxies();
 	
 	typedef server_updates_compressor::send_ready_updates_t::const_iterator update_iterator_t;
 	update_iterator_t			m_update_begin;
@@ -272,13 +272,17 @@ public:
 	virtual bool			HasPassword			()	{ return false; }
 	virtual bool			HasProtected		()	{ return false; }
 			void			AddCheater			(shared_str const & reason, ClientID const & cheaterID);
-			void			MakeScreenshot		(ClientID const & admin_id, ClientID const & cheater_id);
-			void			MakeConfigDump		(ClientID const & admin_id, ClientID const & cheater_id);
+
+	virtual void			MakeScreenshot		();
+	virtual void			MakeConfigDump		();
+			//void			MakeScreenshot		(ClientID const & admin_id, ClientID const & cheater_id);
+			//void			MakeConfigDump		(ClientID const & admin_id, ClientID const & cheater_id);
 
 			bool			HasBattlEye			();
 
 	virtual void			GetServerInfo		( CServerInfo* si );
-			void			SendPlayersInfo		(ClientID const & to_client);
+			//void			SendPlayersInfo		(ClientID const & to_client);
+	virtual void			SendPlayersInfo		();
 public:
 	xr_string				ent_name_safe		(u16 eid);
 #ifdef DEBUG

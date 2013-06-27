@@ -176,12 +176,16 @@ void		xrServer::client_Destroy	(IClient* C)
 			}else
 				break;
 		}while(true);
-		
+
+//TODO: do we really need update server?		
+/*		
+
 		if (pOwner)
 		{
 			game->CleanDelayedEventFor(pOwner->ID);
 		}
-		
+\
+*/
 //.		if (!alife_client->flags.bVerified)
 		xrClientData*	xr_client = static_cast<xrClientData*>(alife_client);
 		m_disconnected_clients.Add(xr_client); //xr_delete(alife_client);				
@@ -213,8 +217,9 @@ INT g_sv_SendUpdate = 0;
 
 void xrServer::Update	()
 {
-	if (Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())
-		return;								//diabling server when demo is playing
+//TODO: somebody need extended demo play?
+//	if (Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())
+//		return;								//disabling server when demo is playing
 
 	NET_Packet		Packet;
 
@@ -335,10 +340,12 @@ void xrServer::SendUpdatePacketsToAll()
 		{
 			m_last_updates_size += to_send.B.count;
 			SendBroadcast	(GetServerClient()->ID, to_send, net_flags(FALSE,TRUE));
+/*
 			if (Level().IsDemoSave())
 			{
 				Level().SavePacket(to_send);
 			}
+*/
 		}
 	}
 }
@@ -433,10 +440,12 @@ u32 xrServer::OnDelayedMessage	(NET_Packet& P, ClientID sender)			// Non-Zero me
 				SendTo				(sender,P_answ,net_flags(TRUE,TRUE));
 			}
 		}break;
+	/*
 		case M_FILE_TRANSFER:
 		{
 			m_file_transfers->on_message(&P, sender);
 		}break;
+	*/
 	}
 	VERIFY							(verify_entities());
 
@@ -576,6 +585,7 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 			xrClientData *l_pC			= ID_to_client(sender);
 			OnChatMessage				(&P, l_pC);
 		}break;
+/*
 	case M_SV_MAP_NAME:
 		{
 			xrClientData *l_pC			= ID_to_client(sender);
@@ -586,6 +596,7 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 			R_ASSERT(CL);
 			ProcessClientDigest			(CL, &P);
 		}break;
+*/
 	case M_CHANGE_LEVEL_GAME:
 		{
 			ClientID CID; CID.set		(0xffffffff);
@@ -595,18 +606,21 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 		{
 			game->AddDelayedEvent		(P,GAME_EVENT_PLAYER_AUTH, 0, sender);
 		}break;
+/*
 	case M_CREATE_PLAYER_STATE:
 		{
 			game->AddDelayedEvent		(P,GAME_EVENT_CREATE_PLAYER_STATE, 0, sender);
 		}break;
+*/
 	case M_STATISTIC_UPDATE:
 		{
 			SendBroadcast			(BroadcastCID,P,net_flags(TRUE,TRUE));
 		}break;
 	case M_STATISTIC_UPDATE_RESPOND:
 		{
+			/*
 			//client method for collecting statistics are called from two places : 1 - this, 2 - game_sv_mp::WritePlayerStats
-			if (GameID() != eGameIDSingle)
+			if (GameID() != GAME_SINGLE)
 			{
 				game_sv_mp* my_game = static_cast<game_sv_mp*>(game);
 				if (CL)
@@ -622,8 +636,9 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 				{
 					Msg("! ERROR: SV: update respond received from unknown sender");
 				}
-			}			
-			//if (SV_Client) SendTo	(SV_Client->ID, P, net_flags(TRUE, TRUE));
+			}	
+			*/
+			if (SV_Client) SendTo	(SV_Client->ID, P, net_flags(TRUE, TRUE));
 		}break;
 	case M_PLAYER_FIRE:
 		{
@@ -674,6 +689,7 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 	case M_BATTLEYE:
 		{
 		}break;
+/*
 	case M_FILE_TRANSFER:
 		{
 			AddDelayedPacket(P, sender);
@@ -686,6 +702,7 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 		{
 			OnSecureMessage(P, CL);
 		}break;
+*/
 	}
 
 	VERIFY							(verify_entities());
@@ -835,7 +852,7 @@ void			xrServer::Server_Client_Check	( IClient* CL )
 
 bool		xrServer::OnCL_QueryHost		() 
 {
-	if (game->Type() == eGameIDSingle) return false;
+	if (game->Type() == GAME_SINGLE) return false;
 	return (GetClientsCount() != 0); 
 };
 
@@ -1043,8 +1060,8 @@ extern	int		g_sv_ah_iReinforcementTime;
 extern	int		g_sv_mp_iDumpStatsPeriod;
 extern	BOOL	g_bCollectStatisticData;
 
-//xr_token game_types[];
-LPCSTR GameTypeToString(EGameIDs gt, bool bShort);
+xr_token game_types[];
+//LPCSTR GameTypeToString(EGameIDs gt, bool bShort);
 
 void xrServer::GetServerInfo( CServerInfo* si )
 {
@@ -1055,15 +1072,15 @@ void xrServer::GetServerInfo( CServerInfo* si )
 	LPCSTR time = InventoryUtilities::GetTimeAsString( Device.dwTimeGlobal, InventoryUtilities::etpTimeToSecondsAndDay ).c_str();
 	si->AddItem( "Uptime", time, RGB(255,228,0) );
 
-//	xr_strcpy( tmp256, get_token_name(game_types, game->Type() ) );
-	xr_strcpy( tmp256, GameTypeToString( game->Type(), true ) );
-	if ( game->Type() == eGameIDDeathmatch || game->Type() == eGameIDTeamDeathmatch )
+	xr_strcpy( tmp256, get_token_name(game_types, game->Type() ) );
+//	xr_strcpy( tmp256, GameTypeToString( game->Type(), true ) );
+	if ( game->Type() == GAME_DEATHMATCH || game->Type() == GAME_TEAMDEATHMATCH )
 	{
 		xr_strcat( tmp256, " [" );
 		xr_strcat( tmp256, itoa( g_sv_dm_dwFragLimit, tmp, 10 ) );
 		xr_strcat( tmp256, "] " );
 	}
-	else if ( game->Type() == eGameIDArtefactHunt || game->Type() == eGameIDCaptureTheArtefact )
+	else if ( game->Type() == GAME_ARTEFACTHUNT )
 	{
 		xr_strcat( tmp256, " [" );
 		xr_strcat( tmp256, itoa( g_sv_ah_dwArtefactsNum, tmp, 10 ) );
@@ -1077,7 +1094,7 @@ void xrServer::GetServerInfo( CServerInfo* si )
 		xr_strcat( tmp256, itoa( g_sv_dm_dwTimeLimit, tmp, 10 ) );
 		xr_strcat( tmp256, "] " );
 	}
-	if ( game->Type() == eGameIDArtefactHunt || game->Type() == eGameIDCaptureTheArtefact )
+	if ( game->Type() == GAME_ARTEFACTHUNT )
 	{
 		xr_strcat( tmp256, " RT [" );
 		xr_strcat( tmp256, itoa( g_sv_ah_iReinforcementTime, tmp, 10 ) );
@@ -1136,6 +1153,7 @@ void xrServer::KickCheaters			()
 	m_cheaters.clear();
 }
 
+/*
 void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheater_id)
 {
 	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
@@ -1153,6 +1171,7 @@ void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheate
 	}
 	Msg("! ERROR: SV: not enough file transfer proxies for downloading screenshot, please try later ...");
 }
+
 void xrServer::MakeConfigDump(ClientID const & admin_id, ClientID const & cheater_id)
 {
 	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
@@ -1186,7 +1205,7 @@ void xrServer::deinitialize_screenshot_proxies()
 		xr_delete(m_screenshot_proxies[i]);
 	}
 }
-
+*/
 struct PlayerInfoWriter
 {
 	NET_Packet*	dest;
@@ -1201,7 +1220,7 @@ struct PlayerInfoWriter
 		dest->w_stringZ(tmp_client->m_cdkey_digest);
 	}
 };//struct PlayerInfoWriter
-
+/*
 void xrServer::SendPlayersInfo(ClientID const & to_client)
 {
 	PlayerInfoWriter tmp_functor;
@@ -1212,3 +1231,4 @@ void xrServer::SendPlayersInfo(ClientID const & to_client)
 	ForEachClientDo		(tmp_functor);
 	SendTo				(to_client, tmp_packet, net_flags(TRUE, TRUE));
 }
+*/

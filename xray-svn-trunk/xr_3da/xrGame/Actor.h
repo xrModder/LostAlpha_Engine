@@ -616,6 +616,7 @@ virtual	bool				can_validate_position_on_spawn	(){return false;}
 	//---------------------------------------------
 #endif
 
+	//	TODO: Friendly Indicator
 	//ref_geom 				hFriendlyIndicator;
 
 	//////////////////////////////////////////////////////////////////////////

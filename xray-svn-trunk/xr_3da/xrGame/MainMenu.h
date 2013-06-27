@@ -127,6 +127,7 @@ public:
 	virtual void _BCL OnFrame							(void);
 	virtual void	StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual bool	UseIndicators					()						{return false;}
+	virtual	bool	CanSkipSceneRendering			(); 
 
 
 	void			OnDeviceCreate					();

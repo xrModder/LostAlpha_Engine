@@ -56,7 +56,8 @@ public:
 	// Loading
 	void					LoadBegin			();
 	void					LoadEnd				();
-	void					LoadTitleInt		(LPCSTR str1, LPCSTR str2, LPCSTR str3);
+	void					LoadTitleInt		(LPCSTR str1/*, LPCSTR str2, LPCSTR str3*/);
+	void					ClearTitle			();
 	void					LoadStage			();
 	void					LoadSwitch			();
 	void					LoadDraw			();
