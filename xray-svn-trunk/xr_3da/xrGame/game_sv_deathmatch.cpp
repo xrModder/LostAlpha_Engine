@@ -2079,3 +2079,20 @@ void game_sv_Deathmatch::WriteGameState(CInifile& ini, LPCSTR sect, bool bRoundR
 	}
 }
 
+void game_sv_Deathmatch::RespawnPlayerAsSpectator(IClient* client)
+{
+	xrClientData *l_pC		= static_cast<xrClientData*>(client);
+
+	if (!l_pC || !l_pC->net_Ready || !l_pC->ps)
+		return;
+	
+	game_PlayerState* ps	= l_pC->ps;
+
+	ps->clear				();
+	ps->pItemList.clear		();
+	ps->DeathTime			= Device.dwTimeGlobal - 1001;
+
+	SetPlayersDefItems		(ps);
+	Money_SetStart			(client->ID);
+	SpawnPlayer				(client->ID, "spectator");
+}

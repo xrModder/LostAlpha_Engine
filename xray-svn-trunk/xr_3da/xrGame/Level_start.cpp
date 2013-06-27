@@ -10,6 +10,17 @@
 #include "../IGame_Persistent.h"
 #include "../xr_ioconsole.h"
 #include "MainMenu.h"
+/*
+shared_str CLevel::OpenDemoFile(LPCSTR demo_file_name)
+{
+	PrepareToPlayDemo(demo_file_name);
+	return m_demo_server_options;
+}
+void CLevel::net_StartPlayDemo()
+{
+	net_Start(m_demo_server_options.c_str(), "localhost");
+}
+*/
 
 BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 {

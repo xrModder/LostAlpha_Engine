@@ -77,7 +77,7 @@ extern	int		g_sv_Skip_Winner_Waiting;
 extern	int 	g_sv_Wait_For_Players_Ready;
 extern	int 	G_DELAYED_ROUND_TIME;	
 extern	int		g_sv_Pending_Wait_Time;
-extern	int		g_sv_Client_Reconnect_Time;
+extern	u32		g_sv_Client_Reconnect_Time;
 		int		g_dwEventDelay			= 0	;
 
 void XRNETSERVER_API DumpNetCompressorStats	(bool brief);
@@ -1407,7 +1407,7 @@ void register_mp_console_commands()
 
 	//. CMD4(CCC_Integer,		"sv_pending_wait_time",		&g_sv_Pending_Wait_Time, 0, 60000);
 
-	CMD4(CCC_Integer,		"sv_client_reconnect_time",		&g_sv_Client_Reconnect_Time, 0, 60);
+	CMD4(CCC_Integer,		"sv_client_reconnect_time",		(int*)&g_sv_Client_Reconnect_Time, 0, 60);
 
 	CMD4(CCC_SV_Integer,	"sv_rpoint_freeze_time", (int*)&g_sv_base_dwRPointFreezeTime, 0, 60000);
 	CMD4(CCC_SV_Integer,	"sv_vote_enabled", &g_sv_base_iVotingEnabled, 0, 0x00FF);

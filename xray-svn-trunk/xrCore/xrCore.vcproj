@@ -1481,6 +1481,14 @@
 				Name="lzo"
 				>
 				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xrCore\lzo_compressor.cpp"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xrCore\lzo_compressor.h"
+					>
+				</File>
+				<File
 					RelativePath=".\rt_config1x.h"
 					>
 				</File>

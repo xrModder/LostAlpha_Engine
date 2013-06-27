@@ -273,16 +273,16 @@ public:
 	virtual bool			HasProtected		()	{ return false; }
 			void			AddCheater			(shared_str const & reason, ClientID const & cheaterID);
 
-	virtual void			MakeScreenshot		();
-	virtual void			MakeConfigDump		();
+			void			MakeScreenshot		();
+			void			MakeConfigDump		();
 			//void			MakeScreenshot		(ClientID const & admin_id, ClientID const & cheater_id);
 			//void			MakeConfigDump		(ClientID const & admin_id, ClientID const & cheater_id);
 
 			bool			HasBattlEye			();
 
-	virtual void			GetServerInfo		( CServerInfo* si );
+			void			GetServerInfo		( CServerInfo* si );
 			//void			SendPlayersInfo		(ClientID const & to_client);
-	virtual void			SendPlayersInfo		();
+			 void			SendPlayersInfo		();
 public:
 	xr_string				ent_name_safe		(u16 eid);
 #ifdef DEBUG

@@ -58,6 +58,13 @@ void xrServer::Perform_connect_spawn(CSE_Abstract* E, xrClientData* CL, NET_Pack
 	E->net_Processed	= TRUE;
 }
 
+void xrServer::SendConfigFinished(ClientID const & clientId)
+{
+	NET_Packet	P;
+	P.w_begin	(M_SV_CONFIG_FINISHED);
+	SendTo		(clientId, P, net_flags(TRUE,TRUE));
+}
+
 void xrServer::SendConnectionData(IClient* _CL)
 {
 	g_perform_spawn_ids.clear_not_free();

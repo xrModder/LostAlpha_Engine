@@ -8,6 +8,7 @@
 #include "GamePersistent.h"
 #include "UI.h"
 
+extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
 
 CFontManager::CFontManager()
 {
@@ -311,6 +312,15 @@ void CHUDManager::OnScreenResolutionChanged()
 
 	pUIGame->OnConnected				();
 	*/
+}
+
+bool   CHUDManager::RenderActiveItemUIQuery()
+{
+	return 0;
+}
+
+void   CHUDManager::RenderActiveItemUI()
+{
 }
 
 /*

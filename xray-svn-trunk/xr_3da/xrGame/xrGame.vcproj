@@ -23719,6 +23719,34 @@
 					>
 				</File>
 				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\file_transfer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\file_transfer.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filereceiver_node.cpp"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filereceiver_node.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_common.h"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_node.cpp"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_node.h"
+					>
+				</File>
+				<File
 					RelativePath=".\xr_Server_BattlEye.cpp"
 					>
 				</File>
@@ -23731,7 +23759,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\xrClientsPool.h"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrClientsPool.h"
 					>
 				</File>
 				<File
@@ -23801,15 +23829,77 @@
 					>
 				</File>
 				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_info.cpp"
+					>
+				</File>
+				<File
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_info.h"
+					>
+				</File>
+				<File
 					RelativePath="xrServer_Space.h"
 					>
 				</File>
 				<File
-					RelativePath=".\xrServer_updates_compressor.cpp"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_updates_compressor.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Mixed|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Mixed_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\xrServer_updates_compressor.h"
+					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_updates_compressor.h"
 					>
 				</File>
 				<Filter

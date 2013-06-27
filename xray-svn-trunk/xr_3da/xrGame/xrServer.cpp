@@ -1220,6 +1220,11 @@ struct PlayerInfoWriter
 		dest->w_stringZ(tmp_client->m_cdkey_digest);
 	}
 };//struct PlayerInfoWriter
+
+void xrServer::SendPlayersInfo()
+{
+}
+
 /*
 void xrServer::SendPlayersInfo(ClientID const & to_client)
 {

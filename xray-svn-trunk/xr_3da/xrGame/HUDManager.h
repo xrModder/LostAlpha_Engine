@@ -13,6 +13,7 @@ class CHUDManager :
 	friend class CUI;
 private:
 	CUI*					pUI;
+	CUIGameCustom*			pUIGame;
 	CHitMarker				HitMarker;
 	CHUDTarget*				m_pHUDTarget;
 	bool					b_online;
@@ -31,6 +32,7 @@ public:
 	virtual		void		RenderUI			();
 
 	virtual		IC CUI*		GetUI				(){return pUI;}
+		CUIGameCustom*		GetGameUI			(){return pUIGame;}
 
 				void		Hit					(int idx, float power, const Fvector& dir);
 	//CFontManager&			Font				()							{return *(UI().Font());}
@@ -47,8 +49,8 @@ public:
 	virtual void			OnDisconnected		();
 	virtual void			OnConnected			();
 
-	virtual	void			RenderActiveItemUI	();
-	virtual	bool			RenderActiveItemUIQuery();
+	void			RenderActiveItemUI	();
+	bool			RenderActiveItemUIQuery();
 
 	virtual void			net_Relcase			(CObject *object);
 };

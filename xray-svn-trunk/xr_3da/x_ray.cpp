@@ -995,7 +995,7 @@ CApplication::CApplication()
 	eStartLoad					= Engine.Event.Handler_Attach("KERNEL:load",this);
 	eDisconnect					= Engine.Event.Handler_Attach("KERNEL:disconnect",this);
 	eConsole					= Engine.Event.Handler_Attach("KERNEL:console",this);
-	eStartMPDemo				= Engine.Event.Handler_Attach("KERNEL:start_mp_demo",this);
+	//eStartMPDemo				= Engine.Event.Handler_Attach("KERNEL:start_mp_demo",this);
 
 	// levels
 	Level_Current				= u32(-1);
@@ -1037,7 +1037,7 @@ CApplication::~CApplication()
 	Engine.Event.Handler_Detach	(eStartLoad,this);
 	Engine.Event.Handler_Detach	(eStart,this);
 	Engine.Event.Handler_Detach	(eQuit,this);
-	Engine.Event.Handler_Detach	(eStartMPDemo,this);
+	//Engine.Event.Handler_Detach	(eStartMPDemo,this);
 	
 }
 
@@ -1126,6 +1126,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 		Console->ExecuteCommand		( command, false );
 		xr_free						(command);
 	}
+/*
 	else if (E == eStartMPDemo)
 	{
 		LPSTR demo_file				= LPSTR	(P1);
@@ -1138,7 +1139,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 		Device.Reset					(false);
 
 		g_pGameLevel					= (IGame_Level*)NEW_INSTANCE(CLSID_GAME_LEVEL);
-		shared_str server_options		= g_pGameLevel->OpenDemoFile(demo_file);
+		shared_str server_options;		= g_pGameLevel->OpenDemoFile(demo_file);
 		
 		//-----------------------------------------------------------
 		g_pGamePersistent->PreStart		(server_options.c_str());
@@ -1151,6 +1152,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 
 		xr_free						(demo_file);
 	}
+*/
 }
 
 static	CTimer	phase_timer		;

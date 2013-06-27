@@ -684,3 +684,8 @@ LPCSTR CMainMenu::GetGSVer()
 
 	return buff2;
 }
+
+bool CMainMenu::CanSkipSceneRendering()
+{
+	return IsActive() && !m_Flags.test(flGameSaveScreenshot);
+}
