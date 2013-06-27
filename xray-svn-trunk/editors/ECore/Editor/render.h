@@ -136,6 +136,8 @@ public:
 		void*							ppShader,
 		void*							ppErrorMsgs,
 		void*							ppConstantTable);
+
+	virtual bool					is_sun_static			(){return true;}
 };
 
 IC  float   CalcSSA(Fvector& C, float R)

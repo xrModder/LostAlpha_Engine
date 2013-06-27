@@ -16,13 +16,16 @@ void 	XRCORE_API		LogWinErr	(LPCSTR msg, long 			err_code);
 
 typedef void	( * LogCallback)	(LPCSTR string);
 LogCallback	XRCORE_API			SetLogCB	(LogCallback cb);
-void 	XRCORE_API				CreateLog	(BOOL no_log=FALSE, BOOL no_log_owerflow=FALSE);
+void 	XRCORE_API				CreateLog	(BOOL no_log=FALSE, BOOL no_log_overflow=FALSE);
 void 							InitLog		();
 void 							CloseLog	();
 void	XRCORE_API				FlushLog	();
 
 extern 	XRCORE_API	xr_vector<shared_str>*		LogFile;
 extern 	XRCORE_API	BOOL						LogExecCB;
+
+extern 	XRCORE_API	BOOL						no_log;
+extern 	XRCORE_API	BOOL						no_log_overflow;
 
 #endif
 

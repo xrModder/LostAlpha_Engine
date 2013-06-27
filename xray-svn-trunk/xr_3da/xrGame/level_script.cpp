@@ -25,6 +25,7 @@
 #include "script_engine.h"
 #include "game_cl_single.h"
 #include "../xr_input.h"
+#include "UIGameSP.h"
 
 #include "map_manager.h"
 #include "map_location.h"
@@ -639,6 +640,18 @@ int get_button_count(void)
 	return pInput->GetButtonCount();
 }
 
+void enable_pda_skills(bool val)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(pGameSP)pGameSP->EnableSkills(val);
+}
+
+void enable_pda_downloads(bool val)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if(pGameSP)pGameSP->EnableDownloads(val);
+}
+
 #include "level_sounds.h"
 void set_level_sound_enabled(bool state)
 {
@@ -682,11 +695,11 @@ void CLevel::script_register(lua_State *L)
 	[
 		// obsolete\deprecated
 		def("object_by_id",						get_object_by_id),
-		def("SendFakeEventKeyPressed",			send_event_key_pressed),
-		def("SendFakeEventKeyRelease",			send_event_key_release),
-		def("SendFakeEventKeyHold",				send_event_key_hold),
-		def("SendFakeEventMouseMove",			send_event_mouse_move),
-		def("SendFakeEventMouseWheel",			send_event_mouse_wheel),
+		def("send_event_key_pressed",			send_event_key_pressed),
+		def("send_event_key_release",			send_event_key_release),
+		def("send_event_key_hold",				send_event_key_hold),
+		def("send_event_mouse_move",			send_event_mouse_move),
+		def("send_event_mouse_wheel",			send_event_mouse_wheel),
 		
 #ifdef DEBUG
 		def("debug_object",						get_object_by_name),
@@ -713,6 +726,9 @@ void CLevel::script_register(lua_State *L)
 		def("is_save_allowed",					&is_save_allowed),
 
 		def("ai_ignore_actor",						&ai_ignore_actor),
+
+		def("enable_pda_skills",			&enable_pda_skills),
+		def("enable_pda_downloads",			&enable_pda_downloads),
 		
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),

@@ -123,6 +123,7 @@ public:
     CCommandVar			CommandChangeTarget		(CCommandVar p1, CCommandVar p2);
 	CCommandVar			CommandShowObjectList	(CCommandVar p1, CCommandVar p2);
     CCommandVar			CommandEnableTarget		(CCommandVar p1, CCommandVar p2);
+    CCommandVar			CommandShowTarget		(CCommandVar p1, CCommandVar p2);
     CCommandVar			CommandReadonlyTarget	(CCommandVar p1, CCommandVar p2);
     CCommandVar			CommandMultiRenameObjects(CCommandVar p1,CCommandVar p2);
 };

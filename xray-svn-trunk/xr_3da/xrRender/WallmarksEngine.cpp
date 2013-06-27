@@ -406,7 +406,7 @@ void CWallmarksEngine::Render()
 				continue	;
 			}
 
-#ifdef DEBUG
+#if 0	//lox: nah
 			if(W->used_in_render != Device.dwFrame)			
 			{
 				Log("W->used_in_render",W->used_in_render);

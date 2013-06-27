@@ -1079,6 +1079,7 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 			)
 #endif // #ifdef NO_SINGLE
 		{		
+			FlushLog						();
 			Console->Execute("main_menu off");
 			Console->Hide();
 //!			this line is commented by Dima

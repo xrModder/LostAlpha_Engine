@@ -10,7 +10,6 @@ CBlender_deffer_aref::CBlender_deffer_aref	(bool _lmapped) : lmapped(_lmapped)	{
 	oAREF.min			= 0;
 	oAREF.max			= 255;
 	oBlend.value		= FALSE;
-	description.version	= 1;
 }
 CBlender_deffer_aref::~CBlender_deffer_aref	()	{	}
 

@@ -32,7 +32,9 @@ public:
 	virtual int 		SelectionCount          (bool testflag);
 	virtual void		ShowObjects				(bool flag, bool bAllowSelectionFlag=false, bool bSelFlag=true);
 
-    virtual void		Clear					(bool bSpecific=false)=0;       
+    virtual void		Clear					(bool bSpecific=false)=0;   
+
+    virtual BOOL		IsVisible				() {return inherited::IsVisible();}    
 
     // validation
     virtual bool		Valid					();
@@ -57,7 +59,7 @@ public:
 
     virtual bool		Export          		(LPCSTR path);
     virtual bool		ExportGame         		(SExportStreams* F);
-    virtual bool		ExportStatic			(SceneBuilder* B);
+    virtual bool		ExportStatic			(SceneBuilder* B, bool b_selected_only);
 
     // properties
     virtual void		FillProp          		(LPCSTR pref, PropItemVec& items);

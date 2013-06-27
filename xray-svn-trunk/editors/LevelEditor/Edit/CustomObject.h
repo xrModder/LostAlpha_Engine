@@ -19,6 +19,7 @@ class CCustomMotion;
 class SAnimParams;
 struct SSceneSummary;
 class ESceneCustomOTools;
+class ESceneCustomMTools;
 
 struct SExportStreamItem{
 	int					chunk;
@@ -38,7 +39,7 @@ struct SExportStreams{
 
 class ECORE_API CCustomObject {
 	ObjClassID		FClassID;
-    ESceneCustomOTools* FParentTools;
+	ESceneCustomOTools* FParentTools;
 
 	SAnimParams*	m_MotionParams;
     COMotion*		m_Motion;
@@ -134,6 +135,7 @@ public:
 
 	virtual bool 	IsRender		();
 	virtual void 	Render			(int priority, bool strictB2F);
+        	void 	RenderRoot		(int priority, bool strictB2F);
 	virtual void 	OnFrame			();
     virtual void 	OnUpdateTransform();
 

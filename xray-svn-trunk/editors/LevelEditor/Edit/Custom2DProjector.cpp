@@ -7,6 +7,7 @@
 #include "SceneObject.h"
 #include "../ECore/Editor/EditObject.h"
 #include "../ECore/Editor/EditMesh.h"
+#include "../ECore/Editor/ui_main.h"
 
 //------------------------------------------------------------------------------
 // SBase
@@ -30,25 +31,52 @@ bool CCustom2DProjector::LoadImage(LPCSTR nm)
 void CCustom2DProjector::CreateRMFromObjects(const Fbox& box, ObjectList& lst)
 {
 	geom.destroy();
-    mesh.clear	();
-	for (ObjectIt it=lst.begin(); it!=lst.end(); it++){
-    	CSceneObject*	 S = (CSceneObject*)(*it);
-    	CEditableObject* O = S->GetReference(); VERIFY(O);
+	mesh.clear	();
 
-        Fmatrix T; S->GetFullTransformToWorld(T);
-        mesh.reserve	(mesh.size()+S->GetFaceCount()*3);
-        for (EditMeshIt m_it=O->FirstMesh(); m_it!=O->LastMesh(); m_it++){
-	        for (u32 f_id=0; f_id!=(*m_it)->GetFCount(); f_id++){
-            	FVF::V v;
-                for (int k=0; k<3; k++){
-                	T.transform_tiny(v.p,(*m_it)->GetVerts()[(*m_it)->GetFaces()[f_id].pv[k].pindex]);
+	SPBItem* pb = UI->ProgressStart(lst.size(),"Create RM from objects...");
+
+	for (ObjectIt it=lst.begin(); it!=lst.end(); it++)
+	{
+		CSceneObject*	 S = (CSceneObject*)(*it);
+		CEditableObject* O = S->GetReference(); VERIFY(O);
+
+		Fmatrix T;
+		S->GetFullTransformToWorld(T);
+		mesh.reserve	(mesh.size()+S->GetFaceCount()*3);
+
+		for (EditMeshIt m_it=O->FirstMesh(); m_it!=O->LastMesh(); m_it++)
+		{
+			bool big_mesh = ((*m_it)->GetFaceCount()>10000); //skyloader: terrain has > 10000 faces
+
+			SPBItem* pbm = 0;
+			if (big_mesh)
+			{
+				shared_str name = (*m_it)->Name().c_str();
+				AnsiString hint	= AnsiString("Create RM from big object (")+*(*m_it)->Name();
+				hint += ")";
+
+				pbm = UI->ProgressStart((*m_it)->GetFaceCount(),hint.c_str());
+			}
+
+			for (u32 f_id=0; f_id!=(*m_it)->GetFCount(); f_id++)
+			{
+				FVF::V	v;
+				for (int k=0; k<3; k++)
+				{
+					T.transform_tiny(v.p,(*m_it)->GetVerts()[(*m_it)->GetFaces()[f_id].pv[k].pindex]);
 					v.t.x = GetUFromX(v.p.x,box);
 					v.t.y = GetVFromZ(v.p.z,box);
-                    mesh.push_back(v);
-                }
-            }
-        }
-    }
+					mesh.push_back(v);
+				}
+				if (big_mesh)
+					pbm->Inc();
+			}
+			if (big_mesh)
+				UI->ProgressEnd(pbm);
+		}
+		pb->Inc();
+	}
+	UI->ProgressEnd(pb);
 	geom.create(FVF::F_V,RCache.Vertex.Buffer(),0);
 }
 

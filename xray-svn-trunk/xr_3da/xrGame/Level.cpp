@@ -348,13 +348,13 @@ void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 	CObject*	 O	= Objects.net_Find	(dest);
 	if (0==O)		{
 #ifdef DEBUG
-		Msg("* WARNING: c_EVENT[%d] to [%d]: unknown dest",type,dest);
+		Msg("* WARNING: c_EVENT[%d] to object: can't find object with id [%d]",type,dest);
 #endif // DEBUG
 		return;
 	}
 	CGameObject* GO = smart_cast<CGameObject*>(O);
 	if (!GO)		{
-		Msg("! ERROR: c_EVENT[%d] : non-game-object",dest);
+		Msg("! ERROR: c_EVENT[%d] to object: is not gameobject",dest);
 		return;
 	}
 	if (type != GE_DESTROY_REJECT)

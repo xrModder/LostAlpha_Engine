@@ -163,7 +163,7 @@
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/FreeImage;../../SDK/luabind/luabind;../../SDK/boost_1_30_0;../../SDK/Xiph/Include;../../SDK/MagicSoftware/Sdk/Include"
-				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0"
+				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,AI_COMPILER;_SECURE_SCL=0;PRIQUEL"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="2"

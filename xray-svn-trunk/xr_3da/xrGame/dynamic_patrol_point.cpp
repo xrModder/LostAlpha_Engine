@@ -17,6 +17,9 @@ CDynamicPatrolPoint::CDynamicPatrolPoint(const CPatrolPath *path, CDynamicPatrol
 {
 	if (old != NULL)
 	{
+#ifdef DEBUG
+		old->initialized(true);
+#endif
 		set_name						(*old->name());
 		set_position					(old->position());
 		set_level_vertex_id				(old->level_vertex_id());

@@ -344,12 +344,12 @@ shared_str game_sv_Single::level_name			(const shared_str &server_options) const
 
 void game_sv_Single::on_death					(CSE_Abstract *e_dest, CSE_Abstract *e_src)
 {
-	inherited::on_death		(e_dest,e_src);
-
 	if (!ai().get_alife())
 		return;
 
 	alife().on_death		(e_dest,e_src);
+
+	inherited::on_death		(e_dest,e_src);
 }
 
 void game_sv_Single::restart_simulator			(LPCSTR saved_game_name)

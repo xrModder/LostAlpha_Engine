@@ -26,6 +26,89 @@ void  CParticleTools::OnControlClick(ButtonValue* sender, bool& bDataModified, b
     bDataModified	= false;
 }
 
+void  CParticleTools::OnFileClick(ButtonValue* sender, bool& bDataModified, bool& bSafe)
+{
+    switch (sender->btn_num){
+	case 0: // import
+	{
+		xr_string fn;
+		if (EFS.GetOpenName("$sparticles$",fn))
+		{
+			LPCSTR ext	= strext(fn.c_str());
+			if (0==stricmp(ext,".pe"))
+			{
+				PS::CPEDef* PE=xr_new<PS::CPEDef>();
+
+				IReader* R = FS.r_open(fn.c_str());
+				PE->Load(*R);
+				FS.r_close(R);
+
+				PTools->AppendPE(PE);
+				PTools->Modified();
+			} else if (0==stricmp(ext,".pg")) {
+				PS::CPGDef* PG=xr_new<PS::CPGDef>();
+
+				IReader* R = FS.r_open(fn.c_str());
+				PG->Load(*R);
+				FS.r_close(R);
+
+				PTools->AppendPG(PG);
+				PTools->Modified();
+			}
+
+			bDataModified = false;
+		} else
+			bDataModified = false;
+	} break;
+	case 1:  // export
+	{
+
+		TElTreeItem* pNode = m_PList->GetSelected(); //get current item
+		if (pNode&&FHelper.IsObject(pNode))
+		{
+			AnsiString full_name;
+			FHelper.MakeName(pNode,0,full_name,false);
+
+			xr_string fn;
+
+			PS::CPEDef* PE=FindPE(full_name.c_str());
+			if (PE)
+			{
+				if (EFS.GetSaveName("$sparticlespe$",fn))
+				{
+					IWriter* W = FS.w_open(fn.c_str());
+					if (W)
+					{
+						PE->Save	(*W);
+						FS.w_close	(W);
+					} else
+						Log			("!Can't export particle:",fn.c_str());
+				}
+			}else{
+				PS::CPGDef* PG=FindPG(full_name.c_str());
+				if (PG)
+				{
+					if (EFS.GetSaveName("$sparticlespg$",fn))
+					{
+						IWriter* W = FS.w_open(fn.c_str());
+						if (W)
+						{
+							PG->Save	(*W);
+							FS.w_close	(W);
+						} else
+							Log			("!Can't export particle:",fn.c_str());
+					}
+				}
+			}
+
+			bDataModified = false;
+		}else{
+			ELog.DlgMsg(mtInformation, "At first select object.");
+		}
+	} break;
+    }
+}
+
 void CParticleTools::OnParticleItemFocused(ListItemsVec& items)
 {
 	PropItemVec props;
@@ -35,6 +118,9 @@ void CParticleTools::OnParticleItemFocused(ListItemsVec& items)
 	B=PHelper().CreateButton	(props,"Transform\\Edit",	"Reset",	ButtonValue::flFirstOnly);
     B->OnBtnClickEvent.bind		(this,&CParticleTools::OnControlClick);
     PHelper().CreateFlag32		(props,"Transform\\Type",	&m_Flags,	flSetXFORM,"Update","Set");
+
+	B=PHelper().CreateButton	(props,"File\\Edit",	"Add, Export",	ButtonValue::flFirstOnly);
+    B->OnBtnClickEvent.bind		(this,&CParticleTools::OnFileClick);
     
     // reset to default
     ResetCurrent	();
@@ -60,6 +146,10 @@ void CParticleTools::OnParticleItemFocused(ListItemsVec& items)
             }
         }
     }
+
+    //play current
+    PlayCurrent();
+
 	m_ItemProps->AssignItems(props);
     UI->RedrawScene();
 }

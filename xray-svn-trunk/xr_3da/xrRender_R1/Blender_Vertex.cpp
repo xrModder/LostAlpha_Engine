@@ -14,7 +14,6 @@
 CBlender_Vertex::CBlender_Vertex()
 {
 	description.CLS		        = B_VERT;
-	description.version         = 1;
 	oTessellation.Count         = 4;
 	oTessellation.IDselected	= 0;
 }

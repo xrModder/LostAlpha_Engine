@@ -6,9 +6,14 @@
 //	Description : Server objects for ALife simulator, script export, the third part
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects_ALife_Monsters.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
 
 #ifdef XRGAME_EXPORTS
@@ -18,6 +23,14 @@
 using namespace luabind;
 
 #pragma optimize("s",on)
+
+
+void set_yaw (CSE_ALifeObjectPhysic *obj, const float yaw)
+{
+	obj->o_Angle.y = yaw;
+}
+
+
 void CSE_ALifeObjectHangingLamp::script_register(lua_State *L)
 {
 	module(L)[
@@ -38,6 +51,7 @@ void CSE_ALifeObjectPhysic::script_register(lua_State *L)
 			CSE_ALifeDynamicObjectVisual,
 			CSE_PHSkeleton
 		)
+		.def("set_yaw",				&set_yaw)
 	];
 }
 

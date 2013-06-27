@@ -112,9 +112,9 @@ bool ESceneCustomOTools::ExportGame(SExportStreams* F)
 }
 //----------------------------------------------------
 
-bool ESceneCustomOTools::ExportStatic(SceneBuilder* B)
+bool ESceneCustomOTools::ExportStatic(SceneBuilder* B, bool b_selected_only)
 {
-	return B->ParseStaticObjects(m_Objects);
+	return B->ParseStaticObjects(m_Objects, NULL, b_selected_only);
 }
 //----------------------------------------------------
  

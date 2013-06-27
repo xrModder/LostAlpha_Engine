@@ -1,6 +1,11 @@
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
 
 using namespace luabind;

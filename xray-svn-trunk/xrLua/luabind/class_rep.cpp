@@ -1541,7 +1541,7 @@ int luabind::detail::class_rep::static_class_gettable(lua_State* L)
 		return 1;
 	}
 
-#ifndef LUABIND_NO_ERROR_CHECKING
+#if 0//#ifndef LUABIND_NO_ERROR_CHECKING
 
 	{
 		string_class msg = "no static '";

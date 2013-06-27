@@ -6,9 +6,14 @@
 //	Description : Server objects script export
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects.h"
-#include "script_space.h"
 #include "phnetstate.h"
 #include "xrServer_script_macroses.h"
 #include "script_ini_file.h"
@@ -83,11 +88,20 @@ struct CWrapperBase : public T, public luabind::wrap_base {
 void CPureServerObject::script_register(lua_State *L)
 {
 	module(L)[
+
+#ifdef XRSE_FACTORY_EXPORTS
 		class_<IPureLîadableObject<IReader> >
+#else // XRSE_FACTORY_EXPORTS
+		class_<IPureLoadableObject<IReader> >
+#endif // XRSE_FACTORY_EXPORTS
 			("ipure_alife_load_object"),
 		class_<IPureSavableObject<IWriter> >
 			("ipure_alife_save_object"),
+#ifdef XRSE_FACTORY_EXPORTS
 		class_<IPureSerializeObject<IReader,IWriter>,bases<IPureLîadableObject<IReader>,IPureSavableObject<IWriter> > >
+#else // XRSE_FACTORY_EXPORTS
+		class_<IPureSerializeObject<IReader,IWriter>,bases<IPureLoadableObject<IReader>,IPureSavableObject<IWriter> > >
+#endif // XRSE_FACTORY_EXPORTS
 			("ipure_alife_load_save_object"),
 		class_<IPureServerObject,IPureSerializeObject<IReader,IWriter> >
 			("ipure_server_object"),
@@ -112,6 +126,7 @@ void CSE_Abstract::script_register(lua_State *L)
 			.def			("name",			&get_name)
 			.def			("clsid",			&BaseType::script_clsid)
 			.def			("spawn_ini",		&get_spawn_ini)
+			.def			("set_custom_data",	&BaseType::set_custom_data)
 			.def			("STATE_Read",		&BaseType::STATE_Read, &WrapType::STATE_Read_static)
 			.def			("STATE_Write",		&BaseType::STATE_Write, &WrapType::STATE_Write_static)
 			.def			("UPDATE_Read",		&BaseType::UPDATE_Read, &WrapType::UPDATE_Read_static)
@@ -136,6 +151,8 @@ void CSE_Visual::script_register(lua_State *L)
 			("cse_visual")
 //			.def(		constructor<>())
 //			.def(		constructor<LPCSTR>())
+			.def("set_startup_animation",	&CSE_Visual::set_startup_animation)
+			.def("get_startup_animation",	&CSE_Visual::get_startup_animation)
 	];
 }
 

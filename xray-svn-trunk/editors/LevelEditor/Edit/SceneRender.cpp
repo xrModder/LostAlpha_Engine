@@ -12,7 +12,7 @@
 #define RENDER_OBJECT(P,B)\
 {\
     try{\
-        (N->val)->Render(P,B);\
+        (N->val)->RenderRoot(P,B);\
     }catch(...){\
         ELog.DlgMsg(mtError, "Please notify AlexMX!!! Critical error has occured in render routine!!! [Type B] - Tools: '%s' Object: '%s'",(N->val)->ParentTools->ClassName(),(N->val)->Name);\
     }\

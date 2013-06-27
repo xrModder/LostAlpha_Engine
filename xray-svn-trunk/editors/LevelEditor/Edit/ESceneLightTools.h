@@ -66,6 +66,7 @@ public:
     
     virtual void		BeforeRender			();
     virtual void		OnRender				(int priority, bool strictB2F);
+		void		OnRenderRoot			(int priority, bool strictB2F){if(IsVisible())OnRender(priority, strictB2F);};
     virtual void		AfterRender				();
 
 	void 				SelectLightsForObject	(CCustomObject* obj);

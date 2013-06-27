@@ -837,7 +837,7 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 	rec_files.clear	();
 	//-----------------------------------------------------------
 
-	CreateLog		(0!=strstr(Core.Params,"-no_log"),0!=strstr(Core.Params,"-no_log_overflow"));
+	CreateLog		(0!=strstr(Core.Params,"-nolog"),0==strstr(Core.Params,"-shortlog"));
 
 }
 
@@ -1140,8 +1140,7 @@ void CLocatorAPI::file_from_archive	(IReader *&R, LPCSTR fname, const file &desc
 
 	string512					temp;
 	xr_sprintf					(temp, sizeof(temp),"%s:%s",*A.path,fname);
-
-#ifdef DEBUG
+#	ifdef FS_DEBUG
 	register_file_mapping		(ptr,sz,temp);
 #endif // DEBUG
 
@@ -1156,9 +1155,8 @@ void CLocatorAPI::file_from_archive	(IReader *&R, LPCSTR fname, const file &desc
 	rtc_decompress				(dest,desc.size_real,ptr+ptr_offs,desc.size_compressed);
 	R							= xr_new<CTempReader>(dest,desc.size_real,0);
 	UnmapViewOfFile				(ptr);
-
-#ifdef DEBUG
-	unregister_file_mapping		(ptr,sz);
+#	ifdef FS_DEBUG	
+unregister_file_mapping		(ptr,sz);
 #endif // DEBUG
 }
 

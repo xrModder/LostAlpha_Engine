@@ -12,7 +12,13 @@
 #include "pure.h"
 //#include "hw.h"
 #include "../xrcore/ftimer.h"
-#include "stats.h"
+
+#ifdef __BORLANDC__
+#	include "..\editors\ECore\Editor\estats.h"
+#else
+#	include "Stats.h"
+#endif
+
 //#include "shader.h"
 //#include "R_Backend.h"
 

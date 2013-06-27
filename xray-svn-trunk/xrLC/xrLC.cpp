@@ -38,6 +38,7 @@ static const char* h_str =
 	"-f<NAME>		== compile level in GameData\\Levels\\<NAME>\\\n"
 	"-noinvalidfaces	== invalid faces detection\n"
 	"-t<NUM>			== numbers of threads \n"
+	"-high				== high priority \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 
@@ -161,7 +162,7 @@ int APIENTRY WinMain(HINSTANCE hInst,
 	g_dummy_stuff		= &trivial_encryptor::encode;
 
 	// Initialize debugging
-	Core._initialize	("xrLC");
+	Core._initialize	("xrlc_la");
 	Startup				(lpCmdLine);
 	Core._destroy		();
 	

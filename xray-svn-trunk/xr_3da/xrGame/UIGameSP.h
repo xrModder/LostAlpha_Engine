@@ -40,7 +40,8 @@ public:
 
 	virtual void		HideShownDialogs		();
 
-	void				ReloadPdaWnd		();
+	void				EnableSkills		(bool val);
+	void				EnableDownloads		(bool val);
 
 	CUIInventoryWnd*	InventoryMenu;
 	CUIPdaWnd*			PdaMenu;

@@ -24,12 +24,14 @@ public:
     	flEnable		= (1<<0),
     	flReadonly		= (1<<1),
     	flForceReadonly	= (1<<2),
+    	flVisible		= (1<<3),
     };
     Flags32				m_EditFlags;
     BOOL				IsEnabled				(){return m_EditFlags.is(flEnable);}
     BOOL				IsEditable				(){return !m_EditFlags.is_any(flReadonly|flForceReadonly);}
     BOOL				IsReadonly				(){return m_EditFlags.is(flReadonly);}
     BOOL				IsForceReadonly			(){return m_EditFlags.is(flForceReadonly);}
+    BOOL				IsVisible				(){return m_EditFlags.is(flVisible);}
 public:
 	// modifiers
     shared_str			m_ModifName;
@@ -112,7 +114,7 @@ public:
     virtual bool		Export          		(LPCSTR path){return true;}
     virtual bool		ExportGame         		(SExportStreams* F){return true;}
 
-    virtual bool		ExportStatic			(SceneBuilder* B){return true;}
+    virtual bool		ExportStatic			(SceneBuilder* B, bool b_selected_only){return true;}
     virtual void		GetStaticDesc			(int& v_cnt, int& f_cnt){}
 
     // properties

@@ -368,6 +368,7 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 	for(; it!=m_ChildWndList.rend(); ++it)
 	{
 		CUIWindow* w	= (*it);
+		R_ASSERT2(w, make_string("Incorrect window in childlist - [%s]",*m_windowName));
 		Frect wndRect	= w->GetWndRect();
 		if (wndRect.in(cursor_pos) )
 		{
@@ -541,16 +542,12 @@ void CUIWindow::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	//оповестить дочерние окна
 	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end()!=it; ++it)
 	{
-
-#ifdef DEBUG
-		R_ASSERT2((*it), make_string("'%s' has a null child(%d) registered!", *m_windowName, m_ChildWndList.end() - it));
-#else
-		if(!(*it))
-			Msg("! '%s' has a null child(%d) registered!", *m_windowName, m_ChildWndList.end() - it);
-		else
-#endif
-		if ((*it)->IsEnabled())
-			(*it)->SendMessage(pWnd,msg,pData);
+		if (*it)
+		{
+			if ((*it)->IsEnabled())
+				(*it)->SendMessage(pWnd,msg,pData);
+		} else
+			Msg("! '%s' has a null child registered!", *m_windowName);
 	}
 }
 

@@ -117,7 +117,7 @@ public:
     virtual bool		LoadSelection      		(IReader&);
     virtual void		SaveSelection      		(IWriter&);
     virtual bool   		Export          		(LPCSTR fn);
-	virtual bool 		ExportStatic			(SceneBuilder* B);
+	virtual bool 		ExportStatic			(SceneBuilder* B, bool b_selected_only);
 	virtual void 		GetStaticDesc			(int& v_cnt, int& f_cnt);
 
 	// device dependent funcs    

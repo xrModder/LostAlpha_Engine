@@ -39,6 +39,9 @@ protected:
 public:
 											CPatrolPoint		(const CLevelGraph *level_graph, const CGameLevelCrossTable *cross, const CGameGraph *game_graph, const CPatrolPath *path, const Fvector &position, u32 level_vertex_id, u32 flags, shared_str name);
 											CPatrolPoint		(const CPatrolPath *path = 0);
+#ifdef DEBUG
+	IC		void					initialized				(bool value);
+#endif
 	virtual		void						load				(IReader &stream);
 	virtual		void						save				(IWriter &stream);
 	virtual		CPatrolPoint				&load_raw			(const CLevelGraph *level_graph, const CGameLevelCrossTable *cross, const CGameGraph *game_graph, IReader &stream);

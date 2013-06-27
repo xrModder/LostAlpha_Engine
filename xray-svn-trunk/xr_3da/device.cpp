@@ -142,7 +142,7 @@ void CRenderDevice::End		(void)
 
 			CheckPrivilegySlowdown							();
 			
-			if(g_pGamePersistent->GameType()==1)//haCk
+			if(g_pGamePersistent->GameType()==1) // hack
 			{
 				WINDOWINFO	wi;
 				GetWindowInfo(m_hWnd,&wi);
@@ -205,6 +205,7 @@ void 			mt_Thread	(void *ptr)	{
 void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_user_input)
 {
 	if (m_pRender->GetForceGPU_REF()) amount=0;
+
 #ifdef DEDICATED_SERVER
 	amount = 0;
 #endif
@@ -428,7 +429,6 @@ void CRenderDevice::Run			()
 //	DeleteCriticalSection	(&mt_csEnter);
 //	DeleteCriticalSection	(&mt_csLeave);
 }
-
 u32 app_inactive_time		= 0;
 u32 app_inactive_time_start = 0;
 

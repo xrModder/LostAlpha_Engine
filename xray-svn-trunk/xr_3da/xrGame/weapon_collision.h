@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include "../envelope.h"
+
 class CWeaponCollision
 {
 	public:
@@ -17,11 +19,12 @@ class CWeaponCollision
 		void CheckState();
 
 	private:
-		float	fReminderDist;
-		float	fReminderNeedDist;
-		float	fReminderStrafe;
-		float	fReminderNeedStrafe;
-		bool	bFirstUpdate;
-		u32	dwMState;
-		bool	is_limping;
+		float		fReminderDist;
+		float		fReminderNeedDist;
+		CEnvelope*	fReminderStrafe;
+		float		fReminderNeedStrafe;
+		float		fNewStrafeTime;
+		bool		bFirstUpdate;
+		u32		dwMState;
+		bool		is_limping;
 };

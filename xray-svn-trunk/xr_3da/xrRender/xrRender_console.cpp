@@ -13,8 +13,15 @@ xr_token							qpreset_token							[ ]={
 	{ "Extreme",					4											},
 	{ 0,							0											}
 };
-
-u32			ps_r_ssao_mode			=	2;
+u32			ps_r_smap_size			=	2; //default
+xr_token							qsmap_size_token						[ ]={
+	{ "Low",					0											},
+	{ "Default",					1											},
+	{ "High",						2											},
+	{ "Extreme",						3											},
+	{ 0,							0											}
+};
+u32			ps_r_ssao_mode			=	1;
 xr_token							qssao_mode_token						[ ]={
 	{ "disabled",					0											},
 	{ "default",					1											},
@@ -82,9 +89,9 @@ xr_token							qminmax_sm_token					[ ]={
 	{ 0,							0												}
 };
 
-//	ìOffî
-//	ìDX10.0 style [Standard]î
-//	ìDX10.1 style [Higher quality]î
+//	‚ÄúOff‚Äù
+//	‚ÄúDX10.0 style [Standard]‚Äù
+//	‚ÄúDX10.1 style [Higher quality]‚Äù
 
 // Common
 extern int			psSkeletonUpdate;
@@ -398,6 +405,47 @@ public:
 				break;
 			}
 		}
+	}
+};
+
+//skyloader: shadow map size
+class	CCC_SMapSize_Mode		: public CCC_Token
+{
+public:
+	CCC_SMapSize_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N,V,T)	{}	;
+
+	virtual void	Execute	(LPCSTR args)	{
+		CCC_Token::Execute	(args);
+
+#if RENDER==R_R2
+		switch	(*value)
+		{
+			case 0:
+			{
+				RImplementation.o.smapsize	= 1536;
+				//ps_r2_ls_squality		= .5f; //skyloader: enable or not?
+				break;
+			}
+			case 1:
+			{
+				RImplementation.o.smapsize	= 2560;
+				//ps_r2_ls_squality		= .7f; //skyloader: enable or not?
+				break;
+			}
+			case 2:
+			{
+				RImplementation.o.smapsize	= 3072;
+				//ps_r2_ls_squality		= 1.f; //skyloader: enable or not?
+				break;
+			}
+			case 3:
+			{
+				RImplementation.o.smapsize	= 4096;
+				//ps_r2_ls_squality		= 1.f; //skyloader: enable or not?
+				break;
+			}
+		}
+#endif
 	}
 };
 
@@ -844,8 +892,8 @@ void		xrRender_initconsole	()
 //	float		ps_r2_dof_focus			= 1.4f;					// 1.4f
 	
 	CMD3(CCC_Mask,		"r2_volumetric_lights",			&ps_r2_ls_flags,			R2FLAG_VOLUMETRIC_LIGHTS);
-//	CMD3(CCC_Mask,		"r2_sun_shafts",				&ps_r2_ls_flags,			R2FLAG_SUN_SHAFTS);
 	CMD3(CCC_Token,		"r2_sun_shafts",				&ps_r_sun_shafts,			qsun_shafts_token);
+	CMD3(CCC_SMapSize_Mode,	"r2_smap_size",					&ps_r_smap_size,			qsmap_size_token);
 	CMD3(CCC_SSAO_Mode,	"r2_ssao_mode",					&ps_r_ssao_mode,			qssao_mode_token);
 	CMD3(CCC_Token,		"r2_ssao",						&ps_r_ssao,					qssao_token);
 	CMD3(CCC_Mask,		"r2_ssao_blur",                 &ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_BLUR);//Need restart

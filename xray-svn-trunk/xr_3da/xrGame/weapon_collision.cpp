@@ -25,7 +25,7 @@ void CWeaponCollision::Load()
 	fReminderDist		= 0;
 	fReminderNeedDist	= 0;
 	bFirstUpdate		= true;
-	fReminderStrafe		= 0;
+	fReminderStrafe		= xr_new<CEnvelope>();
 	fReminderNeedStrafe	= 0;
 }
 
@@ -36,8 +36,8 @@ void CWeaponCollision::CheckState()
 }
 
 static const float SPEED_REMINDER = 1.f;
-static const float SPEED_REMINDER_STRAFE = 0.5f;
-static const float STRAFE_ANGLE = 0.15f;
+static const u16 TIME_REMINDER_STRAFE = 300;
+static const float STRAFE_ANGLE = 0.1f;
 
 extern Flags32 psActorFlags;
 
@@ -55,8 +55,9 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 		fReminderDist		= xyz.z;
 		fReminderNeedDist	= xyz.z;
 		bFirstUpdate		= false;
-		fReminderStrafe		= dir.z;
 		fReminderNeedStrafe	= dir.z;
+		fReminderStrafe->InsertKey(Device.dwTimeGlobal, dir.z);
+		fNewStrafeTime	= Device.dwTimeGlobal;
 	}
 
 	if (range < 0.8f && !is_zoom)
@@ -86,42 +87,60 @@ void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
 
 	if (!psActorFlags.test(AF_STRAFE_INERT)) return;
 
-	if (dwMState&ACTOR_DEFS::mcLStrafe || dwMState&ACTOR_DEFS::mcRStrafe)
+	float fLastStrafe = fReminderNeedStrafe;
+	if ((dwMState&ACTOR_DEFS::mcLStrafe || dwMState&ACTOR_DEFS::mcRStrafe) && !is_zoom)
 	{
 		float k	= ((dwMState & ACTOR_DEFS::mcCrouch) ? 0.5f : 1.f);
 		if (dwMState&ACTOR_DEFS::mcLStrafe)
 			k *= -1.f;
-		if (is_zoom) k = 0.f;
 
 		fReminderNeedStrafe	= dir.z + (STRAFE_ANGLE * k);
 
 		if (dwMState&ACTOR_DEFS::mcFwd || dwMState&ACTOR_DEFS::mcBack)
 			fReminderNeedStrafe	/= 2.f;
 
-	} else fReminderNeedStrafe = 0.f;
+	} else fReminderNeedStrafe = dir.z;
 
-	if (!fsimilar(fReminderStrafe, fReminderNeedStrafe)) {
-		if (fReminderStrafe < fReminderNeedStrafe)
-		{
-			fReminderStrafe += SPEED_REMINDER_STRAFE * Device.fTimeDelta;
-			if (fReminderStrafe > fReminderNeedStrafe)
-				fReminderStrafe = fReminderNeedStrafe;
-		} else if (fReminderStrafe > fReminderNeedStrafe)
-		{
-			fReminderStrafe -= SPEED_REMINDER_STRAFE * Device.fTimeDelta;
-			if (fReminderStrafe < fReminderNeedStrafe)
-				fReminderStrafe = fReminderNeedStrafe;
-		}
+	float result;
+	if (fNewStrafeTime>(float)Device.dwTimeGlobal)
+		result = fReminderStrafe->Evaluate(Device.dwTimeGlobal);
+	else {
+		if (fReminderStrafe->keys.size()>0)
+			result = fReminderStrafe->Evaluate(fReminderStrafe->keys.back()->time);
 	}
 
-	if (!fsimilar(fReminderStrafe, dir.z))
+	if (!fsimilar(fLastStrafe, fReminderNeedStrafe))
 	{
-		dir.z 		= fReminderStrafe;
+		float time_new = TIME_REMINDER_STRAFE+Device.dwTimeGlobal;
+
+		fReminderStrafe->DeleteLastKeys(Device.dwTimeGlobal);
+
+		if (!fsimilar(result, 0.f))
+			fReminderStrafe->InsertKey(Device.dwTimeGlobal, result);
+		else
+			fReminderStrafe->InsertKey(Device.dwTimeGlobal, dir.z);
+		fReminderStrafe->InsertKey(time_new, fReminderNeedStrafe);
+
+		fNewStrafeTime			= time_new;
+
+		result = fReminderStrafe->Evaluate(Device.dwTimeGlobal);
+	}
+
+	if (!fsimilar(result, dir.z))
+	{
+		dir.z 		= result;
 		Fmatrix m;
 		m.setHPB(dir.x,dir.y,dir.z);
 		Fmatrix tmp;
 		tmp.mul_43(o, m);
 		o.set(tmp);
+	} else {
+		if (fReminderStrafe->keys.size()>10 && fNewStrafeTime<(float)Device.dwTimeGlobal)
+		{
+			fReminderStrafe->Clear();	//clear all keys
+			fReminderStrafe->InsertKey(Device.dwTimeGlobal, fReminderNeedStrafe);
+			fNewStrafeTime			= Device.dwTimeGlobal;
+		}
 	}
 
 }

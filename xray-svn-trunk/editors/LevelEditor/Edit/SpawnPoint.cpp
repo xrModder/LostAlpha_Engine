@@ -812,7 +812,7 @@ void CSpawnPoint::OnProfileChange(PropValue* prop)
 		if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
 		{
 			int res = mrNo;
-			if (!psDeviceFlags.is(rsChangeProfileParamsYes)&&!psDeviceFlags.is(rsChangeProfileParamsYes))
+			if (!psDeviceFlags.is(rsChangeProfileParamsYes)&&!psDeviceFlags.is(rsChangeProfileParamsNo))
 			{
 		    		res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo << mbYesToAll << mbNoToAll, "Do you want set all parameters from new profile?");
 				if(res==mrYesToAll)

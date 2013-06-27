@@ -495,7 +495,9 @@ bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 void CUIMapWnd::ShowSettingsWindow(LPCSTR type, u16 id, Fvector pos, shared_str levelName)
 {
 	luabind::functor<void>	lua_function;
-	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindowSettings",lua_function),"Can't call la_pda_spot.InitWindowSettings");
+	string256		fn;
+	strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_settings_pda_spot"));
+	R_ASSERT2 (ai().script_engine().functor<void>(fn,lua_function),make_string("Can't find function %s",fn));
 	
 	string256 MapName;
 	xr_strcpy(MapName, levelName._get()->value);
@@ -542,7 +544,9 @@ void CUIMapWnd::CreateSpotWindow(Fvector RealPosition)
 	xr_strcpy(MapName, m_tgtMap->MapName()._get()->value);
 
 	luabind::functor<void>	lua_function;
-	R_ASSERT2							(ai().script_engine().functor<void>("la_pda_spot.InitWindow",lua_function),"Can't call la_pda_spot.InitWindow");
+	string256		fn;
+	strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_pda_spot"));
+	R_ASSERT2 (ai().script_engine().functor<void>(fn,lua_function),make_string("Can't find function %s",fn));
 	lua_function								(MapName, RealPosition);
 
 }

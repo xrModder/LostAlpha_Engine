@@ -51,4 +51,9 @@ IC	void CPatrolPoint::path										(const CPatrolPath *path)
 	VERIFY				(!m_path);
 	m_path				= path;
 }
+
+IC void CPatrolPoint::initialized(bool value)
+{
+	m_initialized		= value;
+}
 #endif

@@ -6,9 +6,14 @@
 //	Description : Server objects for ALife simulator, script export, the second part
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects_ALife_Monsters.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
 
 using namespace luabind;
@@ -35,18 +40,12 @@ void CSE_ALifeHelicopter::script_register(lua_State *L)
 			CSE_Motion,
 			CSE_PHSkeleton
 		)
-	];
-}
-
-void CSE_ALifeMountedTurret::script_register(lua_State *L)
-{
-	module(L)[
-		luabind_class_dynamic_alife2(
-			CSE_ALifeMountedTurret,
-			"cse_alife_mounted_turret",
-			CSE_ALifeDynamicObjectVisual,
-			CSE_PHSkeleton
-		)
+		.def("set_engine_sound",		&CSE_ALifeHelicopter::set_engine_sound)
+		.def("get_engine_sound",		&CSE_ALifeHelicopter::get_engine_sound)
+		.scope
+		[
+			def("cast_helicopter",		&CSE_ALifeHelicopter::cast_helicopter)
+		]
 	];
 }
 
@@ -56,6 +55,18 @@ void CSE_ALifeCar::script_register(lua_State *L)
 		luabind_class_dynamic_alife2(
 			CSE_ALifeCar,
 			"cse_alife_car",
+			CSE_ALifeDynamicObjectVisual,
+			CSE_PHSkeleton
+		)
+	];
+}
+
+void CSE_ALifeMountedTurret::script_register(lua_State *L)
+{
+	module(L)[
+		luabind_class_dynamic_alife2(
+			CSE_ALifeMountedTurret,
+			"cse_alife_mounted_turret",
 			CSE_ALifeDynamicObjectVisual,
 			CSE_PHSkeleton
 		)

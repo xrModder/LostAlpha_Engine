@@ -6,10 +6,16 @@
 //	Description : Server objects for ALife simulator, script export
 ////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+//#ifdef XRSE_FACTORY_EXPORTS
+#	include "stdafx.h"
+#	include "script_space.h"
+//#else // XRSE_FACTORY_EXPORTS
+//#	include "pch_script.h"
+//#endif // XRSE_FACTORY_EXPORTS
+
 #include "xrServer_Objects_ALife.h"
-#include "script_space.h"
 #include "xrServer_script_macroses.h"
+#include "restriction_space.h"
 
 using namespace luabind;
 
@@ -112,6 +118,18 @@ void CSE_ALifeSpaceRestrictor::script_register(lua_State *L)
 			CSE_ALifeDynamicObject,
 			CSE_Shape
 		)
+		.def("get_space_restrictor_type",	&CSE_ALifeSpaceRestrictor::get_space_restrictor_type)
+		.def("set_space_restrictor_type",	&CSE_ALifeSpaceRestrictor::set_space_restrictor_type)
+		.enum_("messages")
+		[
+			value("DEFAULT_RESTRICTOR_TYPE_NONE",					int(RestrictionSpace::eDefaultRestrictorTypeNone)),
+			value("DEFAULT_RESTRICTOR_TYPE_OUT",					int(RestrictionSpace::eDefaultRestrictorTypeOut)),
+			value("DEFAULT_RESTRICTOR_TYPE_IN",						int(RestrictionSpace::eDefaultRestrictorTypeIn)),
+			value("RESTRICTOR_TYPE_NONE",							int(RestrictionSpace::eRestrictorTypeNone)),
+			value("RESTRICTOR_TYPE_OUT",							int(RestrictionSpace::eRestrictorTypeOut)),
+			value("RESTRICTOR_TYPE_IN",								int(RestrictionSpace::eRestrictorTypeIn))
+		]
+
 	];
 }
 
@@ -126,3 +144,13 @@ void CSE_ALifeLevelChanger::script_register(lua_State *L)
 	];
 }
 
+void CSE_ALifeInventoryBox::script_register(lua_State *L)
+{
+	module(L)[
+		luabind_class_dynamic_alife1(
+			CSE_ALifeInventoryBox,
+			"cse_alife_inventory_box",
+			CSE_ALifeDynamicObjectVisual
+			)
+	];
+}

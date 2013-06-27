@@ -10,7 +10,7 @@
 CBlender_Model::CBlender_Model()
 {
 	description.CLS		= B_MODEL;
-	description.version	= 2;
+	description.version	= 1;
 	oTessellation.Count         = 4;
 	oTessellation.IDselected	= 0;
 	oAREF.value			= 32;
