@@ -825,6 +825,34 @@ void CAI_Stalker::wounded					(bool value)
 	agent_manager().member().unregister_in_combat	(this);
 }
 
+void CAI_Stalker::wounded					(bool value, bool dest)
+{
+	if (m_wounded == value)
+		return;
+
+	if (!g_Alive())
+		return;
+
+	if (value)
+		notify_on_wounded_or_killed	();
+
+	m_wounded				= value;
+
+	if(!m_wounded && g_Alive())
+		character_physics_support()->CreateCharacter();
+
+	if (!m_wounded)
+		return;
+
+	if (dest)
+		character_physics_support()->movement()->DestroyCharacter();
+
+	if (!agent_manager().member().registered_in_combat(this))
+		return;
+
+	agent_manager().member().unregister_in_combat	(this);
+}
+
 bool CAI_Stalker::wounded					(const CRestrictedObject *object) const
 {
 	if (!wounded())

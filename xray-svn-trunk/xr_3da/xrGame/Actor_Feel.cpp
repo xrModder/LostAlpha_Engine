@@ -220,19 +220,15 @@ void	CActor::PickupModeUpdate_COD	()
 
 void CActor::PickupInfoDraw(CObject* object)
 {
-	LPCSTR draw_str = NULL;
-	
 	CInventoryItem* item = smart_cast<CInventoryItem*>(object);
-//.	CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(object);
-//.	VERIFY(item || inventory_owner);
 	if(!item)		return;
 
+	LPCSTR draw_str 	= item->Name();
 	Fmatrix			res;
 	res.mul			(Device.mFullTransform,object->XFORM());
 	Fvector4		v_res;
 	Fvector			shift;
 
-	draw_str = item->Name/*Complex*/();
 	shift.set(0,0,0);
 
 	res.transform(v_res,shift);
@@ -243,9 +239,12 @@ void CActor::PickupInfoDraw(CObject* object)
 	float x = (1.f + v_res.x)/2.f * (Device.dwWidth);
 	float y = (1.f - v_res.y)/2.f * (Device.dwHeight);
 
-	HUD().Font().pFontLetterica16Russian->SetAligment	(CGameFont::alCenter);
-	HUD().Font().pFontLetterica16Russian->SetColor		(PICKUP_INFO_COLOR);
-	HUD().Font().pFontLetterica16Russian->Out			(x,y,draw_str);
+	if (draw_str)
+	{
+		HUD().Font().pFontLetterica16Russian->SetAligment	(CGameFont::alCenter);
+		HUD().Font().pFontLetterica16Russian->SetColor		(PICKUP_INFO_COLOR);
+		HUD().Font().pFontLetterica16Russian->Out			(x,y,draw_str);
+	}
 }
 
 void CActor::feel_sound_new(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector& Position, float power)
