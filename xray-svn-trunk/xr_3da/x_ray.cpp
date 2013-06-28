@@ -634,11 +634,11 @@ BOOL IsOutOfVirtualMemory()
 
 #include "xr_ioc_cmd.h"
 
-//typedef void DUMMY_STUFF (const void*,const u32&,void*);
-//XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
+typedef void DUMMY_STUFF (const void*,const u32&,void*);
+XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
 
-//#define TRIVIAL_ENCRYPTOR_DECODER
-//#include "trivial_encryptor.h"
+#define TRIVIAL_ENCRYPTOR_DECODER
+#include "trivial_encryptor.h"
 
 //#define RUSSIAN_BUILD
 
@@ -791,7 +791,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		//MessageBox(0, fsgame, "using fsltx", MB_OK);
 	}
 
-//	g_temporary_stuff			= &trivial_encryptor::decode;
+	g_temporary_stuff			= &trivial_encryptor::decode;
 	
 	compute_build_id			();
 	Core._initialize			("xray",NULL, TRUE, fsgame[0] ? fsgame : NULL);

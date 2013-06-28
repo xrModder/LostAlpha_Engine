@@ -17,8 +17,8 @@
 
 const u32 BIG_FILE_READER_WINDOW_SIZE	= 1024*1024;
 
-//typedef void DUMMY_STUFF (const void*,const u32&,void*);
-//XRCORE_API DUMMY_STUFF	*g_temporary_stuff = 0;
+typedef void DUMMY_STUFF (const void*,const u32&,void*);
+XRCORE_API DUMMY_STUFF	*g_temporary_stuff = 0;
 
 #	pragma warning(push)
 #	pragma warning(disable:4995)
@@ -278,8 +278,8 @@ IReader* open_chunk(void* ptr, u32 ID)
 			if (dwType&CFS_CompressMark) {
 				BYTE*			dest;
 				unsigned		dest_sz;
-//				if (g_temporary_stuff)
-//					g_temporary_stuff	(src_data,dwSize,src_data);
+				if (g_temporary_stuff)
+					g_temporary_stuff	(src_data,dwSize,src_data);
 				_decompressLZ	(&dest,&dest_sz,src_data,dwSize);
 				xr_free			(src_data);
 				return xr_new<CTempReader>(dest,dest_sz,0);
@@ -337,22 +337,24 @@ void CLocatorAPI::LoadArchive(archive& A, LPCSTR entrypoint)
 
 	}else
 	{
-		R_ASSERT2				(0, "unsupported");
+		//R_ASSERT2				(0, "unsupported");
+		//it`s soc archive format
 		xr_strcpy				(fs_entry_point, sizeof(fs_entry_point), A.path.c_str());
 		if(strext(fs_entry_point))
 			*strext(fs_entry_point) = 0;
+		xr_strcat(fs_entry_point,"\\");
 	}
 	if(entrypoint)
 		xr_strcpy				(fs_entry_point, sizeof(fs_entry_point), entrypoint);
 
 
-//	DUMMY_STUFF	*g_temporary_stuff_subst = NULL;
-//
-//	if(strstr(A.path.c_str(),".xdb"))
-//	{
-//		g_temporary_stuff_subst		= g_temporary_stuff;
-//		g_temporary_stuff			= NULL;
-//	}
+	DUMMY_STUFF	*g_temporary_stuff_subst = NULL;
+
+	if(strstr(A.path.c_str(),".xdb"))
+	{
+		g_temporary_stuff_subst		= g_temporary_stuff;
+		g_temporary_stuff			= NULL;
+	}
 
 	// Read FileSystem
 	A.open				();
@@ -392,8 +394,8 @@ void CLocatorAPI::LoadArchive(archive& A, LPCSTR entrypoint)
 	}
 	hdr->close			();
 
-//	if(g_temporary_stuff_subst)
-//		g_temporary_stuff		= g_temporary_stuff_subst;
+	if(g_temporary_stuff_subst)
+		g_temporary_stuff		= g_temporary_stuff_subst;
 }
 
 void CLocatorAPI::archive::open()
@@ -437,9 +439,9 @@ void CLocatorAPI::ProcessArchive(LPCSTR _path)
 	// Read header
 	BOOL bProcessArchiveLoading = TRUE;
 
-//	DUMMY_STUFF	*g_temporary_stuff_subst	= NULL;
-//	g_temporary_stuff_subst					= g_temporary_stuff;
-//	g_temporary_stuff						= NULL;
+	DUMMY_STUFF	*g_temporary_stuff_subst	= NULL;
+	g_temporary_stuff_subst					= g_temporary_stuff;
+	g_temporary_stuff						= NULL;
 
 	IReader* hdr				= open_chunk(A.hSrcFile, CFS_HeaderChunkID); 
 	if(hdr)
@@ -448,7 +450,7 @@ void CLocatorAPI::ProcessArchive(LPCSTR _path)
 		hdr->close				();
 		bProcessArchiveLoading	= A.header->r_bool("header","auto_load");
 	}
-//	g_temporary_stuff			= g_temporary_stuff_subst;
+	g_temporary_stuff			= g_temporary_stuff_subst;
 	
 	if(bProcessArchiveLoading || strstr(Core.Params, "-auto_load_arch"))
 		LoadArchive				(A);
