@@ -46,12 +46,13 @@ void add_rect_to_draw(Frect r)
 }
 void draw_rect(Frect& r, u32 color)
 {
-
 	if(!dbg_draw_sh){
 		dbg_draw_sh->create("hud\\default","ui\\ui_pop_up_active_back");
 		//dbg_draw_gm.create(FVF::F_TL, RCache.Vertex.Buffer(), 0);
-	   UIRender->StartPrimitive	(5, IUIRender::ptLineStrip, UI().m_currentPointType);
 	}
+
+	UIRender->SetShader(*dbg_draw_sh);
+	UIRender->StartPrimitive	(5, IUIRender::ptLineStrip, UI().m_currentPointType);
 
 	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
 	UIRender->PushPoint(r.rb.x, r.lt.y, 0, color, 0,0);

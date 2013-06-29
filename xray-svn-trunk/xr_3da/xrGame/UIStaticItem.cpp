@@ -83,6 +83,11 @@ void CUIStaticItem::RenderInternal()
 	if (!(tile_x&&tile_y))		return;
 
 	// render
+	UIRender->SetShader			(*hShader);
+
+	if(alpha_ref!=-1)
+		UIRender->SetAlphaRef(alpha_ref);
+
 	UIRender->StartPrimitive(8*tile_x*tile_y, IUIRender::ptTriList, IUIRender::pttLIT);
 	for (x=0; x<tile_x; ++x){
 		for (y=0; y<tile_y; ++y){
@@ -94,23 +99,15 @@ void CUIStaticItem::RenderInternal()
 	// set scissor
 	Frect clip_rect				= {iPos.x,iPos.y,iPos.x+iVisRect.x2*iTileX+iRemX,iPos.y+iVisRect.y2*iTileY+iRemY};
 	UI().PushScissor			(clip_rect, false);
+
 	UIRender->FlushPrimitive();
-	if(alpha_ref!=-1)
-		UIRender->SetAlphaRef(alpha_ref);
 	UI().PopScissor			();
 }
 
 void CUIStaticItem::Render()
 {
 	VERIFY						(g_bRendering);
-	UIRender->SetShader			(*hShader);
-
-	if(alpha_ref!=-1)
-		UIRender->SetAlphaRef(alpha_ref);
-
-	UIRender->StartPrimitive	(8, IUIRender::ptTriList, UI().m_currentPointType);
 	RenderInternal();
-	UIRender->FlushPrimitive	();
 }
 
 void CUIStaticItem::Render(float angle)
