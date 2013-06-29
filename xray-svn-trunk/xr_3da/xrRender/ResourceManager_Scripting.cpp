@@ -20,7 +20,7 @@ using namespace				luabind;
 namespace std
 {
 
-void terminate	()
+void _terminate	()
 {
 	abort();
 }

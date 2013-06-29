@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#ifdef DRENDER
+
 #include "dxDebugRender.h"
 #include "dxUIShader.h"
 
@@ -132,12 +134,11 @@ void dxDebugRender::DestroyDebugShader(dbgShaderHandle shdHandle)
 	m_dbgShaders[shdHandle].destroy();
 }
 
-#ifdef DEBUG
 void dxDebugRender::dbg_DrawTRI(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p3, u32 C)
 {
 	RCache.dbg_DrawTRI(T, p1, p2, p3, C);
 }
-#endif	//	DEBUG
+
 
 struct RDebugRender: 
 	public dxDebugRender,
@@ -179,3 +180,5 @@ virtual void	add_lines			(Fvector const *vertices, u32 const &vertex_count, u16 
 }
 } rdebug_render_impl;
 dxDebugRender *rdebug_render = &rdebug_render_impl; 
+
+#endif	//	DRENDER
