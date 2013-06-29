@@ -176,5 +176,7 @@ protected:
 	void				UpdatePickUpItem();
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
+#ifdef DRENDER
 	void				draw_adjust_mode					();
+#endif //DRENDER
 };

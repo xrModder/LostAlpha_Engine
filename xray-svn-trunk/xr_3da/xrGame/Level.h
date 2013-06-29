@@ -31,7 +31,9 @@ class	CPHCommander;
 class	CLevelDebug;
 class	CLevelSoundManager;
 class	CFastEntityUpdater;
+#ifdef DRENDER
 class	CDebugRenderer;
+#endif
 
 extern float g_fov;
 
@@ -77,8 +79,10 @@ protected:
 	CClientSpawnManager			*m_client_spawn_manager;
 	// autosave manager
 	CAutosaveManager			*m_autosave_manager;
+#ifdef DRENDER
 	// debug renderer
 	CDebugRenderer				*m_debug_renderer;
+#endif
 
 	CPHCommander				*m_ph_commander;
 	CPHCommander				*m_ph_commander_scripts;
@@ -282,7 +286,9 @@ public:
 	IC CSeniorityHierarchyHolder	&seniority_holder			();
 	IC CClientSpawnManager			&client_spawn_manager		();
 	IC CAutosaveManager				&autosave_manager			();
+#ifdef DRENDER
 	IC CDebugRenderer				&debug_renderer				();
+#endif
 	void	__stdcall				script_gc					();			// GC-cycle
 
 	IC CPHCommander					&ph_commander				();
@@ -387,13 +393,13 @@ IC CAutosaveManager &CLevel::autosave_manager()
 	VERIFY				(m_autosave_manager);
 	return				(*m_autosave_manager);
 }
-
+#ifdef DRENDER
 IC CDebugRenderer &CLevel::debug_renderer()
 {
 	VERIFY				(m_debug_renderer);
 	return				(*m_debug_renderer);
 }
-
+#endif //DRENDER
 IC CPHCommander	& CLevel::ph_commander()
 {
 	VERIFY(m_ph_commander);

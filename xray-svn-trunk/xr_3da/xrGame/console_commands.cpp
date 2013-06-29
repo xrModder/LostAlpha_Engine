@@ -1567,11 +1567,6 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ALifeSwitchFactor,		"al_switch_factor"		);		// set switch factor
 #endif // MASTER_GOLD
 
-
-#ifdef DEBUG
-
-#endif // DEBUG
-
 	// Demo
 	CMD1(CCC_DemoPlay,			"demo_play"				);
 	CMD1(CCC_DemoRecord,		"demo_record"			);
@@ -1647,15 +1642,15 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ShowMonsterInfo,	"ai_monster_info");
 	CMD1(CCC_DebugFonts,		"debug_fonts");
 	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
+	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
+#endif // DEBUG
 
+#ifdef DRENDER
 	// adjust mode support
 	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
 	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
+#endif //DRENDER
 
-	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
-#endif // DEBUG
-	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
-	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
 #ifndef MASTER_GOLD
 	CMD3(CCC_Mask,				"ai_ignore_actor",		&psAI_Flags,	aiIgnoreActor);
 #endif // MASTER_GOLD

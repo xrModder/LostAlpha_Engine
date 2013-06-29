@@ -115,7 +115,9 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_space_restriction_manager = xr_new<CSpaceRestrictionManager>();
 		m_client_spawn_manager		= xr_new<CClientSpawnManager>();
 		m_autosave_manager			= xr_new<CAutosaveManager>();
+	#ifdef DRENDER
 		m_debug_renderer			= xr_new<CDebugRenderer>();
+	#endif
 	#ifdef DEBUG
 		m_level_debug				= xr_new<CLevelDebug>();
 	#endif
@@ -126,7 +128,9 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_client_spawn_manager		= NULL;
 		m_autosave_manager			= NULL;
 		m_space_restriction_manager = NULL;
+	#ifdef DRENDER
 		m_debug_renderer			= NULL;
+	#endif
 	#ifdef DEBUG
 		m_level_debug				= NULL;
 	#endif
@@ -243,8 +247,10 @@ CLevel::~CLevel()
 	xr_delete					(m_client_spawn_manager);
 
 	xr_delete					(m_autosave_manager);
-	
+
+#ifdef DRENDER
 	xr_delete					(m_debug_renderer);
+#endif
 
 	if (!g_dedicated_server)
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
@@ -719,7 +725,9 @@ void CLevel::OnRender()
 	}
 #endif
 
+#ifdef DRENDER
 	debug_renderer().render					();
+#endif
 
 #ifdef DEBUG
 	if (psAI_Flags.is(aiVision)) {

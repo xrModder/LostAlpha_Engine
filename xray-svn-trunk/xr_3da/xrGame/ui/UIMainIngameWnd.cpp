@@ -326,7 +326,9 @@ void CUIMainIngameWnd::Draw()
 
 	RenderQuickInfos			();		
 
+#ifdef DRENDER
 	draw_adjust_mode			();
+#endif DRENDER
 
 }
 
@@ -1469,7 +1471,7 @@ void test_draw	()
 	}
 */
 }
-
+#ifdef DRENDER
 void CUIMainIngameWnd::draw_adjust_mode()
 {
 	if (g_bHudAdjustMode&&m_pWeapon) //draw firePoint,ShellPoint etc
@@ -1543,4 +1545,4 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		}
 	}
 }
-
+#endif //DRENDER
