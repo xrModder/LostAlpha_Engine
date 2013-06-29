@@ -554,11 +554,19 @@ void game_sv_GameState::u_EventSend(NET_Packet& P, u32 dwFlags)
 
 void game_sv_GameState::Update		()
 {
-	for (u32 it=0; it<m_server->GetClientsCount(); ++it) {
-		xrClientData*	C			= (xrClientData*)	m_server->client_Get(it);
-		C->ps->ping					= u16(C->stats.getPing());
-	}
-	
+	struct ping_filler
+	{
+		void operator()(IClient* client)
+		{
+			xrClientData*	C			= static_cast<xrClientData*>(client);
+			if (!C->ps)
+				return;
+			C->ps->ping					= u16(C->stats.getPing());
+		}
+	};
+	ping_filler tmp_functor;
+	m_server->ForEachClientDo(tmp_functor);
+
 	if (!g_dedicated_server)
 	{
 		if (Level().game) {
