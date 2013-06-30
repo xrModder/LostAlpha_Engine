@@ -258,27 +258,27 @@ void CDbgLuaHelper::DrawStackTrace()
 		{
 			szDesc[0] = '\0';
 /*			if ( ar.name )
-				strcat(szDesc, ar.name);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.name);
+			xr_strcat(szDesc, ",");
 			if ( ar.namewhat )
-				strcat(szDesc, ar.namewhat);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.namewhat);
+			xr_strcat(szDesc, ",");
 			if ( ar.what )
-				strcat(szDesc, ar.what);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.what);
+			xr_strcat(szDesc, ",");
 */
 			if ( ar.name ){
-				strcat(szDesc, ar.name);
-				strcat(szDesc, " ");
+				xr_strcat(szDesc, ar.name);
+				xr_strcat(szDesc, " ");
 			}
 
 			char szTmp[6];
 
-			strcat(szDesc, itoa(ar.currentline,szTmp,10));
-			strcat(szDesc, " ");
+			xr_strcat(szDesc, itoa(ar.currentline,szTmp,10));
+			xr_strcat(szDesc, " ");
 
 			if ( ar.short_src )
-				strcat(szDesc, ar.short_src);
+				xr_strcat(szDesc, ar.short_src);
 
 			debugger()->AddStackTrace(szDesc, ar.source+1, ar.currentline);
 		}
@@ -468,12 +468,12 @@ void CDbgLuaHelper::RestoreGlobals()
 void CDbgLuaHelper::DrawVariable(lua_State * l, const char* name, bool bOpenTable)
 {
 	Variable var;
-	strcpy(var.szName, name );
+	xr_strcpy(var.szName, name );
 
 	const char * type;
 	int ntype = lua_type(l, -1);
 	type = lua_typename(l, ntype);
-	strcpy(var.szType, type);
+	xr_strcpy(var.szType, type);
 
 	char value[64];
 
@@ -481,17 +481,17 @@ void CDbgLuaHelper::DrawVariable(lua_State * l, const char* name, bool bOpenTabl
 	{
 	case LUA_TNUMBER:
 		xr_sprintf(value, "%f", lua_tonumber(l, -1));
-		strcpy(var.szValue, value );
+		xr_strcpy(var.szValue, value );
 		break;
 
 	case LUA_TBOOLEAN:
 		xr_sprintf(value, "%s", lua_toboolean(L, -1) ? "true" : "false");
-		strcpy(var.szValue, value );
+		xr_strcpy(var.szValue, value );
 		break;
 
 	case LUA_TSTRING:
 		xr_sprintf(value, "%.63s", lua_tostring(l, -1));
-		strcpy(var.szValue, value );
+		xr_strcpy(var.szValue, value );
 		break;
 
 

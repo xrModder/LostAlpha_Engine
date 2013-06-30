@@ -1548,7 +1548,7 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 			{
 				luabind::functor<void>	lua_function;
 				string256		fn;
-				strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_use_trunk"));
+				xr_strcpy		(fn, pSettings->r_string("lost_alpha_cfg", "on_use_trunk"));
 				R_ASSERT2 (ai().script_engine().functor<void>(fn,lua_function),make_string("Can't find function %s",fn));
 				lua_function				(ID());
 				return false;

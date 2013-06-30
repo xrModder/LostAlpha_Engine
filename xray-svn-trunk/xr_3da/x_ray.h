@@ -48,10 +48,8 @@ public:
 	xr_vector<sLevelInfo>	Levels;
 	u32						Level_Current;
 	void					Level_Scan			();
-	int						Level_ID			(LPCSTR name, LPCSTR ver, bool bSet);
+	int						Level_ID			(LPCSTR name);
 	void					Level_Set			(u32 ID);
-	void					LoadAllArchives		();
-	CInifile*				GetArchiveHeader	(LPCSTR name, LPCSTR ver);
 
 	// Loading
 	void					LoadBegin			();

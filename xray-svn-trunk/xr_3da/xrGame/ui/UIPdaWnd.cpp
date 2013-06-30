@@ -231,7 +231,7 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 
 	luabind::functor<CUIWindow*>	lua_function;
 	string256			fn;
-	strcpy_s			(fn, pSettings->r_string("lost_alpha_cfg", "get_script_pda_window"));
+	xr_strcpy			(fn, pSettings->r_string("lost_alpha_cfg", "get_script_pda_window"));
 	R_ASSERT2 (ai().script_engine().functor<CUIWindow*>(fn,lua_function),make_string("Can't find function %s",fn));
 	CUIWindow* w = NULL;
 

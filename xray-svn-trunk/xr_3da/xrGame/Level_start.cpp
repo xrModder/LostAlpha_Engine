@@ -128,7 +128,7 @@ bool CLevel::net_start1				()
 
 			m_name					= l_name;
 
-			int						id = pApp->Level_ID(l_name, l_ver, true);
+			int						id = pApp->Level_ID(l_name);
 
 			if (id<0) {
 				pApp->LoadEnd				();

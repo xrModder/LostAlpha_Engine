@@ -36,22 +36,7 @@ void	CLocatorAPI::auth_runtime		(void*	params)
 {
 	m_auth_lock.Enter	()	;
 	auth_options*		_o	= (auth_options*)	params	;
-
-	CMemoryWriter			writer;
-	pSettingsAuth->save_as	(writer);
-	m_auth_code				= crc32(writer.pointer(), writer.size());
-
-#ifdef DEBUG
-	if (strstr(Core.Params,"auth_debug"))
-	{
-		string_path	tmp_path;
-		update_path(tmp_path, "$app_data_root$", "auth_psettings.ltx");
-		IWriter* tmp_dst = w_open(tmp_path);
-		pSettingsAuth->save_as(*tmp_dst, false);
-		w_close(tmp_dst);
-	}
-#endif
-
+	m_auth_code			= 0;
 	bool				do_break = false;
 
 #ifdef DEBUG
@@ -59,7 +44,7 @@ void	CLocatorAPI::auth_runtime		(void*	params)
 	if (!b_extern_auth)
 #endif // DEBUG
 	{
-		for (files_it it = m_files.begin(); it!=m_files.end(); ++it) {
+		for (files_it it = files.begin(); it!=files.end(); ++it) {
 			const file&	f	=	*it;
 
 			// test for skip
@@ -84,8 +69,8 @@ void	CLocatorAPI::auth_runtime		(void*	params)
 					u32 crc			= crc32		(r->pointer(),r->length());
 					
 #ifdef DEBUG
-					if(strstr(Core.Params,"auth_debug"))
-						Msg("auth %s = 0x%08x",f.name,crc);
+					if(strstr(Core.Params,"qwerty"))
+						Msg("auth %s = %d",f.name,crc);
 #endif // DEBUG
 
 					FS.r_close		(r);
