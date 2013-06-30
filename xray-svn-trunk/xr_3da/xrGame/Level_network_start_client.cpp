@@ -64,7 +64,7 @@ bool	CLevel::net_start_client3				()
 		    level_ver   = 0;
 
 		// Determine internal level-ID
-		int						level_id = pApp->Level_ID(level_name, level_ver, true);
+		int						level_id = pApp->Level_ID(level_name);
 		if (level_id<0)	{
 			Disconnect			();
 			pApp->LoadEnd		();

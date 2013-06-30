@@ -734,7 +734,7 @@ void game_sv_GameState::NewPlayerName_Generate( void* pClient, LPSTR NewPlayerNa
 		printf( NewXName, "%s_%d", NewPlayerName, i );
 		if ( !NewPlayerName_Exists( pClient, NewXName ) )
 		{
-			strcpy( NewPlayerName, NewXName );
+			xr_strcpy( NewPlayerName, 64, NewXName );
 			return;
 		}
 	}

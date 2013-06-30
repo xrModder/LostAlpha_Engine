@@ -1276,37 +1276,25 @@ void CApplication::Level_Append		(LPCSTR folder)
 void CApplication::Level_Scan()
 {
 	SECUROM_MARKER_PERFORMANCE_ON(8)
-
-	for (u32 i=0; i<Levels.size(); i++)
-	{
-		xr_free(Levels[i].folder);
-		xr_free(Levels[i].name);
-	}
-	Levels.clear	();
-
-
-	xr_vector<char*>* folder			= FS.file_list_open		("$game_levels$",FS_ListFolders|FS_RootOnly);
-//.	R_ASSERT							(folder&&folder->size());
-	
-	for (u32 i=0; i<folder->size(); ++i)	
-		Level_Append((*folder)[i]);
-	
+#pragma todo("container is created in stack!")
+	xr_vector<char*>*		folder			= FS.file_list_open		("$game_levels$",FS_ListFolders|FS_RootOnly);
+	R_ASSERT				(folder&&folder->size());
+	for (u32 i=0; i<folder->size(); i++)	Level_Append((*folder)[i]);
 	FS.file_list_close		(folder);
+#ifdef DEBUG
+	folder									= FS.file_list_open		("$game_levels$","$debug$\\",FS_ListFolders|FS_RootOnly);
+	if (folder){
+		string_path	tmp_path;
+		for (u32 i=0; i<folder->size(); i++)
+		{
+			strconcat			(sizeof(tmp_path),tmp_path,"$debug$\\",(*folder)[i]);
+			Level_Append		(tmp_path);
+		}
 
+		FS.file_list_close	(folder);
+	}
+#endif
 	SECUROM_MARKER_PERFORMANCE_OFF(8)
-}
-
-void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
-{
-	strconcat	(sizeof(dest), dest, "intro\\intro_", level_name);
-	
-	u32 len = xr_strlen(dest);
-	if(dest[len-1]=='\\')
-		dest[len-1] = 0;
-
-	string16 buff;
-	xr_strcat(dest, sizeof(dest), "_");
-	xr_strcat(dest, sizeof(dest), itoa(num+1, buff, 10));
 }
 
 void CApplication::Level_Set(u32 L)
@@ -1314,119 +1302,49 @@ void CApplication::Level_Set(u32 L)
 	SECUROM_MARKER_PERFORMANCE_ON(9)
 
 	if (L>=Levels.size())	return;
+	Level_Current = L;
 	FS.get_path	("$level$")->_set	(Levels[L].folder);
 
-	static string_path			path;
 
-	if(Level_Current != L)
-	{
-		path[0]					= 0;
-
-		Level_Current			= L;
+	string_path					temp;
+	string_path					temp2;
+	strconcat					(sizeof(temp),temp,"intro\\intro_",Levels[L].folder);
+	temp[xr_strlen(temp)-1] = 0;
+	if (FS.exist(temp2, "$game_textures$", temp, ".dds"))
+		m_pRender->setLevelLogo	(temp);
+	else
+		m_pRender->setLevelLogo ("intro\\intro_no_start_picture");
 		
-		int count				= 0;
-		while(true)
-		{
-			string_path			temp2;
-			gen_logo_name		(path, Levels[L].folder, count);
-			if(FS.exist(temp2, "$game_textures$", path, ".dds") || FS.exist(temp2, "$level$", path, ".dds"))
-				count++;
-			else
-				break;
-		}
 
-		if(count)
-		{
-			int num				= ::Random.randI(count);
-			gen_logo_name		(path, Levels[L].folder, num);
-		}
-	}
-
-	if(path[0])
-		m_pRender->setLevelLogo	(path);
-
-	CheckCopyProtection			();
+	CheckCopyProtection		();
 
 	SECUROM_MARKER_PERFORMANCE_OFF(9)
 }
 
-int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
+int CApplication::Level_ID(LPCSTR name)
 {
 	int result = -1;
 
 	SECUROM_MARKER_SECURITY_ON(7)
 
-	CLocatorAPI::archives_it it		= FS.m_archives.begin();
-	CLocatorAPI::archives_it it_e	= FS.m_archives.end();
-	bool arch_res					= false;
-
-	for(;it!=it_e;++it)
-	{
-		CLocatorAPI::archive& A		= *it;
-		if(A.hSrcFile==NULL)
-		{
-			LPCSTR ln = A.header->r_string("header", "level_name");
-			LPCSTR lv = A.header->r_string("header", "level_ver");
-			if ( 0==stricmp(ln,name) && 0==stricmp(lv,ver) )
-			{
-				FS.LoadArchive(A);
-				arch_res = true;
-			}
-		}
-	}
-
-	if( arch_res )
-		Level_Scan							();
-	
-	string256		buffer;
-	strconcat		(sizeof(buffer),buffer,name,"\\");
-	for (u32 I=0; I<Levels.size(); ++I)
+	char buffer	[256];
+	strconcat	(sizeof(buffer),buffer,name,"\\");
+	for (u32 I=0; I<Levels.size(); I++)
 	{
 		if (0==stricmp(buffer,Levels[I].folder))	
-		{
-			result = int(I);	
-			break;
-		}
+			result = int(I);
 	}
 
-	if(bSet && result!=-1)
-		Level_Set(result);
 
-	if( arch_res )
-		g_pGamePersistent->OnAssetsChanged	();
+//	if( arch_res )
+//		g_pGamePersistent->OnAssetsChanged	();
 
 	SECUROM_MARKER_SECURITY_OFF(7)
 
 	return result;
 }
 
-CInifile*  CApplication::GetArchiveHeader(LPCSTR name, LPCSTR ver)
-{
-	CLocatorAPI::archives_it it		= FS.m_archives.begin();
-	CLocatorAPI::archives_it it_e	= FS.m_archives.end();
 
-	for(;it!=it_e;++it)
-	{
-		CLocatorAPI::archive& A		= *it;
-
-		LPCSTR ln = A.header->r_string("header", "level_name");
-		LPCSTR lv = A.header->r_string("header", "level_ver");
-		if ( 0==stricmp(ln,name) && 0==stricmp(lv,ver) )
-		{
-			return A.header;
-		}
-	}
-	return NULL;
-}
-
-void CApplication::LoadAllArchives()
-{
-	if( FS.load_all_unloaded_archives() )
-	{
-		Level_Scan							();
-		g_pGamePersistent->OnAssetsChanged	();
-	}
-}
 
 #ifndef DEDICATED_SERVER
 // Parential control for Vista and upper
