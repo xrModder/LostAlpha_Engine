@@ -96,6 +96,11 @@ BOOL CRenderDevice::Begin	()
 	return		TRUE;
 }
 
+bool CRenderDevice::IsR2Active()
+{
+	return (psDeviceFlags.test(rsR2)) ? true : false;
+}
+
 void CRenderDevice::Clear	()
 {
 	m_pRender->Clear();
