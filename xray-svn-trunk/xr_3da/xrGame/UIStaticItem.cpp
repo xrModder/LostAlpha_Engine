@@ -29,7 +29,7 @@ CUIStaticItem::CUIStaticItem()
 	iRemX			= 0.0f;
 	iRemY			= 0.0f;
 	alpha_ref		= -1;
-	//hShader			= NULL;
+	hShader->destroy();
 #ifdef DEBUG
 	dbg_tex_name = NULL;
 #endif
@@ -64,8 +64,16 @@ void CUIStaticItem::Init(LPCSTR tex, LPCSTR sh, float left, float top, EUIItemAl
 }
 
 
-void CUIStaticItem::RenderInternal()
+void CUIStaticItem::Render()
 {
+	VERIFY						(g_bRendering);
+	VERIFY(hShader);	
+	// render
+	UIRender->SetShader			(*hShader);
+
+	if(alpha_ref!=-1)
+		UIRender->SetAlphaRef(alpha_ref);
+	
 	// convert&set pos
 	Fvector2		bp;
 	UI().ClientToScreenScaled	(bp,float(iPos.x),float(iPos.y));
@@ -81,12 +89,6 @@ void CUIStaticItem::RenderInternal()
 	int tile_y					= fis_zero(iRemY)?iTileY:iTileY+1;
 	int							x,y;
 	if (!(tile_x&&tile_y))		return;
-
-	// render
-	UIRender->SetShader			(*hShader);
-
-	if(alpha_ref!=-1)
-		UIRender->SetAlphaRef(alpha_ref);
 
 	UIRender->StartPrimitive(8*tile_x*tile_y, IUIRender::ptTriList, IUIRender::pttLIT);
 	for (x=0; x<tile_x; ++x){
@@ -104,18 +106,14 @@ void CUIStaticItem::RenderInternal()
 	UI().PopScissor			();
 }
 
-void CUIStaticItem::Render()
-{
-	VERIFY						(g_bRendering);
-	RenderInternal();
-}
-
 void CUIStaticItem::Render(float angle)
 {
 	VERIFY						(g_bRendering);
-
+	VERIFY(hShader);
 	UIRender->SetShader			(*hShader);
 	UIRender->StartPrimitive	(32, IUIRender::ptTriList, UI().m_currentPointType);
-	RenderInternal();
+	//inherited::Render			(pv,bp_ns,dwColor,angle);
+	if(alpha_ref!=-1)
+		UIRender->SetAlphaRef(alpha_ref);
 	UIRender->FlushPrimitive	();
 }

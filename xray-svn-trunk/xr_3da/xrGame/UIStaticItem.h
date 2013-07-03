@@ -59,8 +59,8 @@ public:
 	IC u32&			GetColorRef		()							{return dwColor;}
 	IC ui_shader&	GetShader		()							{return hShader;}
 
-private:
-	void RenderInternal();
+//private:
+	//void RenderInternal();
 };
 
 extern ENGINE_API BOOL g_bRendering; 
