@@ -174,7 +174,7 @@ void CUIStatic::DrawText(){
 
 void CUIStatic::DrawTexture(){
 
-	if(m_bAvailableTexture && m_bTextureEnable){
+    if(m_bAvailableTexture && m_bTextureEnable && m_UIStaticItem.GetShader() && m_UIStaticItem.GetShader()->inited()){
 		Frect			rect;
 		GetAbsoluteRect	(rect);
 		m_UIStaticItem.SetPos	(rect.left + m_TextureOffset.x, rect.top + m_TextureOffset.y);

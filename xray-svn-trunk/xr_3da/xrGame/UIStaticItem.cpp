@@ -29,7 +29,6 @@ CUIStaticItem::CUIStaticItem()
 	iRemX			= 0.0f;
 	iRemY			= 0.0f;
 	alpha_ref		= -1;
-	hShader->destroy();
 #ifdef DEBUG
 	dbg_tex_name = NULL;
 #endif
