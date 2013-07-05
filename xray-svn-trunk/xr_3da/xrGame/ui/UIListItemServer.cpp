@@ -3,135 +3,137 @@
 #include "UIListItemServer.h"
 #include "UITextureMaster.h"
 
-CUIListItemServer::CUIListItemServer()
+CUIListItemServer::CUIListItemServer(float height)
+:inherited(height)
 {
-	AttachChild					(&m_icon);
-	m_icon.AttachChild			(&m_iconPass);
-	m_icon.AttachChild			(&m_iconDedicated);
-	m_icon.AttachChild			(&m_iconPunkBuster);
-	m_icon.AttachChild			(&m_iconUserPass);
+	m_iconPass			= AddIconField(5.0f);
+	m_iconDedicated		= AddIconField(5.0f);
+//	m_iconPunkBuster	= AddIconField(5.0f);
+	m_iconUserPass		= AddIconField(5.0f);
 
-	AttachChild					(&m_server);
-	AttachChild					(&m_map);
-	AttachChild					(&m_game);
-	AttachChild					(&m_players);
-	AttachChild					(&m_ping);
-	AttachChild					(&m_version);
-	SetAutoDelete				(false);
+	m_server			= GetTextItem();
+	m_map				= AddTextField("", 5.0f);
+	m_game				= AddTextField("", 5.0f);
+	m_players			= AddTextField("", 5.0f);
+	m_ping				= AddTextField("", 5.0f);
+	m_version			= AddTextField("", 5.0f);
 }
 
-void CUIListItemServer::Init(LIST_SRV_ITEM& params, float x, float y, float width, float height)
+void CUIListItemServer::InitItemServer(LIST_SRV_ITEM& params)
 {
-	CUIWindow::Init(x,y,width,height);
-
-	SetTextColor(params.color);
-	SetFont(params.font);
-
 	float offset = 0.0f;
 
-	m_icon.Init(offset, 0, params.size.icon, height);
-	offset += params.size.icon;
+	float icon_size			= CUITextureMaster::GetTextureHeight("ui_icon_password");
 
-	m_server.Init(offset, 0, params.size.server, height);
-//	m_server.SetText(*params.info.server);
-	offset += params.size.server;
+	icon_size				*= UI().get_current_kx();
+	m_iconPass->SetStretchTexture		(true);
+	m_iconDedicated->SetStretchTexture	(true);
+//	m_iconPunkBuster->SetStretchTexture	(true);
+	m_iconUserPass->SetStretchTexture	(true);
 
-	m_map.Init(offset, 0, params.size.map, height);
-//	m_map.SetText(*params.info.map);
-	offset += params.size.map;
+	float icon_y			= (GetHeight()-icon_size)/2.0f;
 
-	m_game.Init(offset, 0, params.size.game, height);
-//	m_game.SetText(*params.info.game);
+	m_iconPass->SetWndPos	(Fvector2().set(offset, icon_y));
+	m_iconPass->SetWndSize	(Fvector2().set(icon_size,icon_size));
+	m_iconPass->InitTexture	("ui_icon_password");
+	offset					+= icon_size;
+
+	m_iconDedicated->SetWndPos(Fvector2().set(offset, icon_y));
+	m_iconDedicated->SetWndSize(Fvector2().set(icon_size,icon_size));
+	m_iconDedicated->InitTexture("ui_icon_dedicated");
+	offset					+= icon_size;
+	
+	//m_iconPunkBuster->SetWndPos(Fvector2().set(offset, icon_y));
+	//m_iconPunkBuster->SetWndSize(Fvector2().set(icon_size,icon_size));
+	//m_iconPunkBuster->InitTexture("ui_icon_punkbuster");
+	//offset					+= icon_size;
+
+	m_iconUserPass->SetWndPos(Fvector2().set(offset, icon_y));
+	m_iconUserPass->SetWndSize(Fvector2().set(icon_size,icon_size));
+	m_iconUserPass->InitTexture("ui_icon_punkbuster");
+	offset					+= icon_size;
+
+
+	m_server->SetWndPos		(Fvector2().set(offset, 0.0f));
+	m_server->SetWidth		(params.size.server);
+	m_server->SetHeight		(params.size.height);
+	m_server->SetFont		(params.text_font);
+	m_server->SetTextColor	(params.text_color);
+	offset					+= params.size.server;
+
+	m_map->SetWndPos		(Fvector2().set(offset, 0.0f));
+	m_map->SetWidth			(params.size.map);
+	m_map->SetHeight		(params.size.height);
+	m_map->SetFont			(params.text_font);
+	m_map->SetTextColor		(params.text_color);
+	offset					+= params.size.map;
+
+	m_game->SetWndPos		(Fvector2().set(offset, 0.0f));
+	m_game->SetWidth		(params.size.game);
+	m_game->SetHeight		(params.size.height);
+	m_game->SetFont			(params.text_font);
+	m_game->SetTextColor	(params.text_color);
 	offset += params.size.game;
 
-	m_players.Init(offset, 0, params.size.players, height);
-//	m_players.SetText(*params.info.players);
-	offset += params.size.players;
+	m_players->SetWndPos	(Fvector2().set(offset, 0.0f));
+	m_players->SetWidth		(params.size.players);
+	m_players->SetHeight	(params.size.height);
+	m_players->SetFont		(params.text_font);
+	m_players->SetTextColor	(params.text_color);
+	offset					+= params.size.players;
 
-	m_ping.Init(offset, 0, params.size.ping, height);
-//	m_ping.SetText(*params.info.ping);
-	offset += params.size.ping;
+	m_ping->SetWndPos		(Fvector2().set(offset, 0.0f));
+	m_ping->SetWidth		(params.size.ping);
+	m_ping->SetHeight		(params.size.height);
+	m_ping->SetFont			(params.text_font);
+	m_ping->SetTextColor	(params.text_color);
+	offset					+= params.size.ping;
 
-	m_version.Init(offset, 0, params.size.version, height);
+	m_version->SetWndPos	(Fvector2().set(offset, 0.0f));
+	m_version->SetWidth		(params.size.version);
+	m_version->SetHeight	(params.size.height);
+	m_version->SetFont		(params.text_font);
+	m_version->SetTextColor	(params.text_color);
 
-	float icon_size = CUITextureMaster::GetTextureHeight("ui_icon_password");
-
-	m_iconPass.Init(0,0,icon_size,icon_size);
-	m_iconPass.InitTexture("ui_icon_password");
-
-	m_iconDedicated.Init(icon_size,0,icon_size,icon_size);
-	m_iconDedicated.InitTexture("ui_icon_dedicated");
-
-	//m_iconPunkBuster.Init(icon_size*2,0,icon_size,icon_size);
-	//m_iconPunkBuster.InitTexture("ui_icon_punkbuster");
-
-	m_iconUserPass.Init(icon_size*2,0,icon_size,icon_size);
-	m_iconUserPass.InitTexture("ui_icon_punkbuster"); //("ui_icon_userpass");
-
-	SetParams(params);
+	SetParams				(params);
 
 	m_srv_info = params;
 }
+
 #include "../string_table.h"
 u32 cut_string_by_length(CGameFont* pFont, LPCSTR src, LPSTR dst, u32 dst_size, float length);
 
-void CUIListItemServer::SetParams(LIST_SRV_ITEM& params){
+void CUIListItemServer::SetParams(LIST_SRV_ITEM& params)
+{
 	string1024				buff;
 
 	LPCSTR _srv_name		= CStringTable().translate(params.info.server).c_str();
-	cut_string_by_length	(m_map.GetFont(), _srv_name, buff, sizeof(buff), m_server.GetWidth());
-	m_server.SetText		(buff);
+	cut_string_by_length	(m_map->GetFont(), _srv_name, buff, sizeof(buff), m_server->GetWidth());
+	m_server->SetText		(buff);
 
 	LPCSTR _map_name		= CStringTable().translate(params.info.map).c_str();
-	cut_string_by_length	(m_map.GetFont(), _map_name, buff, sizeof(buff), m_map.GetWidth());
-	m_map.SetText			(buff);
+	cut_string_by_length	(m_map->GetFont(), _map_name, buff, sizeof(buff), m_map->GetWidth());
+	m_map->SetText			(buff);
 
 	LPCSTR _game_name		= CStringTable().translate(params.info.game).c_str();
-	cut_string_by_length	(m_game.GetFont(), _game_name, buff, sizeof(buff), m_game.GetWidth());
-	m_game.SetText			(buff);
+	cut_string_by_length	(m_game->GetFont(), _game_name, buff, sizeof(buff), m_game->GetWidth());
+	m_game->SetText			(buff);
 
-	m_players.SetTextST		(*params.info.players);
-	m_ping.SetTextST		(*params.info.ping);
-	m_version.SetTextST		(*params.info.version);
+	m_players->SetText		(params.info.players.c_str());
+	m_ping->SetText			(params.info.ping.c_str());
+	m_version->SetText		(params.info.version.c_str());
 
-	m_iconPass.Show			(params.info.icons.pass);
-	m_iconDedicated.Show	(params.info.icons.dedicated);
-	m_iconPunkBuster.Show	(params.info.icons.punkbuster);
-	m_iconUserPass.Show		(params.info.icons.user_pass);
+	m_iconPass->Show		(params.info.icons.pass);
+	m_iconDedicated->Show	(params.info.icons.dedicated);
+//	m_iconPunkBuster->Show	(params.info.icons.punkbuster);
+	m_iconUserPass->Show	(params.info.icons.user_pass);
 
-	SetValue				(params.info.Index);
-}
-
-void CUIListItemServer::Draw()
-{
-	CUIStatic::Draw();
-	CUIWindow::Draw();
-}
-
-
-void CUIListItemServer::SetTextColor(u32 color){
-	//m_icon.SetTextColor(color);
-	m_server.SetTextColor(color);
-	m_map.SetTextColor(color);
-	m_game.SetTextColor(color);
-	m_players.SetTextColor(color);
-	m_ping.SetTextColor(color);
-	m_version.SetTextColor(color);
-}
-
-void CUIListItemServer::SetFont(CGameFont* pFont){
-	m_icon.SetFont		(pFont);
-	m_server.SetFont	(pFont);
-	m_map.SetFont		(pFont);
-	m_game.SetFont		(pFont);
-	m_players.SetFont	(pFont);
-	m_ping.SetFont		(pFont);
-	m_version.SetFont	(pFont);
+	SetTAG					(params.info.Index);
 }
 
 void CUIListItemServer::CreateConsoleCommand(xr_string& command, LPCSTR player_name, LPCSTR player_pass, LPCSTR server_psw)
 {
-	command  = "start client(";
+	command = "start client(";
 	command += *m_srv_info.info.address;
 	command += "/name=";
 	command += player_name;

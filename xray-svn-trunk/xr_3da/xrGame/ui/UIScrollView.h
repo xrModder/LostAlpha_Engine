@@ -1,9 +1,10 @@
 #pragma once
-
+#include "UIScrollBar.h"
 #include "UIWindow.h"
 #include "UIWndCallback.h"
 
 class CUIScrollBar;
+class CUIFixedScrollBar;
 
 class CUIScrollView :public CUIWindow, public CUIWndCallback
 {
@@ -34,13 +35,13 @@ virtual void		RecalcSize			();
 		void		SetDownIndention	(float val);
 		void		SetVertFlip			(bool val)							{m_flags.set(eVertFlip, val);}
 public:
-	using CUIWindow::Init;
 			
 					CUIScrollView		();
+					CUIScrollView		(CUIFixedScrollBar* scroll_bar);
 	virtual			~CUIScrollView		();
-			void	Init				();// need parent to be initialized
+			void	InitScrollView		();// need parent to be initialized
 	virtual void	SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
-	virtual bool	OnMouse				(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual void	Draw				();
 	virtual void	Update				();
 			void	AddWindow			(CUIWindow* pWnd, bool auto_delete);
@@ -69,15 +70,19 @@ IC			bool	NeedShowScrollBar	();		// no comment
 			float	GetVertIndent		();		// top + bottom indent
 			void	UpdateChildrenLenght();		// set default width for all children
 			float	Scroll2ViewV		();		// calculate scale for scroll position
-	CUIScrollBar*	ScrollBar			() {return m_VScrollBar;}
+	CUIScrollBar*	ScrollBar		() {return m_VScrollBar;}
+	
+	typedef fastdelegate::FastDelegate2<CUIWindow*,CUIWindow*,bool>		cmp_function;
+	cmp_function	m_sort_function;
 };
 
-#define ADD_TEXT_TO_VIEW3(txt,st,view)		st = xr_new<CUIStatic>();						\
+#define ADD_TEXT_TO_VIEW3(txt,st,view)		st = xr_new<CUITextWnd>();						\
+											st->SetFont(UI().Font().pFontLetterica16Russian); \
 											st->SetText(txt);								\
 											st->SetTextComplexMode(true);					\
 											st->SetWidth(view->GetDesiredChildWidth());		\
 											st->AdjustHeightToText();						\
 											view->AddWindow(st, true)
 
-#define ADD_TEXT_TO_VIEW2(txt,view)			CUIStatic*	pSt;								\
+#define ADD_TEXT_TO_VIEW2(txt,view)			CUITextWnd*	pSt;								\
 											ADD_TEXT_TO_VIEW3(txt,pSt,view)

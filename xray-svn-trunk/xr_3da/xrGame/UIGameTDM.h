@@ -39,7 +39,7 @@ public:
 			void		SetScoreCaption			(int t1, int t2);			
 	virtual void		SetFraglimit			(int local_frags, int fraglimit);
 	virtual void		Render					();
-	virtual void		OnFrame					();
+	virtual void  _BCL  OnFrame					();
 	
 	virtual	bool		IR_OnKeyboardPress		( int dik );
 	virtual bool		IR_OnKeyboardRelease	( int dik );

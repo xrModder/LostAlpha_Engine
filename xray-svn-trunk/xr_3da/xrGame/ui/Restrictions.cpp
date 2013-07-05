@@ -80,7 +80,9 @@ void CRestrictions::InitGroups()
 		m_names[i]			= CStringTable().translate( pSettings->r_string(rank, "rank_name"));
 	}
 
+#ifndef MASTER_GOLD
 	Dump();
+#endif // #ifndef MASTER_GOLD
 
 #ifdef DEBUG
 	CMD4(CCC_Integer, "rank_for_buymenu", (int*)&m_rank, 0, 4);
@@ -154,7 +156,7 @@ RESTR CRestrictions::GetRestr(const shared_str& item)
 	ptrdiff_t n				= strchr(item.c_str(),':') - item.c_str();
 	if( n>0 )
 	{
-		strncpy			(_name, item.c_str(), n );
+		strncpy_s		(_name, item.c_str(), n );
 		_name[n]		= 0;
 		_cnt			= sscanf(item.c_str()+n+1,"%d", &ret.n);
 	}
@@ -233,6 +235,7 @@ const CRestrictions::restr_item* CRestrictions::find_restr_item(const u32& rank,
 
 void CRestrictions::Dump() const
 {
+#ifndef MASTER_GOLD
 	Msg("------------item groups ---count=[%d]-------------------",m_goups.size());
 	Groups::const_iterator it = m_goups.begin();
 	Groups::const_iterator it_e = m_goups.end();
@@ -261,4 +264,5 @@ void CRestrictions::Dump() const
 		}
 		Msg("-----------------------------------------");
 	}
+#endif // #ifndef MASTER_GOLD
 }

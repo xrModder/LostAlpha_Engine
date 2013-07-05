@@ -15,6 +15,8 @@
 #include "UIWpnParams.h"
 #include "ui_af_params.h"
 
+#define  INV_GRID_WIDTH2  40.0f
+#define  INV_GRID_HEIGHT2 40.0f
 CUIItemInfo::CUIItemInfo()
 {
 	UIItemImageSize.set			(0.0f,0.0f);
@@ -124,10 +126,11 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 	xml_init.InitAutoStaticGroup	(uiXml, "auto", 0, this);
 }
 
-void CUIItemInfo::Init(float x, float y, float width, float height, LPCSTR xml_name)
+void CUIItemInfo::InitItemInfo(Fvector2 pos, Fvector2 size, LPCSTR xml_name)
 {
-	inherited::Init	(x, y, width, height);
-    Init			(xml_name);
+	inherited::SetWndPos	(pos);
+	inherited::SetWndSize	(size);
+    InitItemInfo			(xml_name);
 }
 
 bool				IsGameTypeSingle();

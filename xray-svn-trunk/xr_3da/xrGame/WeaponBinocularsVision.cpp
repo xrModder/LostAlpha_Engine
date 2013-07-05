@@ -31,26 +31,26 @@ struct FindVisObjByObject{
 
 void SBinocVisibleObj::create_default(u32 color)
 {
-	m_lt.Init			("ui\\ui_enemy_frame",0,0,RECT_SIZE,RECT_SIZE);
-	m_lb.Init			("ui\\ui_enemy_frame",0,0,RECT_SIZE,RECT_SIZE);
-	m_rt.Init			("ui\\ui_enemy_frame",0,0,RECT_SIZE,RECT_SIZE);
-	m_rb.Init			("ui\\ui_enemy_frame",0,0,RECT_SIZE,RECT_SIZE);
+	Frect r = {0,0,RECT_SIZE,RECT_SIZE};
+	m_lt.InitTexture			("ui\\ui_enemy_frame");m_lt.SetWndRect(r);m_lt.SetAlignment(waCenter);
+	m_lb.InitTexture			("ui\\ui_enemy_frame");m_lb.SetWndRect(r);m_lb.SetAlignment(waCenter);
+	m_rt.InitTexture			("ui\\ui_enemy_frame");m_rt.SetWndRect(r);m_rt.SetAlignment(waCenter);
+	m_rb.InitTexture			("ui\\ui_enemy_frame");m_rb.SetWndRect(r);m_rb.SetAlignment(waCenter);
 
-	m_lt.SetOriginalRect(0,			0,			RECT_SIZE,	RECT_SIZE);
-	m_lb.SetOriginalRect(0,			RECT_SIZE,	RECT_SIZE,	RECT_SIZE);
-	m_rt.SetOriginalRect(RECT_SIZE,	0,			RECT_SIZE,	RECT_SIZE);
-	m_rb.SetOriginalRect(RECT_SIZE,	RECT_SIZE,	RECT_SIZE,	RECT_SIZE);
+	m_lt.SetTextureRect		(Frect().set(0,				0,				RECT_SIZE,		RECT_SIZE)	);
+	m_lb.SetTextureRect		(Frect().set(0,				32-RECT_SIZE,	RECT_SIZE,		32)			);
+	m_rt.SetTextureRect		(Frect().set(32-RECT_SIZE,	0,				32,				RECT_SIZE)	);
+	m_rb.SetTextureRect		(Frect().set(32-RECT_SIZE,	32-RECT_SIZE,	32,				32)			);
 
+	u32 clr					= subst_alpha(color,128);
+	m_lt.SetTextureColor	(clr);
+	m_lb.SetTextureColor	(clr);
+	m_rt.SetTextureColor	(clr);
+	m_rb.SetTextureColor	(clr);
 
-	u32 clr			= subst_alpha(color,128);
-	m_lt.SetColor	(clr);
-	m_lb.SetColor	(clr);
-	m_rt.SetColor	(clr);
-	m_rb.SetColor	(clr);
+	cur_rect.set			(0,0, UI_BASE_WIDTH,UI_BASE_HEIGHT);
 
-	cur_rect.set	(0,0, UI_BASE_WIDTH,UI_BASE_HEIGHT);
-
-	m_flags.zero	();
+	m_flags.zero			();
 }
 
 void SBinocVisibleObj::Draw()
@@ -109,7 +109,7 @@ void SBinocVisibleObj::Update()
 		if (mn.similar(cur_rect.lt,2.f)&&mx.similar(cur_rect.rb,2.f)){ 
 			// target locked
 			m_flags.set(flTargetLocked,TRUE);
-			u32 clr	= subst_alpha(m_lt.GetColor(),255);
+			u32 clr	= subst_alpha(m_lt.GetTextureColor(),255);
 
 			//-----------------------------------------------------
 			CActor* pActor = NULL;
@@ -157,17 +157,17 @@ void SBinocVisibleObj::Update()
 				}
 			}
 
-			m_lt.SetColor	(clr);
-			m_lb.SetColor	(clr);
-			m_rt.SetColor	(clr);
-			m_rb.SetColor	(clr);
+			m_lt.SetTextureColor	(clr);
+			m_lb.SetTextureColor	(clr);
+			m_rt.SetTextureColor	(clr);
+			m_rb.SetTextureColor	(clr);
 		}
 	}
 
-	m_lt.SetWndPos		( (cur_rect.lt.x)+2,	(cur_rect.lt.y)+2 );
-	m_lb.SetWndPos		( (cur_rect.lt.x)+2,	(cur_rect.rb.y)-14 );
-	m_rt.SetWndPos		( (cur_rect.rb.x)-14,	(cur_rect.lt.y)+2 );
-	m_rb.SetWndPos		( (cur_rect.rb.x)-14,	(cur_rect.rb.y)-14 );
+	m_lt.SetWndPos		(Fvector2().set((cur_rect.lt.x)+2,		(cur_rect.lt.y)+2	));
+	m_lb.SetWndPos		(Fvector2().set((cur_rect.lt.x)+2,		(cur_rect.rb.y)-14	));
+	m_rt.SetWndPos		(Fvector2().set((cur_rect.rb.x)-14,		(cur_rect.lt.y)+2	));
+	m_rb.SetWndPos		(Fvector2().set((cur_rect.rb.x)-14,		(cur_rect.rb.y)-14	));
 
 	m_flags.set		(flVisObjNotValid, FALSE);
 }

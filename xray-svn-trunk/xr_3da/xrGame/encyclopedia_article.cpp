@@ -9,6 +9,7 @@
 #include "ui/UIXmlInit.h"
 #include "ui/UIInventoryUtilities.h"
 #include "object_broker.h"
+#include "../../Include/xrRender/UIShader.h"
 
 using namespace InventoryUtilities;
 
@@ -75,27 +76,27 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 	if(ltx)
 	{
 		data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
-
-		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH);
-		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT);
-		float width		= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH);
-		float height	= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT);
-
-		data()->image.GetUIStaticItem().SetOriginalRect(x, y, width, height);
-		data()->image.ClipperOn();
-		data()->image.TextureAvailable(true);
+		Frect				tex_rect;
+		tex_rect.x1			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH);
+		tex_rect.y1			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT);
+		tex_rect.x2			= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH);
+		tex_rect.y2			= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT);
+		tex_rect.rb.add		(tex_rect.lt);
+		data()->image.GetUIStaticItem().SetTextureRect(tex_rect);
 	}
 	else 
 	{
-		if( pXML->NavigateToNode(pNode,"texture",0) ){
+		if( pXML->NavigateToNode(pNode,"texture",0) )
+		{
 			pXML->SetLocalRoot(pNode);
 			CUIXmlInit::InitTexture(*pXML, "", 0, &data()->image);
 			pXML->SetLocalRoot(pXML->GetRoot());
 		}
 	}
 
-	if(data()->image.TextureAvailable() ){
-		Frect r = data()->image.GetUIStaticItem().GetOriginalRect();
+	if(data()->image.GetShader() && data()->image.GetShader()->inited())
+	{
+		Frect r = data()->image.GetUIStaticItem().GetTextureRect();
 		data()->image.SetAutoDelete(false);
 
 		const int minSize = 65;
@@ -115,7 +116,7 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 			data()->image.SetTextureOffset(data()->image.GetTextureOffeset()[0], dy / 2);
 		}
 
-		data()->image.SetWndRect(0, 0, r.width(), r.height());
+		data()->image.SetWndRect(Frect().set(0,0,r.width(),r.height()));
 	};
 
 	// Тип статьи

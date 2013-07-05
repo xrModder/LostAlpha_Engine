@@ -9,7 +9,7 @@ namespace WallmarksEngine {
 
 class CSkeletonWallmark;
 class CKinematics;
-
+ 
 class CWallmarksEngine
 {
 public:

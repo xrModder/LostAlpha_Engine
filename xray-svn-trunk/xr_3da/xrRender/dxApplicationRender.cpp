@@ -14,9 +14,8 @@ void dxApplicationRender::Copy(IApplicationRender &_in)
 void dxApplicationRender::LoadBegin()
 {
 	ll_hGeom.create		(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
-	sh_progress.create	("hud\\default","ui\\ui_actor_loadgame_screen");
-	hLevelLogo_Add.create	("hud\\default","ui\\ui_actor_widescreen_sidepanels.dds");
-
+	sh_progress.create	("hud\\default","ui\\ui_load");
+	//hLevelLogo_Add.create	("hud\\default","ui\\ui_actor_widescreen_sidepanels.dds");
 	ll_hGeom2.create		(FVF::F_TL, RCache.Vertex.Buffer(),NULL);
 }
 

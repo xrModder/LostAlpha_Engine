@@ -88,7 +88,7 @@ protected:
 	CUIListWnd		m_list[3];
 	CUIFrameWindow	m_frame[3];
 	CUI3tButton		m_header[LST_COLUMN_COUNT];
-	CUILabel		m_header2[4];
+	CUIFrameLineWnd	m_header2[4];
 	CUIFrameLineWnd	m_header_frames[LST_COLUMN_COUNT];
 	CUIEditBox		m_edit_gs_filter;
 	xr_string		m_playerName;

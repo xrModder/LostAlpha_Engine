@@ -13,7 +13,7 @@
 #define UI_FRAME_LINE_H_
 
 #pragma once
-
+#if 0
 #include "../UIStaticItem.h"
 
 class CUIFrameLine: public CUICustomItem
@@ -52,5 +52,5 @@ public:
 	IC void		SetOrientation	(bool bIsHorizontal)	{ bHorizontalOrientation = bIsHorizontal; uFlags &=~ flValidSize; }
 	void		Render			();
 };
-
+#endif
 #endif	// UI_FRAME_LINE_H_

@@ -430,14 +430,18 @@ void CGamePersistent::OnFrame	()
 		m_intro_event.bind			(this,&CGamePersistent::game_loaded);
 	}
 
-	if(g_tutorial2){ 
+	if(g_tutorial2)
+	{ 
 		g_tutorial2->Destroy	();
 		xr_delete				(g_tutorial2);
 	}
 
-	if(g_tutorial && !g_tutorial->IsActive()){
+	if(g_tutorial && !g_tutorial->IsActive())
+	{
 		xr_delete(g_tutorial);
 	}
+	if(0==Device.dwFrame%200)
+		CUITextureMaster::FreeCachedShaders();
 
 #ifdef DEBUG
 	++m_frame_counter;

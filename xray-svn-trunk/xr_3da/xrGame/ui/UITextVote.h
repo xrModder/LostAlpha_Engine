@@ -1,20 +1,18 @@
 #pragma once
-
+/*
 #include "UIDialogWnd.h"
 
 class CUIStatic;
-class CUI3tButton;
+class CUI3tButtonEx;
 class CUIEditBoxEx;
 class CUIXml;
 
 class CUITextVote : public CUIDialogWnd 
 {
 public:
-	using CUIDialogWnd::Init;
-
 					CUITextVote		();
 
-			void	Init			(CUIXml& xml_doc);
+			void	InitTextVote	(CUIXml& xml_doc);
 
 	virtual void	SendMessage		(CUIWindow* pWnd, s16 msg, void* pData = 0);
 
@@ -26,6 +24,7 @@ protected:
 	CUIStatic*		header;
 	CUIEditBoxEx*	edit;
 
-	CUI3tButton*	btn_ok;
-	CUI3tButton*	btn_cancel;
+	CUI3tButtonEx*	btn_ok;
+	CUI3tButtonEx*	btn_cancel;
 };
+*/

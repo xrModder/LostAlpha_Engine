@@ -870,7 +870,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 	else
 		return inherited::Detach(item_section_name, b_spawn_item);;
 }
-
+#include "UIStaticItem.h"
 void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -892,7 +892,8 @@ void CWeaponMagazined::InitAddons()
 			if(m_UIScope) xr_delete(m_UIScope);
 			m_UIScope = xr_new<CUIStaticItem>();
 
-			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0, alNone);
+			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0);
+	
 
 		}
 		else if(m_eScopeStatus == ALife::eAddonPermanent)
@@ -903,7 +904,7 @@ void CWeaponMagazined::InitAddons()
 
 			if(m_UIScope) xr_delete(m_UIScope);
 			m_UIScope = xr_new<CUIStaticItem>();
-			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0, alNone);
+			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0);
 
 		}
 	}

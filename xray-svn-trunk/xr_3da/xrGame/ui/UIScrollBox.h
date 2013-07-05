@@ -1,18 +1,11 @@
 #pragma once
-#include "uibutton.h"
+#include "uiFrameLineWnd.h"
 
-class CUIScrollBox :public CUIStatic
+class CUIScrollBox :public CUIFrameLineWnd
 {
-	typedef	CUIStatic			inherited;
+	typedef	CUIFrameLineWnd		inherited;
 public:
 								CUIScrollBox			();
 
-			void 				SetHorizontal			();
-			void 				SetVertical				();
-
-	virtual bool				OnMouse					(float x, float y, EUIMessages mouse_action);
-	virtual void				Draw					();
-						
-protected:
-	bool						m_bIsHorizontal;
+	virtual bool				OnMouseAction					(float x, float y, EUIMessages mouse_action);
 };

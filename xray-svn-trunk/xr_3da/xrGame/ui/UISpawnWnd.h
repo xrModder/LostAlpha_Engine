@@ -26,7 +26,7 @@ public:
 
 	virtual void Init();
 	virtual void SendMessage(CUIWindow *pWnd, s16 msg, void *pData);
-	virtual bool OnKeyboard(int dik, EUIMessages keyboard_action);
+	virtual bool OnKeyboardAction(int dik, EUIMessages keyboard_action);
 			void SetVisibleForBtn(ETEAMMENU_BTN btn, bool state);
 			void SetCurTeam(int team);
 
@@ -44,7 +44,7 @@ protected:
 protected:
 	CUIStatic*		m_pCaption;
 	CUIStatic*		m_pBackground;
-	CUIStatic*		m_pFrames[3];
+	CUIStatic*		m_pFrames[2];
 	CUIScrollView*	m_pTextDesc;
 	CUIStatix*		m_pImage1;
 	CUIStatix*		m_pImage2;

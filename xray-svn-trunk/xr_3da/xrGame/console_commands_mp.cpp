@@ -616,7 +616,7 @@ public:
 		bool bMapFound				= false;
 		for(u32 i=0; i<cnt; ++i)
 		{
-			const shared_str& _map_name = M.m_map_names[i];
+			const shared_str& _map_name = M.m_map_names[i].map_name;
 			if ( 0==xr_strcmp(_map_name.c_str(), LevelName) )
 			{
 				bMapFound = true;

@@ -156,34 +156,14 @@ bool game_cl_mp::OnKeyboardPress(int key)
 		case kCHAT:
 		case kCHAT_TEAM:
 			{
-				shared_str prefix;
-				
-
 				CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
-
-				if (kCHAT_TEAM == key)
-				{
-					prefix.printf("%s> ", *st.translate("st_mp_say_to_team"));
-					
-					pChatWnd->TeamChat();
-				}
-				else
-				{
-					prefix.printf("%s> ", *st.translate("st_mp_say_to_all"));					
-					pChatWnd->AllChat();
-				}
-
-				pChatWnd->SetEditBoxPrefix(prefix);
-
-				StartStopMenu(pChatWnd, false);
-				if (!pChatWnd->IsShown() && xr_strlen(pChatWnd->UIEditBox.GetText()) > 0)
-				{
-					shared_str phrase = pChatWnd->UIEditBox.GetText();
-					//				pChatWnd->Say(phrase);
-					(kCHAT == key) ? ChatSayAll(phrase) : ChatSayTeam(phrase);
-					pChatWnd->UIEditBox.SetText("");
-				}
-				return false;
+				R_ASSERT					(!pChatWnd->IsShown());
+				string512					prefix;
+				xr_sprintf(prefix, "%s> ", st.translate((kCHAT_TEAM==key)?"st_mp_say_to_team":"st_mp_say_to_all").c_str());
+				pChatWnd->ChatToAll			(kCHAT==key);
+				pChatWnd->SetEditBoxPrefix	(prefix);
+				pChatWnd->ShowDialog		(false);
+				return						false;
 			}break;
 		case kVOTE_BEGIN:
 			{
@@ -266,7 +246,7 @@ void	game_cl_mp::OnCantVoteMsg(LPCSTR Text)
 	if (!m_pMessageBox)
 		m_pMessageBox = xr_new<CUIMessageBoxEx>();
 
-	m_pMessageBox->Init("cant_vote");
+	m_pMessageBox->InitMessageBox("cant_vote");
 	m_pMessageBox->SetText(Text);
 	StartStopMenu(m_pMessageBox, true);
 }
@@ -408,13 +388,13 @@ void game_cl_mp::OnWarnMessage(NET_Packet* P)
 			SDrawStaticStruct* ss	= HUD().GetUI()->AddInfoMessage(_buff);
 			
 			xr_sprintf					(_buff,"%d ms.", _ping);
-			ss->m_static->SetText	(_buff);
+			ss->m_static->TextItemControl()->SetText	(_buff);
 			CUIWindow*	w			= ss->m_static->FindChild("auto_static_0");
 			if(w)
 			{
 				xr_sprintf				(_buff,"%d/%d", _cnt, _total);
 				CUIStatic* s		= smart_cast<CUIStatic*>(w);
-				s->SetText			(_buff);
+				s->TextItemControl()->SetText			(_buff);
 			}
 		}
 	}
@@ -1203,8 +1183,8 @@ void game_cl_mp::LoadBonuses				()
 		}
 		else
 		{
-			LPCSTR IconShader = CUITextureMaster::GetTextureFileName("ui_hud_status_blue_01");			
-			NewBonus.IconShader->create("hud\\default", IconShader);
+
+			CUITextureMaster::GetTextureShader("ui_hud_status_blue_01", NewBonus.IconShader);
 
 			Frect IconRect;
 			for (u32 r=1; r<=5; r++)

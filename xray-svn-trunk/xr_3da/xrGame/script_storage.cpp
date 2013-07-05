@@ -214,17 +214,17 @@ int CScriptStorage::vscript_log		(ScriptStorage::ELuaMessageType tLuaMessageType
 		default : NODEFAULT;
 	}
 	
-	strcpy	(S2,S);
+	xr_strcpy	(S2,S);
 	S1		= S2 + xr_strlen(S);
 	int		l_iResult = vsprintf(S1,caFormat,marker);
 	Msg		("%s",S2);
 
 #ifndef ENGINE_BUILD
 #	ifdef DEBUG	
-	strcpy	(S2,SS);
+	xr_strcpy	(S2,SS);
 	S1		= S2 + xr_strlen(SS);
 	vsprintf(S1,caFormat,marker);
-	strcat	(S2,"\r\n");
+	xr_strcat	(S2,"\r\n");
 
 		ai().script_engine().m_output.w(S2,xr_strlen(S2)*sizeof(char));
 #	endif // DEBUG
@@ -280,10 +280,10 @@ int __cdecl CScriptStorage::script_log	(ScriptStorage::ELuaMessageType tLuaMessa
 	return		(result);
 }
 
-bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, LPSTR c)
+bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, const u32 b_size, LPSTR c, const u32 c_size)
 {
-	strcpy			(b,"");
-	strcpy			(c,"");
+	xr_strcpy			(b,b_size,"");
+	xr_strcpy			(c,c_size,"");
 	LPSTR			S2	= xr_strdup(caNamespaceName);
 	LPSTR			S	= S2;
 	for (int i=0;;++i) {
@@ -297,11 +297,11 @@ bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, LPSTR c)
 			*S1				= 0;
 
 		if (i)
-			strcat		(b,"{");
-		strcat			(b,S);
-		strcat			(b,"=");
+			xr_strcat		(b,b_size,"{");
+		xr_strcat			(b,b_size,S);
+		xr_strcat			(b,b_size,"=");
 		if (i)
-			strcat		(c,"}");
+			xr_strcat		(c,c_size,"}");
 		if (S1)
 			S			= ++S1;
 		else
@@ -319,12 +319,12 @@ bool CScriptStorage::load_buffer	(lua_State *L, LPCSTR caBuffer, size_t tSize, L
 
 		LPCSTR			header = file_header;
 
-		if (!parse_namespace(caNameSpaceName,a,b))
+		if (!parse_namespace(caNameSpaceName,a,sizeof(a),b,sizeof(b)))
 			return		(false);
 		xr_sprintf			(insert,header,caNameSpaceName,a,b);
 		u32				str_len = xr_strlen(insert);
 		LPSTR			script = xr_alloc<char>(str_len + tSize);
-		strcpy			(script,insert);
+		xr_strcpy			(script,str_len + tSize,insert);
 		CopyMemory	(script + str_len,caBuffer,u32(tSize));
 //		try 
 		{
@@ -424,7 +424,7 @@ bool CScriptStorage::namespace_loaded(LPCSTR N, bool remove_from_stack)
 	lua_pushstring 			(lua(),"_G"); 
 	lua_rawget 				(lua(),LUA_GLOBALSINDEX); 
 	string256				S2;
-	strcpy					(S2,N);
+	xr_strcpy					(S2,N);
 	LPSTR					S = S2;
 	for (;;) { 
 		if (!xr_strlen(S))
@@ -501,7 +501,7 @@ bool CScriptStorage::object	(LPCSTR namespace_name, LPCSTR identifier, int type)
 luabind::object CScriptStorage::name_space(LPCSTR namespace_name)
 {
 	string256			S1;
-	strcpy				(S1,namespace_name);
+	xr_strcpy				(S1,namespace_name);
 	LPSTR				S = S1;
 	luabind::object		lua_namespace = luabind::get_globals(lua());
 	for (;;) {

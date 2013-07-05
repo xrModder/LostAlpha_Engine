@@ -1,33 +1,27 @@
 #include "stdafx.h"
 
 #include "UIEditKeyBind.h"
-#include "UIColorAnimatorWrapper.h"
 #include "../xr_level_controller.h"
 #include "../object_broker.h"
 
 CUIEditKeyBind::CUIEditKeyBind(bool bPrim)
 {
 	m_bPrimary					= bPrim;
-    m_bEditMode					= false;
-
-	m_pAnimation				= xr_new<CUIColorAnimatorWrapper>("ui_map_area_anim");
-	m_pAnimation->Cyclic		(true);
-	m_bChanged					= false;
-	m_lines.SetTextComplexMode	(false);
+    m_bIsEditMode				= false;
+	TextItemControl()->SetTextComplexMode(false);
 	m_keyboard					= NULL;
+	m_opt_backup_value			= NULL;
 	m_action					= NULL;
 }
 CUIEditKeyBind::~CUIEditKeyBind()
-{
-	delete_data(m_pAnimation);
-}
+{}
 
 u32 cut_string_by_length(CGameFont* pFont, LPCSTR src, LPSTR dst, u32 dst_size, float length)
 {
 	if ( pFont->IsMultibyte() ) {
 		u16 nPos = pFont->GetCutLengthPos( length, src );
 		VERIFY( nPos < dst_size );
-		strncpy( dst, src , nPos );
+		strncpy_s( dst, dst_size, src , nPos );
 		dst[ nPos ] = '\0';
 		return nPos;
 	} else {
@@ -52,78 +46,80 @@ u32 cut_string_by_length(CGameFont* pFont, LPCSTR src, LPSTR dst, u32 dst_size, 
 void CUIEditKeyBind::SetText(const char* text)
 {
 	if (!text || 0 == xr_strlen(text))
-		CUILabel::SetText("---");
+		TextItemControl()->SetText("---");
 	else{
 		string256 buff;
 
-		cut_string_by_length(CUILinesOwner::GetFont(), text, buff, sizeof(buff), GetWidth());
+		cut_string_by_length(TextItemControl()->GetFont(), text, buff, sizeof(buff), GetWidth());
 
-		CUILabel::SetText	(buff);
+		TextItemControl()->SetText	(buff);
 	}
 }
 
-void CUIEditKeyBind::Init(float x, float y, float width, float height)
+void CUIEditKeyBind::InitKeyBind(Fvector2 pos, Fvector2 size)
 {
-	CUILabel::Init			(x,y,width,height);
-	InitTexture				("ui_options_string");
+	CUIStatic::SetWndPos	(pos);
+	CUIStatic::SetWndSize	(size);
+	InitTexture				("ui_listline2");
+	TextItemControl()->SetFont	(UI().Font().pFontLetterica16Russian);
+	SetStretchTexture		(true);
+	SetEditMode				(false);
 }
 
-void CUIEditKeyBind::InitTexture(LPCSTR texture, bool bHorizontal)
-{
-	CUILabel::InitTexture(texture,bHorizontal);
-}
 
 void CUIEditKeyBind::OnFocusLost()
 {
-	CUILabel::OnFocusLost		();
-	m_bEditMode					= false;
-	m_lines.SetTextColor		((subst_alpha(m_lines.GetTextColor(), color_get_A(0xffffffff))));
+	CUIStatic::OnFocusLost		();
+	SetEditMode					(false);
+	TextItemControl()->SetTextColor	((subst_alpha(TextItemControl()->GetTextColor(), color_get_A(0xffffffff))));
 }
 
 bool CUIEditKeyBind::OnMouseDown(int mouse_btn)
 {
-	if (m_bEditMode)
+	if (m_bIsEditMode)
 	{		
 		string64 message;
 		
 		m_keyboard				= dik_to_ptr(mouse_btn, true);
 		if(!m_keyboard)			return true;
-		SetText					(m_keyboard->key_local_name.c_str());
+		SetValue				();
 		OnFocusLost				();
-		m_bChanged				= true;
 
-		xr_strcpy			(message, m_action->action_name);
-		xr_strcat			(message, "=");
-		xr_strcat			(message, m_keyboard->key_name);		
-		SendMessage2Group	("key_binding",message);
+		xr_strcpy				(message, m_action->action_name);
+		xr_strcat					(message, "=");
+		xr_strcat					(message, m_keyboard->key_name);		
+		SendMessage2Group		("key_binding",message);
 
 		return					true;
 	}
 
 	if (mouse_btn==MOUSE_1)
-		m_bEditMode = m_bCursorOverWindow;
+		SetEditMode(m_bCursorOverWindow);
 
-	return CUILabel::OnMouseDown(mouse_btn);
+	return CUIStatic::OnMouseDown(mouse_btn);
 }
 
-bool CUIEditKeyBind::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIEditKeyBind::OnKeyboardAction(int dik, EUIMessages keyboard_action)
+{
+	
 	if (dik == MOUSE_1 || dik == MOUSE_2 || dik == MOUSE_3)
 		return false;
-	if (CUILabel::OnKeyboard(dik, keyboard_action))
+
+	if (CUIStatic::OnKeyboardAction(dik, keyboard_action))
 		return true;
 
 	string64 message;
-	if (m_bEditMode)
+	if (m_bIsEditMode)
 	{		
 		m_keyboard			= dik_to_ptr(dik, true);
-		if(!m_keyboard)			return true;
+		if(!m_keyboard)		return true;
+
+		SetValue			();
 
 		xr_strcpy			(message, m_action->action_name);
-		xr_strcat			(message, "=");
-		xr_strcat			(message, m_keyboard->key_name);		
-		SetText				(m_keyboard->key_local_name.c_str());
+		xr_strcat				(message, "=");
+		xr_strcat				(message, m_keyboard->key_name);		
 		OnFocusLost			();
-		m_bChanged			= true;
 		SendMessage2Group	("key_binding",message);
 		return				true;
 	}
@@ -132,27 +128,42 @@ bool CUIEditKeyBind::OnKeyboard(int dik, EUIMessages keyboard_action){
 
 void CUIEditKeyBind::Update()
 {
-	CUILabel::Update();
-
-	m_bTextureAvailable = m_bCursorOverWindow;
-	if (m_bEditMode)
-	{
-		m_pAnimation->Update();
-		m_lines.SetTextColor((subst_alpha(m_lines.GetTextColor(), color_get_A(m_pAnimation->GetColor()))));
-	}
-	
+	CUIStatic::Update();
 }
 
-void CUIEditKeyBind::Register(const char* entry, const char* group)
+void CUIEditKeyBind::SetEditMode(bool b)
 {
-	CUIOptionsItem::Register				(entry, group);
-	m_action		= action_name_to_ptr	(entry);
+	m_bIsEditMode = b;
+
+	if(b)
+	{
+		SetColorAnimation	("ui_map_area_anim", LA_CYCLIC|LA_ONLYALPHA|LA_TEXTCOLOR);
+		TextureOn			();
+	}else
+	{
+		SetColorAnimation	(NULL, 0);
+		TextureOff			();
+	}
 }
 
-void CUIEditKeyBind::SetCurrentValue()
+void CUIEditKeyBind::AssignProps(const shared_str& entry, const shared_str& group)
+{
+	CUIOptionsItem::AssignProps				(entry, group);
+	m_action		= action_name_to_ptr	(entry.c_str());
+}
+
+void CUIEditKeyBind::SetValue()
+{
+	if(m_keyboard)
+		SetText				(m_keyboard->key_local_name.c_str());
+	else
+		SetText				(NULL);
+}
+
+void CUIEditKeyBind::SetCurrentOptValue()
 {
 	string64				buff;
-	ZeroMemory				(buff,sizeof(buff));
+	ZeroMemory				(buff, sizeof(buff));
 
 	_binding*	pbinding	= &g_key_bindings[m_action->id];
 
@@ -160,21 +171,32 @@ void CUIEditKeyBind::SetCurrentValue()
 	int idx					= (m_bPrimary)?0:1;
 	m_keyboard				= pbinding->m_keyboard[idx];
 
-	if(m_keyboard)
-		SetText				(m_keyboard->key_local_name.c_str());
-	else
-		SetText				(NULL);
+	SetValue				();
 }
 
-void CUIEditKeyBind::SaveValue()
+void CUIEditKeyBind::SaveOptValue()
 {
-	CUIOptionsItem::SaveValue();
-
+	CUIOptionsItem::SaveOptValue();
     BindAction2Key		();
-	m_bChanged			= false;
 }
 
-#include "../../xr_ioconsole.h"
+void CUIEditKeyBind::SaveBackUpOptValue()
+{
+	CUIOptionsItem::SaveBackUpOptValue();
+	m_opt_backup_value	= m_keyboard;
+}
+
+void CUIEditKeyBind::UndoOptValue()
+{
+	m_keyboard = m_opt_backup_value;
+	CUIOptionsItem::UndoOptValue();
+}
+
+bool CUIEditKeyBind::IsChangedOptValue() const
+{
+	return m_keyboard != m_opt_backup_value;
+}
+
 void CUIEditKeyBind::BindAction2Key()
 {
 	xr_string comm_unbind	= (m_bPrimary)?"unbind ":"unbind_sec ";
@@ -191,11 +213,8 @@ void CUIEditKeyBind::BindAction2Key()
 	}	
 }
 
-bool CUIEditKeyBind::IsChanged(){
-	return m_bChanged;
-}
-
-void CUIEditKeyBind::OnMessage(const char* message){
+void CUIEditKeyBind::OnMessage(LPCSTR message)
+{
 	// message = "command=key"
 	int eq	= (int)strcspn(message,"=");
 	

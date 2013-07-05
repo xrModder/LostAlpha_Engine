@@ -1,6 +1,8 @@
 #pragma once
 
-#include "UIListItem.h"
+//#include "UIListItem.h"
+#include "UIStatic.h"
+#include "UIListBoxItem.h"
 
 
 struct LIST_SRV_SIZES {
@@ -11,6 +13,7 @@ struct LIST_SRV_SIZES {
 	float players;
 	float ping;
 	float version;
+	float height;
 };
 
 struct SRV_ICONS{
@@ -33,24 +36,19 @@ struct LIST_SRV_INFO{
 };
 
 struct LIST_SRV_ITEM {
-	u32				color;
-	CGameFont*		font;
+	u32				text_color;
+	CGameFont*		text_font;
 	LIST_SRV_SIZES	size;
 	LIST_SRV_INFO	info;
 };
 
-class CUIListItemServer : public CUIListItem 
+class CUIListItemServer : public CUIListBoxItem
 {
+	typedef CUIListBoxItem	inherited;
 public:
-	CUIListItemServer();
+							CUIListItemServer		(float height);
 
-
-	// CUISimpleWindow
-	using CUIWindow::Init;
-	virtual void Draw();
-
-	// own
-	virtual void			Init					(LIST_SRV_ITEM& params, float x, float y, float width, float height);
+			void			InitItemServer			(LIST_SRV_ITEM& params/*, Fvector2 size*/);
 			void			SetParams				(LIST_SRV_ITEM& params);
 			void			CreateConsoleCommand	(xr_string& command, LPCSTR player_name, LPCSTR player_pass, LPCSTR server_psw);
 
@@ -59,21 +57,18 @@ public:
 	
 
 protected:
-			void			SetTextColor			(u32 color);
-			void			SetFont					(CGameFont* pFont);
 	LIST_SRV_SIZES			m_sizes;
 
 	LIST_SRV_ITEM			m_srv_info;
+	CUIStatic*				m_iconPass;
+	CUIStatic* 				m_iconDedicated;
+//	CUIStatic* 				m_iconPunkBuster;
+	CUIStatic* 				m_iconUserPass;
+	CUITextWnd*				m_server;
+	CUITextWnd*				m_map;
+	CUITextWnd*				m_game;
+	CUITextWnd*				m_players;
+	CUITextWnd*				m_ping;
+	CUITextWnd*				m_version;
 
-	CUIWindow 				m_icon;
-	CUIStatic 				m_iconPass;
-	CUIStatic 				m_iconDedicated;
-	CUIStatic 				m_iconPunkBuster;
-	CUIStatic 				m_iconUserPass;
-	CUIStatic 				m_server;
-	CUIStatic 				m_map;
-	CUIStatic 				m_game;
-	CUIStatic 				m_players;
-	CUIStatic 				m_ping;
-	CUIStatic 				m_version;
 };

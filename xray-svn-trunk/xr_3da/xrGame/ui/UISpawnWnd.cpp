@@ -2,15 +2,14 @@
 #include <dinput.h>
 #include "UISpawnWnd.h"
 #include "UIXmlInit.h"
-#include "../hudmanager.h"
 #include "../level.h"
 #include "../game_cl_teamdeathmatch.h"
 #include "UIStatix.h"
 #include "UIScrollView.h"
 #include "UI3tButton.h"
 #include "../xr_level_controller.h"
-
-//#include "UIMapDesc.h"
+#include "uicursor.h"
+#include "uigamecustom.h"
 
 CUISpawnWnd::CUISpawnWnd()
 	:  m_iCurTeam(0)
@@ -22,7 +21,7 @@ CUISpawnWnd::CUISpawnWnd()
 
 	m_pFrames[0]	= xr_new<CUIStatic>();	AttachChild(m_pFrames[0]);
 	m_pFrames[1]	= xr_new<CUIStatic>();	AttachChild(m_pFrames[1]);
-	m_pFrames[2]	= xr_new<CUIStatic>();	AttachChild(m_pFrames[2]);
+//	m_pFrames[2]	= xr_new<CUIStatic>();	AttachChild(m_pFrames[2]);
 
 	m_pTextDesc		= xr_new<CUIScrollView>();	AttachChild(m_pTextDesc);
 
@@ -39,7 +38,7 @@ CUISpawnWnd::~CUISpawnWnd()
 	xr_delete(m_pBackground);
 	xr_delete(m_pFrames[0]);
 	xr_delete(m_pFrames[1]);
-	xr_delete(m_pFrames[2]);
+//	xr_delete(m_pFrames[2]);
 	xr_delete(m_pImage1);
 	xr_delete(m_pImage2);
 	xr_delete(m_pTextDesc);
@@ -53,22 +52,21 @@ CUISpawnWnd::~CUISpawnWnd()
 void CUISpawnWnd::Init()
 {
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "spawn.xml");
-	R_ASSERT3(xml_result, "xml file not found", "spawn.xml");
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "spawn.xml");
 
 	CUIXmlInit::InitWindow(xml_doc,"team_selector",						0,	this);
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:caption",				0,	m_pCaption);
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:background",			0,	m_pBackground);
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_frames_tl",		0,	m_pFrames[0]);
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_frames_tr",		0,	m_pFrames[1]);
-	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_frames_bottom",	0,	m_pFrames[2]);
+//	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_frames_bottom",	0,	m_pFrames[2]);
 	CUIXmlInit::InitScrollView(xml_doc,"team_selector:text_desc",			0,	m_pTextDesc);
 
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_0",0,m_pImage1);
-	m_pImage1->SetStretchTexture(true);	
+	//m_pImage1->SetStretchTexture(true);	
 	CUIXmlInit::InitStatic(xml_doc,"team_selector:image_1",0,m_pImage2);
-	m_pImage2->SetStretchTexture(true);
-	InitTeamLogo();
+	//m_pImage2->SetStretchTexture(true);
+	//InitTeamLogo();
 
 	CUIXmlInit::Init3tButton(xml_doc,"team_selector:btn_spectator",	0,m_pBtnSpectator);
 	CUIXmlInit::Init3tButton(xml_doc,"team_selector:btn_autoselect",0,m_pBtnAutoSelect);
@@ -80,30 +78,28 @@ void CUISpawnWnd::InitTeamLogo(){
 	R_ASSERT(pSettings->line_exist("team_logo", "team1"));
 	R_ASSERT(pSettings->line_exist("team_logo", "team2"));
 
-#pragma todo("Satan -> Satan : adopt to fixed texture size")
-
 	m_pImage1->InitTexture(pSettings->r_string("team_logo", "team1"));
-	m_pImage1->RescaleRelative2Rect(m_pImage1->GetStaticItem()->GetOriginalRect());
 	m_pImage2->InitTexture(pSettings->r_string("team_logo", "team2"));
-	m_pImage2->RescaleRelative2Rect(m_pImage2->GetStaticItem()->GetOriginalRect());
 }
 
 void CUISpawnWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
 	if (BUTTON_CLICKED == msg)
 	{
-		Game().StartStopMenu(this,true);
-		game_cl_TeamDeathmatch * tdm = smart_cast<game_cl_TeamDeathmatch *>(&(Game()));
+		HideDialog							();
+		game_cl_mp * game = smart_cast<game_cl_mp*>(&Game());
+		VERIFY(game);
+		//game_cl_TeamDeathmatch * tdm = smart_cast<game_cl_TeamDeathmatch *>(&(Game()));
 		if (pWnd == m_pImage1)
-			tdm->OnTeamSelect(0);
+			game->OnTeamSelect(0);
 		else if (pWnd == m_pImage2)
-			tdm->OnTeamSelect(1);
+			game->OnTeamSelect(1);
 		else if (pWnd == m_pBtnAutoSelect)
-			tdm->OnTeamSelect(-1);
+			game->OnTeamSelect(-1);
 		else if (pWnd == m_pBtnSpectator)
-			tdm->OnSpectatorSelect();
+			game->OnSpectatorSelect();
 		else if (pWnd == m_pBtnBack)
-			tdm->OnTeamMenuBack();
+			game->OnTeamMenuBack();
 	}
 
 	inherited::SendMessage(pWnd, msg, pData);
@@ -111,7 +107,7 @@ void CUISpawnWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool CUISpawnWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUISpawnWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED != keyboard_action)
 	{
@@ -120,7 +116,7 @@ bool CUISpawnWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			ShowChildren(true);
 			game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 			game->OnKeyboardRelease(kSCORES);
-			UI().GetUICursor()->Show();
+			UI().GetUICursor().Show();
 		}		
 		return false;
 	}
@@ -130,44 +126,46 @@ bool CUISpawnWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
         ShowChildren(false);
 		game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 		game->OnKeyboardPress(kSCORES);
-		UI().GetUICursor()->Hide();
+		UI().GetUICursor().Hide();
 		return false;
 	}
 
-	game_cl_TeamDeathmatch * dm = smart_cast<game_cl_TeamDeathmatch *>(&(Game()));
+	game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
+	VERIFY(game);
+	//game_cl_TeamDeathmatch * dm = smart_cast<game_cl_TeamDeathmatch *>(&(Game()));
 	
 	if (DIK_1 == dik || DIK_2 == dik)
 	{
-		dm->StartStopMenu(this,true);
+		HideDialog							();
 		
 		if (DIK_1 == dik)
-			dm->OnTeamSelect(0);
+			game->OnTeamSelect(0);
 		else
-			dm->OnTeamSelect(1);
+			game->OnTeamSelect(1);
 		return true;
 	}
 	switch (dik)
 	{
 	case DIK_ESCAPE:
-		dm->StartStopMenu(this,true);
-		dm->OnTeamMenuBack();
+		HideDialog							();
+		game->OnTeamMenuBack();
 		return true;
 	case DIK_SPACE:
-		dm->StartStopMenu(this,true);
-		dm->OnTeamSelect(-1);
+		HideDialog							();
+		game->OnTeamSelect(-1);
 		return true;
 	case DIK_RETURN:
-		dm->StartStopMenu(this,true);
+		HideDialog							();
 		if (m_pImage1->GetSelectedState())
-			dm->OnTeamSelect(0);
+			game->OnTeamSelect(0);
 		else if (m_pImage2->GetSelectedState())
-			dm->OnTeamSelect(1);
+			game->OnTeamSelect(1);
 		else
-			dm->OnTeamSelect(-1);		
+			game->OnTeamSelect(-1);		
 		return true;
 	}
 
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 
 void CUISpawnWnd::SetVisibleForBtn(ETEAMMENU_BTN btn, bool state){

@@ -23,9 +23,9 @@ void CUIKeyBinding::InitFromXml(CUIXml& xml_doc, LPCSTR path)
 	CUIXmlInit::InitScrollView	(xml_doc, strconcat(sizeof(buf),buf,path,":scroll_view"),0, m_scroll_wnd);
 
 	CUIXmlInit::InitFrameWindow	(xml_doc, strconcat(sizeof(buf),buf,path,":frame"),		0, &m_frame);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_1"),	0, &m_header[0]);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_2"),	0, &m_header[1]);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_3"),	0, &m_header[2]);
+	CUIXmlInit::InitFrameLine		(xml_doc, strconcat(sizeof(buf),buf,path,":header_1"),	0, &m_header[0]);
+	CUIXmlInit::InitFrameLine		(xml_doc, strconcat(sizeof(buf),buf,path,":header_2"),	0, &m_header[1]);
+	CUIXmlInit::InitFrameLine		(xml_doc, strconcat(sizeof(buf),buf,path,":header_3"),	0, &m_header[2]);
 
 	FillUpList					(xml_doc, path);
 }
@@ -35,11 +35,11 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 	string256		buf;
 	CUIXml			xml_doc;
 	CStringTable	st;
-	xml_doc.Init							(CONFIG_PATH, UI_PATH, "ui_keybinding.xml");
+	xml_doc.Load							(CONFIG_PATH, UI_PATH, "ui_keybinding.xml");
 
 	int groupsCount = xml_doc.GetNodesNum	("",0,"group");
 
-	for (int i = 0; i<groupsCount; i++)
+	for (int i = 0; i<groupsCount; ++i)
 	{
 		// add group
 		shared_str grp_name					= xml_doc.ReadAttrib("group",i,"name");
@@ -47,7 +47,7 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 
 		CUIStatic* pItem					= xr_new<CUIStatic>();
 		CUIXmlInit::InitStatic				(xml_doc_ui, strconcat(sizeof(buf),buf,path_ui,":scroll_view:item_group"),	0, pItem);
-		pItem->SetTextST					(grp_name.c_str());
+		pItem->TextItemControl()->SetTextST		(grp_name.c_str());
 		m_scroll_wnd->AddWindow				(pItem, true);
 
 		// add group items
@@ -55,14 +55,14 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 		XML_NODE* tab_node					= xml_doc.NavigateToNode("group",i);
 		xml_doc.SetLocalRoot				(tab_node);
 
-		for (int j = 0; j<commandsCount; j++)
+		for (int j = 0; j<commandsCount; ++j)
 		{
 			// first field of list item
 			shared_str command_id			= xml_doc.ReadAttrib("command",j,"id");
 
 			pItem							= xr_new<CUIStatic>();
 			CUIXmlInit::InitStatic			(xml_doc_ui, strconcat(sizeof(buf),buf,path_ui,":scroll_view:item_key"),	0, pItem);
-			pItem->SetTextST				(command_id.c_str());
+			pItem->TextItemControl()->SetTextST				(command_id.c_str());
 			m_scroll_wnd->AddWindow			(pItem, true);
 
 			shared_str exe					= xml_doc.ReadAttrib("command",j,"exe");
@@ -78,15 +78,15 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 			float item_width				= m_header[1].GetWidth()-3.0f;
 			float item_pos					= m_header[1].GetWndPos().x;
 			CUIEditKeyBind* pEditKB			= xr_new<CUIEditKeyBind>(true);pEditKB->SetAutoDelete(true);
-			pEditKB->Init					(item_pos, 0, item_width, pItem->GetWndSize().y);
-			pEditKB->Register				(*exe,"key_binding");
+			pEditKB->InitKeyBind			(Fvector2().set(item_pos, 0.0f), Fvector2().set(item_width, pItem->GetWndSize().y) );
+			pEditKB->AssignProps			(exe,"key_binding");
 			pItem->AttachChild				(pEditKB);
 
 			item_width						= m_header[2].GetWidth()-3.0f;
 			item_pos						= m_header[2].GetWndPos().x;
 			pEditKB							= xr_new<CUIEditKeyBind>(false);pEditKB->SetAutoDelete(true);
-			pEditKB->Init					(item_pos, 0, item_width, pItem->GetWndSize().y);
-			pEditKB->Register				(*exe,"key_binding");
+			pEditKB->InitKeyBind			(Fvector2().set(item_pos, 0.0f), Fvector2().set(item_width, pItem->GetWndSize().y) );
+			pEditKB->AssignProps			(exe,"key_binding");
 			pItem->AttachChild				(pEditKB);
 		}
 		xml_doc.SetLocalRoot				(xml_doc.GetRoot());
@@ -100,7 +100,7 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 void CUIKeyBinding::CheckStructure(CUIXml& xml_doc)
 {
 	bool first = true;
-	CUIStatic*	pItem = false;
+	CUITextWnd*	pItem = false;
 	
 	for (int i=0; true; i++)
 	{
@@ -111,21 +111,24 @@ void CUIKeyBinding::CheckStructure(CUIXml& xml_doc)
 				continue;
 			else
 			{
+
 				if (first)
 				{
-					pItem					= xr_new<CUIStatic>();
+					pItem					= xr_new<CUITextWnd>();
 					pItem->SetWndPos		(Fvector2().set(0,0));
 					pItem->SetWndSize		(Fvector2().set(m_scroll_wnd->GetWndSize().x,20.0f));
 					pItem->SetText			("NEXT ITEMS NOT DESCRIBED IN COMMAND DESC LIST");
-					m_scroll_wnd->AttachChild(pItem);
 					first					= false;
+					pItem->SetAutoDelete	(true);
+					m_scroll_wnd->AddWindow	(pItem, true);
 				}
-
-				pItem						= xr_new<CUIStatic>();
+				
+				pItem						= xr_new<CUITextWnd>();
 				pItem->SetWndPos			(Fvector2().set(0,0));
 				pItem->SetWndSize			(Fvector2().set(m_scroll_wnd->GetWndSize().x,20.0f));
 				pItem->SetText				(action_name);
-				m_scroll_wnd->AttachChild	(pItem);
+				pItem->SetAutoDelete		(true);
+				m_scroll_wnd->AddWindow		(pItem, true);
 			}
 		}
 		else
@@ -135,16 +138,18 @@ void CUIKeyBinding::CheckStructure(CUIXml& xml_doc)
 
 bool CUIKeyBinding::IsActionExist(LPCSTR action, CUIXml& xml_doc)
 {
-	bool ret = false;
-	int groupsCount = xml_doc.GetNodesNum("",0,"group");
+	bool ret				= false;
+	int groupsCount			= xml_doc.GetNodesNum("",0,"group");
 
-	for (int i = 0; i<groupsCount; i++){
+	for(int i = 0; i<groupsCount; i++)
+	{
 		// add group items
-		int commandsCount = xml_doc.GetNodesNum("group",i,"command");
-		XML_NODE* tab_node = xml_doc.NavigateToNode("group",i);
+		int commandsCount	= xml_doc.GetNodesNum("group",i,"command");
+		XML_NODE* tab_node	= xml_doc.NavigateToNode("group",i);
 		xml_doc.SetLocalRoot(tab_node);
 
-		for (int j = 0; j<commandsCount; j++){
+		for(int j = 0; j<commandsCount; ++j)
+		{
 			// first field of list item
 			shared_str command_id = xml_doc.ReadAttrib("command",j,"exe");
 			if (0 == xr_strcmp(action, *command_id))

@@ -27,15 +27,11 @@ public:
 			void				AddCallback			(LPCSTR control_id, s16 event, const luabind::functor<void> &lua_function);
 			void				AddCallback			(LPCSTR control_id, s16 event, const luabind::functor<void> &functor, const luabind::object &object);
 	virtual void				Update				();
-	virtual bool				OnKeyboard			(int dik, EUIMessages keyboard_action);
+	virtual bool				OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 	virtual bool				Dispatch			(int cmd, int param)				{return true;}
-
+/*
 template<typename T>
 IC	T*	GetControl(LPCSTR name);
-
+*/
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
-
-add_to_type_list(CUIDialogWndEx)
-#undef script_type_list
-#define script_type_list save_type_list(CUIDialogWndEx)

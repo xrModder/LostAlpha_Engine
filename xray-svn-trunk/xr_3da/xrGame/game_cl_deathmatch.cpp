@@ -427,7 +427,7 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 	};
 
 	if (HUD().GetUI() && HUD().GetUI()->UIMainIngameWnd)
-		HUD().GetUI()->UIMainIngameWnd->GetPDAOnline()->SetText("");
+		HUD().GetUI()->UIMainIngameWnd->GetPDAOnline()->TextItemControl()->SetText("");
 
 	switch (Phase())
 	{

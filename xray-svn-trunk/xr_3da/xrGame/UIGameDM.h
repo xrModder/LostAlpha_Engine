@@ -67,7 +67,7 @@ public:
 	virtual void					SetClGame				(game_cl_GameState* g);
 	virtual	void					Init					();
 	virtual void					Render					();
-	virtual void					OnFrame					();
+	virtual void		_BCL		OnFrame					();
 
 	void							SetRank							(s16 team, u8 rank);
 

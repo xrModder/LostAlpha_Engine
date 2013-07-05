@@ -1,7 +1,7 @@
 #ifndef __XR_UIFRAMERECT_H__
 #define __XR_UIFRAMERECT_H__
 #pragma once
-
+#if 0
 #include "uistaticitem.h"
 #include "ui/uiabstract.h"
 
@@ -41,5 +41,5 @@ protected:
 	Flags8			uFlags;
 	void			UpdateSize		();
 };
-
+#endif
 #endif  //__XR_UIFRAMERECT_H__

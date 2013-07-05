@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-
+/*
 #include "UITextVote.h"
 #include "UIVotingCategory.h"
 #include "UIXmlInit.h"
@@ -10,7 +10,7 @@
 #include "../level.h"
 //#include "../game_cl_base.h"
 #include "../game_cl_teamdeathmatch.h"
-#include "../../xr_ioconsole.h"
+#include "../../xrEngine/xr_ioconsole.h"
 
 
 
@@ -24,20 +24,21 @@ CUITextVote::CUITextVote(){
 	edit = xr_new<CUIEditBoxEx>(); edit->SetAutoDelete(true);
 	AttachChild(edit);
 
-	btn_ok = xr_new<CUI3tButton>(); btn_ok->SetAutoDelete(true);
+	btn_ok = xr_new<CUI3tButtonEx>(); btn_ok->SetAutoDelete(true);
 	AttachChild(btn_ok);
 
-	btn_cancel = xr_new<CUI3tButton>(); btn_cancel->SetAutoDelete(true);
+	btn_cancel = xr_new<CUI3tButtonEx>(); btn_cancel->SetAutoDelete(true);
 	AttachChild(btn_cancel);
 }
 
-void CUITextVote::Init(CUIXml& xml_doc){
+void CUITextVote::InitTextVote(CUIXml& xml_doc)
+{
 	CUIXmlInit::InitWindow(xml_doc,			"text_vote", 0, this);
 	CUIXmlInit::InitStatic(xml_doc,			"text_vote:header", 0, header);
 	CUIXmlInit::InitStatic(xml_doc,			"text_vote:background", 0, bkgrnd);
 	CUIXmlInit::InitEditBoxEx(xml_doc,		"text_vote:edit_box", 0, edit);
-	CUIXmlInit::Init3tButton(xml_doc,		"text_vote:btn_ok", 0, btn_ok);
-	CUIXmlInit::Init3tButton(xml_doc,		"text_vote:btn_cancel", 0, btn_cancel);
+	CUIXmlInit::Init3tButtonEx(xml_doc,		"text_vote:btn_ok", 0, btn_ok);
+	CUIXmlInit::Init3tButtonEx(xml_doc,		"text_vote:btn_cancel", 0, btn_cancel);
 }
 
 void CUITextVote::SendMessage(CUIWindow* pWnd, s16 msg, void* pData){
@@ -68,3 +69,4 @@ void CUITextVote::OnBtnCancel(){
     game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 	game->StartStopMenu(this, false);
 }
+*/

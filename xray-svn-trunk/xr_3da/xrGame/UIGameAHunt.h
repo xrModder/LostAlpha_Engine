@@ -37,7 +37,7 @@ public:
 			void		SetBuyMsgCaption		(LPCSTR str);
 
 	virtual void		Render					();
-	virtual void		OnFrame					();
+	virtual void _BCL	OnFrame					();
 	virtual	void		reset_ui				();
 
 protected:

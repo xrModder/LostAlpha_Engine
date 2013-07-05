@@ -1,10 +1,10 @@
 #pragma once
 
-#include "UIWindow.h"
+#include "UIStatic.h"
 
 class CUIStatic;
 
-class CUIProgressShape : public CUIWindow {
+class CUIProgressShape : public CUIStatic {
 friend class CUIXmlInit;
 public:
 						CUIProgressShape		();
@@ -19,7 +19,9 @@ protected:
 	bool				m_bClockwise;
 	u32					m_sectorCount;
 	float				m_stage;
-	CUIStatic*			m_pTexture;
-	CUIStatic*			m_pBackground;
 	bool				m_bText;
+	bool				m_blend;
+
+	float				m_angle_begin;
+	float				m_angle_end;
 };
