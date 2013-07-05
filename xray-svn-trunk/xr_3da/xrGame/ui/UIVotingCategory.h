@@ -7,6 +7,7 @@ class CUI3tButton;
 class CUIKickPlayer;
 class CUIChangeMap;
 class CUIChangeWeather;
+class CUIChangeGameType;
 class CUIXml;
 class CUITextVote;
 
@@ -15,12 +16,10 @@ class CUIVotingCategory : public CUIDialogWnd
 private:
 	typedef CUIDialogWnd inherited;
 public:
-	using CUIDialogWnd::Init;
-
 						CUIVotingCategory	();
 	virtual				~CUIVotingCategory	();
 
-	virtual bool		OnKeyboard			(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 	virtual void		SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = 0);
 
 	void				OnBtn				(int i);
@@ -29,7 +28,7 @@ public:
 	virtual void		Update				();
 
 protected:
-	void				Init				();
+	void				InitVotingCategory	();
 
 	CUIStatic*			header;
 	CUI3tButton*		btn[7];
@@ -40,6 +39,6 @@ protected:
 	CUIKickPlayer*		kick;
 	CUIChangeMap*		change_map;
 	CUIChangeWeather*	change_weather;
-	CUITextVote*		text_vote;
+	CUIChangeGameType*	change_gametype;
 	CUIXml*				xml_doc;
 };

@@ -92,20 +92,20 @@ protected:
 	shared_str		m_sPatchFileName;
 	
 	xr_vector<CUIMessageBoxEx*>	m_pMB_ErrDlgs;
-
-//.	CUIMessageBoxEx*	m_pMSB_NoNewPatch;
-//.	CUIMessageBoxEx*	m_pMSB_NewPatch;
-//.	CUIMessageBoxEx*	m_pMSB_PatchDownloadError;
-//.	CUIMessageBoxEx*	m_pMSB_PatchDownloadSuccess;
-//.	CUIMessageBoxEx*	m_pMSB_ConnectToMasterServer;
+	bool			ReloadUI						();
 public:
 	u32				m_deactivated_frame;
+	bool			m_activatedScreenRatio;
 	virtual void	DestroyInternal					(bool bForce);
 					CMainMenu						();
 	virtual			~CMainMenu						();
 
 	virtual void	Activate						(bool bActive); 
 	virtual	bool	IsActive						(); 
+	virtual	bool	CanSkipSceneRendering			(); 
+
+	virtual bool	IgnorePause						()	{return true;}
+
 
 	virtual void	IR_OnMousePress					(int btn);
 	virtual void	IR_OnMouseRelease				(int btn);
@@ -123,12 +123,10 @@ public:
 	void			OnRenderPPUI_main				();
 	void			OnRenderPPUI_PP					();
 
-	virtual void	OnRender						();
-	virtual void _BCL OnFrame							(void);
-	virtual void	StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
-	virtual bool	UseIndicators					()						{return false;}
-			bool	CanSkipSceneRendering			(); 
+	virtual void			OnRender						();
+	virtual void	_BCL	OnFrame							(void);
 
+	virtual bool	UseIndicators					()						{return false;}
 
 	void			OnDeviceCreate					();
 

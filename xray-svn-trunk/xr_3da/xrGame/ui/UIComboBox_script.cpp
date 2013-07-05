@@ -9,7 +9,7 @@
 
 #include "pch_script.h"
 #include "UIComboBox.h"
-#include "uilistboxitem.h"
+#include "UIListBoxItem.h"
 
 using namespace luabind;
 
@@ -20,18 +20,17 @@ void CUIComboBox::script_register(lua_State *L)
 	[
 		class_<CUIComboBox, CUIWindow>("CUIComboBox")
 		.def(						constructor<>())
-		.def("Init",				(void (CUIComboBox::*)(float, float, float))   &CUIComboBox::Init)
-		.def("Init",				(void (CUIComboBox::*)(float, float, float, float))   &CUIComboBox::Init)		
 		.def("SetVertScroll",		&CUIComboBox::SetVertScroll)
 		.def("SetListLength",		&CUIComboBox::SetListLength)
 		.def("CurrentID",			&CUIComboBox::CurrentID)
-		.def("SetCurrentID",		&CUIComboBox::SetItem)
-		.def("AddItemToBox",		&CUIComboBox::AddItem_script)
+		.def("disable_id",			&CUIComboBox::disable_id)
+		.def("enable_id",			&CUIComboBox::enable_id)
+		.def("AddItem",				&CUIComboBox::AddItem_)
 		.def("GetText",				&CUIComboBox::GetText)
+		.def("GetTextOf",			&CUIComboBox::GetTextOf)
 		.def("SetText",				&CUIComboBox::SetText)
-		.def("SetCurrentValueScript",&CUIComboBox::SetCurrentValueScript)
-		
-//		.def("AddItem",				(void (CUIComboBox::*)(LPCSTR, bool)) CUIComboBox::AddItem)
-//		.def("AddItem",				(void (CUIComboBox::*)(LPCSTR)) CUIComboBox::AddItem)
+		.def("ClearList",			&CUIComboBox::ClearList)
+		.def("SetCurrentOptValue",	&CUIComboBox::SetCurrentOptValue)
+
 	];
 }

@@ -300,7 +300,7 @@ void CUIMapList::UpdateMapList(EGameTypes GameType)
 	u32 cnt						= M.m_map_names.size();
 	for (u32 i=0; i<cnt; ++i)
 	{
-		CUIListBoxItem* itm		= m_pList1->AddItem( CStringTable().translate(M.m_map_names[i]).c_str() );
+		CUIListBoxItem* itm		= m_pList1->AddItem( CStringTable().translate(M.m_map_names[i].map_name).c_str() );
 		itm->SetData			( (void*)(__int64)i );
 		itm->Enable(m_pExtraContentFilter->IsDataEnabled(M.m_map_names[i].c_str()));
 	}

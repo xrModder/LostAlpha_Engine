@@ -173,7 +173,7 @@ void CUISequenceSimpleItem::Start()
 	if(m_flags.test(etiNeedPauseSound))
 		Device.Pause			(TRUE, FALSE, TRUE, "simpleitem_start");
 
-	GetUICursor()->SetUICursorPosition		(m_desired_cursor_pos);
+	GetUICursor().SetUICursorPosition		(m_desired_cursor_pos);
 	m_time_start							= float(Device.dwTimeContinual)/1000.0f;
 	m_owner->MainWnd()->AttachChild	(m_UIWindow);
 

@@ -11,27 +11,33 @@ CUIStatix::~CUIStatix()
 
 void CUIStatix::start_anim()
 {
-	SetClrLightAnim	("ui_slow_blinking", true, true, true, true);
-	ResetClrAnimation	();
+	SetColorAnimation	("ui_slow_blinking", LA_CYCLIC|LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR);
+	ResetColorAnimation	();
 }
 
 void CUIStatix::stop_anim()
 {
-	SetClrLightAnim	(NULL, true, true, true, true);
+	SetColorAnimation	(NULL, 0);
 }
 
-void CUIStatix::Update(){
-
-	SetColor(0xffffffff);
+void CUIStatix::Update()
+{
+	CUIStatic* child = smart_cast<CUIStatic* >(FindChild("auto_static_0"));
+	if(child)
+		child->SetTextureColor(0x00ffffff);
+	SetTextureColor(0xffffffff);
 
 	if (m_bCursorOverWindow)
 	{
-		SetColor(0xff349F06);
+		if(child)
+			child->SetTextureColor(0xff349F06);
+		else
+			SetTextureColor(0xff349F06);
 	}
 
 	if (!IsEnabled())
 	{
-		SetColor(0x80ffffff);
+		SetTextureColor(0x80ffffff);
 	};
 	
 	CUIStatic::Update();
@@ -40,17 +46,22 @@ void CUIStatix::Update(){
 void CUIStatix::OnFocusLost()
 {
 	CUIStatic::OnFocusLost	();
-	SetColor				(0xffffffff);
+	CUIStatic* child = smart_cast<CUIStatic* >(FindChild("auto_static_0"));
+	if(child)
+		child->SetTextureColor(0x00ffffff);
+	else
+		SetTextureColor(0xffffffff);
+
 	if (!IsEnabled())
 	{
-		SetColor(0x80ffffff);
+		SetTextureColor(0x80ffffff);
 	};
 }
 
 void CUIStatix::OnFocusReceive()
 {
 	CUIStatic::OnFocusReceive	();
-	ResetClrAnimation				();
+	ResetColorAnimation			();
 }
 
 bool CUIStatix::OnMouseDown(int mouse_btn)

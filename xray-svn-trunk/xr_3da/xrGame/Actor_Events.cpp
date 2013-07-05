@@ -65,14 +65,14 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				if(CurrentGameUI())
 				{
 					pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
-					if (Level().CurrentViewEntity() == this)
-							CurrentGameUI()->ReInitShownUI();
+			//		if (Level().CurrentViewEntity() == this)
+			//				CurrentGameUI()->ReInitShownUI();
 				};
 				
 				//добавить отсоединенный аддон в инвентарь
 				if(pGameSP)
 				{
-					if(pGameSP->MainInputReceiver() == pGameSP->InventoryMenu)
+					if(pGameSP->TopInputReceiver() == pGameSP->InventoryMenu)
 					{
 						pGameSP->InventoryMenu->AddItemToBag(smart_cast<CInventoryItem*>(O));
 					}
@@ -111,8 +111,8 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 
 			SelectBestWeapon(O);
 
-			if (Level().CurrentViewEntity() == this && CurrentGameUI())
-				CurrentGameUI()->ReInitShownUI();
+	//		if (Level().CurrentViewEntity() == this && CurrentGameUI())
+//				CurrentGameUI()->ReInitShownUI();
 		}
 		break;
 	case GE_INV_ACTION:

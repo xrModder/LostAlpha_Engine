@@ -78,7 +78,7 @@ public:
 	virtual bool			IsSkillsEnabled			(){return m_bSkillsEnabled;}
 	virtual bool			IsDownloadsEnabled			(){return m_bDownloadsEnabled;}
 
-	virtual bool			OnMouse				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouse(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
+	virtual bool			OnMouseAction				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouseAction(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
 	
 	void					SetActiveSubdialog	(EPdaTabs section);
 	virtual bool			StopAnyMove			(){return false;}

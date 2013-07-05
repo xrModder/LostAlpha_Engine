@@ -12,8 +12,9 @@
 #include "UILines.h"
 #include "UICustomSpin.h"
 
-#define SPIN_HEIGHT 22
-#define BTN_SIZE 11
+#define SPIN_HEIGHT 20.0f
+#define BTN_SIZE_X 11.0f
+#define BTN_SIZE_Y 8.0f
 
 CUICustomSpin::CUICustomSpin()
 {
@@ -47,16 +48,23 @@ CUICustomSpin::~CUICustomSpin()
 	xr_delete					(m_pLines);
 }
 
-void CUICustomSpin::Init(float x, float y, float width, float height){
-	CUIWindow::Init				(x,y,width,SPIN_HEIGHT);
-	m_pFrameLine->Init			(0,0,width, SPIN_HEIGHT);
-	m_pFrameLine->InitTexture	("ui_spiner");
-	m_pBtnUp->Init				(width - BTN_SIZE - 1, 0, BTN_SIZE, BTN_SIZE);
-	m_pBtnUp->InitTexture		("ui_spiner_button_t");
-	m_pBtnDown->Init			(width - BTN_SIZE - 1, BTN_SIZE + 1, BTN_SIZE, BTN_SIZE);
-	m_pBtnDown->InitTexture		("ui_spiner_button_b");
+void CUICustomSpin::InitSpin(Fvector2 pos, Fvector2 size)
+{
+	CUIWindow::SetWndPos		(pos);
+	CUIWindow::SetWndSize		(Fvector2().set(size.x,SPIN_HEIGHT));
 
-	m_pLines->Init				(0,0,width - BTN_SIZE - 10, SPIN_HEIGHT);
+	m_pFrameLine->SetWndPos		(Fvector2().set(0,0));
+	m_pFrameLine->SetWndSize	(Fvector2().set(size.x, SPIN_HEIGHT));
+	m_pFrameLine->InitTexture	("ui_inGame2_spin_box","hud\\default");
+
+	m_pBtnUp->InitButton		(Fvector2().set(size.x-BTN_SIZE_X-2.0f, 1.0f),Fvector2().set(BTN_SIZE_X, BTN_SIZE_Y));
+	m_pBtnUp->InitTexture		("ui_inGame2_spin_box_button_top");
+
+	m_pBtnDown->InitButton		(Fvector2().set(size.x-BTN_SIZE_X-2.0f, BTN_SIZE_Y+2.0f),Fvector2().set(BTN_SIZE_X, BTN_SIZE_Y));
+	m_pBtnDown->InitTexture		("ui_inGame2_spin_box_button_bottom");
+
+	m_pLines->m_wndPos.set		(Fvector2().set(0,0));
+	m_pLines->m_wndSize.set		(Fvector2().set(size.x-BTN_SIZE_X-10.0f, SPIN_HEIGHT));
 }
 
 void CUICustomSpin::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -108,11 +116,11 @@ void CUICustomSpin::Update()
 {
 	CUIWindow::Update();
 	if(!m_pBtnUp->CursorOverWindow())
-		m_pBtnUp->SetButtonMode(CUIButton::BUTTON_NORMAL);
+		m_pBtnUp->SetButtonState(CUIButton::BUTTON_NORMAL);
 	if(!m_pBtnDown->CursorOverWindow())
-		m_pBtnDown->SetButtonMode(CUIButton::BUTTON_NORMAL);
+		m_pBtnDown->SetButtonState(CUIButton::BUTTON_NORMAL);
     
-	if (CUIButton::BUTTON_PUSHED == m_pBtnUp->GetButtonsState() && m_pBtnUp->CursorOverWindow())
+	if (CUIButton::BUTTON_PUSHED == m_pBtnUp->GetButtonState() && m_pBtnUp->CursorOverWindow())
 	{		
 		if (m_time_begin < Device.dwTimeContinual - m_p_delay)
 		{
@@ -131,7 +139,7 @@ void CUICustomSpin::Update()
 				m_p_delay -= 50;
 		}
 	}else
-	if (CUIButton::BUTTON_PUSHED == m_pBtnDown->GetButtonsState() && m_pBtnDown->CursorOverWindow())
+	if (CUIButton::BUTTON_PUSHED == m_pBtnDown->GetButtonState() && m_pBtnDown->CursorOverWindow())
 	{
 		if (m_time_begin < Device.dwTimeContinual - m_p_delay)
 		{

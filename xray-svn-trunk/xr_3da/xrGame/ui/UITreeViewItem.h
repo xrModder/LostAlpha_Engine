@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include "UIListItem.h"
+#include "UIListBox.h"
+#include "UIListBoxItem.h"
+#include "UIStatic.h"
 
-class CUIListWnd;
-
-class CUITreeViewItem: public CUIListItem
+class CUITreeViewItem: public CUIListBox
 {
-	typedef CUIListItem inherited;
+	typedef CUIListBox inherited;
 	// Являемся ли мы началом подыерархии
 	bool			isRoot;
 	// Если мы рут, то этот флаг показывает открыта наша подыерархия или нет
@@ -122,7 +122,7 @@ DEF_VECTOR(GroupTree, shared_str);
 
 //////////////////////////////////////////////////////////////////////////
 
-void CreateTreeBranch(shared_str nestingTree, shared_str leafName, CUIListWnd *pListToAdd, int leafProperty,
+void CreateTreeBranch(shared_str nestingTree, shared_str leafName, CUIListBox *pListToAdd, int leafProperty,
 					  CGameFont *pRootFont, u32 rootColor, CGameFont *pLeafFont, u32 leafColor, bool markRead);
 
 #endif	//UI_TREE_VIEW_ITEM_H_

@@ -146,7 +146,7 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		u32 cnt = CurrentItem()->ChildsCount();
 
 		for(u32 i=0; i<cnt; ++i){
-			CUICellItem*	itm				= CurrentItem()->PopChild();
+			CUICellItem*	itm				= CurrentItem()->PopChild(NULL);
 			PIItem			iitm			= (PIItem)itm->m_pData;
 			SendEvent_Item_Drop				(iitm);
 		}

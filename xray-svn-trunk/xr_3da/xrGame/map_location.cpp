@@ -344,8 +344,8 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 				sp->SetHeading( h_ );
 			}
 
-			Frect clip_rect = map->GetClipperRect();
-			sp->SetClipRect( clip_rect );
+//			Frect clip_rect = map->GetClipperRect();
+//			sp->SetClipRect( clip_rect );
 			map->AttachChild(sp);
 		}
 		if( GameID() == GAME_SINGLE && GetSpotPointer(sp) ){
@@ -446,8 +446,6 @@ void CMapLocation::UpdateSpotPointer(CUICustomMap* map, CMapSpotPointer* sp )
 		sp->SetWndPos(pointer_pos);
 		sp->SetHeading(heading);
 
-		Frect clip_rect = map->GetClipperRect();
-		sp->SetClipRect( clip_rect );
 		map->AttachChild(sp);
 
 		Fvector2 tt = map->ConvertLocalToReal(m_position_on_map);

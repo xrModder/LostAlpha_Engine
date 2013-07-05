@@ -45,7 +45,7 @@ extern bool b_shniaganeed_pp;
 
 CMainMenu*	MainMenu()	{return (CMainMenu*)g_pGamePersistent->m_pMainMenu; };
 //----------------------------------------------------------------------------------
-#define INIT_MSGBOX(_box, _template)	{ _box = xr_new<CUIMessageBoxEx>(); _box->Init(_template);}
+#define INIT_MSGBOX(_box, _template)	{ _box = xr_new<CUIMessageBoxEx>(); _box->InitMessageBox(_template);}
 //----------------------------------------------------------------------------------
 
 CMainMenu::CMainMenu	()
@@ -81,19 +81,16 @@ CMainMenu::CMainMenu	()
 			m_pMB_ErrDlgs.push_back		(pNewErrDlg);
 		}
 
-		Register						(m_pMB_ErrDlgs[PatchDownloadSuccess]);
-		m_pMB_ErrDlgs[PatchDownloadSuccess]->SetWindowName	("msg_box");
-		m_pMB_ErrDlgs[PatchDownloadSuccess]->AddCallback	("msg_box", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnRunDownloadedPatch));
-
-		Register						(m_pMB_ErrDlgs[ConnectToMasterServer]);
-		m_pMB_ErrDlgs[PatchDownloadSuccess]->SetWindowName	("msg_box_connecting");
-		m_pMB_ErrDlgs[PatchDownloadSuccess]->AddCallback	("msg_box_connecting", MESSAGE_BOX_OK_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnConnectToMasterServerOkClicked));
-
+		m_pMB_ErrDlgs[PatchDownloadSuccess]->AddCallbackStr("button_yes", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnRunDownloadedPatch));
+		m_pMB_ErrDlgs[PatchDownloadSuccess]->AddCallbackStr("button_yes", MESSAGE_BOX_OK_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnConnectToMasterServerOkClicked));
 	}
+	
+	Device.seqFrame.Add		(this,REG_PRIORITY_LOW-1000);
 }
 
 CMainMenu::~CMainMenu	()
 {
+	Device.seqFrame.Remove			(this);
 	xr_delete						(g_btnHint);
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
@@ -141,25 +138,16 @@ void CMainMenu::Activate	(bool bActivate)
 		Device.Pause				(TRUE, FALSE, TRUE, "mm_activate1");
 			m_Flags.set				(flActive|flNeedChangeCapture,TRUE);
 
-		{
-			DLL_Pure* dlg = NEW_INSTANCE(TEXT2CLSID("MAIN_MNU"));
-			if(!dlg) 
-			{
-				m_Flags.set				(flActive|flNeedChangeCapture,FALSE);
-				return;
-			}
-			xr_delete					(m_startDialog);
-			m_startDialog				= smart_cast<CUIDialogWnd*>(dlg);
-			VERIFY						(m_startDialog);
-		}
+		m_Flags.set					(flRestoreCursor,GetUICursor().IsVisible());
+
+		if(!ReloadUI())				return;
 
 		m_Flags.set					(flRestoreConsole,Console->bVisible);
-		
+
 		if(b_is_single)	m_Flags.set	(flRestorePause,Device.Paused());
-		
+
 		Console->Hide				();
 
-		m_Flags.set					(flRestoreCursor,GetUICursor()->IsVisible());
 
 		if(b_is_single)
 		{
@@ -169,9 +157,6 @@ void CMainMenu::Activate	(bool bActivate)
 				Device.Pause			(TRUE, TRUE, FALSE, "mm_activate2");
 		}
 
-		m_startDialog->m_bWorkInPause		= true;
-		StartStopMenu						(m_startDialog,true);
-		
 		if(g_pGameLevel)
 		{
 			if(b_is_single){
@@ -182,6 +167,7 @@ void CMainMenu::Activate	(bool bActivate)
 		};
 		Device.seqRender.Add				(this, 4); // 1-console 2-cursor 3-tutorial
 
+		Console->Execute					("stat_memory");
 	}else{
 		m_deactivated_frame					= Device.dwFrame;
 		m_Flags.set							(flActive,				FALSE);
@@ -199,7 +185,9 @@ void CMainMenu::Activate	(bool bActivate)
 			Console->Show					();
 		}
 
-		StartStopMenu						(m_startDialog,true);
+		if(m_startDialog->IsShown())
+			m_startDialog->HideDialog		();
+
 		CleanInternals						();
 		if(g_pGameLevel)
 		{
@@ -221,10 +209,10 @@ void CMainMenu::Activate	(bool bActivate)
 		}	
 	
 		if(m_Flags.test(flRestoreCursor))
-			GetUICursor()->Show			();
+			GetUICursor().Show			();
 
-		Device.Pause					(FALSE, FALSE, TRUE, "mm_deactivate2");
-		
+		Device.Pause					(FALSE, TRUE, TRUE, "mm_deactivate2");
+
 		if(m_Flags.test(flNeedVidRestart))
 		{
 			m_Flags.set			(flNeedVidRestart, FALSE);
@@ -233,11 +221,39 @@ void CMainMenu::Activate	(bool bActivate)
 	}
 }
 
+bool CMainMenu::ReloadUI()
+{
+	if(m_startDialog)
+	{
+		if(m_startDialog->IsShown())
+			m_startDialog->HideDialog		();
+		CleanInternals						();
+	}
+	DLL_Pure* dlg = NEW_INSTANCE(TEXT2CLSID("MAIN_MNU"));
+	if(!dlg) 
+	{
+		m_Flags.set				(flActive|flNeedChangeCapture,FALSE);
+		return false;
+	}
+	xr_delete					(m_startDialog);
+	m_startDialog				= smart_cast<CUIDialogWnd*>(dlg);
+	VERIFY						(m_startDialog);
+	m_startDialog->m_bWorkInPause= true;
+	m_startDialog->ShowDialog	(true);
+
+	m_activatedScreenRatio		= (float)Device.dwWidth/(float)Device.dwHeight > (UI_BASE_WIDTH/UI_BASE_HEIGHT+0.01f);
+	return true;
+}
+
 bool CMainMenu::IsActive()
 {
 	return !!m_Flags.test(flActive);
 }
 
+bool CMainMenu::CanSkipSceneRendering()
+{
+	return IsActive() && !m_Flags.test(flGameSaveScreenshot);
+}
 
 //IInputReceiver
 static int mouse_button_2_key []	=	{MOUSE_1,MOUSE_2,MOUSE_3};
@@ -266,10 +282,7 @@ void	CMainMenu::IR_OnMouseHold(int btn)
 void	CMainMenu::IR_OnMouseMove(int x, int y)
 {
 	if(!IsActive()) return;
-
-	if(MainInputReceiver())
-		MainInputReceiver()->IR_OnMouseMove(x, y);
-
+	CDialogHolder::IR_UIOnMouseMove(x, y);
 };
 
 void	CMainMenu::IR_OnMouseStop(int x, int y)
@@ -290,34 +303,28 @@ void	CMainMenu::IR_OnKeyboardPress(int dik)
 		return;
 	}
 
-	if(MainInputReceiver())
-		MainInputReceiver()->IR_OnKeyboardPress( dik);
-
+	CDialogHolder::IR_UIOnKeyboardPress(dik);
 };
 
 void	CMainMenu::IR_OnKeyboardRelease			(int dik)
 {
 	if(!IsActive()) return;
 	
-	if(MainInputReceiver())
-		MainInputReceiver()->IR_OnKeyboardRelease(dik);
-
+	CDialogHolder::IR_UIOnKeyboardRelease(dik);
 };
 
 void	CMainMenu::IR_OnKeyboardHold(int dik)	
 {
 	if(!IsActive()) return;
 	
-	if(MainInputReceiver())
-		MainInputReceiver()->IR_OnKeyboardHold(dik);
+	CDialogHolder::IR_UIOnKeyboardHold(dik);
 };
 
 void CMainMenu::IR_OnMouseWheel(int direction)
 {
 	if(!IsActive()) return;
 	
-	if(MainInputReceiver())
-		MainInputReceiver()->IR_OnMouseWheel(direction);
+	CDialogHolder::IR_UIOnMouseWheel(direction);
 }
 
 
@@ -378,12 +385,12 @@ void CMainMenu::OnRenderPPUI_PP	()
 	}
 	UI().pp_stop();
 }
-
+/*
 void CMainMenu::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	pDialog->m_bWorkInPause = true;
 	CDialogHolder::StartStopMenu(pDialog, bDoHideIndicators);
-}
+}*/
 
 //pureFrame
 void CMainMenu::OnFrame()
@@ -417,7 +424,15 @@ void CMainMenu::OnFrame()
 		m_pGameSpyFull->Update();
 
 	if(IsActive())
+	{
 		CheckForErrorDlg();
+		bool b_is_16_9	= (float)Device.dwWidth/(float)Device.dwHeight > (UI_BASE_WIDTH/UI_BASE_HEIGHT+0.01f);
+		if(b_is_16_9 !=m_activatedScreenRatio)
+		{
+			ReloadUI();
+			m_startDialog->SendMessage(m_startDialog, MAIN_MENU_RELOADED, NULL);
+		}
+	}
 }
 
 void CMainMenu::OnDeviceCreate()
@@ -469,7 +484,7 @@ void CMainMenu::SetErrorDialog					(EErrorDlg ErrDlg)
 void CMainMenu::CheckForErrorDlg()
 {
 	if (m_NeedErrDialog == ErrNoError)	return;
-	StartStopMenu						(m_pMB_ErrDlgs[m_NeedErrDialog], false);
+	m_pMB_ErrDlgs[m_NeedErrDialog]->ShowDialog(false);
 	m_NeedErrDialog						= ErrNoError;
 };
 
@@ -504,14 +519,13 @@ void CMainMenu::OnNewPatchFound(LPCSTR VersionName, LPCSTR URL)
 	m_sPatchURL = URL;
 	
 	Register						(m_pMB_ErrDlgs[NewPatchFound]);
-	m_pMB_ErrDlgs[NewPatchFound]->SetWindowName	("msg_box");
-	m_pMB_ErrDlgs[NewPatchFound]->AddCallback	("msg_box", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadPatch));
-	StartStopMenu					(m_pMB_ErrDlgs[NewPatchFound], false);
+	m_pMB_ErrDlgs[NewPatchFound]->AddCallbackStr	("button_yes", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadPatch));
+	m_pMB_ErrDlgs[NewPatchFound]->ShowDialog(false);
 };
 
 void CMainMenu::OnNoNewPatchFound				()
 {
-	StartStopMenu(m_pMB_ErrDlgs[NoNewPatch], false);
+	m_pMB_ErrDlgs[NoNewPatch]->ShowDialog(false);
 }
 
 void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
@@ -530,12 +544,6 @@ void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
 	string4096 FilePath = "";
 	char* FileName = NULL;
 	GetFullPathName(fileName, 4096, FilePath, &FileName);
-	/*
-	if (strrchr(fileName, '/')) fileName = strrchr(fileName, '/')+1;
-	else
-		if (strrchr(fileName, '\\')) fileName = strrchr(fileName, '\\')+1;
-	if (!fileName) return;
-	*/
 
 	string_path		fname;
 	if (FS.path_exist("$downloads$"))
@@ -557,14 +565,14 @@ void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
 void	CMainMenu::OnDownloadPatchError()
 {
 	m_sPDProgress.IsInProgress	= false;
-	StartStopMenu(m_pMB_ErrDlgs[PatchDownloadError], false);
+	m_pMB_ErrDlgs[PatchDownloadError]->ShowDialog(false);
 };
 
 void	CMainMenu::OnDownloadPatchSuccess			()
 {
 	m_sPDProgress.IsInProgress	= false;
 	
-	StartStopMenu(m_pMB_ErrDlgs[PatchDownloadSuccess], false);
+	m_pMB_ErrDlgs[PatchDownloadSuccess]->ShowDialog(false);
 }
 
 void CMainMenu::OnSessionTerminate(LPCSTR reason)
@@ -573,18 +581,29 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 		return;
 
 	m_start_time = Device.dwTimeGlobal;
-	string1024 Text;
-	xr_strcpy(Text, sizeof(Text), "Client disconnected. ");
-	xr_strcat(Text,sizeof(Text),reason);
-	m_pMB_ErrDlgs[SessionTerminate]->SetText(Text);
+	CStringTable	st;
+	LPCSTR str = st.translate("ui_st_kicked_by_server").c_str();
+	LPSTR		text;
+
+	if ( reason && xr_strlen(reason) && reason[0] == '@' )
+	{
+		STRCONCAT( text, reason + 1 );
+	}
+	else
+	{
+		STRCONCAT( text, str, " ", reason );
+	}
+	
+	m_pMB_ErrDlgs[SessionTerminate]->SetText(st.translate(text).c_str());
 	SetErrorDialog(CMainMenu::SessionTerminate);
 }
 
 void	CMainMenu::OnLoadError(LPCSTR module)
 {
+	LPCSTR str=CStringTable().translate("ui_st_error_loading").c_str();
 	string1024 Text;
-	xr_strcpy(Text, sizeof(Text),"Error loading (not found) ");
-	xr_strcat(Text,sizeof(Text), module);
+	strconcat(sizeof(Text),Text,str," ");
+	xr_strcat(Text,sizeof(Text),module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);
 }
@@ -654,14 +673,14 @@ void		CMainMenu::Show_CTMS_Dialog				()
 {
 	if (!m_pMB_ErrDlgs[ConnectToMasterServer]) return;
 	if (m_pMB_ErrDlgs[ConnectToMasterServer]->IsShown()) return;
-	StartStopMenu(m_pMB_ErrDlgs[ConnectToMasterServer], false);
+	m_pMB_ErrDlgs[ConnectToMasterServer]->ShowDialog(false);
 }
 
 void		CMainMenu::Hide_CTMS_Dialog()
 {
 	if (!m_pMB_ErrDlgs[ConnectToMasterServer]) return;
 	if (!m_pMB_ErrDlgs[ConnectToMasterServer]->IsShown()) return;
-	StartStopMenu(m_pMB_ErrDlgs[ConnectToMasterServer], false);
+	m_pMB_ErrDlgs[ConnectToMasterServer]->HideDialog();
 }
 
 void CMainMenu::OnConnectToMasterServerOkClicked(CUIWindow*, void*)
@@ -685,7 +704,3 @@ LPCSTR CMainMenu::GetGSVer()
 	return buff2;
 }
 
-bool CMainMenu::CanSkipSceneRendering()
-{
-	return IsActive() && !m_Flags.test(flGameSaveScreenshot);
-}

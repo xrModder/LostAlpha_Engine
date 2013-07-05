@@ -122,15 +122,15 @@ bool CUI::Render()
 
 bool	CUI::IR_OnMouseWheel			(int direction)
 {
-	if ( MainInputReceiver() ){
-		if( MainInputReceiver()->IR_OnMouseWheel(direction) )
+	if ( TopInputReceiver() ){
+		if( TopInputReceiver()->IR_OnMouseWheel(direction) )
 			return true;
 	}
 
 	if (pUIGame&&pUIGame->IR_OnMouseWheel(direction)) 
 		return true;
 
-	if( MainInputReceiver() )
+	if( TopInputReceiver() )
 		return true;
 
 	return false;
@@ -139,12 +139,12 @@ bool	CUI::IR_OnMouseWheel			(int direction)
 //--------------------------------------------------------------------
 bool CUI::IR_OnKeyboardHold(int dik)
 {
-	if ( MainInputReceiver() ) {
-		if( MainInputReceiver()->IR_OnKeyboardHold(dik) )
+	if ( TopInputReceiver() ) {
+		if( TopInputReceiver()->IR_OnKeyboardHold(dik) )
 			return true;
 	}
 
-	if( MainInputReceiver() )
+	if( TopInputReceiver() )
 		return true;
 
 	return false;
@@ -154,8 +154,8 @@ bool CUI::IR_OnKeyboardHold(int dik)
 bool CUI::IR_OnKeyboardPress(int dik)
 {
 
-	if ( MainInputReceiver() ) {
-		if( MainInputReceiver()->IR_OnKeyboardPress(dik) )
+	if ( TopInputReceiver() ) {
+		if( TopInputReceiver()->IR_OnKeyboardPress(dik) )
 			return true;
 	}
 
@@ -165,7 +165,7 @@ bool CUI::IR_OnKeyboardPress(int dik)
 	if (pUIGame && pUIGame->IR_OnKeyboardPress(dik)) 
 		return true;
 
-	if( MainInputReceiver() )
+	if( TopInputReceiver() )
 		return true;
 
 	return false;

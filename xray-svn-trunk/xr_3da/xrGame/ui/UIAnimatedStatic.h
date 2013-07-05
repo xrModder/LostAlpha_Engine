@@ -16,7 +16,7 @@ class CUIAnimatedStatic: public CUIStatic
 	// Размеры текстуры с анимацией в кадрах
 	u32		m_uAnimRows, m_uAnimCols;
 	// Размеры кадра на тектуре
-	u32		m_uFrameWidth, m_uFrameHeight;
+	float	m_uFrameWidth, m_uFrameHeight;
 	// Время показа всей анимации в ms.
 	u32		m_uAnimationDuration;
 	// Время прошедшее с начала анимации
@@ -41,7 +41,7 @@ public:
 	void SetFramesCount(u32 frameCnt)					{ m_uFrameCount = frameCnt; m_bParamsChanged = true; }
 	void SetAnimCols(u32 animCols)						{ m_uAnimCols = animCols; m_bParamsChanged = true; }
 	void SetAnimationDuration(u32 animDur)				{ m_uAnimationDuration = animDur; m_bParamsChanged = true; }
-	void SetFrameDimentions(u32 frameW, u32 frameH)		{ m_uFrameHeight = frameH; m_uFrameWidth = frameW; m_bParamsChanged = true; }
+	void SetFrameDimentions(float frameW, float frameH)	{ m_uFrameHeight = frameH; m_uFrameWidth = frameW; m_bParamsChanged = true; }
 	// Управление
 	void Play()											{ m_bPlaying = true; m_prevTime = Device.dwTimeContinual;}
 	void Stop()											{ m_bPlaying = false; }

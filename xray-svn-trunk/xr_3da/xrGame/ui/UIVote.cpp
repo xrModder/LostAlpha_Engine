@@ -14,13 +14,12 @@ CUIVote::CUIVote()
 {
 	m_prev_upd_time		= 0;
 	bkgrnd				= xr_new<CUIStatic>();	bkgrnd->SetAutoDelete(true);	AttachChild(bkgrnd);
-	msg_back			= xr_new<CUIStatic>();	msg_back->SetAutoDelete(true);	AttachChild(msg_back);
-	msg					= xr_new<CUIStatic>();	msg->SetAutoDelete(true);		AttachChild(msg);
+	msg					= xr_new<CUITextWnd>();	msg->SetAutoDelete(true);		AttachChild(msg);
 
 	for (int i = 0; i<3; i++)
 	{
-		cap[i]			= xr_new<CUIStatic>();		cap[i]->SetAutoDelete(true);	AttachChild(cap[i]);
-		frame[i]		= xr_new<CUIFrameWindow>();	frame[i]->SetAutoDelete(true);	AttachChild(frame[i]);
+		cap[i]			= xr_new<CUITextWnd>();		cap[i]->SetAutoDelete(true);	AttachChild(cap[i]);
+//		frame[i]		= xr_new<CUIFrameWindow>();	frame[i]->SetAutoDelete(true);	AttachChild(frame[i]);
 		list[i]			= xr_new<CUIListBox>();		list[i]->SetAutoDelete(true);	AttachChild(list[i]);
 	}	
 
@@ -34,20 +33,19 @@ CUIVote::CUIVote()
 void CUIVote::Init()
 {
 	CUIXml xml_doc;
-	xml_doc.Init			(CONFIG_PATH, UI_PATH, "voting_category.xml");
+	xml_doc.Load			(CONFIG_PATH, UI_PATH, "voting_category.xml");
 	CUIXmlInit::InitWindow	(xml_doc, "vote",				0, this);
 	CUIXmlInit::InitStatic	(xml_doc, "vote:background",	0, bkgrnd);
-	CUIXmlInit::InitStatic	(xml_doc, "vote:msg_back",		0, msg_back);
-	CUIXmlInit::InitStatic	(xml_doc, "vote:msg",			0, msg);
+	CUIXmlInit::InitTextWnd	(xml_doc, "vote:msg",			0, msg);
 
 	string256 path;
 
 	for (int i = 0; i<3; i++)
 	{
 		xr_sprintf						(path, "vote:list_cap_%d", i+1);
-		CUIXmlInit::InitStatic		(xml_doc, path, 0, cap[i]);
-		xr_sprintf						(path, "vote:list_back_%d", i+1);
-		CUIXmlInit::InitFrameWindow	(xml_doc, path, 0, frame[i]);
+		CUIXmlInit::InitTextWnd			(xml_doc, path, 0, cap[i]);
+//		xr_sprintf						(path, "vote:list_back_%d", i+1);
+//		CUIXmlInit::InitFrameWindow		(xml_doc, path, 0, frame[i]);
 		xr_sprintf						(path, "vote:list_%d", i+1);
 		CUIXmlInit::InitListBox		(xml_doc, path, 0, list[i]);
 	}	
@@ -89,11 +87,11 @@ void CUIVote::Update()
 	for (u32 i = 0; i<items.size(); i++){
 		game_PlayerState* p					= items[i];
 		if (p->m_bCurrentVoteAgreed == 1)
-			list[0]->AddItem(p->name);
+			list[0]->AddTextItem(p->getName());
 		else if (p->m_bCurrentVoteAgreed == 0)
-			list[1]->AddItem(p->name);
+			list[1]->AddTextItem(p->getName());
 		else
-			list[2]->AddItem(p->name);
+			list[2]->AddTextItem(p->getName());
 	}
 }
 
@@ -113,19 +111,16 @@ void CUIVote::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 void CUIVote::OnBtnYes()
 {
     Console->Execute("cl_voteyes");
-	game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
-	game->StartStopMenu(this, true);
+	HideDialog							();
 }
 
 void CUIVote::OnBtnNo()
 {
     Console->Execute("cl_voteno");
-	game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
-	game->StartStopMenu(this, true);
+	HideDialog							();
 }
 
 void CUIVote::OnBtnCancel()
 {
-	game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
-	game->StartStopMenu(this, true);
+	HideDialog							();
 }

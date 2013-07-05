@@ -1541,11 +1541,14 @@ void CWeapon::modify_holder_params		(float &range, float &fov) const
 
 void CWeapon::OnDrawUI()
 {
-	if(IsZoomed() && ZoomHideCrosshair()){
-		if(ZoomTexture() && !IsRotatingToZoom()){
-			ZoomTexture()->SetPos	(0,0);
-			ZoomTexture()->SetRect	(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT);
-			ZoomTexture()->Render	();
+	if(IsZoomed() && ZoomHideCrosshair())
+	{
+		CUIStaticItem* wnd = NULL;
+		if((wnd = ZoomTexture()) != NULL && !IsRotatingToZoom())
+		{
+			wnd->SetPos					(0,0);
+			wnd->SetTextureRect			(Frect().set(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT));
+			wnd->Render					();
 
 //			m_UILens.Draw();
 		}

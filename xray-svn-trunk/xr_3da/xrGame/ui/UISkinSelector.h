@@ -11,14 +11,13 @@
 //#include "UIButton.h"
 //#include "UISkinWindow.h"
 
-const u32			SKIN_TEX_HEIGHT			= 341;
-const u32			SKIN_TEX_WIDTH			= 128;
+const u32			SKIN_TEX_HEIGHT			= 232;
+const u32			SKIN_TEX_WIDTH			= 111;
 
 class CUIStatic;
 class CUIStatix;
 class CUI3tButton;
 class CUIAnimatedStatic;
-class CExtraContentFilter;
 
 typedef enum{
 	SKIN_MENU_BACK = 0,
@@ -30,15 +29,14 @@ class CUISkinSelectorWnd: public CUIDialogWnd
 {
 	typedef CUIDialogWnd inherited;
 
-	CExtraContentFilter*	m_pExtraContentFilter;
 public:	
 	CUISkinSelectorWnd(const char* strSectionName, s16 team);
 	~CUISkinSelectorWnd();
 	
 	virtual void	Init(const char* strSectionName);
 	virtual void	SendMessage(CUIWindow *pWnd, s16 msg, void *pData = NULL);
-	virtual bool	OnMouse(float x, float y, EUIMessages mouse_action);
-	virtual bool	OnKeyboard(int dik, EUIMessages keyboard_action);
+	virtual bool	OnMouseAction(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnKeyboardAction(int dik, EUIMessages keyboard_action);
 			void	SetVisibleForBtn(ESKINMENU_BTN btn, bool state);
 			void	SetCurSkin(int skin);
 
@@ -56,9 +54,10 @@ protected:
 	CUIStatic*		m_pCaption;
 	CUIStatic*		m_pBackground;
 	CUIStatic*		m_pFrames;
-	CUIStatix*		m_pImage[4];
-	CUI3tButton*	m_pButtons[2];
-	CUIAnimatedStatic* m_pAnims[2];
+#define p_image_count	6
+	CUIStatix*		m_pImage[p_image_count];
+//	CUI3tButton*	m_pButtons[2];
+//	CUIAnimatedStatic* m_pAnims[2];
 	CUI3tButton*	m_pBtnAutoSelect;
 	CUI3tButton*	m_pBtnSpectator;
 	CUI3tButton*	m_pBtnBack;

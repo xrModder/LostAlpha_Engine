@@ -193,7 +193,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 					string1024					str;
 					strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
-					_s->wnd()->SetText			(str);
+					_s->wnd()->TextItemControl()->SetText(str);
 				}
 			}
 		}break;

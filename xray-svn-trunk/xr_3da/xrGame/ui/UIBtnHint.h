@@ -1,22 +1,20 @@
 #pragma once
-#include "UIWindow.h"
+#include "UIFrameWindow.h"
 
-class CUIStatic;
-class CUIFrameLineWnd;
+class CUITextWnd;
 
-class CUIButtonHint :public CUIWindow, public pureRender
+class CUIButtonHint :public CUIFrameWindow
 {
 	CUIWindow*			m_ownerWnd;
 
-	CUIStatic*			m_text;
-	CUIFrameLineWnd*	m_border;
+	CUITextWnd*			m_text;
 	bool				m_enabledOnFrame;
 public:
 					CUIButtonHint	();
 	virtual			~CUIButtonHint	();
 	CUIWindow*		Owner			()	{return m_ownerWnd;}
 	void			Discard			()	{m_ownerWnd=NULL;};
-	virtual void	OnRender		();
+	void			OnRender		();
 	void			Draw_			()	{m_enabledOnFrame = true;};
 	void			SetHintText		(CUIWindow* w, LPCSTR text);
 };

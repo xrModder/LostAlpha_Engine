@@ -3,31 +3,45 @@
 #include "ui3tbutton.h"
 #include "UIOptionsItem.h"
 
-class CUICheckButton : public CUI3tButton, public CUIOptionsItem {
-public:
-	CUICheckButton(void);
-	virtual ~CUICheckButton(void);
+class UIHint;
 
-	virtual void Update();
+class CUICheckButton : public CUI3tButton, public CUIOptionsItem
+{
+	typedef CUI3tButton			inherited;
+
+public:
+					CUICheckButton			();
+	virtual			~CUICheckButton			();
+
+	virtual void	Update					();
 
 	// CUIOptionsItem
-	virtual void	SetCurrentValue();
-	virtual void	SaveValue();
-	virtual bool	IsChanged();
-	virtual void 	SeveBackUpValue			();
-	virtual void 	Undo					();
+	virtual void	SetCurrentOptValue	();	// opt->current
+	virtual void	SaveBackUpOptValue	();	// current->backup
+	virtual void	SaveOptValue		();	// current->opt
+	virtual void	UndoOptValue		();	// backup->current
+	virtual bool	IsChangedOptValue	() const;	// backup!=current
 
-	virtual void Init(float x, float y, float width, float height);
-	virtual void SetTextX(float x) {/*do nothing*/}
+	virtual void 	OnFocusReceive		();
+	virtual void	OnFocusLost			();
+	virtual void	Show				( bool status );
+	virtual bool 	OnMouseAction				( float x, float y, EUIMessages mouse_action );
+	virtual bool	OnMouseDown			( int mouse_btn );
+
+			void InitCheckButton		(Fvector2 pos, Fvector2 size, LPCSTR texture_name);
 
 	//состояние кнопки
-	bool GetCheck()					{return m_eButtonState == BUTTON_PUSHED;}
-	void SetCheck(bool ch)			{m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;}
+	IC	bool	GetCheck					() const {return GetButtonState() == BUTTON_PUSHED;}
+	IC	void	SetCheck(bool ch)
+	{
+		SetButtonState( ch ? BUTTON_PUSHED : BUTTON_NORMAL);
+	}
 
 	void SetDependControl(CUIWindow* pWnd);
 
 private:
-	bool			b_backup_val;
-	void InitTexture();
+	bool							m_opt_backup_value;
+	void InitTexture2				(LPCSTR texture_name);
 	CUIWindow* m_pDependControl;
+
 };

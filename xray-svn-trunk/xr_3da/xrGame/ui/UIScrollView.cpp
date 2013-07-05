@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIScrollView.h"
 #include "UIScrollBar.h"
+#include "UIFixedScrollBar.h"
 #include "../ui_base.h"
 #include "../UICursor.h"
 #include "../../xr_input.h"	
@@ -14,9 +15,27 @@ CUIScrollView::CUIScrollView()
 	m_downIndent		= 0.0f;
 	m_flags.zero		();
 	SetFixedScrollBar	(true);
-	m_pad = NULL;
-	m_VScrollBar = NULL;
+	m_pad				= NULL;
+	m_VScrollBar		= NULL;
 	m_visible_rgn.set	(-1,-1);
+}
+CUIScrollView::CUIScrollView(CUIFixedScrollBar* scroll_bar)
+{
+	m_rightIndent		= 0.0f;
+	m_leftIndent		= 0.0f;
+	m_vertInterval		= 0.0f;
+   	m_upIndent			= 0.0f;
+	m_downIndent		= 0.0f;
+	m_flags.zero		();
+	SetFixedScrollBar	(true);
+	m_pad				= NULL;
+	m_visible_rgn.set	(-1,-1);
+
+	m_VScrollBar = scroll_bar;
+	m_VScrollBar->SetAutoDelete(true);
+	AttachChild(m_VScrollBar);
+	Register(m_VScrollBar);
+	AddCallback(m_VScrollBar,	SCROLLBAR_VSCROLL, CUIWndCallback::void_function(this, &CUIScrollView::OnScrollV));
 }
 
 CUIScrollView::~CUIScrollView()
@@ -36,32 +55,37 @@ void CUIScrollView::ForceUpdate()
 	m_flags.set			(eNeedRecalc,TRUE);
 }
 
-void CUIScrollView::Init				()
+void CUIScrollView::InitScrollView()
 {
 	if (!m_pad)
 	{
         m_pad						= xr_new<CUIWindow>(); m_pad->SetAutoDelete(true);
 		AttachChild					(m_pad);
 	}
-	m_pad->SetWndPos			(0.0f,0.0f);
+	m_pad->SetWndPos				(Fvector2().set(0,0));
 	if (!m_VScrollBar)
 	{
 		m_VScrollBar = xr_new<CUIScrollBar>();
 		m_VScrollBar->SetAutoDelete(true);
 		AttachChild					(m_VScrollBar);
 		Register					(m_VScrollBar);
-		AddCallback					("scroll_v",	SCROLLBAR_VSCROLL, CUIWndCallback::void_function (this, &CUIScrollView::OnScrollV) );
+		AddCallback					(m_VScrollBar,	SCROLLBAR_VSCROLL, CUIWndCallback::void_function (this, &CUIScrollView::OnScrollV) );
 	}
-	if (!!m_scrollbar_profile)
-        m_VScrollBar->Init			(GetWndSize().x, 0.0f, GetWndSize().y, false, *m_scrollbar_profile);
+	CUIFixedScrollBar* tmp_scroll = smart_cast<CUIFixedScrollBar* >(m_VScrollBar);
+	if(tmp_scroll)
+		tmp_scroll->InitScrollBar(Fvector2().set(GetWndSize().x, 0.0f), false, *m_scrollbar_profile);
 	else
-		m_VScrollBar->Init			(GetWndSize().x, 0.0f, GetWndSize().y, false);
-	m_VScrollBar->SetWndPos			(m_VScrollBar->GetWndPos().x - m_VScrollBar->GetWndSize().x, m_VScrollBar->GetWndPos().y);
+	{
+		if (!!m_scrollbar_profile)
+			m_VScrollBar->InitScrollBar(Fvector2().set(GetWndSize().x, 0.0f), GetWndSize().y, false, *m_scrollbar_profile);
+		else
+			m_VScrollBar->InitScrollBar(Fvector2().set(GetWndSize().x, 0.0f), GetWndSize().y, false);
+	}
+	Fvector2 sc_pos					= {m_VScrollBar->GetWndPos().x - m_VScrollBar->GetWndSize().x, m_VScrollBar->GetWndPos().y};
+	m_VScrollBar->SetWndPos			(sc_pos);
 	m_VScrollBar->SetWindowName		("scroll_v");
 	m_VScrollBar->SetStepSize		(_max(1,iFloor(GetHeight()/10)));
 	m_VScrollBar->SetPageSize		(iFloor(GetHeight()));
-	
-
 }
 
 void CUIScrollView::SetScrollBarProfile(LPCSTR profile){
@@ -105,8 +129,6 @@ void CUIScrollView::Update				()
 	inherited::Update();
 }
 
-#define V2STR(v) v.x,v.y
-
 void CUIScrollView::RecalcSize			()
 {
 	if(!m_pad)			return;
@@ -117,7 +139,13 @@ void CUIScrollView::RecalcSize			()
 	item_pos.set		(m_rightIndent, m_vertInterval + m_upIndent);
 	pad_size.y			+= m_upIndent;
 	pad_size.y			+= m_downIndent;
-	
+
+	if(m_sort_function)
+	{
+		//. m_pad->GetChildWndList().sort(m_sort_function);
+		std::sort(m_pad->GetChildWndList().begin(), m_pad->GetChildWndList().end(), m_sort_function);
+	}
+
 	if(GetVertFlip()){
 		for(WINDOW_LIST::reverse_iterator it = m_pad->GetChildWndList().rbegin(); m_pad->GetChildWndList().rend() != it; ++it)
 		{
@@ -145,7 +173,7 @@ void CUIScrollView::RecalcSize			()
 
 
 	if(m_flags.test(eInverseDir) )
-		m_pad->SetWndPos		(m_pad->GetWndPos().x, GetHeight()-m_pad->GetHeight());
+		m_pad->SetWndPos		(Fvector2().set(m_pad->GetWndPos().x, GetHeight()-m_pad->GetHeight()));
 
 	UpdateScroll				();
 
@@ -161,6 +189,7 @@ void CUIScrollView::UpdateScroll		()
 	m_VScrollBar->SetRange		(0,iFloor(m_pad->GetHeight()*Scroll2ViewV()));
 
 	m_VScrollBar->SetScrollPos	(iFloor(-w_pos.y));
+
 }
 
 float CUIScrollView::Scroll2ViewV	(){
@@ -178,12 +207,12 @@ void CUIScrollView::Draw				()
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
 
-	Frect				visible_rect;
-	GetAbsoluteRect		(visible_rect);
-	visible_rect.top	+= m_upIndent;
-	visible_rect.bottom -= m_downIndent;
+	Frect								visible_rect;
+	GetAbsoluteRect						(visible_rect);
+	visible_rect.top					+= m_upIndent;
+	visible_rect.bottom					-= m_downIndent;
 	UI().PushScissor					(visible_rect);
-	
+
 	WINDOW_LIST_it it					= m_pad->GetChildWndList().begin();
 //	WINDOW_LIST_it it_e					= m_pad->GetChildWndList().end();
 	
@@ -219,7 +248,7 @@ void CUIScrollView::Draw				()
 	UI().PopScissor					();
 
 	if(NeedShowScrollBar())
-		m_VScrollBar->Draw					();
+		m_VScrollBar->Draw				();
 }
 
 bool CUIScrollView::NeedShowScrollBar(){
@@ -230,28 +259,28 @@ void CUIScrollView::OnScrollV			(CUIWindow*, void*)
 {
 	int s_pos					= m_VScrollBar->GetScrollPos();
 	Fvector2 w_pos				= m_pad->GetWndPos();
-	m_pad->SetWndPos			(w_pos.x,float(-s_pos));
+	m_pad->SetWndPos			(Fvector2().set(w_pos.x,float(-s_pos)));
 	m_visible_rgn.set			(-1,-1);
 }
 
-bool CUIScrollView::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	if(inherited::OnMouse(x,y,mouse_action)) return true;
+	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
 	bool res = false;
 	int prev_pos	= m_VScrollBar->GetScrollPos();
 	switch (mouse_action){
 		case WINDOW_MOUSE_WHEEL_UP:
-			m_VScrollBar->TryScrollDec();
+			m_VScrollBar->TryScrollDec(true);
 			res = true;
 		break;
 		case WINDOW_MOUSE_WHEEL_DOWN:
-			m_VScrollBar->TryScrollInc();
+			m_VScrollBar->TryScrollInc(true);
 			res = true;
 		break;
 		case WINDOW_MOUSE_MOVE:
 			if( pInput->iGetAsyncBtnState(0) ){
 				Fvector2	curr_pad_pos = m_pad->GetWndPos	();
-				curr_pad_pos.y				+= GetUICursor()->GetCursorPositionDelta().y;
+				curr_pad_pos.y				+= GetUICursor().GetCursorPositionDelta().y;
 				
 				float max_pos = m_pad->GetHeight() - GetHeight();
 				max_pos							= _max(0.0f,max_pos);

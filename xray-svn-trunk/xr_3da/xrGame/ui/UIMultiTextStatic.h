@@ -11,7 +11,7 @@
 #define UI_MULTITEXT_STATIC_H_
 
 #pragma once
-
+#if 0
 #include "UITextBanner.h"
 
 class CUIMultiTextStatic: public CUIStatic
@@ -66,4 +66,5 @@ public:
 	void				setCaption(const shared_str& msg_name, LPCSTR message_to_out, u32 color=0, bool replaceColor=false);
 	void				removeCustomMessage(const shared_str& msg_name);
 };
+#endif
 #endif	//UI_MULTITEXT_STATIC_H_

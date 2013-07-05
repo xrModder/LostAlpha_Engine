@@ -1,38 +1,32 @@
-// File:		UIDebugFonts.cpp
-// Description:	Output list of all fonts
-// Created:		22.03.2005
-// Author:		Serge Vynnychenko
-// Mail:		narrator@gsc-game.kiev.ua
-//
-// Copyright 2005 GSC Game World
-
 #include "StdAfx.h"
 #include "UIDebugFonts.h"
+#include "UIDialogHolder.h"
 #include "dinput.h"
-#include "../hudmanager.h"
 
 
-CUIDebugFonts::CUIDebugFonts(){
+CUIDebugFonts::CUIDebugFonts()
+{
 	AttachChild			(&m_background);
-	Init				(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
+	InitDebugFonts		(Frect().set(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT));
 }
 
 CUIDebugFonts::~CUIDebugFonts(){
 
 }
 
-void CUIDebugFonts::Init(float x, float y, float width, float height){
-	CUIDialogWnd::Init(x, y, width, height);
+void CUIDebugFonts::InitDebugFonts(Frect r)
+{
+	CUIDialogWnd::SetWndRect	(r);
 
 	FillUpList();
 
-	m_background.Init(x, y, width, height);
-	m_background.InitTexture("ui\\ui_debug_font");
+	m_background.SetWndRect	(r);
+	m_background.InitTexture	("ui\\ui_debug_font");
 }
 
-bool CUIDebugFonts::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIDebugFonts::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (DIK_ESCAPE == dik)
-		this->GetHolder()->StartStopMenu(this, true);
+		HideDialog();
 
 	if (DIK_F12 == dik)
 		return false;
@@ -50,20 +44,20 @@ void CUIDebugFonts::FillUpList(){
 	sz.set			(UI_BASE_WIDTH,UI_BASE_HEIGHT);
 	string256		str;
 	for(;it!=it_e;++it){
-		CGameFont* F			= *(*it);
-		CUIStatic* pItem		= xr_new<CUIStatic>();
-		pItem->SetWndPos		(pos);
-		pItem->SetWndSize		(sz);
-		xr_sprintf					(str, "%s:%s", *F->m_font_name, *CStringTable().translate("Test_Font_String"));
-		pItem->SetFont			(F);
-		pItem->SetText			(str);
-		pItem->SetTextComplexMode(false);
-		pItem->SetVTextAlignment(valCenter);
-		pItem->SetTextAlignment	(CGameFont::alCenter);
-		pItem->AdjustHeightToText();
-		pos.y					+= pItem->GetHeight()+20.0f;
-		pItem->SetAutoDelete	(true);
-		AttachChild				(pItem);
+		CGameFont* F					= *(*it);
+		CUITextWnd* pItem				= xr_new<CUITextWnd>();
+		pItem->SetWndPos				(pos);
+		pItem->SetWndSize				(sz);
+		xr_sprintf						(str, "%s:%s", F->m_font_name.c_str(), CStringTable().translate("Test_Font_String").c_str());
+		pItem->SetFont	(F);
+		pItem->SetText					(str);
+		pItem->SetTextComplexMode		(false);
+		pItem->SetVTextAlignment		(valCenter);
+		pItem->SetTextAlignment			(CGameFont::alCenter);
+		pItem->AdjustHeightToText		();
+		pos.y							+= pItem->GetHeight()+20.0f;
+		pItem->SetAutoDelete			(true);
+		AttachChild						(pItem);
 	}
 
 }

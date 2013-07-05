@@ -396,14 +396,14 @@ bool CUIMapWnd::OnKeyboard				(int dik, EUIMessages keyboard_action)
 bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 {
 	if(inherited::OnMouse(x,y,mouse_action)) return true;
-	Fvector2 cursor_pos = GetUICursor()->GetCursorPosition();
+	Fvector2 cursor_pos = GetUICursor().GetCursorPosition();
 
 	if(GlobalMap() && !GlobalMap()->Locked() && ActiveMapRect().in( cursor_pos ) ){
 		switch (mouse_action)
 		{
 		case WINDOW_MOUSE_MOVE:
 			if( pInput->iGetAsyncBtnState(0) ){
-				GlobalMap()->MoveWndDelta	(GetUICursor()->GetCursorPositionDelta());
+				GlobalMap()->MoveWndDelta	(GetUICursor().GetCursorPositionDelta());
 				UpdateScroll					();
 				m_hint->SetOwner				(NULL);
 				return							true;
@@ -788,7 +788,7 @@ bool CUIMapWnd::ConvertCursorPosToMap(Fvector* return_position)
 	
 	//Где находимся от левого верхнего угла
 	//Add cursor position
-	Fvector2 CursorPos = GetUICursor()->GetCursorPosition();
+	Fvector2 CursorPos = GetUICursor().GetCursorPosition();
 	CursorPos.sub(ActiveMapRect().lt);
 	CursorPos.div(m_GlobalMap->GetCurrentZoom());
 	Position.add(CursorPos);
@@ -824,7 +824,7 @@ void CUIMapWnd::AddUserSpot			(CUILevelMap* lm)
 {
 	VERIFY(m_flags.test(lmUserSpotAdd) );
 
-	Fvector2 cursor_pos = GetUICursor()->GetPos();
+	Fvector2 cursor_pos = GetUICursor().GetPos();
 	Fvector2 _p;lm->GetAbsolutePos(_p);
 	cursor_pos.sub					(_p);
 	Fvector2 p =					lm->ConvertLocalToReal(cursor_pos);
@@ -850,7 +850,7 @@ void CUIMapWnd::ShowHint					(CUIWindow* parent, LPCSTR text)
 {
 	if(m_hint->GetOwner())	return;
 	if(!text)				return;
-	Fvector2 c_pos			= GetUICursor()->GetCursorPosition();
+	Fvector2 c_pos			= GetUICursor().GetCursorPosition();
 	Frect vis_rect			= ActiveMapRect				();
 	if(FALSE==vis_rect.in(c_pos)) return;
 
