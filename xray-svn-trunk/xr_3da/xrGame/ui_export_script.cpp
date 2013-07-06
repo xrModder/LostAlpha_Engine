@@ -67,7 +67,7 @@ void UIRegistrator::script_register(lua_State *L)
 			.def("ValidateCDKey",			&CMainMenu::ValidateCDKey)
 			.def("GetGSVer",				&CMainMenu::GetGSVer)
 			.def("IsActive",				&CMainMenu::IsActive)
-	],
+	];
 	module(L,"main_menu")
 	[
 		def("get_main_menu",				&MainMenu)
