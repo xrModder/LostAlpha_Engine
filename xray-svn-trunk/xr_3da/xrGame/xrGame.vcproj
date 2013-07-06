@@ -27375,6 +27375,14 @@
 				RelativePath=".\UIDialogHolder.h"
 				>
 			</File>
+			<File
+				RelativePath=".\ui\UIHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ui\UIHelper.h"
+				>
+			</File>
 			<Filter
 				Name="Common"
 				>

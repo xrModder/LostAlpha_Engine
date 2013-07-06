@@ -45,8 +45,8 @@ struct CUITradeInternal{
 
 	CUIStatic			UIOurTradeWnd;
 	CUIStatic			UIOthersTradeWnd;
-	CUIMultiTextStatic	UIOurPriceCaption;
-	CUIMultiTextStatic	UIOthersPriceCaption;
+	CUITextWnd			UIOurPriceCaption;
+	CUITextWnd			UIOthersPriceCaption;
 	CUIDragDropListEx	UIOurTradeList;
 	CUIDragDropListEx	UIOthersTradeList;
 
@@ -132,10 +132,14 @@ void CUITradeWnd::Init()
 	xml_init.InitStatic					(uiXml, "static", 1, &m_uidata->UIOthersTradeWnd);
 
 	m_uidata->UIOurTradeWnd.AttachChild	(&m_uidata->UIOurPriceCaption);
-	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
+	//xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
+	xml_init.InitTextWnd				(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
+	
 
 	m_uidata->UIOthersTradeWnd.AttachChild(&m_uidata->UIOthersPriceCaption);
-	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
+//	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
+	xml_init.InitTextWnd				(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
+	
 
 	//Списки Drag&Drop
 	m_uidata->UIOurBagWnd.AttachChild	(&m_uidata->UIOurBagList);	
@@ -154,8 +158,8 @@ void CUITradeWnd::Init()
 	AttachChild							(&m_uidata->UIDescWnd);
 	xml_init.InitStatic					(uiXml, "desc_static", 0, &m_uidata->UIDescWnd);
 	m_uidata->UIDescWnd.AttachChild		(&m_uidata->UIItemInfo);
-	m_uidata->UIItemInfo.Init			(0,0, m_uidata->UIDescWnd.GetWidth(), m_uidata->UIDescWnd.GetHeight(), TRADE_ITEM_XML);
-
+	m_uidata->UIItemInfo.Init			(TRADE_ITEM_XML); //(0,0, m_uidata->UIDescWnd.GetWidth(), m_uidata->UIDescWnd.GetHeight(), TRADE_ITEM_XML);
+	m_uidata->UIItemInfo.SetWndRect		(Frect().set(0,0, m_uidata->UIDescWnd.GetWidth(), m_uidata->UIDescWnd.GetHeight()));
 
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
@@ -181,7 +185,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 
 	m_pInvOwner							= pOur;
 	m_pOthersInvOwner					= pOthers;
-	m_uidata->UIOthersPriceCaption.GetPhraseByIndex(0)->SetText(*CStringTable().translate("ui_st_opponent_items"));
+	m_uidata->UIOthersPriceCaption.SetText(*CStringTable().translate("ui_st_opponent_items"));
 
 	m_uidata->UICharacterInfoLeft.InitCharacter(m_pInvOwner->object_id());
 	m_uidata->UICharacterInfoRight.InitCharacter(m_pOthersInvOwner->object_id());
@@ -449,20 +453,19 @@ void CUITradeWnd::UpdatePrices()
 
 
 	string256				buf;
-	xr_sprintf					(buf, "%d RU", m_iOurTradePrice);
-	m_uidata->UIOurPriceCaption.GetPhraseByIndex(2)->str = buf;
-	xr_sprintf					(buf, "%d RU", m_iOthersTradePrice);
-	m_uidata->UIOthersPriceCaption.GetPhraseByIndex(2)->str = buf;
-
+	xr_sprintf					(buf, "%s\\n%d RU", *CStringTable().translate("ui_st_our_items"), m_iOurTradePrice);
+	m_uidata->UIOurPriceCaption.SetText(buf); m_uidata->UIOurPriceCaption.AdjustWidthToText();
+	xr_sprintf					(buf, "%s\\n%d RU", *CStringTable().translate("ui_st_opponent_items"), m_iOthersTradePrice);
+	m_uidata->UIOthersPriceCaption.SetText(buf); m_uidata->UIOthersPriceCaption.AdjustWidthToText();
 	xr_sprintf					(buf, "%d RU", m_pInvOwner->get_money());
-	m_uidata->UIOurMoneyStatic.SetText(buf);
+	m_uidata->UIOurMoneyStatic.TextItemControl()->SetText(buf);
 
 	if(!m_pOthersInvOwner->InfinitiveMoney()){
 		xr_sprintf					(buf, "%d RU", m_pOthersInvOwner->get_money());
-		m_uidata->UIOtherMoneyStatic.SetText(buf);
+		m_uidata->UIOtherMoneyStatic.TextItemControl()->SetText(buf);
 	}else
 	{
-		m_uidata->UIOtherMoneyStatic.SetText("---");
+		m_uidata->UIOtherMoneyStatic.TextItemControl()->SetText("---");
 	}
 }
 
@@ -609,7 +612,7 @@ void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 		string256			str;
 
 		xr_sprintf				(str, "%d RU", m_pOthersTrade->GetItemPrice(CurrentIItem(), bBuying) );
-		m_uidata->UIItemInfo.UICost->SetText (str);
+		m_uidata->UIItemInfo.UICost->TextItemControl()->SetText (str);
 	}
 }
 
@@ -620,11 +623,11 @@ void CUITradeWnd::SwitchToTalk()
 
 void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 {
-	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemDrop);
-	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemStartDrag);
-	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemDbClick);
-	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemSelected);
-	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemRButtonClick);
+	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemDrop);
+	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemStartDrag);
+	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemDbClick);
+	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemSelected);
+	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemRButtonClick);
 }
 
 void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
@@ -632,7 +635,7 @@ void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 	//lost alpha starts
 	PIItem iitem		= (PIItem)itm->m_pData;
 	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
-		itm->SetColor				(color_rgba(100,255,100,255));
+		itm->SetTextureColor		(color_rgba(100,255,100,255));
 	else if(!b)
-		itm->SetColor				(color_rgba(255,100,100,255));
+		itm->SetTextureColor		(color_rgba(255,100,100,255));
 }

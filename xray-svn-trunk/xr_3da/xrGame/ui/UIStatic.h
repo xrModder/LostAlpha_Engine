@@ -88,6 +88,7 @@ public:
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
+			void			SetMask							(CUIFrameWindow* mask);
 
 protected:
 	CUILines*		m_pTextControl;
@@ -107,6 +108,9 @@ public:
 	shared_str		m_stat_hint_text;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
+
+private:
+	CUIFrameWindow* m_mask;
 };
 
 class CUITextWnd :public CUIWindow, public CUILightAnimColorConrollerImpl

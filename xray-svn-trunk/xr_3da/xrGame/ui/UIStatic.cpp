@@ -319,3 +319,15 @@ void CUITextWnd::ColorAnimationSetTextColor(u32 color, bool only_alpha)
 	SetTextColor( (only_alpha)?subst_alpha(GetTextColor(),color) : color);
 }
 
+void CUIStatic::SetMask(CUIFrameWindow* mask)
+{
+	DetachChild(m_mask);
+	m_mask = mask;
+	if (m_mask)
+	{
+		AttachChild			(m_mask);
+		Frect r				= GetWndRect();
+		m_mask->SetWidth	(r.right - r.left);
+		m_mask->SetHeight	(r.bottom - r.top);
+	}
+}

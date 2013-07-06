@@ -29,7 +29,8 @@ CUIPdaListItem::~CUIPdaListItem()
 
 void CUIPdaListItem::Init(float x, float y, float width, float height)
 {
-	inherited::Init								(x, y, width, height);
+//	inherited::Init								(x, y, width, height);
+	inherited::SetWndRect						(Frect().set(x, y, width, height));
 
 	CUIXml uiXml;
 	bool xml_result = uiXml.Init				(CONFIG_PATH, UI_PATH, PDA_CONTACT_CHAR);
