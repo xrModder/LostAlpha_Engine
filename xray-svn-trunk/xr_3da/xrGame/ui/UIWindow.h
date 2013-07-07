@@ -153,6 +153,7 @@ public:
 	//обновление окна передпрорисовкой
 	virtual void			Update				();
 
+	virtual void			BringAllToTop		();
 
 			void			SetPPMode			();
 			void			ResetPPMode			();

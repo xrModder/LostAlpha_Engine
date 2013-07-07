@@ -619,3 +619,10 @@ bool fit_in_rect(CUIWindow* w, Frect const& vis_rect, float border, float dx16po
 	w->SetWndPos( rect.lt );
 	return true;
 }
+
+void CUIWindow::BringAllToTop()
+{
+	if (GetParent() == NULL)				return;
+	GetParent()->BringToTop					(this);
+	GetParent()->BringAllToTop				();
+}

@@ -8,8 +8,8 @@
 #include "UIScrollView.h"
 #include "UI3tButton.h"
 #include "../xr_level_controller.h"
-#include "uicursor.h"
-#include "uigamecustom.h"
+#include "../uicursor.h"
+#include "../uigamecustom.h"
 
 CUISpawnWnd::CUISpawnWnd()
 	:  m_iCurTeam(0)

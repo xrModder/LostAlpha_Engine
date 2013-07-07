@@ -119,7 +119,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		UIItemImage->TextureAvailable(true);
 
 		UIItemImage->TextureOff			();
-		UIItemImage->ClipperOn			();
+//		UIItemImage->ClipperOn			();
 		UIItemImageSize.set				(UIItemImage->GetWidth(),UIItemImage->GetHeight());
 	}
 
@@ -195,7 +195,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos*INV_GRID_WIDTH), float(iYPos*INV_GRID_HEIGHT),
 														float(iGridWidth*INV_GRID_WIDTH),	float(iGridHeight*INV_GRID_HEIGHT));
 		UIItemImage->TextureOn				();
-		UIItemImage->ClipperOn				();
+//		UIItemImage->ClipperOn				();
 		UIItemImage->SetStretchTexture		(true);
 		Frect v_r							= {	0.0f, 
 												0.0f, 

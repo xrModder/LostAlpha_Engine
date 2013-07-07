@@ -184,20 +184,23 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	}
 }
 
-void CUIPdaWnd::Show()
+void CUIPdaWnd::Show(bool status)
 {
-	InventoryUtilities::SendInfoToActor("ui_pda");
+	
+	if (status)
+	{
+		InventoryUtilities::SendInfoToActor("ui_pda");
+		inherited::Show();
+	}
+	else
+	{
+		inherited::Hide();
 
-	inherited::Show();
-}
+		InventoryUtilities::SendInfoToActor("ui_pda_hide");
+		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
 
-void CUIPdaWnd::Hide()
-{
-	inherited::Hide();
-
-	InventoryUtilities::SendInfoToActor("ui_pda_hide");
-	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
-
+	}
+	
 }
 
 void CUIPdaWnd::UpdateDateTime()

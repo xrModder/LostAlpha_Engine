@@ -59,7 +59,7 @@ void CUIChangeMap::Init(CUIXml& xml_doc)
 	CUIXmlInit::InitStatic				(xml_doc,			"change_map:header", 0, header);
 	CUIXmlInit::InitStatic				(xml_doc,			"change_map:background", 0, bkgrnd);
 	CUIXmlInit::InitStatic				(xml_doc,			"change_map:map_frame", 0, map_frame);
-	CUIXmlInit::InitStatic				(xml_doc,			"change_map:map_pic", 0, map_pic); map_pic->ClipperOn();
+	CUIXmlInit::InitStatic				(xml_doc,			"change_map:map_pic", 0, map_pic);// map_pic->ClipperOn();
 	CUIXmlInit::InitFrameWindow			(xml_doc,			"change_map:list_back", 0, lst_back);
 	CUIXmlInit::InitFrameWindow			(xml_doc,			"change_map:frame", 0, frame);
 	CUIXmlInit::InitListBox				(xml_doc,			"change_map:list", 0, lst);
@@ -143,7 +143,7 @@ void CUIChangeMap::FillUpList()
 	u32 cnt						= M.m_map_names.size();
 	for (u32 i=0; i<cnt; ++i)
 	{
-		CUIListBoxItem* itm		= lst->AddItem( CStringTable().translate(M.m_map_names[i]).c_str() );
+		CUIListBoxItem* itm		= lst->AddItem( CStringTable().translate(M.m_map_names[i].map_name).c_str() );
 		itm->Enable				(m_pExtraContentFilter->IsDataEnabled(M.m_map_names[i].c_str()));
 	}
 

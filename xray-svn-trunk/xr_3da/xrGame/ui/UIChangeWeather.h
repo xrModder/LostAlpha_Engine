@@ -1,3 +1,5 @@
+#ifndef __UICHANGEWEATHER_H__
+#define __UICHANGEWEATHER_H__
 #pragma once
 
 #include "UIDialogWnd.h"
@@ -39,3 +41,12 @@ protected:
 	CUIStatic*		bkgrnd;
 	CUI3tButton*	btn_cancel;
 };
+
+class CUIChangeGameType : public CUIChangeWeather
+{
+public:
+	void			InitChangeGameType	(CUIXml& xml_doc);
+	virtual void	OnBtn				(int i);
+};
+
+#endif

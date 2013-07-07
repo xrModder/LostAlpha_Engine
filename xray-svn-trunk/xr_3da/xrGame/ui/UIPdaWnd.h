@@ -1,3 +1,5 @@
+#ifndef __UIPDAWND_H__
+#define __UIPDAWND_H__
 #pragma once
 
 #include "UIDialogWnd.h"
@@ -61,6 +63,7 @@ public:
 	CUI3tButton*			m_pUIClose;
 
 	virtual void			Reset				();
+
 public:
 							CUIPdaWnd			();
 	virtual					~CUIPdaWnd			();
@@ -71,17 +74,20 @@ public:
 
 	virtual void 			Draw				();
 	virtual void 			Update				();
-	virtual void 			Show				();
-	virtual void 			Hide				();
+	virtual void 			Show				(bool status);
+	
 	virtual void 			EnableSkills				(bool val);
 	virtual void 			EnableDownloads				(bool val);
 	virtual bool			IsSkillsEnabled			(){return m_bSkillsEnabled;}
 	virtual bool			IsDownloadsEnabled			(){return m_bDownloadsEnabled;}
 
 	virtual bool			OnMouseAction				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouseAction(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
+	virtual bool			OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 	
 	void					SetActiveSubdialog	(EPdaTabs section);
 	virtual bool			StopAnyMove			(){return false;}
 
 			void			PdaContentsChanged	(pda_section::part type);
 };
+
+#endif
