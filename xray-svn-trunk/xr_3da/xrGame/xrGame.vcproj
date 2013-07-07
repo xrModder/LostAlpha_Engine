@@ -53,7 +53,7 @@
 				EnableFiberSafeOptimizations="true"
 				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
-				GeneratePreprocessedFile="1"
+				GeneratePreprocessedFile="0"
 				StringPooling="false"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
