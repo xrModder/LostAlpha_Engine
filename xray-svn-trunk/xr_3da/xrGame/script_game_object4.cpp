@@ -175,6 +175,17 @@ void CScriptGameObject::wounded					(bool value)
 	stalker->wounded			(value);
 }
 
+void CScriptGameObject::wounded					(bool value, bool dest)
+{
+	CAI_Stalker					*stalker = smart_cast<CAI_Stalker *>(&object());
+	if (!stalker) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member wounded!");
+		return;
+	}
+
+	stalker->wounded			(value, dest);
+}
+
 CSightParams CScriptGameObject::sight_params	()
 {
 	CAI_Stalker						*stalker = smart_cast<CAI_Stalker*>(&object());

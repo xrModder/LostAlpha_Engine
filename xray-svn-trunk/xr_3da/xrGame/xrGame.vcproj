@@ -27525,6 +27525,14 @@
 					<File
 						RelativePath=".\ui\UIPdaWnd.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								Detect64BitPortabilityProblems="false"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIPdaWnd.h"
@@ -29682,6 +29690,14 @@
 					</File>
 					<File
 						RelativePath=".\ui\UIDragDropListEx.h"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.cpp"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.h"
 						>
 					</File>
 				</Filter>

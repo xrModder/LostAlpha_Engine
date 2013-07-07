@@ -596,6 +596,7 @@ public:
 
 			bool				wounded								() const;
 			void				wounded								(bool value);
+			void				wounded								(bool value, bool dest);
 
 			CSightParams		sight_params						();
 
