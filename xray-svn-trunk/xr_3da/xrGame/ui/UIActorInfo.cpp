@@ -221,14 +221,14 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 		if( 0==(*it).str_value.size() )
 		{
 			xr_sprintf							(buff,"x%d", (*it).int_count);
-			itm->m_text2->SetTextST				(buff);
+			itm->m_text2->TextItemControl()->SetTextST				(buff);
 
 			xr_sprintf							(buff,"%d", (*it).int_points);
-			itm->m_text3->SetTextST				(buff);
+			itm->m_text3->TextItemControl()->SetTextST				(buff);
 		}else
 		{
-			itm->m_text2->SetTextST				((*it).str_value.c_str());
-			itm->m_text3->SetTextST				("");
+			itm->m_text2->TextItemControl()->SetTextST				((*it).str_value.c_str());
+			itm->m_text3->TextItemControl()->SetTextST				("");
 		}
 
 		Fvector2 sz							= itm->GetWndSize();

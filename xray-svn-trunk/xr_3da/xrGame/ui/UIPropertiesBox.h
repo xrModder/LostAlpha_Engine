@@ -40,6 +40,8 @@ public:
 	
 	void				ShowSubMenu							();
 	void	xr_stdcall	OnItemReceivedFocus					(CUIWindow* w, void* d);
+
+	
 protected:
 	CUIListBox			m_UIListWnd;
 private:

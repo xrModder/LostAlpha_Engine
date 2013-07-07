@@ -26,3 +26,4 @@ public:
 protected:
 //	Fvector2 m_textPos;
 };
+*/

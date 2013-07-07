@@ -1,4 +1,4 @@
-#include "pch_script.h"
+#include "../pch_script.h"
 #include "UITaskItem.h"
 #include "UIXmlInit.h"
 #include "UI3tButton.h"

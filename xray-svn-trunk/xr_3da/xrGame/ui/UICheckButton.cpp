@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include ".\uicheckbutton.h"
 #include "UIXmlInit.h"
-#include "UIHint.h"
+//#include "UIHint.h"
 
 CUICheckButton::CUICheckButton()
 {	

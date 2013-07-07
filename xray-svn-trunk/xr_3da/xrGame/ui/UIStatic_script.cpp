@@ -1,4 +1,4 @@
-#include "pch_script.h"
+#include "../pch_script.h"
 #include "UIStatic.h"
 
 using namespace luabind;

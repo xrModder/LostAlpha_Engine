@@ -125,3 +125,32 @@ void CUIChangeWeather::AddWeather(const shared_str& weather, const shared_str& t
 	weather_counter++;
 }
 
+
+void CUIChangeGameType::InitChangeGameType(CUIXml& xml_doc)
+{
+	CUIXmlInit::InitWindow(xml_doc, "change_gametype", 0, this);
+
+	CUIXmlInit::InitTextWnd(xml_doc, "change_gametype:header", 0, header);
+	CUIXmlInit::InitStatic(xml_doc, "change_gametype:background", 0, bkgrnd);
+
+	string256 _path;
+	for (int i = 0; i<4; i++)
+	{
+		xr_sprintf(_path, "change_gametype:btn_%d", i + 1);
+		CUIXmlInit::Init3tButton(xml_doc, _path, 0, btn[i]);
+		xr_sprintf(_path, "change_gametype:txt_%d", i + 1);
+		CUIXmlInit::InitTextWnd(xml_doc, _path, 0, m_data[i].m_text);
+		m_data[i].m_weather_name = xml_doc.ReadAttrib(_path,0,"id");
+	}
+
+	CUIXmlInit::Init3tButton(xml_doc, "change_gametype:btn_cancel", 0, btn_cancel);
+}
+
+void CUIChangeGameType::OnBtn(int i)
+{
+	string1024				command;
+	xr_sprintf				(command, "cl_votestart changegametype %s", m_data[i].m_weather_name.c_str());
+	Console->Execute		(command);
+	HideDialog				();
+}
+

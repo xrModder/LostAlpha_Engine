@@ -53,6 +53,7 @@
 				EnableFiberSafeOptimizations="true"
 				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
+				GeneratePreprocessedFile="1"
 				StringPooling="false"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -29748,30 +29749,83 @@
 					Name="ListBox"
 					>
 					<File
+						RelativePath=".\ui\UIListBox_script.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIListBoxItemMsgChain.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIListBoxItemMsgChain.h"
+						>
+					</File>
+					<File
 						RelativePath=".\ui\UIListItem.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIListItem.h"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIListWnd.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIListWnd.h"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIListWnd_inline.h"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIListWnd_script.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
+							ExcludedFromBuild="true"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -29831,10 +29885,26 @@
 						<File
 							RelativePath=".\ui\UIListItemEx.cpp"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath=".\ui\UIListItemEx.h"
 							>
+							<FileConfiguration
+								Name="Debug|Win32"
+								ExcludedFromBuild="true"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 				</Filter>

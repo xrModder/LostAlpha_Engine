@@ -14,7 +14,7 @@
 #include "UIFrameWindow.h"
 #include "UI3tButton.h"
 #include "UICheckButton.h"
-#include "UIHint.h"
+//#include "UIHint.h"
 #include "UIDragDropReferenceList.h"
 #include "UIEditBox.h"
 
@@ -104,7 +104,7 @@ CUICheckButton* UIHelper::CreateCheck( CUIXml& xml, LPCSTR ui_path, CUIWindow* p
 	CUIXmlInit::InitCheck		( xml, ui_path, 0, ui );
 	return ui;
 }
-
+/*
 UIHint* UIHelper::CreateHint( CUIXml& xml, LPCSTR ui_path)
 {
 	UIHint* ui					= xr_new<UIHint>();
@@ -112,7 +112,7 @@ UIHint* UIHelper::CreateHint( CUIXml& xml, LPCSTR ui_path)
 	ui->init_from_xml			( xml, ui_path );
 	return ui;
 }
-
+*/
 CUIDragDropListEx* UIHelper::CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
 {
 	CUIDragDropListEx* ui			= xr_new<CUIDragDropListEx>();

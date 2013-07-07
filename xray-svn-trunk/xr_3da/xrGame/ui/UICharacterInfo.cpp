@@ -54,7 +54,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIIcon] = xr_new<CUIStatic>();
 		xml_init.InitStatic	(*xml_doc, "icon_static", 0, pItem);
-		pItem->ClipperOn	();
+//		pItem->ClipperOn	();
 		pItem->Show			(true);
 		pItem->Enable		(true);
 		AttachChild			(pItem);

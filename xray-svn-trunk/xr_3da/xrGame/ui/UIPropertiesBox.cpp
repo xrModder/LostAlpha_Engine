@@ -229,3 +229,4 @@ bool CUIPropertiesBox::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	return true;
 }
+

@@ -9,7 +9,7 @@
 #include "../../../Include/xrRender/UIRender.h"
 
 #include "UIBtnHint.h"
-#include "UICursor.h"
+#include "../UICursor.h"
 
 bool is_in2(const Frect& b1, const Frect& b2);
 

@@ -7,11 +7,11 @@
 #include "string_table.h"
 
 #include "InventoryOwner.h"
-#include "ui/UIActorMenu.h"
+
 #include "ui/UIPdaWnd.h"
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIMessagesWindow.h"
-#include "ui/UIHudStatesWnd.h"
+
 #include "actor.h"
 #include "inventory.h"
 #include "game_cl_base.h"

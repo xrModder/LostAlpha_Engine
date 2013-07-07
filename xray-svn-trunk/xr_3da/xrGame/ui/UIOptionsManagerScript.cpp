@@ -1,4 +1,4 @@
-#include "pch_script.h"
+#include "../pch_script.h"
 #include "UIOptionsItem.h"
 #include "UIOptionsManagerScript.h"
 
