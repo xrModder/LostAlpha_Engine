@@ -1167,7 +1167,7 @@ void CApplication::LoadBegin	()
 		g_appLoaded			= FALSE;
 
 #ifndef DEDICATED_SERVER
-		_InitializeFont		(pFontSystem,"ui_font_letterica18_russian",0);
+		_InitializeFont		(pFontSystem,"ui_font_graffiti19_russian",0);
 
 		m_pRender->LoadBegin();
 #endif
