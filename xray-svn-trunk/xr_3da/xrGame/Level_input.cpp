@@ -241,7 +241,7 @@ case DIK_MULTIPLY:
 			bOk = false;
 			for (++i; i <n; ++i) {
 				CEntityAlive* tpEntityAlive = smart_cast<CEntityAlive*>(Objects.o_get_by_iterator(i));
-				if (tpEntityAlive) {
+				if (tpEntityAlive && tpEntityAlive->g_Alive()) {
 					bOk = true;
 					break;
 				}
@@ -249,7 +249,7 @@ case DIK_MULTIPLY:
 			if (!bOk)
 				for (i = 0; i <j; ++i) {
 					CEntityAlive* tpEntityAlive = smart_cast<CEntityAlive*>(Objects.o_get_by_iterator(i));
-					if (tpEntityAlive) {
+					if (tpEntityAlive && tpEntityAlive->g_Alive()) {
 						bOk = true;
 						break;
 					}
