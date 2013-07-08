@@ -85,6 +85,7 @@ void CZombie::reinit()
 	time_dead_start			= 0;
 	last_hit_frame			= 0;
 	time_resurrect			= 0;
+	fakedeath_is_active		= false;
 	fake_death_left			= fake_death_count;
 
 	active_triple_idx		= u8(-1);
@@ -158,6 +159,7 @@ void	CZombie::Hit								(SHit* pHDS)
 				if (g_Alive())
 					character_physics_support()->movement()->DestroyCharacter();
 				time_dead_start				= Device.dwTimeGlobal;
+				fakedeath_is_active			= true;
 				
 				if (fake_death_left == 0)	fake_death_left = 1;
 				fake_death_left--;
@@ -176,6 +178,7 @@ void CZombie::shedule_Update(u32 dt)
 	if (time_dead_start != 0) {
 		if (time_dead_start + TIME_FAKE_DEATH < Device.dwTimeGlobal) {
 			time_dead_start  = 0;
+			fakedeath_is_active = false;
 
 			com_man().ta_pointbreak();
 			if (g_Alive())	
@@ -193,6 +196,7 @@ bool CZombie::fake_death_fall_down()
 
 	com_man().ta_activate		(anim_triple_death[u8(Random.randI(FAKE_DEATH_TYPES_COUNT))]);
 	move().stop					();
+	fakedeath_is_active				= true;
 	if (g_Alive())
 		character_physics_support()->movement()->DestroyCharacter();
 
@@ -210,7 +214,9 @@ void CZombie::fake_death_stand_up()
 		}
 	}
 	if (!active) return;
-	
+
+	fakedeath_is_active	= false;
+
 	com_man().ta_pointbreak();
 
 	if (g_Alive())
