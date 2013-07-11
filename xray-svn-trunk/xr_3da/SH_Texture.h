@@ -21,36 +21,7 @@ public:
 		rstCompute = rstDomain+256,
         rstInvalid = rstCompute+256
 	};
-	struct 
-	{
-		u32					bLoaded		: 1;
-		u32					bUser		: 1;
-		u32					seqCycles	: 1;
-		u32					MemoryUsage	: 28;
 
-	}									flags;
-	fastdelegate::FastDelegate1<u32>	bind;
-
-	IDirect3DBaseTexture9*				pSurface;
-	CAviPlayerCustom*					pAVI;
-	CTheoraSurface*						pTheora;
-	float								m_material;
-	shared_str							m_bumpmap;
-
-	union{
-		u32								m_play_time;		// sync theora time
-		u32								seqMSPF;			// Sequence data milliseconds per frame
-	};
-
-	// Sequence data
-	xr_vector<IDirect3DBaseTexture9*>	seqDATA;
-
-	// Description
-	IDirect3DBaseTexture9*				desc_cache;
-	D3DSURFACE_DESC						desc;
-	IC BOOL								desc_valid		()		{ return pSurface==desc_cache; }
-	IC void								desc_enshure	()		{ if (!desc_valid()) desc_update(); }
-	void								desc_update		();
 public:
 	void	xr_stdcall					apply_load		(u32	stage);
 	void	xr_stdcall					apply_theora	(u32	stage);
@@ -79,6 +50,43 @@ public:
 
 	CTexture							();
 	virtual ~CTexture					();
+
+private:
+	// Description
+	IDirect3DBaseTexture9*				desc_cache;
+	D3DSURFACE_DESC						desc;
+	IC BOOL								desc_valid		()		{ return pSurface==desc_cache; }
+	IC void								desc_enshure	()		{ if (!desc_valid()) desc_update(); }
+	void								desc_update		();
+	//	Class data
+public:	//	Public class members (must be encapsulated furthur)
+	struct 
+	{
+		u32					bLoaded		: 1;
+		u32					bUser		: 1;
+		u32					seqCycles	: 1;
+		u32					MemoryUsage	: 28;
+
+	}									flags;
+	fastdelegate::FastDelegate1<u32>	bind;
+
+
+	CAviPlayerCustom*					pAVI;
+	CTheoraSurface*						pTheora;
+	float								m_material;
+	shared_str							m_bumpmap;
+
+	union{
+		u32								m_play_time;		// sync theora time
+		u32								seqMSPF;			// Sequence data milliseconds per frame
+	};
+
+private:
+	IDirect3DBaseTexture9*				pSurface;
+	// Sequence data
+	xr_vector<IDirect3DBaseTexture9*>	seqDATA;
+
+
 };
 struct ENGINE_API		resptrcode_texture	: public resptr_base<CTexture>
 {

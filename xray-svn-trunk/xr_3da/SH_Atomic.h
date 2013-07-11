@@ -13,6 +13,7 @@
 struct	ENGINE_API		SVS				: public xr_resource_named							{
 	IDirect3DVertexShader9*				vs;
 	R_constant_table					constants;
+	SVS				();
 	~SVS			();
 };
 typedef	resptr_core<SVS,resptr_base<SVS> >													ref_vs;

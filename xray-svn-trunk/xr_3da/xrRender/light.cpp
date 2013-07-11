@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "light.h"
 
-//static const float	SQRT2		=	1.4142135623730950488016887242097f;
+static const float	SQRT2		=	1.4142135623730950488016887242097f;
 static const float	RSQRTDIV2	=	0.70710678118654752440084436210485f;
 
 light::light		(void)	: ISpatial(g_SpatialSpace)

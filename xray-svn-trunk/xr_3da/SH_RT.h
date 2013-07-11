@@ -5,6 +5,15 @@
 //////////////////////////////////////////////////////////////////////////
 class	ENGINE_API	CRT		:	public xr_resource_named	{
 public:
+	CRT					();
+	~CRT				();
+
+	void	create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount = 1 );
+	void				destroy			();
+	void				reset_begin		();
+	void				reset_end		();
+	IC BOOL				valid			()	{ return !!pTexture; }
+public:
 	IDirect3DTexture9*	pSurface;
 	IDirect3DSurface9*	pRT;
 	ref_texture			pTexture;
@@ -14,15 +23,6 @@ public:
 	D3DFORMAT			fmt;
 
 	u64					_order;
-
-	CRT					();
-	~CRT				();
-
-	void	create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount = 1 );
-	void				destroy			();
-	void				reset_begin		();
-	void				reset_end		();
-	IC BOOL				valid			()	{ return !!pTexture; }
 };
 struct ENGINE_API		resptrcode_crt	: public resptr_base<CRT>
 {
