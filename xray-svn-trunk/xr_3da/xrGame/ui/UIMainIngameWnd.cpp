@@ -108,7 +108,14 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 void CUIMainIngameWnd::Init()
 {
 	CUIXml						uiXml;
-	uiXml.Init					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
+
+	string128		XmlName;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	sprintf_s		(XmlName, "maingame_%d.xml", ui_hud_type);
+
+	uiXml.Init					(CONFIG_PATH, UI_PATH, XmlName);
 	
 	CUIXmlInit					xml_init;
 	CUIWindow::Init				(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);

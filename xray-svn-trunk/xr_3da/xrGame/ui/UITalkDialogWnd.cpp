@@ -6,10 +6,7 @@
 #include "UIScrollView.h"
 #include "UI3tButton.h"
 #include "../UI.h"
-
-
-#define				TALK_XML				"talk.xml"
-#define				TRADE_CHARACTER_XML		"trade_character.xml"
+#include "../HUDManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +24,16 @@ CUITalkDialogWnd::~CUITalkDialogWnd()
 void CUITalkDialogWnd::Init(float x, float y, float width, float height)
 {
 	m_uiXml						= xr_new<CUIXml>();
+
+	string128		TALK_XML;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	sprintf_s		(TALK_XML, "talk_%d.xml", ui_hud_type);
+
+	string128		TRADE_CHARACTER_XML;
+	sprintf_s		(TRADE_CHARACTER_XML, "trade_character_%d.xml", ui_hud_type);
+
 	bool xml_result				= m_uiXml->Init(CONFIG_PATH, UI_PATH, TALK_XML);
 	R_ASSERT3					(xml_result, "xml file not found", TALK_XML);
 	CUIXmlInit					ml_init;

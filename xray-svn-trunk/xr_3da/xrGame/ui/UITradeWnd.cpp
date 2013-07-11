@@ -27,11 +27,6 @@
 #include "UICellItemFactory.h"
 
 
-#define				TRADE_XML			"trade.xml"
-#define				TRADE_CHARACTER_XML	"trade_character.xml"
-#define				TRADE_ITEM_XML		"trade_item.xml"
-
-
 struct CUITradeInternal{
 	CUIStatic			UIStaticTop;
 	CUIStatic			UIStaticBottom;
@@ -91,6 +86,19 @@ CUITradeWnd::~CUITradeWnd()
 void CUITradeWnd::Init()
 {
 	CUIXml								uiXml;
+
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	string128		TRADE_XML;
+	sprintf_s		(TRADE_XML, "trade_%d.xml", ui_hud_type);
+
+	string128		TRADE_CHARACTER_XML;
+	sprintf_s		(TRADE_CHARACTER_XML, "trade_character_%d.xml", ui_hud_type);
+
+	string128		TRADE_ITEM_XML;
+	sprintf_s		(TRADE_ITEM_XML, "trade_item_%d.xml", ui_hud_type);
+
 	bool xml_result						= uiXml.Init(CONFIG_PATH, UI_PATH, TRADE_XML);
 	R_ASSERT3							(xml_result, "xml file not found", TRADE_XML);
 	CUIXmlInit							xml_init;

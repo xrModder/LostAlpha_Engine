@@ -180,18 +180,21 @@ void CUIPdaWnd::Show()
 {
 	InventoryUtilities::SendInfoToActor("ui_pda");
 
-	bool val = false;
-	if (InventoryUtilities::HasActorInfo("pda_skills_enabled"))
-		val = true;
-
-	UITabControl->GetButtonsVector()->at(7)->Enable(val);
-
-	if (InventoryUtilities::HasActorInfo("pda_downloads_enabled"))
-		val = true;
-	else
-		val = false;
-
-	UITabControl->GetButtonsVector()->at(8)->Enable(val);
+	if( IsGameTypeSingle() )
+	{
+		bool val = false;
+		if (InventoryUtilities::HasActorInfo("pda_skills_enabled"))
+			val = true;
+	
+		UITabControl->GetButtonsVector()->at(7)->Enable(val);
+	
+		if (InventoryUtilities::HasActorInfo("pda_downloads_enabled"))
+			val = true;
+		else
+			val = false;
+	
+		UITabControl->GetButtonsVector()->at(8)->Enable(val);
+	}
 
 	inherited::Show();
 }

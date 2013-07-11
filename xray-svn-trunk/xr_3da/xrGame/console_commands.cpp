@@ -86,6 +86,11 @@ extern	BOOL	g_show_wnd_rect2			;
 extern	float	g_fTimeFactor;
 int				g_keypress_on_start	= 1;
 
+xr_token			qhud_type_token		[ ]={
+	{ "hud_1",					1},
+	{ "hud_2",					2},
+	{ 0,						0}
+};
 
 void register_mp_console_commands();
 //-----------------------------------------------------------
@@ -690,6 +695,42 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 			return;
 
 		F->w_printf				("%s %s\r\n",cName,g_language.c_str()); 
+	}
+
+	virtual void	Status	(TStatus& S)
+	{	
+		sprintf_s	(S,"%s",g_language.c_str());	  
+	}
+};
+
+class	CCC_UiHud_Mode		: public CCC_Token
+{
+public:
+	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N,V,T)	{}	;
+
+	virtual void	Execute	(LPCSTR args)	{
+		CCC_Token::Execute	(args);
+
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+		{
+			switch	(*value)
+			{
+				case 1: //skyloader: build-style ui
+				{
+					HUD().GetUI()->UIGame()->HideShownDialogs();
+					HUD().OnScreenRatioChanged(); //юзанем чужую функу для maingame :)
+					HUD().GetUI()->UIGame()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
+					break;
+				}
+				case 2: //new ui
+				{
+					HUD().GetUI()->UIGame()->HideShownDialogs();
+					HUD().OnScreenRatioChanged();
+					HUD().GetUI()->UIGame()->ReinitDialogs();
+					break;
+				}
+			}
+		}
 	}
 };
 
@@ -1540,6 +1581,8 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
+
+	CMD3(CCC_UiHud_Mode,			"ui_hud_type",	&ui_hud_type,	qhud_type_token);
 
 	// alife
 #ifdef DEBUG

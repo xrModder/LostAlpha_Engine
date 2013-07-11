@@ -28,9 +28,6 @@
 #include "../BottleItem.h"
 #include "../Car.h"
 
-#define				CAR_BODY_XML		"carbody_new.xml"
-#define				CARBODY_ITEM_XML	"carbody_item.xml"
-
 void move_item (u16 from_id, u16 to_id, u16 what_id);
 
 CUICarBodyWnd::CUICarBodyWnd()
@@ -52,6 +49,16 @@ CUICarBodyWnd::~CUICarBodyWnd()
 void CUICarBodyWnd::Init()
 {
 	CUIXml						uiXml;
+
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	string128		CAR_BODY_XML;
+	sprintf_s		(CAR_BODY_XML, "carbody_new_%d.xml", ui_hud_type);
+
+	string128		CARBODY_ITEM_XML;
+	sprintf_s		(CARBODY_ITEM_XML, "carbody_item_%d.xml", ui_hud_type);
+
 	uiXml.Init					(CONFIG_PATH, UI_PATH, CAR_BODY_XML);
 	
 	CUIXmlInit					xml_init;
