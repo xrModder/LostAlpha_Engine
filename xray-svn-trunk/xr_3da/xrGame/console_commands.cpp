@@ -717,9 +717,10 @@ public:
 			{
 				case 1: //skyloader: build-style ui
 				{
-					HUD().GetUI()->UIGame()->HideShownDialogs();
+					HUD().GetUI()->UIGame()->HideShownDialogs(); //скрываем активные диалоги, ибо будем их дестроить
 					HUD().OnScreenRatioChanged(); //юзанем чужую функу для maingame :)
 					HUD().GetUI()->UIGame()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
+					HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
 					break;
 				}
 				case 2: //new ui
@@ -727,6 +728,7 @@ public:
 					HUD().GetUI()->UIGame()->HideShownDialogs();
 					HUD().OnScreenRatioChanged();
 					HUD().GetUI()->UIGame()->ReinitDialogs();
+					HUD().GetUI()->OnConnected();
 					break;
 				}
 			}

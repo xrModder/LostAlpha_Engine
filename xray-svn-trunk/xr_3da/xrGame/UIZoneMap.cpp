@@ -31,8 +31,14 @@ void CUIZoneMap::Init()
 {
 
 	CUIXml uiXml;
-	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH, "zone_map.xml");
-	R_ASSERT3(xml_result, "xml file not found", "zone_map.xml");
+	string128		XmlName;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	sprintf_s		(XmlName, "zone_map_%d.xml", ui_hud_type);
+
+	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH, XmlName);
+	R_ASSERT3(xml_result, "xml file not found", XmlName);
 
 	// load map backgroundwwwwwwwwwwwww
 	CUIXmlInit xml_init;
