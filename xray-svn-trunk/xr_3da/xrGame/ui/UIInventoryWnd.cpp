@@ -118,15 +118,21 @@ void CUIInventoryWnd::Init()
 
 	UIProgressBack.AttachChild (&UIProgressBarHealth);
 	xml_init.InitProgressBar (uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
-	
+
 	UIProgressBack.AttachChild	(&UIProgressBarStamina);
 	xml_init.InitProgressBar (uiXml, "progress_bar_stamina", 0, &UIProgressBarStamina);
+	
+	UIProgressBack.AttachChild	(&UIProgressBarArmor);
+	xml_init.InitProgressBar (uiXml, "progress_bar_armor", 0, &UIProgressBarArmor);
 
 	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
 	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
 
 	UIProgressBack.AttachChild    (&UIProgressBarHunger);
-    xml_init.InitProgressBar (uiXml, "progress_bar_hunger", 0, &UIProgressBarHunger);
+	xml_init.InitProgressBar (uiXml, "progress_bar_hunger", 0, &UIProgressBarHunger);
+
+	UIProgressBack.AttachChild	(&UIProgressBarThirst);
+	xml_init.InitProgressBar (uiXml, "progress_bar_thirst", 0, &UIProgressBarThirst);
 
 	UIPersonalWnd.AttachChild			(&UIStaticPersonal);
 	xml_init.InitStatic					(uiXml, "static_personal",0, &UIStaticPersonal);
@@ -293,30 +299,39 @@ void CUIInventoryWnd::Update()
 		float v = pEntityAlive->conditions().GetHealth()*100.0f;
 		UIProgressBarHealth.SetProgressPos		(v);
 
-		v = pEntityAlive->conditions().GetPower()*100.0f;
-		UIProgressBarStamina.SetProgressPos		(v);
-
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		UIProgressBarRadiation.SetProgressPos	(v);
 
+		v = pEntityAlive->conditions().GetPower()*100.0f;
+		UIProgressBarStamina.SetProgressPos		(v);
+
+		// Armor progress bar stuff
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-        v = pActor->conditions().GetSatiety()*100.0f;
-        UIProgressBarHunger.SetProgressPos    (v);
+		PIItem	pItem = pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
+		if (pItem)
+		{
+			v = pItem->GetCondition()*100;
+			UIProgressBarArmor.SetProgressPos	(v);
+		} else
+			UIProgressBarArmor.SetProgressPos	(0.f);
 
 
 		CInventoryOwner* pOurInvOwner	= smart_cast<CInventoryOwner*>(pEntityAlive);
 		u32 _money						= 0;
 
-		if (GameID() != GAME_SINGLE){
+		if (GameID() != GAME_SINGLE)
+		{
 			game_PlayerState* ps = Game().GetPlayerByGameID(pEntityAlive->ID());
-			if (ps){
+			if (ps)
+			{
 				UIProgressBarRank.SetProgressPos(ps->experience_D*100);
 				_money							= ps->money_for_round;
 			}
-		}else
-		{
+			UIProgressBarHunger.SetProgressPos	(100.f);
+			UIProgressBarThirst.SetProgressPos	(100.f);
+		} else
 			_money							= pOurInvOwner->get_money();
-		}
+
 		// update money
 		string64						sMoney;
 		sprintf_s							(sMoney,"%d RU", _money);
@@ -556,4 +571,14 @@ bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	return false;
+}
+
+void CUIInventoryWnd::SetProgessToHunger(float val)
+{
+	UIProgressBarHunger.SetProgressPos(val);
+}
+
+void CUIInventoryWnd::SetProgessToThirst(float val)
+{
+	UIProgressBarThirst.SetProgressPos(val);
 }
