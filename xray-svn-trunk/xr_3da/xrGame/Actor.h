@@ -644,6 +644,7 @@ public:
 	virtual	shared_str		GetDefaultVisualOutfit_legs	() const	{return m_DefaultVisualOutfit_legs;};
 	virtual	void			SetDefaultVisualOutfit_legs	(shared_str DefaultOutfit) {m_DefaultVisualOutfit_legs = DefaultOutfit;};
 	virtual	void			SetDrawLegs	(bool DrawLegs) {m_bDrawLegs = DrawLegs;};
+	virtual bool			DrawLegs	() const {return m_bDrawLegs;}
 	virtual	void			SetActorShadows	(bool ActorShadows) {m_bActorShadows = ActorShadows;};
 	virtual bool			IsActorShadowsOn	() const {return m_bActorShadows;}
 	virtual bool			IsFirstEye	() const {return (m_bFirstEye);}
