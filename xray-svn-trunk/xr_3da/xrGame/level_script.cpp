@@ -784,7 +784,6 @@ void CLevel::script_register(lua_State *L)
 		def("indicators_shown",					indicators_shown),
 		def("set_value_to_hunger_bar",					set_value_to_hunger_bar),
 		def("set_value_to_thirst_bar",					set_value_to_thirst_bar),
-		def("indicators_shown",					indicators_shown),
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),
