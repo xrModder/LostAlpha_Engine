@@ -123,12 +123,18 @@ void CWeaponPistol::PlayAnimIdle	()
 void CWeaponPistol::PlayAnimReload	()
 {	
 	VERIFY(GetState()==eReload);
-	if(m_opened){ 
-		CWeaponPistol::WWPMotions& m = wwpm_current();
-		m_pHUD->animPlay(random_anim(m.mhud_reload_empty), TRUE, this, GetState());
-	}else{
-		CWeaponMagazined::SWMmotions& m = swm_current();
-		m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
+
+	if (IsMisfire())
+		inherited::PlayAnimReload();
+	else {
+		if(m_opened)
+		{ 
+			CWeaponPistol::WWPMotions& m = wwpm_current();
+			m_pHUD->animPlay(random_anim(m.mhud_reload_empty), TRUE, this, GetState());
+		} else {
+			CWeaponMagazined::SWMmotions& m = swm_current();
+			m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
+		}
 	}
 
 	LPCSTR AnimName = "_reload";
