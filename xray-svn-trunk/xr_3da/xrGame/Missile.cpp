@@ -193,17 +193,24 @@ void CMissile::UpdateCL()
 {
 	inherited::UpdateCL();
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
-	if(pActor && GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
-		OnStateSwitch(MS_PLAYING);
+	if (pActor && GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME )
+	{
+		CEntity::SEntityState st;
+		pActor->g_State(st);
+
+		if(!st.bSprint || !m_sAnimIdle_sprint.size())
+			OnStateSwitch(MS_PLAYING);
+		else
+			m_dwStateTime = 0;
+	}
 	
 	if(GetState() == MS_READY) 
 	{
-		if(m_throw){ 
+		if(m_throw)
 			SwitchState(MS_THROW);
-		}else 
-		{
-//			CActor	*actor = smart_cast<CActor*>(H_Parent());
-			if (pActor) {				
+		else {
+			if (pActor)
+			{				
 				m_fThrowForce		+= (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
 				clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
 			}
