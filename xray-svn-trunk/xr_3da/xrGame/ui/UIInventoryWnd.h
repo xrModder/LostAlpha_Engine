@@ -51,6 +51,9 @@ public:
 	void					AddItemToBag				(PIItem pItem);
 	void					DeleteFromInventory			(PIItem PIItem);
 
+	void					SetProgessToHunger				(float val);
+	void					SetProgessToThirst				(float val); 
+
 protected:
 //	  CUISleepWnd				UISleepWnd;
 	enum eInventorySndAction{	eInvSndOpen	=0,
@@ -113,10 +116,14 @@ protected:
 
 	CUIStatic					UIProgressBack;
 	CUIStatic					UIProgressBack_rank;
+
 	CUIProgressBar				UIProgressBarHealth;	
 	CUIProgressBar				UIProgressBarStamina;
 	CUIProgressBar				UIProgressBarRadiation;
-	CUIProgressBar              UIProgressBarHunger;
+	CUIProgressBar				UIProgressBarHunger;
+	CUIProgressBar				UIProgressBarThirst;
+	CUIProgressBar				UIProgressBarArmor;
+
 	CUIProgressBar				UIProgressBarRank;
 
 	CUIPropertiesBox			UIPropertiesBox;

@@ -26,6 +26,7 @@
 #include "game_cl_single.h"
 #include "../xr_input.h"
 #include "UIGameSP.h"
+#include "ui/UIInventoryWnd.h"
 
 #include "map_manager.h"
 #include "map_location.h"
@@ -464,6 +465,22 @@ void spawn_phantom(const Fvector &position)
 	Level().spawn_item("m_phantom", position, u32(-1), u16(-1), false);
 }
 
+void set_value_to_hunger_bar(float value)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+
+	if(pGameSP)
+		pGameSP->InventoryMenu->SetProgessToHunger(value);
+}
+
+void set_value_to_thirst_bar(float value)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+
+	if(pGameSP)
+		pGameSP->InventoryMenu->SetProgessToThirst(value);
+}
+
 Fbox get_bounding_volume()
 {
 	return Level().ObjectSpace.GetBoundingVolume();
@@ -765,6 +782,8 @@ void CLevel::script_register(lua_State *L)
 		def("hide_indicators",					hide_indicators),
 		def("show_indicators",					show_indicators),
 		def("indicators_shown",					indicators_shown),
+		def("set_value_to_hunger_bar",					set_value_to_hunger_bar),
+		def("set_value_to_thirst_bar",					set_value_to_thirst_bar),
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),
