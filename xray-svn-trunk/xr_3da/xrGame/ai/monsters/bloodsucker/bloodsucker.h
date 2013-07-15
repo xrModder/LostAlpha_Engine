@@ -71,19 +71,18 @@ public:
 	//--------------------------------------------------------------------
 public:
 
-	u32						m_vampire_min_delay;
 	SAnimationTripleData	anim_triple_vampire;
 
 	SPPInfo					pp_vampire_effector;
 
 			
 			void			ActivateVampireEffector	();
-	IC		bool			WantVampire				() {return (fsimilar(m_vampire_want_value,1.f) == TRUE);}
+	IC		bool			WantVampire				() {return m_vampire_want_value >= 1.f;}
 	IC		void			SatisfyVampire			() {m_vampire_want_value = 0.f;}
 
 private:
 	float					m_vampire_want_value;
-//	float					m_vampire_want_speed;		// load from ltx
+	float					m_vampire_want_speed;		// load from ltx
 	float					m_vampire_wound;
 
 			void			LoadVampirePPEffector	(LPCSTR section);
@@ -99,6 +98,8 @@ private:
 public:
 	CBloodsuckerAlien		m_alien_control;
 	u32						m_time_lunge;
+	float					m_vampire_runaway_time;
+	u32					m_vampire_runaway_distance;
 
 			void			set_alien_control		(bool val);
 
