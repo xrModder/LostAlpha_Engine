@@ -45,6 +45,7 @@ protected:
 	CUIWindow*				m_pActiveDialog;
 	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
+	bool				bUpgraded;
 
 public:
 	// Поддиалоги PDA

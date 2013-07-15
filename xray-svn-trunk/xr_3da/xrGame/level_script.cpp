@@ -27,6 +27,7 @@
 #include "../xr_input.h"
 #include "UIGameSP.h"
 #include "ui/UIInventoryWnd.h"
+#include "ui/UIPdaWnd.h"
 
 #include "map_manager.h"
 #include "map_location.h"
@@ -669,6 +670,17 @@ void enable_pda_downloads(bool val)
 	if(pGameSP)pGameSP->EnableDownloads(val);
 }
 
+void upgrade_pda(bool upgrade)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if (!pGameSP) return;
+
+	Actor()->TransferInfo("pda_upgraded", upgrade);
+
+	xr_delete(pGameSP->PdaMenu);
+	pGameSP->PdaMenu = xr_new<CUIPdaWnd> ();
+}
+
 #include "level_sounds.h"
 void set_level_sound_enabled(bool state)
 {
@@ -746,6 +758,7 @@ void CLevel::script_register(lua_State *L)
 
 		def("enable_pda_skills",			&enable_pda_skills),
 		def("enable_pda_downloads",			&enable_pda_downloads),
+		def("upgrade_pda",			&upgrade_pda),
 		
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),

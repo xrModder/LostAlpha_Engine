@@ -31,10 +31,9 @@
 #include "../script_engine.h"
 #include "../ai_space.h"
 
-#define		PDA_XML					"pda.xml"
 u32			g_pda_info_state		= 0;
 
-void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places);
+void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool bUpgraded);
 
 CUIPdaWnd::CUIPdaWnd()
 {
@@ -47,6 +46,7 @@ CUIPdaWnd::CUIPdaWnd()
 	UIEventsWnd				= NULL;
 	m_updatedSectionImage	= NULL;
 	m_oldSectionImage		= NULL;
+	bUpgraded			= false;
 	Init					();
 }
 
@@ -68,6 +68,15 @@ CUIPdaWnd::~CUIPdaWnd()
 void CUIPdaWnd::Init()
 {
 	CUIXml uiXml;
+
+	string128			PDA_XML;
+	bUpgraded = IsGameTypeSingle() && InventoryUtilities::HasActorInfo("pda_upgraded");
+
+	if (bUpgraded)
+		strcpy_s				(PDA_XML, "pda_upgraded.xml");
+	else
+		strcpy_s				(PDA_XML, "pda.xml");
+
 	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH,PDA_XML);
 	R_ASSERT3				(xml_result, "xml file not found", PDA_XML);
 
@@ -152,33 +161,12 @@ void CUIPdaWnd::Init()
 
 	m_pActiveSection				= eptNoActiveTab;
 
-	RearrangeTabButtons			(UITabControl, m_sign_places_main);
+	RearrangeTabButtons			(UITabControl, m_sign_places_main, bUpgraded);
 
 	//On\off button
 	m_pUIClose					= xr_new<CUI3tButton>(); m_pUIClose->SetAutoDelete(true);
 	AttachChild						(m_pUIClose);
 	xml_init.Init3tButton				(uiXml, "btn_close", 0, m_pUIClose);
-}
-
-void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
-{
-	if (BUTTON_CLICKED == msg && m_pUIClose == pWnd)
-		GetHolder()->StartStopMenu(this,true);
-
-	if(pWnd == UITabControl){
-		if (TAB_CHANGED == msg){
-			SetActiveSubdialog	((EPdaTabs)UITabControl->GetActiveIndex());
-		}
-	}else 
-	{
-		R_ASSERT(m_pActiveDialog);
-		m_pActiveDialog->SendMessage(pWnd, msg, pData);
-	}
-}
-
-void CUIPdaWnd::Show()
-{
-	InventoryUtilities::SendInfoToActor("ui_pda");
 
 	if( IsGameTypeSingle() )
 	{
@@ -195,6 +183,26 @@ void CUIPdaWnd::Show()
 	
 		UITabControl->GetButtonsVector()->at(8)->Enable(val);
 	}
+}
+
+void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
+{
+	if (BUTTON_CLICKED == msg && m_pUIClose == pWnd)
+		GetHolder()->StartStopMenu(this,true);
+
+	if(pWnd == UITabControl){
+		if (TAB_CHANGED == msg){
+			SetActiveSubdialog	((EPdaTabs)UITabControl->GetActiveIndex());
+		}
+	} else {
+		R_ASSERT(m_pActiveDialog);
+		m_pActiveDialog->SendMessage(pWnd, msg, pData);
+	}
+}
+
+void CUIPdaWnd::Show()
+{
+	InventoryUtilities::SendInfoToActor("ui_pda");
 
 	inherited::Show();
 }
@@ -296,6 +304,20 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		g_pda_info_state		&= ~pda_section::downloads;
 		InventoryUtilities::SendInfoToActor("ui_pda_downloads");
 		break;
+	case eptGames:
+		w				= lua_function("games");
+		VERIFY(w);
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::games;
+		InventoryUtilities::SendInfoToActor("ui_pda_games");
+		break;
+	case eptMPlayer:
+		w				= lua_function("mplayer");
+		VERIFY(w);
+		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		g_pda_info_state		&= ~pda_section::mplayer;
+		InventoryUtilities::SendInfoToActor("ui_pda_mplayer");
+		break;
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
@@ -358,67 +380,103 @@ void CUIPdaWnd::DrawUpdatedSections				()
 
 	pos = m_sign_places_main[eptQuests];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::quests)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::quests)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptMap];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::map)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::map)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptDiary];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::diary)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::diary)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptContacts];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::contacts)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::contacts)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptRanking];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::ranking)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::ranking)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptActorStatistic];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::statistics)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::statistics)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptEncyclopedia];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::encyclopedia)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::encyclopedia)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 
 	pos = m_sign_places_main[eptSkills];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::skills)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::skills)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
 
 	pos = m_sign_places_main[eptDownloads];
 	pos.add(tab_pos);
-	if(g_pda_info_state&pda_section::downloads)
-		draw_sign								(m_updatedSectionImage, pos);
-	else
-		draw_sign								(m_oldSectionImage, pos);
+	if (!bUpgraded)
+	{
+		if(g_pda_info_state&pda_section::downloads)
+			draw_sign								(m_updatedSectionImage, pos);
+		else
+			draw_sign								(m_oldSectionImage, pos);
+	}
+
+	if (bUpgraded)
+	{
+		pos = m_sign_places_main[eptGames];
+		pos.add(tab_pos);
+	
+		pos = m_sign_places_main[eptMPlayer];
+		pos.add(tab_pos);
+	}
 }
 
 void CUIPdaWnd::Reset()
@@ -433,7 +491,7 @@ void CUIPdaWnd::Reset()
 	if (UIEventsWnd)		UIEventsWnd->Reset		();
 }
 
-void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places)
+void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool bUpgraded)
 {
 	TABS_VECTOR *	btn_vec		= pTab->GetButtonsVector();
 	TABS_VECTOR::iterator it	= btn_vec->begin();
@@ -456,7 +514,10 @@ void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_plac
 			st = xr_new<CUIStatic>(); st->SetAutoDelete(true);pTab->AttachChild(st);
 			st->SetFont((*it)->GetFont());
 			st->SetTextColor	(color_rgba(90,90,90,255));
-			st->SetText("//");
+			if (bUpgraded)
+				st->SetText("  ");
+			else
+				st->SetText("//");
 			st->SetWndSize		((*it)->GetWndSize());
 			st->AdjustWidthToText();
 			st->SetWndPos		(pos);
