@@ -155,7 +155,7 @@ void logThread(void *dummy)
 	GetUserName	(u_name,&u_size);
 	_strlwr		(u_name);
 
-	if (strstr(GetCommandLine(), "-high") != NULL)	bHighPriority	= TRUE; 
+	if (strstr(GetCommandLine(), "-p") != NULL)	bHighPriority	= TRUE;
 
 	// Main cycle
 	u32		LogSize = 0;

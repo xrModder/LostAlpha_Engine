@@ -89,7 +89,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				_F->dwMaterialGame	= B.dwMaterialGame;
 
 				// Vertices and adjacement info
-				for (u32 it=0; it<3; it++)
+				for (u32 it=0; it<3; ++it)
 				{
 					int id			= B.v[it];
 					R_ASSERT		(id<(int)g_vertices.size());
@@ -208,6 +208,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				RL.attenuation0			=	L.attenuation0;
 				RL.attenuation1			=	L.attenuation1;
 				RL.attenuation2			=	L.attenuation2;
+				//RL.falloff			=   1.0f/(RL.range*(RL.attenuation0 + RL.attenuation1*RL.range + RL.attenuation2*RL.range2));
 				RL.energy				=	_e;
 
 				// place into layer

@@ -238,7 +238,7 @@ public:
 		Vertex* V2 = v[edge2idx[edge][1]];
 		return V1->P.distance_to(V2->P);
 	};
-	IC void		EdgeVerts		(int e, Vertex** A, Vertex** B)
+	IC void		EdgeVerts		(int e, Vertex** A, Vertex** B) const
 	{
 		*A = v[edge2idx[e][0]];
 		*B = v[edge2idx[e][1]];

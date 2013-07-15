@@ -6,6 +6,9 @@
 int GetVertexIndex(Vertex *F)
 {
 	vecVertexIt it = std::lower_bound(g_vertices.begin(),g_vertices.end(),F);
+
+	R_ASSERT	(it!=g_vertices.end());
+
 	return int(it-g_vertices.begin());
 }
 
@@ -25,12 +28,14 @@ int getTriByEdge(Vertex *V1, Vertex *V2, Face* parent, vecFace &ids)
 	{
 		Face* test = *I;
 		if (test == parent) continue;
-		if (test->VContains(V2)) {
-			f_count++;
+		if (test->VContains(V2)) 
+		{
+			++f_count;
 			found = test;
 		}
 	}
-	if (f_count>1) {
+	if (f_count>1) 
+	{
 		bCriticalErrCnt	++;
 		pBuild->err_multiedge.w_fvector3(V1->P);
 		pBuild->err_multiedge.w_fvector3(V2->P);
@@ -52,13 +57,15 @@ void TestEdge			(Vertex *V1, Vertex *V2, Face* parent)
 	for (vecFaceIt I=V1->adjacent.begin(); I!=V1->adjacent.end(); I++)	{
 		Face* test = *I;
 		if (test == parent) continue;
-		if (test->VContains(V2)) {
-			f_count++;
+		if (test->VContains(V2)) 
+		{
+			++f_count;
 			found = test;
 		}
 	}
-	if (f_count>1) {
-		bCriticalErrCnt	++;
+	if (f_count>1) 
+		{
+		++bCriticalErrCnt;
 		pBuild->err_multiedge.w_fvector3(V1->P);
 		pBuild->err_multiedge.w_fvector3(V2->P);
 	}
@@ -79,15 +86,20 @@ void CBuild::BuildCForm	()
 
 		Status("Collecting faces...");
 		cfFaces->reserve	(g_faces.size());
-		for (vecFaceIt I=g_faces.begin(); I!=g_faces.end(); I++)
+		for (vecFaceIt I=g_faces.begin(); I!=g_faces.end(); ++I)
 		{
 			Face* F = *I;
 			if (F->Shader().flags.bCollision) 
 			{
 				cfFaces->push_back(F);
-				cfVertexMarks[GetVertexIndex(F->v[0])] = true;
-				cfVertexMarks[GetVertexIndex(F->v[1])] = true;
-				cfVertexMarks[GetVertexIndex(F->v[2])] = true;
+				int index = GetVertexIndex(F->v[0]);
+				cfVertexMarks[index] = true;
+
+				index = GetVertexIndex(F->v[1]);
+				cfVertexMarks[index] = true;
+
+				index = GetVertexIndex(F->v[2]);
+				cfVertexMarks[index] = true;
 			}
 		}
 

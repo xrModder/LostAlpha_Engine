@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "build.h"
 
-#define VPUSH(a) a.x,a.y,a.z
+#define VPUSH(a) ((a).x), ((a).y), ((a).z)
 
 IC float	SqrDistance2Segment(const Fvector& P, const Fvector& A, const Fvector& B)
 {
@@ -30,12 +30,12 @@ struct record
 	Vertex	*T;
 };
 
-xr_vector<record>*	vecJunctions;
-xr_vector<record>*	vecEdges;
+static xr_vector<record>*	vecJunctions;
+static xr_vector<record>*	vecEdges;
 
-void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
+static void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 {
-	if (_sqrt(SqrDistance2Segment(vTEST->P,vE1->P,vE2->P))<0.005f)	
+	if (_sqrt(SqrDistance2Segment(vTEST->P,vE1->P,vE2->P))<0.002f)	
 	{
 		BOOL bWeld = FALSE;
 		
@@ -45,7 +45,7 @@ void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 		{
 			record&	rec = (*vecJunctions)[i];
 			if (rec.T==vTEST)						return;
-			if (rec.T->P.similar(vTEST->P,.005f))	bWeld = TRUE;
+			if (rec.T->P.similar(vTEST->P,.002f))	bWeld = TRUE;
 		}
 		
 		// register
@@ -62,7 +62,7 @@ void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 	}
 }
 
-void edge(Vertex* vE1, Vertex* vE2)
+static void edge(Vertex* vE1, Vertex* vE2)
 {
 	float		len	= vE1->P.distance_to(vE2->P);
 	if (len<32.f)	return;
@@ -91,44 +91,50 @@ void CBuild::CorrectTJunctions()
 	vecJunctions			= xr_new<xr_vector<record> > (); vecJunctions->reserve	(1024);
 	vecEdges				= xr_new<xr_vector<record> > (); vecEdges->reserve		(1024);
 
-	for (u32 I=0; I<g_faces.size(); I++)
+	for (u32 I=0; I<g_faces.size(); ++I)
 	{
 		Face* F = g_faces[I];
 
 		// Iterate on edges
-		for (u32 e=0; e<3; e++)
+		for (u32 e=0; e<3; ++e)
 		{
 			Vertex			*vA,*vB;
 			F->EdgeVerts	(e,&vA,&vB);
 
 			// Iterate on 'vA'-adjacent faces
-			for (u32 f1=0; f1!=vA->adjacent.size(); f1++)
+			for (u32 f1=0; f1!=vA->adjacent.size(); ++f1)
 			{
 				Face*	F1	= vA->adjacent[f1];
 
 				// Iterate on it's edges
-				for (u32 e1=0; e1<3; e1++)
+				for (u32 e1=0; e1<3; ++e1)
 				{
 					Vertex			*v1,*v2;
 					F1->EdgeVerts	(e1,&v1,&v2);
 					edge						(v1,v2);
-					if (v1==vA && v2!=vB)		check(vA,vB,v2);
-					else if (v2==vA && v1!=vB)	check(vA,vB,v1);
+
+					if (v1==vA && v2!=vB)
+						check(vA,vB,v2);
+					else 
+					if (v2==vA && v1!=vB)	
+						check(vA,vB,v1);
 				}
 			}
 			// Iterate on 'vB'-adjacent faces
-			for (u32 f2=0; f2!=vB->adjacent.size(); f2++)
+			for (u32 f2=0; f2!=vB->adjacent.size(); ++f2)
 			{
 				Face*	F2	= vB->adjacent[f2];
 
 				// Iterate on it's edges
-				for (u32 e1=0; e1<3; e1++)
+				for (u32 e1=0; e1<3; ++e1)
 				{
 					Vertex			*v1,*v2;
 					F2->EdgeVerts	(e1,&v1,&v2);
-					edge						(v1,v2);
-					if (v1==vB && v2!=vA)		check(vA,vB,v2);
-					else if (v2==vB && v1!=vA)	check(vA,vB,v1);
+					edge			(v1,v2);
+					if (v1==vB && v2!=vA)		
+						check(vA,vB,v2);
+					else if (v2==vB && v1!=vA)	
+						check(vA,vB,v1);
 				}
 			}
 		}

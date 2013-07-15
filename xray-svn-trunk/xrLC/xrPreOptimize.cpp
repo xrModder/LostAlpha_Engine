@@ -82,7 +82,8 @@ void CBuild::PreOptimize()
 			Vertex *pBase = *T;
 			if (pBase->similar(*pTest,g_params.m_weld_distance)) 
 			{
-				while				(pTest->adjacent.size())	pTest->adjacent.front()->VReplace(pTest, pBase);
+				while				(pTest->adjacent.size())
+					pTest->adjacent.front()->VReplace(pTest, pBase);
 				VertexPool.destroy	(g_vertices[it]);
 				Vremoved		+=	1;
 				pTest			=	NULL;

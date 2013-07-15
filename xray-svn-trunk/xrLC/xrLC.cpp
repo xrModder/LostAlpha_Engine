@@ -38,7 +38,7 @@ static const char* h_str =
 	"-f<NAME>		== compile level in GameData\\Levels\\<NAME>\\\n"
 	"-noinvalidfaces	== invalid faces detection\n"
 	"-t<NUM>			== numbers of threads \n"
-	"-high				== high priority \n"
+	"-p					== high priority \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 
