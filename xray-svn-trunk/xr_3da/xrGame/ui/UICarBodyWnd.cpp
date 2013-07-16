@@ -59,6 +59,9 @@ void CUICarBodyWnd::Init()
 	string128		CARBODY_ITEM_XML;
 	sprintf_s		(CARBODY_ITEM_XML, "carbody_item_%d.xml", ui_hud_type);
 
+	string128		TRADE_CHARACTER_XML;
+	sprintf_s		(TRADE_CHARACTER_XML, "trade_character_%d.xml", ui_hud_type);
+
 	uiXml.Init					(CONFIG_PATH, UI_PATH, CAR_BODY_XML);
 	
 	CUIXmlInit					xml_init;
@@ -85,12 +88,12 @@ void CUICarBodyWnd::Init()
 
 	m_pUICharacterInfoLeft		= xr_new<CUICharacterInfo>(); m_pUICharacterInfoLeft->SetAutoDelete(true);
 	m_pUIOurIcon->AttachChild	(m_pUICharacterInfoLeft);
-	m_pUICharacterInfoLeft->Init(0,0, m_pUIOurIcon->GetWidth(), m_pUIOurIcon->GetHeight(), "trade_character.xml");
+	m_pUICharacterInfoLeft->Init(0,0, m_pUIOurIcon->GetWidth(), m_pUIOurIcon->GetHeight(), TRADE_CHARACTER_XML);
 
 
 	m_pUICharacterInfoRight			= xr_new<CUICharacterInfo>(); m_pUICharacterInfoRight->SetAutoDelete(true);
 	m_pUIOthersIcon->AttachChild	(m_pUICharacterInfoRight);
-	m_pUICharacterInfoRight->Init	(0,0, m_pUIOthersIcon->GetWidth(), m_pUIOthersIcon->GetHeight(), "trade_character.xml");
+	m_pUICharacterInfoRight->Init	(0,0, m_pUIOthersIcon->GetWidth(), m_pUIOthersIcon->GetHeight(), TRADE_CHARACTER_XML);
 
 	m_pUIOurBagWnd					= xr_new<CUIStatic>(); m_pUIOurBagWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIOurBagWnd);
