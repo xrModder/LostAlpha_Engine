@@ -52,6 +52,8 @@ public:
 	virtual bool 	OnMouseDown					(int mouse_btn);
 			void 	SetCheckMode				(bool mode) {m_bCheckMode = mode;}
 
+	void		SetStretch			(bool stretch_texture)	{m_background.SetStretchTexture(stretch_texture);}
+
 
 	CUIStatic			m_hint;
 	CUI_IB_Static		m_background;

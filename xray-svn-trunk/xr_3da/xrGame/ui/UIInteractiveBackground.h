@@ -50,6 +50,8 @@ public:
 	virtual void SetWidth(float width);
 	virtual void SetHeight(float heigth);
 
+	virtual void SetStretchTexture(bool value);
+
 protected:
 	T* m_stateCurrent;
 	T* m_stateEnabled;
@@ -264,6 +266,19 @@ void CUIInteractiveBackground<T>::SetHeight(float heigth){
 		m_stateHighlighted->SetHeight(heigth);
 	if (m_stateTouched)
 		m_stateTouched->SetHeight(heigth);
+}
+
+template <class T>
+void CUIInteractiveBackground<T>::SetStretchTexture(bool value)
+{
+	if (m_stateEnabled)
+		m_stateEnabled->SetStretchTexture(value);
+	if (m_stateDisabled)
+		m_stateDisabled->SetStretchTexture(value);
+	if (m_stateHighlighted)
+		m_stateHighlighted->SetStretchTexture(value);
+	if (m_stateTouched)
+		m_stateTouched->SetStretchTexture(value);
 }
 
 typedef CUIInteractiveBackground<CUIFrameWindow> CUI_IB_FrameWindow;
