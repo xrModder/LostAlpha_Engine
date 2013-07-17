@@ -25,6 +25,7 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_eSoundEmptyClick	= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	m_eSoundReloadJammed		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
+	m_eSoundReloadEmpty		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	
 	m_pSndShotCurrent = NULL;
 	m_sSilencerFlameParticles = m_sSilencerSmokeParticles = NULL;
@@ -44,6 +45,7 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndEmptyClick);
 	HUD_SOUND::DestroySound(sndReload);
 	HUD_SOUND::DestroySound(sndReloadJammed);
+	HUD_SOUND::DestroySound(sndReloadEmpty);
 }
 
 
@@ -55,6 +57,7 @@ void CWeaponMagazined::StopHUDSounds		()
 	HUD_SOUND::StopSound(sndEmptyClick);
 	HUD_SOUND::StopSound(sndReload);
 	HUD_SOUND::StopSound(sndReloadJammed);
+	HUD_SOUND::StopSound(sndReloadEmpty);
 
 	HUD_SOUND::StopSound(sndShot);
 //.	if(sndShot.enable && sndShot.snd.feedback)
@@ -79,11 +82,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_shoot"	, sndShot		, m_eSoundShot		);
 	HUD_SOUND::LoadSound(section,"snd_empty"	, sndEmptyClick	, m_eSoundEmptyClick	);
 	HUD_SOUND::LoadSound(section,"snd_reload"	, sndReload		, m_eSoundReload		);
-
 	if (pSettings->line_exist(section,"snd_reload_jammed"))
 		HUD_SOUND::LoadSound(section,"snd_reload_jammed"	, sndReloadJammed		, m_eSoundReloadJammed		);
 	else
 		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadJammed		, m_eSoundReloadJammed		);
+	if (pSettings->line_exist(section,"snd_reload_empty"))
+		HUD_SOUND::LoadSound(section,"snd_reload_empty"	, sndReloadEmpty		, m_eSoundReloadEmpty		);
+	else
+		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadEmpty		, m_eSoundReloadEmpty		);
 	
 	m_pSndShotCurrent = &sndShot;
 		
@@ -95,16 +101,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	animGet				(mhud.mhud_show,		pSettings->r_string(*hud_sect, "anim_draw"));
 	animGet				(mhud.mhud_hide,		pSettings->r_string(*hud_sect, "anim_holster"));
 	animGet				(mhud.mhud_shots,	pSettings->r_string(*hud_sect, "anim_shoot"));
-
 	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
 		animGet				(mhud.mhud_idle_sprint,	pSettings->r_string(*hud_sect, "anim_idle_sprint"));
-
 	if(pSettings->line_exist(*hud_sect,"anim_reload_jammed"))
 		animGet				(mhud.mhud_reload_jammed,	pSettings->r_string(*hud_sect, "anim_reload_jammed"));
-
 	if(IsZoomEnabled())
 		animGet				(mhud.mhud_idle_aim,		pSettings->r_string(*hud_sect, "anim_idle_aim"));
-	
+	if(pSettings->line_exist(*hud_sect,"anim_reload_empty"))
+		animGet				(mhud.mhud_reload_empty,	pSettings->r_string(*hud_sect, "anim_reload_empty"));	
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if(m_eSilencerStatus == ALife::eAddonAttachable)
@@ -1224,9 +1228,6 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 
 	string256		sItemName;
 	strcpy_s			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
-
-	if ( HasFireModes() )
-		strcat_s(sItemName, GetCurrentFireModeStr());
 
 	str_name		= sItemName;
 
