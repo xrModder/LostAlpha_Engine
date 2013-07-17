@@ -89,6 +89,7 @@ int				g_keypress_on_start	= 1;
 xr_token			qhud_type_token		[ ]={
 	{ "hud_1",					1},
 	{ "hud_2",					2},
+	{ "hud_3",					3},
 	{ 0,						0}
 };
 
