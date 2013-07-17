@@ -69,6 +69,7 @@ protected:
 	CUIStatic			UIWeaponSignAmmo;
 	CUIStatic			UIWeaponIcon;
 	Frect				UIWeaponIcon_rect;
+	CUIStatic			UIWeaponFiremode;
 public:
 	CUIStatic*			GetPDAOnline					() { return &UIPdaOnline; };
 protected:

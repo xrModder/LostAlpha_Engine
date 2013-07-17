@@ -110,9 +110,6 @@ void CUIMainIngameWnd::Init()
 	CUIXml						uiXml;
 
 	string128		XmlName;
-	if (!ui_hud_type)
-		ui_hud_type = 1;
-
 	sprintf_s		(XmlName, "maingame_%d.xml", ui_hud_type);
 
 	uiXml.Init					(CONFIG_PATH, UI_PATH, XmlName);
@@ -138,6 +135,10 @@ void CUIMainIngameWnd::Init()
 
 	UIWeaponBack.AttachChild	(&UIWeaponIcon);
 	xml_init.InitStatic			(uiXml, "static_wpn_icon", 0, &UIWeaponIcon);
+
+	UIWeaponBack.AttachChild	(&UIWeaponFiremode);
+	xml_init.InitStatic			(uiXml, "static_wpn_firemode", 0, &UIWeaponFiremode);
+
 	UIWeaponIcon.SetShader		(GetEquipmentIconsShader());
 	UIWeaponIcon_rect			= UIWeaponIcon.GetWndRect();
 	// lost alpha start
@@ -1308,8 +1309,10 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		item->GetBriefInfo			(str_name, icon_sect_name, str_count);
 
 		UIWeaponSignAmmo.Show		(true						);
+		UIWeaponFiremode.Show		(true						);
 		UIWeaponBack.SetText		(str_name.c_str			()	);
 		UIWeaponSignAmmo.SetText	(str_count.c_str		()	);
+		UIWeaponFiremode.SetText	(item->GetCurrentFireModeStr());
 		SetAmmoIcon					(icon_sect_name.c_str	()	);
 
 		//-------------------
@@ -1320,6 +1323,7 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 	{
 		UIWeaponIcon.Show			(false);
 		UIWeaponSignAmmo.Show		(false);
+		UIWeaponFiremode.Show		(false);
 		UIWeaponBack.SetText		("");
 		m_pWeapon					= NULL;
 	}
