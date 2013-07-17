@@ -30,6 +30,10 @@ public:
 	virtual void			load					(IReader &input_packet);
 
 			bool			Empty						()	const				{return m_iPortionsNum==0;};
+
+	IC	u32				GetPortionsNum		()	const		{	return m_iPortionsNum;}
+		void				SetPortionsNum	(u32 value)			{m_iPortionsNum = value; }
+
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;
