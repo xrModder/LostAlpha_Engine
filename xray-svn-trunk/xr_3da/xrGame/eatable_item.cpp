@@ -52,7 +52,7 @@ void CEatableItem::Load(LPCSTR section)
 //	m_bIsBattery				 = READ_IF_EXISTS(pSettings, r_bool, section, "is_battery", false);
 	m_iPortionsNum			= READ_IF_EXISTS	(pSettings,r_u32,section, "eat_portions_num", 1);
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
-	VERIFY2						(m_iPortionsNum<10000, make_string("'eat_portions_num' should be < 10000. Wrong section [%s]",section));
+	VERIFY2						(m_iPortionsNum<10000 || m_iPortionsNum == -1, make_string("'eat_portions_num' should be < 10000. Wrong section [%s]",section));
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
