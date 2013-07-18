@@ -106,6 +106,7 @@ protected:
 	shared_str				m_sAnimIdle;
 	shared_str				m_sAnimIdle_sprint;
 	shared_str				m_sAnimPlaying;
+	shared_str				m_sAnimPlayingFail;
 	shared_str				m_sAnimThrowBegin;
 	shared_str				m_sAnimThrowIdle;
 	shared_str				m_sAnimThrowAct;
