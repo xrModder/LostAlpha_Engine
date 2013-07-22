@@ -213,6 +213,7 @@ void CUIPdaWnd::Hide()
 
 	InventoryUtilities::SendInfoToActor("ui_pda_hide");
 	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, false);
 
 }
 
@@ -339,29 +340,42 @@ void CUIPdaWnd::Draw()
 
 void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 {
-	bool b = true;
+	bool bTask = true;
+	bool bEncyclopedia = false;
 
-	if(type==pda_section::encyclopedia){
-		UIEncyclopediaWnd->ReloadArticles	();
-	}else
-	if(type==pda_section::news){
-		UIDiaryWnd->AddNews					();
-		UIDiaryWnd->MarkNewsAsRead			(UIDiaryWnd->IsShown());
-	}else
-	if(type==pda_section::quests){
-		UIEventsWnd->Reload					();
-	}else
-	if(type==pda_section::contacts){
-		UIPdaContactsWnd->Reload		();
-		b = false;
+	if (type==pda_section::encyclopedia)
+	{
+		UIEncyclopediaWnd->ReloadArticles();
+		bEncyclopedia = true;
+		bTask = false;
+
+	} else if(type==pda_section::news) {
+		UIDiaryWnd->AddNews();
+		UIDiaryWnd->MarkNewsAsRead(UIDiaryWnd->IsShown());
+
+	} else if(type==pda_section::quests)
+		UIEventsWnd->Reload();
+
+	else if(type==pda_section::contacts) {
+		UIPdaContactsWnd->Reload();
+		bTask = false;
 	}
 
-	if(b){
+	if(bTask)
+	{
 		g_pda_info_state |= type;
 		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
 	}
 
+
+	if(bEncyclopedia)
+	{
+		g_pda_info_state |= type;
+		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, true);
+	}
+
 }
+
 void draw_sign		(CUIStatic* s, Fvector2& pos)
 {
 	s->SetWndPos		(pos);
