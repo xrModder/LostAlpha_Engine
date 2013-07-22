@@ -27,6 +27,7 @@
 #include "../date_time.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
 #include "../../LightAnimLibrary.h"
+#include "../ActorState.h"
 
 #include "UIInventoryUtilities.h"
 
@@ -211,24 +212,6 @@ void CUIMainIngameWnd::Init()
 	AttachChild					(m_UIIcons);
 
 	// Загружаем иконки 
-	if(IsGameTypeSingle())
-	{
-		xml_init.InitStatic		(uiXml, "starvation_static", 0, &UIStarvationIcon);
-		UIStarvationIcon.Show	(false);
-
-		xml_init.InitStatic		(uiXml, "psy_health_static", 0, &UIPsyHealthIcon);
-		UIPsyHealthIcon.Show	(false);
-	}
-
-	xml_init.InitStatic			(uiXml, "weapon_jammed_static", 0, &UIWeaponJammedIcon);
-	UIWeaponJammedIcon.Show		(false);
-
-	xml_init.InitStatic			(uiXml, "radiation_static", 0, &UIRadiaitionIcon);
-	UIRadiaitionIcon.Show		(false);
-
-	xml_init.InitStatic			(uiXml, "wound_static", 0, &UIWoundIcon);
-	UIWoundIcon.Show			(false);
-
 	xml_init.InitStatic			(uiXml, "invincible_static", 0, &UIInvincibleIcon);
 	UIInvincibleIcon.Show		(false);
 
@@ -456,30 +439,35 @@ void CUIMainIngameWnd::Update()
 
 		UpdateActiveItemInfo				();
 
-
 		EWarningIcons i					= ewiWeaponJammed;
 
 		while (i < ewiInvincible)
 		{
 			float value = 0;
+			EActorState state;
+
 			switch (i)
 			{
 				//radiation
 			case ewiRadiation:
 				value = m_pActor->conditions().GetRadiation();
+				state = eRadiationInactive;
 				break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
+				state = eBleedingInactive;
+				break;
+			case ewiStarvation:
+				value = 1 - m_pActor->conditions().GetSatiety();
 				break;
 			case ewiWeaponJammed:
 				if (m_pWeapon)
 					value = 1 - m_pWeapon->GetConditionToShow();
+				state = eJammedInactive;
 				break;
-			case ewiStarvation:
-				value = 1 - m_pActor->conditions().GetSatiety();
-				break;		
 			case ewiPsyHealth:
 				value = 1 - m_pActor->conditions().GetPsyHealth();
+				state = ePsyHealthInactive;
 				break;
 			default:
 				R_ASSERT(!"Unknown type of warning icon");
@@ -498,13 +486,38 @@ void CUIMainIngameWnd::Update()
 			float min = m_Thresholds[i].front();
 			float max = m_Thresholds[i].back();
 
-			if (rit != m_Thresholds[i].rend()){
+			if (rit != m_Thresholds[i].rend())
+			{
 				float v = *rit;
-				SetWarningIconColor(i, color_argb(0xFF, clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255), 
+				u32 color = color_argb(0xFF, clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255), 
 					clampr<u32>(static_cast<u32>(255 * (2.0f - (v - min) / (max - min) * 2)), 0, 255),
-					0));
-			}else
-				TurnOffWarningIcon(i);
+					0); //skyloader: я не смог нормально разобрать эту сборку цветов, поэтому сделал немного по-глупому (надо исправить!!!):
+
+				u8 active_state = 0;
+
+				if (color==0xff00fff00) //green
+					active_state = 1;
+				else if (color==0xff7fff00) //yellow
+					active_state = 2;
+				else if (color==0xffffff00) //orange
+					active_state = 2;
+				else if (color==0xffff7f00) //orange-red
+					active_state = 3;
+				else if (color==0xffff0000) //red
+					active_state = 3;
+
+				for (u8 i=0; i<3; i++)
+				{
+					if (i == active_state)
+						m_pActor->SetActorState(EActorState(state - i), true);
+					else
+						m_pActor->SetActorState(EActorState(state - i), false);
+				}
+			} else {
+				for (u8 i=0; i<3; i++)
+					m_pActor->SetActorState(EActorState(state - i), false);
+				m_pActor->SetActorState(state, true);
+			}
 
 			i = (EWarningIcons)(i + 1);
 		}
@@ -1141,21 +1154,6 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 	{
 	case ewiAll:
 		bMagicFlag = false;
-	case ewiWeaponJammed:
-		SetWarningIconColor		(&UIWeaponJammedIcon, cl);
-		if (bMagicFlag) break;
-	case ewiRadiation:
-		SetWarningIconColor		(&UIRadiaitionIcon, cl);
-		if (bMagicFlag) break;
-	case ewiWound:
-		SetWarningIconColor		(&UIWoundIcon, cl);
-		if (bMagicFlag) break;
-	case ewiStarvation:
-		SetWarningIconColor		(&UIStarvationIcon, cl);
-		if (bMagicFlag) break;	
-	case ewiPsyHealth:
-		SetWarningIconColor		(&UIPsyHealthIcon, cl);
-		if (bMagicFlag) break;
 	case ewiInvincible:
 		SetWarningIconColor		(&UIInvincibleIcon, cl);
 		if (bMagicFlag) break;
@@ -1200,9 +1198,14 @@ void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 		// Теперь запоминаем иконку и ее тип
 		EFlashingIcons type = efiPdaTask;
 
-		if		(iconType == "pda")		type = efiPdaTask;
-		else if (iconType == "mail")	type = efiMail;
-		else	R_ASSERT(!"Unknown type of mainingame flashing icon");
+		if (iconType == "pda")
+			type = efiPdaTask;
+		else if (iconType == "mail")
+			type = efiMail;
+		else if (iconType == "encyclopedia")
+			type = efiEncyclopedia;
+		else
+			R_ASSERT(!"Unknown type of mainingame flashing icon");
 
 		R_ASSERT2(m_FlashingIcons.find(type) == m_FlashingIcons.end(), "Flashing icon with this type already exists");
 

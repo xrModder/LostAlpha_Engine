@@ -793,11 +793,11 @@ public:
 			u16					GetTurretTemp					();
 			void				SetDirectionSlowly				(Fvector pos, float time);
 			void				SetActorState					(EActorState state, bool show);
-			Flags16				&GetActorState					()											{  return m_actor_state; }
+			Flags32				&GetActorState					()											{  return m_actor_state; }
 
 private:
 	CTorch				*m_current_torch;
-	Flags16				m_actor_state;
+	Flags32				m_actor_state;
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);
