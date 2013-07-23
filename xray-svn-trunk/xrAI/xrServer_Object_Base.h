@@ -12,7 +12,7 @@
 #include "object_interfaces.h"
 #include "script_value_container.h"
 #include "alife_space.h"
-#include "../../xrNetServer/client_id.h"
+#include "client_id.h"
 
 class NET_Packet;
 class xrClientData;
@@ -138,6 +138,7 @@ public:
 	// end of the virtual inheritance dependant code
 	IC		int						script_clsid	() const					{VERIFY(m_script_clsid >= 0); return (m_script_clsid);}
 			CInifile				&spawn_ini		();
+			void					set_custom_data	(LPCSTR);
 
 // for smart cast
 	virtual CSE_ALifeGroupAbstract		*cast_group_abstract		() {return 0;};

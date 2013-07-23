@@ -170,6 +170,24 @@ CInifile &CSE_Abstract::spawn_ini			()
 #pragma warning(pop)
 	return						(*m_ini_file);
 }
+
+void CSE_Abstract::set_custom_data(LPCSTR data)
+{
+#pragma warning(push)
+#pragma warning(disable:4238)
+	m_ini_string = data;
+	if (m_ini_file && xr_strlen(m_ini_string)) {
+		delete_data(m_ini_file);
+		m_ini_file			= xr_new<CInifile>(
+			&IReader			(
+				(void*)(*(m_ini_string)),
+				m_ini_string.size()
+			),
+			FS.get_path("$game_config$")->m_Path
+		);
+	}
+#pragma warning(pop)
+}
 	
 void CSE_Abstract::Spawn_Write				(NET_Packet	&tNetPacket, BOOL bLocal)
 {
@@ -390,7 +408,7 @@ void CSE_Abstract::FillProps				(LPCSTR pref, PropItemVec& items)
 
 //	LPCSTR						gcs = pSettings->r_string(s_name,"GroupControlSection");
 //	PHelper().CreateChoose		(items,PrepareKey(pref,*s_name,"Spawn\\group control"),				&m_spawn_control,		smSpawnItem,	0,	(void*)gcs,	16);
-	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\enabled"),					&m_spawn_flags,			flSpawnEnabled);
+//	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\enabled"),					&m_spawn_flags,			flSpawnEnabled);
 //	PHelper().CreateFloat		(items,PrepareKey(pref,*s_name,"Spawn\\probability"),				&m_spawn_probability,	0.f,			1.f);
 //	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn on surge only"),		&m_spawn_flags,			flSpawnOnSurgeOnly);
 //	PHelper().CreateFlag32		(items,PrepareKey(pref,*s_name,"Spawn\\spawn if destroyed only"),	&m_spawn_flags,			flSpawnIfDestroyedOnly);

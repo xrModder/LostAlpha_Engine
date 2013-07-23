@@ -101,6 +101,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemTorch,CSE_ALifeItem)
 	u16								m_battery_state;
 									CSE_ALifeItemTorch	(LPCSTR caSection);
     virtual							~CSE_ALifeItemTorch	();
+	virtual BOOL					Net_Relevant			();
+
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemTorch)
 #define script_type_list save_type_list(CSE_ALifeItemTorch)
@@ -114,6 +116,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemAmmo,CSE_ALifeItem)
 	virtual CSE_ALifeItemAmmo		*cast_item_ammo		()  {return this;};
 	virtual bool					can_switch_online	() const;
 	virtual bool					can_switch_offline	() const;
+			u16						get_ammo_left		() const;
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemAmmo)
 #define script_type_list save_type_list(CSE_ALifeItemAmmo)
@@ -135,26 +138,6 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 		eWeaponAddonSilencer = 0x04
 	};
 
-	//count of grenades to spawn in grenade launcher [ttcccccc]
-	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
-
-	struct grenade_count_t
-	{
-		u8	grenades_count	:	6;
-		u8	grenades_type	:	2;
-		u8	pack_to_byte() const
-		{
-			return (grenades_type << 6) | grenades_count;
-		}
-		void unpack_from_byte(u8 const b)
-		{
-			grenades_type	=	(b >> 6);
-			grenades_count	=	b & 0x3f; //111111
-		}
-	}; 
-
-	grenade_count_t					a_elapsed_grenades;
-
 	EWeaponAddonStatus				m_scope_status;
 	EWeaponAddonStatus				m_silencer_status;				
 	EWeaponAddonStatus				m_grenade_launcher_status;
@@ -165,6 +148,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u8								ammo_type;
 	u16								a_current;
 	u16								a_elapsed;
+
 	float							m_fHitPower;
 	ALife::EHitType					m_tHitType;
 	LPCSTR							m_caAmmoSections;
@@ -183,7 +167,9 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u16								get_ammo_limit		();
 	u16								get_ammo_total		();
 	u16								get_ammo_elapsed	();
+	void							set_ammo_elapsed	(u16);
 	u16								get_ammo_magsize	();
+	u8								get_addon_flags		();
 
 	virtual BOOL					Net_Relevant		();
 
@@ -203,11 +189,32 @@ add_to_type_list(CSE_ALifeItemWeaponMagazined)
 #define script_type_list save_type_list(CSE_ALifeItemWeaponMagazined)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazinedWGL, CSE_ALifeItemWeaponMagazined)
-bool			m_bGrenadeMode;
-CSE_ALifeItemWeaponMagazinedWGL(LPCSTR caSection);
-virtual							~CSE_ALifeItemWeaponMagazinedWGL();
 
-virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
+							CSE_ALifeItemWeaponMagazinedWGL(LPCSTR caSection);
+	virtual						~CSE_ALifeItemWeaponMagazinedWGL();
+
+	//count of grenades to spawn in grenade launcher [ttcccccc]
+	//WARNING! hight 2 bits (tt bits) indicate type of grenade, so maximum grenade count is 2^6 = 64
+	//skyloader: moved to CSE_ALifeItemWeaponMagazinedWGL because it has gl params only
+	struct grenade_count_t
+	{
+		u8	grenades_count	:	6;
+		u8	grenades_type	:	2;
+		u8	pack_to_byte() const
+		{
+			return (grenades_type << 6) | grenades_count;
+		}
+		void unpack_from_byte(u8 const b)
+		{
+			grenades_type	=	(b >> 6);
+			grenades_count	=	b & 0x3f; //111111
+		}
+	}; 
+
+	grenade_count_t					a_elapsed_grenades;
+	bool						m_bGrenadeMode;
+
+	virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemWeaponMagazinedWGL)
 #define script_type_list save_type_list(CSE_ALifeItemWeaponMagazinedWGL)

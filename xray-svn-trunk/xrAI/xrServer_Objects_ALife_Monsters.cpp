@@ -137,8 +137,12 @@ CSE_ALifeTraderAbstract::CSE_ALifeTraderAbstract(LPCSTR caSection)
 CSE_Abstract *CSE_ALifeTraderAbstract::init	()
 {
 	string4096					S;
-	//sprintf						(S,"%s\r\n[game_info]\r\nname_id = default\r\n",!*base()->m_ini_string ? "" : *base()->m_ini_string);
+
+#ifdef XRSE_FACTORY_EXPORTS
 	sprintf						(S,"%s\r\n[game_info]\r\n",!*base()->m_ini_string ? "" : *base()->m_ini_string);
+#else // XRSE_FACTORY_EXPORTS
+	sprintf_s						(S,"%s\r\n[game_info]\r\n",!*base()->m_ini_string ? "" : *base()->m_ini_string);
+#endif // XRSE_FACTORY_EXPORTS
 	base()->m_ini_string		= S;
 
 	return						(base());
@@ -410,8 +414,13 @@ void CSE_ALifeTraderAbstract::set_specific_character	(shared_str new_spec_char)
 		//select name and lastname
 		xr_string subset			= m_character_name.c_str()+xr_strlen(gen_name);
 
+#ifdef XRGAME_EXPORTS
 		string32					t1;
 		strconcat					(t1,"stalker_names_",subset.c_str());
+#else //XRGAME_EXPORTS
+		string_path					t1;
+		strconcat					(sizeof(t1),t1,"stalker_names_",subset.c_str());
+#endif //XRGAME_EXPORTS
 		u32 name_cnt				= pSettings->r_u32(t1, "name_cnt");
 		u32 last_name_cnt			= pSettings->r_u32(t1, "last_name_cnt");
 		
@@ -452,6 +461,10 @@ void CSE_ALifeTraderAbstract::set_character_profile(shared_str new_profile)
 shared_str CSE_ALifeTraderAbstract::character_profile()
 {
 	return	m_sCharacterProfile;
+}
+LPCSTR	CSE_ALifeTraderAbstract::character_name()
+{
+	return m_character_name.c_str();
 }
 
 #endif
@@ -1080,6 +1093,15 @@ void CSE_ALifeCreatureAbstract::FillProps	(LPCSTR pref, PropItemVec& items)
 bool CSE_ALifeCreatureAbstract::used_ai_locations	() const
 {
 	return						(true);
+}
+
+LPCSTR CSE_ALifeCreatureAbstract::get_visual_script			() const
+{
+	return visual_name.c_str();
+}
+void CSE_ALifeCreatureAbstract::set_visual_script			(LPCSTR visual_name)
+{
+	visual()->set_visual(visual_name,true);
 }
 
 bool CSE_ALifeCreatureAbstract::can_switch_online	() const

@@ -82,7 +82,11 @@ struct SFillPropData{
 		for (int i=0; i<GameGraph::LOCATION_TYPE_COUNT; ++i){
             VERIFY				(locations[i].empty());
             string256			caSection, T;
+#ifdef XRSE_FACTORY_EXPORTS
+            strconcat			(sizeof(caSection),caSection,SECTION_HEADER,itoa(i,T,10));
+#else // XRSE_FACTORY_EXPORTS
             strconcat			(caSection,SECTION_HEADER,itoa(i,T,10));
+#endif // XRSE_FACTORY_EXPORTS
             R_ASSERT			(Ini->section_exist(caSection));
             for (k = 0; Ini->r_line(caSection,k,&N,&V); ++k)
                 locations[i].push_back	(xr_rtoken(V,atoi(N)));
@@ -718,6 +722,16 @@ void CSE_ALifeSpaceRestrictor::STATE_Read		(NET_Packet	&tNetPacket, u16 size)
 		m_space_restrictor_type = tNetPacket.r_u8();
 }
 
+u8 CSE_ALifeSpaceRestrictor::get_space_restrictor_type() const
+{
+	return m_space_restrictor_type;
+}
+
+void CSE_ALifeSpaceRestrictor::set_space_restrictor_type(u8 _type)
+{
+	m_space_restrictor_type = _type;
+}
+
 void CSE_ALifeSpaceRestrictor::STATE_Write	(NET_Packet	&tNetPacket)
 {
 	inherited1::STATE_Write		(tNetPacket);
@@ -1305,11 +1319,18 @@ u32	 CSE_ALifeSchedulable::ef_detector_type	() const
 // CSE_ALifeHelicopter
 ////////////////////////////////////////////////////////////////////////////
 
+static LPCSTR DEFAULT_STARTUP_ANIM = "idle";
+static LPCSTR DEFAULT_ENGINE_SOUND = "alexmx\\helicopter";
+
+
 CSE_ALifeHelicopter::CSE_ALifeHelicopter	(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_Motion(),CSE_PHSkeleton(caSection)
 {
 	m_flags.set					(flUseSwitches,		FALSE);
 	m_flags.set					(flSwitchOffline,	FALSE);
-	m_flags.set					(flInteractive,		FALSE);
+	//m_flags.set					(flInteractive,		FALSE);
+	startup_animation					= DEFAULT_STARTUP_ANIM;
+	engine_sound						= DEFAULT_ENGINE_SOUND;
+
 }
 
 CSE_ALifeHelicopter::~CSE_ALifeHelicopter	()
@@ -1378,75 +1399,21 @@ bool CSE_ALifeHelicopter::used_ai_locations	() const
 	return						(false);
 }
 
-////////////////////////////////////////////////////////////////////////////
-// CSE_ALifeMountedTurret
-////////////////////////////////////////////////////////////////////////////
-
-CSE_ALifeMountedTurret::CSE_ALifeMountedTurret(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_PHSkeleton(caSection)
+void CSE_ALifeHelicopter::set_engine_sound(LPCSTR sound)
 {
-	if (pSettings->section_exist(caSection) && pSettings->line_exist(caSection, "visual"))
-    	set_visual				(pSettings->r_string(caSection, "visual"));	
+	engine_sound = sound;
 }
 
-CSE_ALifeMountedTurret::~CSE_ALifeMountedTurret	()
+LPCSTR CSE_ALifeHelicopter::get_engine_sound()
 {
+	return engine_sound.c_str();
 }
 
-void CSE_ALifeMountedTurret::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
+CSE_ALifeHelicopter *CSE_ALifeHelicopter::cast_helicopter(CSE_Abstract *e)
 {
-	inherited1::STATE_Read		(tNetPacket,size);
-}
-
-void CSE_ALifeMountedTurret::STATE_Write			(NET_Packet	&tNetPacket)
-{
-	inherited1::STATE_Write		(tNetPacket);
-	inherited2::STATE_Write		(tNetPacket);
-}
-
-void CSE_ALifeMountedTurret::UPDATE_Read			(NET_Packet	&tNetPacket)
-{
-	inherited1::UPDATE_Read		(tNetPacket);
-	inherited2::UPDATE_Read		(tNetPacket);
-}
-
-void CSE_ALifeMountedTurret::UPDATE_Write			(NET_Packet	&tNetPacket)
-{
-	inherited1::UPDATE_Write		(tNetPacket);
-	inherited2::UPDATE_Write		(tNetPacket);
-}
-
-bool CSE_ALifeMountedTurret::used_ai_locations() const
-{
-	return						(false);
-}
-
-bool CSE_ALifeMountedTurret::can_save() const
-{
-	return						CSE_PHSkeleton::need_save();
-}
-
-void CSE_ALifeMountedTurret::load(NET_Packet &tNetPacket)
-{
-	inherited1::load(tNetPacket);
-	inherited2::load(tNetPacket);
-}
-
-void CSE_ALifeMountedTurret::data_load(NET_Packet	&tNetPacket)
-{
-	//inherited1::data_load(tNetPacket);
-	inherited2::data_load		(tNetPacket);
-}
-
-void CSE_ALifeMountedTurret::data_save(NET_Packet &tNetPacket)
-{
-	//inherited1::data_save(tNetPacket);
-	inherited2::data_save			(tNetPacket);
-}
-
-void CSE_ALifeMountedTurret::FillProps(LPCSTR pref, PropItemVec& values)
-{
-  	inherited1::FillProps			(pref,values);
-	inherited2::FillProps			(pref,values);
+	CSE_ALifeHelicopter *ret = smart_cast<CSE_ALifeHelicopter*>(e);
+	VERIFY2(ret, "No CSE_ALifeHelicopter instance");
+	return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1459,7 +1426,8 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
     	set_visual				(pSettings->r_string(caSection,"visual"));
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
-	health						=1.0f;
+	health						= 1.0f;
+	fuel						= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
 }
 
 CSE_ALifeCar::~CSE_ALifeCar				()
@@ -1539,6 +1507,7 @@ void CSE_ALifeCar::data_load(NET_Packet	&tNetPacket)
 		wheel_states.push_back(ws);
 	}
 	health=tNetPacket.r_float();
+	fuel=tNetPacket.r_float();
 }
 void CSE_ALifeCar::data_save(NET_Packet &tNetPacket)
 {
@@ -1565,6 +1534,7 @@ void CSE_ALifeCar::data_save(NET_Packet &tNetPacket)
 		//wheel_states.clear();
 	}
 	tNetPacket.w_float(health);
+	tNetPacket.w_float(fuel);
 }
 void CSE_ALifeCar::SDoorState::read(NET_Packet& P)
 {
@@ -1589,6 +1559,85 @@ void CSE_ALifeCar::FillProps				(LPCSTR pref, PropItemVec& values)
   	inherited1::FillProps			(pref,values);
 	inherited2::FillProps			(pref,values);
 	PHelper().CreateFloat		(values, PrepareKey(pref,*s_name,"Health"),			&health,			0.f, 1.0f);
+}
+
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeMountedTurret
+////////////////////////////////////////////////////////////////////////////
+
+CSE_ALifeMountedTurret::CSE_ALifeMountedTurret(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(caSection), CSE_PHSkeleton(caSection)
+{
+	if (pSettings->section_exist(caSection) && pSettings->line_exist(caSection, "visual"))
+    	set_visual				(pSettings->r_string(caSection, "visual"));	
+}
+
+CSE_ALifeMountedTurret::~CSE_ALifeMountedTurret	()
+{
+}
+
+void CSE_ALifeMountedTurret::on_spawn			()
+{
+	m_flags.set					(flUseSwitches,		FALSE);
+	m_flags.set					(flSwitchOnline,	TRUE);
+	m_flags.set					(flSwitchOffline,	TRUE);
+	//inherited1::on_spawn		();
+}
+
+void CSE_ALifeMountedTurret::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
+{
+	inherited1::STATE_Read		(tNetPacket,size);
+}
+
+void CSE_ALifeMountedTurret::STATE_Write			(NET_Packet	&tNetPacket)
+{
+	inherited1::STATE_Write		(tNetPacket);
+	inherited2::STATE_Write		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::UPDATE_Read			(NET_Packet	&tNetPacket)
+{
+	inherited1::UPDATE_Read		(tNetPacket);
+	inherited2::UPDATE_Read		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::UPDATE_Write			(NET_Packet	&tNetPacket)
+{
+	inherited1::UPDATE_Write		(tNetPacket);
+	inherited2::UPDATE_Write		(tNetPacket);
+}
+
+bool CSE_ALifeMountedTurret::used_ai_locations() const
+{
+	return						(false);
+}
+
+bool CSE_ALifeMountedTurret::can_save() const
+{
+	return						CSE_PHSkeleton::need_save();
+}
+
+void CSE_ALifeMountedTurret::load(NET_Packet &tNetPacket)
+{
+	inherited1::load(tNetPacket);
+	inherited2::load(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::data_load(NET_Packet	&tNetPacket)
+{
+	//inherited1::data_load(tNetPacket);
+	inherited2::data_load		(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::data_save(NET_Packet &tNetPacket)
+{
+	//inherited1::data_save(tNetPacket);
+	inherited2::data_save			(tNetPacket);
+}
+
+void CSE_ALifeMountedTurret::FillProps(LPCSTR pref, PropItemVec& values)
+{
+  	inherited1::FillProps			(pref,values);
+	inherited2::FillProps			(pref,values);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1887,4 +1936,46 @@ float CSE_ALifeSmartZone::detect_probability()
 
 void CSE_ALifeSmartZone::smart_touch	(CSE_ALifeMonsterAbstract *monster)
 {
+}
+
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeInventoryBox
+////////////////////////////////////////////////////////////////////////////
+
+CSE_ALifeInventoryBox::CSE_ALifeInventoryBox( LPCSTR caSection ) : CSE_ALifeDynamicObjectVisual( caSection )
+{
+	
+}
+
+CSE_ALifeInventoryBox::~CSE_ALifeInventoryBox()
+{
+}
+
+void CSE_ALifeInventoryBox::STATE_Read( NET_Packet &tNetPacket, u16 size )
+{
+	inherited::STATE_Read( tNetPacket, size );
+
+
+}
+
+void CSE_ALifeInventoryBox::STATE_Write( NET_Packet &tNetPacket )
+{
+	inherited::STATE_Write( tNetPacket );
+	
+}
+
+void CSE_ALifeInventoryBox::UPDATE_Read( NET_Packet &tNetPacket )
+{
+	inherited::UPDATE_Read( tNetPacket );
+}
+
+void CSE_ALifeInventoryBox::UPDATE_Write( NET_Packet &tNetPacket )
+{
+	inherited::UPDATE_Write( tNetPacket );
+}
+
+
+void CSE_ALifeInventoryBox::FillProps( LPCSTR pref, PropItemVec& values )
+{
+	inherited::FillProps( pref, values );
 }

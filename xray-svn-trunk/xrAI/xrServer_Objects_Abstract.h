@@ -21,8 +21,10 @@
 class NET_Packet;
 class CDUInterface;
 
-#ifndef XRGAME_EXPORTS
-#	include "Sound.h"
+#ifndef _EDITOR
+    #ifndef XRGAME_EXPORTS
+        #include "Sound.h"
+    #endif
 #endif
 
 #include "xrEProps.h"
@@ -55,6 +57,8 @@ public:
 
     void							set_visual		(LPCSTR name, bool load=true);
 	LPCSTR							get_visual		() const {return *visual_name;};
+	virtual void					set_startup_animation		(LPCSTR name)	{ startup_animation = name; }
+	virtual LPCSTR					get_startup_animation		()				{ return *startup_animation; }
 	virtual void					FillProps		(LPCSTR pref, PropItemVec &items);
 
 	virtual CSE_Visual* __stdcall	visual			() = 0;

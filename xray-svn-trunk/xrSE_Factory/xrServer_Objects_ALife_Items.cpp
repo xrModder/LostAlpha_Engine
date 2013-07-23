@@ -870,7 +870,10 @@ void CSE_ALifeItemPDA::FillProps		(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemDocument::CSE_ALifeItemDocument(LPCSTR caSection): CSE_ALifeItem(caSection)
 {
-	m_wDoc					= NULL;
+	if (pSettings->line_exist(caSection, "info_portion"))
+		m_wDoc					= pSettings->r_string(caSection,"info_portion");
+	else
+		m_wDoc					= NULL;
 }
 
 CSE_ALifeItemDocument::~CSE_ALifeItemDocument()

@@ -482,6 +482,7 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSke
 	virtual bool					can_save			() const;
 	virtual CSE_Abstract			*cast_abstract		() {return this;}
 
+
 #ifdef XRGAME_EXPORTS
 	virtual void		add_offline				(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
 	virtual void		add_online				(const bool &update_registries);
