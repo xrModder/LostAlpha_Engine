@@ -85,6 +85,7 @@ public:
 	//(режим стрельбы из подствольника)
 	MotionSVec			mhud_idle_w_gl;
 	MotionSVec			mhud_idle_w_gl_aim;
+	MotionSVec			mhud_idle_sprint_gl;
 	MotionSVec			mhud_reload_w_gl;
 	MotionSVec			mhud_shots_w_gl;
 	MotionSVec			mhud_show_w_gl;

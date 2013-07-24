@@ -25,7 +25,7 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_eSoundEmptyClick	= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	m_eSoundReloadJammed		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
-	m_eSoundReloadEmpty		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
+	m_eSoundReloadNotEmpty		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	
 	m_pSndShotCurrent = NULL;
 	m_sSilencerFlameParticles = m_sSilencerSmokeParticles = NULL;
@@ -45,7 +45,7 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndEmptyClick);
 	HUD_SOUND::DestroySound(sndReload);
 	HUD_SOUND::DestroySound(sndReloadJammed);
-	HUD_SOUND::DestroySound(sndReloadEmpty);
+	HUD_SOUND::DestroySound(sndReloadNotEmpty);
 }
 
 
@@ -57,7 +57,7 @@ void CWeaponMagazined::StopHUDSounds		()
 	HUD_SOUND::StopSound(sndEmptyClick);
 	HUD_SOUND::StopSound(sndReload);
 	HUD_SOUND::StopSound(sndReloadJammed);
-	HUD_SOUND::StopSound(sndReloadEmpty);
+	HUD_SOUND::StopSound(sndReloadNotEmpty);
 
 	HUD_SOUND::StopSound(sndShot);
 //.	if(sndShot.enable && sndShot.snd.feedback)
@@ -82,14 +82,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_shoot"	, sndShot		, m_eSoundShot		);
 	HUD_SOUND::LoadSound(section,"snd_empty"	, sndEmptyClick	, m_eSoundEmptyClick	);
 	HUD_SOUND::LoadSound(section,"snd_reload"	, sndReload		, m_eSoundReload		);
-	if (pSettings->line_exist(section,"snd_reload_jammed"))
-		HUD_SOUND::LoadSound(section,"snd_reload_jammed"	, sndReloadJammed		, m_eSoundReloadJammed		);
+	if (pSettings->line_exist(section,"snd_reload_misfire"))
+		HUD_SOUND::LoadSound(section,"snd_reload_misfire"	, sndReloadJammed		, m_eSoundReloadJammed		);
 	else
 		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadJammed		, m_eSoundReloadJammed		);
-	if (pSettings->line_exist(section,"snd_reload_empty"))
-		HUD_SOUND::LoadSound(section,"snd_reload_empty"	, sndReloadEmpty		, m_eSoundReloadEmpty		);
+	if (pSettings->line_exist(section,"snd_reload_not_empty"))
+		HUD_SOUND::LoadSound(section,"snd_reload_not_empty"	, sndReloadNotEmpty		, m_eSoundReloadNotEmpty		);
 	else
-		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadEmpty		, m_eSoundReloadEmpty		);
+		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadNotEmpty		, m_eSoundReloadNotEmpty		);
 	
 	m_pSndShotCurrent = &sndShot;
 		
@@ -103,12 +103,12 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	animGet				(mhud.mhud_shots,	pSettings->r_string(*hud_sect, "anim_shoot"));
 	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
 		animGet				(mhud.mhud_idle_sprint,	pSettings->r_string(*hud_sect, "anim_idle_sprint"));
-	if(pSettings->line_exist(*hud_sect,"anim_reload_jammed"))
-		animGet				(mhud.mhud_reload_jammed,	pSettings->r_string(*hud_sect, "anim_reload_jammed"));
+	if(pSettings->line_exist(*hud_sect,"anim_reload_misfire"))
+		animGet				(mhud.mhud_reload_jammed,	pSettings->r_string(*hud_sect, "anim_reload_misfire"));
 	if(IsZoomEnabled())
 		animGet				(mhud.mhud_idle_aim,		pSettings->r_string(*hud_sect, "anim_idle_aim"));
-	if(pSettings->line_exist(*hud_sect,"anim_reload_empty"))
-		animGet				(mhud.mhud_reload_empty,	pSettings->r_string(*hud_sect, "anim_reload_empty"));	
+	if(pSettings->line_exist(*hud_sect,"anim_reload_not_empty"))
+		animGet				(mhud.mhud_reload_not_empty,	pSettings->r_string(*hud_sect, "anim_reload_not_empty"));	
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if(m_eSilencerStatus == ALife::eAddonAttachable)
@@ -479,6 +479,8 @@ void CWeaponMagazined::UpdateSounds	()
 	if (sndHide.playing			())	sndHide.set_position		(get_LastFP());
 	if (sndShot.playing			()) sndShot.set_position		(get_LastFP());
 	if (sndReload.playing		()) sndReload.set_position		(get_LastFP());
+	if (sndReloadJammed.playing		()) sndReloadJammed.set_position		(get_LastFP());
+	if (sndReloadNotEmpty.playing		()) sndReloadNotEmpty.set_position		(get_LastFP());
 	if (sndEmptyClick.playing	())	sndEmptyClick.set_position	(get_LastFP());
 }
 
@@ -678,6 +680,8 @@ void CWeaponMagazined::PlayReloadSound()
 {
 	if (IsMisfire())
 		PlaySound	(sndReloadJammed,get_LastFP());
+	else if (iAmmoElapsed > 0)
+		PlaySound	(sndReloadNotEmpty,get_LastFP());
 	else
 		PlaySound	(sndReload,get_LastFP());
 }
@@ -1023,8 +1027,11 @@ void CWeaponMagazined::PlayAnimReload()
 	VERIFY(GetState()==eReload);
 	if (IsMisfire() && mhud.mhud_reload_jammed.size())
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload_jammed),TRUE,this,GetState());
+	else if (iAmmoElapsed > 0 && mhud.mhud_reload_not_empty.size())
+		m_pHUD->animPlay(random_anim(mhud.mhud_reload_not_empty),TRUE,this,GetState());
 	else
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
+
 	LPCSTR AnimName = "_reload";
 	inherited::WeaponCamEffector(AnimName);
 }
