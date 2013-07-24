@@ -732,6 +732,14 @@ public:
 					HUD().GetUI()->OnConnected();
 					break;
 				}
+				case 3: //new ui again
+				{
+					HUD().GetUI()->UIGame()->HideShownDialogs();
+					HUD().OnScreenRatioChanged();
+					HUD().GetUI()->UIGame()->ReinitDialogs();
+					HUD().GetUI()->OnConnected();
+					break;
+				}
 			}
 		}
 	}
