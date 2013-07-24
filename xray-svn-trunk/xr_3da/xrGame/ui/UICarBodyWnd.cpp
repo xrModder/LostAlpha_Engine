@@ -50,9 +50,6 @@ void CUICarBodyWnd::Init()
 {
 	CUIXml						uiXml;
 
-	if (!ui_hud_type)
-		ui_hud_type = 1;
-
 	string128		CAR_BODY_XML;
 	sprintf_s		(CAR_BODY_XML, "carbody_new_%d.xml", ui_hud_type);
 

@@ -742,32 +742,33 @@ bool CUIXmlInit::InitTabControl(CUIXml &xml_doc, LPCSTR path, int index, CUITabC
 
 bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, const char* path, int index, CUIFrameLineWnd* pWnd)
 {
-	R_ASSERT2(xml_doc.NavigateToNode(path,index), "XML node not found");
+	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
 
 	string256 buf;
 
-	float x			= xml_doc.ReadAttribFlt(path, index, "x");
-	float y			= xml_doc.ReadAttribFlt(path, index, "y");
+	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
+	pWnd->SetStretchTexture( stretch_flag );
 
-	InitAlignment(xml_doc, path, index, x, y, pWnd);
+	Fvector2 pos, size;
+	pos.x			= xml_doc.ReadAttribFlt(path, index, "x");
+	pos.y			= xml_doc.ReadAttribFlt(path, index, "y");
 
-	float width		= xml_doc.ReadAttribFlt(path, index, "width");
-	float height	= xml_doc.ReadAttribFlt(path, index, "height");
+	InitAlignment	(xml_doc, path, index, pos.x, pos.y, pWnd);
+
+	size.x			= xml_doc.ReadAttribFlt(path, index, "width");
+	size.y			= xml_doc.ReadAttribFlt(path, index, "height");
 	bool vertical	= !!xml_doc.ReadAttribInt(path, index, "vertical");
-
+	
 	strconcat		(sizeof(buf),buf,path,":texture");
 	shared_str base_name = xml_doc.Read(buf, index, NULL);
 
 	VERIFY			(base_name);
-/*	{
-		pWnd->Init(x, y, width, height);
-		return true;
-	}
-*/
+
 	u32 color		= GetColor	(xml_doc,buf,index,0xff);
 	pWnd->SetColor	(color);
 
-	pWnd->Init(*base_name, x, y, width, height, !vertical);
+	InitWindow		(xml_doc, path, index, pWnd);
+	pWnd->Init(*base_name, pos.x, pos.y, size.x, size.y, !vertical);
 
 	strconcat(sizeof(buf),buf,path,":title");
 	if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
