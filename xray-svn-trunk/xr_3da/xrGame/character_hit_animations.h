@@ -2,9 +2,9 @@
 class CEntityAlive;
 class IKinematics;
 
-//#include "../Include/xrRender/KinematicsAnimated.h"
 #include "../KinematicsAnimated.h"
 #include "../animation_blend.h"
+
 class character_hit_animation_controller
 {
 public:
@@ -27,7 +27,9 @@ private:
 	MotionID							all_shift_down;
 	MotionID							hit_downl;
 	MotionID							hit_downr;
-	static	const	u16					num_anims = 7;
-	mutable u32							block_times[num_anims];
+	static	const	u16					num_anims = 9;
+	//mutable u32							block_times[num_anims];
+	mutable CBlend*						block_blends[num_anims];
 	//
 };
+
