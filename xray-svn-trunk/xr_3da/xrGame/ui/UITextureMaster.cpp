@@ -28,27 +28,51 @@ void CUITextureMaster::ParseShTexInfo(LPCSTR xml_file){
 	xml.Init(CONFIG_PATH, UI_PATH, xml_file);
 	shared_str file = xml.Read("file_name",0,""); 
 
-//	shared_textures_it	sht_it = m_shTex.find(texture);
-//	if (m_shTex.end() == sht_it)
-//	{
-		int num = xml.GetNodesNum("",0,"texture");
-//		regions regs;
+	//skyloader: shoc reading
+	int num = xml.GetNodesNum("",0,"texture");
+	for (int i = 0; i<num; i++)
+	{
+		TEX_INFO info;
+
+		info.file = file;
+
+		info.rect.x1 = xml.ReadAttribFlt("texture",i,"x");
+		info.rect.x2 = xml.ReadAttribFlt("texture",i,"width") + info.rect.x1;
+		info.rect.y1 = xml.ReadAttribFlt("texture",i,"y");
+		info.rect.y2 = xml.ReadAttribFlt("texture",i,"height") + info.rect.y1;
+		shared_str id = xml.ReadAttrib("texture",i,"id");
+
+		m_textures.insert(mk_pair(id,info));
+	}
+
+	//skyloader: cs\cop reading
+	int files_num				= xml.GetNodesNum("",0,"file");
+
+	for(int fi=0; fi<files_num; ++fi)
+	{
+		XML_NODE* root_node			= xml.GetLocalRoot();
+		shared_str file				= xml.ReadAttrib("file", fi, "name"); 
+
+		XML_NODE* node				= xml.NavigateToNode("file", fi);
+
+		int num						= xml.GetNodesNum(node, "texture");
 		for (int i = 0; i<num; i++)
 		{
 			TEX_INFO info;
 
 			info.file = file;
 
-			info.rect.x1 = xml.ReadAttribFlt("texture",i,"x");
-			info.rect.x2 = xml.ReadAttribFlt("texture",i,"width") + info.rect.x1;
-			info.rect.y1 = xml.ReadAttribFlt("texture",i,"y");
-			info.rect.y2 = xml.ReadAttribFlt("texture",i,"height") + info.rect.y1;
-			shared_str id = xml.ReadAttrib("texture",i,"id");
+			info.rect.x1 = xml.ReadAttribFlt(node, "texture",i,"x");
+			info.rect.x2 = xml.ReadAttribFlt(node, "texture",i,"width") + info.rect.x1;
+			info.rect.y1 = xml.ReadAttribFlt(node, "texture",i,"y");
+			info.rect.y2 = xml.ReadAttribFlt(node, "texture",i,"height") + info.rect.y1;
+			shared_str id = xml.ReadAttrib	(node, "texture",i,"id");
 
 			m_textures.insert(mk_pair(id,info));
 		}
-//		m_shTex.insert(mk_pair(texture, regs));
-//	}
+
+		xml.SetLocalRoot		(root_node);
+	}
 }
 
 bool CUITextureMaster::IsSh(const char* texture_name){
