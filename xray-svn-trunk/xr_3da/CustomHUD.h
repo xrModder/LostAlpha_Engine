@@ -40,6 +40,8 @@ public:
 	virtual void			OnDisconnected			()=0;
 	virtual void			OnConnected				()=0;
 	virtual void			net_Relcase				(CObject *object) = 0;
+
+	virtual IC u32			GetUIHudType	()=0;
 };
 
 extern ENGINE_API CCustomHUD* g_hud;

@@ -19,7 +19,7 @@ class CSE_ALifeItemWeapon;
 class CSE_ALifeItemWeaponAmmo;
 class CWeaponMagazined;
 class CParticlesObject;
-class CUIStaticItem;
+class CUIWindow;
 
 class CWeapon : public CHudItemObject,
 				public CShootingObject
@@ -227,7 +227,7 @@ protected:
 	//время приближения
 	float			m_fZoomRotateTime;
 	//текстура для снайперского прицела, в режиме приближения
-	CUIStaticItem*	m_UIScope;
+	CUIWindow*	m_UIScope;
 	//коэффициент увеличения прицеливания
 	float			m_fIronSightZoomFactor;
 	//коэффициент увеличения прицела
@@ -248,7 +248,7 @@ public:
 	virtual void			OnZoomIn			();
 	virtual void			OnZoomOut			();
 			bool			IsZoomed			()	const	{return m_bZoomMode;};
-	CUIStaticItem*			ZoomTexture			();	
+	CUIWindow*			ZoomTexture			();	
 			bool			ZoomHideCrosshair	()			{return m_bHideCrosshairInZoom || ZoomTexture();}
 
 	IC float				GetZoomFactor		() const		{	return m_fZoomFactor;	}

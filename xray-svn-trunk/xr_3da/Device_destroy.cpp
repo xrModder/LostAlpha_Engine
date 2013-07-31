@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "render.h"
 #include "IGame_Persistent.h"
+#include "xr_ioconsole.h"
 
 void CRenderDevice::_Destroy	(BOOL bKeepTextures)
 {
@@ -94,8 +95,15 @@ void CRenderDevice::Reset		(bool precache)
 	seqDeviceReset.Process(rp_DeviceReset);
 
 	bool b_16_after	= (float)dwWidth/(float)dwHeight > (1024.0f/768.0f+0.01f);
-	if(b_16_after!=b_16_before && g_pGameLevel && g_pGameLevel->pHUD) 
-		g_pGameLevel->pHUD->OnScreenRatioChanged();
+	if(b_16_after!=b_16_before && g_pGameLevel && g_pGameLevel->pHUD)
+	{
+		//g_pGameLevel->pHUD->OnScreenRatioChanged(); //skyloader: эта функция реинитит не все, так что лучше юзануть вызов смены худа, в нем реинитится все без багов
+
+		u32	type	= g_pGameLevel->pHUD->GetUIHudType();
+		string512		command;
+		sprintf_s		(command, "ui_hud_type hud_%d", type);
+		Console->Execute	(command);
+	}
 
 #ifdef DEBUG
 	_SHOW_REF("*ref +CRenderDevice::ResetTotal: DeviceREF:",HW.pDevice);

@@ -78,4 +78,6 @@ public:
 	virtual void			OnDisconnected		();
 	virtual void			OnConnected			();
 	virtual void			net_Relcase			(CObject *object);
+
+	virtual		IC u32		GetUIHudType				(){return ui_hud_type;}
 };

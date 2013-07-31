@@ -40,6 +40,8 @@
 #include "../resourcemanager.h"
 #include "doug_lea_memory_allocator.h"
 #include "cameralook.h"
+#include "inventory.h"
+#include "WeaponMagazined.h"
 
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
@@ -99,6 +101,7 @@ void register_mp_console_commands();
 		BOOL	g_bCheckTime			= FALSE;
 		int		net_cl_inputupdaterate	= 50;
 		Flags32	g_mt_config				= {mtLevelPath | mtDetailPath | mtMap | mtObjectHandler | mtSoundPlayer | mtAiVision | mtBullets | mtLUA_GC | mtLevelSounds | mtALife};
+
 #ifdef DEBUG
 		Flags32	dbg_net_Draw_Flags		= {0};
 #endif
@@ -704,6 +707,8 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 	}
 };
 
+extern CUIXml*			pWpnScopeXml;
+
 class	CCC_UiHud_Mode		: public CCC_Token
 {
 public:
@@ -714,31 +719,36 @@ public:
 
 		if (g_pGamePersistent && g_pGameLevel && Level().game)
 		{
-			switch	(*value)
+			if (*value >= 1 && *value <= 3)
 			{
-				case 1: //skyloader: build-style ui
+				HUD().GetUI()->UIGame()->HideShownDialogs(); //skyloader: скрываем активные диалоги, ибо будем их дестроить
+				HUD().OnScreenRatioChanged(); //юзанем чужую функу для maingame :)
+				HUD().GetUI()->UIGame()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
+				//HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
+				
+				CActor			*actor = Actor(); //перезапускаем текстуру для прицела активного оружия 
+				if (actor)
 				{
-					HUD().GetUI()->UIGame()->HideShownDialogs(); //скрываем активные диалоги, ибо будем их дестроить
-					HUD().OnScreenRatioChanged(); //юзанем чужую функу для maingame :)
-					HUD().GetUI()->UIGame()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
-					HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
-					break;
-				}
-				case 2: //new ui
-				{
-					HUD().GetUI()->UIGame()->HideShownDialogs();
-					HUD().OnScreenRatioChanged();
-					HUD().GetUI()->UIGame()->ReinitDialogs();
-					HUD().GetUI()->OnConnected();
-					break;
-				}
-				case 3: //new ui again
-				{
-					HUD().GetUI()->UIGame()->HideShownDialogs();
-					HUD().OnScreenRatioChanged();
-					HUD().GetUI()->UIGame()->ReinitDialogs();
-					HUD().GetUI()->OnConnected();
-					break;
+					if (actor->inventory().ItemFromSlot(PISTOL_SLOT)) //пистолет
+					{
+						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(PISTOL_SLOT));
+						if (pWeaponMagazined)
+							pWeaponMagazined->InitAddons();
+					}
+
+					if (actor->inventory().ItemFromSlot(RIFLE_SLOT)) //автомат
+					{
+						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(RIFLE_SLOT));
+						if (pWeaponMagazined)
+							pWeaponMagazined->InitAddons();
+					}
+
+					if (actor->inventory().ItemFromSlot(APPARATUS_SLOT)) //бинокль
+					{
+						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(APPARATUS_SLOT));
+						if (pWeaponMagazined)
+							pWeaponMagazined->InitAddons();
+					}
 				}
 			}
 		}
@@ -1709,9 +1719,10 @@ void CCC_RegisterCommands()
 #endif // DEBUG
 	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
 	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
-#ifndef MASTER_GOLD
-	CMD3(CCC_Mask,				"ai_ignore_actor",		&psAI_Flags,	aiIgnoreActor);
-#endif // MASTER_GOLD
+
+#ifdef DEBUG
+	CMD3(CCC_Mask,				"ai_ignore_actor",		&psActorFlags,	AF_INVISIBLE);
+#endif // DEBUG
 
 	// Physics
 	CMD1(CCC_PHFps,				"ph_frequency"																					);

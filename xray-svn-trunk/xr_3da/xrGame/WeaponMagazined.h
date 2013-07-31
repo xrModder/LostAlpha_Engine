@@ -83,6 +83,8 @@ protected:
 
 	bool			TryReload		();
 	bool			TryPlayAnimIdle	();
+public:
+	virtual void	ReinitZoomTexture	();
 
 protected:
 	virtual void	ReloadMagazine	();
