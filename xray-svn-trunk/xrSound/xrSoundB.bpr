@@ -52,7 +52,7 @@
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="xrSoundB.bpf"/>
     <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(BCB)\include;$(BCB)\include\vcl;$(CORESOC_DIR);$(XIPH_DIR);$(ETOOLSSOC_DIR);$(EAX_DIR)\Include;$(ALSOC_DIR)\Include"/>
-    <LIBPATH value="$(MAIN_DIR)\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries"/>
+    <LIBPATH value="..\..\sdk\components\elpack\code;$(MAIN_DIR)\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries"/>
     <WARNINGS value="-w-par -w-8027 -w-8026"/>
     <OTHERFILES value=""/>
   </MACROS>

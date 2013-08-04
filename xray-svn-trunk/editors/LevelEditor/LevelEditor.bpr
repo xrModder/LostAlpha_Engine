@@ -145,9 +145,8 @@
     <IDLCFLAGS value="-I$(DXSDK_DIR)\Include -IEdit -IEngine -I$(BCB)\Projects 
       -I$(BCB)\include\vcl -I$(BCB)\include -I$(COMPONENTS_SOC)\alexmx 
       -I$(COMPONENTS_SOC)\ElPack\Code -I$(COMPONENTS_SOC)\ElPack\Code\Source 
-      -I$(CORESOC_DIR) -I../../xr_3da -I../../xr_3da/xrRender 
-      -I$(MAGIC_SW_DIR) -I$(MAGIC_SW_DIR)\Include -src_suffix cpp -D_EDITOR 
-      -D_LEVEL_EDITOR -D_DEBUG"/>
+      -I$(CORESOC_DIR) -I../../xr_3da -I../../xr_3da/xrRender -I$(MAGIC_SW_DIR) 
+      -I$(MAGIC_SW_DIR)\Include -src_suffix cpp -D_EDITOR -D_LEVEL_EDITOR -D_DEBUG"/>
     <CFLAG1 value="-Od -H=x:\intermediate_ed\le\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp -VF -ff 
       -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -He -c -tW -tWM"/>
     <PFLAGS value="-N2x:\intermediate_ed\le -N0x:\intermediate_ed\le -$Y+ -$W -$R -$Q -$O- 
