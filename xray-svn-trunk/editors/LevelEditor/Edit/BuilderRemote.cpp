@@ -1225,23 +1225,25 @@ if (!m_save_as_object)
 {
 	UI->ProgressEnd(pb);
 // process lods
-	if (bResult&&!l_lods.empty()){
+	if (bResult&&!l_lods.empty())
+	{
         SPBItem* pb = UI->ProgressStart(l_lods.size()*2,"Merge LOD textures...");
         Fvector2Vec			offsets;
         Fvector2Vec			scales;
         boolVec				rotated;
         U32Vec				remap;
         SSimpleImageVec		images;
-        for (int k=0; k<(int)l_lods.size(); k++){
+        for (unsigned long k=0; k<(unsigned long)l_lods.size(); ++k)
+		{
             images.push_back(SSimpleImage());
-            SSimpleImage& I	= images.back();
+			SSimpleImage& I	= images.back();
             I.name			= l_lods[k].lod_name;
             I.layers.push_back(l_lods[k].data);
             I.layers.push_back(l_lods[k].ndata);
             I.w				= LOD_IMAGE_SIZE*LOD_SAMPLE_COUNT;
             I.h				= LOD_IMAGE_SIZE;
 	        pb->Inc();
-        }       
+        }         
 
         SSimpleImage merged_image;
         xr_string fn_color	= ChangeFileExt	(MakeLevelPath(LEVEL_LODS_TEX_NAME).c_str(),".dds").c_str();
@@ -1257,7 +1259,8 @@ if (!m_save_as_object)
             tp.flags.assign		(STextureParams::flDitherColor|STextureParams::flGenerateMipMaps);
             ImageLib.MakeGameTexture		(fn_color.c_str(),merged_image.layers[0].begin(), tp);
             ImageLib.MakeGameTexture		(fn_normal.c_str(),merged_image.layers[1].begin(),tp);
-	        for (k=0; k<(int)l_lods.size(); k++){        
+	        for (k=0; k<(int)l_lods.size(); k++)
+			{        
 	            e_b_lod& l	= l_lods[k];         
                 for (u32 f=0; f<8; f++){
                 	for (u32 t=0; t<4; t++){
@@ -1268,8 +1271,8 @@ if (!m_save_as_object)
                 }
 		        pb->Inc();
 			}
-        }else{
-            ELog.DlgMsg		(mtError,"Failed to build merged LOD texture. Merged texture more than [2048x1024].");
+    	}else{
+            ELog.DlgMsg		(mtError,"Failed to build merged LOD texture. Merged texture more than [2048x2048].");
         	bResult			= FALSE;
         }
         UI->ProgressEnd(pb);
