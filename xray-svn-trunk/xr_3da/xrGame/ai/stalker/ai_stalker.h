@@ -482,6 +482,7 @@ public:
 
 public:
 			void						wounded								(bool value);
+			void						wounded								(bool value, bool dest);
 			bool						wounded								(const CRestrictedObject *object) const;
 	IC		bool						wounded								() const;
 

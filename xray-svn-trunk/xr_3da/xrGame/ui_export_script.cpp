@@ -15,11 +15,11 @@
 #include "ui/UIOptionsManagerScript.h"
 #include "ui/UIMapInfo.h"
 #include "ScriptXmlInit.h"
-
+/*
 #include "login_manager.h"
 #include "account_manager.h"
 #include "profile_store.h"
-
+*/
 using namespace luabind;
 
 CMainMenu*	MainMenu();

@@ -207,7 +207,8 @@ void	CActor::PickupModeUpdate_COD	()
 				pNearestItem = NULL;
 	}
 
-	CurrentGameUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
+	if (CurrentGameUI())
+		CurrentGameUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
 
 	if (pNearestItem && m_bPickupMode)
 	{

@@ -462,6 +462,20 @@ void InventoryUtilities::SendInfoToActor(LPCSTR info_id)
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+// skyloader: специальная функция для получения info_portions при нажатии кнопок UI 
+// (для tutorial)
+bool InventoryUtilities::HasActorInfo(LPCSTR info_id)
+{
+	if (GameID() != GAME_SINGLE) return false;
+	
+	CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+	if(actor)
+		return (actor->HasInfo(info_id));
+	else
+		return false;
+}
+
 u32 InventoryUtilities::GetGoodwillColor(CHARACTER_GOODWILL gw)
 {
 	u32 res = 0xffc0c0c0;

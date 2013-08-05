@@ -202,6 +202,8 @@ public:
 
 	Fmatrix									mInvFullTransform;
 
+	bool IsR2Active(void);
+
 	//float									fFOV;
 	//float									fASPECT;
 	

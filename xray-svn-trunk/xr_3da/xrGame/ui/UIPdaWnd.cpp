@@ -47,8 +47,6 @@ CUIPdaWnd::CUIPdaWnd()
 	UIEventsWnd				= NULL;
 	m_updatedSectionImage	= NULL;
 	m_oldSectionImage		= NULL;
-	m_bSkillsEnabled	= false;
-	m_bDownloadsEnabled	= false;
 	Init					();
 }
 
@@ -144,12 +142,6 @@ void CUIPdaWnd::Init()
 		UITabControl->GetButtonsVector()->at(6)->Enable(false);
 		UITabControl->GetButtonsVector()->at(7)->Enable(false);
 		UITabControl->GetButtonsVector()->at(8)->Enable(false);
-  	} else {
-		if (!m_bSkillsEnabled)
-			UITabControl->GetButtonsVector()->at(7)->Enable(false);
-
-		if (!m_bDownloadsEnabled)
-			UITabControl->GetButtonsVector()->at(8)->Enable(false);
 	}
 	
 	m_updatedSectionImage			= xr_new<CUIStatic>();
@@ -190,7 +182,21 @@ void CUIPdaWnd::Show(bool status)
 	if (status)
 	{
 		InventoryUtilities::SendInfoToActor("ui_pda");
-		inherited::Show();
+	bool val = false;
+	if (InventoryUtilities::HasActorInfo("pda_skills_enabled"))
+		val = true;
+
+	UITabControl->GetButtonsVector()->at(7)->Enable(val);
+
+	if (InventoryUtilities::HasActorInfo("pda_downloads_enabled"))
+		val = true;
+	else
+		val = false;
+
+	UITabControl->GetButtonsVector()->at(8)->Enable(val);
+
+	inherited::Show();
+	
 	}
 	else
 	{
@@ -285,7 +291,7 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		InventoryUtilities::SendInfoToActor("ui_pda_skills");
 		break;
 	case eptDownloads:
-		w				= lua_function("downloads");
+		w				= lua_function("downs");
 		VERIFY(w);
 		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
 		g_pda_info_state		&= ~pda_section::downloads;
@@ -473,12 +479,20 @@ void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_plac
 
 void CUIPdaWnd::EnableSkills(bool val)
 {
-	m_bSkillsEnabled = val;
-	UITabControl->GetButtonsVector()->at(7)->Enable(false);
+	if (val)
+		InventoryUtilities::SendInfoToActor("pda_skills_enabled");
+	else
+		InventoryUtilities::SendInfoToActor("pda_skills_disabled");
+
+	UITabControl->GetButtonsVector()->at(7)->Enable(val);
 }
 
 void CUIPdaWnd::EnableDownloads(bool val)
 {
-	m_bDownloadsEnabled = val;
-	UITabControl->GetButtonsVector()->at(8)->Enable(false);
+	if (val)
+		InventoryUtilities::SendInfoToActor("pda_downloads_enabled");
+	else
+		InventoryUtilities::SendInfoToActor("pda_downloads_disabled");
+
+	UITabControl->GetButtonsVector()->at(8)->Enable(val);
 }

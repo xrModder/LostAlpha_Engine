@@ -48,9 +48,6 @@ protected:
 	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
 
-	bool				m_bSkillsEnabled;
-	bool				m_bDownloadsEnabled;
-
 public:
 	// Поддиалоги PDA
 	CUIMapWnd*				UIMapWnd;
@@ -78,8 +75,6 @@ public:
 	
 	virtual void 			EnableSkills				(bool val);
 	virtual void 			EnableDownloads				(bool val);
-	virtual bool			IsSkillsEnabled			(){return m_bSkillsEnabled;}
-	virtual bool			IsDownloadsEnabled			(){return m_bDownloadsEnabled;}
 
 	virtual bool			OnMouseAction				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouseAction(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
 	virtual bool			OnKeyboardAction			(int dik, EUIMessages keyboard_action);

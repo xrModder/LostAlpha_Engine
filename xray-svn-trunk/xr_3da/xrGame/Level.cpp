@@ -570,7 +570,13 @@ void CLevel::OnFrame	()
 
 	//Device.Statistic->cripting.Begin	();
 	if (!g_dedicated_server)
-		ai().script_engine().script_process	(ScriptEngine::eScriptProcessorLevel)->update();
+	{
+		//TODO: why CLevel::OnFrame is calling before CLevel::Load_GameSpecific_After?
+		//is it logic error?
+		CScriptProcess * levelScript = ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel);
+		if (levelScript != NULL)
+			levelScript->update();
+	}
 	//Device.Statistic->Scripting.End	();
 	m_ph_commander->update				();
 	m_ph_commander_scripts->update		();

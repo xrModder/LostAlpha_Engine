@@ -53,7 +53,7 @@
 				EnableFiberSafeOptimizations="true"
 				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
-				GeneratePreprocessedFile="1"
+				GeneratePreprocessedFile="0"
 				StringPooling="false"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -27525,6 +27525,14 @@
 					<File
 						RelativePath=".\ui\UIPdaWnd.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								Detect64BitPortabilityProblems="false"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\ui\UIPdaWnd.h"
@@ -29682,6 +29690,14 @@
 					</File>
 					<File
 						RelativePath=".\ui\UIDragDropListEx.h"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.cpp"
+						>
+					</File>
+					<File
+						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.h"
 						>
 					</File>
 				</Filter>
