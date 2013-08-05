@@ -127,7 +127,7 @@ bool ESoundSource::Load(IReader& F)
 	inherited::Load			(F);
 
 	R_ASSERT(F.find_chunk(SOUND_CHUNK_TYPE));
-	m_Type					= ESoundType(F.r_u8());//u32());
+	m_Type					= ESoundType(F.r_u32());//u8());
 
     R_ASSERT(F.find_chunk(SOUND_CHUNK_SOURCE_NAME));
     F.r_stringZ		(m_WAVName);
@@ -195,7 +195,7 @@ void ESoundSource::Save(IWriter& F)
 	F.w_u16			(SOUND_SOURCE_VERSION);
 	F.close_chunk	();
 
-	F.w_chunk		(SOUND_CHUNK_TYPE,&m_Type, 1);//sizeof(m_Type));
+    F.w_chunk		(SOUND_CHUNK_TYPE,&m_Type,sizeof(m_Type));//1;
 
     F.open_chunk	(SOUND_CHUNK_SOURCE_NAME);
     F.w_stringZ		(m_WAVName);
