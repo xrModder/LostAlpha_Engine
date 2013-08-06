@@ -56,7 +56,7 @@
       -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\se -D&quot;&quot; -aa -Tpe -GD -x -Gn -v"/>
+    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\se -D&quot;&quot; -aa -Tpe -GD -x -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>

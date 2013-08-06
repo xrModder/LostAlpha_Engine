@@ -45,7 +45,7 @@
       -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zi"/>
-    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\particles -D&quot;&quot; -aa -Tpd -GD -s -Gi -v"/>
+    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\particles -D&quot;&quot; -aa -Tpd -GD -x -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>

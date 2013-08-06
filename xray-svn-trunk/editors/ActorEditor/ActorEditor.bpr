@@ -41,18 +41,18 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_EDITOR -D_ACTOR_EDITOR -D_DEBUG -I$(DXSDK_DIR)\Include 
-      -I$(COMPONENTS_SOC)\alexmx -I$(BCB)\include -I$(BCB)\include\vcl 
-      -I$(COMPONENTS_SOC)\ElPack\Code -I$(COMPONENTS_SOC)\ElPack\Code\Source 
-      -I$(CORESOC_DIR) -I..\..\xr_3da -I..\..\xr_3da\xrCPU_Pipe 
-      -I..\..\xr_3da\xrRender -boa"/>
+    <IDLCFLAGS value="-I$(DXSDK_DIR)\Include -I$(COMPONENTS_SOC)\alexmx -I$(BCB)\include 
+      -I$(BCB)\include\vcl -I$(COMPONENTS_SOC)\ElPack\Code 
+      -I$(COMPONENTS_SOC)\ElPack\Code\Source -I$(CORESOC_DIR) -I..\..\xr_3da 
+      -I..\..\xr_3da\xrCPU_Pipe -I..\..\xr_3da\xrRender -src_suffix cpp 
+      -D_EDITOR -D_ACTOR_EDITOR -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=x:\intermediate_ed\ae\pch.csm -Hc -Q -Vms -Vx -Ve -xf -xp -VF -ff 
       -X- -r- -ps -a4 -6 -b- -k -y -v -vi- -He -c -tW -tWM"/>
     <PFLAGS value="-N2x:\intermediate_ed\ae -N0x:\intermediate_ed\ae -$Y+ -$W -$O- -$A8 -v 
       -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\ae -D&quot;&quot; -aa -Tpe -GD -x -Gn -v"/>
+    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\ae -D&quot;&quot; -aa -Tpe -GD -x -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
