@@ -76,9 +76,7 @@ void CScriptGameObject::set_sound_mask	(u32 sound_mask)
 		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member set_sound_mask!");
 	else {
 		CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(monster);
-		if (entity_alive) {
-			VERIFY2				(entity_alive->g_Alive(),"Stalkers talk after death??? Say why??");
-		}
+
 		monster->sound().set_sound_mask(sound_mask);
 	}
 }
