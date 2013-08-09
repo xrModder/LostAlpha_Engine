@@ -183,6 +183,10 @@ void CUIInventoryWnd::Init()
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_binocular", 0, m_pUIBinocularList);
 	BindDragDropListEnents				(m_pUIBinocularList);
 
+	m_pUITorchList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUITorchList); m_pUITorchList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx			(uiXml, "dragdrop_torch", 0, m_pUITorchList);
+	BindDragDropListEnents				(m_pUITorchList);
+
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
 	UIPropertiesBox.Init				(0,0,300,300);
@@ -241,6 +245,7 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	if(l==m_pUIOutfitList)		return iwSlot;
 	if(l==m_pUIKnifeList)	return iwSlot;
 	if(l==m_pUIBinocularList)	return iwSlot;
+	if(l==m_pUITorchList)	return iwSlot;
 
 	NODEFAULT;
 #ifdef DEBUG

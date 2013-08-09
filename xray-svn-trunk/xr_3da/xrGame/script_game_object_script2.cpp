@@ -145,6 +145,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("patrol",						&CScriptGameObject::GetPatrolPathName)
 
 		// lost alpha start
+		.def("get_torch_battery_status", &CScriptGameObject::GetTorchBatteryStatus)
+		.def("set_torch_battery_status", &CScriptGameObject::SetTorchBatteryStatus)
 		.def("set_torch_state", &CScriptGameObject::SetTorchState)
 		.def("get_torch_state", &CScriptGameObject::GetTorchState)
 

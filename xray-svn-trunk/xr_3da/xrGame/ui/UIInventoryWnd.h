@@ -97,6 +97,7 @@ protected:
 	CUIDragDropListEx*			m_pUIAutomaticList;
 	CUIDragDropListEx*			m_pUIKnifeList;
 	CUIDragDropListEx*			m_pUIBinocularList;
+	CUIDragDropListEx*			m_pUITorchList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);

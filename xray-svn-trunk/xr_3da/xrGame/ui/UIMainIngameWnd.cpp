@@ -564,7 +564,13 @@ void CUIMainIngameWnd::Update()
 			if (UIFlashlightBar.IsShown())
 				UIFlashlightBar.Show(false);
 		}
+	} else {
+		if (UIStaticTorch.IsShown())
+			UIStaticTorch.Show(false);
+		if (UIFlashlightBar.IsShown())
+			UIFlashlightBar.Show(false);
 	}
+
 	if (m_pActor->UsingTurret())
 	{
 		if (!UIStaticTurret.IsShown())

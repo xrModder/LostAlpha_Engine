@@ -124,37 +124,40 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
 	case kNIGHT_VISION:
 		{
-			const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
-			xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-			xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-			for(;it!=it_e;++it){
-				CTorch* torch = smart_cast<CTorch*>(*it);
-				if (torch){		
+			if (inventory().ItemFromSlot(TORCH_SLOT))
+			{
+				CTorch *torch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+				if (torch)		
 					torch->SwitchNightVision();
-					break;
-				}
 			}
-		}break;
+		} break;
 	case kTORCH:{ 
 		if (!m_current_torch)
 		{
-			const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
-			xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-			xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-			for(;it!=it_e;++it){
-					CTorch* torch = smart_cast<CTorch*>(*it);
-					if (torch){		
-							m_current_torch = torch;
-							m_current_torch->Switch();
-						break;
-					}
+			if (inventory().ItemFromSlot(TORCH_SLOT))
+			{
+				CTorch *torch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+				if (torch)		
+				{
+					m_current_torch = torch;
+					m_current_torch->Switch();
 				}
+			}
+		} else {
+			if (inventory().ItemFromSlot(TORCH_SLOT))
+			{
+				CTorch *torch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+				if (torch)
+				{
+					m_current_torch = torch;
+					m_current_torch->Switch();
+				} else
+					m_current_torch = 0;
+
+			} else
+				m_current_torch = 0;
 		}
-		else
-		{
-			m_current_torch->Switch();
-		}
-		}break;
+		} break;
 	case kWPN_1:	
 	case kWPN_2:	
 	case kWPN_3:	
