@@ -820,6 +820,9 @@ void CScriptGameObject::enable_attachable_item	(bool value)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAttachableItem : cannot access class member enable_attachable_item!");
 		return;
 	}
+
+	//Msg("enable_attachable_item for [%s][%d]", attachable_item->object().cNameSect().c_str(), value);
+
 	attachable_item->enable					(value);
 }
 
@@ -830,6 +833,9 @@ bool CScriptGameObject::attachable_item_enabled	() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAttachableItem : cannot access class member attachable_item_enabled!");
 		return								(false);
 	}
+
+	//Msg("attachable_item_enabled for [%s]", attachable_item->object().cNameSect().c_str());
+
 	return									(attachable_item->enabled());
 }
 
@@ -993,11 +999,10 @@ u16 CScriptGameObject::GetTorchBatteryStatus()
 {
 	CTorch *torch = smart_cast<CTorch*>(&object());
 	if (torch)
-	{
-		torch->GetBatteryStatus();
-	} else {
+		return (torch->GetBatteryStatus());
+	else {
 		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "This method works only for torch, check your code!");
-		return 0;
+		return -1;
 	}
 }
 
