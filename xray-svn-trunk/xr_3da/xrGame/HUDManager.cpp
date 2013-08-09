@@ -173,6 +173,9 @@ void CHUDManager::Render_First()
 	if (A->HUDview() && !A->IsActorShadowsOn() && !A->DrawLegs())
 		return;
 
+	if (A->UsingTurret())
+		return;
+
 	if ((!A->HUDview() && A->IsActorShadowsOn()) || !A->IsActorShadowsOn())
 	{
 		::Render->set_Object			(O->H_Root());
