@@ -301,7 +301,7 @@ void CUIInventoryWnd::Update()
 
 	if(pEntityAlive) 
 	{
-		float v = pEntityAlive->conditions().BleedingSpeed()*100.0f;
+		float v = (1.f - pEntityAlive->conditions().BleedingSpeed())*100.0f;
 		UIProgressBarHealth.SetProgressPos		(v);
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
