@@ -18,7 +18,7 @@ bool CCar::DoorHit(float P,s16 element,ALife::EHitType hit_type)
 	if(hit_type==ALife::eHitTypeStrike && P > 20.f)
 	{
 		xr_map<u16,SDoor>::iterator	   i=m_doors.begin(),e=m_doors.end();
-		for(;e!=i;++i)i->second.Open();
+		//for(;e!=i;++i)i->second.Open();
 	}
 	xr_map   <u16,SDoor>::iterator i=m_doors.find(element);
 	if(i!=m_doors.end())
