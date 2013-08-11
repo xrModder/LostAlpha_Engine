@@ -1,17 +1,17 @@
 #pragma once
-#include "UIbutton.h"
+//#include "UIbutton.h"
 
-class CUIListItem :	public CUIButton
+class CUIListItem //:	public CUIButton
 {
 private:
-	typedef CUIButton inherited;
+	//typedef CUIButton inherited;
 public:
 	CUIListItem(void);
 	virtual ~CUIListItem(void);
 
-	virtual void Init(float x, float y, float width, float height);
-	virtual void Init(const char* str, float x, float y, float width, float height);
-	virtual void InitTexture(LPCSTR tex_name);
+//	virtual void Init(float x, float y, float width, float height);
+//	virtual void Init(const char* str, float x, float y, float width, float height);
+//	virtual void InitTexture(LPCSTR tex_name);
 	
 			void* GetData() {return m_pData;}
 			void SetData(void* pData) { m_pData = pData;}
@@ -25,10 +25,10 @@ public:
 			int	GetGroupID() { return m_iGroupID; }
 			void SetGroupID(int ID) { m_iGroupID = ID; }
 
-	virtual void	MarkSelected				(bool b){};
+//	virtual void	MarkSelected				(bool b){};
 	// переопределяем критерий подсвечивания текста
-	virtual bool IsHighlightText();
-	virtual void SetHighlightText(bool Highlight)		{ m_bHighlightText = Highlight; }
+//	virtual bool IsHighlightText();
+//	virtual void SetHighlightText(bool Highlight)		{ m_bHighlightText = Highlight; }
 
 protected:
 	//указатель на произвольные данные, которые могут
@@ -45,5 +45,5 @@ protected:
 	int m_iGroupID;
 
 	// подсвечивается кнопка или нет?
-	bool m_bHighlightText;
+//	bool m_bHighlightText;
 };

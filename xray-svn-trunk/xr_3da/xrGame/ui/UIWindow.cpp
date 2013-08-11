@@ -626,3 +626,22 @@ void CUIWindow::BringAllToTop()
 	GetParent()->BringToTop					(this);
 	GetParent()->BringAllToTop				();
 }
+
+bool CUIWindow::BringToTop(CUIWindow* pChild)
+{
+	//найти окно в списке
+/*	WINDOW_LIST_it it = std::find(m_ChildWndList.begin(), 
+										m_ChildWndList.end(), 
+										pChild);
+*/
+	if( !IsChild(pChild) ) return false;
+
+	//удалить со старого места
+	SafeRemoveChild(pChild);
+//	m_ChildWndList.remove(pChild);
+	//поместить на вершину списка
+	m_ChildWndList.push_back(pChild);
+
+	return true;
+}
+

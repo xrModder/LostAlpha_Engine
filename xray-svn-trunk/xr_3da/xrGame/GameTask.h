@@ -3,10 +3,13 @@
 #include "encyclopedia_article_defs.h"
 #include "GameTaskDefs.h"
 #include "script_export_space.h"
+#include "pch_script.h"
 
 class CGameTaskManager;
 class CMapLocation;
 class CGameTask;
+
+typedef xr_vector<luabind::functor<bool> > task_state_functors;
 
 class SScriptObjectiveHelper: public IPureSerializeObject<IReader,IWriter>
 {
@@ -25,7 +28,7 @@ public:
 	virtual void			save			(IWriter &stream);
 	virtual void			load			(IReader &stream);
 			
-			void			init_functors	(xr_vector<shared_str>& v_src, xr_vector<luabind::functor<bool> >& v_dest);
+			void			init_functors	(xr_vector<shared_str>& v_src, task_state_functors& v_dest);
 };
 
 class SGameTaskObjective : public IPureSerializeObject<IReader,IWriter>
@@ -67,11 +70,11 @@ public:
 	xr_vector<shared_str>				m_infos_on_complete;
 	xr_vector<shared_str>				m_infos_on_fail;
 
-	xr_vector<luabind::functor<bool> >	m_complete_lua_functions;
-	xr_vector<luabind::functor<bool> >	m_fail_lua_functions;
+	task_state_functors						m_fail_lua_functions;
+	task_state_functors						m_complete_lua_functions;
 
-	xr_vector<luabind::functor<bool> >	m_lua_functions_on_complete;
-	xr_vector<luabind::functor<bool> >	m_lua_functions_on_fail;
+	task_state_functors						m_lua_functions_on_complete;
+	task_state_functors						m_lua_functions_on_fail;
 
 // for scripting access
 	void					SetDescription_script	(LPCSTR _descr);

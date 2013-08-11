@@ -874,6 +874,26 @@ void CUIMapWnd::ShowHint					(CUIWindow* parent, LPCSTR text)
 	m_hint->SetWndPos		(r.lt);
 }
 
+void CUIMapWnd::ShowHintSpot( CMapSpot* spot )
+{
+	CUIWindow* owner = m_hint->GetOwner();
+	if ( !owner )
+	{
+		m_hint->SetInfoMSpot( spot );
+		m_hint->SetOwner( spot );
+		ShowHint();
+		return;
+	}
+
+	CMapSpot* prev_spot = smart_cast<CMapSpot*>( owner );
+	if ( prev_spot && ( prev_spot->get_location_level() < spot->get_location_level() ) )
+	{
+		m_hint->SetInfoMSpot( spot );
+		m_hint->SetOwner( spot );
+		ShowHint();
+	}
+}
+
 void CUIMapWnd::HideHint					(CUIWindow* parent)
 {
 	if(m_hint->GetOwner() == parent)
@@ -909,4 +929,25 @@ void CUIMapWnd::Reset()
 {
 	inherited::Reset			();
 	ResetActionPlanner			();
+}
+
+
+#include "../gametaskmanager.h"
+#include "../actor.h"
+#include "../map_spot.h"
+#include "../gametask.h"
+
+void CUIMapWnd::SpotSelected( CUIWindow* w )
+{
+	CMapSpot* sp	= smart_cast<CMapSpot*>( w );
+	if ( !sp )
+	{
+		return;
+	}
+	
+	CGameTask* t	= Actor()->GameTaskManager().HasGameTask( sp->MapLocation(), true );
+	if ( t )
+	{
+		Actor()->GameTaskManager().SetActiveTask( t );
+	}
 }

@@ -52,6 +52,7 @@ public:
 
 	void				Init					(float x, float y, float width, float height, CUIXml* xml_doc);
 	void				Init					(float x, float y, float width, float height, const char* xml_name);
+	void				Init					(Fvector2 pos, Fvector2 size, const char* xml_name)						{ Init(pos.x,pos.y,size.x,size.y,xml_name); }
 	void				InitCharacter			(u16 id);
 	void				ClearInfo				();
 

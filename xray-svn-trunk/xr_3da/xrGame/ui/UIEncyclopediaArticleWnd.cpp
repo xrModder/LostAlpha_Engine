@@ -40,24 +40,24 @@ void CUIEncyclopediaArticleWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 void CUIEncyclopediaArticleWnd::SetArticle(CEncyclopediaArticle* article)
 {
-	if( article->data()->image.TextureAvailable() ){
+	if( article->data()->image.IsTextureOn() ){
 		m_UIImage->SetShader			(article->data()->image.GetShader());
-		m_UIImage->SetOriginalRect		(article->data()->image.GetStaticItem()->GetOriginalRect());
+		m_UIImage->SetTextureRect		(article->data()->image.GetStaticItem()->GetTextureRect());
 		m_UIImage->SetWndSize			(article->data()->image.GetWndSize());
 
 		float img_x						= (GetWidth()-m_UIImage->GetWidth())/2.0f;
 		img_x							= _max(0.0f, img_x);
-		m_UIImage->SetWndPos			(img_x ,m_UIImage->GetWndPos().y);
+		m_UIImage->SetWndPos			(Fvector2().set(img_x ,m_UIImage->GetWndPos().y));
 	};
-	m_UIText->SetText					(*CStringTable().translate(article->data()->text.c_str()));
-	m_UIText->AdjustHeightToText		();
+	m_UIText->TextItemControl()->SetText	(*CStringTable().translate(article->data()->text.c_str()));
+	m_UIText->AdjustHeightToText			();
 
-	AdjustLauout						();
+	AdjustLauout							();
 }
 
 void CUIEncyclopediaArticleWnd::AdjustLauout()
 {
-	m_UIText->SetWndPos					(m_UIText->GetWndPos().x, m_UIImage->GetWndPos().y + m_UIImage->GetHeight());
+	m_UIText->SetWndPos					(Fvector2().set(m_UIText->GetWndPos().x, m_UIImage->GetWndPos().y + m_UIImage->GetHeight()));
 	SetHeight							(m_UIImage->GetWndPos().y + m_UIImage->GetHeight()+m_UIText->GetHeight());
 }
 

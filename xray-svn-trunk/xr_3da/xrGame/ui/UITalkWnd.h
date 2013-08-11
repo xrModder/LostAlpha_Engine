@@ -4,7 +4,7 @@
 #include "UIStatic.h"
 #include "UIButton.h"
 #include "UIEditBox.h"
-#include "UIListWnd.h"
+//#include "UIListWnd.h"
 #include "UIFrameWindow.h"
 
 
@@ -14,7 +14,7 @@ class CActor;
 class CInventoryOwner;
 class CPhraseDialogManager;
 class CUITalkDialogWnd;
-class CUITradeWnd;
+//class CUITradeWnd;
 ///////////////////////////////////////
 //
 ///////////////////////////////////////
@@ -30,27 +30,30 @@ public:
 						CUITalkWnd();
 	virtual				~CUITalkWnd();
 
-	virtual void		Init();
+	IC		bool		playing_sound			()		 { return !!m_sound._feedback(); }
+	IC	CInventoryOwner*OthersInvOwner			() const { return m_pOthersInvOwner;	 };
 
-	virtual bool		StopAnyMove					(){return true;}
-	virtual void		SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+			void		InitTalkWnd				();
 
-	virtual void		Draw();
-	virtual void		Update();
+	virtual bool		StopAnyMove				(){return true;}
+	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+
+	virtual void		Draw					();
+	virtual void		Update					();
 		
-	virtual void		Show();
-	virtual void		Hide();
+	virtual void		Show					(bool status);
 	
-	void				Stop();					//deffered
+	void				Stop					();					//deffered
+	void				StopTalk				();
 
 	void				UpdateQuestions();
 	void				NeedUpdateQuestions();
 	//инициализации начального диалога собеседника
-	void				InitOthersStartDialog();
-	virtual bool		IR_OnKeyboardPress(int dik);
-	virtual bool		OnKeyboard(int dik, EUIMessages keyboard_action);
-	void				SwitchToTrade();
-	void				AddIconedMessage(LPCSTR text, LPCSTR texture_name, Frect texture_rect, LPCSTR templ_name);
+	void				InitOthersStartDialog	();
+	virtual bool		OnKeyboardAction				(int dik, EUIMessages keyboard_action);
+	void				SwitchToTrade			();
+	void				SwitchToUpgrade			();
+	void				AddIconedMessage		(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
 
 protected:
 	//диалог
@@ -63,14 +66,10 @@ protected:
 public:
 	void				AddQuestion				(const shared_str& text, const shared_str& id);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
+	bool				b_disable_break;
 protected:
-	//для режима торговли
-	CUITradeWnd*			UITradeWnd;
-	CUITalkDialogWnd*		UITalkDialogWnd;
+	CUITalkDialogWnd*	UITalkDialogWnd;
 
-
-	//указатель на владельца инвентаря вызвавшего менюшку
-	//и его собеседника
 	CActor*				m_pActor;
 	CInventoryOwner*	m_pOurInvOwner;
 	CInventoryOwner*	m_pOthersInvOwner;
@@ -78,10 +77,6 @@ protected:
 	CPhraseDialogManager* m_pOurDialogManager;
 	CPhraseDialogManager* m_pOthersDialogManager;
 
-	//спец. переменная, нужна для того чтобы RemoveAll
-	//могла быть корректно вызвана из SendMessage
-	//так как иначе возникает ситуация, что класс, который
-	//вызвал нам SendMessage обращается к удаленному объекту pListItem
 	bool				m_bNeedToUpdateQuestions;
 
 	//текущий диалог, если NULL, то переходим в режим выбора темы

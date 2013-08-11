@@ -133,7 +133,7 @@ void CUIArtefactParams::SetInfo(const shared_str& af_section)
 									_color, 
 									_val, 
 									_sn);
-		_s->SetText				(_buff);
+		_s->TextItemControl()->SetText				(_buff);
 		_s->SetWndPos			(_s->GetWndPos().x, _h);
 		_h						+= _s->GetWndSize().y;
 		AttachChild				(_s);

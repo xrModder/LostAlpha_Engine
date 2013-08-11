@@ -19,7 +19,9 @@ void CUIPointerGage::Init    (LPCSTR tex_name,
 								 float x, float y, 
 								 float width, float height)
 {
-	inherited::Init(tex_name, x , y, width, height);
+//	inherited::Init(tex_name, x , y, width, height);
+	inherited::SetWindowName(tex_name);
+	inherited::SetWndRect(x , y, width, height);
 }
 
 
@@ -28,7 +30,7 @@ void CUIPointerGage::InitPointer(LPCSTR arrow_tex_name,  float arrow_offset_x , 
 {
 	m_iArrowOffsetX = GetWidth()/2 + arrow_offset_x;
 	m_iArrowOffsetY = GetHeight()/2 + arrow_offset_y;
-	m_ArrowPointer.Init(arrow_tex_name,	"hud\\default", 0, 0, alNone);
+	m_ArrowPointer.Init(arrow_tex_name,	"hud\\default", 0, 0);
 
 	m_fAngleMin = angle_min;
 	m_fAngleMax = angle_max;

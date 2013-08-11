@@ -26,17 +26,16 @@ public:
 	CUIGameSP									();
 	virtual				~CUIGameSP				();
 
-	virtual	void		reset_ui				();
-	virtual	void		shedule_Update			(u32 dt);
 	virtual void		SetClGame				(game_cl_GameState* g);
-	virtual bool		IR_OnKeyboardPress		(int dik);
-	virtual bool		IR_OnKeyboardRelease	(int dik);
+	virtual bool		IR_UIOnKeyboardPress	(int dik);
+	virtual void _BCL	OnFrame					();
 
-	void				StartTalk				();
-	void				StartCarBody			(CInventoryOwner* pOurInv, CInventoryOwner* pOthers);
-	void				StartCarBody			(CInventoryOwner* pOurInv, CInventoryBox* pBox);
-	virtual void		ReInitShownUI			();
-	void				ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b);
+	void				StartTalk				(bool disable_break);
+	void				StartTrade				(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner);
+//	void				StartUpgrade			(CInventoryOwner* pActorInv, CInventoryOwner* pMech);
+	void				StartCarBody			(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner);
+	void				StartCarBody			(CInventoryOwner* pActorInv, CInventoryBox* pBox);
+	void				ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b, const shared_str& message, bool b_allow_change_level);
 
 	virtual void		HideShownDialogs		();
 
@@ -65,6 +64,8 @@ public:
 	Fvector					m_position_cancel;
 	Fvector					m_angles_cancel;
 	bool					m_b_position_cancel;
+	bool					m_b_allow_change_level;
+	shared_str				m_message_str;
 
 						CChangeLevelWnd				();
 	virtual				~CChangeLevelWnd			()									{};
@@ -72,5 +73,5 @@ public:
 	virtual bool		WorkInPause					()const {return true;}
 	virtual void		Show						();
 	virtual void		Hide						();
-	virtual bool		OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 };

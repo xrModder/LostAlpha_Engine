@@ -154,6 +154,7 @@ public:
 	virtual void			Update				();
 
 	virtual void			BringAllToTop		();
+	virtual	bool			BringToTop			(CUIWindow* pChild);
 
 			void			SetPPMode			();
 			void			ResetPPMode			();

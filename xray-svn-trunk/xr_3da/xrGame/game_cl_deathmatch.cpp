@@ -618,12 +618,12 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 	u32 cur_game_state = Phase();
 	if(m_game_ui->m_pMapDesc && m_game_ui->m_pMapDesc->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
 	{
-		m_game_ui->m_pMapDesc->GetHolder()->StartStopMenu(m_game_ui->m_pMapDesc, true);
+		m_game_ui->m_pMapDesc->GetHolder()->StopMenu(m_game_ui->m_pMapDesc);
 	}
 
 	if(pCurSkinMenu && pCurSkinMenu->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
 	{
-		pCurSkinMenu->GetHolder()->StartStopMenu(pCurSkinMenu, true);
+		pCurSkinMenu->GetHolder()->StopMenu(pCurSkinMenu);
 	}
 	
 	if(cur_game_state!=GAME_PHASE_INPROGRESS) HideBuyMenu();	

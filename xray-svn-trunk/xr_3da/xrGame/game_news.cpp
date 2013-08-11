@@ -27,6 +27,7 @@ GAME_NEWS_DATA::GAME_NEWS_DATA()
 void GAME_NEWS_DATA::save (IWriter& stream)
 {
 	save_data(m_type,		stream);
+	save_data(news_caption,	stream);
 	save_data(news_text,	stream);
 	save_data(receive_time, stream);
 	save_data(texture_name,	stream);
@@ -36,6 +37,7 @@ void GAME_NEWS_DATA::save (IWriter& stream)
 void GAME_NEWS_DATA::load (IReader& stream)
 {
 	load_data(m_type,		stream);
+	load_data(news_caption,	stream);
 	load_data(news_text,	stream);
 	load_data(receive_time, stream);
 	load_data(texture_name,	stream);

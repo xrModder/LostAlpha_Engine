@@ -2,6 +2,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+/*
 #include "UISleepWnd.h"
 #include "../alife_space.h"
 #include "UIXmlInit.h"
@@ -34,16 +35,16 @@ void CUISleepWnd::Init()
 	// Plus, minus time
 	UIPlusBtn				= xr_new<CUIButton>();UIPlusBtn->SetAutoDelete(true);
 	AttachChild				(UIPlusBtn);
-	xml_init.InitButton		(uiXml, "plus_button", 0, UIPlusBtn);
+	CUIXmlInit::Init3tButton		(uiXml, "plus_button", 0, UIPlusBtn);
 
 	UIMinusBtn				= xr_new<CUIButton>();UIMinusBtn->SetAutoDelete(true);
 	AttachChild(UIMinusBtn);
-	xml_init.InitButton(uiXml, "minus_button", 0, UIMinusBtn);
+	CUIXmlInit::Init3tButton(uiXml, "minus_button", 0, UIMinusBtn);
 
 	// Perform sleep
 	UIRestBtn				= xr_new<CUIButton>();UIRestBtn->SetAutoDelete(true);
 	AttachChild(UIRestBtn);
-	xml_init.InitButton(uiXml, "rest_button", 0, UIRestBtn);
+	CUIXmlInit::Init3tButton(uiXml, "rest_button", 0, UIRestBtn);
 
 	// Update timerest meter
 	ResetTime();
@@ -144,3 +145,4 @@ void CUISleepWnd::SetRestTime(u8 hours, u8 minutes)
 void CUISleepWnd::SetText(LPCSTR str){
 	this->UIRestBtn->SetText(str);
 }
+*/

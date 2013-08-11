@@ -43,7 +43,7 @@ CDialogHolder::~CDialogHolder()
 {
 }
 
-void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
+void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	R_ASSERT						( !pDialog->IsShown() );
 
@@ -85,7 +85,7 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 }
 
 
-void CDialogHolder::StopMenu (CUIDialogWnd* pDialog)
+void CDialogHolder::StopMenu(CUIDialogWnd* pDialog)
 {
 	R_ASSERT( pDialog->IsShown() );
 
@@ -134,7 +134,8 @@ void CDialogHolder::RemoveDialogToRender(CUIWindow* pDialog)
 	dlgItem itm		(pDialog);
 	itm.enabled		= true;
 	xr_vector<dlgItem>::iterator it = std::find(m_dialogsToRender.begin(),m_dialogsToRender.end(),itm);
-	if(it != m_dialogsToRender.end())
+
+	if(it!=m_dialogsToRender.end())
 	{
 		(*it).wnd->Show(false);
 		(*it).wnd->Enable(false);
@@ -200,23 +201,22 @@ void CDialogHolder::SetMainInputReceiver	(CUIDialogWnd* ir, bool _find_remove)
 		m_input_receivers.push_back(recvItem(ir));
 	}
 };
-//. #include "ai_space.h"
-//. #include "script_engine.h"
-void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
+
+void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-//.	ai().script_engine().script_log	(eLuaMessageTypeError,"foo");
 	if (pDialog && pDialog->NeedCenterCursor())
 	{
 		GetUICursor().SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
 	}
-	if( pDialog->IsShown() )
-		StopMenu(pDialog);
-	else
-		StartMenu(pDialog, bDoHideIndicators);
-	
+	StartMenu(pDialog, bDoHideIndicators);
 }
 
-void CDialogHolder::OnFrame	()
+void CDialogHolder::StopDialog(CUIDialogWnd* pDialog)
+{
+	StopMenu(pDialog);
+}
+
+void CDialogHolder::OnFrame()
 {
 	m_b_in_update = true;
 	CUIDialogWnd* wnd = TopInputReceiver();

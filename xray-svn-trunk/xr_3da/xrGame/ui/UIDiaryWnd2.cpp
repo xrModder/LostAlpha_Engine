@@ -16,6 +16,7 @@
 #include "../alife_registry_wrappers.h"
 #include "../encyclopedia_article.h"
 #include "UIPdaAux.h"
+#include "uilistbox.h"
 
 extern u32			g_pda_info_state;
 
@@ -53,38 +54,38 @@ void CUIDiaryWnd::Init()
 	xml_init.InitWindow				(uiXml, "main_wnd", 0, this);
 
 	m_UILeftFrame					= xr_new<CUIFrameWindow>(); m_UILeftFrame->SetAutoDelete(true);
-	xml_init.InitFrameWindow		(uiXml,"main_wnd:left_frame",0,m_UILeftFrame);
+	CUIXmlInit::InitFrameWindow		(uiXml,"main_wnd:left_frame",0,m_UILeftFrame);
 	AttachChild						(m_UILeftFrame);
 	
 	m_UILeftHeader					= xr_new<CUIFrameLineWnd>(); m_UILeftHeader->SetAutoDelete(true);
-	xml_init.InitFrameLine			(uiXml, "main_wnd:left_frame:left_frame_header", 0, m_UILeftHeader);
+	CUIXmlInit::InitFrameLine			(uiXml, "main_wnd:left_frame:left_frame_header", 0, m_UILeftHeader);
 	m_UILeftFrame->AttachChild		(m_UILeftHeader);
 
 	m_FilterTab						= xr_new<CUITabControl>();m_FilterTab->SetAutoDelete(true);
 	m_UILeftHeader->AttachChild		(m_FilterTab);
-	xml_init.InitTabControl			(uiXml, "main_wnd:left_frame:left_frame_header:filter_tab", 0, m_FilterTab);
+	CUIXmlInit::InitTabControl			(uiXml, "main_wnd:left_frame:left_frame_header:filter_tab", 0, m_FilterTab);
 	m_FilterTab->SetWindowName		("filter_tab");
 	Register						(m_FilterTab);
-    AddCallback						("filter_tab",TAB_CHANGED,CUIWndCallback::void_function(this,&CUIDiaryWnd::OnFilterChanged));
+    AddCallbackStr					("filter_tab",TAB_CHANGED,CUIWndCallback::void_function(this,&CUIDiaryWnd::OnFilterChanged));
 
 	m_UIAnimation					= xr_new<CUIAnimatedStatic>(); m_UIAnimation->SetAutoDelete(true);
-	xml_init.InitAnimatedStatic		(uiXml, "main_wnd:left_frame:left_frame_header:anim_static", 0, m_UIAnimation);
+	CUIXmlInit::InitAnimatedStatic		(uiXml, "main_wnd:left_frame:left_frame_header:anim_static", 0, m_UIAnimation);
 	m_UILeftHeader->AttachChild		(m_UIAnimation);
 
 
 	m_UILeftWnd						= xr_new<CUIWindow>(); m_UILeftWnd->SetAutoDelete(true);
-	xml_init.InitWindow				(uiXml, "main_wnd:left_frame:work_area", 0, m_UILeftWnd);
+	CUIXmlInit::InitWindow				(uiXml, "main_wnd:left_frame:work_area", 0, m_UILeftWnd);
 	m_UILeftFrame->AttachChild		(m_UILeftWnd);
 
-	m_SrcListWnd					= xr_new<CUIListWnd>(); m_SrcListWnd->SetAutoDelete(false);
-	xml_init.InitListWnd			(uiXml, "main_wnd:left_frame:work_area:src_list", 0, m_SrcListWnd);
+	m_SrcListWnd					= xr_new<CUIListBox>(); m_SrcListWnd->SetAutoDelete(false);
+	CUIXmlInit::InitListBox			(uiXml, "main_wnd:left_frame:work_area:src_list", 0, m_SrcListWnd);
 	m_SrcListWnd->SetWindowName		("src_list");
 	Register						(m_SrcListWnd);
-    AddCallback						("src_list",LIST_ITEM_CLICKED,CUIWndCallback::void_function(this,&CUIDiaryWnd::OnSrcListItemClicked));
+    AddCallbackStr					("src_list",LIST_ITEM_CLICKED,CUIWndCallback::void_function(this,&CUIDiaryWnd::OnSrcListItemClicked));
 
-	xml_init.InitFont				(uiXml, "main_wnd:left_frame:work_area:src_list:tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
+	CUIXmlInit::InitFont				(uiXml, "main_wnd:left_frame:work_area:src_list:tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
 	R_ASSERT						(m_pTreeItemFont);
-	xml_init.InitFont				(uiXml, "main_wnd:left_frame:work_area:src_list:tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
+	CUIXmlInit::InitFont				(uiXml, "main_wnd:left_frame:work_area:src_list:tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
 	R_ASSERT						(m_pTreeRootFont);
 
 	m_UIRightFrame					= xr_new<CUIFrameWindow>();		m_UIRightFrame->SetAutoDelete(true);
@@ -92,24 +93,24 @@ void CUIDiaryWnd::Init()
 	AttachChild						(m_UIRightFrame);
 
 	m_UIRightHeader					= xr_new<CUIFrameLineWnd>();	m_UIRightHeader->SetAutoDelete(true);
-	xml_init.InitFrameLine			(uiXml, "main_wnd:right_frame:right_frame_header", 0, m_UIRightHeader);
+	CUIXmlInit::InitFrameLine			(uiXml, "main_wnd:right_frame:right_frame_header", 0, m_UIRightHeader);
 	m_UIRightFrame->AttachChild		(m_UIRightHeader);
 
 	m_UIRightWnd						= xr_new<CUIWindow>(); m_UIRightWnd->SetAutoDelete(true);
-	xml_init.InitWindow				(uiXml, "main_wnd:right_frame:work_area", 0, m_UIRightWnd);
+	CUIXmlInit::InitWindow				(uiXml, "main_wnd:right_frame:work_area", 0, m_UIRightWnd);
 	m_UIRightFrame->AttachChild		(m_UIRightWnd);
 
-	m_UINewsWnd						= xr_new<CUINewsWnd>();m_UINewsWnd->SetAutoDelete(false);
-	m_UINewsWnd->Init				();
+//	m_UINewsWnd						= xr_new<CUINewsWnd>();m_UINewsWnd->SetAutoDelete(false);
+//	m_UINewsWnd->Init				();
 
 	m_DescrView						= xr_new<CUIScrollView>(); m_DescrView->SetAutoDelete(false);
-	xml_init.InitScrollView			(uiXml, "main_wnd:right_frame:work_area:scroll_view", 0, m_DescrView);
+	CUIXmlInit::InitScrollView			(uiXml, "main_wnd:right_frame:work_area:scroll_view", 0, m_DescrView);
 
 	m_updatedSectionImage			= xr_new<CUIStatic>();
-	xml_init.InitStatic				(uiXml, "updated_section_static", 0, m_updatedSectionImage);
+	CUIXmlInit::InitStatic				(uiXml, "updated_section_static", 0, m_updatedSectionImage);
 
 	m_oldSectionImage				= xr_new<CUIStatic>();
-	xml_init.InitStatic				(uiXml, "old_section_static", 0, m_oldSectionImage);
+	CUIXmlInit::InitStatic				(uiXml, "old_section_static", 0, m_oldSectionImage);
 
 	RearrangeTabButtons				(m_FilterTab, m_sign_places);
 }
@@ -157,7 +158,7 @@ void CUIDiaryWnd::Reload	(EDiaryFilter new_filter)
 
 void CUIDiaryWnd::AddNews	()
 {
-	m_UINewsWnd->AddNews	();
+//	m_UINewsWnd->AddNews	();
 }
 
 void CUIDiaryWnd::MarkNewsAsRead (bool status)
@@ -227,14 +228,14 @@ void CUIDiaryWnd::LoadInfoTab	()
 
 void CUIDiaryWnd::UnloadNewsTab	()
 {
-	m_UIRightWnd->DetachChild	(m_UINewsWnd);
-	m_UINewsWnd->Show			(false);
+//	m_UIRightWnd->DetachChild	(m_UINewsWnd);
+//	m_UINewsWnd->Show			(false);
 }
 
 void CUIDiaryWnd::LoadNewsTab	()
 {
-	m_UIRightWnd->AttachChild	(m_UINewsWnd);
-	m_UINewsWnd->Show			(true);
+//	m_UIRightWnd->AttachChild	(m_UINewsWnd);
+//	m_UINewsWnd->Show			(true);
 	g_pda_info_state			&= ~pda_section::news;
 }
 

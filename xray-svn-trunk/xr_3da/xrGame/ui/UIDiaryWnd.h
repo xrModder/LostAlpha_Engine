@@ -13,6 +13,7 @@ class CUITabControl;
 class CUIScrollView;
 class CUIListWnd;
 class CEncyclopediaArticle;
+class CUIListBox;
 
 class CUIDiaryWnd: public CUIWindow, public CUIWndCallback
 {
@@ -36,7 +37,7 @@ protected:
 	CUIFrameLineWnd*	m_UIRightHeader;
 	CUIAnimatedStatic*	m_UIAnimation;
 	CUITabControl*		m_FilterTab;
-	CUIListWnd*			m_SrcListWnd;
+	CUIListBox*			m_SrcListWnd;
 	CUIScrollView*		m_DescrView;
 	CGameFont*			m_pTreeRootFont;
 	u32					m_uTreeRootColor;

@@ -16,14 +16,15 @@ public:
 class recvItem{
 public:
 	enum{	eCrosshair		= (1<<0),
-			eIndicators		= (1<<1),};
+			eIndicators		= (1<<1)};
 	recvItem		(CUIDialogWnd*);
 	CUIDialogWnd*	m_item;
 	Flags8			m_flags;
 };
 
-class CDialogHolder :public pureFrame
+class PROTECT_API CDialogHolder :public pureFrame
 {
+public:
 	//dialogs
 	xr_vector<recvItem>										m_input_receivers;
 	xr_vector<dlgItem>										m_dialogsToRender;
@@ -37,7 +38,7 @@ protected:
 	void					DoRenderDialogs					();
 	void					CleanInternals					();
 public:
-	CDialogHolder					();
+							CDialogHolder					();
 	virtual					~CDialogHolder					();
 
 	//dialogs
@@ -48,7 +49,8 @@ public:
 	virtual void	_BCL	OnFrame							();
 	virtual bool			UseIndicators					()						{return true;}
 
-	virtual void			StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
+	virtual void			StartDialog						(CUIDialogWnd* pDialog, bool bDoHideIndicators);
+	virtual void			StopDialog						(CUIDialogWnd* pDialog);
 	virtual bool			IgnorePause						()	{return false;}
 
 	virtual bool 			IR_UIOnKeyboardPress			(int dik);

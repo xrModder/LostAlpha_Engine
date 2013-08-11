@@ -84,7 +84,7 @@ void CUIActorInfoWnd::Show(bool status)
 	if (!status) return;
 	
 	UICharacterInfo->InitCharacter			(Actor()->ID());
-	UICharIconHeader->UITitleText.SetText	(Actor()->Name());
+	//UICharIconHeader->UITitleText.TextItemControl()->SetText	(Actor()->Name());
 	FillPointsInfo							();
 }
 
@@ -111,19 +111,19 @@ void CUIActorInfoWnd::FillPointsInfo			()
 
 			if(itm->m_id=="reputation")
 			{
-				itm->m_text2->SetTextST				(InventoryUtilities::GetReputationAsText(Actor()->Reputation()));
-				itm->m_text2->SetTextColor			(InventoryUtilities::GetReputationColor(Actor()->Reputation()));
+				itm->m_text2->TextItemControl()->SetTextST				(InventoryUtilities::GetReputationAsText(Actor()->Reputation()));
+				itm->m_text2->TextItemControl()->SetTextColor			(InventoryUtilities::GetReputationColor(Actor()->Reputation()));
 			}else
 			{
 				s32 _totl = Actor()->StatisticMgr().GetSectionPoints(itm->m_id);
 				
 				if(_totl==-1)
 				{
-					itm->m_text2->SetTextST				("");
+					itm->m_text2->TextItemControl()->SetTextST				("");
 				}else
 				{
 					xr_sprintf							(buff,"%d", _totl);
-					itm->m_text2->SetTextST				(buff);
+					itm->m_text2->TextItemControl()->SetTextST				(buff);
 				}
 			}
 		}
@@ -157,19 +157,19 @@ void CUIActorInfoWnd::FillMasterPart(CUIXml* xml, const shared_str& key_name)
 
 		if(key_name=="reputation")
 		{
-			itm->m_text2->SetTextST				(InventoryUtilities::GetReputationAsText(Actor()->Reputation()));
-			itm->m_text2->SetTextColor			(InventoryUtilities::GetReputationColor(Actor()->Reputation()));
+			itm->m_text2->TextItemControl()->SetTextST				(InventoryUtilities::GetReputationAsText(Actor()->Reputation()));
+			itm->m_text2->TextItemControl()->SetTextColor			(InventoryUtilities::GetReputationColor(Actor()->Reputation()));
 		}else
 		{
 			s32 _totl = Actor()->StatisticMgr().GetSectionPoints(key_name);
 			
 			if(_totl==-1)
 			{
-				itm->m_text2->SetTextST				("");
+				itm->m_text2->TextItemControl()->SetTextST				("");
 			}else
 			{
 				xr_sprintf							(buff,"%d", _totl);
-				itm->m_text2->SetTextST				(buff);
+				itm->m_text2->TextItemControl()->SetTextST				(buff);
 			}
 		}
 	}
@@ -193,13 +193,13 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 
 	if(id=="reputation")//reputation
 	{
-		UIInfoHeader->GetTitleStatic()->SetTextST	("st_detail_list_for_community_relations");
+//		UIInfoHeader->GetTitleStatic()->TextItemControl()->SetTextST	("st_detail_list_for_community_relations");
 		FillReputationDetails						(&uiXml, path);
 		return;
 	}
 	string256									str;
 	xr_sprintf									(str,"st_detail_list_for_%s", id.c_str());
-	UIInfoHeader->GetTitleStatic()->SetTextST	(str);
+//	UIInfoHeader->GetTitleStatic()->SetTextST	(str);
 
 	SStatSectionData&	section				= Actor()->	StatisticMgr().GetSection(id);
 	vStatDetailData::const_iterator it		= section.data.begin();
@@ -213,9 +213,9 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 		itm->Init							(&uiXml, path, 0);
 
 		xr_sprintf							(buff,"%d.",_cntr);
-		itm->m_text0->SetText				(buff);
+		itm->m_text0->TextItemControl()->SetText				(buff);
 
-		itm->m_text1->SetTextST				(*CStringTable().translate((*it).key));
+		itm->m_text1->TextItemControl()->SetTextST				(*CStringTable().translate((*it).key));
 		itm->m_text1->AdjustHeightToText	();
 
 		if( 0==(*it).str_value.size() )
@@ -265,17 +265,17 @@ void	CUIActorInfoWnd::FillReputationDetails(CUIXml* xml, LPCSTR path)
 		CUIActorStaticticDetail* itm		= xr_new<CUIActorStaticticDetail>();
 		itm->Init							(xml, path, 0);
 		comm.set							(xml->Read(_list_node,"r",i,"unknown_community"));
-		itm->m_text1->SetTextST				(*(comm.id()));
+		itm->m_text1->TextItemControl()->SetTextST				(*(comm.id()));
 		
 		CHARACTER_GOODWILL	gw				= RELATION_REGISTRY().GetCommunityGoodwill(comm.index(), Actor()->ID());
 		gw									+= CHARACTER_COMMUNITY::relation(Actor()->Community(),comm.index());
 		gw									+= d_neutral;
 
-		itm->m_text2->SetTextST				(InventoryUtilities::GetGoodwillAsText(gw));
-		itm->m_text2->SetTextColor			(InventoryUtilities::GetGoodwillColor(gw));
+		itm->m_text2->TextItemControl()->SetTextST				(InventoryUtilities::GetGoodwillAsText(gw));
+		itm->m_text2->TextItemControl()->SetTextColor			(InventoryUtilities::GetGoodwillColor(gw));
 
 		xr_sprintf							(buff,"%d", gw);
-		itm->m_text3->SetTextST				(buff);
+		itm->m_text3->TextItemControl()->SetTextST				(buff);
 
 		UIDetailList->AddWindow				(itm, true);
 	}
@@ -313,7 +313,7 @@ void CUIActorStaticticHeader::Init	(CUIXml* xml, LPCSTR path, int idx_in_xml)
 	m_id								= _id;
 #endif
 
-	m_stored_alpha						= color_get_A(m_text1->GetTextColor());
+	m_stored_alpha						= color_get_A(m_text1->TextItemControl()->GetTextColor());
 	xml->SetLocalRoot					(_stored_root);
 
 }
@@ -331,7 +331,7 @@ bool CUIActorStaticticHeader::OnMouseDown	(int mouse_btn)
 void CUIActorStaticticHeader::SetSelected(bool b)
 {
 	CUISelectable::SetSelected(b);
-	m_text1->SetTextColor( subst_alpha(m_text1->GetTextColor(), b?255:m_stored_alpha ));
+	m_text1->TextItemControl()->SetTextColor( subst_alpha(m_text1->TextItemControl()->GetTextColor(), b?255:m_stored_alpha ));
 	if(b){ 
 		m_actorInfoWnd->FillPointsDetail			(m_id);
 	}

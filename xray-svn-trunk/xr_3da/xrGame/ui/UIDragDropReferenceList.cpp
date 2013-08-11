@@ -113,7 +113,7 @@ void CUIDragDropReferenceList::ReloadReferences(CInventoryOwner* pActor)
 	for(u8 i=0; i<m_container->CellsCapacity().x; i++)
 	{
 		CUIStatic* ref = m_references[i];
-		LPCSTR item_name = ACTOR_DEFS::g_quick_use_slots[i];
+		LPCSTR item_name = 0; //ACTOR_DEFS::g_quick_use_slots[i];
 		if(item_name && xr_strlen(item_name))
 		{
 			PIItem itm = pActor->inventory().GetAny(item_name);
@@ -148,7 +148,7 @@ void CUIDragDropReferenceList::OnItemDBClick(CUIWindow* w, void* pData)
 			if(itm)
 				inherited::RemoveItem(GetCellAt(Ivector2().set(index, 0)).m_item, false);
 		}
-		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
+//		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
 		(*it)->SetTextureColor(color_rgba(255,255,255,0));
 	}
 }
@@ -183,9 +183,9 @@ void CUIDragDropReferenceList::OnItemDrop(CUIWindow* w, void* pData)
 			if(vec2.x!=-1&&vec2.y!=-1)
 			{
 				u8 index = u8(vec2.x);
-				shared_str tmp = ACTOR_DEFS::g_quick_use_slots[vec.x];
-				xr_strcpy(ACTOR_DEFS::g_quick_use_slots[vec.x], ACTOR_DEFS::g_quick_use_slots[index]);
-				xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], tmp.c_str());
+//				shared_str tmp = ACTOR_DEFS::g_quick_use_slots[vec.x];
+	//			xr_strcpy(ACTOR_DEFS::g_quick_use_slots[vec.x], ACTOR_DEFS::g_quick_use_slots[index]);
+	//			xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], tmp.c_str());
 				ReloadReferences(actor);
 				return;
 			}

@@ -34,7 +34,6 @@ public:
 	bool 				Init					(LPCSTR path_alias, LPCSTR path, LPCSTR  xml_filename);
 	bool 				Init					(LPCSTR path_alias, LPCSTR xml_filename);
 
-
 	//чтение элементов
 	LPCSTR 				Read					(LPCSTR path, int index,  LPCSTR   default_str_val);
 	LPCSTR 				Read					(XML_NODE* start_node, LPCSTR path, int index,  LPCSTR   default_str_val );

@@ -334,7 +334,7 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 	}
 
 	xr_sprintf(buf, "%s%s%3.1f %s/%5.1f", prefix, cl, total, "%c[UI_orange]", max);
-	wnd.SetText(buf);
+	wnd.TextItemControl()->SetText(buf);
 	//	UIStaticWeight.ClipperOff();
 }
 
@@ -524,4 +524,15 @@ u32	InventoryUtilities::GetRelationColor(ALife::ERelationType relation)
 #ifdef DEBUG
 	return 0xffffffff;
 #endif
+}
+
+//////////////////////////////////////////////////////////////////////
+
+const shared_str InventoryUtilities::GetTimeAndDateAsString(ALife::_TIME_ID time)
+{
+	string256 buf;
+	LPCSTR time_str = GetTimeAsString( time, etpTimeToMinutes ).c_str();
+	LPCSTR date_str = GetDateAsString( time, edpDateToDay ).c_str();
+	strconcat( sizeof(buf), buf, time_str, ", ", date_str );
+	return buf;
 }

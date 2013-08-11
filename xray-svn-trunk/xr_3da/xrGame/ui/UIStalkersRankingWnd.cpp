@@ -29,7 +29,7 @@ TOP_LIST						g_all_statistic_humans;
 void CUIStalkersRankingWnd::Init()
 {
 	CUIXml								uiXml;
-	uiXml.Load							(CONFIG_PATH, UI_PATH,STALKERS_RANKING_XML);
+	uiXml.Init							(CONFIG_PATH, UI_PATH,STALKERS_RANKING_XML);
 
 	CUIXmlInit							xml_init;
 
@@ -66,7 +66,7 @@ void CUIStalkersRankingWnd::Init()
 
 	UICharacterInfo						= xr_new<CUICharacterInfo>(); UICharacterInfo->SetAutoDelete(true);
 	UICharacterWindow->AttachChild		(UICharacterInfo);
-	UICharacterInfo->InitCharacterInfo	(Fvector2().set(0,0),UICharacterWindow->GetWndSize(), STALKERS_RANKING_CHARACTER_XML);
+	UICharacterInfo->Init				(Fvector2().set(0,0),UICharacterWindow->GetWndSize(), STALKERS_RANKING_CHARACTER_XML);
 
 	xml_init.InitAutoStaticGroup		(uiXml, "left_auto",	0,			UIInfoFrame);
 	xml_init.InitAutoStaticGroup		(uiXml, "right_auto",	0,			UICharIconFrame);
@@ -106,7 +106,7 @@ void CUIStalkersRankingWnd::FillList()
 {
 
 	CUIXml									uiXml;
-	uiXml.Load								(CONFIG_PATH, UI_PATH,STALKERS_RANKING_XML);
+	uiXml.Init								(CONFIG_PATH, UI_PATH,STALKERS_RANKING_XML);
 
 	UIList->Clear							();
 
@@ -147,13 +147,13 @@ void CUIStalkersRankingWnd::AddStalkerItem(CUIXml* xml, int num, CSE_ALifeTrader
 	itm->Init							(xml, "item_human", 0);
 
 	xr_sprintf								(buff,"%d.",num);
-	itm->m_text1->SetText				(buff);		
+	itm->m_text1->TextItemControl()->SetText				(buff);		
 
 	xr_sprintf								(buff,"%s",t->m_character_name.c_str());
-	itm->m_text2->SetText				(buff);		
+	itm->m_text2->TextItemControl()->SetText				(buff);		
 
 	xr_sprintf								(buff,"%d",t->m_rank);
-	itm->m_text3->SetText				(buff);		
+	itm->m_text3->TextItemControl()->SetText				(buff);		
 	itm->m_humanID						= t->object_id();
 	UIList->AddWindow					(itm, true);
 
@@ -173,14 +173,14 @@ void CUIStalkersRankingWnd::AddActorItem(CUIXml* xml, int num, CSE_ALifeTraderAb
 	itm->Init							(xml, "item_actor", 0);
 
 	xr_sprintf								(buff,"%d.",num);
-	itm->m_text1->SetText				(buff);		
+	itm->m_text1->TextItemControl()->SetText				(buff);		
 
 
 	xr_sprintf								(buff,"%s", t->m_character_name.c_str());
-	itm->m_text2->SetText				(buff);		
+	itm->m_text2->TextItemControl()->SetText				(buff);		
 
 	xr_sprintf								(buff,"%d",t->m_rank);
-	itm->m_text3->SetText				(buff);		
+	itm->m_text3->TextItemControl()->SetText				(buff);		
 
 	itm->m_humanID						= t->object_id();
 	UIList->AddWindow					(itm, true);
@@ -249,16 +249,16 @@ void CUIStalkerRankingInfoItem::Init	(CUIXml* xml, LPCSTR path, int idx)
 
 	xml_init.InitAutoStaticGroup			(*xml, "auto", 0, this);
 
-	m_stored_alpha							= color_get_A(m_text2->GetTextColor());
+	m_stored_alpha							= color_get_A(m_text2->TextItemControl()->GetTextColor());
 	xml->SetLocalRoot						(_stored_root);
 }
 
 void CUIStalkerRankingInfoItem::SetSelected	(bool b)
 {
 	CUISelectable::SetSelected				(b);
-	m_text1->SetTextColor( subst_alpha(m_text1->GetTextColor(), b?255:m_stored_alpha ));
-	m_text2->SetTextColor( subst_alpha(m_text2->GetTextColor(), b?255:m_stored_alpha ));
-	m_text3->SetTextColor( subst_alpha(m_text3->GetTextColor(), b?255:m_stored_alpha ));
+	m_text1->TextItemControl()->SetTextColor( subst_alpha(m_text1->TextItemControl()->GetTextColor(), b?255:m_stored_alpha ));
+	m_text2->TextItemControl()->SetTextColor( subst_alpha(m_text2->TextItemControl()->GetTextColor(), b?255:m_stored_alpha ));
+	m_text3->TextItemControl()->SetTextColor( subst_alpha(m_text3->TextItemControl()->GetTextColor(), b?255:m_stored_alpha ));
 	if(b){ 
 		m_StalkersRankingWnd->ShowHumanInfo			(m_humanID);
 	}

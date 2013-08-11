@@ -44,6 +44,7 @@ public:
 	virtual void			SetTextureColor			(u32 color)					{ m_UIStaticItem.SetTextureColor(color);}
 	virtual u32				GetTextureColor			() const					{ return m_UIStaticItem.GetTextureColor();}
 	virtual void			SetTextureRect			(const Frect& r)			{m_UIStaticItem.SetTextureRect(r);}
+	virtual void			SetTextureRect			(const float x, const float y, const float w, const float h)			{m_UIStaticItem.SetTextureRect(Frect().set(x,y,w,h));}
 	virtual const Frect&	GetTextureRect			() const					{return m_UIStaticItem.GetTextureRect();}
 	
 	virtual void			InitTexture				(LPCSTR tex_name);
@@ -57,13 +58,14 @@ public:
 	virtual void			SetTextureOffset		(float x, float y)			{ m_TextureOffset.set(x, y); }
 			Fvector2		GetTextureOffeset		() const					{ return m_TextureOffset; }
 			void			TextureOn				()							{ m_bTextureEnable = true; }
+			bool			IsTextureOn				() const					{ return m_bTextureEnable; }
 			void			TextureOff				()							{ m_bTextureEnable = false; }
 
 
 	// own
 			void			SetXformLightAnim		(LPCSTR lanim, bool bCyclic);
 			void			ResetXformAnimation		();
-
+			
 	virtual void			DrawTexture				();
 	virtual void			DrawText				();
 

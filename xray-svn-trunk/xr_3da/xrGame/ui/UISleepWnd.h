@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+/*
 #include "UIStatic.h"
 
 class CUIButton;
@@ -30,15 +30,15 @@ protected:
 	void			SetRestTime			(u8 hours, u8 minutes);
 	// Текущее запоменное время отдыха
 	s8				m_Hours, m_Minutes;
-/*
+
 	// Время индицирующее утро и вечер
-	s8				m_MorningH, m_EveningH, m_MorningM, m_EveningM;
+//	s8				m_MorningH, m_EveningH, m_MorningM, m_EveningM;
 	// Текущее время
-	u8				m_CurrMins, m_CurrHours;
-*/
+//	u8				m_CurrMins, m_CurrHours;
+
 	// Контролы
 	CUIStatic*		UIStaticRestAmount;
 	CUIButton*		UIPlusBtn;
 	CUIButton*		UIMinusBtn;
 	CUIButton*		UIRestBtn;
-};
+};*/

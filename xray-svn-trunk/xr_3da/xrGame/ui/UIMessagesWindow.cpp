@@ -78,10 +78,10 @@ void CUIMessagesWindow::Init(float x, float y, float width, float height){
 void CUIMessagesWindow::AddIconedPdaMessage(LPCSTR textureName, Frect originalRect, LPCSTR message, int iDelay){
 	
 	CUIPdaMsgListItem *pItem			= m_pGameLog->AddPdaMessage(message, float(iDelay), FALSE);
-	pItem->SetTextComplexMode			(true);
+	pItem->TextItemControl()->SetTextComplexMode			(true);
 	pItem->UIIcon.InitTexture			(textureName);
-	pItem->UIIcon.SetOriginalRect		(originalRect.left, originalRect.top, originalRect.right, originalRect.bottom);
-	pItem->UIMsgText.SetWndPos			(pItem->UIIcon.GetWidth(), pItem->UIMsgText.GetWndPos().y);
+	pItem->UIIcon.SetTextureRect		(originalRect.left, originalRect.top, originalRect.right, originalRect.bottom);
+	pItem->UIMsgText.SetWndPos			(Fvector2().set(pItem->UIIcon.GetWidth(), pItem->UIMsgText.GetWndPos().y));
 	pItem->UIMsgText.AdjustHeightToText	();
 
 	if (pItem->UIIcon.GetHeight() > pItem->UIMsgText.GetHeight())
@@ -100,8 +100,8 @@ void CUIMessagesWindow::AddChatMessage(shared_str msg, shared_str author)
 
 void CUIMessagesWindow::SetChatOwner(game_cl_GameState* owner)
 {
-	if (m_pChatWnd)
-		m_pChatWnd->SetOwner(owner);
+//	if (m_pChatWnd)
+//		m_pChatWnd->SetOwner(owner);
 }
 
 void CUIMessagesWindow::Update()

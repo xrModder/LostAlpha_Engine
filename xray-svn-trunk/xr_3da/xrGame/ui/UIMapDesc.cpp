@@ -2,6 +2,7 @@
 
 #include "UIMapDesc.h"
 #include "UIStatic.h"
+#include "UICursor.h"
 #include "UIScrollView.h"
 #include "UIXmlInit.h"
 #include "UI3tButton.h"
@@ -53,8 +54,7 @@ CUIMapDesc::~CUIMapDesc(){
 
 void CUIMapDesc::Init(){
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "map_desc.xml");
-	R_ASSERT3(xml_result, "xml file not found", "map_desc.xml");
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "map_desc.xml");
 
 	CUIXmlInit::InitWindow		(xml_doc,"map_desc",				0,	this);
 	CUIXmlInit::InitStatic		(xml_doc,"map_desc:caption",		0,	m_pCaption);
@@ -94,7 +94,7 @@ void CUIMapDesc::SendMessage(CUIWindow* pWnd,s16 msg, void* pData){
 	if (BUTTON_CLICKED == msg)
 	{
 		game_cl_mp * dm = smart_cast<game_cl_mp *>(&(Game()));
-		dm->StartStopMenu(this,true);
+		HideDialog							();
 		if (pWnd == m_pBtnSpectator)
 			dm->OnSpectatorSelect();
 		else if (pWnd == m_pBtnNext)
@@ -111,7 +111,7 @@ bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
 			ShowChildren(true);
 			game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 			game->OnKeyboardRelease(kSCORES);
-			UI().GetUICursor().Show();
+			GetUICursor().Show();
 		}
 		
 		return false;
@@ -130,14 +130,14 @@ bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
 
 	switch (dik){
 		case DIK_ESCAPE:
-			dm->StartStopMenu(this,true);
-			dm->OnSpectatorSelect();
+			HideDialog					();
+			dm->OnSpectatorSelect		();
 			return true;
 			break;
 		case DIK_SPACE:
 		case DIK_RETURN:
-			dm->StartStopMenu(this,true);
-			dm->OnMapInfoAccept();
+			HideDialog					();
+			dm->OnMapInfoAccept			();
 			return true;
 			break;
 	}

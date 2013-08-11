@@ -151,15 +151,16 @@ void CUIMMShniaga::CreateList(xr_vector<CUIStatic*>& lst, CUIXml& xml_doc, LPCST
 //				continue;
 //		}
 		st = xr_new<CUIStatic>();
-		st->Init(0,0,m_view->GetDesiredChildWidth(), height);
-		st->SetTextComplexMode		(false);
-		st->SetTextST(xml_doc.ReadAttrib	("btn", i, "caption"));
+		//st->Init(0,0,m_view->GetDesiredChildWidth(), height);
+		st->SetWndRect(0,0,m_view->GetDesiredChildWidth(), height);
+		st->TextItemControl()->SetTextComplexMode		(false);
+		st->TextItemControl()->SetTextST(xml_doc.ReadAttrib	("btn", i, "caption"));
 		if (pF)
-			st->SetFont(pF);
-		st->SetTextColor(color);
-		st->SetTextAlignment(CGameFont::alCenter);
+			st->TextItemControl()->SetFont(pF);
+		st->TextItemControl()->SetTextColor(color);
+		st->TextItemControl()->SetTextAlignment(CGameFont::alCenter);
 //		st->SetTextAlignment(CGameFont::alLeft);
-		st->SetVTextAlignment(valCenter);
+		st->TextItemControl()->SetVTextAlignment(valCenter);
 		st->SetWindowName(xml_doc.ReadAttrib("btn", i, "name"));
 		st->SetMessageTarget(this);
 
@@ -177,7 +178,7 @@ void CUIMMShniaga::ShowMain(){
 	for (u32 i = 0; i<m_buttons.size(); i++)
 		m_view->AddWindow(m_buttons[i], false);
 
-	SendMessage(m_buttons[0], STATIC_FOCUS_RECEIVED);
+	SendMessage(m_buttons[0], WINDOW_FOCUS_RECEIVED);
 }
 
 void CUIMMShniaga::ShowNewGame(){
@@ -186,7 +187,7 @@ void CUIMMShniaga::ShowNewGame(){
 	for (u32 i = 0; i<m_buttons_new.size(); i++)
 		m_view->AddWindow(m_buttons_new[i], false);
 
-	SendMessage(m_buttons_new[0], STATIC_FOCUS_RECEIVED);
+	SendMessage(m_buttons_new[0], WINDOW_FOCUS_RECEIVED);
 }
 
 bool CUIMMShniaga::IsButton(CUIWindow* st){
@@ -205,7 +206,7 @@ void CUIMMShniaga::SendMessage(CUIWindow* pWnd, s16 msg, void* pData){
 	CUIWindow::SendMessage(pWnd, msg, pData);
 	if (IsButton(pWnd)){
 		switch (msg){
-			case STATIC_FOCUS_RECEIVED:
+			case WINDOW_FOCUS_RECEIVED:
 				SelectBtn(pWnd);
 				break;
 		}

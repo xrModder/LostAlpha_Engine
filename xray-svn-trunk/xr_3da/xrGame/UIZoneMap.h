@@ -4,38 +4,47 @@
 #include "ui/UIStatic.h"
 
 class CActor;
-class CUICustomMap;
-//////////////////////////////////////////////////////////////////////////
+class CUIMiniMap;
 
 
 class CUIZoneMap
 {
-	CUICustomMap*				m_activeMap;
-	float						m_fScale;
+public:
+	bool						visible;
+
+private:
+	CUIMiniMap*					m_activeMap;
 
 	CUIStatic					m_background;
+	CUIStatic*					m_clock_wnd;
 	CUIStatic					m_center;
 	CUIStatic					m_compass;
-	CUIStatic					m_clipFrame;
-	CUIStatic					m_pointerDistanceText;
+	CUIWindow					m_clipFrame;
+	CUIStatic					m_Counter;
+	CUITextWnd					m_Counter_text;
+	u8							m_current_map_idx;
 
 public:
 								CUIZoneMap		();
 	virtual						~CUIZoneMap		();
 
-	void						SetHeading		(float angle);
 	void						Init			();
 
 	void						Render			();
-	void						UpdateRadar		(Fvector pos);
-
-	void						SetScale		(float s)							{m_fScale = s;}
-	float						GetScale		()									{return m_fScale;}
+	void						Update			();
 
 	bool						ZoomIn			();
 	bool						ZoomOut			();
 
 	CUIStatic&					Background		()									{return m_background;};
+	CUIWindow&					MapFrame		()									{return m_clipFrame;};
 	void						SetupCurrentMap	();
+	void						OnSectorChanged	(int sector);
+	void						Counter_ResetClrAnimation();
+
+private:
+	void						SetHeading		(float angle);
+	void						UpdateRadar		(Fvector pos);
+
 };
 

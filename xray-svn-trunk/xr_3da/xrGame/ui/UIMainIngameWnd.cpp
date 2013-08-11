@@ -110,7 +110,7 @@ void CUIMainIngameWnd::Init()
 	uiXml.Init					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
 	
 	CUIXmlInit					xml_init;
-	CUIWindow::Init				(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
+	CUIWindow::SetWndRect		(Frect().set(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT));
 
 	Enable(false);
 
@@ -126,7 +126,7 @@ void CUIMainIngameWnd::Init()
 
 	UIWeaponBack.AttachChild	(&UIWeaponSignAmmo);
 	xml_init.InitStatic			(uiXml, "static_ammo", 0, &UIWeaponSignAmmo);
-	UIWeaponSignAmmo.SetElipsis	(CUIStatic::eepEnd, 2);
+//	UIWeaponSignAmmo.SetElipsis	(CUIStatic::eepEnd, 2);
 
 	UIWeaponBack.AttachChild	(&UIWeaponIcon);
 	xml_init.InitStatic			(uiXml, "static_wpn_icon", 0, &UIWeaponIcon);
@@ -162,7 +162,7 @@ void CUIMainIngameWnd::Init()
 
 	//индикаторы 
 	UIZoneMap->Init				();
-	UIZoneMap->SetScale			(DEFAULT_MAP_SCALE);
+//	UIZoneMap->SetScale			(DEFAULT_MAP_SCALE);
 
 	if(IsGameTypeSingle())
 	{
@@ -280,10 +280,10 @@ void CUIMainIngameWnd::Init()
 	}
 
 	AttachChild								(&UIStaticDiskIO);
-	UIStaticDiskIO.SetWndRect				(1000,750,16,16);
-	UIStaticDiskIO.GetUIStaticItem().SetRect(0,0,16,16);
+	UIStaticDiskIO.SetWndRect				(Frect().set(1000,750,16,16));
+	UIStaticDiskIO.GetUIStaticItem().SetTextureRect(0,0,16,16);
 	UIStaticDiskIO.InitTexture				("ui\\ui_disk_io");
-	UIStaticDiskIO.SetOriginalRect			(0,0,32,32);
+	UIStaticDiskIO.SetTextureRect			(0,0,32,32);
 	UIStaticDiskIO.SetStretchTexture		(TRUE);
 
 
@@ -304,7 +304,7 @@ void CUIMainIngameWnd::Draw()
 	else {
 		u32		alpha			= clampr(iFloor(255.f*(1.f-(Device.fTimeGlobal-UIStaticDiskIO_start_time)/1.f)),0,255);
 		UIStaticDiskIO.Show		( true  ); 
-		UIStaticDiskIO.SetColor	(color_rgba(255,255,255,alpha));
+		UIStaticDiskIO.SetTextureColor	(color_rgba(255,255,255,alpha));
 	}
 	FS.dwOpenCounter = 0;
 
@@ -354,7 +354,7 @@ void CUIMainIngameWnd::SetAmmoIcon (const shared_str& sect_name)
 	float iXPos				= pSettings->r_float(sect_name, "inv_grid_x");
 	float iYPos				= pSettings->r_float(sect_name, "inv_grid_y");
 
-	UIWeaponIcon.GetUIStaticItem().SetOriginalRect(	(iXPos		 * INV_GRID_WIDTH),
+	UIWeaponIcon.GetUIStaticItem().SetTextureRect(	(iXPos		 * INV_GRID_WIDTH),
 													(iYPos		 * INV_GRID_HEIGHT),
 													(iGridWidth	 * INV_GRID_WIDTH),
 													(iGridHeight * INV_GRID_HEIGHT));
@@ -369,7 +369,7 @@ void CUIMainIngameWnd::SetAmmoIcon (const shared_str& sect_name)
 	if	(iGridWidth<2)
 		x	+= ( UIWeaponIcon_rect.width() - w) / 2.0f;
 
-	UIWeaponIcon.SetWndPos	(x, UIWeaponIcon_rect.y1);
+	UIWeaponIcon.SetWndPos	(Fvector2().set(x, UIWeaponIcon_rect.y1));
 	
 	UIWeaponIcon.SetWidth	(w);
 	UIWeaponIcon.SetHeight	(h);
@@ -405,11 +405,11 @@ void CUIMainIngameWnd::Update()
 			if(_pda && 0!= (_cn=_pda->ActiveContactsNum()) )
 			{
 				xr_sprintf(text_str, "%d", _cn);
-				UIPdaOnline.SetText(text_str);
+				UIPdaOnline.TextItemControl()->SetText(text_str);
 			}
 			else
 			{
-				UIPdaOnline.SetText("");
+				UIPdaOnline.TextItemControl()->SetText("");
 			}
 	};
 
@@ -514,8 +514,8 @@ void CUIMainIngameWnd::Update()
 			UIStaticTime.Show(true);
 		if (!UIStaticDate.IsShown())
 			UIStaticDate.Show(true);
-		UIStaticTime.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
-		UIStaticDate.SetText(*InventoryUtilities::GetGameDateAsString(InventoryUtilities::edpDateToDay));
+		UIStaticTime.TextItemControl()->SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
+		UIStaticDate.TextItemControl()->SetText(*InventoryUtilities::GetGameDateAsString(InventoryUtilities::edpDateToDay));
 	}
 	else
 	{
@@ -557,10 +557,11 @@ void CUIMainIngameWnd::Update()
 		UIStaticTurret.Show(false);
 		UITurretBar.Show(false);
 	}
-	UIZoneMap->UpdateRadar			(Device.vCameraPosition);
-	float h,p;
-	Device.vCameraDirection.getHP	(h,p);
-	UIZoneMap->SetHeading			(-h);
+	UIZoneMap->Update				();
+//	UIZoneMap->UpdateRadar			(Device.vCameraPosition);
+//	float h,p;
+//	Device.vCameraDirection.getHP	(h,p);
+//	UIZoneMap->SetHeading			(-h);
 	UIActorStateIcons.SetIcons		(m_pActor->GetActorState());
 
 	UpdatePickUpItem				();
@@ -1087,14 +1088,14 @@ void CUIMainIngameWnd::RenderQuickInfos()
 	UIStaticQuickHelp.Show				(NULL!=actor_action);
 
 	if(NULL!=actor_action){
-		if(stricmp(actor_action,UIStaticQuickHelp.GetText()))
-			UIStaticQuickHelp.SetTextST				(actor_action);
+		if(stricmp(actor_action,UIStaticQuickHelp.TextItemControl()->GetText()))
+			UIStaticQuickHelp.TextItemControl()->SetTextST				(actor_action);
 	}
 
 	if (pObject!=m_pActor->ObjectWeLookingAt())
 	{
-		UIStaticQuickHelp.SetTextST				(actor_action);
-		UIStaticQuickHelp.ResetClrAnimation		();
+		UIStaticQuickHelp.TextItemControl()->SetTextST				(actor_action);
+		UIStaticQuickHelp.ResetXformAnimation		();
 		pObject	= m_pActor->ObjectWeLookingAt	();
 	}
 }
@@ -1112,7 +1113,7 @@ void CUIMainIngameWnd::SetWarningIconColor(CUIStatic* s, const u32 cl)
 	bool bIsShown = s->IsShown();
 
 	if(bOn)
-		s->SetColor	(cl);
+		s->SetTextureColor	(cl);
 
 	if(bOn&&!bIsShown){
 		m_UIIcons->AddWindow	(s, false);
@@ -1228,7 +1229,7 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 
 void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 {
-	UIPdaOnline.ResetClrAnimation	();
+	UIPdaOnline.ResetXformAnimation	();
 
 	if(b_snd)
 		HUD_SOUND::PlaySound	(m_contactSnd, Fvector().set(0,0,0), 0, true );
@@ -1270,11 +1271,11 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 
 	float scale = scale_x<scale_y?scale_x:scale_y;
 
-	UIPickUpItemIcon.GetUIStaticItem().SetOriginalRect(
+	UIPickUpItemIcon.GetUIStaticItem().SetTextureRect(Frect().set(
 		float(m_iXPos * INV_GRID_WIDTH),
 		float(m_iYPos * INV_GRID_HEIGHT),
 		float(m_iGridWidth * INV_GRID_WIDTH),
-		float(m_iGridHeight * INV_GRID_HEIGHT));
+		float(m_iGridHeight * INV_GRID_HEIGHT)));
 
 	UIPickUpItemIcon.SetStretchTexture(true);
 
@@ -1286,7 +1287,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 		m_iPickUpItemIconY + 
 		(m_iPickUpItemIconHeight - UIPickUpItemIcon.GetHeight())/2);
 
-	UIPickUpItemIcon.SetColor(color_rgba(255,255,255,192));
+	UIPickUpItemIcon.SetTextureColor(color_rgba(255,255,255,192));
 	UIPickUpItemIcon.Show(true);
 };
 
@@ -1302,8 +1303,8 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		item->GetBriefInfo			(str_name, icon_sect_name, str_count);
 
 		UIWeaponSignAmmo.Show		(true						);
-		UIWeaponBack.SetText		(str_name.c_str			()	);
-		UIWeaponSignAmmo.SetText	(str_count.c_str		()	);
+		UIWeaponBack.TextItemControl()->SetText		(str_name.c_str			()	);
+		UIWeaponSignAmmo.TextItemControl()->SetText	(str_count.c_str		()	);
 		SetAmmoIcon					(icon_sect_name.c_str	()	);
 
 		//-------------------
@@ -1314,7 +1315,7 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 	{
 		UIWeaponIcon.Show			(false);
 		UIWeaponSignAmmo.Show		(false);
-		UIWeaponBack.SetText		("");
+		UIWeaponBack.TextItemControl()->SetText		("");
 		m_pWeapon					= NULL;
 	}
 }

@@ -12,6 +12,9 @@ public:
 	CUIListBoxItem* AddTextItem						(LPCSTR text);
 	void			AddExistingItem					(CUIListBoxItem*);
 
+	void			Remove							(CUIListBoxItem* itm);
+	void			RemoveAll						();
+
 	CUIListBoxItem* GetItemByTAG					(u32 tag_value);
 	int				GetIdxByTAG						(u32 tag_value);
 	CUIListBoxItem* GetItemByIDX					(int idx);

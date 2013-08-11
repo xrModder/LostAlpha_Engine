@@ -7,14 +7,14 @@
 
 void UIVoteStatusWnd::InitFromXML(CUIXml& xml_doc)
 {
-	m_str_message	= xr_new<CUIStatic>(); m_str_message->SetAutoDelete(true);	 AttachChild	(m_str_message);
-	m_hint			= xr_new<CUIStatic>(); m_hint->SetAutoDelete(true);			AttachChild		(m_hint);
-	m_time_message	= xr_new<CUIStatic>();m_time_message->SetAutoDelete(true);	AttachChild		(m_time_message);
+	m_str_message	= xr_new<CUITextWnd>(); m_str_message->SetAutoDelete(true);	 AttachChild	(m_str_message);
+	m_hint			= xr_new<CUITextWnd>(); m_hint->SetAutoDelete(true);			AttachChild	(m_hint);
+	m_time_message	= xr_new<CUITextWnd>();m_time_message->SetAutoDelete(true);	AttachChild		(m_time_message);
 
 	CUIXmlInit::InitFrameWindow	(xml_doc, "vote_wnd",						0,	this);
-	CUIXmlInit::InitStatic		(xml_doc, "vote_wnd:static_str_message",	0, m_str_message);
-	CUIXmlInit::InitStatic		(xml_doc, "vote_wnd:static_hint",			0, m_hint);
-	CUIXmlInit::InitStatic		(xml_doc, "vote_wnd:static_time_message",	0, m_time_message);
+	CUIXmlInit::InitTextWnd		(xml_doc, "vote_wnd:static_str_message",	0, m_str_message);
+	CUIXmlInit::InitTextWnd		(xml_doc, "vote_wnd:static_hint",			0, m_hint);
+	CUIXmlInit::InitTextWnd		(xml_doc, "vote_wnd:static_time_message",	0, m_time_message);
 }
 
 void UIVoteStatusWnd::SetVoteTimeResultMsg(LPCSTR s)

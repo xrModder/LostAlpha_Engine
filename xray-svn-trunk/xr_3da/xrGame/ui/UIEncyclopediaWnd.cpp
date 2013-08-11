@@ -43,53 +43,53 @@ void CUIEncyclopediaWnd::Init()
 
 	CUIXmlInit	xml_init;
 
-	xml_init.InitWindow		(uiXml, "main_wnd", 0, this);
+	CUIXmlInit::InitWindow		(uiXml, "main_wnd", 0, this);
 
 	// Load xml data
 	UIEncyclopediaIdxBkg		= xr_new<CUIFrameWindow>(); UIEncyclopediaIdxBkg->SetAutoDelete(true);
 	AttachChild(UIEncyclopediaIdxBkg);
-	xml_init.InitFrameWindow(uiXml, "right_frame_window", 0, UIEncyclopediaIdxBkg);
+	CUIXmlInit::InitFrameWindow(uiXml, "right_frame_window", 0, UIEncyclopediaIdxBkg);
 
-	xml_init.InitFont(uiXml, "tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
+	CUIXmlInit::InitFont(uiXml, "tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
 	R_ASSERT(m_pTreeItemFont);
-	xml_init.InitFont(uiXml, "tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
+	CUIXmlInit::InitFont(uiXml, "tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
 	R_ASSERT(m_pTreeRootFont);
 
 
 	UIEncyclopediaIdxHeader		= xr_new<CUIFrameLineWnd>(); UIEncyclopediaIdxHeader->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIEncyclopediaIdxHeader);
-	xml_init.InitFrameLine(uiXml, "right_frame_line", 0, UIEncyclopediaIdxHeader);
+	CUIXmlInit::InitFrameLine(uiXml, "right_frame_line", 0, UIEncyclopediaIdxHeader);
 
 	UIAnimation					= xr_new<CUIAnimatedStatic>(); UIAnimation->SetAutoDelete(true);
 	UIEncyclopediaIdxHeader->AttachChild(UIAnimation);
-	xml_init.InitAnimatedStatic(uiXml, "a_static", 0, UIAnimation);
+	CUIXmlInit::InitAnimatedStatic(uiXml, "a_static", 0, UIAnimation);
 
 	UIEncyclopediaInfoBkg		= xr_new<CUIFrameWindow>();UIEncyclopediaInfoBkg->SetAutoDelete(true);
 	AttachChild(UIEncyclopediaInfoBkg);
-	xml_init.InitFrameWindow(uiXml, "left_frame_window", 0, UIEncyclopediaInfoBkg);
+	CUIXmlInit::InitFrameWindow(uiXml, "left_frame_window", 0, UIEncyclopediaInfoBkg);
 
 	UIEncyclopediaInfoHeader	= xr_new<CUIFrameLineWnd>();UIEncyclopediaInfoHeader->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIEncyclopediaInfoHeader);
 
-	UIEncyclopediaInfoHeader->UITitleText.SetElipsis(CUIStatic::eepBegin, 20);
-	xml_init.InitFrameLine(uiXml, "left_frame_line", 0, UIEncyclopediaInfoHeader);
+	//UIEncyclopediaInfoHeader->UITitleText.SetElipsis(CUIStatic::eepBegin, 20);
+	CUIXmlInit::InitFrameLine(uiXml, "left_frame_line", 0, UIEncyclopediaInfoHeader);
 
 	UIArticleHeader				= xr_new<CUIStatic>(); UIArticleHeader->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIArticleHeader);
-	xml_init.InitStatic(uiXml, "article_header_static", 0, UIArticleHeader);
+	CUIXmlInit::InitStatic(uiXml, "article_header_static", 0, UIArticleHeader);
 
-	UIIdxList					= xr_new<CUIListWnd>(); UIIdxList->SetAutoDelete(true);
+	UIIdxList					= xr_new<CUIListBox>(); UIIdxList->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIIdxList);
-	xml_init.InitListWnd(uiXml, "idx_list", 0, UIIdxList);
+	CUIXmlInit::InitListBox(uiXml, "idx_list", 0, UIIdxList);
 	UIIdxList->SetMessageTarget(this);
-	UIIdxList->EnableScrollBar(true);
+//	UIIdxList->EnableScrollBar(true);
 
 	UIInfoList					= xr_new<CUIScrollView>(); UIInfoList->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIInfoList);
-	xml_init.InitScrollView(uiXml, "info_list", 0, UIInfoList);
+	CUIXmlInit::InitScrollView(uiXml, "info_list", 0, UIInfoList);
 
-	xml_init.InitAutoStatic(uiXml, "left_auto_static", UIEncyclopediaInfoBkg);
-	xml_init.InitAutoStatic(uiXml, "right_auto_static", UIEncyclopediaIdxBkg);
+	CUIXmlInit::InitAutoStatic(uiXml, "left_auto_static", UIEncyclopediaInfoBkg);
+	CUIXmlInit::InitAutoStatic(uiXml, "right_auto_static", UIEncyclopediaIdxBkg);
 }
 
 #include "../string_table.h"
@@ -108,8 +108,8 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->group).c_str();
 
-			UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
-			UIArticleHeader->SetTextST(*(A->data()->group));
+//			UIEncyclopediaInfoHeader->UITitleText.TextItemControl()->SetText(caption.c_str());
+			UIArticleHeader->TextItemControl()->SetTextST(*(A->data()->group));
 			SetCurrentArtice		(NULL);
 		}else
 		{
@@ -120,9 +120,9 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->name).c_str();
 
-			UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
+//			UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
 			SetCurrentArtice		(pTVItem);
-			UIArticleHeader->SetTextST(*(A->data()->name));
+			UIArticleHeader->TextItemControl()->SetTextST(*(A->data()->name));
 		}
 	}
 

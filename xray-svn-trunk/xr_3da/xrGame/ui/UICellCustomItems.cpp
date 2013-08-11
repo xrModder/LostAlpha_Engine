@@ -20,7 +20,7 @@ CUIInventoryCellItem::CUIInventoryCellItem(CInventoryItem* itm)
 	rect.rb.set										(	rect.lt.x+INV_GRID_WIDTHF*m_grid_size.x, 
 														rect.lt.y+INV_GRID_HEIGHTF*m_grid_size.y);
 
-	inherited::SetOriginalRect						(rect);
+	inherited::SetTextureRect						(rect);
 	inherited::SetStretchTexture					(true);
 }
 
@@ -68,21 +68,22 @@ void CUIAmmoCellItem::UpdateItemText()
 		
 		u16 total				= object()->m_boxCurr;
 		for(;it!=it_e;++it)
-			total				= total + ((CUIAmmoCellItem*)(*it))->object()->m_boxCurr;
+			total				+= ((CUIAmmoCellItem*)(*it))->object()->m_boxCurr;
 
-		string32				str;
+		string32					str;
 		xr_sprintf					(str,"%d",total);
 
-		SetText					(str);
-	}else
+		TextItemControl()->SetText					(str);
+	}
+	else
 	{
-		SetText					("");
+		TextItemControl()->SetText					("");
 	}
 }
 
 
 CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
-:inherited(itm)
+	: inherited(itm)
 {
 	m_addons[eSilencer]		= NULL;
 	m_addons[eScope]		= NULL;
@@ -224,7 +225,7 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 
 		s->SetWndSize			(cell_size);
 		s->SetWndPos			(addon_offset);
-		s->SetOriginalRect		(tex_rect);
+		s->SetTextureRect		(tex_rect);
 		s->SetStretchTexture	(true);
 }
 
@@ -238,7 +239,7 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetSilencerName(), m_addon_offset[eSilencer]);
-		s->SetColor		(i->wnd()->GetColor());
+		s->SetTextureColor(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild	(s);
 	}
 	
@@ -247,7 +248,7 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s,	*object()->GetScopeName(),		m_addon_offset[eScope]);
-		s->SetColor		(i->wnd()->GetColor());
+		s->SetTextureColor		(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild	(s);
 	}
 
@@ -256,7 +257,7 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetGrenadeLauncherName(),m_addon_offset[eLauncher]);
-		s->SetColor		(i->wnd()->GetColor());
+		s->SetTextureColor		(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild	(s);
 	}
 	return				i;

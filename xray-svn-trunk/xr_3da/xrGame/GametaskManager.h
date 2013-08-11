@@ -23,6 +23,7 @@ public:
 	void					initialize						(u16 id);
 	GameTasks&				GameTasks						();
 	CGameTask*				HasGameTask						(const TASK_ID& id);
+	CGameTask*				HasGameTask						(const CMapLocation* ml, bool only_inprocess);
 	CGameTask*				GiveGameTaskToActor				(const TASK_ID& id, u32 timeToComplete, bool bCheckExisting=true);
 	CGameTask*				GiveGameTaskToActor				(CGameTask* t, u32 timeToComplete, bool bCheckExisting=true);
 	void					SetTaskState					(const TASK_ID& id, u16 objective_num, ETaskState state);

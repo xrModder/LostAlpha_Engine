@@ -10,21 +10,17 @@ void CUITabControl::script_register(lua_State *L)
 	module(L)
 	[
 		class_<CUITabControl, CUIWindow>("CUITabControl")
-		.def(					constructor<>())
-		.def("AddItem",			(bool (CUITabControl::*)(CUITabButton*))(&CUITabControl::AddItem), adopt(_2))
-		.def("AddItem",			(bool (CUITabControl::*)(const char*, const char*,float,float, float,float))	&CUITabControl::AddItem)
-		.def("RemoveItem",				&CUITabControl::RemoveItem)
+		.def(							constructor<>())
+		.def("AddItem",					(bool (CUITabControl::*)(CUITabButton*))(&CUITabControl::AddItem), adopt(_2))
+		.def("AddItem",					(bool (CUITabControl::*)(LPCSTR, LPCSTR,Fvector2,Fvector2))	&CUITabControl::AddItem)
 		.def("RemoveAll",				&CUITabControl::RemoveAll)
-		.def("GetActiveIndex",			&CUITabControl::GetActiveIndex)
+		.def("GetActiveId",				&CUITabControl::GetActiveId_script)
 		.def("GetTabsCount",			&CUITabControl::GetTabsCount)
-		.def("SetNewActiveTab",			&CUITabControl::SetNewActiveTab)
-		.def("GetButtonByIndex",		&CUITabControl::GetButtonByIndex),
+		.def("SetActiveTab",			&CUITabControl::SetActiveTab_script)
+		.def("GetButtonById",			&CUITabControl::GetButtonById_script),
 
 		class_<CUITabButton, CUIButton>("CUITabButton")
 		.def(							constructor<>())		
-//.		.def("AssociateWindow",			&CUITabButton::AssociateWindow)
-//.		.def("GetAssociatedWindow",		&CUITabButton::GetAssociatedWindow)
-//.		.def("ShowAssociatedWindow",	&CUITabButton::ShowAssociatedWindow)
 	];
 
 }

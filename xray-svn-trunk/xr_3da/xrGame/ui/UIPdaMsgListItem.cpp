@@ -19,12 +19,14 @@ using namespace InventoryUtilities;
 
 
 void CUIPdaMsgListItem::SetFont(CGameFont* pFont){
-	UIMsgText.SetFont(pFont);
+	UIMsgText.TextItemControl()->SetFont(pFont);
 }
 
 void CUIPdaMsgListItem::Init(float x, float y, float width, float height)
 {
-	CUIStatic::Init			(x, y, width, height);
+//	CUIStatic::Init			(x, y, width, height);
+	CUIStatic::SetWndPos	(x, y);
+	CUIStatic::SetWndSize	(Fvector2().set(width, height));
 
 	CUIXml uiXml;
 	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH,PDA_MSG_MAINGAME_CHAR);
@@ -47,11 +49,11 @@ void CUIPdaMsgListItem::Init(float x, float y, float width, float height)
 }
 
 void CUIPdaMsgListItem::SetTextColor(u32 color){
-	UIMsgText.SetTextColor	(color);
+	UIMsgText.TextItemControl()->SetTextColor	(color);
 }
 
 void CUIPdaMsgListItem::SetColor(u32 color){
-	UIIcon.SetColor(color);
+	UIIcon.SetTextureColor(color);
 }
 
 void CUIPdaMsgListItem::InitCharacter(CInventoryOwner* pInvOwner)
@@ -60,7 +62,7 @@ void CUIPdaMsgListItem::InitCharacter(CInventoryOwner* pInvOwner)
 
 	string256 str;
 	xr_sprintf(str, "name: %s", pInvOwner->Name());
-	UIName.SetText			(str);
+	UIName.TextItemControl()->SetText			(str);
 
 	UIIcon.InitTexture		( pInvOwner->CharacterInfo().IconName().c_str() );
 /*

@@ -85,6 +85,18 @@ void CUIListBox::AddExistingItem(CUIListBoxItem* item)
 	AddWindow					(item, true);
 }
 
+void CUIListBox::Remove(CUIListBoxItem* itm)
+{
+	if (!m_pad->IsChild(itm))
+		return;
+	RemoveWindow(itm);
+}
+
+void CUIListBox::RemoveAll()
+{
+	Clear();
+}
+
 void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	if (m_pad->IsChild(pWnd))

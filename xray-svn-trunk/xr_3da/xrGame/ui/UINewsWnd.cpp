@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "UINewsWnd.h"
+/*
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
 #include "../UI.h"
@@ -27,10 +28,9 @@ void CUINewsWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 {
 	string512 pth;
 
-	CUIXml uiXml;
-	bool xml_result				= uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT3					(xml_result, "xml file not found", xml_name);
-	CUIXmlInit xml_init;
+	CUIXml						uiXml;
+	uiXml.Load					(CONFIG_PATH, UI_PATH, xml_name);
+	CUIXmlInit					xml_init;
 
 	strconcat					(sizeof(pth),pth,start_from,"list");
 	xml_init.InitWindow			(uiXml, pth, 0, this);
@@ -106,3 +106,4 @@ void CUINewsWnd::Show(bool status)
 	inherited::Show(status);
 
 }
+*/

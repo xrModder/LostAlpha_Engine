@@ -115,7 +115,7 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 	{
 		_sz		+= xr_sprintf	(_buff+_sz,sizeof(_buff)-_sz,"%s %+3.0f%%", (_val_af>0.0f)?"%c[green]":"%c[red]", _val_af*100.0f);
 	}
-	_s->SetText			(_buff);
+	_s->TextItemControl()->SetText			(_buff);
 
 	if(_s->GetParent()==NULL)
 		m_listWnd->AddWindow(_s, false);

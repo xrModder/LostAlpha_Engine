@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIWindow.h"
+/*
 class CUIScrollView;
 struct GAME_NEWS_DATA;
 
@@ -26,3 +27,4 @@ private:
 	void			LoadNews		();
 	void			AddNewsItem	(GAME_NEWS_DATA& news_data);
 };
+*/

@@ -483,16 +483,16 @@ void game_cl_mp::shedule_Update(u32 dt)
 
 	if(m_pVoteStartWindow && m_pVoteStartWindow->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
 	{
-		m_pVoteStartWindow->GetHolder()->StartStopMenu(m_pVoteStartWindow, true);
+		m_pVoteStartWindow->GetHolder()->StopMenu(m_pVoteStartWindow);
 	}
 	if(m_pVoteRespondWindow && m_pVoteRespondWindow->IsShown() && (cur_game_state!=GAME_PHASE_INPROGRESS || !IsVotingActive()))
 	{
-		m_pVoteRespondWindow->GetHolder()->StartStopMenu(m_pVoteRespondWindow, true);
+		m_pVoteRespondWindow->GetHolder()->StopMenu(m_pVoteRespondWindow);
 	}
 
 	if(m_pMessageBox && m_pMessageBox->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
 	{
-		m_pMessageBox->GetHolder()->StartStopMenu(m_pMessageBox, true);
+		m_pMessageBox->GetHolder()->StopMenu(m_pMessageBox);
 	}
 	
 }

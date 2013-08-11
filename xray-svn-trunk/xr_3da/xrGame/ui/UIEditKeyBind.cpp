@@ -196,7 +196,7 @@ bool CUIEditKeyBind::IsChangedOptValue() const
 {
 	return m_keyboard != m_opt_backup_value;
 }
-
+#include "../../xr_ioconsole.h"
 void CUIEditKeyBind::BindAction2Key()
 {
 	xr_string comm_unbind	= (m_bPrimary)?"unbind ":"unbind_sec ";

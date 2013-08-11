@@ -45,7 +45,8 @@ CUICharacterInfo::~CUICharacterInfo()
 
 void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml* xml_doc)
 {
-	inherited::Init(x, y, width, height);
+//	inherited::Init(x, y, width, height);
+	inherited::SetWndRect(x, y, width, height);
 
 	CUIXmlInit xml_init;
 	CUIStatic*	pItem = NULL;
@@ -64,7 +65,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	if(xml_doc->NavigateToNode("name_static", 0)){
 		pItem = m_icons[eUIName] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "name_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 0);
+//		pItem->SetElipsis(CUIStatic::eepEnd, 0);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -74,7 +75,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIRank] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "rank_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+//		pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -92,7 +93,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUICommunity] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "community_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+//		pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -110,7 +111,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIReputation] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "reputation_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+//		pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -128,7 +129,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIRelation] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "relation_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+//		pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -169,23 +170,23 @@ void CUICharacterInfo::InitCharacter(u16 id)
 	CStringTable	stbl;
 	string256		str;
 	if(m_icons[eUIName]){
-		m_icons[eUIName]->SetText	(T->m_character_name.c_str());
+		m_icons[eUIName]->TextItemControl()->SetText	(T->m_character_name.c_str());
 	}
 
 	if(m_icons[eUIRank]){
 		xr_sprintf(str, "%s", *stbl.translate(GetRankAsText(chInfo.Rank().value())));
-		m_icons[eUIRank]->SetText(str);
+		m_icons[eUIRank]->TextItemControl()->SetText(str);
 	}
 
 
 	if(m_icons[eUIReputation]){
 		xr_sprintf(str, "%s", *stbl.translate(GetReputationAsText(chInfo.Reputation().value())));
-		m_icons[eUIReputation]->SetText(str);
+		m_icons[eUIReputation]->TextItemControl()->SetText(str);
 	}
 
 	if(m_icons[eUICommunity]){
 		xr_sprintf(str, "%s", *CStringTable().translate(chInfo.Community().id()));
-		m_icons[eUICommunity]->SetText(str);
+		m_icons[eUICommunity]->TextItemControl()->SetText(str);
 	}
 
 	m_texture_name										= chInfo.IconName().c_str();
@@ -200,9 +201,9 @@ void CUICharacterInfo::InitCharacter(u16 id)
 		{
 			CUIStatic* pItem				= xr_new<CUIStatic>();
 			pItem->SetWidth					(pUIBio->GetDesiredChildWidth());
-			pItem->SetText					(*(chInfo.Bio()));
+			pItem->TextItemControl()->SetText					(*(chInfo.Bio()));
 			pItem->AdjustHeightToText		();
-			pItem->SetTextComplexMode(true);
+			pItem->TextItemControl()->SetTextComplexMode(true);
 			pUIBio->AddWindow				(pItem, true);
 		}
 	}
@@ -218,12 +219,12 @@ void  CUICharacterInfo::SetRelation(ALife::ERelationType relation, CHARACTER_GOO
 
 	CStringTable stbl;
 
-	m_icons[eUIRelation]->SetTextColor(GetRelationColor(relation));
+	m_icons[eUIRelation]->TextItemControl()->SetTextColor(GetRelationColor(relation));
 	string256		str;
 
 	xr_sprintf(str, "%s", *stbl.translate(GetGoodwillAsText(goodwill)));
 
-	m_icons[eUIRelation]->SetText(str);
+	m_icons[eUIRelation]->TextItemControl()->SetText(str);
 }
 
 
@@ -231,11 +232,11 @@ void  CUICharacterInfo::SetRelation(ALife::ERelationType relation, CHARACTER_GOO
 
 void CUICharacterInfo::ResetAllStrings()
 {
-	if(m_icons[eUIName])		m_icons[eUIName]->SetText		("");
-	if(m_icons[eUIRank])		m_icons[eUIRank]->SetText		("");
-	if(m_icons[eUICommunity])	m_icons[eUICommunity]->SetText	("");
-	if(m_icons[eUIRelation])	m_icons[eUIRelation]->SetText	("");
-	if(m_icons[eUIReputation])	m_icons[eUIReputation]->SetText	("");
+	if(m_icons[eUIName])		m_icons[eUIName]->TextItemControl()->SetText		("");
+	if(m_icons[eUIRank])		m_icons[eUIRank]->TextItemControl()->SetText		("");
+	if(m_icons[eUICommunity])	m_icons[eUICommunity]->TextItemControl()->SetText	("");
+	if(m_icons[eUIRelation])	m_icons[eUIRelation]->TextItemControl()->SetText	("");
+	if(m_icons[eUIReputation])	m_icons[eUIReputation]->TextItemControl()->SetText	("");
 }
 
 void CUICharacterInfo::UpdateRelation()
@@ -277,7 +278,7 @@ void CUICharacterInfo::Update()
 		if(m_icons[eUIIcon]){
 			CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(T);
 			if(pCreature && !pCreature->g_Alive())
-				m_icons[eUIIcon]->SetColor	(color_argb(255,255,160,160));
+				m_icons[eUIIcon]->SetTextureColor	(color_argb(255,255,160,160));
 		}
 	}
 }
@@ -287,7 +288,7 @@ void CUICharacterInfo::ClearInfo()
 	ResetAllStrings	();
 	
 	if (m_icons[eUIIcon]) {
-		m_icons[eUIIcon]->GetUIStaticItem().SetOriginalRect(	8*ICON_GRID_WIDTH,0,
+		m_icons[eUIIcon]->GetUIStaticItem().SetTextureRect(	8*ICON_GRID_WIDTH,0,
 			float(CHAR_ICON_WIDTH*ICON_GRID_WIDTH),
 			float(CHAR_ICON_HEIGHT*ICON_GRID_HEIGHT));
 	}

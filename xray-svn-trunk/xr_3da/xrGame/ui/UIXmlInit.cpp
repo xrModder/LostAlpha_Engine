@@ -16,7 +16,7 @@
 #include "UIListBox.h"
 #include "UIComboBox.h"
 #include "UITrackBar.h"
-//#include "UIHint.h"
+#include "UIHint.h"
 #include "../game_base_space.h"
 
 #include "UITextureMaster.h"
@@ -804,8 +804,8 @@ bool CUIXmlInit::InitTabControl(CUIXml &xml_doc, LPCSTR path, int index, CUITabC
 	{
 		newButton = radio ? xr_new<CUIRadioButton>() : xr_new<CUITabButton>();
 		status &= Init3tButton(xml_doc, "button", i, newButton);
-		newButton->m_btn_id = xml_doc.ReadAttrib("button",i,"id");
-		R_ASSERT3(newButton->m_btn_id.size(), xml_doc.m_xml_file_name, path);
+		newButton->m_btn_id = xml_doc.ReadAttribInt("button",i,"id");
+		//R_ASSERT3(newButton->m_btn_id.size(), xml_doc.m_xml_file_name, path);
 		pWnd->AddItem(newButton);
 	}
 	
@@ -924,9 +924,9 @@ bool CUIXmlInit::InitAnimatedStatic(CUIXml &xml_doc, const char *path, int index
 
 bool CUIXmlInit::InitSleepStatic(CUIXml &xml_doc, const char *path, int index, CUISleepStatic *pWnd)
 {
-	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
+//	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
 
-	InitStatic(xml_doc, path, index, pWnd);
+//	InitStatic(xml_doc, path, index, pWnd);
     
 	return true;
 }
@@ -1133,7 +1133,7 @@ void CUIXmlInit::InitColorDefs()
 	m_pColorDefs = xr_new<ColorDefs>();
 
 	CUIXml					uiXml;
-	uiXml.Load				(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
+	uiXml.Init				(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
 
 	int num = uiXml.GetNodesNum("colors", 0, "color");
 

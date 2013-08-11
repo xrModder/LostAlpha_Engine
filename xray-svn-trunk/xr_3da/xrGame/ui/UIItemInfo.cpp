@@ -56,7 +56,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		wnd_rect.x2		= uiXml.ReadAttribFlt("main_frame", 0, "width", 0);
 		wnd_rect.y2		= uiXml.ReadAttribFlt("main_frame", 0, "height", 0);
 		
-		inherited::Init(wnd_rect.x1, wnd_rect.y1, wnd_rect.x2, wnd_rect.y2);
+		inherited::SetWndRect(wnd_rect.x1, wnd_rect.y1, wnd_rect.x2, wnd_rect.y2);
 	}
 
 	if(uiXml.NavigateToNode("static_name",0))
@@ -116,7 +116,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		AttachChild					(UIItemImage);	
 		UIItemImage->SetAutoDelete	(true);
 		xml_init.InitStatic			(uiXml, "image_static", 0, UIItemImage);
-		UIItemImage->TextureAvailable(true);
+		UIItemImage->TextureOn		();
 
 		UIItemImage->TextureOff			();
 //		UIItemImage->ClipperOn			();
@@ -130,7 +130,7 @@ void CUIItemInfo::InitItemInfo(Fvector2 pos, Fvector2 size, LPCSTR xml_name)
 {
 	inherited::SetWndPos	(pos);
 	inherited::SetWndSize	(size);
-    InitItemInfo			(xml_name);
+	Init					(xml_name);
 }
 
 bool				IsGameTypeSingle();
@@ -143,17 +143,17 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	string256				str;
 	if(UIName)
 	{
-		UIName->SetText		(pInvItem->Name());
+		UIName->TextItemControl()->SetText		(pInvItem->Name());
 	}
 	if(UIWeight)
 	{
 		xr_sprintf				(str, "%3.2f kg", pInvItem->Weight());
-		UIWeight->SetText	(str);
+		UIWeight->TextItemControl()->SetText	(str);
 	}
 	if( UICost && IsGameTypeSingle() )
 	{
 		xr_sprintf				(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
-		UICost->SetText		(str);
+		UICost->TextItemControl()->SetText		(str);
 	}
 
 	if(UICondProgresBar)
@@ -172,11 +172,11 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
-			pItem->SetTextColor					(m_desc_info.uDescClr);
-			pItem->SetFont						(m_desc_info.pDescFont);
+			pItem->TextItemControl()->SetTextColor					(m_desc_info.uDescClr);
+			pItem->TextItemControl()->SetFont						(m_desc_info.pDescFont);
 			pItem->SetWidth						(UIDesc->GetDesiredChildWidth());
-			pItem->SetTextComplexMode			(true);
-			pItem->SetText						(*pInvItem->ItemDescription());
+			pItem->TextItemControl()->SetTextComplexMode			(true);
+			pItem->TextItemControl()->SetText						(*pInvItem->ItemDescription());
 			pItem->AdjustHeightToText			();
 			UIDesc->AddWindow					(pItem, true);
 		}
@@ -192,7 +192,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		int iXPos							= pInvItem->GetXPos();
 		int iYPos							= pInvItem->GetYPos();
 
-		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos*INV_GRID_WIDTH), float(iYPos*INV_GRID_HEIGHT),
+		UIItemImage->GetUIStaticItem().SetTextureRect(	float(iXPos*INV_GRID_WIDTH), float(iYPos*INV_GRID_HEIGHT),
 														float(iGridWidth*INV_GRID_WIDTH),	float(iGridHeight*INV_GRID_HEIGHT));
 		UIItemImage->TextureOn				();
 //		UIItemImage->ClipperOn				();
@@ -201,10 +201,10 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 												0.0f, 
 												float(iGridWidth*INV_GRID_WIDTH),	
 												float(iGridHeight*INV_GRID_HEIGHT)};
-		if(UI().is_16_9_mode())
-			v_r.x2 /= 1.328f;
+	
+		v_r.x2								*= UI().get_current_kx();
 
-		UIItemImage->GetUIStaticItem().SetRect	(v_r);
+		UIItemImage->GetUIStaticItem().SetTextureRect	(v_r);
 		UIItemImage->SetWidth					(_min(v_r.width(),	UIItemImageSize.x));
 		UIItemImage->SetHeight					(_min(v_r.height(),	UIItemImageSize.y));
 	}
