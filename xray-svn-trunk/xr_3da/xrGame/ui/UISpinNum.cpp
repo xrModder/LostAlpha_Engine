@@ -15,42 +15,6 @@ CUISpinNum::CUISpinNum()
 	m_iStep(1)
 {}
 
-void CUISpinNum::SetMaxValueByScript(int MaxValue)
-{
-	R_ASSERT(m_iMin<MaxValue);
-	m_iMax = MaxValue;
-}
-
-void CUISpinNum::SetMinValueByScript(int MinValue)
-{
-	R_ASSERT(m_iMin<MinValue);
-	m_iMin = MinValue;
-}
-
-int CUISpinNum::GetValueByScript()
-{
-	return Value();
-}
-int CUISpinNum::GetStepByScript()
-{
-	return m_iStep;
-}
-
-void CUISpinNum::SetStepByScript(int StepValue)
-{
-	m_iStep = StepValue;
-}
-
-bool CUISpinNum::SetValueByScript(int value)
-{
-	R_ASSERT	(!((value<=m_iMax) && (value>=m_iMin)));
-	
-	m_iVal = value;
-	SetValue();
-	
-	return true;
-}
-
 void CUISpinNum::SetCurrentOptValue	()	// opt->current
 {
 	CUIOptionsItem::SetCurrentOptValue();
@@ -64,29 +28,28 @@ void CUISpinNum::SaveBackUpOptValue	()	// current->backup
 	m_opt_backup_value	= m_iVal;
 }
 
-void CUISpinNum::SetCurrentValue()
+void CUISpinNum::SaveOptValue()	// current->opt
 {
-	GetOptIntegerValue(m_iVal, m_iMin, m_iMax);
-	SetValue();
-}
-
-void CUISpinNum::SaveValue()
-{
-	CUIOptionsItem::SaveValue();
+	CUIOptionsItem::SaveOptValue();
 	SaveOptIntegerValue(m_iVal);
 }
 
-bool CUISpinNum::IsChanged()
+void CUISpinNum::UndoOptValue()	// backup->current
 {
-	int val, min, max;
-	GetOptIntegerValue(val, min, max);
-    return m_iVal != val;
+	m_iVal						= m_opt_backup_value;
+	SetValue					(m_iVal);
+	CUIOptionsItem::UndoOptValue();
 }
 
-void CUISpinNum::Init(float x, float y, float width, float height)
+bool CUISpinNum::IsChangedOptValue	() const	// backup!=current
 {
-	CUICustomSpin::Init(x,y,width,height);
-	SetValue();
+	return m_iVal != m_opt_backup_value;
+}
+
+void CUISpinNum::InitSpin(Fvector2 pos, Fvector2 size)
+{
+	CUICustomSpin::InitSpin(pos, size);
+	SetValue(m_iVal);
 }
 
 void CUISpinNum::IncVal()
@@ -94,7 +57,7 @@ void CUISpinNum::IncVal()
 	if (CanPressUp())
 		m_iVal += m_iStep;
 
-	SetValue();
+	SetValue(m_iVal);
 }
 
 void CUISpinNum::DecVal()
@@ -102,7 +65,7 @@ void CUISpinNum::DecVal()
 	if (CanPressDown())
 		m_iVal -= m_iStep;
 
-	SetValue();
+	SetValue(m_iVal);
 }
 
 void CUISpinNum::OnBtnUpClick()
@@ -117,10 +80,10 @@ void CUISpinNum::OnBtnDownClick()
 	CUICustomSpin::OnBtnDownClick();
 }
 
-void CUISpinNum::SetValue()
+void CUISpinNum::SetValue(int v)
 {
 	string16	buff;
-	m_pLines->SetText(itoa(m_iVal, buff, 10)); 
+	m_pLines->SetText(itoa(v, buff, 10)); 
 }
 
 bool CUISpinNum::CanPressUp()
@@ -221,40 +184,4 @@ bool CUISpinFlt::CanPressUp()
 bool CUISpinFlt::CanPressDown()
 {
 	return (m_fVal - m_fStep > m_fMin) || fsimilar(m_fVal-m_fStep, m_fMin);
-}
-
-void CUISpinFlt::SetMaxValueByScript(float MaxValue)
-{
-	R_ASSERT(MaxValue>m_fMin);
-	m_fMax = MaxValue;
-}
-
-void CUISpinFlt::SetMinValueByScript(float MinValue)
-{
-	R_ASSERT(MinValue<m_fMax);
-	m_fMin = MinValue;
-}
-
-int CUISpinFlt::GetValueByScript()
-{
-	return m_fVal;
-}
-int CUISpinFlt::GetStepByScript()
-{
-	return m_fStep;
-}
-
-void CUISpinFlt::SetStepByScript(float StepValue)
-{
-	m_fStep = StepValue;
-}
-
-bool CUISpinFlt::SetValueByScript(float value)
-{
-	R_ASSERT	(!((value<=m_fMax) && (value>=m_fMin)));
-	
-	m_fVal = value;
-	SetValue();
-	
-	return true;
 }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UICellItem.h"
-#include "uicursor.h"
+#include "../uicursor.h"
 #include "../inventory_item.h"
 #include "UIDragDropListEx.h"
 #include "../xr_level_controller.h"

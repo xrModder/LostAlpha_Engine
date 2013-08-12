@@ -14,7 +14,7 @@ CUIDMStatisticWnd::CUIDMStatisticWnd					() :
 	SetHeaderColumnText(2, "Hits/Shots");
 	SetHeaderColumnText(3, "Kills");
 
-	Show();
+	Show(true);
 };
 
 CUIDMStatisticWnd::~CUIDMStatisticWnd					()
@@ -26,13 +26,13 @@ bool	CUIDMStatisticWnd::SetItemData		(Weapon_Statistic* pWS, CUIStatsListItem *p
 	if (!pWS) return false;
 	
 	string1024 Text;
-	pItem->FieldsVector[0]->SetText(*pWS->InvName);
+	pItem->FieldsVector[0]->TextItemControl()->SetText(*pWS->InvName);
 	float Eff = float(pWS->m_dwHitsScored)/((pWS->m_dwBulletsFired != 0) ? (pWS->m_dwBulletsFired) : 1);
-	xr_sprintf(Text, "%.2f", Eff); pItem->FieldsVector[1]->SetText(Text);
+	xr_sprintf(Text, "%.2f", Eff); pItem->FieldsVector[1]->TextItemControl()->SetText(Text);
 	u32 Hits = u32(pWS->m_dwRoundsFired*Eff);
 	xr_sprintf(Text, "%d / %d", Hits, pWS->m_dwRoundsFired); 
-	pItem->FieldsVector[2]->SetText(Text);
-	xr_sprintf(Text, "%d", pWS->m_dwKillsScored); pItem->FieldsVector[3]->SetText(Text);
+	pItem->FieldsVector[2]->TextItemControl()->SetText(Text);
+	xr_sprintf(Text, "%d", pWS->m_dwKillsScored); pItem->FieldsVector[3]->TextItemControl()->SetText(Text);
 
 	return true;
 };
@@ -70,9 +70,9 @@ void CUIDMStatisticWnd::Update				()
 		if (!pItem) continue;
 		if (SetItemData(&(pPS->aWeaponStats[i]), pItem)) continue;
 
-		pItem->FieldsVector[0]->SetText(NULL);
-		pItem->FieldsVector[1]->SetText(NULL);
-		pItem->FieldsVector[2]->SetText(NULL);
+		pItem->FieldsVector[0]->TextItemControl()->SetText(NULL);
+		pItem->FieldsVector[1]->TextItemControl()->SetText(NULL);
+		pItem->FieldsVector[2]->TextItemControl()->SetText(NULL);
 	};
 };
 

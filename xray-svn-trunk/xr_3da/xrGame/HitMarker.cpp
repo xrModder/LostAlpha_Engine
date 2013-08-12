@@ -67,14 +67,14 @@ SHitMark::SHitMark		(const ui_shader& sh, const Fvector& dir)
 	m_UIStaticItem						= xr_new<CUIStaticItem>();
 	m_UIStaticItem->SetShader			(sh);
 	m_UIStaticItem->SetPos				(256.0f, 128.0f);
-	m_UIStaticItem->SetRect				(.0f, .0f, 512.0f, 512.0f);
+	m_UIStaticItem->SetTextureRect		(.0f, .0f, 512.0f, 512.0f);
 }
 
 void SHitMark::UpdateAnim	()
 {
 	int frame;
 	u32 clr			= m_lanim->CalculateRGB(Device.fTimeGlobal-m_StartTime,frame);
-	m_UIStaticItem->SetColor		(subst_alpha(m_UIStaticItem->GetColor(), color_get_A(clr)));
+	m_UIStaticItem->SetTextureColor		(subst_alpha(m_UIStaticItem->GetTextureColor(), color_get_A(clr)));
 }
 
 SHitMark::~SHitMark		()

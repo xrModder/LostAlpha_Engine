@@ -68,5 +68,5 @@ protected:
 	// Подсвеченый элемент
 	u32					m_uHighlightedItem;
 	// Заголовок
-	CUIMultiTextStatic	UIHeader;
+	CUIStatic	UIHeader;
 };

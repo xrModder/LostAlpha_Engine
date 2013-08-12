@@ -1,54 +1,28 @@
 #include "stdafx.h"
 #include "UIGameTDM.h"
 
-//. #include "UITDMPlayerList.h"
-//.#include "UITDMFragList.h"
-#include "UIDMStatisticWnd.h"
-
-#include "hudmanager.h"
 #include "game_cl_base.h"
 
 #include "game_cl_TeamDeathmatch.h"
 
-#include "ui/UIFrags2.h"
 #include "ui/TeamInfo.h"
 #include <dinput.h>
 
 #include "object_broker.h"
 
+#include "UITeamPanels.h"
+#include "ui/UIMoneyIndicator.h"
+#include "ui/UIRankIndicator.h"
+
 #define MSGS_OFFS 510
+#define TEAM_PANELS_TDM_XML_NAME "ui_team_panels_tdm.xml"
 
 //--------------------------------------------------------------------
 CUIGameTDM::CUIGameTDM()
+:m_game(NULL)
 {
-	m_game							= NULL;
-
-	CUIXml							uiXml;
-	CUIXmlInit						xml_init;
-	uiXml.Init						(CONFIG_PATH, UI_PATH, "ui_game_tdm.xml");
-	m_team1_icon					= xr_new<CUIStatic>();
-	m_team2_icon					= xr_new<CUIStatic>();
-	m_team1_score					= xr_new<CUIStatic>();
-	m_team2_score					= xr_new<CUIStatic>();
-	xml_init.InitStatic				(uiXml, "team1_icon", 0,	m_team1_icon);
-//.	xml_init.InitAutoStaticGroup	(uiXml, "team1_icon",		m_team1_icon);
-	xml_init.InitStatic				(uiXml, "team2_icon", 0,	m_team2_icon);
-//.	xml_init.InitAutoStaticGroup	(uiXml, "team2_icon",		m_team2_icon); moved in InitStatic
-
-//.	CUIXmlInit::StaticsVec gr;
-	xml_init.InitStatic					(uiXml, "team1_score", 0,	m_team1_score);
-//.	gr = xml_init.InitAutoStaticGroup	(uiXml, "team1_score",		m_team1_score);
-//.	(*gr.back()).SetText				(*CTeamInfo::GetTeam1_name());
-//.	(*gr.back()).SetTextColor			(CTeamInfo::GetTeam1_color());
-
-	xml_init.InitStatic					(uiXml, "team2_score", 0,	m_team2_score);
-//.	gr = xml_init.InitAutoStaticGroup	(uiXml, "team2_score",		m_team2_score);
-//.	(*gr.back()).SetText				(*CTeamInfo::GetTeam2_name());
-//.	(*gr.back()).SetTextColor			(CTeamInfo::GetTeam2_color());
-
-	m_pUITeamSelectWnd	= xr_new<CUISpawnWnd>	();
 }
-//--------------------------------------------------------------------
+
 void CUIGameTDM::SetClGame (game_cl_GameState* g)
 {
 	inherited::SetClGame(g);
@@ -56,69 +30,62 @@ void CUIGameTDM::SetClGame (game_cl_GameState* g)
 	R_ASSERT(m_game);
 }
 
-void CUIGameTDM::Init ()
+void CUIGameTDM::Init (int stage)
 {
-	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "stats.xml");
-	R_ASSERT2(xml_result, "xml file not found");
+	if(stage==0)
+	{ //shared
+		m_pUITeamSelectWnd				= xr_new<CUISpawnWnd>	();
+		m_team1_icon					= xr_new<CUIStatic>();
+		m_team2_icon					= xr_new<CUIStatic>();
+		m_team1_score					= xr_new<CUITextWnd>();
+		m_team1_score->SetAutoDelete	(true);
+		m_team2_score					= xr_new<CUITextWnd>();
+		m_team2_score->SetAutoDelete	(true);
+		m_buy_msg_caption				= xr_new<CUITextWnd>();
+		m_buy_msg_caption->SetAutoDelete(true);
 
-	CUIFrags2* pFragList		= xr_new<CUIFrags2>();			pFragList->SetAutoDelete(true);
-	//-----------------------------------------------------------
-	CUIDMStatisticWnd* pStatisticWnd = xr_new<CUIDMStatisticWnd>(); pStatisticWnd->SetAutoDelete(true);
+		inherited::Init					(stage);
+		CUIXmlInit::InitTextWnd			(*m_msgs_xml, "mp_tdm_buy",0,		m_buy_msg_caption);
+	}
+	if(stage==1)
+	{ //unique
+		m_pTeamPanels->Init				(TEAM_PANELS_TDM_XML_NAME, "team_panels_wnd");
 
-	pFragList->Init(xml_doc,"stats_wnd","frag_wnd_tdm");
+		CUIXml							uiXml, xml2;
+		uiXml.Load						(CONFIG_PATH, UI_PATH, "ui_game_tdm.xml");
 
-	float ScreenW = UI_BASE_WIDTH;
-	float ScreenH = UI_BASE_HEIGHT;
-	//-----------------------------------------------------------
-	Frect FrameRect = pFragList->GetWndRect ();
-	float FrameW	= FrameRect.right - FrameRect.left;
-	float FrameH	= FrameRect.bottom - FrameRect.top;
+		CUIXmlInit::InitWindow			(uiXml, "global",		0,  m_window);
+		CUIXmlInit::InitStatic			(uiXml, "team1_icon",	0,	m_team1_icon);
+		CUIXmlInit::InitStatic			(uiXml, "team2_icon",	0,	m_team2_icon);
+		CUIXmlInit::InitTextWnd			(uiXml, "team1_score",	0,	m_team1_score);
+		CUIXmlInit::InitTextWnd			(uiXml, "team2_score",	0,	m_team2_score);
+		CUIXmlInit::InitTextWnd			(uiXml, "fraglimit",	0,	m_pFragLimitIndicator);
 
-	pFragList->SetWndPos((ScreenW-FrameW)/2.0f, (ScreenH - FrameH)/2.0f);
-	//-----------------------------------------------------------
-	m_pFragLists->AttachChild(pFragList);
-	//-----------------------------------------------------------
-	CUIFrags2* pPlayerListT1	= xr_new<CUIFrags2>	();pPlayerListT1->SetAutoDelete(true);
-//	CUIFrags2* pPlayerListT2	= xr_new<CUIFrags2>	();pPlayerListT2->SetAutoDelete(true);
-
-	pPlayerListT1->Init(xml_doc, "players_wnd", "frag_wnd_tdm");
-//	pPlayerListT2->Init(xml_doc, "players_wnd", "frag_wnd_tdm");
-	//-----------------------------------------------------------
-	FrameRect = pPlayerListT1->GetWndRect ();
-	FrameW	= FrameRect.right - FrameRect.left;
-	FrameH	= FrameRect.bottom - FrameRect.top;
-
-	pPlayerListT1->SetWndPos((ScreenW-FrameW)/2.0f, (ScreenH - FrameH)/2.0f);
-	//-----------------------------------------------------------
-//	FrameRect = pPlayerListT2->GetWndRect ();
-//	FrameW	= FrameRect.right - FrameRect.left;
-//	FrameH	= FrameRect.bottom - FrameRect.top;
-
-//	pPlayerListT2->SetWndRect(ScreenW/4.0f*3.0f-FrameW/2.0f, (ScreenH - FrameH)/2.0f, FrameW, FrameH);
-	//-----------------------------------------------------------
-	m_pPlayerLists->AttachChild(pPlayerListT1);
-//	m_pPlayerLists->AttachChild(pPlayerListT2);
-	//-----------------------------------------------------------
-	FrameRect = pStatisticWnd->GetFrameRect ();
-	FrameW	= FrameRect.right - FrameRect.left;
-	FrameH	= FrameRect.bottom - FrameRect.top;
-	pStatisticWnd->SetWndRect((ScreenW-FrameW)/2.0f, (ScreenH - FrameH)/2.0f, FrameW, FrameH);
-
-	m_pStatisticWnds->AttachChild(pStatisticWnd);
+		m_pMoneyIndicator->InitFromXML	(uiXml);
+		m_pRankIndicator->InitFromXml	(uiXml);
+	}
+	if(stage==2)
+	{ //after
+		inherited::Init(stage);
+		m_window->AttachChild			(m_team1_score);
+		m_window->AttachChild			(m_team2_score);
+		m_window->AttachChild			(m_buy_msg_caption);
+	}
 }
-//--------------------------------------------------------------------
-CUIGameTDM::~CUIGameTDM()
+
+void CUIGameTDM::UnLoad()
 {
+	inherited::UnLoad	();
 	xr_delete			(m_team1_icon);
 	xr_delete			(m_team2_icon);
-	xr_delete			(m_team1_score);
-	xr_delete			(m_team2_score);
-
 	delete_data			(m_pUITeamSelectWnd);
 }
-//--------------------------------------------------------------------
-bool CUIGameTDM::IR_OnKeyboardPress(int dik)
+
+CUIGameTDM::~CUIGameTDM()
+{
+}
+
+bool CUIGameTDM::IR_UIOnKeyboardPress(int dik)
 {
 	switch (dik) {
 		case DIK_CAPSLOCK :
@@ -133,11 +100,10 @@ bool CUIGameTDM::IR_OnKeyboardPress(int dik)
 			};
 		}break;
 	}
-	if(inherited::IR_OnKeyboardPress(dik)) return true;
-	return false;
+	return inherited::IR_UIOnKeyboardPress(dik);
 }
 
-bool CUIGameTDM::IR_OnKeyboardRelease(int dik)
+bool CUIGameTDM::IR_UIOnKeyboardRelease(int dik)
 {
 	switch (dik) {
 		case DIK_CAPSLOCK :
@@ -150,9 +116,8 @@ bool CUIGameTDM::IR_OnKeyboardRelease(int dik)
 				};
 			}break;
 	}
-	if(inherited::IR_OnKeyboardRelease(dik)) return true;
-	
-	return false;
+
+	return inherited::IR_UIOnKeyboardRelease(dik);
 }
 
 void CUIGameTDM::OnFrame()
@@ -160,17 +125,13 @@ void CUIGameTDM::OnFrame()
 	inherited::OnFrame();
 	m_team1_icon->Update();
 	m_team2_icon->Update();
-	m_team1_score->Update();
-	m_team2_score->Update();
 }
 
 void CUIGameTDM::Render()
 {
-	inherited::Render();
 	m_team1_icon->Draw();
 	m_team2_icon->Draw();
-	m_team1_score->Draw();
-	m_team2_score->Draw();
+	inherited::Render();
 }
 
 void CUIGameTDM::SetScoreCaption(int t1, int t2)
@@ -181,6 +142,8 @@ void CUIGameTDM::SetScoreCaption(int t1, int t2)
 
 	xr_sprintf					(str,"%d", t2);
 	m_team2_score->SetText	(str);
+	
+	m_pTeamPanels->SetArtefactsCount(t1, t2);
 }
 
 void CUIGameTDM::SetFraglimit(int local_frags, int fraglimit)
@@ -194,8 +157,10 @@ void CUIGameTDM::SetFraglimit(int local_frags, int fraglimit)
 	m_pFragLimitIndicator->SetText(str);
 }
 
-void CUIGameTDM::reset_ui				()
+void CUIGameTDM::SetBuyMsgCaption(LPCSTR str)
 {
-	inherited::reset_ui();
-	m_pUITeamSelectWnd->Reset();
+	if (!str)
+		m_buy_msg_caption->SetText("");
+	else
+		m_buy_msg_caption->SetTextST(str);
 }

@@ -502,7 +502,7 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 	{
 		if (m_phase != GAME_PHASE_INPROGRESS || (!local_player || !local_player->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)))
 		{
-			StartStopMenu(m_game_ui->m_pBuySpawnMsgBox, true);
+			m_game_ui->m_pBuySpawnMsgBox->HideDialog();
 		};
 	};
 	//-------------------------------------------
@@ -536,10 +536,14 @@ BOOL game_cl_ArtefactHunt::CanCallBuyMenu			()
 	{
 		return FALSE;
 	};
-	if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
+	if ( m_game_ui && m_game_ui->ActorMenu().IsShown() )
 	{
 		return FALSE;
-	};
+	}
+	/*if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
+	{
+		return FALSE;
+	};*/
 
 	CActor* pCurActor = smart_cast<CActor*> (Level().CurrentEntity());
 	if (!pCurActor || !pCurActor->g_Alive()) return FALSE;
@@ -558,14 +562,14 @@ bool game_cl_ArtefactHunt::CanBeReady				()
 	if (!m_bTeamSelected)
 	{
 		if (CanCallTeamSelectMenu())
-			StartStopMenu(m_game_ui->m_pUITeamSelectWnd,true);
+			m_game_ui->m_pUITeamSelectWnd->ShowDialog(true);
 		return false;
 	};
 
 	if (!m_bSkinSelected)
 	{
 		if (CanCallSkinMenu())
-			StartStopMenu(pCurSkinMenu,true);
+			pCurSkinMenu->ShowDialog(true);
 		return false;
 	};
 
@@ -695,7 +699,8 @@ bool game_cl_ArtefactHunt::NeedToSendReady_Spectator(int key, game_PlayerState* 
 		m_game_ui->m_pBuySpawnMsgBox->SetText(BuySpawnText);
 
 		if (m_bTeamSelected && m_bSkinSelected)
-			StartStopMenu(m_game_ui->m_pBuySpawnMsgBox, true);
+			m_game_ui->m_pBuySpawnMsgBox->ShowDialog(true);
+
 		return false;
 	};
 	return res;

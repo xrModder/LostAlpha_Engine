@@ -1,9 +1,3 @@
-// file:		UISpinNum.h
-// description:	Spin Button with numerical data (unlike text data)
-// created:		15.06.2005
-// author:		Serge Vynnychenko
-//
-
 #include "UICustomSpin.h"
 
 class CUISpinNum : public CUICustomSpin 
@@ -58,13 +52,6 @@ public:
 
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();
-
-	virtual bool	SetValueByScript	(float value);
-	virtual void	SetStepByScript		(float StepValue);
-	virtual int		GetValueByScript	();
-	virtual int		GetStepByScript		();
-	virtual void	SetMaxValueByScript	(float MaxValue);
-	virtual void	SetMinValueByScript	(float MaxValue);
 
 			void	SetMax				(float max);
 			void	SetMin				(float min);

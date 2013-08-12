@@ -17,7 +17,7 @@ class CUICaption;
 class CUIStatic;
 class CUIWindow;
 class CUIXml;
-class CUIActorMenu;
+class CUIInventoryWnd;
 class CUIPdaWnd;			
 struct KillMessageStruct;
 class CUIMainIngameWnd;
@@ -90,7 +90,7 @@ protected:
 	typedef st_vec::iterator				st_vec_it;
 	st_vec									m_custom_statics;
 
-	CUIActorMenu*		m_ActorMenu;
+	CUIInventoryWnd*		m_ActorMenu;
 	CUIPdaWnd*			m_PdaMenu;
 
 	bool				m_bShowGameIndicators;
@@ -111,7 +111,7 @@ public:
 	virtual void		Render					();
 	virtual void _BCL	OnFrame					();
 	
-	IC CUIActorMenu&	ActorMenu				() const { return *m_ActorMenu; }
+	IC CUIInventoryWnd&	ActorMenu				() const { return *m_ActorMenu; }
 	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }
 			bool		ShowActorMenu			();
 			void		HideActorMenu			();

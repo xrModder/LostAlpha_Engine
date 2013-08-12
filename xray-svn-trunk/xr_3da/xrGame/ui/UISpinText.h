@@ -15,11 +15,6 @@ public:
 	virtual void	OnBtnUpClick();
 	virtual void	OnBtnDownClick();
 
-	virtual void	AddItemByScript(const char* item, int id);
-	virtual LPCSTR	GetTokenTextByScript();
-	virtual int		GetCurrentIDByScript();
-	virtual void	SetCurrentIDByScript(int id);
-
 			void	AddItem_(const char* item, int id);
 			LPCSTR	GetTokenText();
 protected:

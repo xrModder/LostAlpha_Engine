@@ -76,7 +76,7 @@ CUICellItem* CUIDragDropReferenceList::RemoveItem(CUICellItem* itm, bool force_r
 	if(vec2.x!=-1&&vec2.y!=-1)
 	{
 		u8 index = u8(vec2.x);
-		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
+//		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
 		m_references[index]->SetTextureColor(color_rgba(255,255,255,0));
 	}
 	inherited::RemoveItem(itm, force_root);
@@ -144,7 +144,7 @@ void CUIDragDropReferenceList::OnItemDBClick(CUIWindow* w, void* pData)
 		CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
 		if(actor)
 		{
-			PIItem itm = actor->inventory().GetAny(ACTOR_DEFS::g_quick_use_slots[index]);
+			PIItem itm = 0; // actor->inventory().GetAny(ACTOR_DEFS::g_quick_use_slots[index]);
 			if(itm)
 				inherited::RemoveItem(GetCellAt(Ivector2().set(index, 0)).m_item, false);
 		}

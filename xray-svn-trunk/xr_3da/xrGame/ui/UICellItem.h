@@ -8,6 +8,7 @@ class CUIDragDropListEx;
 class CUICellItem;
 class CUIProgressBar;
 
+
 class ICustomDrawCellItem
 {
 public:
