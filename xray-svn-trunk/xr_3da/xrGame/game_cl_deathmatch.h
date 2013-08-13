@@ -11,6 +11,7 @@ class CUIGameDM;
 class CUIPdaWnd;
 class CUIInventoryWnd;
 class CUIMapDesc;
+class CWeaponMagazinedWGrenade;
 
 class game_cl_Deathmatch :public game_cl_mp
 {
@@ -30,6 +31,7 @@ public :
 	string64						WinnerName;
 	
 	virtual		CUIGameCustom*		createGameUI			();
+	virtual		void				SetGameUI				(CUIGameCustom*);
 	virtual		void				net_import_state		(NET_Packet& P);
 	virtual		void				net_import_update		(NET_Packet& P);	
 	virtual		void				Init					();
@@ -153,6 +155,7 @@ public:
 
 	virtual		void				OnGameRoundStarted				();
 	virtual		void				UpdateMapLocations		();
+	virtual		void				OnConnected				();
 };
 
 IC bool	DM_Compare_Players		(game_PlayerState* p1, game_PlayerState* p2);

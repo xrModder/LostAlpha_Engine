@@ -20,6 +20,7 @@
 #include "Artifact.h"
 #include "map_location.h"
 #include "Inventory.h"
+#include "ui/uiinventorywnd.h"
 #include "ActorCondition.h"
 #include "ui/TeamInfo.h"
 #include "string_table.h"
@@ -61,7 +62,7 @@ void game_cl_ArtefactHunt::Init ()
 	old_artefactID = 0;
 	old_teamInPossession = 0;
 	//---------------------------------------------------
-	string_path	fn_game;
+/*	string_path	fn_game;
 	if (FS.exist(fn_game, "$level$", "level.game")) 
 	{
 		IReader *F = FS.r_open	(fn_game);
@@ -75,17 +76,17 @@ void game_cl_ArtefactHunt::Init ()
 				RPoint					R;
 				u8						RP_team;
 				u8						RP_type;
-				u8						RP_GameType;
+				u16						RP_GameType;
 
 				O->r_fvector3			(R.P);
 				O->r_fvector3			(R.A);
 				RP_team					= O->r_u8	();	VERIFY(RP_team>=0 && RP_team<4);
 				RP_type					= O->r_u8	();
-				RP_GameType				= O->r_u8	();
+				RP_GameType				= O->r_u16	();
 				//u16 res					= 
-				O->r_u8	();
+				//O->r_u8	();
 
-				if (RP_GameType != rpgtGameAny && RP_GameType != rpgtGameArtefactHunt)
+				if (RP_GameType != GAME_ANY && RP_GameType != GAME_ARTEFACTHUNT)
 				{
 					continue;					
 				};
@@ -113,7 +114,7 @@ void game_cl_ArtefactHunt::Init ()
 		}
 
 		FS.r_close	(F);
-	}
+	}*/
 	//-------------------------------------------------------
 	if (pSettings->line_exist("artefacthunt_gamedata", "artefact_spawn_effect"))
 		m_Eff_Af_Spawn = pSettings->r_string("artefacthunt_gamedata", "artefact_spawn_effect");
@@ -187,7 +188,8 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				pPlayer->name, 
 				Color_Main,
 				Color_Artefact);
-			CommonMessageOut(Text);
+			
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 
 			if (!Game().local_player) break;
 			if (Game().local_player->GameID == PlayerID)
@@ -214,7 +216,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				pPlayer->name, 
 				Color_Main,
 				Color_Artefact);
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 
 //			pMessageSounds[0].play_at_pos(NULL, Fvector().set(0,0,0), sm_2D, 0);
 			PlaySndMessage(ID_AF_LOST);
@@ -234,7 +236,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				CTeamInfo::GetTeam_color_tag(int(Team)), 
 				CTeamInfo::GetTeam_name(int(Team)),
 				Color_Main);
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 			
 			if (!Game().local_player) break;
 			if (Game().local_player->GameID == PlayerID)
@@ -249,7 +251,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 		{
 			xr_sprintf(Text, "%s%s", 
 				Color_Main, *st.translate("mp_art_spowned"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 
 			PlaySndMessage(ID_NEW_AF);
 		}break;
@@ -263,34 +265,32 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			if (pObj && xr_strlen(m_Eff_Af_Disappear))
 				PlayParticleEffect(m_Eff_Af_Disappear.c_str(), pObj->Position());
 			//-------------------------------------------
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 		}break;
 	default:
 		inherited::TranslateGameMessage(msg,P);
 	}
 }
 
+void game_cl_ArtefactHunt::SetGameUI(CUIGameCustom* uigame)
+{
+	inherited::SetGameUI(uigame);
+	m_game_ui			= smart_cast<CUIGameAHunt*>(uigame);
+	R_ASSERT			(m_game_ui);
+};
+
 CUIGameCustom* game_cl_ArtefactHunt::createGameUI()
 {
-	game_cl_mp::createGameUI();
+	if (g_dedicated_server)
+		return NULL;
 
 	CLASS_ID clsid			= CLSID_GAME_UI_ARTEFACTHUNT;
-	m_game_ui	= smart_cast<CUIGameAHunt*> ( NEW_INSTANCE ( clsid ) );
-	R_ASSERT(m_game_ui);
-	m_game_ui->SetClGame(this);
-	m_game_ui->Init();
-
-//	pUITeamSelectWnd	= xr_new<CUISpawnWnd>	();
-	//----------------------------------------------------------------
-//	pInventoryMenu = xr_new<CUIInventoryWnd>();
-	//-----------------------------------------------------------	
-//	pPdaMenu = xr_new<CUIPdaWnd>();
-	//-----------------------------------------------------------
-//	pMapDesc = xr_new<CUIMapDesc>();
-	//-----------------------------------------------------------
-	LoadMessagesMenu(MESSAGE_MENUS);
-	//-----------------------------------------------------------
-	return m_game_ui;
+	m_game_ui				= smart_cast<CUIGameAHunt*> ( NEW_INSTANCE ( clsid ) );
+	R_ASSERT				(m_game_ui);
+	m_game_ui->Load			();
+	m_game_ui->SetClGame	(this);
+	LoadMessagesMenu		(MESSAGE_MENUS);
+	return					m_game_ui;
 }
 
 void game_cl_ArtefactHunt::GetMapEntities(xr_vector<SZoneMapEntityData>& dst)
@@ -340,17 +340,18 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 {
 	CStringTable st;
 	string1024 msg;
-	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameAHunt*>( CurrentGameUI() );
 
 	inherited::shedule_Update		(dt);
 
-	if(g_dedicated_server)	return;
+	if (g_dedicated_server)
+		return;
+
+	if (!m_game_ui)
+		return;
 
 	//out game information
-//	m_game_ui->SetReinforcementCaption("");
-	m_game_ui->SetBuyMsgCaption		("");
-	m_game_ui->SetTodoCaption		("");
-	m_game_ui->SetPressBuyMsgCaption	("");	
+	m_game_ui->SetBuyMsgCaption			(NULL);
+	m_game_ui->SetPressBuyMsgCaption	(NULL);	
 
 	switch (m_phase)
 	{
@@ -371,7 +372,7 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 
 			if (local_player && Level().CurrentControlEntity())
 			{
-				if (Level().CurrentControlEntity()->CLS_ID == CLSID_OBJECT_ACTOR)
+				if (smart_cast<CActor*>(Level().CurrentControlEntity()))
 				{
 					if(m_game_ui) m_game_ui->SetBuyMsgCaption("");
 					if (m_bBuyEnabled)
@@ -437,49 +438,17 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 					if (s32(CurTime) > dReinforcementTime) dTime = 0;
 					else dTime = iCeil(float(dReinforcementTime - CurTime) / 1000);
 							
-					m_game_ui->m_pReinforcementInidcator->SetPos(dTime, iReinforcementTime);
+					string128 _buff;
+					m_game_ui->m_pReinforcementInidcator->SetText(itoa(dTime,_buff,10));
 				}else
-					m_game_ui->m_pReinforcementInidcator->SetPos(0, 0);
-
+					m_game_ui->m_pReinforcementInidcator->SetText("0");
 
 				s16 lt = local_player->team;
 				if (lt>=0)
 				{
 //					if(m_game_ui) m_game_ui->SetScoreCaption	(teams[0].score, teams[1].score);
 				};				
-	/*
-			if ( (artefactBearerID==0))// && (artefactID!=0) )
-				{
-					m_game_ui->SetTodoCaption("Grab the Artefact");
-				}
-				else
-				{
-					if (teamInPossession != local_player->team )
-					{
-						m_game_ui->SetTodoCaption("Stop ArtefactBearer");
-					}
-					else
-					{
-						if (local_player->GameID == artefactBearerID)
-						{
-							m_game_ui->SetTodoCaption("You got the Artefact. Bring it to your base.");
-						}
-						else
-						{
-							m_game_ui->SetTodoCaption("Protect your ArtefactBearer");
-						};
-					};
-				};
-			*/
 			};
-/*
-			if (Level().CurrentViewEntity() && m_game_ui)
-			{
-				game_PlayerState* ps = GetPlayerByGameID(Level().CurrentViewEntity()->ID());
-				if (ps&&m_game_ui) m_game_ui->SetRank(ps->team, ps->rank);
-				if (ps&&m_game_ui) m_game_ui->SetFraglimit(ps->kills, artefactsNum);
-			}
-*/
 			SetScore();
 		}break;
 	case GAME_PHASE_TEAM1_ELIMINATED:
@@ -511,7 +480,7 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 void game_cl_ArtefactHunt::SetScore				()
 {
 	game_cl_TeamDeathmatch::SetScore();
-
+//	game_cl_Deathmatch::SetScore();
 	if (Level().CurrentViewEntity() && m_game_ui)
 	{
 		game_PlayerState* ps = GetPlayerByGameID(Level().CurrentViewEntity()->ID());
@@ -527,6 +496,9 @@ BOOL game_cl_ArtefactHunt::CanCallBuyMenu			()
 {
 	if (!m_bBuyEnabled) return FALSE;
 	if (Phase()!=GAME_PHASE_INPROGRESS) return false;
+
+	if (!is_buy_menu_ready())
+		return FALSE;
 	
 	if (m_game_ui->m_pUITeamSelectWnd && m_game_ui->m_pUITeamSelectWnd->IsShown())
 	{
@@ -650,12 +622,12 @@ void	game_cl_ArtefactHunt::UpdateMapLocations		()
 						Level().MapManager().RemoveMapLocationByObjectID(artefactID);
 					};
 
-					bool OutfitWorkDown = false;
+					/*bool OutfitWorkDown = false;
 
 					CActor* pActor = smart_cast<CActor*>(Level().Objects.net_Find(artefactBearerID));
 					if (pActor)
 					{
-						CCustomOutfit* pOutfit			= (CCustomOutfit*)pActor->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
+						CCustomOutfit* pOutfit			= pActor->GetOutfit();
 						if (pOutfit && pOutfit->CLS_ID == CLSID_EQUIPMENT_SCIENTIFIC)
 						{
 							if (!pActor->AnyAction())
@@ -668,7 +640,8 @@ void	game_cl_ArtefactHunt::UpdateMapLocations		()
 							}
 						}
 					}
-					if (!OutfitWorkDown && !Level().MapManager().HasMapLocation(ARTEFACT_ENEMY, artefactID))
+					if (!OutfitWorkDown && */
+					if (!Level().MapManager().HasMapLocation(ARTEFACT_ENEMY, artefactID))
 					{
 						(Level().MapManager().AddMapLocation(ARTEFACT_ENEMY, artefactID))->EnablePointer();
 					}
@@ -694,7 +667,7 @@ bool game_cl_ArtefactHunt::NeedToSendReady_Spectator(int key, game_PlayerState* 
 		local_player && (local_player->money_for_round+m_iSpawn_Cost)>=0) 
 	{
 		string1024				BuySpawnText;
-		xr_sprintf					(BuySpawnText, *st.translate("mp_press_yes2pay"), 
+		xr_sprintf				(BuySpawnText, *st.translate("mp_press_yes2pay"), 
 								abs(local_player->money_for_round), abs(m_iSpawn_Cost));
 		m_game_ui->m_pBuySpawnMsgBox->SetText(BuySpawnText);
 
@@ -775,7 +748,13 @@ void	game_cl_ArtefactHunt::OnSellItemsFromRuck		()
 	pCurActor->u_EventSend(P);
 };
 
-void			game_cl_ArtefactHunt::SendPickUpEvent		(u16 ID_who, u16 ID_what)
+void game_cl_ArtefactHunt::SendPickUpEvent		(u16 ID_who, u16 ID_what)
 {
 	game_cl_GameState::SendPickUpEvent(ID_who, ID_what);
 };
+
+void game_cl_ArtefactHunt::OnConnected()
+{
+	inherited::OnConnected();
+	m_game_ui = smart_cast<CUIGameAHunt*>( CurrentGameUI() );
+}

@@ -120,6 +120,14 @@ struct	game_TeamState
 	game_TeamState();
 };
 
+// [15.11.07] Alexander Maniluk: added next enumeratuion to solve problem with team identifiers
+enum ETeam
+{
+	etGreenTeam			=	0x00,
+	etBlueTeam			=	0X01,
+	etSpectatorsTeam	=	0x02
+};
+//--------------
 
 #pragma pack(pop)
 
@@ -172,6 +180,7 @@ private:
 	//-------------------------------------------------------
 public:
 
+	virtual		ALife::_TIME_ID		GetStartGameTime		();
 	virtual		ALife::_TIME_ID		GetGameTime				();	
 	virtual		float				GetGameTimeFactor		();	
 				void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);

@@ -16,9 +16,9 @@
 
 game_cl_GameState::game_cl_GameState()
 {
+	local_player				= createPlayerState(NULL);	//initializing account info
 	m_WeaponUsageStatistic		= xr_new<WeaponUsageStatistic>();
 
-	local_player				= 0;
 	m_game_type_name			= 0;
 
 	shedule.t_min				= 5;
@@ -38,19 +38,17 @@ game_cl_GameState::~game_cl_GameState()
 	players.clear();
 
 	shedule_unregister();
-
-	xr_delete					(m_WeaponUsageStatistic);
+	xr_delete(m_WeaponUsageStatistic);
+	xr_delete(local_player);
 }
 
 void	game_cl_GameState::net_import_GameTime		(NET_Packet& P)
 {
-	//time
 	u64				GameTime;
 	P.r_u64			(GameTime);
 	float			TimeFactor;
 	P.r_float		(TimeFactor);
 
-	
 	Level().SetGameTimeFactor	(GameTime,TimeFactor);
 
 	u64				GameEnvironmentTime;
@@ -212,7 +210,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_disconnected"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s disconnected", PlayerName);
 		}break;
@@ -222,7 +220,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_entered_game"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 		}break;
 	default:
 		{
@@ -240,6 +238,16 @@ void	game_cl_GameState::OnGameMessage	(NET_Packet& P)
 
 	TranslateGameMessage(msg, P);
 };
+
+game_PlayerState* game_cl_GameState::lookat_player()
+{
+	CObject* current_entity = Level().CurrentEntity();
+	if (current_entity)
+	{
+		return GetPlayerByGameID(current_entity->ID());
+	}
+	return NULL;
+}
 
 game_PlayerState* game_cl_GameState::GetPlayerByGameID(u32 GameID)
 {
@@ -287,8 +295,9 @@ void game_cl_GameState::shedule_Update		(u32 dt)
 {
 	ISheduled::shedule_Update	(dt);
 
-	if(!m_game_ui_custom){
-		if( HUD().GetUI() )
+	if(!m_game_ui_custom)
+	{
+		if( CurrentGameUI() )
 			m_game_ui_custom = CurrentGameUI();
 	} 
 	//---------------------------------------
@@ -305,11 +314,6 @@ void game_cl_GameState::shedule_Update		(u32 dt)
 	};
 };
 
-void game_cl_GameState::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
-{
-	HUD().GetUI()->StartStopMenu(pDialog, bDoHideIndicators);
-}
-
 void game_cl_GameState::sv_GameEventGen(NET_Packet& P)
 {
 	P.w_begin	(M_EVENT);
@@ -323,29 +327,20 @@ void	game_cl_GameState::sv_EventSend(NET_Packet& P)
 	Level().Send(P,net_flags(TRUE,TRUE));
 }
 
-bool game_cl_GameState::IR_OnKeyboardPress		(int dik)
+bool game_cl_GameState::OnKeyboardPress		(int dik)
 {
-	if(local_player && !local_player->IsSkip())
-		return OnKeyboardPress( get_binded_action(dik) );
+	if(!local_player || local_player->IsSkip())
+		return true;
 	else
 		return false;
 }
 
-bool game_cl_GameState::IR_OnKeyboardRelease	(int dik)
+bool game_cl_GameState::OnKeyboardRelease	(int dik)
 {
-	if(local_player && !local_player->IsSkip())
-		return OnKeyboardRelease( get_binded_action(dik) );
+	if(!local_player || local_player->IsSkip())
+		return true;
 	else
 		return false;
-}
-
-bool game_cl_GameState::IR_OnMouseMove			(int dx, int dy)
-{
-	return false;	
-}
-bool game_cl_GameState::IR_OnMouseWheel			(int direction)
-{
-	return false;
 }
 
 void game_cl_GameState::u_EventGen(NET_Packet& P, u16 type, u16 dest)
@@ -385,33 +380,27 @@ void				game_cl_GameState::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 	}	
 }
 
-void				game_cl_GameState::SendPickUpEvent		(u16 ID_who, u16 ID_what)
+void game_cl_GameState::SendPickUpEvent(u16 ID_who, u16 ID_what)
 {
-	NET_Packet P;
-	u_EventGen(P,GE_OWNERSHIP_TAKE, ID_who);
-	P.w_u16(ID_what);
-	u_EventSend(P);
+	CObject* O		= Level().Objects.net_Find	(ID_what);
+	Level().m_feel_deny.feel_touch_deny			(O, 1000);
+
+	NET_Packet		P;
+	u_EventGen		(P,GE_OWNERSHIP_TAKE, ID_who);
+	P.w_u16			(ID_what);
+	u_EventSend		(P);
 };
 
 void game_cl_GameState::set_type_name(LPCSTR s)	
 { 
 	m_game_type_name		=s; 
 	if(OnClient()){
-		strcpy					(g_pGamePersistent->m_game_params.m_game_type, *m_game_type_name);
+		xr_strcpy					(g_pGamePersistent->m_game_params.m_game_type, m_game_type_name.c_str());
 		g_pGamePersistent->OnGameStart();
 	}
 };
-void game_cl_GameState::reset_ui()
+
+void game_cl_GameState::OnConnected()
 {
-	if(g_dedicated_server)	return;
-
-	if(!m_game_ui_custom)
-		m_game_ui_custom = CurrentGameUI();
-
-	m_game_ui_custom->reset_ui					();
-
-	HUD().GetUI()->UIMainIngameWnd->reset_ui	();
-
-	if (HUD().GetUI()->MainInputReceiver())
-		HUD().GetUI()->StartStopMenu			(HUD().GetUI()->MainInputReceiver(),true);
+	m_game_ui_custom	= CurrentGameUI();
 }

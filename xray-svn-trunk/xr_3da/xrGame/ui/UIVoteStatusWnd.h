@@ -2,13 +2,13 @@
 #include "UIFrameWindow.h"
 
 class CUIXml;
-class CUIStatic;
+class CUITextWnd;
 
 class UIVoteStatusWnd :public CUIFrameWindow
 {
-	CUIStatic*						m_str_message;
-	CUIStatic*						m_hint;
-	CUIStatic*						m_time_message;
+	CUITextWnd*						m_str_message;
+	CUITextWnd*						m_hint;
+	CUITextWnd*						m_time_message;
 public:
 	void	InitFromXML				(CUIXml& xml_doc);
 	void	SetVoteTimeResultMsg	(LPCSTR s);

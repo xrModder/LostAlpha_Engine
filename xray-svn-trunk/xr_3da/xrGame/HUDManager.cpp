@@ -6,6 +6,8 @@
 #include "../igame_level.h"
 #include "clsid_game.h"
 #include "GamePersistent.h"
+#include "UIGameCustom.h"
+#include "UICursor.h"
 #include "UI.h"
 
 extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
@@ -57,7 +59,6 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	static char* tex_names[]={"texture800","texture","texture1600"};
 	int def_idx		= 1;//default 1024x768
 	int idx			= def_idx;
-
 #if 0
 	u32 w = Device.dwWidth;
 
@@ -68,7 +69,7 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	u32 h = Device.dwHeight;
 
 	if(h<=600)		idx = 0;
-	else if(h<=900)	idx = 1;
+	else if(h<1024)	idx = 1;
 	else 			idx = 2;
 #endif
 
@@ -183,7 +184,7 @@ void CHUDManager::Render_First()
 
 void CHUDManager::Render_Last()
 {
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return;
+	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2|HUD_DRAW_RT2))return;
 	if (0==pUI)						return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;
@@ -302,16 +303,14 @@ void CHUDManager::net_Relcase	(CObject *object)
 
 void CHUDManager::OnScreenResolutionChanged()
 {
-	/*
 	pUIGame->HideShownDialogs			();
 
-	xr_delete							(pWpnScopeXml);
+//	xr_delete							(pWpnScopeXml);
 
 	pUIGame->UnLoad						();
 	pUIGame->Load						();
 
 	pUIGame->OnConnected				();
-	*/
 }
 
 bool   CHUDManager::RenderActiveItemUIQuery()

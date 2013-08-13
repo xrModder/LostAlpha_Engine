@@ -10,8 +10,6 @@ class game_cl_ArtefactHunt :public game_cl_TeamDeathmatch
 	shared_str							m_Eff_Af_Spawn;
 	shared_str							m_Eff_Af_Disappear;
 	typedef game_cl_TeamDeathmatch inherited;
-protected:
-//	ref_sound							pMessageSounds[8];
 
 protected:
 	virtual const shared_str			GetBaseCostSect			() {return "artefacthunt_base_cost";}
@@ -20,9 +18,6 @@ protected:
 
 	virtual			BOOL				CanCallBuyMenu			();
 	virtual			bool				CanBeReady				();
-
-//	virtual			void				OnObjectEnterTeamBase	(u16 player_id, u8 zone_team_id);
-//	virtual			void				OnObjectLeaveTeamBase	(u16 player_id, u8 zone_team_id);
 	virtual			void				UpdateMapLocations		();
 
 	virtual			bool				NeedToSendReady_Spectator		(int key, game_PlayerState* ps);
@@ -44,9 +39,10 @@ public:
 
 public :
 										game_cl_ArtefactHunt	();
-	virtual							~game_cl_ArtefactHunt		();
+	virtual								~game_cl_ArtefactHunt	();
 	virtual			void				Init					();
 	virtual			CUIGameCustom*		createGameUI			();
+	virtual			void				SetGameUI				(CUIGameCustom*);
 	virtual			void				net_import_state		(NET_Packet& P);
 	virtual			void				GetMapEntities(xr_vector<SZoneMapEntityData>& dst);
 	virtual			char*				getTeamSection			(int Team);
@@ -58,4 +54,5 @@ public :
 	virtual			void				OnSpawn					(CObject* pObj);
 	virtual			void				OnDestroy				(CObject* pObj);	
 	virtual			void				SendPickUpEvent			(u16 ID_who, u16 ID_what);
+	virtual		void					OnConnected				();
 };

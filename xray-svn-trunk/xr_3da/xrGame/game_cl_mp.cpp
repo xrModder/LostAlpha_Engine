@@ -82,7 +82,7 @@ game_cl_mp::~game_cl_mp()
 	xr_delete(m_pVoteStartWindow);
 	xr_delete(m_pMessageBox);
 };
-
+/*
 CUIGameCustom*		game_cl_mp::createGameUI			()
 {
 //	m_pSpeechMenu = xr_new<CUISpeechMenu>("test_speech_section");
@@ -90,7 +90,7 @@ CUIGameCustom*		game_cl_mp::createGameUI			()
 		
 	return NULL;
 };
-
+*/
 bool game_cl_mp::CanBeReady	()
 {
 	return true;
@@ -122,19 +122,21 @@ bool game_cl_mp::OnKeyboardPress(int key)
 		CObject* curr = Level().CurrentControlEntity();
 		if (!curr) return(false);
 
-		bool is_actor		= curr->CLS_ID==CLSID_OBJECT_ACTOR;
-		bool is_spectator	= curr->CLS_ID==CLSID_SPECTATOR;
+		bool is_actor		= !!smart_cast<CActor*>(curr);
+		bool is_spectator	= !!smart_cast<CSpectator*>(curr);
 		
 		game_PlayerState* ps	= local_player;
 
-		if (is_actor){
+		if (is_actor)
+		{
 			b_need_to_send_ready = NeedToSendReady_Actor(key, ps);
 		};
-		if(is_spectator){
+		if(is_spectator)
+		{
 			b_need_to_send_ready =	NeedToSendReady_Spectator(key, ps);
-
 		};
-		if(b_need_to_send_ready){
+		if(b_need_to_send_ready)
+		{
 				CGameObject* GO = smart_cast<CGameObject*>(curr);
 				NET_Packet			P;
 				GO->u_EventGen		(P,GE_GAME_EVENT,GO->ID()	);
@@ -216,7 +218,8 @@ bool game_cl_mp::OnKeyboardPress(int key)
 				if (MenuID >= m_aMessageMenus.size()) break;
 				cl_MessageMenu* pCurMenu = &(m_aMessageMenus[MenuID]);
 				HideMessageMenus();
-				StartStopMenu(pCurMenu->m_pSpeechMenu, FALSE);
+				//StartStopMenu(pCurMenu->m_pSpeechMenu, FALSE);
+				pCurMenu->m_pSpeechMenu->ShowDialog(false);
 				return true;
 			}break;
 		}		
@@ -230,7 +233,7 @@ void	game_cl_mp::VotingBegin()
 	if(!m_pVoteStartWindow)
 		m_pVoteStartWindow		= xr_new<CUIVotingCategory>();
 
-	StartStopMenu(m_pVoteStartWindow, true);
+	m_pVoteStartWindow->ShowDialog(true);
 }
 
 void	game_cl_mp::Vote()
@@ -238,17 +241,13 @@ void	game_cl_mp::Vote()
 	if(!m_pVoteRespondWindow)
 		m_pVoteRespondWindow	= xr_new<CUIVote>();
 
-	StartStopMenu			(m_pVoteRespondWindow, true);
+	m_pVoteRespondWindow->ShowDialog(true);
 }
 
 void	game_cl_mp::OnCantVoteMsg(LPCSTR Text)
 {
-	if (!m_pMessageBox)
-		m_pMessageBox = xr_new<CUIMessageBoxEx>();
-
-	m_pMessageBox->InitMessageBox("cant_vote");
-	m_pMessageBox->SetText(Text);
-	StartStopMenu(m_pMessageBox, true);
+	if(CurrentGameUI()) 
+		CurrentGameUI()->CommonMessageOut(Text);
 }
 
 bool	game_cl_mp::OnKeyboardRelease		(int key)
@@ -268,7 +267,7 @@ char	Color_Green[]	= "%c[255,1,255,1]";
 
 void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 {
-	string512 Text;
+	string4096 Text;
 	CStringTable st;
 
 	switch(msg)	{
@@ -280,21 +279,22 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 	case GAME_EVENT_VOTE_START:
 		{
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_started_msg"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 			OnVoteStart(P);
 		}break;
 	case GAME_EVENT_VOTE_STOP:
 		{
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_broken"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+
 			OnVoteStop(P);
 		}break;
 	case GAME_EVENT_VOTE_END:
 		{
-			string512 Reason;
+			string4096 Reason;
 			P.r_stringZ(Reason);
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate(Reason));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 			OnVoteEnd(P);
 		}break;
 	case GAME_EVENT_PLAYER_NAME:
@@ -316,18 +316,24 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 	case GAME_EVENT_ROUND_STARTED:
 		{
 			OnGameRoundStarted();
+#ifdef DEBUG
+			Msg("--- On round started !!!");
+#endif // #ifdef DEBUG
 		}break;
 	case GAME_EVENT_ROUND_END:
 		{
 			string64 reason;
 			P.r_stringZ(reason);
+#ifdef DEBUG
+			Msg("--- On round end !!!");
+#endif // #ifdef DEBUG
 		}break;
 	case GAME_EVENT_SERVER_STRING_MESSAGE:
 		{
 			string1024 mess;
 			P.r_stringZ(mess);
 			xr_sprintf( Text, "%s%s", Color_Red, *st.translate(mess) );
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 		}break;
 	case GAME_EVENT_SERVER_DIALOG_MESSAGE:
 		{
@@ -381,11 +387,11 @@ void game_cl_mp::OnWarnMessage(NET_Packet* P)
 		u8	_cnt				= P->r_u8	();
 		u8	_total				= P->r_u8	();
 		
-		if(HUD().GetUI())
+		if(CurrentGameUI())
 		{
-			string512				_buff;
+			string512					_buff;
 			xr_sprintf					(_buff,"max_ping_warn_%d", _cnt);
-			SDrawStaticStruct* ss	= HUD().GetUI()->AddInfoMessage(_buff);
+			SDrawStaticStruct* ss		= CurrentGameUI()->AddCustomStatic(_buff, true);
 			
 			xr_sprintf					(_buff,"%d ms.", _ping);
 			ss->m_static->TextItemControl()->SetText	(_buff);
@@ -421,10 +427,12 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 //#endif
 	if(g_dedicated_server)	return;
 
-	string256 colPlayerName;
-	xr_sprintf(colPlayerName, "%s%s:%s", Color_Teams[team], PlayerName, "%c[default]");
-	if (Level().CurrentViewEntity() && HUD().GetUI())
-		HUD().GetUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
+	if ( team < 0 || 2 < team )	{ team = 0; }
+	
+	LPSTR colPlayerName;
+	STRCONCAT(colPlayerName, Color_Teams[team], PlayerName, ":%c[default]");
+	if (Level().CurrentViewEntity() && CurrentGameUI())
+		CurrentGameUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
 };
 
 void game_cl_mp::CommonMessageOut		(LPCSTR msg)
@@ -449,9 +457,9 @@ void game_cl_mp::shedule_Update(u32 dt)
 	{
 	case GAME_PHASE_PENDING:
 		{
-			CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
-			if (pChatWnd && pChatWnd->IsShown())
-				StartStopMenu(pChatWnd, false);
+			//CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
+			//if (pChatWnd && pChatWnd->IsShown())
+			//	StartStopMenu(pChatWnd, false);
 
 			if (m_bJustRestarted)
 			{
@@ -472,29 +480,30 @@ void game_cl_mp::shedule_Update(u32 dt)
 		}break;
 	default:
 		{
-			CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
+			CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
 			if (pChatWnd && pChatWnd->IsShown())
-				StartStopMenu(pChatWnd, false);
+				pChatWnd->HideDialog();
 		}break;
 	}
 	UpdateMapLocations();	
 
 	u32 cur_game_state = Phase();
 
-	if(m_pVoteStartWindow && m_pVoteStartWindow->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
+	if ((cur_game_state != GAME_PHASE_INPROGRESS) && (cur_game_state!=GAME_PHASE_PENDING))
 	{
-		m_pVoteStartWindow->GetHolder()->StopMenu(m_pVoteStartWindow);
+		if (m_pVoteStartWindow && m_pVoteStartWindow->IsShown())
+		{
+			m_pVoteStartWindow->HideDialog();
+		}
+		if (m_pMessageBox && m_pMessageBox->IsShown())
+		{
+			m_pMessageBox->HideDialog();
+		}
+		if (m_pVoteRespondWindow && m_pVoteRespondWindow->IsShown())// && IsVotingActive())
+		{
+			m_pVoteRespondWindow->HideDialog();
+		}
 	}
-	if(m_pVoteRespondWindow && m_pVoteRespondWindow->IsShown() && (cur_game_state!=GAME_PHASE_INPROGRESS || !IsVotingActive()))
-	{
-		m_pVoteRespondWindow->GetHolder()->StopMenu(m_pVoteRespondWindow);
-	}
-
-	if(m_pMessageBox && m_pMessageBox->IsShown() && cur_game_state!=GAME_PHASE_INPROGRESS)
-	{
-		m_pMessageBox->GetHolder()->StopMenu(m_pMessageBox);
-	}
-	
 }
 
 void game_cl_mp::SendStartVoteMessage	(LPCSTR args)
@@ -534,7 +543,7 @@ void game_cl_mp::OnVoteStop				(NET_Packet& P)
 	SetVotingActive(false);
 	if(m_pVoteRespondWindow && m_pVoteRespondWindow->IsShown())
 	{
-		StartStopMenu			(m_pVoteRespondWindow, true);
+		m_pVoteRespondWindow->HideDialog();
 	}
 };
 
@@ -551,7 +560,7 @@ void game_cl_mp::OnPlayerVoted			(game_PlayerState* ps)
 	string1024 resStr;
 	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[ps->team], ps->getName(), Color_Main, *st.translate("mp_voted"),
 		ps->m_bCurrentVoteAgreed ? Color_Green : Color_Red, *st.translate(ps->m_bCurrentVoteAgreed ? "mp_voted_yes" : "mp_voted_no"));
-	CommonMessageOut(resStr);
+	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(resStr);
 }
 void game_cl_mp::LoadTeamData			(const shared_str& TeamName)
 {
@@ -594,15 +603,24 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		{
 			m_bSpectatorSelected = FALSE;
 
-			if(HUD().GetUI())
+			if(CurrentGameUI())
 			{
-				HUD().GetUI()->ShowGameIndicators();
+				 CurrentGameUI()->ShowGameIndicators(true);
+				 CurrentGameUI()->m_pMessagesWnd->PendingMode(false);
 			}
 		}break;
 	case GAME_PHASE_PENDING:
 		{
 			m_bJustRestarted = true;
 			HideMessageMenus();
+			if (old_phase == GAME_PHASE_INPROGRESS)
+			{
+				if(CurrentGameUI())
+				{
+					 CurrentGameUI()->ShowGameIndicators(true);
+					 CurrentGameUI()->m_pMessagesWnd->PendingMode(true);
+				}
+			}
 		};
 
 	case GAME_PHASE_TEAM1_SCORES:
@@ -611,27 +629,27 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 	case GAME_PHASE_TEAM2_ELIMINATED:
 	case GAME_PHASE_TEAMS_IN_A_DRAW:
 	case GAME_PHASE_PLAYER_SCORES:
+		{
 			HideMessageMenus();
-	break;
-
+		}break;
 	default:
 		{
-			if (g_hud && HUD().GetUI())
-				HUD().GetUI()->ShowGameIndicators();
+			if (g_hud && CurrentGameUI())
+				CurrentGameUI()->ShowGameIndicators(false);
 			HideMessageMenus();
 		}break;
 	}
 }
 
-ui_shader game_cl_mp::GetEquipmentIconsShader	()
+const ui_shader& game_cl_mp::GetEquipmentIconsShader	()
 {
-	if (m_EquipmentIconsShader) return m_EquipmentIconsShader;
+	if (m_EquipmentIconsShader->inited()) return m_EquipmentIconsShader;
 
-	m_EquipmentIconsShader->create("hud\\default", EQUIPMENT_ICONS);
+	m_EquipmentIconsShader->create("hud\\default", "ui\\ui_mp_icon_kill");
 	return m_EquipmentIconsShader;
 }
 
-ui_shader game_cl_mp::GetKillEventIconsShader	()
+const ui_shader& game_cl_mp::GetKillEventIconsShader	()
 {
 	return GetEquipmentIconsShader();
 	/*
@@ -642,7 +660,7 @@ ui_shader game_cl_mp::GetKillEventIconsShader	()
 	*/
 }
 
-ui_shader game_cl_mp::GetRadiationIconsShader	()
+const ui_shader& game_cl_mp::GetRadiationIconsShader	()
 {
 	return GetEquipmentIconsShader();
 	/*
@@ -653,7 +671,7 @@ ui_shader game_cl_mp::GetRadiationIconsShader	()
 	*/
 }
 
-ui_shader game_cl_mp::GetBloodLossIconsShader	()
+const ui_shader& game_cl_mp::GetBloodLossIconsShader	()
 {
 	return GetEquipmentIconsShader();
 	/*
@@ -663,9 +681,9 @@ ui_shader game_cl_mp::GetBloodLossIconsShader	()
 	return m_BloodLossIconsShader;
 	*/
 }
-ui_shader		game_cl_mp::GetRankIconsShader()
+const ui_shader& game_cl_mp::GetRankIconsShader()
 {
-	if (m_RankIconsShader) return m_RankIconsShader;
+	if (m_RankIconsShader->inited()) return m_RankIconsShader;
 
 	m_RankIconsShader->create("hud\\default", RANK_ICONS);
 	return m_RankIconsShader;
@@ -805,7 +823,6 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 					};
 
 					xr_sprintf(sSpecial, *st.translate("mp_with_backstab"));
-
 					if (pOKiller && pOKiller==Level().CurrentViewEntity())
 						PlaySndMessage(ID_ASSASSIN);					
 				}break;
@@ -881,8 +898,8 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 	default:
 		break;
 	}
-	if (HUD().GetUI() && HUD().GetUI()->m_pMessagesWnd)
-		HUD().GetUI()->m_pMessagesWnd->AddLogMessage(KMS);
+	if (CurrentGameUI() && CurrentGameUI()->m_pMessagesWnd)
+		CurrentGameUI()->m_pMessagesWnd->AddLogMessage(KMS);
 };
 
 void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
@@ -897,11 +914,14 @@ void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
 
 	string1024 resStr;
 	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[Team], OldName, Color_Main, *st.translate("mp_is_now"),Color_Teams[Team], NewName);
-	CommonMessageOut(resStr);
+	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(resStr);
+	Msg( NewName );
 	//-------------------------------------------
 	CObject* pObj = Level().Objects.net_Find(ObjID);
 	if (pObj)
+	{
 		pObj->cName_set(NewName);
+	}
 
 }
 
@@ -921,7 +941,7 @@ void	game_cl_mp::OnRankChanged	(u8 OldRank)
 	string1024 RankStr;
 	xr_sprintf(tmp, "rank_%d",local_player->rank);
 	xr_sprintf(RankStr, "%s : %s", *st.translate("mp_your_rank"), *st.translate(READ_IF_EXISTS(pSettings, r_string, tmp, "rank_name", "")));
-	CommonMessageOut(RankStr);	
+	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(RankStr);	
 #ifdef DEBUG
 	Msg("- %s", RankStr);
 #endif
@@ -975,6 +995,8 @@ void	game_cl_mp::net_import_state		(NET_Packet& P)
 
 bool	game_cl_mp::Is_Spectator_Camera_Allowed			(CSpectator::EActorCameras Camera)
 {
+	if (Level().IsDemoPlay())		//all cameras allowed in demo play mode
+		return true;
 	/*
 	switch (Camera)
 	{
@@ -991,26 +1013,22 @@ bool	game_cl_mp::Is_Spectator_Camera_Allowed			(CSpectator::EActorCameras Camera
 void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 {
 	if (!local_player) return;
-	CUIGameDM* pUIDM = smart_cast<CUIGameDM*>(m_game_ui_custom);
+	
+	//CUIGameDM* pUIDM = smart_cast<CUIGameDM*>(m_game_ui_custom);
+	VERIFY2(m_game_ui_custom, "game ui not initialized");
 	local_player->money_for_round = P.r_s32();
 	OnMoneyChanged();
 	{
-		if(pUIDM)
-		{
-			string256					MoneyStr;
-			itoa(local_player->money_for_round, MoneyStr, 10);
-			pUIDM->ChangeTotalMoneyIndicator	(MoneyStr);
-		}
+		string256					MoneyStr;
+		itoa(local_player->money_for_round, MoneyStr, 10);
+		m_game_ui_custom->ChangeTotalMoneyIndicator	(MoneyStr);
 	}
 	s32 Money_Added = P.r_s32();
 	if (Money_Added != 0)
 	{
-		if(pUIDM)
-		{
 			string256					MoneyStr;
-			xr_sprintf						(MoneyStr,(Money_Added>0)?"+%d":"%d", Money_Added);
-			pUIDM->DisplayMoneyChange	(MoneyStr);
-		}
+			xr_sprintf					(MoneyStr,(Money_Added>0)?"+%d":"%d", Money_Added);
+			m_game_ui_custom->DisplayMoneyChange	(MoneyStr);
 	};
 	u8 NumBonuses = P.r_u8();
 	s32 TotalBonusMoney = 0;
@@ -1077,7 +1095,7 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 			BMS.m_initiator.m_rect.y2 = pBS->IconRects[RectID].y1 + pBS->IconRects[RectID].y2;		
 		};
 
-		if (pUIDM) pUIDM->DisplayMoneyBonus(BMS);
+		m_game_ui_custom->DisplayMoneyBonus(&BMS);
 	};
 };
 
@@ -1124,7 +1142,7 @@ void	game_cl_mp::OnGameRoundStarted				()
 	string512 Text;
 	CStringTable st;
 	xr_sprintf(Text, "%s%s",Color_Main, *st.translate("mp_match_started"));
-	CommonMessageOut(Text);
+	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 	OnSwitchPhase_InProgress();
 	//-------------------------------
 	PlaySndMessage(ID_MATCH_STARTED);
@@ -1221,3 +1239,9 @@ void game_cl_mp::OnRadminMessage(u16 type, NET_Packet* P)
 		}break;
 	}
 }
+
+void game_cl_mp::OnConnected()
+{
+//	SendPlayerStarted	();
+	inherited::OnConnected();
+};

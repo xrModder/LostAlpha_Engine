@@ -18,7 +18,7 @@ struct SND_Message{
 	u32			SoundID;
 	u32			LastStarted;
 	bool operator == (u32 ID){return SoundID == ID;}
-	void Load(u32 ID, u32 prior, LPCSTR name)
+	void Load(u32 const ID, u32 const prior, LPCSTR name)
 	{
 		SoundID = ID;
 		priority = prior;
@@ -135,11 +135,14 @@ protected:
 	ui_shader				m_BloodLossIconsShader;
 	ui_shader				m_RankIconsShader;
 
-	virtual ui_shader		GetEquipmentIconsShader	();
-	virtual ui_shader		GetKillEventIconsShader	();
-	virtual ui_shader		GetRadiationIconsShader	();
-	virtual ui_shader		GetBloodLossIconsShader	();
-	virtual ui_shader		GetRankIconsShader();
+	virtual const ui_shader&		GetEquipmentIconsShader	();
+	virtual const ui_shader&		GetKillEventIconsShader	();
+	virtual const ui_shader&		GetRadiationIconsShader	();
+	virtual const ui_shader&		GetBloodLossIconsShader	();
+	virtual const ui_shader&		GetRankIconsShader();
+
+			bool				is_buy_menu_ready				() const { return m_ready_to_open_buy_menu; };
+			void				set_buy_menu_not_ready			() { m_ready_to_open_buy_menu = false; };
 
 	virtual void			OnPlayerKilled			(NET_Packet& P);
 
@@ -158,6 +161,8 @@ protected:
 	bool		m_bSpectator_FreeLook;
 	bool		m_bSpectator_TeamCamera;
 
+	bool		m_ready_to_open_buy_menu;
+
 	virtual		void		LoadBonuses				();
 
 public:
@@ -173,7 +178,6 @@ public:
 	virtual		bool				OnKeyboardRelease		(int key);
 
 	virtual		bool				CanBeReady				();
-	virtual		CUIGameCustom*		createGameUI			();
 	virtual		void				shedule_Update			(u32 dt);
 
 	//// VOTING
@@ -223,6 +227,7 @@ public:
 
 	virtual		bool				Is_Spectator_TeamCamera_Allowed () {return m_bSpectator_TeamCamera;};
 	virtual		bool				Is_Spectator_Camera_Allowed			(CSpectator::EActorCameras Camera);
+	virtual		void				OnConnected				();
 	
 //-------------------------------------------------------------------------------------------------
 #include "game_cl_mp_messages_menu.h"

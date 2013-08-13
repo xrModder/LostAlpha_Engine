@@ -43,13 +43,10 @@ public:
 	PLAYERS_MAP							players;
 	ClientID							local_svdpnid;
 	game_PlayerState*					local_player;
-//.	xr_vector<CGameObject*>				targets;
+	game_PlayerState*					lookat_player();
 
 
-	WeaponUsageStatistic				*m_WeaponUsageStatistic;	
-	virtual		void				reset_ui				();
-	virtual		void				CommonMessageOut		(LPCSTR msg);
-
+	WeaponUsageStatistic				*m_WeaponUsageStatistic;
 private:
 				void				switch_Phase			(u32 new_phase)		{inherited::switch_Phase(new_phase);};
 protected:
@@ -76,27 +73,23 @@ public:
 	virtual		void				net_import_GameTime		(NET_Packet& P);						// update GameTime only for remote clients
 	virtual		void				net_signal				(NET_Packet& P);
 
-				bool				IR_OnKeyboardPress		(int dik);
-				bool				IR_OnKeyboardRelease	(int dik);
-				bool				IR_OnMouseMove			(int dx, int dy);
-				bool				IR_OnMouseWheel			(int direction);
+	virtual		bool				OnKeyboardPress			(int key);
+	virtual		bool				OnKeyboardRelease		(int key);
 
-
-	virtual		bool				OnKeyboardPress			(int key){return false;};
-	virtual		bool				OnKeyboardRelease		(int key){return false;};
 				void				OnGameMessage			(NET_Packet& P);
 
 	virtual		char*				getTeamSection			(int Team){return NULL;};
+	virtual		void				SetGameUI				(CUIGameCustom*){};
 
 				game_PlayerState*	GetPlayerByGameID		(u32 GameID);
 				game_PlayerState*	GetPlayerByOrderID		(u32 id);
 				ClientID			GetClientIDByOrderID	(u32 id);
 				u32					GetPlayersCount			() const {return players.size();};
 	virtual		CUIGameCustom*		createGameUI			(){return NULL;};
+	//virtual		void				SetGameUI				(CUIGameCustom*){};
 	virtual		void				GetMapEntities			(xr_vector<SZoneMapEntityData>& dst)	{};
 
 
-				void				StartStopMenu			(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual		void				shedule_Update			(u32 dt);
 
 	void							u_EventGen				(NET_Packet& P, u16 type, u16 dest);
@@ -131,4 +124,5 @@ public:
 	virtual		void				OnPlayerFlagsChanged	(game_PlayerState* ps)	{};
 	virtual		void				OnPlayerVoted			(game_PlayerState* ps)	{};
 	virtual		void				SendPickUpEvent			(u16 ID_who, u16 ID_what);
+	virtual		void				OnConnected				();
 };

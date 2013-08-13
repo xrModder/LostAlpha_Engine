@@ -194,11 +194,12 @@ void				game_cl_mp::OnSpeechMessage			(NET_Packet& P)
 
 void				game_cl_mp::HideMessageMenus		()
 {
-	if (m_aMessageMenus.empty()) return;
+	if (m_aMessageMenus.empty()) 
+		return;
 	for (u32 i=0; i<m_aMessageMenus.size(); i++)
 	{
 		cl_MessageMenu* pMenu = &(m_aMessageMenus[i]);
 		if (pMenu->m_pSpeechMenu->IsShown())
-			StartStopMenu(pMenu->m_pSpeechMenu, FALSE);
-	};
-};
+			pMenu->m_pSpeechMenu->HideDialog();
+	}
+}

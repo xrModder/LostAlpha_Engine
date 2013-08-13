@@ -29,6 +29,8 @@ public :
 	virtual	BOOL					CanCallInventoryMenu	();
 	virtual	BOOL					CanCallTeamSelectMenu	();
 
+	virtual void					SetGameUI				(CUIGameCustom* uigame);
+	virtual void					OnConnected				();
 
 	virtual	void					OnSpectatorSelect		();
 	virtual		void				OnSkinMenuBack			();
