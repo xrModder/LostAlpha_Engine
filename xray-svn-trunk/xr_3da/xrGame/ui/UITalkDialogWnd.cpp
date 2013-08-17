@@ -7,6 +7,7 @@
 #include "UI3tButton.h"
 #include "../UI.h"
 #include "../HUDManager.h"
+#include <dinput.h>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -148,11 +149,19 @@ void CUITalkDialogWnd::ClearQuestions()
 	UIQuestionsList->Clear();
 }
 
-
-void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value)
+void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number)
 {
 	CUIQuestionItem* itm			= xr_new<CUIQuestionItem>(m_uiXml,"question_item");
 	itm->Init						(value, str);
+	++number; //zero-based index
+	if(number<=10)
+	{
+		string16 buff;
+		sprintf_s						(buff, "%d.", (number==10)?0:number);
+		itm->m_num_text->SetText		(buff);
+		itm->m_text->SetAccelerator		(DIK_ESCAPE+number, 0);
+	}
+
 	itm->SetWindowName				("question_item");
 	UIQuestionsList->AddWindow		(itm, true);
 	Register						(itm);
@@ -233,6 +242,11 @@ CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 	m_text->SetWindowName			("text_button");
 	AddCallback						("text_button",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));
 
+	m_num_text						= xr_new<CUIStatic>();
+	m_num_text->SetAutoDelete		(true);
+	AttachChild						(m_num_text);
+	strconcat						(sizeof(str),str,path,":number_phrase");
+	xml_init.InitStatic			(*xml_doc, str, 0, m_num_text);
 }
 
 void CUIQuestionItem::Init			(LPCSTR val, LPCSTR text)
