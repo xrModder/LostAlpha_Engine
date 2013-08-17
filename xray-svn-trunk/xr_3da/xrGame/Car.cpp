@@ -864,7 +864,7 @@ void CCar::ParseDefinitions()
 		gear_rat[2]*=(1.f/60.f*2.f*M_PI);
 		m_gear_ratious.push_back(gear_rat);
 #ifdef DEBUG
-		Msg("! [%s][%s] [%3.3f,%3.3f,%3.3f]", Name(), rat_num, VPUSH(gear_rat));
+		Msg("! [%s][%s] [%3.3f,%3.3f,%3.3f]", *(cName()), rat_num, VPUSH(gear_rat));
 #endif
 	}
 	///////////////////////////////sound///////////////////////////////////////////////////////
