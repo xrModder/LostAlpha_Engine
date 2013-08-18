@@ -27149,6 +27149,70 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ik_calculate_data.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_calculate_data.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_calculate_state.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_collide_data.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_dbg_matrix.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_dbg_matrix.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_foot_collider.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_foot_collider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state_predict.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_object_shift.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_object_shift.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot_inl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Ik\IKLimb.cpp"
 					>
 				</File>
@@ -27194,6 +27258,14 @@
 				</File>
 				<File
 					RelativePath=".\Ik\mathTrig.h"
+					>
+				</File>
+				<File
+					RelativePath=".\pose_extrapolation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\pose_extrapolation.h"
 					>
 				</File>
 			</Filter>
