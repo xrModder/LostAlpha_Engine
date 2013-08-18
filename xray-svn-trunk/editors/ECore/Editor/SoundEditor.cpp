@@ -414,7 +414,7 @@ void TfrmSoundLib::PlaySound(LPCSTR name, u32& size, u32& time)
         m_Snd.play			(0,sm_2D);
         CSoundRender_Source* src= (CSoundRender_Source*)m_Snd._handle(); VERIFY(src);
         size				= F.size;
-        time				= src->dwTimeTotal;
+        time				= iFloor(src->fTimeTotal/1000.0f);
     	if (!bAutoPlay)		m_Snd.stop();
     }
 }

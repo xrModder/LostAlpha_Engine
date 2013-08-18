@@ -18,11 +18,6 @@
 int	ENGINE_API		ps_r1_SoftwareSkinning		= 0;					// r1-only
 
 
-xr_token							snd_freq_token							[ ]={
-	{ "22khz",						sf_22K										},
-	{ "44khz",						sf_44K										},
-	{ 0,							0											}
-};
 xr_token							snd_model_token							[ ]={
 	{ "Default",					0											},
 	{ "Normal",						1											},
