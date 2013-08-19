@@ -251,6 +251,7 @@
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCORE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
+				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="false"

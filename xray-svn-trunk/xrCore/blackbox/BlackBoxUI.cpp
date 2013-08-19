@@ -94,6 +94,30 @@ void BuildStackTrace	()
 	BuildStackTrace			(&ex_ptrs);
 }
 
+void BuildStackTraceDirect	(PCONTEXT pContext)
+{
+	CONTEXT& context		= *pContext;
+#ifdef _EDITOR
+    DWORD                   *EBP = &context.Ebp;
+    DWORD                   *ESP = &context.Esp;
+#endif // _EDITOR
+
+	context.Eip				= program_counter();
+#ifndef _EDITOR
+	__asm					mov context.Ebp, ebp
+	__asm					mov context.Esp, esp
+#else // _EDITOR
+	__asm					mov EBP, ebp
+	__asm					mov ESP, esp
+#endif // _EDITOR
+
+	EXCEPTION_POINTERS		ex_ptrs;
+	ex_ptrs.ContextRecord	= pContext;
+	ex_ptrs.ExceptionRecord	= 0;
+
+	BuildStackTrace			(&ex_ptrs);
+}
+
 #ifndef _EDITOR
 __declspec(noinline)
 #endif // _EDITOR

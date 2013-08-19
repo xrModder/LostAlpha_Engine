@@ -35,6 +35,9 @@ public:
 	void			backend				(const char* reason, const char* expression, const char *argument0, const char *argument1, const char* file, int line, const char *function, bool &ignore_always);
 	void			do_exit				(const std::string &message);
 	
+	void			exception_stacktrace(_EXCEPTION_POINTERS* ep);
+	LPCSTR			exception_name		(DWORD code);
+
 };
 
 // warning

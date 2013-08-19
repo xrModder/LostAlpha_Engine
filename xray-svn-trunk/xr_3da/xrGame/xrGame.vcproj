@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHca"
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
@@ -55,7 +56,7 @@
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="false"
 				MinimalRebuild="true"
-				ExceptionHandling="1"
+				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="true"
 				RuntimeLibrary="2"
@@ -21176,6 +21177,14 @@
 								>
 							</File>
 							<File
+								RelativePath=".\pda_space.h"
+								>
+							</File>
+							<File
+								RelativePath=".\PdaMsg.h"
+								>
+							</File>
+							<File
 								RelativePath=".\PdaScript.cpp"
 								>
 								<FileConfiguration
@@ -21232,14 +21241,6 @@
 										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
 									/>
 								</FileConfiguration>
-							</File>
-							<File
-								RelativePath=".\pda_space.h"
-								>
-							</File>
-							<File
-								RelativePath=".\PdaMsg.h"
-								>
 							</File>
 						</Filter>
 						<Filter
