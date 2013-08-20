@@ -176,9 +176,9 @@ void	CEffect_Rain::OnFrame	()
 	// ambient sound
 	if (snd_Ambient._feedback())
 	{
-//		Fvector					sndP;
-//		sndP.mad				(Device.vCameraPosition,Fvector().set(0,1,0),source_offset);
-//		snd_Ambient.set_position(sndP);
+		Fvector					sndP;
+		sndP.mad				(Device.vCameraPosition,Fvector().set(0,1,0),params->source_offset);
+		snd_Ambient.set_position(sndP);
 		snd_Ambient.set_volume	(_max(0.1f,factor) * hemi_factor );
 	}
 }

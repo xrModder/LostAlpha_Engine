@@ -173,6 +173,7 @@
 				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\NVAPI;X:\STALKER\SDK\ATI;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\Xiph\Include;X:\STALKER\SDK\luabind\luabind"
 				PreprocessorDefinitions="DEBUG,MIXED,WIN32,_WINDOWS,ENGINE_BUILD;_SECURE_SCL=0"
 				StringPooling="true"
+				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="false"
