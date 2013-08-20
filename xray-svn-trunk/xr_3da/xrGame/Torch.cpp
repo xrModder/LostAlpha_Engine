@@ -205,7 +205,11 @@ void CTorch::Broke()
 
 void CTorch::SetBatteryStatus(u16 val)
 {
+	float condition = m_current_battery_state - val;
+	condition	/= -m_battery_duration;
+	//Msg("SetBatteryStatus=[%f], [%d], [%d], [%d], [%d], [%d], [%f]", condition, m_current_battery_state, val, m_battery_duration, m_current_battery_state - val, (m_current_battery_state - val)/m_battery_duration*100, (m_current_battery_state - val)/m_battery_duration);
 	m_current_battery_state = val;
+	ChangeCondition(condition); 
 }
 
 void CTorch::Switch	(bool light_on)
@@ -285,7 +289,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	SwitchNightVision		(false);
 
 	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
-	
+
 	m_current_battery_state = torch->m_battery_state;
 
 	return					(TRUE);
@@ -322,7 +326,10 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 
 void CTorch::Recharge(void)
 {
+	float condition = m_battery_duration - m_current_battery_state;
+	condition /= m_battery_duration;
 	m_current_battery_state = m_battery_duration;
+	ChangeCondition(condition);
 }
 
 void CTorch::UpdateBattery(void)
@@ -330,6 +337,10 @@ void CTorch::UpdateBattery(void)
 	if (m_switched_on)
 	{
 		m_current_battery_state--;
+
+		float condition = -1.f/m_battery_duration;
+		ChangeCondition(condition);
+
 		if (!m_current_battery_state)
 		{
 			Switch(false);
@@ -495,8 +506,6 @@ void CTorch::setup_physic_shell	()
 void CTorch::net_Export			(NET_Packet& P)
 {
 	inherited::net_Export		(P);
-//	P.w_u8						(m_switched_on ? 1 : 0);
-
 
 	BYTE F = 0;
 	F |= (m_switched_on ? eTorchActive : 0);
@@ -509,7 +518,7 @@ void CTorch::net_Export			(NET_Packet& P)
 	}
 	P.w_u8(F);
 	P.w_u16(m_current_battery_state);
-//	Msg("CTorch::net_export - NV[%d]", m_bNightVisionOn);
+	P.w_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 void CTorch::net_Import			(NET_Packet& P)
@@ -517,17 +526,17 @@ void CTorch::net_Import			(NET_Packet& P)
 	inherited::net_Import		(P);
 	
 	BYTE F = P.r_u8();
-	bool new_m_switched_on				= !!(F & eTorchActive);
-	bool new_m_bNightVisionOn			= !!(F & eNightVisionActive);
+	bool new_m_switched_on		= !!(F & eTorchActive);
+	bool new_m_bNightVisionOn	= !!(F & eNightVisionActive);
 
-	if (new_m_switched_on != m_switched_on)			Switch						(new_m_switched_on);
+	if (new_m_switched_on != m_switched_on)
+		Switch(new_m_switched_on);
+
 	if (new_m_bNightVisionOn != m_bNightVisionOn)	
-	{
-//		Msg("CTorch::net_Import - NV[%d]", new_m_bNightVisionOn);
+		SwitchNightVision(new_m_bNightVisionOn);
 
-		SwitchNightVision			(new_m_bNightVisionOn);
-	}
 	m_current_battery_state = P.r_u16();
+	P.r_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 bool  CTorch::can_be_attached		() const
@@ -576,16 +585,3 @@ bool CTorch::IsSwitchedOn()
 {
 	return m_switched_on;
 }
-/*
-void CTorch::save(NET_Packet &output_packet)
-{
-	inherited::save	(output_packet);
-	save_data		(m_current_battery_state,		output_packet);
-}
-
-void CTorch::load(IReader &input_packet)
-{
-	inherited::load	(input_packet);
-	load_data		(m_current_battery_state,		input_packet);
-}
-*/
