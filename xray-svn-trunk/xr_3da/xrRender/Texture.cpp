@@ -405,7 +405,7 @@ IDirect3DBaseTexture9*	texture_load_dds(string_path &fn, u32& ret_msize)
 	D3DXIMAGE_INFO			IMG;
 	S						= FS.r_open	(fn);
 #ifdef DEBUG
-	Msg						("* Loaded: %s[%d]b",fn,S->length());
+//	Msg						("* Loaded: %s[%d]b",fn,S->length());
 #endif // DEBUG
 	R_ASSERT				(S);
 	HRESULT const result	= D3DXGetImageInfoFromFileInMemory	(S->pointer(),S->length(),&IMG);
