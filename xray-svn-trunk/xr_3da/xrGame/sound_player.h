@@ -116,6 +116,9 @@ public:
 		}
 	};
 
+private:
+//	typedef fastdelegate::FastDelegate2<u32, u32, void> object_sound_callback;
+
 public:
 	typedef std::pair<CSoundCollectionParamsFull,CSoundCollection*>	SOUND_COLLECTION;
 	typedef associative_vector<u32,SOUND_COLLECTION>				SOUND_COLLECTIONS;
@@ -126,6 +129,7 @@ private:
 	u32											m_sound_mask;
 	CObject										*m_object;
 	shared_str									m_sound_prefix;
+	//object_sound_callback						m_callback;
 
 	IC		Fvector		compute_sound_point			(const CSoundSingle &sound);
 			void		remove_inappropriate_sounds	(u32 sound_mask);
@@ -151,7 +155,8 @@ public:
 	IC	const SOUND_COLLECTIONS &objects			() const;
 	IC		bool		active_sound_type			(u32 synchro_mask) const;
 	IC		void		sound_prefix				(const shared_str &sound_prefix);
-	IC	const shared_str &sound_prefix				() const;
+	IC	const shared_str &sound_prefix				() const; 
+	//IC		void		set_object_callback			(object_sound_callback& callback);
 };
 
 #include "sound_player_inline.h"

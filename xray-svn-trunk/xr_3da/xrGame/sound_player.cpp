@@ -146,6 +146,9 @@ void CSoundPlayer::update_playing_sounds()
 		else
 			if (!(*I).started() && (Device.dwTimeGlobal >= (*I).m_start_time))
 				(*I).play_at_pos		(m_object,compute_sound_point(*I));
+			//else
+		//		if (m_callback)
+		//			m_callback((*I).
 	}
 }
 
@@ -162,7 +165,12 @@ bool CSoundPlayer::need_bone_data	() const
 	}
 	return							(false);
 }
-
+/*
+void CSoundPlayer::set_object_callback			(object_sound_callback& callback)
+{
+	m_callback		= callback;
+}
+*/
 void CSoundPlayer::play				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
 	if (!check_sound_legacy(internal_type))

@@ -37,7 +37,7 @@ public:
 	void					decompress				(u32 line, OggVorbis_File* ovf);
 	
 	virtual	float			length_sec				() const	{return fTimeTotal;}
-	virtual	float			length_ms				() const	{return fTimeTotal/1000;}
+	virtual	float			length_ms				() const	{return fTimeTotal*1000.0f;}
 	virtual u32				game_type				() const	{return m_uGameType;}
 	virtual LPCSTR			file_name				() const	{return *fname;}
 	virtual float			base_volume				() const	{return m_fBaseVolume;}

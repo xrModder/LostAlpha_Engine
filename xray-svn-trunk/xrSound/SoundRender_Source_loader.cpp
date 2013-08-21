@@ -127,8 +127,8 @@ void CSoundRender_Source::LoadWave	(LPCSTR pName)
 	R_ASSERT3((m_fMaxAIDist>=0.1f)&&(m_fMaxDist>=0.1f),"Invalid max distance.",pName);
 
 #ifdef DEBUG
-	Msg("Ogg-comments loaded: [%s] :: min=[%.3f], max=[%.3f], base=[%.3f], type=[%d], maxAI=[%.2f]", 
-			pName, m_fMinDist, m_fMaxDist, m_fBaseVolume, m_uGameType, m_fMaxAIDist);
+//	Msg("Ogg-comments loaded: [%s] :: min=[%.3f], max=[%.3f], base=[%.3f], type=[%d], maxAI=[%.2f]", 
+//			pName, m_fMinDist, m_fMaxDist, m_fBaseVolume, m_uGameType, m_fMaxAIDist);
 #endif
 
 	ov_clear				(&ovf);

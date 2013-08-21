@@ -49,6 +49,7 @@ namespace GameObject {
 		eOnMoveToSlot,
 		eOnMoveToBelt,
 		eOnMoveToRuck,
+	//	eOnSoundPlayed,
 		//
 
 		eScriptAnimation,
