@@ -83,6 +83,9 @@ protected:
 	float					m_NightVisionDischargeTime;
 	float					m_NightVisionChargeTime;*/
 
+	float					m_RangeMax;
+	float					m_RangeMin;
+
 	enum EStats{
 		eTorchActive				= (1<<0),
 		eNightVisionActive			= (1<<1),

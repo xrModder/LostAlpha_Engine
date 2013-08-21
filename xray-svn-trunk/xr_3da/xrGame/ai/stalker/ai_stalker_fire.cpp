@@ -287,6 +287,7 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 							CTorch* torch = smart_cast<CTorch*>(*it);
 							if (torch){		
 									torch->Broke();
+									torch->SetBatteryStatus(0);
 									break;
 							}
 						}

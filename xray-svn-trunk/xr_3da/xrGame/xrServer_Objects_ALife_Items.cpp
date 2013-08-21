@@ -336,6 +336,7 @@ void CSE_ALifeItemTorch::UPDATE_Read		(NET_Packet	&tNetPacket)
 	m_nightvision_active		= !!(F & eNightVisionActive);
 	m_attached					= !!(F & eAttached);
 	m_battery_state				= tNetPacket.r_u16();
+	tNetPacket.r_float_q8		(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
@@ -348,6 +349,7 @@ void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
 	F |= (m_attached ? eAttached : 0);
 	tNetPacket.w_u8(F);
 	tNetPacket.w_u16(m_battery_state);
+	tNetPacket.w_float_q8		(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemTorch::FillProps			(LPCSTR pref, PropItemVec& values)

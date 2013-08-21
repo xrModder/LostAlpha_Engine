@@ -329,7 +329,7 @@ void CMissile::State(u32 state)
 		{
 			PlaySound(sndPlaying,Position());
 			MotionSVec anim;
-			if (m_sAnimPlayingFail.size() && Random.randI(10)==1)
+			if (m_sAnimPlayingFail.size() && Random.randI(30)==1)
 				animGet(anim, *m_sAnimPlayingFail);
 			else
 				animGet(anim, *m_sAnimPlaying);
