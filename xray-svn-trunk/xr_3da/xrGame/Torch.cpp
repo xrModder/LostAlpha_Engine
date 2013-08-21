@@ -47,6 +47,8 @@ CTorch::CTorch(void) : m_current_battery_state(0)
 	m_NightVisionRechargeTimeMin= 2.f;
 	m_NightVisionDischargeTime	= 10.f;
 	m_NightVisionChargeTime		= 0.f;*/
+	m_RangeMax			= 13.f;
+	m_RangeMin			= 13.f;
 
 	m_prev_hp.set				(0,0);
 	m_delta_h					= 0;
@@ -266,9 +268,10 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	Fcolor clr				= pUserData->r_fcolor				("torch_definition",(b_r2)?"color_r2":"color");
 	fBrightness				= clr.intensity();
-	float range				= pUserData->r_float				("torch_definition",(b_r2)?"range_r2":"range");
+	m_RangeMax				= pUserData->r_float				("torch_definition",(b_r2)?"range_max_r2":"range_max");
+	m_RangeMin				= pUserData->r_float				("torch_definition",(b_r2)?"range_min_r2":"range_min");
 	light_render->set_color	(clr);
-	light_render->set_range	(range);
+	light_render->set_range	(m_RangeMax);
 
 	Fcolor clr_o			= pUserData->r_fcolor				("torch_definition",(b_r2)?"omni_color_r2":"omni_color");
 	float range_o			= pUserData->r_float				("torch_definition",(b_r2)?"omni_range_r2":"omni_range");
@@ -288,7 +291,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	
 	SwitchNightVision		(false);
 
-	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
+	m_delta_h				= PI_DIV_2-atan((m_RangeMax*0.5f)/_abs(TORCH_OFFSET.x));
 
 	m_current_battery_state = torch->m_battery_state;
 
@@ -340,6 +343,14 @@ void CTorch::UpdateBattery(void)
 
 		float condition = -1.f/m_battery_duration;
 		ChangeCondition(condition);
+
+ 		float range = m_current_battery_state;
+		range /= m_battery_duration;
+		range *= m_RangeMax-m_RangeMin;
+		range += m_RangeMin;
+		//Msg("set_range [%f]", range);
+		light_render->set_range	(range);
+		m_delta_h	= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
 
 		if (!m_current_battery_state)
 		{
