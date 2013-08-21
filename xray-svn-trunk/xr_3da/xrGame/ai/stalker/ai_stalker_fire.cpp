@@ -192,7 +192,16 @@ void CAI_Stalker::g_WeaponBones	(int &L, int &R1, int &R2)
 void			CAI_Stalker::Hit					(SHit* pHDS)
 {
 	if (invulnerable())
+	{
+		callback(GameObject::eHit)(
+			lua_game_object(), 
+			pHDS->damage(),
+			pHDS->direction(),
+			smart_cast<const CGameObject*>(pHDS->initiator())->lua_game_object(),
+			pHDS->bone()
+		);
 		return;
+	}
 
 	if (m_bIsGhost) return;
 
@@ -1206,6 +1215,8 @@ bool CAI_Stalker::too_far_to_kill_enemy						(const Fvector &position)
 	int						weapon_type = best_weapon()->object().ef_weapon_type();
 	float					distance = position.distance_to(Position());
 	switch (weapon_type) {
+		// knife
+		case 1 : return		(distance > 2.f); 
 		// pistols
 		case 5 : return		(distance > 10.f);
 		// shotguns
