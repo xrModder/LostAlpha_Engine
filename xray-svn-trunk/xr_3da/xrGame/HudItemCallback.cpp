@@ -16,13 +16,13 @@ void CHudItem::OnAnimationEnd(u32 state)
 	}
 } 
 
-void CHudItem::OnAnimationStart(u32 state)
+void CHudItem::OnAnimationStart(u32 state, u32 anim_time)
 {
 	CActor* actor = 0;
-	Msg("%d CHudItem::OnAnimationStart %d %s", Device.dwTimeGlobal, state, object().cName().c_str());
+	Msg("%d CHudItem::OnAnimationStart %d %s %d", Device.dwTimeGlobal, state, object().cName().c_str(), anim_time);
 	if ((actor = smart_cast<CActor*>(m_object->H_Parent())) != NULL)
 	{
-		actor->callback(GameObject::eHudAnimStarted)(m_object->lua_game_object(), state);
+		actor->callback(GameObject::eHudAnimStarted)(m_object->lua_game_object(), state, anim_time);
 		Msg("OnAnimationStart callback called");
 	}
 } 

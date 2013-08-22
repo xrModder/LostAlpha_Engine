@@ -74,7 +74,7 @@ public:
 	virtual void	OnActiveItem		() {};
 	virtual void	OnHiddenItem		() {};
 
-	virtual void	OnAnimationStart	(u32 state);
+	virtual void	OnAnimationStart	(u32 state, u32 anim_time);
 	virtual void	OnAnimationEnd		(u32 state);
 
 	virtual void	UpdateCL			();
