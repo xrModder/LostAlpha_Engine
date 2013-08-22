@@ -285,6 +285,7 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("move_to_ruck",				&CScriptGameObject::MoveToRuck)
 		.def("move_to_slot",				&CScriptGameObject::MoveToSlot)
 		.def("remove_from_inventory",		&CScriptGameObject::RemoveFromInventory)
+		.def("set_actor_walk_accel",		&CScriptGameObject::SetActorWalkAccel)
 
 #ifdef DEBUG
 		.def("debug_planner",				&CScriptGameObject::debug_planner)

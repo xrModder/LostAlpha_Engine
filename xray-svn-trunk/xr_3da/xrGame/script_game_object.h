@@ -611,10 +611,12 @@ public:
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
 			// lost alpha start
-			u16				GetTorchBatteryStatus();
-			void				SetTorchBatteryStatus(u16 value);
-			void				SetTorchState(bool state);
-			bool				GetTorchState(void);
+			u16					GetTorchBatteryStatus				();
+			void				SetTorchBatteryStatus				(u16 value);
+			void				SetTorchState						(bool state);
+			bool				GetTorchState						(void);
+
+			float				SetActorWalkAccel					(float new_value);
 			
 
 

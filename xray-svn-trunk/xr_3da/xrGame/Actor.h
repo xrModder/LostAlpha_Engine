@@ -795,6 +795,8 @@ public:
 			void				SetActorState					(EActorState state, bool show);
 			Flags32				&GetActorState					()											{  return m_actor_state; }
 
+			float				SetWalkAccel					(float new_value);					
+
 private:
 	CTorch				*m_current_torch;
 	Flags32				m_actor_state;

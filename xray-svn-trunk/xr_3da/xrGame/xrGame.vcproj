@@ -21424,6 +21424,10 @@
 								>
 							</File>
 							<File
+								RelativePath=".\HudItemCallback.cpp"
+								>
+							</File>
+							<File
 								RelativePath=".\HudSound.cpp"
 								>
 							</File>

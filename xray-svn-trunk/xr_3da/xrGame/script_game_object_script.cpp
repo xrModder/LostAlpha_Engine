@@ -74,6 +74,8 @@ void CScriptGameObject::script_register(lua_State *L)
 				value("article_info",				int(GameObject::eArticleInfo)),
 				value("use_object",					int(GameObject::eUseObject)),
 	//			value("sound_played",				int(GameObject::eOnSoundPlayed)),
+				value("actor_hud_anim_starts",		int(GameObject::eHudAnimStarted)),
+				value("actor_hud_anim_ends",		int(GameObject::eHudAnimCompleted)),
 				value("hit",						int(GameObject::eHit)),
 				value("sound",						int(GameObject::eSound)),
 				value("action_movement",			int(GameObject::eActionTypeMovement)),

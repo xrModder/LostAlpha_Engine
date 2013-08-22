@@ -1830,3 +1830,10 @@ void CActor::SetActorState(EActorState state, bool show)
 {
 	m_actor_state.set					(1 << state, show);
 }
+
+float CActor::SetWalkAccel(float new_value)
+{
+	float old_value = m_fWalkAccel;
+	m_fWalkAccel = new_value;
+	return old_value;
+}

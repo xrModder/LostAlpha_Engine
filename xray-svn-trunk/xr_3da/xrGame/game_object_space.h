@@ -18,6 +18,8 @@ namespace GameObject {
 		eInventoryPda,
 		eInventoryInfo,
 		eArticleInfo,
+		eHudAnimStarted,
+		eHudAnimCompleted,
 		eTaskStateChange,
 		eMapLocationAdded,
 

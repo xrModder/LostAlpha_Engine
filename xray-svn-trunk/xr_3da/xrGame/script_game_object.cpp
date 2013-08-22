@@ -674,3 +674,13 @@ void CScriptGameObject::TeleportAliveEntity (Fvector pos, Fvector dir)
 	pAlive->character_physics_support()->set_movement_position(xform.c);
 	pAlive->character_physics_support()->movement()->SetVelocity(0,0,0);
 }
+
+float CScriptGameObject::SetActorWalkAccel (float new_value)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (!actor) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CActor : cannot access class member SetWalkAccel!");
+		return -1.f;
+	}
+	return actor->SetWalkAccel(new_value);
+}

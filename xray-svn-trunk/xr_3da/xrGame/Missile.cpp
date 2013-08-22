@@ -387,6 +387,7 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	default: break;
 	}
+	inherited::OnAnimationEnd(state);
 }
 
 
