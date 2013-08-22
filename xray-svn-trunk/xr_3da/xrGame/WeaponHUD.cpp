@@ -174,7 +174,8 @@ void CWeaponHUD::animPlay			(MotionID M,	BOOL bMixIn, CHudItem* W, u32 state)
 	if (anim_time>0){
 		m_bStopAtEndAnimIsRunning	= true;
 		m_pCallbackItem				= W;
-		m_pCallbackItem->OnAnimationStart(state, anim_time);
+		if (m_pCallbackItem)
+			m_pCallbackItem->OnAnimationStart(state, anim_time);
 		m_dwAnimEndTime				= Device.dwTimeGlobal + anim_time;	
 	}else{
 		m_pCallbackItem				= NULL;
