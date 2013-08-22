@@ -179,7 +179,7 @@ void CWeaponHUD::animPlay			(MotionID M,	BOOL bMixIn, CHudItem* W, u32 state)
 	}else{
 		m_pCallbackItem				= NULL;
 	}
-	Msg("%d:animPlay %d state %d start %d end %d for %s", Device.dwTimeGlobal, M.idx, state, anim_time, m_dwAnimEndTime, m_pParentWeapon->object().cName().c_str());
+//	Msg("%d:animPlay %d state %d start %d end %d for %s", Device.dwTimeGlobal, M.idx, state, anim_time, m_dwAnimEndTime, m_pParentWeapon->object().cName().c_str());
 }
 
 void CWeaponHUD::Update				()
@@ -197,7 +197,7 @@ void CWeaponHUD::StopCurrentAnim()
 	if(m_pCallbackItem)
 	{
 		m_pCallbackItem->OnAnimationEnd	(m_startedAnimState);
-		Msg("CWeaponHUD::StopCurrentAnim OnAnimationEnd(%d)[%s]", m_startedAnimState, m_pParentWeapon->object().cName().c_str());
+		//Msg("CWeaponHUD::StopCurrentAnim OnAnimationEnd(%d)[%s]", m_startedAnimState, m_pParentWeapon->object().cName().c_str());
 	}
 }
 
