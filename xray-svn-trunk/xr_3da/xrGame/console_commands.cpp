@@ -726,26 +726,14 @@ public:
 				HUD().GetUI()->UIGame()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
 				//HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
 				
-				CActor			*actor = Actor(); //перезапускаем текстуру для прицела активного оружия 
+				CActor		*actor = Actor(); //перезапускаем текстуры прицелов для оружия в инвентаре
 				if (actor)
 				{
-					if (actor->inventory().ItemFromSlot(PISTOL_SLOT)) //пистолет
+					TIItemContainer::iterator it = actor->inventory().m_all.begin();
+					TIItemContainer::iterator it_e = actor->inventory().m_all.end();
+					for(;it!=it_e;++it) 
 					{
-						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(PISTOL_SLOT));
-						if (pWeaponMagazined)
-							pWeaponMagazined->InitAddons();
-					}
-
-					if (actor->inventory().ItemFromSlot(RIFLE_SLOT)) //автомат
-					{
-						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(RIFLE_SLOT));
-						if (pWeaponMagazined)
-							pWeaponMagazined->InitAddons();
-					}
-
-					if (actor->inventory().ItemFromSlot(APPARATUS_SLOT)) //бинокль
-					{
-						CWeaponMagazined* pWeaponMagazined = smart_cast<CWeaponMagazined*>(actor->inventory().ItemFromSlot(APPARATUS_SLOT));
+						CWeaponMagazined *pWeaponMagazined = smart_cast<CWeaponMagazined*>(*it);
 						if (pWeaponMagazined)
 							pWeaponMagazined->InitAddons();
 					}

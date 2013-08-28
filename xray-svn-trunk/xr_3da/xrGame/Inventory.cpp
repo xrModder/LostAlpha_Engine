@@ -240,6 +240,11 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	m_pOwner->OnItemTake				(pIItem);
 
+	CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
+	if (pWeapon)
+		pWeapon->InitAddons(); //skyloader: need to do it as in CoP when UI will be ported | надо взять реализацию зум текстур из чн\зп, когда будет пересен уи из зп
+
+
 	CalcTotalWeight						();
 	InvalidateState						();
 
@@ -352,10 +357,6 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 
 	if(IsGameTypeSingle() && Actor()->m_inventory == this)
 		Actor()->callback(GameObject::eOnMoveToSlot)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
-
-	CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
-	if (pWeapon)
-		pWeapon->InitAddons(); //skyloader: need to do it as in CoP when UI will be ported | надо взять реализацию зум текстур из чн\зп, когда будет пересен уи из зп
 
 	pIItem->object().processing_activate();
 
