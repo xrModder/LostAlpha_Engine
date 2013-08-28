@@ -48,6 +48,8 @@ namespace StalkerDecisionSpace {
 		eWorldPropertyPausedAfterKill,
 		eWorldPropertyKilledWounded,
 		eWorldPropertyTooFarToKillEnemy,
+		eWorldPropertyEnemyLocationReached,
+		eWorldPropertyAmbushLocationReached,
 		eWorldPropertyStartedToThrowGrenade,
 
 		eWorldPropertyDangerUnknown,
@@ -119,6 +121,9 @@ namespace StalkerDecisionSpace {
 		eWorldOperatorKillEnemyIfCriticallyWounded,
 		eWorldOperatorPauseAfterKill,
 		eWorldOperatorThrowGrenade,
+		eWorldOperatorReachEnemyLocation,
+		eWorldOperatorReachAmbushLocation,
+		eWorldOperatorHoldAmbushLocation,
 
 // danger
 		eWorldOperatorDangerUnknownPlanner,
