@@ -7382,6 +7382,34 @@
 							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.h"
 							>
 						</File>
+						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.h"
+							>
+						</File>
+						<Filter
+							Name="Choke State"
+							>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_execute.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_execute_inline.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_inline.h"
+								>
+							</File>
+						</Filter>
 						<Filter
 							Name="States"
 							>

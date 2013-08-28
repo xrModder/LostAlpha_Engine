@@ -16,6 +16,7 @@
 #include "../../../detail_path_manager.h"
 #include "../states/monster_state_controlled.h"
 #include "../states/monster_state_help_sound.h"
+#include "zombie_choke.h"
 
 CStateManagerZombie::CStateManagerZombie(CZombie *obj) : inherited(obj)
 {
@@ -31,6 +32,7 @@ CStateManagerZombie::CStateManagerZombie(CZombie *obj) : inherited(obj)
 	add_state(eStateHearInterestingSound,	xr_new<CStateMonsterHearInterestingSound<CZombie> >(obj));
 	add_state(eStateControlled,				xr_new<CStateMonsterControlled<CZombie> >	(obj));
 	add_state(eStateHearHelpSound,			xr_new<CStateMonsterHearHelpSound<CZombie> >(obj));
+	add_state(eStateCustom_Choke,		xr_new<CStateZombieChoke<CZombie> >			(obj));
 }
 
 CStateManagerZombie::~CStateManagerZombie()
@@ -48,7 +50,10 @@ void CStateManagerZombie::execute()
 		const CEntityAlive* enemy	= object->EnemyMan.get_enemy();
 
 		if (enemy) {
-			state_id = eStateAttack;
+			if (check_state(eStateCustom_Choke))
+				state_id = eStateCustom_Choke;
+			else
+				state_id = eStateAttack;
 		} else if (check_state(eStateHearHelpSound)) {
 			state_id = eStateHearHelpSound;
 		} else if (object->hear_interesting_sound || object->hear_dangerous_sound) {

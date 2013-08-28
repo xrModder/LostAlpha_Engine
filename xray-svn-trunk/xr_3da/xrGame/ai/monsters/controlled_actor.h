@@ -16,6 +16,8 @@ class CControlledActor : public CActorInputHandler {
 
 	bool	m_need_turn;
 
+	float	m_speed_min;
+	float	m_speed_max;
 public:
 	virtual void	reinit				();
 	virtual	float	mouse_scale_factor	(){return flt_max;}
@@ -33,6 +35,8 @@ public:
 
 			void	dont_need_turn		(){m_need_turn = false;}
 
+			void	set_max_speed		(float value) {m_speed_max = value;}
+			void	set_min_speed		(float value) {m_speed_min = value;}
 private:
 			void	reset				();
 			void	update_turn			();

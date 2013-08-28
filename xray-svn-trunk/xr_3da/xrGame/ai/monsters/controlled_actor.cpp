@@ -70,7 +70,7 @@ void CControlledActor::update_turn()
 	if (fsimilar(cam_current_yaw, cam_target_yaw, EPS_ANGLE)) {
 		m_turned_yaw	= true;
 	} else {
-		speed	= SPEED_MIN + speed_factor * (SPEED_MAX - SPEED_MIN);
+		speed	= m_speed_min + speed_factor * (m_speed_max - m_speed_min);
 	
 		if (from_right(cam_target_yaw,cam_current_yaw)) 
 			m_actor->cam_Active()->Move	(kLEFT,		speed * Device.fTimeDelta);
@@ -87,7 +87,7 @@ void CControlledActor::update_turn()
 	if (fsimilar(cam_current_pitch, cam_target_pitch, EPS_ANGLE)) {
 		m_turned_pitch	= true;
 	} else {
-		speed	= SPEED_MIN + speed_factor * (SPEED_MAX - SPEED_MIN);
+		speed	= m_speed_min + speed_factor * (m_speed_max - m_speed_min);
 
 		if (from_right(cam_target_pitch,cam_current_pitch)) 
 			m_actor->cam_Active()->Move	(kDOWN,		speed * Device.fTimeDelta);
@@ -100,6 +100,8 @@ void CControlledActor::reset()
 {
 	m_turned_yaw		= false;
 	m_turned_pitch		= false;
+	m_speed_min		= SPEED_MIN;
+	m_speed_max		= SPEED_MAX;
 }
 
 bool CControlledActor::is_turning()
