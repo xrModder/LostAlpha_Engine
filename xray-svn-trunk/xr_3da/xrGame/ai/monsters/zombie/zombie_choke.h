@@ -15,9 +15,10 @@ public:
 	virtual void		reinit							();
 	
 	virtual void		initialize						();
-	//virtual	void		reselect_state					();
+	virtual	void		reselect_state					();
 	virtual	void		finalize						();
 	virtual	void		critical_finalize				();
+	virtual	void		check_force_state					();
 	virtual bool		check_start_conditions			();
 	virtual bool		check_completion				();
 

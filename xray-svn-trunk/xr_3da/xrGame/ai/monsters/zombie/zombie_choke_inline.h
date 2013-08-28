@@ -36,12 +36,25 @@ void CStateZombieChokeAbstract::initialize()
 	m_enemy	= object->EnemyMan.get_enemy		();
 }
 
-/*TEMPLATE_SPECIALIZATION
+TEMPLATE_SPECIALIZATION
 void CStateZombieChokeAbstract::reselect_state()
 {
 	if (get_state(eStateChoke_Execute)->check_start_conditions())
-			select_state(eStateChoke_Execute);
-}*/
+		select_state(eStateChoke_Execute);
+	
+	//ctd. here !!!!
+}
+
+TEMPLATE_SPECIALIZATION
+void CStateZombieChokeAbstract::check_force_state()
+{
+	// check if we can start execute
+	if (prev_substate == eStateChoke_Execute)
+	{
+		if (get_state(eStateChoke_Execute)->check_start_conditions())
+			current_substate = u32(-1);
+	}
+}
 
 TEMPLATE_SPECIALIZATION
 void CStateZombieChokeAbstract::finalize()
@@ -77,6 +90,8 @@ bool CStateZombieChokeAbstract::check_start_conditions()
 	if (dist_to_enemy > MAX_DISTANCE_TO_ENEMY)							return false;
 
 	if (controlling_value == 1)									return false;
+
+	if (!get_state(eStateChoke_Execute)->check_start_conditions())					return false;
 
 	return true;
   }

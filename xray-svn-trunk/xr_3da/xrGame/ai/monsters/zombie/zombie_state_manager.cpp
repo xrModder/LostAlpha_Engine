@@ -50,9 +50,9 @@ void CStateManagerZombie::execute()
 		const CEntityAlive* enemy	= object->EnemyMan.get_enemy();
 
 		if (enemy) {
-			if (check_state(eStateCustom_Choke))
-				state_id = eStateCustom_Choke;
-			else
+			//if (check_state(eStateCustom_Choke))
+			//	state_id = eStateCustom_Choke; //skyloader: disabled!!
+			//else
 				state_id = eStateAttack;
 		} else if (check_state(eStateHearHelpSound)) {
 			state_id = eStateHearHelpSound;
