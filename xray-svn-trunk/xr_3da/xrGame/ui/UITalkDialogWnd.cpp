@@ -216,6 +216,10 @@ void CUITalkDialogWnd::SetOsoznanieMode(bool b)
 	UIToTradeButton.Show(!b);
 }
 
+void CUITalkDialogWnd::ShowTradeButton(bool b)
+{
+	UIToTradeButton.Show(b);
+}
 
 void CUIQuestionItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
 {

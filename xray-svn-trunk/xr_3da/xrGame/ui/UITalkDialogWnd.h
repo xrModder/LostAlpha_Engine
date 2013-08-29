@@ -62,6 +62,7 @@ public:
 	void				ClearQuestions		();
 
 	void				SetOsoznanieMode	(bool b);
+	void				ShowTradeButton	(bool b);
 private:
 	CUIScrollView*			UIQuestionsList;
 	CUIScrollView*			UIAnswersList;

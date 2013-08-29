@@ -90,6 +90,7 @@ void CUITalkWnd::InitTalkDialog()
 	Update									();
 
 	UITalkDialogWnd->SetOsoznanieMode		(m_pOthersInvOwner->NeedOsoznanieMode());
+	UITalkDialogWnd->ShowTradeButton		(m_pOthersInvOwner->IsTradeEnabled());
 	UITalkDialogWnd->Show					();
 
 	UITradeWnd->Hide							();
