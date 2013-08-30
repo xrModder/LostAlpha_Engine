@@ -36,19 +36,46 @@ IC void MouseRayFromPoint	( Fvector& direction, int x, int y, Fmatrix& m_CamMat 
 void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* memory_writer)
 {
 	if (!Device.b_is_Ready)			return;
-	if ((psDeviceFlags.test(rsFullscreen)) == 0) {
-		if(name && FS.exist(name))
-			FS.file_delete(0,name);
+	//if ((psDeviceFlags.test(rsFullscreen)) == 0) {
+	//	if(name && FS.exist(name))
+	//		FS.file_delete(0,name);
 
-		Log("~ Can't capture screen while in windowed mode...");
-		return;
-	}
+	//	Log("~ Can't capture screen while in windowed mode...");
+	//	return;
+	//}
 
 	// Create temp-surface
 	IDirect3DSurface9*	pFB;
 	D3DLOCKED_RECT		D;
 	HRESULT				hr;
-	hr					= HW.pDevice->CreateOffscreenPlainSurface(Device.dwWidth,Device.dwHeight,D3DFMT_A8R8G8B8,D3DPOOL_SYSTEMMEM,&pFB,NULL);
+
+	int width = Device.dwWidth;
+	int height = Device.dwHeight;
+	RECT* srcRect = 0;
+
+	//MSDN IDirect3DDevice9::GetFrontBufferData method
+	//For windowed mode, the size of the destination surface should be the size of the desktop. 
+	if ((psDeviceFlags.test(rsFullscreen)) == 0) {
+		RECT desktop;
+		const HWND hDesktop = GetDesktopWindow();
+		GetWindowRect(hDesktop, &desktop);
+		width = desktop.right;
+		height = desktop.bottom;
+		RECT windowRect;
+		const HWND hActive = GetActiveWindow();
+		GetClientRect(hActive, &windowRect);
+		srcRect = new RECT;
+		POINT p; p.x = windowRect.left; p.y = windowRect.top;
+		ClientToScreen(hActive, &p);
+		srcRect->left = p.x;
+		srcRect->top = p.y;
+		p.x = windowRect.right; p.y = windowRect.bottom;
+		ClientToScreen(hActive, &p);
+		srcRect->right = p.x;
+		srcRect->bottom = p.y;
+	}
+
+	hr					= HW.pDevice->CreateOffscreenPlainSurface(width,height,D3DFMT_A8R8G8B8,D3DPOOL_SYSTEMMEM,&pFB,NULL);
 	if(hr!=D3D_OK)		return;
 
 	hr					= HW.pDevice->GetFrontBufferData(0,pFB);
@@ -176,7 +203,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 				string_path			buf;
 				sprintf_s			(buf,sizeof(buf),"ss_%s_%s_(%s).jpg",Core.UserName,timestamp(t_stemp),(g_pGameLevel)?g_pGameLevel->name().c_str():"mainmenu");
 				ID3DXBuffer*		saved	= 0;
-				CHK_DX				(D3DXSaveSurfaceToFileInMemory (&saved,D3DXIFF_JPG,pFB,0,0));
+				CHK_DX				(D3DXSaveSurfaceToFileInMemory (&saved,D3DXIFF_JPG,pFB,0,srcRect));
 				IWriter*		fs	= FS.w_open	("$screenshots$",buf); R_ASSERT(fs);
 				fs->w				(saved->GetBufferPointer(),saved->GetBufferSize());
 				FS.w_close			(fs);
