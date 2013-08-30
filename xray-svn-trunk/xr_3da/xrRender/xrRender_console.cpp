@@ -459,11 +459,9 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,	2.0f /*1.2f*/	);
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
-//.	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.05f,	0.99f	);
-//	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.2f,	0.6f	);
-CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.02f,	1.00f	);
+	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.026f,	1.0f	);
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	CMD4(CCC_Float,		"r__detail_l_ambient",	&ps_r__Detail_l_ambient,	.5f,	.95f	);
 	CMD4(CCC_Float,		"r__detail_l_aniso",	&ps_r__Detail_l_aniso,		.1f,	.5f		);
 
@@ -474,7 +472,7 @@ CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.02f,	1.00f	);
 	tw_min.set			(EPS,EPS,EPS);
 	tw_max.set			(2,2,2);
 	CMD4(CCC_Vector3,	"r__d_tree_wave",		&ps_r__Tree_Wave,			tw_min, tw_max	);
-#endif // DEBUG
+//#endif // DEBUG
 
 	CMD2(CCC_tf_Aniso,	"r__tf_aniso",			&ps_r__tf_Anisotropic		); //	{1..16}
 
