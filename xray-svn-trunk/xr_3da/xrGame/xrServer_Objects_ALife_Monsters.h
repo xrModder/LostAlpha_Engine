@@ -218,6 +218,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeCreatureAbstract,CSE_ALifeDynamicObjectVisu
 	IC		bool					g_Alive					() const								{ return (g_Health() > 0.f);}
 	virtual LPCSTR					get_visual_script		() const;
 	virtual void					set_visual_script		(LPCSTR);
+	virtual void					kill_entity		(ALife::_OBJECT_ID);
 	virtual bool					used_ai_locations		() const;
 	virtual bool					can_switch_online		() const;
 	virtual bool					can_switch_offline		() const;
