@@ -9,8 +9,46 @@
 #pragma warning(push)
 #pragma warning(disable:4995)
 #include <malloc.h>
-#include "dxerr9.h"
+#include "dxerr.h"
 //#pragma warning(pop)
+
+const GUID CLSID_DirectPlay8Client =
+{ 0x743f1dc6, 0x5aba, 0x429f, { 0x8b, 0xdf, 0xc5, 0x4d, 0x03, 0x25, 0x3d, 0xc2 } };
+
+// {DA825E1B-6830-43d7-835D-0B5AD82956A2}
+const GUID CLSID_DirectPlay8Server =
+{ 0xda825e1b, 0x6830, 0x43d7, { 0x83, 0x5d, 0x0b, 0x5a, 0xd8, 0x29, 0x56, 0xa2 } };
+
+/****************************************************************************
+ *
+ * DirectPlay8 Interface IIDs
+ *
+ ****************************************************************************/
+
+typedef REFIID	DP8REFIID;
+
+// {5102DACD-241B-11d3-AEA7-006097B01411}
+const GUID IID_IDirectPlay8Client =
+{ 0x5102dacd, 0x241b, 0x11d3, { 0xae, 0xa7, 0x00, 0x60, 0x97, 0xb0, 0x14, 0x11 } };
+
+// {5102DACE-241B-11d3-AEA7-006097B01411}
+const GUID IID_IDirectPlay8Server =
+{ 0x5102dace, 0x241b, 0x11d3, { 0xae, 0xa7, 0x00, 0x60, 0x97, 0xb0, 0x14, 0x11 } };
+
+// IIDs added for DirectX 9
+
+// {EBFE7BA0-628D-11D2-AE0F-006097B01411}
+const GUID CLSID_DP8SP_TCPIP =
+{ 0xebfe7ba0, 0x628d, 0x11d2, { 0xae, 0x0f, 0x00, 0x60, 0x97, 0xb0, 0x14, 0x11 } };
+
+// Service providers added for DirectX 9
+
+const GUID CLSID_DirectPlay8Address =
+{ 0x934a9523, 0xa3ca, 0x4bc5, { 0xad, 0xa0, 0xd6, 0xd9, 0x5d, 0x97, 0x94, 0x21 } };
+
+const GUID IID_IDirectPlay8Address =
+{ 0x83783300, 0x4063, 0x4c8a, { 0x9d, 0xb3, 0x82, 0x83, 0x0a, 0x7f, 0xeb, 0x31 } };
+
 
 static	INetLog* pClNetLog = NULL; 
 
