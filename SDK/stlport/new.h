@@ -23,11 +23,17 @@
 #if !defined(_STLP_NO_NEW_HEADER)
 #  if defined (__BORLANDC__)
 #    include <new>
+#  elif defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <new.h>
 #  elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800 && !defined(_MSC_VER))
 #    include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 #  else
 #    if defined (__GNUC__) && (__GNUC__ >= 3)
-#      include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
+#      ifdef SN_TARGET_PS3
+#        include _STLP_NATIVE_OLD_STREAMS_HEADER(new)
+#      else
+#        include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
+#      endif
 #    else
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
 #    endif
