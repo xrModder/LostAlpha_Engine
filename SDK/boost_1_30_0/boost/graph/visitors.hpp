@@ -2,25 +2,9 @@
 // Copyright 1997, 1998, 1999, 2000 University of Notre Dame.
 // Authors: Andrew Lumsdaine, Lie-Quan Lee, Jeremy G. Siek
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
 //
 // Revision History:
@@ -31,17 +15,23 @@
 
 #include <iosfwd>
 #include <boost/config.hpp>
-#include <boost/property_map.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/limits.hpp>
-#include <boost/graph/detail/is_same.hpp>
+
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of the concept checking class
+# define Graph Graph_
+#endif
 
 namespace boost {
 
   // This is a bit more convenient than std::numeric_limits because
   // you don't have to explicitly provide type T.
   template <class T>
-  inline T numeric_limits_max(T) { return std::numeric_limits<T>::max(); }
+  inline T numeric_limits_max(T) { return (std::numeric_limits<T>::max)(); }
 
   //========================================================================
   // Event Tags
@@ -49,44 +39,49 @@ namespace boost {
   namespace detail {
     // For partial specialization workaround
     enum event_visitor_enum
-    { on_no_event_num, 
-      on_initialize_vertex_num, on_start_vertex_num, 
+    { on_no_event_num,
+      on_initialize_vertex_num, on_start_vertex_num,
       on_discover_vertex_num, on_finish_vertex_num, on_examine_vertex_num,
-      on_examine_edge_num, on_tree_edge_num, on_non_tree_edge_num, 
-      on_gray_target_num, on_black_target_num, 
+      on_examine_edge_num, on_tree_edge_num, on_non_tree_edge_num,
+      on_gray_target_num, on_black_target_num,
       on_forward_or_cross_edge_num, on_back_edge_num,
       on_edge_relaxed_num, on_edge_not_relaxed_num,
       on_edge_minimized_num, on_edge_not_minimized_num
     };
+
+    template<typename Event, typename Visitor>
+    struct functor_to_visitor : Visitor
+    {
+      typedef Event event_filter;
+      functor_to_visitor(const Visitor& visitor) : Visitor(visitor) {}
+    };
+
   } // namespace detail
 
   struct on_no_event { enum { num = detail::on_no_event_num }; };
 
-  struct on_initialize_vertex { 
+  struct on_initialize_vertex {
     enum { num = detail::on_initialize_vertex_num }; };
   struct on_start_vertex { enum { num = detail::on_start_vertex_num }; };
   struct on_discover_vertex { enum { num = detail::on_discover_vertex_num }; };
   struct on_examine_vertex { enum { num = detail::on_examine_vertex_num }; };
   struct on_finish_vertex { enum { num = detail::on_finish_vertex_num }; };
-  
+
   struct on_examine_edge { enum { num = detail::on_examine_edge_num }; };
   struct on_tree_edge { enum { num = detail::on_tree_edge_num }; };
   struct on_non_tree_edge { enum { num = detail::on_non_tree_edge_num }; };
   struct on_gray_target { enum { num = detail::on_gray_target_num }; };
   struct on_black_target { enum { num = detail::on_black_target_num }; };
-  struct on_forward_or_cross_edge { 
+  struct on_forward_or_cross_edge {
     enum { num = detail::on_forward_or_cross_edge_num }; };
   struct on_back_edge { enum { num = detail::on_back_edge_num }; };
 
   struct on_edge_relaxed { enum { num = detail::on_edge_relaxed_num }; };
-  struct on_edge_not_relaxed { 
+  struct on_edge_not_relaxed {
     enum { num = detail::on_edge_not_relaxed_num }; };
   struct on_edge_minimized { enum { num = detail::on_edge_minimized_num }; };
-  struct on_edge_not_minimized { 
+  struct on_edge_not_minimized {
     enum { num = detail::on_edge_not_minimized_num }; };
-
-  struct true_tag { enum { num = true }; };
-  struct false_tag { enum { num = false }; };
 
   //========================================================================
   // base_visitor and null_visitor
@@ -110,41 +105,38 @@ namespace boost {
 
   namespace detail {
     template <class Visitor, class T, class Graph>
-    inline void
-    invoke_dispatch(Visitor& v, T x, Graph& g, true_tag) {
+    inline void invoke_dispatch(Visitor& v, T x, Graph& g, mpl::true_) {
        v(x, g);
     }
+
     template <class Visitor, class T, class Graph>
-    inline void
-    invoke_dispatch(Visitor&, T, Graph&, false_tag) { }
+    inline void invoke_dispatch(Visitor&, T, Graph&, mpl::false_)
+    { }
   } // namespace detail
 
   template <class Visitor, class Rest, class T, class Graph, class Tag>
-  inline void 
+  inline void
   invoke_visitors(std::pair<Visitor, Rest>& vlist, T x, Graph& g, Tag tag) {
     typedef typename Visitor::event_filter Category;
-    typedef typename graph_detail::is_same<Category, Tag>::is_same_tag
-      IsSameTag;
+    typedef typename is_same<Category, Tag>::type IsSameTag;
     detail::invoke_dispatch(vlist.first, x, g, IsSameTag());
     invoke_visitors(vlist.second, x, g, tag);
   }
 #if defined(BOOST_MSVC) && BOOST_MSVC <= 1300
   template <class Visitor, class T, class Graph, class Tag>
-  inline void 
+  inline void
   invoke_visitors(base_visitor<Visitor>& vis, T x, Graph& g, Tag) {
     typedef typename Visitor::event_filter Category;
-    typedef typename graph_detail::is_same<Category, Tag>::is_same_tag
-      IsSameTag;
+    typedef typename is_same<Category, Tag>::type IsSameTag;
     Visitor& v = static_cast<Visitor&>(vis);
     detail::invoke_dispatch(v, x, g, IsSameTag());
   }
 #else
   template <class Visitor, class T, class Graph, class Tag>
-  inline void 
+  inline void
   invoke_visitors(Visitor& v, T x, Graph& g, Tag) {
     typedef typename Visitor::event_filter Category;
-    typedef typename graph_detail::is_same<Category, Tag>::is_same_tag
-      IsSameTag;
+    typedef typename is_same<Category, Tag>::type IsSameTag;
     detail::invoke_dispatch(v, x, g, IsSameTag());
   }
 #endif
@@ -165,7 +157,7 @@ namespace boost {
     PredecessorMap m_predecessor;
   };
   template <class PredecessorMap, class Tag>
-  predecessor_recorder<PredecessorMap, Tag> 
+  predecessor_recorder<PredecessorMap, Tag>
   record_predecessors(PredecessorMap pa, Tag) {
     return predecessor_recorder<PredecessorMap, Tag> (pa);
   }
@@ -186,7 +178,7 @@ namespace boost {
     PredEdgeMap m_predecessor;
   };
   template <class PredEdgeMap, class Tag>
-  edge_predecessor_recorder<PredEdgeMap, Tag> 
+  edge_predecessor_recorder<PredEdgeMap, Tag>
   record_edge_predecessors(PredEdgeMap pa, Tag) {
     return edge_predecessor_recorder<PredEdgeMap, Tag> (pa);
   }
@@ -202,14 +194,14 @@ namespace boost {
     distance_recorder(DistanceMap pa) : m_distance(pa) { }
     template <class Edge, class Graph>
     void operator()(Edge e, const Graph& g) {
-      typename graph_traits<Graph>::vertex_descriptor 
+      typename graph_traits<Graph>::vertex_descriptor
         u = source(e, g), v = target(e, g);
       put(m_distance, v, get(m_distance, u) + 1);
     }
     DistanceMap m_distance;
   };
   template <class DistanceMap, class Tag>
-  distance_recorder<DistanceMap, Tag> 
+  distance_recorder<DistanceMap, Tag>
   record_distances(DistanceMap pa, Tag) {
     return distance_recorder<DistanceMap, Tag> (pa);
   }
@@ -217,7 +209,7 @@ namespace boost {
   //========================================================================
   // time_stamper
 
-  
+
   template <class TimeMap, class TimeT, class Tag>
   struct time_stamper
     : public base_visitor<time_stamper<TimeMap, TimeT, Tag> >
@@ -232,7 +224,7 @@ namespace boost {
     TimeT& m_time;
   };
   template <class TimeMap, class TimeT, class Tag>
-  time_stamper<TimeMap, TimeT, Tag> 
+  time_stamper<TimeMap, TimeT, Tag>
   stamp_times(TimeMap pa, TimeT& time_counter, Tag) {
     return time_stamper<TimeMap, TimeT, Tag>(pa, time_counter);
   }
@@ -259,6 +251,70 @@ namespace boost {
     return property_writer<PA, OutputIterator, Tag>(pa, out);
   }
 
+  //========================================================================
+  // property_put
+
+    /**
+     * Functor which just sets a given value to a vertex or edge in a property map.
+     */
+
+  template <typename PropertyMap, typename EventTag>
+  struct property_put
+  {
+    typedef EventTag event_filter;
+    
+    property_put (PropertyMap property_map,
+                  typename property_traits <PropertyMap>::value_type value) :
+      property_map_ (property_map), value_ (value)
+    {}
+
+    template <typename VertexOrEdge, typename Graph>
+    void operator() (VertexOrEdge v, const Graph& g)
+    {
+      put (property_map_, v, value_);
+    }
+
+  private:
+    PropertyMap property_map_;
+    typename property_traits <PropertyMap>::value_type value_;
+  };
+
+  /**
+   * Creates a property_put functor which just sets a given value to a vertex or edge.
+   * 
+   * @param property_map Given writeable property map 
+   * @param value Fixed value of the map
+   * @param tag Event Filter
+   * @return The functor.
+   */
+
+    template <typename PropertyMap, typename EventTag>
+    inline property_put <PropertyMap, EventTag>
+    put_property (PropertyMap property_map,
+                  typename property_traits <PropertyMap>::value_type value,
+                  EventTag tag)
+    {
+      return property_put <PropertyMap, EventTag> (property_map, value);
+    }
+
+#define BOOST_GRAPH_EVENT_STUB(Event,Kind)                                 \
+    typedef ::boost::Event Event##_type;                                   \
+    template<typename Visitor>                                             \
+    Kind##_visitor<std::pair<detail::functor_to_visitor<Event##_type,      \
+                                                     Visitor>, Visitors> > \
+    do_##Event(Visitor visitor)                                            \
+    {                                                                      \
+      typedef std::pair<detail::functor_to_visitor<Event##_type, Visitor>, \
+                        Visitors> visitor_list;                            \
+      typedef Kind##_visitor<visitor_list> result_type;                    \
+      return result_type(visitor_list(visitor, m_vis));                    \
+    }
+
 } /* namespace boost */
+
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of the concept checking class
+# undef Graph
+#endif
 
 #endif

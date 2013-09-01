@@ -3,25 +3,9 @@
 // Copyright 1997, 1998, 1999, 2000 University of Notre Dame.
 // Authors: Andrew Lumsdaine, Lie-Quan Lee, Jeremy G. Siek
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
 //
 #ifndef BOOST_GRAPH_MST_KRUSKAL_HPP
@@ -39,7 +23,7 @@
 #include <queue>
 #include <functional>
 
-#include <boost/property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/named_function_params.hpp>
 #include <boost/pending/disjoint_sets.hpp>
@@ -64,6 +48,7 @@ namespace boost {
                      OutputIterator spanning_tree_edges, 
                      Rank rank, Parent parent, Weight weight)
     {
+      if (num_vertices(G) == 0) return; // Nothing to do in this case
       typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
       typedef typename graph_traits<Graph>::edge_descriptor Edge;
       function_requires<VertexListGraphConcept<Graph> >();
@@ -117,6 +102,7 @@ namespace boost {
     typedef typename graph_traits<Graph>::vertices_size_type size_type;
     typedef typename graph_traits<Graph>::vertex_descriptor vertex_t;
     typedef typename property_map<Graph, vertex_index_t>::type index_map_t;
+    if (num_vertices(g) == 0) return; // Nothing to do in this case
     typename graph_traits<Graph>::vertices_size_type
       n = num_vertices(g);
     std::vector<size_type> rank_map(n);
@@ -137,6 +123,7 @@ namespace boost {
   {
     typedef typename graph_traits<Graph>::vertices_size_type size_type;
     typedef typename graph_traits<Graph>::vertex_descriptor vertex_t;
+    if (num_vertices(g) == 0) return; // Nothing to do in this case
     typename graph_traits<Graph>::vertices_size_type n;
     n = is_default_param(get_param(params, vertex_rank))
                                    ? num_vertices(g) : 1;

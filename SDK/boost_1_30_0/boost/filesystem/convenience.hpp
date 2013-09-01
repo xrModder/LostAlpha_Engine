@@ -1,38 +1,35 @@
-//  boost/filesystem/convenience.hpp  ----------------------------------------//
+//  boost/filesystem/convenience.hpp  --------------------------------------------------//
 
-//  (C) Copyright Beman Dawes, 2002
-//  (C) Copyright Vladimir Prus, 2002
-//  Permission to copy, use, modify, sell and distribute this software
-//  is granted provided this copyright notice appears in all copies.
-//  This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  Copyright Beman Dawes 2010
 
+//  Distributed under the Boost Software License, Version 1.0.
+//  See http://www.boost.org/LICENSE_1_0.txt
 
-//  See http://www.boost.org/libs/filesystem for documentation.
+//  Library home page: http://www.boost.org/libs/filesystem
 
-//----------------------------------------------------------------------------// 
+//--------------------------------------------------------------------------------------// 
 
-#ifndef BOOST_FILESYSTEM_CONVENIENCE_HPP
-#define BOOST_FILESYSTEM_CONVENIENCE_HPP
+#ifndef BOOST_FILESYSTEM_CONVENIENCEX_HPP
+#define BOOST_FILESYSTEM_CONVENIENCEX_HPP
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <boost/config.hpp>  // for <boost/config/user.hpp>, in case
+                             //  BOOST_FILESYSTEM_VERSION defined there
 
-namespace boost
-{
-  namespace filesystem
-  {
+# if defined(BOOST_FILESYSTEM_VERSION) \
+  && BOOST_FILESYSTEM_VERSION != 2  && BOOST_FILESYSTEM_VERSION != 3
+#   error BOOST_FILESYSTEM_VERSION defined, but not as 2 or 3
+# endif
 
-//  create_directories (contributed by Vladimir Prus)  -----------------------//
+# if !defined(BOOST_FILESYSTEM_VERSION)
+#   define BOOST_FILESYSTEM_VERSION 3
+# endif
 
+#if BOOST_FILESYSTEM_VERSION == 2
+#  include <boost/filesystem/v2/convenience.hpp>
 
-    /** Creates directory 'ph' and all necessary parent directories.
-        @post exists(directory_ph) && is_directory(directory_ph) && is_empty(directory_ph)
-     */
-    void create_directories(const path& ph);
+# else
+#  include <boost/filesystem/v3/convenience.hpp>
 
-  } // namespace filesystem
-} // namespace boost
-#endif // BOOST_FILESYSTEM_CONVENIENCE_HPP
+# endif
 
-
+#endif  // BOOST_FILESYSTEM_CONVENIENCEX_HPP 

@@ -1,15 +1,9 @@
 // Boost.Signals library
-//
-// Copyright (C) 2001-2003 Doug Gregor (gregod@cs.rpi.edu)
-//
-// Permission to copy, use, sell and distribute this software is granted
-// provided this copyright notice appears in all copies.
-// Permission to modify the code and to distribute modified code is granted
-// provided this copyright notice appears in all copies, and a notice
-// that the code was modified is included with the copyright notice.
-//
-// This software is provided "as is" without express or implied warranty,
-// and with no claim as to its suitability for any purpose.
+
+// Copyright Douglas Gregor 2001-2004. Use, modification and
+// distribution is subject to the Boost Software License, Version
+// 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 // For more information, see http://www.boost.org
 
@@ -18,11 +12,14 @@
 
 #include <boost/type_traits.hpp>
 #include <boost/signals/connection.hpp>
-#include <boost/pending/ct_if.hpp>
 #include <boost/ref.hpp>
 #include <boost/utility/addressof.hpp>
 #include <list>
 #include <vector>
+
+#ifdef BOOST_HAS_ABI_HEADERS
+#  include BOOST_ABI_PREFIX
+#endif
 
 namespace boost {
 
@@ -45,7 +42,9 @@ namespace BOOST_SIGNALS_NAMESPACE {
 
     trackable& operator=(const trackable&)
     {
+      dying = true;
       connected_signals.clear();
+      dying = false;
       return *this;
     }
 
@@ -104,7 +103,7 @@ namespace BOOST_SIGNALS_NAMESPACE {
       {
         // Take the address of this object, because the object itself may be
         // trackable
-        add_if_trackable(addressof(t));
+        add_if_trackable(boost::addressof(t));
       }
 
       // add_if_trackable() adds trackable objects to the list of bound objects
@@ -115,73 +114,50 @@ namespace BOOST_SIGNALS_NAMESPACE {
         }
       }
 
-      inline void add_if_trackable(const void*) const
-      {
-      }
+      inline void add_if_trackable(const void*) const { }
 
       template<typename R>
-      inline void add_if_trackable(R (*)()) const
-      {
-      }
+      inline void add_if_trackable(R (*)()) const { }
 
       template<typename R, typename T1>
-      inline void add_if_trackable(R (*)(T1)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1)) const { }
 
       template<typename R, typename T1, typename T2>
-      inline void add_if_trackable(R (*)(T1, T2)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2)) const { }
 
       template<typename R, typename T1, typename T2, typename T3>
-      inline void add_if_trackable(R (*)(T1, T2, T3)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2, T3)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4>
-      inline void add_if_trackable(R (*)(T1, T2, T3, T4)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2, T3, T4)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5>
-      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5, typename T6>
-      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5, typename T6, typename T7>
-      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7)) const
-      {
-      }
+      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5, typename T6, typename T7, typename T8>
-      inline void add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8)) const
-      {
-      }
+      inline void 
+      add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5, typename T6, typename T7, typename T8, typename T9>
       inline void
-      add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8, T9)) const
-      {
-      }
+      add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8, T9)) const { }
 
       template<typename R, typename T1, typename T2, typename T3, typename T4,
                typename T5, typename T6, typename T7, typename T8, typename T9,
                typename T10>
       inline void
-      add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)) const
-      {
-      }
+      add_if_trackable(R (*)(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)) const { }
 
       std::vector<const trackable*>& bound_objects;
     };
@@ -189,5 +165,9 @@ namespace BOOST_SIGNALS_NAMESPACE {
 } // end namespace BOOST_SIGNALS_NAMESPACE
 
 } // end namespace boost
+
+#ifdef BOOST_HAS_ABI_HEADERS
+#  include BOOST_ABI_SUFFIX
+#endif
 
 #endif // BOOST_SIGNALS_TRACKABLE_HPP

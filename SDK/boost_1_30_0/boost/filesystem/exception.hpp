@@ -1,105 +1,35 @@
-//  boost/filesystem/exception.hpp  ------------------------------------------//
+//  boost/filesystem/exception.hpp  ----------------------------------------------------//
 
-// < ----------------------------------------------------------------------- > 
-// <   Copyright © 2002 Beman Dawes                                          > 
-// <   Copyright © 2001 Dietmar Kühl, All Rights Reserved                    > 
-// <                                                                         > 
-// <   Permission to use, copy, modify, distribute and sell this             > 
-// <   software for any purpose is hereby granted without fee, provided      > 
-// <   that the above copyright notice appears in all copies and that        > 
-// <   both that copyright notice and this permission notice appear in       > 
-// <   supporting documentation. The authors make no representations about   > 
-// <   the suitability of this software for any purpose. It is provided      > 
-// <   "as is" without express or implied warranty.                          > 
-// < ----------------------------------------------------------------------- > 
+//  Copyright Beman Dawes 2010
 
-//  See http://www.boost.org/libs/filesystem for documentation.
+//  Distributed under the Boost Software License, Version 1.0.
+//  See http://www.boost.org/LICENSE_1_0.txt
 
-//----------------------------------------------------------------------------// 
+//  Library home page: http://www.boost.org/libs/filesystem
 
-#ifndef BOOST_FILESYSTEM_EXCEPTION_HPP
-#define BOOST_FILESYSTEM_EXCEPTION_HPP
+//--------------------------------------------------------------------------------------// 
 
-#include <boost/filesystem/path.hpp>
+#ifndef BOOST_FILESYSTEM_EXCEPTIONX_HPP
+#define BOOST_FILESYSTEM_EXCEPTIONX_HPP
 
-#include <string>
-#include <stdexcept>
+#include <boost/config.hpp>  // for <boost/config/user.hpp>, in case
+                             //  BOOST_FILESYSTEM_VERSION defined there
 
-//----------------------------------------------------------------------------// 
+# if defined(BOOST_FILESYSTEM_VERSION) \
+  && BOOST_FILESYSTEM_VERSION != 2  && BOOST_FILESYSTEM_VERSION != 3
+#   error BOOST_FILESYSTEM_VERSION defined, but not as 2 or 3
+# endif
 
-namespace boost
-{
-  namespace filesystem
-  {
-    namespace detail
-    {
-      int system_error_code(); // artifact of POSIX and WINDOWS error reporting
-    }
+# if !defined(BOOST_FILESYSTEM_VERSION)
+#   define BOOST_FILESYSTEM_VERSION 3
+# endif
 
-    enum error_code
-    {
-      no_error = 0,
-      system_error,     // system generated error; if possible, is translated
-                        // to one of the more specific errors below.
-      other_error,      // library generated error
-      security_error,   // includes access rights, permissions failures
-      read_only_error,
-      io_error,
-      path_error,
-      not_found_error,
-      not_directory_error,
-      busy_error,       // implies trying again might succeed
-      already_exists_error,
-      not_empty_error,
-      is_directory_error,
-      out_of_space_error,
-      out_of_memory_error,
-      out_of_resource_error
-    };
+#if BOOST_FILESYSTEM_VERSION == 2
+#  include <boost/filesystem/v2/exception.hpp>
 
+# else
+#  include <boost/filesystem/v3/exception.hpp>
 
-    class filesystem_error : public std::runtime_error
-    {
-    public:
+# endif
 
-      filesystem_error(
-        const std::string & who,
-        const std::string & message ); // assumed to be error_code::other_error
-
-      filesystem_error(
-        const std::string & who,
-        const path & path1,
-        const std::string & message ); // assumed to be error_code::other_error
-
-      filesystem_error(
-        const std::string & who,
-        const path & path1,
-        int sys_err_code );
-
-      filesystem_error(
-        const std::string & who,
-        const path & path1,
-        const path & path2,
-        int sys_err_code );
-
-      ~filesystem_error() throw();
-
-      int             native_error() const { return m_sys_err; }
-      // Note: a value of 0 implies a library (rather than system) error
-      error_code      error() const { return m_err; }
-      const std::string &  who() const; // name of who throwing exception
-      const path &    path1() const; // argument 1 to who; may be empty()
-      const path &    path2() const; // argument 2 to who; may be empty()
-
-    private:
-      int             m_sys_err;
-      error_code      m_err;
-      std::string     m_who;
-      path            m_path1;
-      path            m_path2;
-    };
-
-  } // namespace filesystem
-} // namespace boost
-
-#endif // BOOST_FILESYSTEM_EXCEPTION_HPP
+#endif  // BOOST_FILESYSTEM_EXCEPTIONX_HPP 

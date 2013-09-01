@@ -1,30 +1,27 @@
 /*=============================================================================
-    Spirit v1.6.0
-    Copyright (c) 2001-2003 Daniel Nuffer
-    Copyright (c) 2002 Jeff Westfahl
-    http://spirit.sourceforge.net/
+  Copyright (c) 2001-2008 Joel de Guzman
+  Copyright (c) 2001-2008 Hartmut Kaiser
+  http://spirit.sourceforge.net/
 
-    Permission to copy, use, modify, sell and distribute this software is
-    granted provided this copyright notice appears in all copies. This
-    software is provided "as is" without express or implied warranty, and
-    with no claim as to its suitability for any purpose.
+  Distributed under the Boost Software License, Version 1.0. (See accompanying
+  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(BOOST_SPIRIT_ITERATOR_MAIN_HPP)
-#define BOOST_SPIRIT_ITERATOR_MAIN_HPP
+#ifndef BOOST_SPIRIT_DEPRECATED_INCLUDE_ITERATOR
+#define BOOST_SPIRIT_DEPRECATED_INCLUDE_ITERATOR
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Master header for Spirit.Iterators
-//
-///////////////////////////////////////////////////////////////////////////////
+#include <boost/version.hpp>
 
-#include "boost/spirit/iterator/file_iterator.hpp"
-#include "boost/spirit/iterator/fixed_size_queue.hpp"
-#include "boost/spirit/iterator/position_iterator.hpp"
-
-#include "boost/config.hpp"
-#if !defined(BOOST_MSVC) || (BOOST_MSVC > 1300)
-#include "boost/spirit/iterator/multi_pass.hpp"
+#if BOOST_VERSION >= 103800
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__DMC__)
+#  pragma message ("Warning: This header is deprecated. Please use: boost/spirit/include/classic_iterator.hpp")
+#elif defined(__GNUC__) || defined(__HP_aCC) || defined(__SUNPRO_CC) || defined(__IBMCPP__)
+#  warning "This header is deprecated. Please use: boost/spirit/include/classic_iterator.hpp"
+#endif
 #endif
 
-#endif // !defined(BOOST_SPIRIT_ITERATOR_MAIN_HPP)
+#if !defined(BOOST_SPIRIT_USE_OLD_NAMESPACE)
+#define BOOST_SPIRIT_USE_OLD_NAMESPACE
+#endif
+#include <boost/spirit/include/classic_iterator.hpp>
+
+#endif

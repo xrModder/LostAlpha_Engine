@@ -1,8 +1,12 @@
 #ifndef _DATE_TIME_ADJUST_FUNCTORS_HPP___
 #define _DATE_TIME_ADJUST_FUNCTORS_HPP___
-/* Copyright (c) 2001 CrystalClear Software, Inc.
- * Disclaimer & Full Copyright at end of file
- * Author: Jeff Garland 
+
+/* Copyright (c) 2002,2003 CrystalClear Software, Inc.
+ * Use, modification and distribution is subject to the 
+ * Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
+ * Author: Jeff Garland, Bart Garst
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 #include "boost/date_time/date.hpp"
@@ -21,7 +25,16 @@ namespace date_time {
     day_functor(int f) : f_(f) {}
     duration_type get_offset(const date_type& d) const 
     {
+      // why is 'd' a parameter???
+      // fix compiler warnings
+      d.year();
       return duration_type(f_);
+    }
+    duration_type get_neg_offset(const date_type& d) const 
+    {
+      // fix compiler warnings
+      d.year();
+      return duration_type(-f_);
     }
   private:
     int f_;
@@ -57,11 +70,43 @@ namespace date_time {
           origDayOfMonth_ = -1; //force the value to the end of month
         }
       }
-      date_time::wrapping_int2<short,1,12> wi(ymd.month);
-      unsigned long year = wi.add(f_); //calc the year wrap around
-      year += ymd.year; //now add in the current year
+      typedef date_time::wrapping_int2<short,1,12> wrap_int2;
+      typedef typename wrap_int2::int_type int_type;
+      wrap_int2 wi(ymd.month);
+      //calc the year wrap around, add() returns 0 or 1 if wrapped
+      int_type year = wi.add(static_cast<int_type>(f_)); 
+      year = static_cast<int_type>(year + ymd.year); //calculate resulting year
 //       std::cout << "trace wi: " << wi.as_int() << std::endl;
 //       std::cout << "trace year: " << year << std::endl;
+      //find the last day for the new month
+      day_type resultingEndOfMonthDay(cal_type::end_of_month_day(year, wi.as_int()));
+      //original was the end of month -- force to last day of month
+      if (origDayOfMonth_ == -1) {
+        return date_type(year, wi.as_int(), resultingEndOfMonthDay) - d;
+      }
+      day_type dayOfMonth = origDayOfMonth_;
+      if (dayOfMonth > resultingEndOfMonthDay) {
+        dayOfMonth = resultingEndOfMonthDay;
+      }
+      return date_type(year, wi.as_int(), dayOfMonth) - d;
+    }
+    //! Returns a negative duration_type
+    duration_type get_neg_offset(const date_type& d) const 
+    {
+      ymd_type ymd(d.year_month_day());
+      if (origDayOfMonth_ == 0) {
+        origDayOfMonth_ = ymd.day;
+        day_type endOfMonthDay(cal_type::end_of_month_day(ymd.year,ymd.month));
+        if (endOfMonthDay == ymd.day) {
+          origDayOfMonth_ = -1; //force the value to the end of month
+        }
+      }
+      typedef date_time::wrapping_int2<short,1,12> wrap_int2;
+      typedef typename wrap_int2::int_type int_type;
+      wrap_int2 wi(ymd.month);
+      //calc the year wrap around, add() returns 0 or 1 if wrapped
+      int_type year = wi.subtract(static_cast<int_type>(f_)); 
+      year = static_cast<int_type>(year + ymd.year); //calculate resulting year
       //find the last day for the new month
       day_type resultingEndOfMonthDay(cal_type::end_of_month_day(year, wi.as_int()));
       //original was the end of month -- force to last day of month
@@ -90,46 +135,44 @@ namespace date_time {
     week_functor(int f) : f_(f) {}
     duration_type get_offset(const date_type& d) const 
     {
+      // why is 'd' a parameter???
+      // fix compiler warnings
+      d.year();
       return duration_type(f_*calendar_type::days_in_week());
+    }
+    duration_type get_neg_offset(const date_type& d) const 
+    {
+      // fix compiler warnings
+      d.year();
+      return duration_type(-f_*calendar_type::days_in_week());
     }
   private:
     int f_;
   };
 
   //! Functor to iterate by a year adjusting for leap years
-  /*!
-   *@throws bad_day if date value is invalid (eg: feb 29) 
-   */
   template<class date_type>
   class year_functor 
   {
   public:
-    typedef typename date_type::year_type year_type;
+    //typedef typename date_type::year_type year_type;
     typedef typename date_type::duration_type duration_type;
-    year_functor(int f) : f_(f) {}
+    year_functor(int f) : _mf(f * 12) {}
     duration_type get_offset(const date_type& d) const 
     {
-      date_type new_date(d.year()+f_, d.month(), d.day());
-      return new_date-d;
+      return _mf.get_offset(d);
+    }
+    duration_type get_neg_offset(const date_type& d) const 
+    {
+      return _mf.get_neg_offset(d);
     }
   private:
-    int f_;
+    month_functor<date_type> _mf;
   };
-  
 
   
 } }//namespace date_time
 
-/* Copyright (c) 2001
- * CrystalClear Software, Inc.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  CrystalClear Software makes no
- * representations about the suitability of this software for any
- * purpose.  It is provided "as is" without express or implied warranty.
- */
 
 #endif
+

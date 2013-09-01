@@ -1,35 +1,19 @@
 //=======================================================================
 // Copyright 2001 Universite Joseph Fourier, Grenoble.
-// Author: François Faure
+// Author: Francois Faure
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
-
-
-#ifndef ______adj_list_io_______
-#define ______adj_list_io_______
+#ifndef BOOST_GRAPH_ADJACENCY_LIST_IO_HPP
+#define BOOST_GRAPH_ADJACENCY_LIST_IO_HPP
 
 #include <iostream>
 #include <vector>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/iteration_macros.hpp>
+#include <cctype>
 
 // Method read to parse an adjacency list from an input stream. Examples:
 // cin >> read( G );
@@ -67,7 +51,7 @@ std::istream& operator >> ( std::istream& in, property<Tag,Value,no_property>& p
         return in;
 }
 
-std::istream& operator >> ( std::istream& in, no_property& )
+inline std::istream& operator >> ( std::istream& in, no_property& )
 {
         return in;
 }
@@ -104,19 +88,35 @@ void getSubset
 template<class Tag, class Value, class Next, 
         class Stag, class Svalue>
 void getSubset
-( property<Tag,Value,Next>& p, const property<Stag,Svalue,no_property>& s )
+( property<Tag,Value,Next>& p, const property<Stag,Svalue,no_property>& s)
 {
         get( p, s.m_value, Stag() );
 }
 
-void getSubset
-( no_property& p, const no_property& s )
+inline void getSubset
+( no_property&, const no_property& )
 {
 }
+
+#if !defined(BOOST_GRAPH_NO_BUNDLED_PROPERTIES)
+template<typename T, typename U>
+void getSubset(T& p, const U& s)
+{
+  p = s;
+}
+
+template<typename T>
+void getSubset(T&, const no_property&)
+{
+}
+
+
+#endif
 
 //  get property subset
 //===========================================================================
 // graph parser
+typedef enum{ PARSE_NUM_NODES, PARSE_VERTEX, PARSE_EDGE } GraphParserState;
 
 template<class Graph_t, class VertexProperty, class EdgeProperty, class VertexPropertySubset,
 class EdgePropertySubset>
@@ -130,11 +130,10 @@ struct GraphParser
         
         GraphParser& operator () ( std::istream& in )
         {
-                typedef graph_traits<Graph>::vertex_descriptor Vertex;
+                typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
                 std::vector<Vertex> nodes;
 
-                typedef enum{ PARSE_NUM_NODES, PARSE_VERTEX, PARSE_EDGE } State;
-                State state = PARSE_VERTEX;
+                GraphParserState state = PARSE_VERTEX;
 
                 unsigned int numLine = 1;
                 char c;
@@ -145,7 +144,7 @@ struct GraphParser
                         else if( c== 'v' ) state = PARSE_VERTEX;
                         else if( c== 'e' ) state = PARSE_EDGE;
                         else if( c== '\n' ) numLine++;
-                        else if( !isspace(c) ){
+                        else if( !std::isspace(c) ){
                                 in.putback(c);
                                 if( state == PARSE_VERTEX ){
                                         VertexPropertySubset readProp;
@@ -203,6 +202,7 @@ protected:
 //=======================================================================
 // property printer
 
+#if defined(BOOST_GRAPH_NO_BUNDLED_PROPERTIES)
 template<class Graph, class Property>
 struct PropertyPrinter
 {
@@ -210,27 +210,62 @@ struct PropertyPrinter
         typedef typename Property::tag_type Tag;
         typedef typename Property::next_type Next;
         
-        PropertyPrinter( Graph& g ):graph(&g){}
+        PropertyPrinter( const Graph& g ):graph(&g){}
         
-        template<class Iterator>
-        PropertyPrinter& operator () ( std::ostream& out, Iterator it )
+        template<class Val>
+        PropertyPrinter& operator () ( std::ostream& out, const Val& v )
         {
-                property_map<Graph,Tag>::type ps = get(Tag(), *graph);
-                out << ps[ *it ] <<" ";
+                typename property_map<Graph,Tag>::type ps = get(Tag(), *graph);
+                out << ps[ v ] <<" ";
                 PropertyPrinter<Graph,Next> print(*graph);
-                print(out, it);
+                print(out, v);
                 return (*this);
         }
 private:
-        Graph* graph;
+        const Graph* graph;
 };
+#else
+template<class Graph, typename Property>
+struct PropertyPrinter
+{
+        PropertyPrinter( const Graph& g ):graph(&g){}
+        
+        template<class Val>
+        PropertyPrinter& operator () ( std::ostream& out, const Val& v )
+        {
+                out << (*graph)[ v ] <<" ";
+                return (*this);
+        }
+private:
+        const Graph* graph;
+};
+
+template<class Graph, typename Tag, typename Value, typename Next>
+struct PropertyPrinter<Graph, property<Tag, Value, Next> >
+{
+        PropertyPrinter( const Graph& g ):graph(&g){}
+        
+        template<class Val>
+        PropertyPrinter& operator () ( std::ostream& out, const Val& v )
+        {
+                typename property_map<Graph,Tag>::type ps = get(Tag(), *graph);
+                out << ps[ v ] <<" ";
+                PropertyPrinter<Graph,Next> print(*graph);
+                print(out, v);
+                return (*this);
+        }
+private:
+        const Graph* graph;
+};
+#endif
+
 template<class Graph>
 struct PropertyPrinter<Graph, no_property>
 {
-        PropertyPrinter( Graph& ){}
+        PropertyPrinter( const Graph& ){}
 
-        template<class Iterator>
-        PropertyPrinter& operator () ( std::ostream&, Iterator it ){ return *this; }
+        template<class Val>
+        PropertyPrinter& operator () ( std::ostream&, const Val& ){ return *this; }
 };
 
 // property printer
@@ -244,7 +279,7 @@ struct EdgePrinter
         typedef Graph_t Graph;
         typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
         
-        EdgePrinter( Graph& g )
+        EdgePrinter( const Graph& g )
                 : graph(g)
         {}      
         
@@ -253,18 +288,16 @@ struct EdgePrinter
                 // assign indices to vertices
                 std::map<Vertex,int> indices;
                 int num = 0;
-                graph_traits<Graph>::vertex_iterator vi;
-                for (vi = vertices(graph).first; vi != vertices(graph).second; ++vi){
-                        indices[*vi] = num++;
+                BGL_FORALL_VERTICES_T(v, graph, Graph) {
+                        indices[v] = num++;
                 }
 
                 // write edges
                 PropertyPrinter<Graph, EdgeProperty> print_Edge(graph);
                 out << "e" << std::endl;
-                graph_traits<Graph>::edge_iterator ei;
-                for (ei = edges(graph).first; ei != edges(graph).second; ++ei){
-                        out << indices[source(*ei,graph)] <<  " " << indices[target(*ei,graph)] << "  "; 
-                        print_Edge(out,ei); 
+                BGL_FORALL_EDGES_T(e, graph, Graph) {
+                        out << indices[source(e,graph)] <<  " " << indices[target(e,graph)] << "  "; 
+                        print_Edge(out,e); 
                         out << std::endl;
                 }
                 out << std::endl;            
@@ -273,14 +306,14 @@ struct EdgePrinter
         
 protected:
 
-        Graph& graph;
+        const Graph& graph;
         
 };
 
 template<class Graph, class V, class E>
 struct GraphPrinter: public EdgePrinter<Graph,E>
 {
-        GraphPrinter( Graph& g )
+        GraphPrinter( const Graph& g )
           : EdgePrinter<Graph,E>(g)
         {}
         
@@ -288,9 +321,8 @@ struct GraphPrinter: public EdgePrinter<Graph,E>
         {
                 PropertyPrinter<Graph, V> printNode(this->graph);
                 out << "v"<<std::endl;
-                graph_traits<Graph>::vertex_iterator vi;
-                for (vi = vertices(graph).first; vi != vertices(graph).second; ++vi){
-                        printNode(out,vi); 
+                BGL_FORALL_VERTICES_T(v, this->graph, Graph) {
+                        printNode(out,v); 
                         out << std::endl;
                 }
                 
@@ -299,17 +331,17 @@ struct GraphPrinter: public EdgePrinter<Graph,E>
         }
 };
 
-template<class G, class E>
-struct GraphPrinter<G,no_property,E> 
-  : public EdgePrinter<G,E>
+template<class Graph, class E>
+struct GraphPrinter<Graph,no_property,E> 
+  : public EdgePrinter<Graph,E>
 {
-        GraphPrinter( G& g )
-          : EdgePrinter<G,E>(g)
+        GraphPrinter( const Graph& g )
+          : EdgePrinter<Graph,E>(g)
         {}
         
         const GraphPrinter& operator () ( std::ostream& out ) const
         {
-                out << "n "<< num_vertices(graph) << std::endl;
+                out << "n "<< num_vertices(this->graph) << std::endl;
                 EdgePrinter<Graph,E>::operator ()( out );
                 return (*this);
         }
@@ -355,7 +387,7 @@ std::ostream& operator << ( std::ostream& out, const GraphPrinter<Graph,VP,EP>& 
 /// write the graph with given property subsets
 template<class EL, class VL, class D, class VP, class EP, class GP, class VPS, class EPS>
 GraphPrinter<adjacency_list<EL,VL,D,VP,EP,GP>,VPS,EPS> 
-write( adjacency_list<EL,VL,D,VP,EP,GP>& g, VPS, EPS )
+write( const adjacency_list<EL,VL,D,VP,EP,GP>& g, VPS, EPS )
 {
         return GraphPrinter<adjacency_list<EL,VL,D,VP,EP,GP>,VPS,EPS>(g);
 }
@@ -363,7 +395,7 @@ write( adjacency_list<EL,VL,D,VP,EP,GP>& g, VPS, EPS )
 /// write the graph with all internal vertex and edge properties
 template<class EL, class VL, class D, class VP, class EP, class GP>
 GraphPrinter<adjacency_list<EL,VL,D,VP,EP,GP>,VP,EP> 
-write( adjacency_list<EL,VL,D,VP,EP,GP>& g )
+write( const adjacency_list<EL,VL,D,VP,EP,GP>& g )
 {
         return GraphPrinter<adjacency_list<EL,VL,D,VP,EP,GP>,VP,EP>(g);
 }

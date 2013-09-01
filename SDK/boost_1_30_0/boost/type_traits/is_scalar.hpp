@@ -1,24 +1,23 @@
 
-// (C) Copyright Steve Cleary, Beman Dawes, Howard Hinnant & John Maddock 2000.
-// Permission to copy, use, modify, sell and
-// distribute this software is granted provided this copyright notice appears
-// in all copies. This software is provided "as is" without express or implied
-// warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright Steve Cleary, Beman Dawes, Howard Hinnant & John Maddock 2000.
+//  Use, modification and distribution are subject to the Boost Software License,
+//  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt).
 //
-// See http://www.boost.org for most recent version including documentation.
+//  See http://www.boost.org/libs/type_traits for most recent version including documentation.
 
 #ifndef BOOST_TT_IS_SCALAR_HPP_INCLUDED
 #define BOOST_TT_IS_SCALAR_HPP_INCLUDED
 
-#include "boost/type_traits/is_arithmetic.hpp"
-#include "boost/type_traits/is_enum.hpp"
-#include "boost/type_traits/is_pointer.hpp"
-#include "boost/type_traits/is_member_pointer.hpp"
-#include "boost/type_traits/detail/ice_or.hpp"
-#include "boost/config.hpp"
+#include <boost/type_traits/is_arithmetic.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/type_traits/is_pointer.hpp>
+#include <boost/type_traits/is_member_pointer.hpp>
+#include <boost/type_traits/detail/ice_or.hpp>
+#include <boost/config.hpp>
 
 // should be the last #include
-#include "boost/type_traits/detail/bool_trait_def.hpp"
+#include <boost/type_traits/detail/bool_trait_def.hpp>
 
 namespace boost {
 
@@ -51,6 +50,6 @@ BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_scalar,T,::boost::detail::is_scalar_impl<T>::val
 
 } // namespace boost
 
-#include "boost/type_traits/detail/bool_trait_undef.hpp"
+#include <boost/type_traits/detail/bool_trait_undef.hpp>
 
 #endif // BOOST_TT_IS_SCALAR_HPP_INCLUDED

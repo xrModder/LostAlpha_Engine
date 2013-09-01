@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#pragma warning(push)
+#pragma warning(disable:4995)
+
 #define LUA_LIB
 #include <luabind/lua_include.hpp>
 
@@ -56,3 +59,4 @@ string_class luabind::detail::stack_content_by_name(lua_State* L, int start_inde
 	return ret;
 }
 
+#pragma warning(pop)

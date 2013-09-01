@@ -1,7 +1,7 @@
-//  (C) Copyright David Abrahams 2000. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright David Abrahams 2000.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //
 //  The author gratefully acknowleges the support of Dragon Systems, Inc., in
 //  producing this work.
@@ -20,13 +20,44 @@
 // 04 Mar 01  Rolled in some changes from the Dragon fork (Dave Abrahams)
 // 01 Mar 01  define PyObject_INIT() for Python 1.x (Dave Abrahams)
 
+#ifdef _DEBUG
+# ifndef BOOST_DEBUG_PYTHON
+#  ifdef _MSC_VER  
+    // VC8.0 will complain if system headers are #included both with
+    // and without _DEBUG defined, so we have to #include all the
+    // system headers used by pyconfig.h right here.
+#   include <stddef.h>
+#   include <stdarg.h>
+#   include <stdio.h>
+#   include <stdlib.h>
+#   include <assert.h>
+#   include <errno.h>
+#   include <ctype.h>
+#   include <wchar.h>
+#   include <basetsd.h>
+#   include <io.h>
+#   include <limits.h>
+#   include <float.h>
+#   include <string.h>
+#   include <math.h>
+#   include <time.h>
+#  endif
+#  undef _DEBUG // Don't let Python force the debug library just because we're debugging.
+#  define DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
+# endif
+#endif
+
+# include <pyconfig.h>
+# if defined(_SGI_COMPILER_VERSION) && _SGI_COMPILER_VERSION >= 740
+#  undef _POSIX_C_SOURCE
+#  undef _XOPEN_SOURCE
+#  undef HAVE_STDINT_H // undo Python 2.5.1 define
+# endif
+
 //
 // Python's LongObject.h helpfully #defines ULONGLONG_MAX for us,
 // which confuses Boost's config
 //
-#if defined(__ALPHA) && defined(__osf__) && defined(__DECCXX_VER)
-# include <pyconfig.h>
-#endif
 #include <limits.h>
 #ifndef ULONG_MAX
 # define BOOST_PYTHON_ULONG_MAX_UNDEFINED
@@ -43,11 +74,8 @@
 //
 #include <patchlevel.h>
 
-#ifdef _DEBUG
-# ifndef BOOST_DEBUG_PYTHON
-#  undef _DEBUG // Don't let Python force the debug library just because we're debugging.
-#  define DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
-# endif
+#if PY_MAJOR_VERSION<2 || PY_MAJOR_VERSION==2 && PY_MINOR_VERSION<2
+#error Python 2.2 or higher is required for this version of Boost.Python.
 #endif
 
 //
@@ -90,7 +118,7 @@ typedef int pid_t;
 
 #   define HAVE_LONG_LONG 1
 #   define LONG_LONG long long
-#  endif 
+#  endif
 
 # elif defined(__MWERKS__)
 
@@ -99,19 +127,9 @@ typedef int pid_t;
 #   define _MSC_VER 900
 #  endif
 
-#  if PY_MAJOR_VERSION < 2 || PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 2
-#   include <config.h>
-#  else
-#   include <pyconfig.h>
-#  endif
 #  undef hypot // undo the evil #define left by Python.
 
 # elif defined(__BORLANDC__)
-#  if PY_MAJOR_VERSION < 2 || PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 2
-#   include <config.h>
-#  else
-#   include <pyconfig.h>
-#  endif
 #  undef HAVE_HYPOT
 #  define HAVE_HYPOT 1
 # endif
@@ -146,6 +164,10 @@ typedef int pid_t;
 #ifdef DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
 # undef DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
 # define _DEBUG
+# ifdef _CRT_NOFORCE_MANIFEST_DEFINED_FROM_WRAP_PYTHON_H
+#  undef _CRT_NOFORCE_MANIFEST_DEFINED_FROM_WRAP_PYTHON_H
+#  undef _CRT_NOFORCE_MANIFEST
+# endif
 #endif
 
 #if !defined(PY_MAJOR_VERSION) || PY_MAJOR_VERSION < 2
@@ -153,8 +175,31 @@ typedef int pid_t;
         ( (op)->ob_type = (typeobj), _Py_NewReference((PyObject *)(op)), (op) )
 #endif
 
+// Define Python 3 macros for Python 2.x
+#if PY_VERSION_HEX < 0x02060000
+
+# define Py_TYPE(o)    (((PyObject*)(o))->ob_type)
+# define Py_REFCNT(o)  (((PyObject*)(o))->ob_refcnt)
+# define Py_SIZE(o)    (((PyVarObject*)(o))->ob_size)
+
+# define PyVarObject_HEAD_INIT(type, size) \
+        PyObject_HEAD_INIT(type) size,
+
+#endif
+
+
 #ifdef __MWERKS__
 # pragma warn_possunwant off
 #elif _MSC_VER
 # pragma warning(disable:4786)
+#endif
+
+#if defined(HAVE_LONG_LONG)
+# if defined(PY_LONG_LONG)
+#  define BOOST_PYTHON_LONG_LONG PY_LONG_LONG
+# elif defined(LONG_LONG)
+#  define BOOST_PYTHON_LONG_LONG LONG_LONG
+# else
+#  error "HAVE_LONG_LONG defined but not PY_LONG_LONG or LONG_LONG"
+# endif
 #endif

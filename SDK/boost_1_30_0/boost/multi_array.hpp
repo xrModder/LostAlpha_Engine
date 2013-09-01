@@ -1,15 +1,13 @@
-// Copyright (C) 2002 Ronald Garcia
-//
-// Permission to copy, use, sell and distribute this software is granted
-// provided this copyright notice appears in all copies. 
-// Permission to modify the code and to distribute modified code is granted
-// provided this copyright notice appears in all copies, and a notice 
-// that the code was modified is included with the copyright notice.
-//
-// This software is provided "as is" without express or implied warranty, 
-// and with no claim as to its suitability for any purpose.
-//
+// Copyright 2002 The Trustees of Indiana University.
 
+// Use, modification and distribution is subject to the Boost Software 
+// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+//  Boost.MultiArray Library
+//  Authors: Ronald Garcia
+//           Jeremy Siek
+//           Andrew Lumsdaine
 //  See http://www.boost.org/libs/multi_array for documentation.
 
 #ifndef BOOST_MULTI_ARRAY_RG071801_HPP
@@ -28,6 +26,7 @@
 #include "boost/multi_array/multi_array_ref.hpp"
 #include "boost/multi_array/algorithm.hpp"
 #include "boost/array.hpp"
+#include "boost/mpl/if.hpp"
 #include "boost/type_traits.hpp"
 #include <algorithm>
 #include <cstddef>
@@ -40,30 +39,85 @@
 namespace boost {
   namespace detail {
     namespace multi_array {
+
       struct populate_index_ranges {
         multi_array_types::index_range
+        // RG: underscore on extent_ to stifle strange MSVC warning.
         operator()(multi_array_types::index base,
-                   multi_array_types::size_type extent) {
-          return multi_array_types::index_range(base,base+extent);
+                   multi_array_types::size_type extent_) {
+          return multi_array_types::index_range(base,base+extent_);
         }
       };
+
+#ifdef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+//
+// Compilers that don't support partial ordering may need help to
+// disambiguate multi_array's templated constructors.  Even vc6/7 are
+// capable of some limited SFINAE, so we take the most-general version
+// out of the overload set with disable_multi_array_impl.
+//
+template <typename T, std::size_t NumDims, typename TPtr>
+char is_multi_array_impl_help(const_multi_array_view<T,NumDims,TPtr>&);
+template <typename T, std::size_t NumDims, typename TPtr>
+char is_multi_array_impl_help(const_sub_array<T,NumDims,TPtr>&);
+template <typename T, std::size_t NumDims, typename TPtr>
+char is_multi_array_impl_help(const_multi_array_ref<T,NumDims,TPtr>&);
+
+char ( &is_multi_array_impl_help(...) )[2];
+
+template <class T>
+struct is_multi_array_impl
+{
+    static T x;
+    BOOST_STATIC_CONSTANT(bool, value = sizeof((is_multi_array_impl_help)(x)) == 1);
+
+  typedef mpl::bool_<value> type;
+};
+
+template <bool multi_array = false>
+struct disable_multi_array_impl_impl
+{
+    typedef int type;
+};
+
+template <>
+struct disable_multi_array_impl_impl<true>
+{
+    // forming a pointer to a reference triggers SFINAE
+    typedef int& type; 
+};
+
+
+template <class T>
+struct disable_multi_array_impl :
+  disable_multi_array_impl_impl<is_multi_array_impl<T>::value>
+{ };
+
+
+template <>
+struct disable_multi_array_impl<int>
+{
+  typedef int type;
+};
+
+
+#endif
+
     } //namespace multi_array
   } // namespace detail
 
 template<typename T, std::size_t NumDims,
   typename Allocator>
-class multi_array : 
+class multi_array :
   public multi_array_ref<T,NumDims>
 {
   typedef multi_array_ref<T,NumDims> super_type;
-public: 
+public:
   typedef typename super_type::value_type value_type;
   typedef typename super_type::reference reference;
   typedef typename super_type::const_reference const_reference;
   typedef typename super_type::iterator iterator;
   typedef typename super_type::const_iterator const_iterator;
-  typedef typename super_type::iter_base iter_base;
-  typedef typename super_type::const_iter_base const_iter_base;
   typedef typename super_type::reverse_iterator reverse_iterator;
   typedef typename super_type::const_reverse_iterator const_reverse_iterator;
   typedef typename super_type::element element;
@@ -83,17 +137,31 @@ public:
     typedef boost::detail::multi_array::multi_array_view<T,NDims> type;
   };
 
+  explicit multi_array() :
+    super_type((T*)initial_base_,c_storage_order(),
+               /*index_bases=*/0, /*extents=*/0) {
+    allocate_space(); 
+  }
+
   template <class ExtentList>
-  explicit multi_array(ExtentList const& extents) :
+  explicit multi_array(
+      ExtentList const& extents
+#ifdef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+      , typename mpl::if_<
+      detail::multi_array::is_multi_array_impl<ExtentList>,
+      int&,int>::type* = 0
+#endif
+      ) :
     super_type((T*)initial_base_,extents) {
     boost::function_requires<
       detail::multi_array::CollectionConcept<ExtentList> >();
     allocate_space();
   }
 
+    
   template <class ExtentList>
   explicit multi_array(ExtentList const& extents,
-                       const general_storage_order<NumDims>& so) : 
+                       const general_storage_order<NumDims>& so) :
     super_type((T*)initial_base_,extents,so) {
     boost::function_requires<
       detail::multi_array::CollectionConcept<ExtentList> >();
@@ -140,28 +208,163 @@ public:
   multi_array(const multi_array& rhs) :
   super_type(rhs), allocator_(rhs.allocator_) {
     allocate_space();
-    boost::copy_n(rhs.base_,rhs.num_elements(),base_);
+    boost::detail::multi_array::copy_n(rhs.base_,rhs.num_elements(),base_);
+  }
+
+
+  //
+  // A multi_array is constructible from any multi_array_ref, subarray, or
+  // array_view object.  The following constructors ensure that.
+  //
+
+  // Due to limited support for partial template ordering, 
+  // MSVC 6&7 confuse the following with the most basic ExtentList 
+  // constructor.
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+  template <typename OPtr>
+  multi_array(const const_multi_array_ref<T,NumDims,OPtr>& rhs,
+              const general_storage_order<NumDims>& so = c_storage_order())
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    // Warning! storage order may change, hence the following copy technique.
+    std::copy(rhs.begin(),rhs.end(),this->begin());
   }
 
   template <typename OPtr>
   multi_array(const detail::multi_array::
-              const_sub_array<T,NumDims,OPtr>& rhs) :
-    super_type(rhs) {
+              const_sub_array<T,NumDims,OPtr>& rhs,
+              const general_storage_order<NumDims>& so = c_storage_order())
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
     allocate_space();
     std::copy(rhs.begin(),rhs.end(),this->begin());
   }
 
-  // For some reason, gcc 2.95.2 doesn't pick the above template
-  // member function when passed a subarray, so i was forced to
-  // duplicate the functionality here...
+
+  template <typename OPtr>
   multi_array(const detail::multi_array::
-              sub_array<T,NumDims>& rhs) :
-    super_type(rhs) {
+              const_multi_array_view<T,NumDims,OPtr>& rhs,
+              const general_storage_order<NumDims>& so = c_storage_order())
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
     allocate_space();
     std::copy(rhs.begin(),rhs.end(),this->begin());
   }
 
-  // Since assignment is a deep copy, multi_array_ref 
+#else // BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+  // More limited support for MSVC
+
+
+  multi_array(const const_multi_array_ref<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    // Warning! storage order may change, hence the following copy technique.
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const const_multi_array_ref<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    // Warning! storage order may change, hence the following copy technique.
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const detail::multi_array::
+              const_sub_array<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const detail::multi_array::
+              const_sub_array<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+
+  multi_array(const detail::multi_array::
+              const_multi_array_view<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const detail::multi_array::
+              const_multi_array_view<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+#endif // !BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+
+  // Thes constructors are necessary because of more exact template matches.
+  multi_array(const multi_array_ref<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    // Warning! storage order may change, hence the following copy technique.
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const multi_array_ref<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    // Warning! storage order may change, hence the following copy technique.
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+
+  multi_array(const detail::multi_array::
+              sub_array<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+  multi_array(const detail::multi_array::
+              sub_array<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+
+
+  multi_array(const detail::multi_array::
+              multi_array_view<T,NumDims>& rhs)
+    : super_type(0,c_storage_order(),rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+    
+  multi_array(const detail::multi_array::
+              multi_array_view<T,NumDims>& rhs,
+              const general_storage_order<NumDims>& so)
+    : super_type(0,so,rhs.index_bases(),rhs.shape()) 
+  {
+    allocate_space();
+    std::copy(rhs.begin(),rhs.end(),this->begin());
+  }
+    
+  // Since assignment is a deep copy, multi_array_ref
   // contains all the necessary code.
   template <typename ConstMultiArray>
   multi_array& operator=(const ConstMultiArray& other) {
@@ -177,12 +380,30 @@ public:
   }
 
 
+  template <typename ExtentList>
+  multi_array& resize(const ExtentList& extents) {
+    boost::function_requires<
+      detail::multi_array::CollectionConcept<ExtentList> >();
+
+    typedef detail::multi_array::extent_gen<NumDims> gen_type;
+    gen_type ranges;
+
+    for (int i=0; i != NumDims; ++i) {
+      typedef typename gen_type::range range_type;
+      ranges.ranges_[i] = range_type(0,extents[i]);
+    }
+    
+    return this->resize(ranges);
+  }
+
+
+
   multi_array& resize(const detail::multi_array
                       ::extent_gen<NumDims>& ranges) {
 
 
     // build a multi_array with the specs given
-    multi_array new_array(ranges);
+    multi_array new_array(ranges,this->storage_order());
 
 
     // build a view of tmp with the minimum extents
@@ -191,13 +412,13 @@ public:
     boost::array<size_type,NumDims> min_extents;
 
     const size_type& (*min)(const size_type&, const size_type&) =
-      std::min<size_type>;
+      std::min;
     std::transform(new_array.extent_list_.begin(),new_array.extent_list_.end(),
                    this->extent_list_.begin(),
                    min_extents.begin(),
                    min);
 
-    
+
     // typedef boost::array<index,NumDims> index_list;
     // Build index_gen objects to create views with the same shape
 
@@ -208,17 +429,19 @@ public:
 
     std::transform(new_array.index_base_list_.begin(),
                    new_array.index_base_list_.end(),
-                   min_extents.begin(),old_idxes.ranges_.begin(),
+                   min_extents.begin(),new_idxes.ranges_.begin(),
                    detail::multi_array::populate_index_ranges());
 
     std::transform(this->index_base_list_.begin(),
                    this->index_base_list_.end(),
-                   min_extents.begin(),new_idxes.ranges_.begin(),
+                   min_extents.begin(),old_idxes.ranges_.begin(),
                    detail::multi_array::populate_index_ranges());
 
     // Build same-shape views of the two arrays
-    typename multi_array::array_view<3>::type view_old = (*this)[old_idxes];
-    typename multi_array::array_view<3>::type view_new = new_array[new_idxes];
+    typename
+      multi_array::BOOST_NESTED_TEMPLATE array_view<NumDims>::type view_old = (*this)[old_idxes];
+    typename
+      multi_array::BOOST_NESTED_TEMPLATE array_view<NumDims>::type view_new = new_array[new_idxes];
 
     // Set the right portion of the new array
     view_new = view_old;
@@ -260,8 +483,8 @@ private:
         allocator_.destroy(i);
       allocator_.deallocate(base_,allocated_elements_);
     }
-  }    
-  
+  }
+
   typedef boost::array<size_type,NumDims> size_list;
   typedef boost::array<index,NumDims> index_list;
 

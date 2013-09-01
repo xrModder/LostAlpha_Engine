@@ -1,9 +1,12 @@
-
 #ifndef DATE_CLOCK_DEVICE_HPP___
 #define DATE_CLOCK_DEVICE_HPP___
-/* Copyright (c) 2002 CrystalClear Software, Inc.
- * Disclaimer & Full Copyright at end of file
- * Author: Jeff Garland 
+
+/* Copyright (c) 2002,2003,2005 CrystalClear Software, Inc.
+ * Use, modification and distribution is subject to the 
+ * Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
+ * Author: Jeff Garland, Bart Garst
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 #include "boost/date_time/c_time.hpp"
@@ -13,7 +16,7 @@ namespace boost {
 namespace date_time {
 
   //! A clock providing day level services based on C time_t capabilities
-  /*! This clock uses Posix interfaces as its implemenation and hence
+  /*! This clock uses Posix interfaces as its implementation and hence
    *  uses the timezone settings of the operating system.  Incorrect
    *  user settings will result in incorrect results for the calls
    *  to local_day.
@@ -31,7 +34,8 @@ namespace date_time {
     //! Get the local day as a ymd_type
     static typename date_type::ymd_type local_day_ymd() 
     {
-      ::std::tm* curr = get_local_time();
+      ::std::tm result;
+      ::std::tm* curr = get_local_time(result);
       return ymd_type(curr->tm_year + 1900, 
                       curr->tm_mon + 1, 
                       curr->tm_mday);
@@ -39,7 +43,8 @@ namespace date_time {
     //! Get the current day in universal date as a ymd_type
     static typename date_type::ymd_type universal_day_ymd() 
     {
-      ::std::tm* curr = get_universal_time();
+      ::std::tm result;
+      ::std::tm* curr = get_universal_time(result);
       return ymd_type(curr->tm_year + 1900, 
                       curr->tm_mon + 1, 
                       curr->tm_mday);
@@ -51,33 +56,22 @@ namespace date_time {
     }
 
   private:
-    static ::std::tm* get_local_time() 
+    static ::std::tm* get_local_time(std::tm& result) 
     {
       ::std::time_t t;
       ::std::time(&t);
-      return ::std::localtime(&t);
+      return c_time::localtime(&t, &result);
     }
-    static ::std::tm* get_universal_time() 
+    static ::std::tm* get_universal_time(std::tm& result) 
     {
       ::std::time_t t;
       ::std::time(&t);
-      return ::std::gmtime(&t);
+      return c_time::gmtime(&t, &result);
     }
 
   };
 
 } } //namespace date_time
 
-/* Copyright (c) 2002
- * CrystalClear Software, Inc.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  CrystalClear Software makes no
- * representations about the suitability of this software for any
- * purpose.  It is provided "as is" without express or implied warranty.
- */
 
 #endif

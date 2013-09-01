@@ -1,14 +1,14 @@
-// Copyright (C) 2002 Ronald Garcia
-//
-// Permission to copy, use, sell and distribute this software is granted
-// provided this copyright notice appears in all copies. 
-// Permission to modify the code and to distribute modified code is granted
-// provided this copyright notice appears in all copies, and a notice 
-// that the code was modified is included with the copyright notice.
-//
-// This software is provided "as is" without express or implied warranty, 
-// and with no claim as to its suitability for any purpose.
-//
+// Copyright 2002 The Trustees of Indiana University.
+
+// Use, modification and distribution is subject to the Boost Software 
+// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+//  Boost.MultiArray Library
+//  Authors: Ronald Garcia
+//           Jeremy Siek
+//           Andrew Lumsdaine
+//  See http://www.boost.org/libs/multi_array for documentation.
 
 #ifndef SUBARRAY_RG071801_HPP
 #define SUBARRAY_RG071801_HPP
@@ -44,7 +44,6 @@ public:
   typedef typename super_type::value_type value_type;
   typedef typename super_type::const_reference const_reference;
   typedef typename super_type::const_iterator const_iterator;
-  typedef typename super_type::const_iter_base const_iter_base;
   typedef typename super_type::const_reverse_iterator const_reverse_iterator;
   typedef typename super_type::element element;
   typedef typename super_type::size_type size_type;
@@ -80,9 +79,11 @@ public:
   
   template <typename IndexList>
   const element& operator()(const IndexList& indices) const {
+    boost::function_requires<
+      CollectionConcept<IndexList> >();
     return super_type::access_element(boost::type<const element&>(),
-                                      origin(),
-                                      indices,strides());
+                                      indices,origin(),
+                                      shape(),strides(),index_bases());
   }
 
   // see generate_array_view in base.hpp
@@ -138,13 +139,13 @@ public:
   }
 
   const_iterator begin() const {
-    return const_iterator(const_iter_base(*index_bases(),origin(),
-                                   shape(),strides(),index_bases()));
+    return const_iterator(*index_bases(),origin(),
+                          shape(),strides(),index_bases());
   }
 
   const_iterator end() const {
-    return const_iterator(const_iter_base(*index_bases()+*shape(),origin(),
-                                   shape(),strides(),index_bases()));
+    return const_iterator(*index_bases()+(index)*shape(),origin(),
+                          shape(),strides(),index_bases());
   }
 
   const_reverse_iterator rbegin() const {
@@ -195,6 +196,7 @@ private:
   const_sub_array& operator=(const const_sub_array&);
 };
 
+
 //
 // sub_array
 //    multi_array's proxy class to allow multiple overloads of
@@ -211,11 +213,9 @@ public:
   typedef typename super_type::size_type size_type;
   typedef typename super_type::iterator iterator;
   typedef typename super_type::reverse_iterator reverse_iterator;
-  typedef typename super_type::iter_base iter_base;
   typedef typename super_type::const_reference const_reference;
   typedef typename super_type::const_iterator const_iterator;
   typedef typename super_type::const_reverse_iterator const_reverse_iterator;
-  typedef typename super_type::const_iter_base const_iter_base;
 
   // template typedefs
   template <std::size_t NDims>
@@ -231,13 +231,13 @@ public:
   // Assignment from other ConstMultiArray types.
   template <typename ConstMultiArray>
   sub_array& operator=(const ConstMultiArray& other) {
-    function_requires< boost::detail::multi_array::ConstMultiArrayConcept< 
+    function_requires< boost::multi_array_concepts::ConstMultiArrayConcept< 
         ConstMultiArray, NumDims> >();
 
     // make sure the dimensions agree
-    assert(other.num_dimensions() == this->num_dimensions());
-    assert(std::equal(other.shape(),other.shape()+this->num_dimensions(),
-                      this->shape()));
+    BOOST_ASSERT(other.num_dimensions() == this->num_dimensions());
+    BOOST_ASSERT(std::equal(other.shape(),other.shape()+this->num_dimensions(),
+                            this->shape()));
     // iterator-based copy
     std::copy(other.begin(),other.end(),begin());
     return *this;
@@ -247,9 +247,10 @@ public:
   sub_array& operator=(const sub_array& other) {
     if (&other != this) {
       // make sure the dimensions agree
-      assert(other.num_dimensions() == this->num_dimensions());
-      assert(std::equal(other.shape(),other.shape()+this->num_dimensions(),
-                        this->shape()));
+      BOOST_ASSERT(other.num_dimensions() == this->num_dimensions());
+      BOOST_ASSERT(std::equal(other.shape(),
+                              other.shape()+this->num_dimensions(),
+                              this->shape()));
       // iterator-based copy
       std::copy(other.begin(),other.end(),begin());
     }
@@ -286,19 +287,22 @@ public:
 
   template <class IndexList>
   element& operator()(const IndexList& indices) {
+    boost::function_requires<
+      CollectionConcept<IndexList> >();
     return super_type::access_element(boost::type<element&>(),
-                                      origin(),
-                                      indices,this->strides());
+                                      indices,origin(),
+                                      this->shape(),this->strides(),
+                                      this->index_bases());
   }
 
   iterator begin() {
-    return iterator(iter_base(*this->index_bases(),origin(),
-                                   this->shape(),this->strides(),this->index_bases()));
+    return iterator(*this->index_bases(),origin(),
+                    this->shape(),this->strides(),this->index_bases());
   }
 
   iterator end() {
-    return iterator(iter_base(*this->index_bases()+*this->shape(),origin(),
-                                   this->shape(),this->strides(),this->index_bases()));
+    return iterator(*this->index_bases()+(index)*this->shape(),origin(),
+                    this->shape(),this->strides(),this->index_bases());
   }
 
   // RG - rbegin() and rend() written naively to thwart MSVC ICE.
@@ -318,6 +322,8 @@ public:
 
   template <class IndexList>
   const element& operator()(const IndexList& indices) const {
+    boost::function_requires<
+      CollectionConcept<IndexList> >();
     return super_type::operator()(indices);
   }
 

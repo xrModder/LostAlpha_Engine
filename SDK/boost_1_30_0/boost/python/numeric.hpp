@@ -1,10 +1,11 @@
-// Copyright David Abrahams 2002. Permission to copy, use,
-// modify, sell and distribute this software is granted provided this
-// copyright notice appears in all copies. This software is provided
-// "as is" without express or implied warranty, and with no claim as
-// to its suitability for any purpose.
+// Copyright David Abrahams 2002.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef NUMARRAY_DWA2002922_HPP
 # define NUMARRAY_DWA2002922_HPP
+
+# include <boost/python/detail/prefix.hpp>
 
 # include <boost/python/tuple.hpp>
 # include <boost/python/str.hpp>
@@ -15,6 +16,8 @@
 # include <boost/preprocessor/repetition/enum_binary_params.hpp>
 
 namespace boost { namespace python { namespace numeric {
+
+class array;
 
 namespace aux
 {
@@ -35,18 +38,19 @@ namespace aux
       void info() const;
       bool is_c_array() const;
       bool isbyteswapped() const;
-      object new_(object type) const;
+      array new_(object type) const;
       void sort();
       object trace(long offset = 0, long axis1 = 0, long axis2 = 1) const;
       object type() const;
       char typecode() const;
-      
-      object factory(object const& buffer=object()
-            , object const& type=object()
-            , object const& shape=object()
-            , bool copy = true
-            , bool savespace = false
-            , object typecode = object());
+
+      object factory(
+          object const& sequence = object()
+        , object const& typecode = object()
+        , bool copy = true
+        , bool savespace = false
+        , object type = object()
+        , object shape = object());
 
       object getflat() const;
       long getrank() const;
@@ -88,6 +92,7 @@ namespace aux
   {
       static bool check(PyObject* obj);
       static detail::new_non_null_reference adopt(PyObject* obj);
+      static PyTypeObject const* get_pytype() ;
   };
 } // namespace aux
 
@@ -105,7 +110,7 @@ class array : public aux::array_base
     }
 
     template <class Type>
-    object new_(Type const& type_) const
+    array new_(Type const& type_) const
     {
         return base::new_(object(type_));
     }
@@ -161,43 +166,48 @@ class array : public aux::array_base
         return base::factory();
     }
     
-    template <class Buffer>
-    object factory(Buffer const& buffer)
+    template <class Sequence>
+    object factory(Sequence const& sequence)
     {
-        return base::factory(object(buffer));
+        return base::factory(object(sequence));
     }
     
-    template <class Buffer, class Type>
+    template <class Sequence, class Typecode>
     object factory(
-        Buffer const& buffer
-        , Type const& type_)
+        Sequence const& sequence
+      , Typecode const& typecode_
+      , bool copy = true
+      , bool savespace = false
+    )
     {
-        return base::factory(object(buffer), object(type_));
+        return base::factory(object(sequence), object(typecode_), copy, savespace);
     }
 
-    template <class Buffer, class Type, class Shape>
+    template <class Sequence, class Typecode, class Type>
     object factory(
-        Buffer const& buffer
-        , Type const& type_
-        , Shape const& shape
-        , bool copy = true
-        , bool savespace = false)
+        Sequence const& sequence
+      , Typecode const& typecode_
+      , bool copy
+      , bool savespace
+      , Type const& type
+    )
     {
-        return base::factory(object(buffer), object(type_), object(shape), copy, savespace);
+        return base::factory(object(sequence), object(typecode_), copy, savespace, object(type));
     }
     
-    template <class Buffer, class Type, class Shape>
+    template <class Sequence, class Typecode, class Type, class Shape>
     object factory(
-        Buffer const& buffer
-        , Type const& type_
-        , Shape const& shape
-        , bool copy
-        , bool savespace
-        , char typecode)
+        Sequence const& sequence
+      , Typecode const& typecode_
+      , bool copy
+      , bool savespace
+      , Type const& type
+      , Shape const& shape
+    )
     {
-        return base::factory(object(buffer), object(type_), object(shape), copy, savespace, object(typecode));
+        return base::factory(object(sequence), object(typecode_), copy, savespace, object(type), object(shape));
     }
-
+    
 # define BOOST_PYTHON_ENUM_AS_OBJECT(z, n, x) object(BOOST_PP_CAT(x,n))
 # define BOOST_PP_LOCAL_MACRO(n)                                        \
     template <BOOST_PP_ENUM_PARAMS_Z(1, n, class T)>                    \
@@ -209,6 +219,7 @@ class array : public aux::array_base
 # undef BOOST_PYTHON_AS_OBJECT
 
     static BOOST_PYTHON_DECL void set_module_and_type(char const* package_name = 0, char const* type_attribute_name = 0);
+    static BOOST_PYTHON_DECL std::string get_module_name();
 
  public: // implementation detail -- for internal use only
     BOOST_PYTHON_FORWARD_OBJECT_CONSTRUCTORS(array, base);

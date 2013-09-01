@@ -1,52 +1,71 @@
 
 // (C) Copyright Steve Cleary, Beman Dawes, Howard Hinnant & John Maddock 2000.
-// Permission to copy, use, modify, sell and distribute this software is 
-// granted provided this copyright notice appears in all copies. This software 
-// is provided "as is" without express or implied warranty, and with no claim 
-// as to its suitability for any purpose.
+//  Use, modification and distribution are subject to the Boost Software License,
+//  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt).
 //
-// See http://www.boost.org for most recent version including documentation.
+//  See http://www.boost.org/libs/type_traits for most recent version including documentation.
 
 #ifndef BOOST_TT_IS_EMPTY_HPP_INCLUDED
 #define BOOST_TT_IS_EMPTY_HPP_INCLUDED
 
-#include "boost/type_traits/is_convertible.hpp"
-#include "boost/type_traits/detail/ice_or.hpp"
-#include "boost/type_traits/config.hpp"
-#include "boost/type_traits/intrinsics.hpp"
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/detail/ice_or.hpp>
+#include <boost/type_traits/config.hpp>
+#include <boost/type_traits/intrinsics.hpp>
 
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-#   include "boost/type_traits/remove_cv.hpp"
-#   include "boost/type_traits/is_class.hpp"
-#   include "boost/type_traits/add_reference.hpp"
+#   include <boost/type_traits/remove_cv.hpp>
+#   include <boost/type_traits/is_class.hpp>
+#   include <boost/type_traits/add_reference.hpp>
 #else
-#   include "boost/type_traits/is_reference.hpp"
-#   include "boost/type_traits/is_pointer.hpp"
-#   include "boost/type_traits/is_member_pointer.hpp"
-#   include "boost/type_traits/is_array.hpp"
-#   include "boost/type_traits/is_void.hpp"
-#   include "boost/type_traits/detail/ice_and.hpp"
-#   include "boost/type_traits/detail/ice_not.hpp"
+#   include <boost/type_traits/is_reference.hpp>
+#   include <boost/type_traits/is_pointer.hpp>
+#   include <boost/type_traits/is_member_pointer.hpp>
+#   include <boost/type_traits/is_array.hpp>
+#   include <boost/type_traits/is_void.hpp>
+#   include <boost/type_traits/detail/ice_and.hpp>
+#   include <boost/type_traits/detail/ice_not.hpp>
 #endif
 
 // should be always the last #include directive
-#include "boost/type_traits/detail/bool_trait_def.hpp"
+#include <boost/type_traits/detail/bool_trait_def.hpp>
+
+#ifndef BOOST_INTERNAL_IS_EMPTY
+#define BOOST_INTERNAL_IS_EMPTY(T) false
+#else
+#define BOOST_INTERNAL_IS_EMPTY(T) BOOST_IS_EMPTY(T)
+#endif
 
 namespace boost {
 
 namespace detail {
 
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+
+#ifdef BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable:4624) // destructor could not be generated
+#endif
+
 template <typename T>
 struct empty_helper_t1 : public T
 {
     empty_helper_t1();  // hh compiler bug workaround
     int i[256];
+private:
+   // suppress compiler warnings:
+   empty_helper_t1(const empty_helper_t1&);
+   empty_helper_t1& operator=(const empty_helper_t1&);
 };
+
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
 
 struct empty_helper_t2 { int i[256]; };
 
-#ifndef __BORLANDC__
+#if !BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 
 template <typename T, bool is_a_class = false>
 struct empty_helper
@@ -70,7 +89,7 @@ struct is_empty_impl
         bool, value = (
             ::boost::type_traits::ice_or<
               ::boost::detail::empty_helper<cvt,::boost::is_class<T>::value>::value
-              , BOOST_IS_EMPTY(cvt)
+              , BOOST_INTERNAL_IS_EMPTY(cvt)
             >::value
             ));
 };
@@ -105,7 +124,7 @@ struct is_empty_impl
                 , ::boost::is_class<T>::value
                 , ::boost::is_convertible< r_type,int>::value
               >::value
-              , BOOST_IS_EMPTY(cvt)
+              , BOOST_INTERNAL_IS_EMPTY(cvt)
            >::value));
 };
 
@@ -154,9 +173,9 @@ struct empty_helper_chooser<true>
    };
 };
 
-template <typename T> 
+template <typename T>
 struct is_empty_impl
-{ 
+{
    typedef ::boost::detail::empty_helper_chooser<
       ::boost::type_traits::ice_and<
          ::boost::type_traits::ice_not< ::boost::is_reference<T>::value >::value,
@@ -174,14 +193,14 @@ struct is_empty_impl
    typedef typename result::type eh_type;
 
    BOOST_STATIC_CONSTANT(bool, value =
-      (::boost::type_traits::ice_or<eh_type::value, BOOST_IS_EMPTY(T)>::value)); 
+      (::boost::type_traits::ice_or<eh_type::value, BOOST_INTERNAL_IS_EMPTY(T)>::value));
 };
 
 #else
 
 template <typename T> struct is_empty_impl
 {
-    BOOST_STATIC_CONSTANT(bool, value = BOOST_IS_EMPTY(T));
+    BOOST_STATIC_CONSTANT(bool, value = BOOST_INTERNAL_IS_EMPTY(T));
 };
 
 #endif  // BOOST_MSVC6_MEMBER_TEMPLATES
@@ -202,7 +221,9 @@ BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_empty,T,::boost::detail::is_empty_impl<T>::value
 
 } // namespace boost
 
-#include "boost/type_traits/detail/bool_trait_undef.hpp"
+#include <boost/type_traits/detail/bool_trait_undef.hpp>
+
+#undef BOOST_INTERNAL_IS_EMPTY
 
 #endif // BOOST_TT_IS_EMPTY_HPP_INCLUDED
 

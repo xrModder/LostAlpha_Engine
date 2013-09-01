@@ -1,8 +1,7 @@
-// Copyright David Abrahams 2002. Permission to copy, use,
-// modify, sell and distribute this software is granted provided this
-// copyright notice appears in all copies. This software is provided
-// "as is" without express or implied warranty, and with no claim as
-// to its suitability for any purpose.
+// Copyright David Abrahams 2002.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef CV_CATEGORY_DWA200222_HPP
 # define CV_CATEGORY_DWA200222_HPP
 # include <boost/type_traits/cv_traits.hpp>
@@ -24,9 +23,12 @@ typedef cv_tag<true,true> const_volatile_;
 template <class T>
 struct cv_category
 {
-    BOOST_STATIC_CONSTANT(bool, c = is_const<T>::value);
-    BOOST_STATIC_CONSTANT(bool, v = is_volatile<T>::value);
-    typedef cv_tag<c,v> type;
+//    BOOST_STATIC_CONSTANT(bool, c = is_const<T>::value);
+//    BOOST_STATIC_CONSTANT(bool, v = is_volatile<T>::value);
+    typedef cv_tag<
+        ::boost::is_const<T>::value
+      , ::boost::is_volatile<T>::value
+    > type;
 };
 
 }}} // namespace boost::python::detail

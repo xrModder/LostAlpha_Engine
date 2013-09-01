@@ -1,9 +1,9 @@
 //    boost octonion.hpp header file
 
-//  (C) Copyright Hubert Holin 2001. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright Hubert Holin 2001.
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
 
 // See http://www.boost.org for updates, documentation, and revision history.
 
@@ -18,7 +18,7 @@ namespace boost
 {
     namespace math
     {
-#if defined(__GNUC__) && (__GNUC__ < 3)
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
         // gcc 2.95.x uses expression templates for valarray calculations, but
         // the result is not conforming. We need BOOST_GET_VALARRAY to get an
         // actual valarray result when we need to call a member function
@@ -34,7 +34,7 @@ namespace boost
         using    ::std::sin;
         using    ::std::exp;
         using    ::std::cosh;
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
     
 #define    BOOST_OCTONION_ACCESSOR_GENERATOR(type)                      \
             type                        real() const                    \
@@ -44,7 +44,7 @@ namespace boost
                                                                         \
             octonion<type>                unreal() const                \
             {                                                           \
-                return(octonion(static_cast<type>(0),b,c,d,e,f,g,h));   \
+                return( octonion<type>(static_cast<type>(0),b,c,d,e,f,g,h));   \
             }                                                           \
                                                                         \
             type                            R_component_1() const       \
@@ -683,7 +683,7 @@ namespace boost
         template<>    class octonion<long double>;
         
         
-        // helper templates for converting copy constructors
+        // helper templates for converting copy constructors (declaration)
         
         namespace detail
         {
@@ -691,17 +691,7 @@ namespace boost
             template<   typename T,
                         typename U
                     >
-            octonion<T>    octonion_type_converter(octonion<U> const & rhs)
-            {
-                return(octonion<T>( static_cast<T>(rhs.R_component_1()),
-                                    static_cast<T>(rhs.R_component_2()),
-                                    static_cast<T>(rhs.R_component_3()),
-                                    static_cast<T>(rhs.R_component_4()),
-                                    static_cast<T>(rhs.R_component_5()),
-                                    static_cast<T>(rhs.R_component_6()),
-                                    static_cast<T>(rhs.R_component_7()),
-                                    static_cast<T>(rhs.R_component_8())));
-            }
+            octonion<T>    octonion_type_converter(octonion<U> const & rhs);
         }
         
         
@@ -979,7 +969,7 @@ namespace boost
                 tr[0] = rhs.real();                                                                     \
                 tr[1] = rhs.imag();                                                                     \
                                                                                                         \
-                type            mixam = BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max();    \
+                type            mixam = (BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max)();  \
                                                                                                         \
                 tr *= mixam;                                                                            \
                                                                                                         \
@@ -1021,7 +1011,7 @@ namespace boost
                 tr[0] = rhs.real();                                                     \
                 tr[1] = rhs.imag();                                                     \
                                                                                         \
-                type            mixam = static_cast<type>(1)/abs(tr).max();             \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();           \
                                                                                         \
                 tr *= mixam;                                                            \
                                                                                         \
@@ -1062,7 +1052,7 @@ namespace boost
                 tr[0] = rhs.real();                                                     \
                 tr[1] = rhs.imag();                                                     \
                                                                                         \
-                type            mixam = static_cast<type>(1)/abs(tr).max();             \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();           \
                                                                                         \
                 tr *= mixam;                                                            \
                                                                                         \
@@ -1107,7 +1097,7 @@ namespace boost
                 tr[2] = static_cast<type>(rhs.R_component_3());                                      \
                 tr[3] = static_cast<type>(rhs.R_component_4());                                      \
                                                                                                      \
-                type            mixam = BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max(); \
+                type           mixam = (BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max)();\
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
@@ -1151,7 +1141,7 @@ namespace boost
                 tr[2] = static_cast<type>(rhs.R_component_3());                                      \
                 tr[3] = static_cast<type>(rhs.R_component_4());                                      \
                                                                                                      \
-                type            mixam = static_cast<type>(1)/abs(tr).max();                          \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();                        \
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
@@ -1194,7 +1184,7 @@ namespace boost
                 tr[2] = static_cast<type>(rhs.R_component_3());                                      \
                 tr[3] = static_cast<type>(rhs.R_component_4());                                      \
                                                                                                      \
-                type            mixam = static_cast<type>(1)/abs(tr).max();                          \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();                        \
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
@@ -1244,20 +1234,20 @@ namespace boost
                 tr[6] = static_cast<type>(rhs.R_component_7());                                      \
                 tr[7] = static_cast<type>(rhs.R_component_8());                                      \
                                                                                                      \
-                type            mixam = BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max(); \
+                type           mixam = (BOOST_GET_VALARRAY(type,static_cast<type>(1)/abs(tr)).max)();\
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
                 valarray<type>    tt(8);                                                             \
                                                                                                      \
                 tt[0] = +a*tr[0]+b*tr[1]+c*tr[2]+d*tr[3]+e*tr[4]+f*tr[5]+g*tr[6]+h*tr[7];            \
-                tt[0] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
-                tt[0] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
-                tt[0] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
-                tt[0] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
-                tt[0] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
-                tt[0] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
-                tt[0] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
+                tt[1] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
+                tt[2] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
+                tt[3] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
+                tt[4] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
+                tt[5] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
+                tt[6] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
+                tt[7] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
                                                                                                      \
                 tr *= tr;                                                                            \
                                                                                                      \
@@ -1293,20 +1283,20 @@ namespace boost
                 tr[6] = static_cast<type>(rhs.R_component_7());                                      \
                 tr[7] = static_cast<type>(rhs.R_component_8());                                      \
                                                                                                      \
-                type            mixam = static_cast<type>(1)/abs(tr).max();                          \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();                        \
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
                 valarray<type>    tt(8);                                                             \
                                                                                                      \
                 tt[0] = +a*tr[0]+b*tr[1]+c*tr[2]+d*tr[3]+e*tr[4]+f*tr[5]+g*tr[6]+h*tr[7];            \
-                tt[0] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
-                tt[0] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
-                tt[0] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
-                tt[0] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
-                tt[0] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
-                tt[0] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
-                tt[0] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
+                tt[1] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
+                tt[2] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
+                tt[3] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
+                tt[4] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
+                tt[5] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
+                tt[6] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
+                tt[7] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
                                                                                                      \
                 tr *= tr;                                                                            \
                                                                                                      \
@@ -1341,20 +1331,20 @@ namespace boost
                 tr[6] = static_cast<type>(rhs.R_component_7());                                      \
                 tr[7] = static_cast<type>(rhs.R_component_8());                                      \
                                                                                                      \
-                type            mixam = static_cast<type>(1)/abs(tr).max();                          \
+                type            mixam = static_cast<type>(1)/(abs(tr).max)();                        \
                                                                                                      \
                 tr *= mixam;                                                                         \
                                                                                                      \
                 valarray<type>    tt(8);                                                             \
                                                                                                      \
                 tt[0] = +a*tr[0]+b*tr[1]+c*tr[2]+d*tr[3]+e*tr[4]+f*tr[5]+g*tr[6]+h*tr[7];            \
-                tt[0] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
-                tt[0] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
-                tt[0] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
-                tt[0] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
-                tt[0] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
-                tt[0] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
-                tt[0] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
+                tt[1] = -a*tr[1]+b*tr[0]-c*tr[3]+d*tr[2]-e*tr[5]+f*tr[4]+g*tr[7]-h*tr[6];            \
+                tt[2] = -a*tr[2]+b*tr[3]+c*tr[0]-d*tr[1]-e*tr[6]-f*tr[7]+g*tr[4]+h*tr[5];            \
+                tt[3] = -a*tr[3]-b*tr[2]+c*tr[1]+d*tr[0]-e*tr[7]+f*tr[6]-g*tr[5]+h*tr[4];            \
+                tt[4] = -a*tr[4]+b*tr[5]+c*tr[6]+d*tr[7]+e*tr[0]-f*tr[1]-g*tr[2]-h*tr[3];            \
+                tt[5] = -a*tr[5]-b*tr[4]+c*tr[7]-d*tr[6]+e*tr[1]+f*tr[0]+g*tr[3]-h*tr[2];            \
+                tt[6] = -a*tr[6]-b*tr[7]-c*tr[4]+d*tr[5]+e*tr[2]-f*tr[3]+g*tr[0]+h*tr[1];            \
+                tt[7] = -a*tr[7]+b*tr[6]-c*tr[5]-d*tr[4]+e*tr[3]+f*tr[2]-g*tr[1]+h*tr[0];            \
                                                                                                      \
                 tr *= tr;                                                                            \
                                                                                                      \
@@ -1867,7 +1857,7 @@ namespace boost
         // Note:    the default values in the constructors of the complex and quaternions make for
         //            a very complex and ambiguous situation; we have made choices to disambiguate.
         
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
         template<typename T>
         ::std::istream &                        operator >> (    ::std::istream & is,
                                                                 octonion<T>& o)
@@ -1875,11 +1865,11 @@ namespace boost
         template<typename T, typename charT, class traits>
         ::std::basic_istream<charT,traits> &    operator >> (    ::std::basic_istream<charT,traits> & is,
                                                                 octonion<T> & o)
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
             typedef    char    charT;
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
             
 #ifdef     BOOST_NO_STD_LOCALE
 #else
@@ -1998,20 +1988,20 @@ namespace boost
                                 }
                                 else                                    // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                             else                                    // error
                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                 is.setstate(::std::ios::failbit);
 #else
                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                             }
                         }
                         else if    (cc ==',')                        // read "((u,"
@@ -2070,38 +2060,38 @@ namespace boost
                                     }
                                     else                                    // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else                                    // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                             else                                    // error
                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                 is.setstate(::std::ios::failbit);
 #else
                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                             }
                         }
                         else                                    // error
                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                             is.setstate(::std::ios::failbit);
 #else
                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                         }
                     }
                     else                                        // read "((a"
@@ -2190,11 +2180,11 @@ namespace boost
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // read "((a),(c" or "((a),(e"
@@ -2277,29 +2267,29 @@ namespace boost
                                                     }
                                                     else                                    // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                    // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                    // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else if    (cc == ',')                            // read "((a),(c," or "((a),(e,"
@@ -2352,20 +2342,20 @@ namespace boost
                                                     }
                                                     else                                    // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                    // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                    // read "((a),(c,d" or "((a),(e,f"
@@ -2448,29 +2438,29 @@ namespace boost
                                                             }
                                                             else                                    // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                    // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else                                    // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else if    (cc == ',')                        // read "((a),(e,f," (ambiguity resolution)
@@ -2511,11 +2501,11 @@ namespace boost
                                                         }
                                                         else                                    // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else if    (cc == ',')                        // read "((a),(e,f,g,"
@@ -2554,48 +2544,48 @@ namespace boost
                                                             }
                                                             else                                    // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                    // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else                                    // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                    // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                 }
@@ -2661,39 +2651,39 @@ namespace boost
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                             }
                             else                                        // error
                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                 is.setstate(::std::ios::failbit);
 #else
                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                             }
                         }
                         else if    (cc ==',')                            // read "((a,"
@@ -2768,29 +2758,29 @@ namespace boost
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else                                        // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                             else
@@ -2879,11 +2869,11 @@ namespace boost
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                        // read "((a,b),(c" or "((a,b),(e"
@@ -2966,29 +2956,29 @@ namespace boost
                                                             }
                                                             else                                        // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                        // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else                                        // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else if    (cc == ',')                            // read "((a,b),(c," or "((a,b),(e,"
@@ -3043,20 +3033,20 @@ namespace boost
                                                             }
                                                             else                                        // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                        // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else                                        // read "((a,b),(c,d" or "((a,b),(e,f"
@@ -3139,29 +3129,29 @@ namespace boost
                                                                     }
                                                                     else                                        // error
                                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                         is.setstate(::std::ios::failbit);
 #else
                                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                                     }
                                                                 }
                                                                 else                                        // error
                                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                     is.setstate(::std::ios::failbit);
 #else
                                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                                 }
                                                             }
                                                             else                                        // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else if    (cc == ',')                            // read "((a,b),(e,f," (ambiguity resolution)
@@ -3202,11 +3192,11 @@ namespace boost
                                                                 }
                                                                 else                                        // error
                                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if BOOST_WORKAROUND(__GNUC__, < 3)
                                                                     is.setstate(::std::ios::failbit);
 #else
                                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                                 }
                                                             }
                                                             else if    (cc == ',')                            // read "((a,b),(e,f,g,"
@@ -3245,67 +3235,67 @@ namespace boost
                                                                     }
                                                                     else                                        // error
                                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                         is.setstate(::std::ios::failbit);
 #else
                                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                                     }
                                                                 }
                                                                 else                                        // error
                                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                     is.setstate(::std::ios::failbit);
 #else
                                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                                 }
                                                             }
                                                             else                                        // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                        // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else if    (cc == ',')                            // read "((a,b,"
@@ -3364,20 +3354,20 @@ namespace boost
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else if    (cc == ',')                            // read "((a,b,c,"
@@ -3436,57 +3426,57 @@ namespace boost
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else                                        // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                         }
                         else                                        // error
                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                             is.setstate(::std::ios::failbit);
 #else
                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                         }
                     }
                 }
@@ -3564,11 +3554,11 @@ namespace boost
                                 }
                                 else                                        // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                             else                                        // read "(a,(c" or "(a,(e"
@@ -3651,29 +3641,29 @@ namespace boost
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else if    (cc == ',')                            // read "(a,(c," or "(a,(e,"
@@ -3728,20 +3718,20 @@ namespace boost
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // read "(a,(c,d" or "(a,(e,f"
@@ -3824,29 +3814,29 @@ namespace boost
                                                     }
                                                     else                                        // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else if    (cc == ',')                            // read "(a,(e,f," (ambiguity resolution)
@@ -3887,11 +3877,11 @@ namespace boost
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else if    (cc == ',')                            // read "(a,(e,f,g,"
@@ -3930,48 +3920,48 @@ namespace boost
                                                     }
                                                     else                                        // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                 }
                                 else                                        // error
                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                     is.setstate(::std::ios::failbit);
 #else
                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                 }
                             }
                         }
@@ -4057,20 +4047,20 @@ namespace boost
                                         }
                                         else                                        // error
                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                             is.setstate(::std::ios::failbit);
 #else
                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                                 else                                        // read "(a,b,c" or "(a,c,e"
@@ -4137,11 +4127,11 @@ namespace boost
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                         else                                        // read "(a,b,c,d" (ambiguity resolution)
@@ -4248,77 +4238,77 @@ namespace boost
                                                             }
                                                             else                                        // error
                                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                                 is.setstate(::std::ios::failbit);
 #else
                                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                             }
                                                         }
                                                         else                                        // error
                                                         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                             is.setstate(::std::ios::failbit);
 #else
                                                             is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                         }
                                                     }
                                                     else                                        // error
                                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                         is.setstate(::std::ios::failbit);
 #else
                                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                     }
                                                 }
                                                 else                                        // error
                                                 {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                     is.setstate(::std::ios::failbit);
 #else
                                                     is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                                 }
                                             }
                                             else                                        // error
                                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                                 is.setstate(::std::ios::failbit);
 #else
                                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                             }
                                         }
                                     }
                                     else                                        // error
                                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                         is.setstate(::std::ios::failbit);
 #else
                                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                                     }
                                 }
                             }
                             else                                        // error
                             {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                                 is.setstate(::std::ios::failbit);
 #else
                                 is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                             }
                         }
                     }
                     else                                        // error
                     {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
                         is.setstate(::std::ios::failbit);
 #else
                         is.setstate(::std::ios_base::failbit);
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
                     }
                 }
             }
@@ -4338,7 +4328,7 @@ namespace boost
         }
         
         
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
         template<typename T>
         ::std::ostream &                        operator << (    ::std::ostream & os,
                                                                 octonion<T> const & o)
@@ -4346,13 +4336,13 @@ namespace boost
         template<typename T, typename charT, class traits>
         ::std::basic_ostream<charT,traits> &    operator << (    ::std::basic_ostream<charT,traits> & os,
                                                                 octonion<T> const & o)
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
         {
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
             ::std::ostringstream                        s;
 #else
             ::std::basic_ostringstream<charT,traits>    s;
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
             
             s.flags(os.flags());
 #ifdef    BOOST_NO_STD_LOCALE
@@ -4414,11 +4404,11 @@ namespace boost
             
             BOOST_OCTONION_VALARRAY_LOADER
             
-#if defined(__GNUC__) && __GNUC__ < 3
-            return(BOOST_GET_VALARRAY(T, abs(temp)).max());
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
+            return((BOOST_GET_VALARRAY(T, abs(temp)).max)());
 #else
-            return(abs(temp).max());
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+            return((abs(temp).max)());
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
         }
         
         
@@ -4431,11 +4421,11 @@ namespace boost
             
             BOOST_OCTONION_VALARRAY_LOADER
             
-#if defined(__GNUC__) && __GNUC__ < 3
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
             return(BOOST_GET_VALARRAY(T, abs(temp)).sum());
 #else
             return(abs(temp).sum());
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
         }
         
         
@@ -4450,11 +4440,11 @@ namespace boost
             
             BOOST_OCTONION_VALARRAY_LOADER
             
-#if defined(__GNUC__) && __GNUC__ < 3
-            T            maxim = BOOST_GET_VALARRAY(T,abs(temp)).max();    // overflow protection
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
+            T            maxim = (BOOST_GET_VALARRAY(T,abs(temp)).max)();    // overflow protection
 #else
-            T            maxim = abs(temp).max();    // overflow protection
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+            T            maxim = (abs(temp).max)();    // overflow protection
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
             
             if    (maxim == static_cast<T>(0))
             {
@@ -4723,20 +4713,42 @@ namespace boost
             }
             else if    (n == 0)
             {
-                return(octonion<T>(1));
+                return(octonion<T>(static_cast<T>(1)));
             }
             else    /* n < 0 */
             {
-                return(pow(octonion<T>(1)/o,-n));
+                return(pow(octonion<T>(static_cast<T>(1))/o,-n));
+            }
+        }
+        
+        
+        // helper templates for converting copy constructors (definition)
+        
+        namespace detail
+        {
+            
+            template<   typename T,
+                        typename U
+                    >
+            octonion<T>    octonion_type_converter(octonion<U> const & rhs)
+            {
+                return(octonion<T>( static_cast<T>(rhs.R_component_1()),
+                                    static_cast<T>(rhs.R_component_2()),
+                                    static_cast<T>(rhs.R_component_3()),
+                                    static_cast<T>(rhs.R_component_4()),
+                                    static_cast<T>(rhs.R_component_5()),
+                                    static_cast<T>(rhs.R_component_6()),
+                                    static_cast<T>(rhs.R_component_7()),
+                                    static_cast<T>(rhs.R_component_8())));
             }
         }
     }
 }
 
 
-#if defined(__GNUC__) && (__GNUC__ < 3)
+#if    BOOST_WORKAROUND(__GNUC__, < 3)
     #undef    BOOST_GET_VALARRAY
-#endif /* defined(__GNUC__) && (__GNUC__ < 3) */
+#endif /* BOOST_WORKAROUND(__GNUC__, < 3) */
 
 
 #endif /* BOOST_OCTONION_HPP */

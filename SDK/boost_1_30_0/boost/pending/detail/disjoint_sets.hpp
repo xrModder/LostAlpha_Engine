@@ -1,3 +1,8 @@
+//  (C) Copyright Jeremy Siek 2004 
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+
 #ifndef BOOST_DETAIL_DISJOINT_SETS_HPP
 #define BOOST_DETAIL_DISJOINT_SETS_HPP
 
@@ -30,7 +35,7 @@ find_representative_with_full_compression(ParentPA parent, Vertex v)
     v = ancestor;
     ancestor = get(parent, v);
   }
-  v = parent[old];
+  v = get(parent, old);
   while (ancestor != v) {
     put(parent, old, ancestor);
     old = v;
@@ -56,7 +61,7 @@ link_sets(ParentPA p, RankPA rank, Vertex i, Vertex j,
   else {
     put(p, i, j);
     if (get(rank, i) == get(rank, j)) 
-      ++rank[j];
+      put(rank, j, get(rank, j) + 1);
   }
 }  
 

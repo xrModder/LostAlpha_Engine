@@ -1,17 +1,16 @@
-//  (C) Copyright Gennadiy Rozental 2001-2002.
+//  (C) Copyright Gennadiy Rozental 2001-2008.
 //  (C) Copyright Beman Dawes 2001.
-//  Permission to copy, use, modify, sell and distribute this software
-//  is granted provided this copyright notice appears in all copies.
-//  This software is provided "as is" without express or implied warranty,
-//  and with no claim as to its suitability for any purpose.
+//  Distributed under the Boost Software License, Version 1.0.
+//  (See accompanying file LICENSE_1_0.txt or copy at 
+//  http://www.boost.org/LICENSE_1_0.txt)
 
-//  See http://www.boost.org for most recent version including documentation.
+//  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: execution_monitor.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Id: execution_monitor.hpp,v 1.8 2002/12/08 17:40:59 rogeeff Exp $
+//  Version     : $Revision: 57992 $
 //
-//  Description : defines abstract monitor interfaces and implements execution excepiton
+//  Description : defines abstract monitor interfaces and implements execution exception
 //  The original Boost Test Library included an implementation detail function
 //  named catch_exceptions() which caught otherwise uncaught C++ exceptions.
 //  It was derived from an existing test framework by Beman Dawes.  The
@@ -30,25 +29,65 @@
 //  design presented here.
 // ***************************************************************************
 
-#ifndef BOOST_EXECUTION_MONITOR_HPP
-#define BOOST_EXECUTION_MONITOR_HPP
+#ifndef BOOST_TEST_EXECUTION_MONITOR_HPP_071894GER
+#define BOOST_TEST_EXECUTION_MONITOR_HPP_071894GER
 
-#include <boost/test/detail/unit_test_config.hpp>
+// Boost.Test
+#include <boost/test/detail/global_typedef.hpp>
+#include <boost/test/detail/fwd_decl.hpp>
+#include <boost/test/utils/callback.hpp>
+#include <boost/test/utils/class_properties.hpp>
+
+// Boost
+#include <boost/scoped_ptr.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/type.hpp>
+#include <boost/cstdlib.hpp>
+
+#include <boost/test/detail/suppress_warnings.hpp>
+
+//____________________________________________________________________________//
 
 namespace boost {
-    
+
+namespace detail {
+
+// ************************************************************************** //
+// **************       detail::translate_exception_base       ************** //
+// ************************************************************************** //
+
+class BOOST_TEST_DECL translate_exception_base {
+public:
+    // Constructor
+    explicit    translate_exception_base( boost::scoped_ptr<translate_exception_base>& next )
+    {
+        next.swap( m_next );
+    }
+
+    // Destructor
+    virtual     ~translate_exception_base() {}
+
+    virtual int operator()( unit_test::callback0<int> const& F ) = 0;
+
+protected:
+    // Data members
+    boost::scoped_ptr<translate_exception_base> m_next;
+};
+
+} // namespace detail
+
 // ************************************************************************** //
 // **************              execution_exception             ************** //
 // ************************************************************************** //
     
 //  design rationale: fear of being out (or nearly out) of memory.
     
-class execution_exception {
-    typedef unit_test_framework::c_string_literal c_string_literal;
+class BOOST_TEST_DECL execution_exception {
+    typedef boost::unit_test::const_string const_string;
 public:
     enum error_code {
         //  These values are sometimes used as program return codes.
-        //  The particular values have been choosen to avoid conflicts with
+        //  The particular values have been chosen to avoid conflicts with
         //  commonly used program return codes: values < 100 are often user
         //  assigned, values > 255 are sometimes used to report system errors.
         //  Gaps in values allow for orderly expansion.
@@ -68,73 +107,157 @@ public:
         //  Note 2: These errors include Unix signals and Windows structured
         //  exceptions.  They are often initiated by hardware traps.
         //
-        //  The implementation decides what's a fatal_system_exception and what's
+        //  The implementation decides what is a fatal_system_exception and what is
         //  just a system_exception.  Fatal errors are so likely to have corrupted
         //  machine state (like a stack overflow or addressing exception) that it
         //  is unreasonable to continue execution.
     };
     
-    // Constructor
-    execution_exception( error_code ec_, c_string_literal what_msg_ ) // max length 256 inc '\0'
-    : m_error_code( ec_ ), m_what( what_msg_ ) {}
+    struct BOOST_TEST_DECL location {
+        explicit    location( char const* file_name = 0, size_t line_num = 0, char const* func = 0 );
 
-    // access methods
-    error_code          code() const { return m_error_code; }
-    c_string_literal    what() const { return m_what; }
+        const_string    m_file_name;
+        size_t          m_line_num;
+        const_string    m_function;
+    };
+
+    // Constructor
+    execution_exception( error_code ec_, const_string what_msg_, location const& location_ ); // max length 256 inc '\0'
+
+    // Access methods
+    error_code      code() const    { return m_error_code; }
+    const_string    what() const    { return m_what; }
+    location const& where() const   { return m_location; }
 
 private:
     // Data members
-    error_code          m_error_code;
-    c_string_literal    m_what;
-};
+    error_code      m_error_code;
+    const_string    m_what;
+    location        m_location;
+}; // execution_exception
 
 // ************************************************************************** //
 // **************               execution_monitor              ************** //
 // ************************************************************************** //
 
-class execution_monitor {
+class BOOST_TEST_DECL execution_monitor {
 public:
-    // Destructor
-    virtual ~execution_monitor()    {}
+    // Constructor
+    execution_monitor()
+    : p_catch_system_errors( true )
+    , p_auto_start_dbg( false )
+    , p_timeout( 0 )
+    , p_use_alt_stack( true )
+    , p_detect_fp_exceptions( false )
+    {}
+
+    // Public properties
     
-    int execute( bool catch_system_errors = true, int timeout_ = 0 );  // timeout is in seconds
-    //  The catch_system_errors parameter specifies whether the monitor should 
-    //  try to catch system errors/exeptions that would cause program to crash 
+    //  The p_catch_system_errors parameter specifies whether the monitor should 
+    //  try to catch system errors/exceptions that would cause program to crash 
     //  in regular case
-    //  The timeout argument specifies the seconds that elapse before
+    unit_test::readwrite_property<bool> p_catch_system_errors; 
+    //  The p_auto_start_dbg parameter specifies whether the monitor should 
+    //  try to attach debugger in case of caught system error
+    unit_test::readwrite_property<bool> p_auto_start_dbg;
+    //  The p_timeout parameter specifies the seconds that elapse before
     //  a timer_error occurs.  May be ignored on some platforms.
+    unit_test::readwrite_property<int>  p_timeout;
+    //  The p_use_alt_stack parameter specifies whether the monitor should
+    //  use alternative stack for the signal catching
+    unit_test::readwrite_property<bool> p_use_alt_stack;
+    //  The p_detect_fp_exceptions parameter specifies whether the monitor should
+    //  try to detect hardware floating point exceptions
+    unit_test::readwrite_property<bool> p_detect_fp_exceptions;
+
+    int         execute( unit_test::callback0<int> const& F ); 
+    //  Returns:  Value returned by function call F().
     //
-    //  Returns:  Value returned by function().
-    //
-    //  Effects:  Calls function() inside a try/catch block which also may
+    //  Effects:  Calls executes supplied function F inside a try/catch block which also may
     //  include other unspecified platform dependent error detection code.
     //
     //  Throws: execution_exception on an uncaught C++ exception,
     //  a hardware or software signal, trap, or other exception.
     //
-    //  Note: execute() doesn't consider it an error for function() to
-    //  return a non-zero value.
+    //  Note: execute() doesn't consider it an error for F to return a non-zero value.
     
-    virtual int function() = 0;
-    //  user supplied function called by execute()
-    
-}; // exception monitor
+    // register custom (user supplied) exception translator
+    template<typename Exception, typename ExceptionTranslator>
+    void        register_exception_translator( ExceptionTranslator const& tr, boost::type<Exception>* = 0 );
+
+private:
+    // implementation helpers
+    int         catch_signals( unit_test::callback0<int> const& F );
+
+    // Data members
+    boost::scoped_ptr<detail::translate_exception_base> m_custom_translators;
+    boost::scoped_array<char>                           m_alt_stack;
+}; // execution_monitor
+
+namespace detail {
+
+// ************************************************************************** //
+// **************         detail::translate_exception          ************** //
+// ************************************************************************** //
+
+template<typename Exception, typename ExceptionTranslator>
+class translate_exception : public translate_exception_base
+{
+    typedef boost::scoped_ptr<translate_exception_base> base_ptr;
+public:
+    explicit    translate_exception( ExceptionTranslator const& tr, base_ptr& next )
+    : translate_exception_base( next ), m_translator( tr ) {}
+
+    int operator()( unit_test::callback0<int> const& F )
+    {
+        try {
+            return m_next ? (*m_next)( F ) : F();
+        } catch( Exception const& e ) {
+            m_translator( e );
+            return boost::exit_exception_failure;
+        }
+    }
+
+private:
+    // Data members
+    ExceptionTranslator m_translator;
+};
+
+} // namespace detail
+
+template<typename Exception, typename ExceptionTranslator>
+void
+execution_monitor::register_exception_translator( ExceptionTranslator const& tr, boost::type<Exception>* )
+{
+    m_custom_translators.reset( 
+        new detail::translate_exception<Exception,ExceptionTranslator>( tr,m_custom_translators ) );
+}
+
+// ************************************************************************** //
+// **************               execution_aborted              ************** //
+// ************************************************************************** //
+
+struct execution_aborted {};
+
+// ************************************************************************** //
+// **************                  system_error                ************** //
+// ************************************************************************** //
+
+class system_error {
+public:
+    // Constructor
+    explicit    system_error( char const* exp );
+
+    unit_test::readonly_property<long>          p_errno; 
+    unit_test::readonly_property<char const*>   p_failed_exp; 
+};
+
+#define BOOST_TEST_SYS_ASSERT( exp ) if( (exp) ) ; else throw ::boost::system_error( BOOST_STRINGIZE( exp ) )
 
 }  // namespace boost
 
-// ***************************************************************************
-//  Revision History :
-//  
-//  $Log: execution_monitor.hpp,v $
-//  Revision 1.8  2002/12/08 17:40:59  rogeeff
-//  catch_system_errors switch introduced
-//  switched to use c_string_literal
-//
-//  Revision 1.7  2002/11/02 19:31:04  rogeeff
-//  merged into the main trank
-//
+//____________________________________________________________________________//
 
-// ***************************************************************************
+#include <boost/test/detail/enable_warnings.hpp>
 
 #endif
-

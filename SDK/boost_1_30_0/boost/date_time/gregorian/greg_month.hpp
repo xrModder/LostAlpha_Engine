@@ -1,15 +1,23 @@
 #ifndef GREG_MONTH_HPP___
 #define GREG_MONTH_HPP___
-/* Copyright (c) 2000 CrystalClear Software, Inc.
- * Disclaimer & Full Copyright at end of file
- * Author: Jeff Garland
+
+/* Copyright (c) 2002,2003 CrystalClear Software, Inc.
+ * Use, modification and distribution is subject to the 
+ * Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
+ * Author: Jeff Garland, Bart Garst
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 #include "boost/date_time/constrained_value.hpp"
 #include "boost/date_time/date_defs.hpp"
+#include "boost/shared_ptr.hpp"
+#include "boost/date_time/compiler_config.hpp"
 #include <stdexcept>
 #include <string>
-
+#include <map>
+#include <algorithm>
+#include <cctype>
 
 namespace boost {
 namespace gregorian {
@@ -44,11 +52,14 @@ namespace gregorian {
 
   
   //! Wrapper class to represent months in gregorian based calendar
-  class greg_month : public greg_month_rep {
+  class BOOST_DATE_TIME_DECL greg_month : public greg_month_rep {
   public:
     typedef date_time::months_of_year month_enum;
+    typedef std::map<std::string, unsigned short> month_map_type;
+    typedef boost::shared_ptr<month_map_type> month_map_ptr_type;
     //! Construct a month from the months_of_year enumeration
-    greg_month(month_enum theMonth) : greg_month_rep(theMonth) {}
+    greg_month(month_enum theMonth) : 
+      greg_month_rep(static_cast<greg_month_rep::value_type>(theMonth)) {}
     //! Construct from a short value
     greg_month(unsigned short theMonth) : greg_month_rep(theMonth) {}
     //! Convert the value back to a short
@@ -58,21 +69,37 @@ namespace gregorian {
     month_enum as_enum() const {return static_cast<month_enum>(value_);}
     const char* as_short_string() const;
     const char* as_long_string()  const;
+#ifndef BOOST_NO_STD_WSTRING
+    const wchar_t* as_short_wstring() const;
+    const wchar_t* as_long_wstring()  const;
+#endif // BOOST_NO_STD_WSTRING
+    //! Shared pointer to a map of Month strings (Names & Abbrev) & numbers
+    static month_map_ptr_type get_month_map_ptr();
+
+    /* parameterized as_*_string functions are intended to be called
+     * from a template function: "... as_short_string(charT c='\0');" */
+    const char* as_short_string(char) const
+    {
+      return as_short_string();
+    }
+    const char* as_long_string(char) const
+    {
+      return as_long_string();
+    }
+#ifndef BOOST_NO_STD_WSTRING
+    const wchar_t* as_short_string(wchar_t) const
+    {
+      return as_short_wstring();
+    }
+    const wchar_t* as_long_string(wchar_t) const
+    {
+      return as_long_wstring();
+    }
+#endif // BOOST_NO_STD_WSTRING
   };
 
 } } //namespace gregorian
 
-/* Copyright (c) 2000
- * CrystalClear Software, Inc.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  CrystalClear Software makes no
- * representations about the suitability of this software for any
- * purpose.  It is provided "as is" without express or implied warranty.
- */
 
 
 #endif

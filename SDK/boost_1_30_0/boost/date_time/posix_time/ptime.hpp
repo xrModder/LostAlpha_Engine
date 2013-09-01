@@ -1,8 +1,12 @@
 #ifndef POSIX_PTIME_HPP___
 #define POSIX_PTIME_HPP___
-/* Copyright (c) 2002 CrystalClear Software, Inc.
- * Disclaimer & Full Copyright at end of file
+
+/* Copyright (c) 2002,2003 CrystalClear Software, Inc.
+ * Use, modification and distribution is subject to the 
+ * Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland 
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 #include "boost/date_time/posix_time/posix_time_system.hpp"
@@ -11,6 +15,15 @@
 namespace boost {
 
 namespace posix_time {
+ 
+  //bring special enum values into the namespace
+  using date_time::special_values;
+  using date_time::not_special;
+  using date_time::neg_infin;
+  using date_time::pos_infin;
+  using date_time::not_a_date_time;
+  using date_time::max_date_time;
+  using date_time::min_date_time; 
   
   //! Time type with no timezone or other adjustments
   /*! \ingroup time_basics
@@ -32,24 +45,21 @@ namespace posix_time {
     ptime(const time_rep_type& rhs):
       date_time::base_time<time_type,time_system_type>(rhs)
     {}
+    //! Construct from special value
+    ptime(const special_values sv) : date_time::base_time<time_type,time_system_type>(sv)
+    {}
+#if !defined(DATE_TIME_NO_DEFAULT_CONSTRUCTOR)
+    // Default constructor constructs to not_a_date_time
+    ptime() : date_time::base_time<time_type,time_system_type>(gregorian::date(not_a_date_time), time_duration_type(not_a_date_time))
+    {}
+#endif // DATE_TIME_NO_DEFAULT_CONSTRUCTOR
+      
   };
 
 
 
 } }//namespace posix_time
 
-/* Copyright (c) 2002
- * CrystalClear Software, Inc.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  CrystalClear Software makes no
- * representations about the suitability of this software for any
- * purpose.  It is provided "as is" without express or implied warranty.
- *
- */
 
 #endif
 

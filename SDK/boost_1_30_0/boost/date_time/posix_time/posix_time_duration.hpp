@@ -1,8 +1,12 @@
 #ifndef POSIX_TIME_DURATION_HPP___
 #define POSIX_TIME_DURATION_HPP___
-/* Copyright (c) 2002 CrystalClear Software, Inc.
- * Disclaimer & Full Copyright at end of file
+
+/* Copyright (c) 2002,2003 CrystalClear Software, Inc.
+ * Use, modification and distribution is subject to the 
+ * Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 #include "boost/date_time/posix_time/posix_time_config.hpp"
@@ -47,12 +51,14 @@ namespace posix_time {
   //! Allows expression of durations as milli seconds
   /*! \ingroup time_basics
    */
-  typedef date_time::millisec_duration<time_duration> millisec;
+  typedef date_time::subsecond_duration<time_duration,1000> millisec;
+  typedef date_time::subsecond_duration<time_duration,1000> milliseconds;
 
   //! Allows expression of durations as micro seconds
   /*! \ingroup time_basics
    */
-  typedef date_time::microsec_duration<time_duration> microsec;
+  typedef date_time::subsecond_duration<time_duration,1000000> microsec;
+  typedef date_time::subsecond_duration<time_duration,1000000> microseconds;
 
   //This is probably not needed anymore...
 #if defined(BOOST_DATE_TIME_HAS_NANOSECONDS)
@@ -60,7 +66,8 @@ namespace posix_time {
   //! Allows expression of durations as nano seconds
   /*! \ingroup time_basics
    */
-  typedef date_time::nanosec_duration<time_duration> nanosec;
+  typedef date_time::subsecond_duration<time_duration,1000000000> nanosec;
+  typedef date_time::subsecond_duration<time_duration,1000000000> nanoseconds;
 
 
 #endif
@@ -70,18 +77,6 @@ namespace posix_time {
 
 } }//namespace posix_time
 
-/* Copyright (c) 2002
- * CrystalClear Software, Inc.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.  CrystalClear Software makes no
- * representations about the suitability of this software for any
- * purpose.  It is provided "as is" without express or implied warranty.
- *
- */
 
 #endif
 

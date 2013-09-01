@@ -2,25 +2,9 @@
 // Copyright 1997, 1998, 1999, 2000 University of Notre Dame.
 // Authors: Andrew Lumsdaine, Lie-Quan Lee, Jeremy G. Siek
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
 
 #ifndef BOOST_GRAPH_TRAITS_HPP
@@ -28,76 +12,329 @@
 
 #include <boost/config.hpp>
 #include <iterator>
+#include <utility> /* Primarily for std::pair */
 #include <boost/tuple/tuple.hpp>
-#include <boost/pending/ct_if.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/iterator/iterator_categories.hpp>
+#include <boost/iterator/iterator_adaptor.hpp>
+#include <boost/pending/property.hpp>
+#include <boost/detail/workaround.hpp>
 
 namespace boost {
-  
-  template <typename G>
-  struct graph_traits {
-    typedef typename G::vertex_descriptor      vertex_descriptor;
-    typedef typename G::edge_descriptor        edge_descriptor;
-    typedef typename G::adjacency_iterator     adjacency_iterator;
-    typedef typename G::out_edge_iterator      out_edge_iterator;
-    typedef typename G::in_edge_iterator       in_edge_iterator;
-    typedef typename G::vertex_iterator        vertex_iterator;
-    typedef typename G::edge_iterator          edge_iterator;
 
-    typedef typename G::directed_category      directed_category;
-    typedef typename G::edge_parallel_category edge_parallel_category;
-    typedef typename G::traversal_category     traversal_category;
+    template <typename G>
+    struct graph_traits {
+        typedef typename G::vertex_descriptor      vertex_descriptor;
+        typedef typename G::edge_descriptor        edge_descriptor;
+        typedef typename G::adjacency_iterator     adjacency_iterator;
+        typedef typename G::out_edge_iterator      out_edge_iterator;
+        typedef typename G::in_edge_iterator       in_edge_iterator;
+        typedef typename G::vertex_iterator        vertex_iterator;
+        typedef typename G::edge_iterator          edge_iterator;
 
-    typedef typename G::vertices_size_type     vertices_size_type;
-    typedef typename G::edges_size_type        edges_size_type;
-    typedef typename G::degree_size_type       degree_size_type;
-  };
+        typedef typename G::directed_category      directed_category;
+        typedef typename G::edge_parallel_category edge_parallel_category;
+        typedef typename G::traversal_category     traversal_category;
 
-  // directed_category tags
-  struct directed_tag { };
-  struct undirected_tag { };
-  struct bidirectional_tag : public directed_tag { };
+        typedef typename G::vertices_size_type     vertices_size_type;
+        typedef typename G::edges_size_type        edges_size_type;
+        typedef typename G::degree_size_type       degree_size_type;
 
-  namespace detail {
-    inline bool is_directed(directed_tag) { return true; }
-    inline bool is_directed(undirected_tag) { return false; }
-  }
+        static inline vertex_descriptor null_vertex();
+    };
 
-  template <typename Graph>
-  bool is_directed(const Graph&) { 
-    typedef typename graph_traits<Graph>::directed_category Cat;
-    return detail::is_directed(Cat());
-  }
-  template <typename Graph>
-  bool is_undirected(const Graph& g) { 
-    return ! is_directed(g);
-  }
+    template <typename G>
+    inline typename graph_traits<G>::vertex_descriptor
+    graph_traits<G>::null_vertex()
+    { return G::null_vertex(); }
 
-  // edge_parallel_category tags
-  struct allow_parallel_edge_tag {};
-  struct disallow_parallel_edge_tag {};
+    // directed_category tags
+    struct directed_tag { };
+    struct undirected_tag { };
+    struct bidirectional_tag : public directed_tag { };
 
-  namespace detail {
-    inline bool allows_parallel(allow_parallel_edge_tag) { return true; }
-    inline bool allows_parallel(disallow_parallel_edge_tag) { return false; }
-  }
+    namespace detail {
+        inline bool is_directed(directed_tag) { return true; }
+        inline bool is_directed(undirected_tag) { return false; }
+    }
 
-  template <typename Graph>
-  bool allows_parallel_edges(const Graph&) { 
-    typedef typename graph_traits<Graph>::edge_parallel_category Cat;
-    return detail::allows_parallel(Cat());
-  }
+    /** Return true if the given graph is directed. */
+    template <typename Graph>
+    bool is_directed(const Graph&) {
+        typedef typename graph_traits<Graph>::directed_category Cat;
+        return detail::is_directed(Cat());
+    }
 
-  // traversal_category tags
-  struct incidence_graph_tag { };
-  struct adjacency_graph_tag { };
-  struct bidirectional_graph_tag : 
-    public virtual incidence_graph_tag { };
-  struct vertex_list_graph_tag { };
-  struct edge_list_graph_tag { };
-  struct adjacency_matrix_tag { };
+    /** Return true if the given graph is undirected. */
+    template <typename Graph>
+    bool is_undirected(const Graph& g) {
+        return !is_directed(g);
+    }
 
-  //?? not the right place ?? Lee
-  struct multi_pass_input_iterator_tag : std::input_iterator_tag { };
+    /** @name Directed/Undirected Graph Traits */
+    //@{
+    namespace graph_detail {
+        template <typename Tag>
+        struct is_directed_tag
+            : mpl::bool_<is_convertible<Tag, directed_tag>::value>
+        { };
+    } // namespace graph_detail
+
+    template <typename Graph>
+    struct is_directed_graph
+        : graph_detail::is_directed_tag<
+            typename graph_traits<Graph>::directed_category
+        >
+    { };
+
+    template <typename Graph>
+    struct is_undirected_graph
+        : mpl::not_< is_directed_graph<Graph> >
+    { };
+    //@}
+
+    // edge_parallel_category tags
+    struct allow_parallel_edge_tag { };
+    struct disallow_parallel_edge_tag { };
+
+    namespace detail {
+        inline bool allows_parallel(allow_parallel_edge_tag) { return true; }
+        inline bool allows_parallel(disallow_parallel_edge_tag) { return false; }
+    }
+
+    template <typename Graph>
+    bool allows_parallel_edges(const Graph&) {
+        typedef typename graph_traits<Graph>::edge_parallel_category Cat;
+        return detail::allows_parallel(Cat());
+    }
+
+    /** @name Parallel Edges Traits */
+    //@{
+    /**
+     * The is_multigraph metafunction returns true if the graph allows
+     * parallel edges. Technically, a multigraph is a simple graph that
+     * allows parallel edges, but since there are no traits for the allowance
+     * or disallowance of loops, this is a moot point.
+     */
+    template <typename Graph>
+    struct is_multigraph
+        : mpl::bool_<
+            is_same<
+                typename graph_traits<Graph>::edge_parallel_category,
+                allow_parallel_edge_tag
+            >::value
+        >
+    { };
+    //@}
+
+    // traversal_category tags
+    struct incidence_graph_tag { };
+    struct adjacency_graph_tag { };
+    struct bidirectional_graph_tag : virtual incidence_graph_tag { };
+    struct vertex_list_graph_tag { };
+    struct edge_list_graph_tag { };
+    struct adjacency_matrix_tag { };
+
+    /** @name Taversal Category Traits
+     * These traits classify graph types by their supported methods of
+     * vertex and edge traversal.
+     */
+    //@{
+    template <typename Graph>
+    struct is_incidence_graph
+        : mpl::bool_<
+            is_convertible<
+                typename graph_traits<Graph>::traversal_category,
+                incidence_graph_tag
+            >::value
+        >
+    { };
+
+    template <typename Graph>
+    struct is_bidirectional_graph
+        : mpl::bool_<
+            is_convertible<
+                typename graph_traits<Graph>::traversal_category,
+                bidirectional_graph_tag
+            >::value
+        >
+    { };
+
+    template <typename Graph>
+    struct is_vertex_list_graph
+        : mpl::bool_<
+            is_convertible<
+                typename graph_traits<Graph>::traversal_category,
+                vertex_list_graph_tag
+            >::value
+        >
+    { };
+
+    template <typename Graph>
+    struct is_edge_list_graph
+        : mpl::bool_<
+            is_convertible<
+                typename graph_traits<Graph>::traversal_category,
+                edge_list_graph_tag
+            >::value
+        >
+    { };
+
+    template <typename Graph>
+    struct is_adjacency_matrix
+        : mpl::bool_<
+            is_convertible<
+                typename graph_traits<Graph>::traversal_category,
+                adjacency_matrix_tag
+            >::value
+        >
+    { };
+    //@}
+
+    /** @name Directed Graph Traits
+     * These metafunctions are used to fully classify directed vs. undirected
+     * graphs. Recall that an undirected graph is also bidirectional, but it
+     * cannot be both undirected and directed at the same time.
+     */
+    //@{
+    template <typename Graph>
+    struct is_directed_unidirectional_graph
+        : mpl::and_<
+            is_directed_graph<Graph>, mpl::not_< is_bidirectional_graph<Graph> >
+        >
+    { };
+
+    template <typename Graph>
+    struct is_directed_bidirectional_graph
+        : mpl::and_<
+            is_directed_graph<Graph>, is_bidirectional_graph<Graph>
+        >
+    { };
+    //@}
+
+    //?? not the right place ?? Lee
+    typedef boost::forward_traversal_tag multi_pass_input_iterator_tag;
+
+    // Forward declare graph_bundle_t property name (from
+    // boost/graph/properties.hpp, which includes this file) for
+    // bundled_result.
+    enum graph_bundle_t {graph_bundle};
+
+    template <typename G>
+    struct graph_property_type {
+      typedef typename G::graph_property_type type;
+    };
+    template <typename G>
+    struct edge_property_type {
+      typedef typename G::edge_property_type type;
+    };
+    template <typename G>
+    struct vertex_property_type {
+      typedef typename G::vertex_property_type type;
+    };
+
+    struct no_bundle { };
+    struct no_graph_bundle : no_bundle { };
+    struct no_vertex_bundle : no_bundle { };
+    struct no_edge_bundle : no_bundle { };
+
+    template<typename G>
+    struct graph_bundle_type {
+      typedef typename G::graph_bundled type;
+    };
+
+    template<typename G>
+    struct vertex_bundle_type {
+      typedef typename G::vertex_bundled type;
+    };
+
+    template<typename G>
+    struct edge_bundle_type {
+      typedef typename G::edge_bundled type;
+    };
+
+    namespace graph { namespace detail {
+        template<typename Graph, typename Descriptor>
+        class bundled_result {
+            typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
+            typedef typename mpl::if_c<(is_same<Descriptor, Vertex>::value),
+                                        vertex_bundle_type<Graph>,
+                                        edge_bundle_type<Graph> >::type bundler;
+        public:
+            typedef typename bundler::type type;
+        };
+
+        template<typename Graph>
+        class bundled_result<Graph, graph_bundle_t> {
+            typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
+            typedef graph_bundle_type<Graph> bundler;
+        public:
+            typedef typename bundler::type type;
+        };
+
+    } } // namespace graph::detail
+
+    namespace graph_detail {
+      // A helper metafunction for determining whether or not a type is
+      // bundled.
+      template <typename T>
+      struct is_no_bundle : mpl::bool_<is_convertible<T, no_bundle>::value>
+      { };
+    } // namespace graph_detail
+
+    /** @name Graph Property Traits
+     * These metafunctions (along with those above), can be used to access the
+     * vertex and edge properties (bundled or otherwise) of vertices and
+     * edges.
+     */
+    //@{
+    template<typename Graph>
+    struct has_graph_property
+      : mpl::not_<
+        typename detail::is_no_property<
+          typename graph_property_type<Graph>::type
+        >::type
+      >::type
+    { };
+
+    template<typename Graph>
+    struct has_bundled_graph_property
+      : mpl::not_<
+        graph_detail::is_no_bundle<typename graph_bundle_type<Graph>::type>
+      >
+    { };
+
+    template <typename Graph>
+    struct has_vertex_property
+        : mpl::not_<
+            typename detail::is_no_property<typename vertex_property_type<Graph>::type>
+        >::type
+    { };
+
+    template <typename Graph>
+    struct has_bundled_vertex_property
+        : mpl::not_<
+            graph_detail::is_no_bundle<typename vertex_bundle_type<Graph>::type>
+        >
+    { };
+
+    template <typename Graph>
+    struct has_edge_property
+        : mpl::not_<
+            typename detail::is_no_property<typename edge_property_type<Graph>::type>
+        >::type
+    { };
+
+    template <typename Graph>
+    struct has_bundled_edge_property
+        : mpl::not_<
+            graph_detail::is_no_bundle<typename edge_bundle_type<Graph>::type>
+        >
+    { };
+    //@}
 
 } // namespace boost
 

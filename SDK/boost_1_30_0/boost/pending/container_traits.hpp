@@ -1,3 +1,10 @@
+//  (C) Copyright Jeremy Siek 2004 
+//  (C) Copyright Thomas Claveirole 2010
+//  (C) Copyright Ignacy Gawedzki 2010
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+
 #ifndef BOOST_GRAPH_DETAIL_CONTAINER_TRAITS_H
 #define BOOST_GRAPH_DETAIL_CONTAINER_TRAITS_H
 
@@ -5,20 +12,35 @@
 // instead of pulling in all the headers. Too bad that
 // is not legal. There ought to be a standard <stlfwd> header. -JGS 
 
+#include <boost/next_prior.hpp>
+
 #include <algorithm>   // for std::remove
 #include <vector>
 #include <list>
 #include <map>
 #include <set>
-#ifndef BOOST_NO_SLIST
-#  include <slist>
-#endif
-#ifndef BOOST_NO_HASH
-#  include <hash_map>
-#  include <hash_set>
+#include <boost/unordered_set.hpp>
+#include <boost/unordered_map.hpp>
+
+#if !defined BOOST_NO_SLIST
+#  ifdef BOOST_SLIST_HEADER
+#    include BOOST_SLIST_HEADER
+#  else
+#    include <slist>
+#  endif
 #endif
 
-namespace boost {
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of concept checking class templates
+# define Container Container_
+# define AssociativeContainer AssociativeContainer_
+#endif
+
+// The content of this file is in 'graph_detail' because otherwise
+// there will be name clashes with 
+// sandbox/boost/sequence_algo/container_traits.hpp
+// The 'detail' subnamespace will still cause problems.
+namespace boost { namespace graph_detail {
 
   //======================================================================
   // Container Category Tags
@@ -242,34 +264,87 @@ namespace boost {
 
  // hash_set, hash_map
 
+  struct unordered_set_tag :
+    virtual public simple_associative_container_tag,
+    virtual public unique_associative_container_tag
+    { };
+
+  struct unordered_multiset_tag :
+    virtual public simple_associative_container_tag,
+    virtual public multiple_associative_container_tag
+    { };
+
+
+  struct unordered_map_tag :
+    virtual public pair_associative_container_tag,
+    virtual public unique_associative_container_tag
+    { };
+
+  struct unordered_multimap_tag :
+    virtual public pair_associative_container_tag,
+    virtual public multiple_associative_container_tag
+    { };
+
+
 #ifndef BOOST_NO_HASH
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
   template <class Key, class Eq, class Hash, class Alloc> 
-  struct container_traits< BOOST_STD_EXTENSION_NAMESPACE::hash_set<Key,Eq,Hash,Alloc> > {
-    typedef set_tag category;
-    typedef stable_tag iterator_stability; // is this right?
+  struct container_traits< boost::unordered_set<Key,Eq,Hash,Alloc> > {
+    typedef unordered_set_tag category;
+    typedef unstable_tag iterator_stability;
   };
   template <class Key, class T, class Eq, class Hash, class Alloc>
-  struct container_traits< BOOST_STD_EXTENSION_NAMESPACE::hash_map<Key,T,Eq,Hash,Alloc> > {
-    typedef map_tag category;
-    typedef stable_tag iterator_stability; // is this right?
+  struct container_traits< boost::unordered_map<Key,T,Eq,Hash,Alloc> > {
+    typedef unordered_map_tag category;
+    typedef unstable_tag iterator_stability;
+  };
+  template <class Key, class Eq, class Hash, class Alloc>
+  struct container_traits< boost::unordered_multiset<Key,Eq,Hash,Alloc> > {
+    typedef unordered_multiset_tag category;
+    typedef unstable_tag iterator_stability;
+  };
+  template <class Key, class T, class Eq, class Hash, class Alloc>
+  struct container_traits< boost::unordered_multimap<Key,T,Eq,Hash,Alloc> > {
+    typedef unordered_multimap_tag category;
+    typedef unstable_tag iterator_stability;
   };
 #endif
   template <class Key, class Eq, class Hash, class Alloc>
-  set_tag container_category(const BOOST_STD_EXTENSION_NAMESPACE::hash_set<Key,Eq,Hash,Alloc>&)
-  { return set_tag(); }
+  unordered_set_tag
+  container_category(const boost::unordered_set<Key,Eq,Hash,Alloc>&)
+  { return unordered_set_tag(); }
 
   template <class Key, class T, class Eq, class Hash, class Alloc>
-  map_tag container_category(const BOOST_STD_EXTENSION_NAMESPACE::hash_map<Key,T,Eq,Hash,Alloc>&)
-  { return map_tag(); }
+  unordered_map_tag
+  container_category(const boost::unordered_map<Key,T,Eq,Hash,Alloc>&)
+  { return unordered_map_tag(); }
 
   template <class Key, class Eq, class Hash, class Alloc>
-  stable_tag iterator_stability(const BOOST_STD_EXTENSION_NAMESPACE::hash_set<Key,Eq,Hash,Alloc>&)
-  { return stable_tag(); }
+  unstable_tag iterator_stability(const boost::unordered_set<Key,Eq,Hash,Alloc>&)
+  { return unstable_tag(); }
 
   template <class Key, class T, class Eq, class Hash, class Alloc>
-  stable_tag iterator_stability(const BOOST_STD_EXTENSION_NAMESPACE::hash_map<Key,T,Eq,Hash,Alloc>&)
-  { return stable_tag(); }
+  unstable_tag iterator_stability(const boost::unordered_map<Key,T,Eq,Hash,Alloc>&)
+  { return unstable_tag(); }
+  template <class Key, class Eq, class Hash, class Alloc>
+  unordered_multiset_tag
+  container_category(const boost::unordered_multiset<Key,Eq,Hash,Alloc>&)
+  { return unordered_multiset_tag(); }
+
+  template <class Key, class T, class Eq, class Hash, class Alloc>
+  unordered_multimap_tag
+  container_category(const boost::unordered_multimap<Key,T,Eq,Hash,Alloc>&)
+  { return unordered_multimap_tag(); }
+
+  template <class Key, class Eq, class Hash, class Alloc>
+  unstable_tag
+  iterator_stability(const boost::unordered_multiset<Key,Eq,Hash,Alloc>&)
+  { return unstable_tag(); }
+
+  template <class Key, class T, class Eq, class Hash, class Alloc>
+  unstable_tag
+  iterator_stability(const boost::unordered_multimap<Key,T,Eq,Hash,Alloc>&)
+  { return unstable_tag(); }
 #endif
 
 
@@ -383,6 +458,104 @@ namespace boost {
     return push_dispatch(c, v, container_category(c));
   }
 
-} // namespace boost
+  // Find
+  template <class Container, class Value>
+  typename Container::iterator
+  find_dispatch(Container& c,
+                const Value& value,
+                container_tag)
+  {
+    return std::find(c.begin(), c.end(), value);
+  }
+
+  template <class AssociativeContainer, class Value>
+  typename AssociativeContainer::iterator
+  find_dispatch(AssociativeContainer& c,
+                const Value& value,
+                associative_container_tag)
+  {
+    return c.find(value);
+  }
+
+  template <class Container, class Value>
+  typename Container::iterator
+  find(Container& c,
+       const Value& value)
+  {
+    return find_dispatch(c, value,
+                         graph_detail::container_category(c));
+  }
+
+  // Find (const versions)
+  template <class Container, class Value>
+  typename Container::const_iterator
+  find_dispatch(const Container& c,
+                const Value& value,
+                container_tag)
+  {
+    return std::find(c.begin(), c.end(), value);
+  }
+
+  template <class AssociativeContainer, class Value>
+  typename AssociativeContainer::const_iterator
+  find_dispatch(const AssociativeContainer& c,
+                const Value& value,
+                associative_container_tag)
+  {
+    return c.find(value);
+  }
+
+  template <class Container, class Value>
+  typename Container::const_iterator
+  find(const Container& c,
+       const Value& value)
+  {
+    return find_dispatch(c, value,
+                         graph_detail::container_category(c));
+  }
+
+  // Equal range
+#if 0
+  // Make the dispatch fail if c is not an Associative Container (and thus
+  // doesn't have equal_range unless it is sorted, which we cannot check
+  // statically and is not typically true for BGL's uses of this function).
+  template <class Container,
+            class LessThanComparable>
+  std::pair<typename Container::iterator, typename Container::iterator>
+  equal_range_dispatch(Container& c,
+                       const LessThanComparable& value,
+                       container_tag)
+  {
+    // c must be sorted for std::equal_range to behave properly.
+    return std::equal_range(c.begin(), c.end(), value);
+  }
+#endif
+
+  template <class AssociativeContainer, class Value>
+  std::pair<typename AssociativeContainer::iterator,
+            typename AssociativeContainer::iterator>
+  equal_range_dispatch(AssociativeContainer& c,
+                       const Value& value,
+                       associative_container_tag)
+  {
+    return c.equal_range(value);
+  }
+
+  template <class Container, class Value>
+  std::pair<typename Container::iterator, typename Container::iterator>
+  equal_range(Container& c,
+              const Value& value)
+  {
+    return equal_range_dispatch(c, value,
+                                graph_detail::container_category(c));
+  }
+
+}} // namespace boost::graph_detail
+
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of concept checking class templates
+# undef Container
+# undef AssociativeContainer
+#endif
 
 #endif // BOOST_GRAPH_DETAIL_CONTAINER_TRAITS_H

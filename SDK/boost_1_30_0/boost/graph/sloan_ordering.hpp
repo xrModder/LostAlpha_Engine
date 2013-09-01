@@ -1,27 +1,11 @@
 //
 //=======================================================================
-// Copyright 2002 Marc Wintermantel (wintermantel@imes.mavt.ethz.ch)
+// Copyright 2002 Marc Wintermantel (wintermantel@even-ag.ch)
 // ETH Zurich, Center of Structure Technologies (www.imes.ethz.ch/st)
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
 //
 
@@ -30,19 +14,18 @@
 
 #define WEIGHT1 1               //default weight for the distance in the Sloan algorithm
 #define WEIGHT2 2               //default weight for the degree in the Sloan algorithm
-#define MAXINT 2147483647       //Maximum value for a 32bit integer
 
 #include <boost/config.hpp>
 #include <vector>
 #include <queue>
+#include <algorithm>
+#include <limits>
 #include <boost/pending/queue.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/properties.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <boost/property_map.hpp>
-#include <algorithm>
-#include <utility>
+#include <boost/property_map/property_map.hpp>
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/cuthill_mckee_ordering.hpp>
@@ -124,7 +107,7 @@ namespace boost {
                            ColorMap color, 
                            DegreeMap degree)
   {
-    typedef typename property_traits<DegreeMap>::value_type DS;
+    typedef typename property_traits<DegreeMap>::value_type Degree;
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
     typedef typename std::vector< typename graph_traits<Graph>::vertices_size_type>::iterator vec_iter;
     typedef typename graph_traits<Graph>::vertices_size_type size_type;
@@ -149,14 +132,14 @@ namespace boost {
     typename property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
     
     //Creating a priority queue
-    typedef indirect_cmp<DegreeMap, std::greater<DS> > Compare;
+    typedef indirect_cmp<DegreeMap, std::greater<Degree> > Compare;
     Compare comp(degree);
     std::priority_queue<Vertex, std::vector<Vertex>, Compare> degree_queue(comp);
     
     //step 1
     //Scan for the vertex with the smallest degree and the maximum degree
     typename graph_traits<Graph>::vertex_iterator ui, ui_end;
-    for (tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
     {
       dummy = get(degree, *ui);
       
@@ -197,7 +180,7 @@ namespace boost {
       //step 4
       //pushing one node of each degree in an ascending manner into degree_queue
       std::vector<bool> shrink_trace(maximum_degree, false);
-      for (tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+      for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
       {
         dummy = get(degree, *ui);
         
@@ -211,9 +194,9 @@ namespace boost {
       //end 3 & 4
 
       
-      //step 5
-      //Initializing w
-      w_e = MAXINT;
+      // step 5
+      // Initializing w
+      w_e = (std::numeric_limits<unsigned>::max)();
       //end 5
       
       
@@ -279,8 +262,8 @@ namespace boost {
                  Weight W1, 
                  Weight W2)
   {
-    //typedef typename property_traits<DegreeMap>::value_type DS;
-    typedef typename property_traits<PriorityMap>::value_type DS;
+    //typedef typename property_traits<DegreeMap>::value_type Degree;
+    typedef typename property_traits<PriorityMap>::value_type Degree;
     typedef typename property_traits<ColorMap>::value_type ColorValue;
     typedef color_traits<ColorValue> Color;
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
@@ -309,7 +292,7 @@ namespace boost {
     //Sets the color and priority to their initial status
     unsigned cdeg;    
     typename graph_traits<Graph>::vertex_iterator ui, ui_end;
-    for (tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(color, *ui, Color::white());
         cdeg=get(degree, *ui)+1;
@@ -317,7 +300,7 @@ namespace boost {
     }
     
     //Priority list
-    typedef indirect_cmp<PriorityMap, std::greater<DS> > Compare;
+    typedef indirect_cmp<PriorityMap, std::greater<Degree> > Compare;
     Compare comp(priority);
     std::list<Vertex> priority_list;
 
@@ -338,7 +321,7 @@ namespace boost {
       if(get(color, u) == Color::green() )
       {
         //for-loop over all out-edges of vertex u
-        for (tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) 
+        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) 
         {
           v = target(*ei, g);
           
@@ -357,7 +340,7 @@ namespace boost {
       put(color, u, Color::black() );          //Gives u an inactive status
       
       //for loop over all the adjacent vertices of u
-      for (tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
+      for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei) {
         
         v = target(*ei, g);     
         
@@ -367,7 +350,7 @@ namespace boost {
           put(priority, v, get(priority, v)+W2);  //updates the priority        
           
           //for loop over alll adjacent vertices of v
-          for (tie(ei2, ei2_end) = out_edges(v, g); ei2 != ei2_end; ++ei2) {
+          for (boost::tie(ei2, ei2_end) = out_edges(v, g); ei2 != ei2_end; ++ei2) {
             w = target(*ei2, g);
             
             if(get(color, w) != Color::black() ) {     //tests if vertex is postactive

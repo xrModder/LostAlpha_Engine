@@ -1,16 +1,20 @@
+// (C) Copyright Jeremy Siek    2004.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef BOOST_FIBONACCI_HEAP_HPP
 #define BOOST_FIBONACCI_HEAP_HPP
 
 #if defined(__sgi) && !defined(__GNUC__)
 # include <math.h>
 #else
-# include <cmath>
+# include <boost/config/no_tr1/cmath.hpp>
 #endif
 #include <iosfwd>
 #include <vector>
 #include <functional>
 #include <boost/config.hpp>
-#include <boost/property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 
 //
 // An adaptation of Knuth's Fibonacci heap implementation
@@ -47,20 +51,23 @@ public:
   // 33
   void push(const T& d) {
     ++_n;
-    size_type v = _id[d];
+    size_type v = get(_id, d);
     _key[v] = d;
     _p[v] = nil();
     _degree[v] = 0;
     _mark[v] = false;
-    if (_root == nil())
+    _child[v] = nil();
+    if (_root == nil()) {
       _root = _left[v] = _right[v] = v;
-    else {
+      //std::cout << "root added" << std::endl;
+    } else {
       size_type u = _left[_root];
       _left[v] = u;
       _right[v] = _root;
       _left[_root] = _right[u] = v;
       if (_compare(d, _key[_root]))
         _root = v;
+      //std::cout << "non-root node added" << std::endl;
     }
   }
   T& top() { return _key[_root]; }
@@ -113,12 +120,14 @@ public:
       new_roots[r] = nil();
       if (_compare(_key[u], _key[v])) {
         _degree[v] = r;
+        _mark[v] = false;
         std::swap(u, v);
       }
       make_child(u, v, r);
       ++r;
     }
     _degree[v] = r;
+    _mark[v] = false;
   }
   // 40
   void make_child(size_type u, size_type v, size_type r) {
@@ -133,6 +142,7 @@ public:
       _right[t] = u;
       _left[_right[u]] = u;
     }
+    _p[u] = v;
   }
   // 41
   inline void rebuild_root_list(LinkIter new_roots, int& h)
@@ -163,14 +173,14 @@ public:
 
   // 34
   void update(const T& d) {
-    size_type v = _id[d];
-    assert(_compare(d, _key[v]));
+    size_type v = get(_id, d);
+    assert(!_compare(_key[v], d));
     _key[v] = d;
     size_type p = _p[v];
-    if (p != nil()) {
+    if (p == nil()) {
       if (_compare(d, _key[_root]))
         _root = v;
-    } else if (_compare(d, _key[_root]))
+    } else if (_compare(d, _key[p]))
       while (1) {
         size_type r = _degree[p];
         if (r >= 2)
@@ -183,6 +193,7 @@ public:
         }
         if (_mark[p] == false) {
           _mark[p] = true;
+          --_degree[p];
           break;
         } else
           --_degree[p];
@@ -199,7 +210,7 @@ public:
       size_type i = _root;
       do {
         print_recur(i, os);
-        os << endl;
+        os << std::endl;
         i = _right[i];
       } while (i != _root);
     }
@@ -229,7 +240,7 @@ protected:
   void print_recur(size_type x, std::ostream& os) {
     if (x != nil()) {
       os << x;
-      if (_child[x] != nil()) {
+      if (_degree[x] > 0) {
         os << "(";
         size_type i = _child[x];
         do {

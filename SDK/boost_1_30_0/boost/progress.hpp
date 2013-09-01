@@ -1,9 +1,8 @@
 //  boost progress.hpp header file  ------------------------------------------//
 
-//  (C) Copyright Beman Dawes 1994-99. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  Copyright Beman Dawes 1994-99.  Distributed under the Boost
+//  Software License, Version 1.0. (See accompanying file
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/timer for documentation.
 
@@ -52,7 +51,7 @@ class progress_timer : public timer, private noncopyable
       std::istream::fmtflags old_flags = m_os.setf( std::istream::fixed,
                                                    std::istream::floatfield );
       std::streamsize old_prec = m_os.precision( 2 );
-      m_os << elapsed() << " s\n" // "s" is System International d'Unités std
+      m_os << elapsed() << " s\n" // "s" is System International d'Unites std
                         << std::endl;
       m_os.flags( old_flags );
       m_os.precision( old_prec );

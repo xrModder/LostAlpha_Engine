@@ -1,7 +1,8 @@
-//  (C) Copyright Boost.org 2001. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright John Maddock 2001 - 2002. 
+//  (C) Copyright Aleksey Gurtovoy 2002. 
+//  Use, modification and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
 
@@ -31,7 +32,40 @@
 #  define BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
 
 #  define BOOST_NO_STD_ALLOCATOR /* actually a bug with const reference overloading */
+
 #endif
+
+//
+// C++0x features
+//
+//   See boost\config\suffix.hpp for BOOST_NO_LONG_LONG
+//
+#define BOOST_NO_AUTO_DECLARATIONS
+#define BOOST_NO_AUTO_MULTIDECLARATIONS
+#define BOOST_NO_CHAR16_T
+#define BOOST_NO_CHAR32_T
+#define BOOST_NO_CONSTEXPR
+#define BOOST_NO_DECLTYPE
+#define BOOST_NO_DECLTYPE_N3276
+#define BOOST_NO_DEFAULTED_FUNCTIONS
+#define BOOST_NO_DELETED_FUNCTIONS
+#define BOOST_NO_EXPLICIT_CONVERSION_OPERATORS
+#define BOOST_NO_EXTERN_TEMPLATE
+#define BOOST_NO_FUNCTION_TEMPLATE_DEFAULT_ARGS
+#define BOOST_NO_INITIALIZER_LISTS
+#define BOOST_NO_LAMBDAS
+#define BOOST_NO_NOEXCEPT
+#define BOOST_NO_NULLPTR
+#define BOOST_NO_RAW_LITERALS
+#define BOOST_NO_RVALUE_REFERENCES
+#define BOOST_NO_SCOPED_ENUMS
+#define BOOST_NO_SFINAE_EXPR
+#define BOOST_NO_STATIC_ASSERT
+#define BOOST_NO_TEMPLATE_ALIASES
+#define BOOST_NO_UNICODE_LITERALS
+#define BOOST_NO_VARIADIC_TEMPLATES
+#define BOOST_NO_VARIADIC_MACROS
+#define BOOST_NO_UNIFIED_INITIALIZATION_SYNTAX
 
 //
 // versions check:
@@ -46,4 +80,5 @@
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  endif
 #endif
+
 

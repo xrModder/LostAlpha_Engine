@@ -1,8 +1,7 @@
-//  (C) Copyright Jeremy Siek 1999. Permission to copy, use, modify,
-//  sell and distribute this software is granted provided this
-//  copyright notice appears in all copies. This software is provided
-//  "as is" without express or implied warranty, and with no claim as
-//  to its suitability for any purpose.
+//  (C) Copyright Jeremy Siek 1999.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_TREE_STRUCTURE_HPP
 #define BOOST_TREE_STRUCTURE_HPP
@@ -22,7 +21,7 @@ namespace boost {
   {
     visitor.preorder(v, t);
     typename tree_traits<Tree>::children_iterator i, end;
-    tie(i, end) = children(v, t);
+    boost::tie(i, end) = children(v, t);
     if (i != end) {
       traverse_tree(*i++, t, visitor);
       visitor.inorder(v, t);

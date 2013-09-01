@@ -1,35 +1,50 @@
 
-// (C) Copyright Dave Abrahams, Steve Cleary, Beman Dawes, Howard
-// Hinnant & John Maddock 2000.  Permission to copy, use, modify,
-// sell and distribute this software is granted provided this
-// copyright notice appears in all copies. This software is provided
-// "as is" without express or implied warranty, and with no claim as
-// to its suitability for any purpose.
+//  (C) Copyright Dave Abrahams, Steve Cleary, Beman Dawes, 
+//      Howard Hinnant and John Maddock 2000. 
+//  (C) Copyright Mat Marcus, Jesse Jones and Adobe Systems Inc 2001
+
+//  Use, modification and distribution are subject to the Boost Software License,
+//  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt).
 //
-// See http://www.boost.org for most recent version including documentation.
+//  See http://www.boost.org/libs/type_traits for most recent version including documentation.
+
+//    Fixed is_pointer, is_reference, is_const, is_volatile, is_same, 
+//    is_member_pointer based on the Simulated Partial Specialization work 
+//    of Mat Marcus and Jesse Jones. See  http://opensource.adobe.com or 
+//    http://groups.yahoo.com/group/boost/message/5441 
+//    Some workarounds in here use ideas suggested from "Generic<Programming>: 
+//    Mappings between Types and Values" 
+//    by Andrei Alexandrescu (see http://www.cuj.com/experts/1810/alexandr.html).
+
 
 #ifndef BOOST_TT_IS_POINTER_HPP_INCLUDED
 #define BOOST_TT_IS_POINTER_HPP_INCLUDED
 
-#include "boost/type_traits/is_member_pointer.hpp"
-#include "boost/type_traits/detail/ice_and.hpp"
-#include "boost/type_traits/detail/ice_not.hpp"
-#include "boost/type_traits/config.hpp"
+#include <boost/type_traits/is_member_pointer.hpp>
+#include <boost/type_traits/detail/ice_and.hpp>
+#include <boost/type_traits/detail/ice_not.hpp>
+#include <boost/type_traits/config.hpp>
+#if !BOOST_WORKAROUND(BOOST_MSVC,<=1300)
+#include <boost/type_traits/remove_cv.hpp>
+#endif
 
 #ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-#   include "boost/type_traits/is_reference.hpp"
-#   include "boost/type_traits/is_array.hpp"
-#   include "boost/type_traits/detail/is_function_ptr_tester.hpp"
-#   include "boost/type_traits/detail/false_result.hpp"
-#   include "boost/type_traits/detail/ice_or.hpp"
+#   include <boost/type_traits/is_reference.hpp>
+#   include <boost/type_traits/is_array.hpp>
+#   include <boost/type_traits/detail/is_function_ptr_tester.hpp>
+#   include <boost/type_traits/detail/false_result.hpp>
+#   include <boost/type_traits/detail/ice_or.hpp>
 #endif
 
 // should be the last #include
-#include "boost/type_traits/detail/bool_trait_def.hpp"
+#include <boost/type_traits/detail/bool_trait_def.hpp>
 
 namespace boost {
 
-#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+#if defined( __CODEGEARC__ )
+BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_pointer,T,__is_pointer(T))
+#elif !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 namespace detail {
 
@@ -46,16 +61,14 @@ template< typename T > struct helper<sp> \
 /**/
 
 TT_AUX_BOOL_TRAIT_HELPER_PARTIAL_SPEC(is_pointer_helper,T*,true)
-TT_AUX_BOOL_TRAIT_HELPER_PARTIAL_SPEC(is_pointer_helper,T* const,true)
-TT_AUX_BOOL_TRAIT_HELPER_PARTIAL_SPEC(is_pointer_helper,T* volatile,true)
-TT_AUX_BOOL_TRAIT_HELPER_PARTIAL_SPEC(is_pointer_helper,T* const volatile,true)
 
 #   undef TT_AUX_BOOL_TRAIT_HELPER_PARTIAL_SPEC
 
 template< typename T >
 struct is_pointer_impl
 {
-    BOOST_STATIC_CONSTANT(bool, value = 
+#if BOOST_WORKAROUND(BOOST_MSVC,<=1300)
+    BOOST_STATIC_CONSTANT(bool, value =
         (::boost::type_traits::ice_and<
               ::boost::detail::is_pointer_helper<T>::value
             , ::boost::type_traits::ice_not<
@@ -63,13 +76,23 @@ struct is_pointer_impl
                 >::value
             >::value)
         );
+#else
+    BOOST_STATIC_CONSTANT(bool, value =
+        (::boost::type_traits::ice_and<
+        ::boost::detail::is_pointer_helper<typename remove_cv<T>::type>::value
+            , ::boost::type_traits::ice_not<
+                ::boost::is_member_pointer<T>::value
+                >::value
+            >::value)
+        );
+#endif
 };
 
 } // namespace detail
 
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_pointer,T,::boost::detail::is_pointer_impl<T>::value)
 
-#if defined(__BORLANDC__) && !defined(__COMO__)
+#if defined(__BORLANDC__) && !defined(__COMO__) && (__BORLANDC__ < 0x600)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_pointer,T&,false)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_pointer,T& const,false)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_pointer,T& volatile,false)
@@ -90,7 +113,7 @@ no_type BOOST_TT_DECL is_pointer_tester(...);
 
 template <bool>
 struct is_pointer_select
-    : ::boost::type_traits::false_result
+    : public ::boost::type_traits::false_result
 {
 };
 
@@ -110,7 +133,7 @@ struct is_pointer_select<false>
 
 template <typename T>
 struct is_pointer_impl
-    : is_pointer_select<
+    : public is_pointer_select<
           ::boost::type_traits::ice_or<
               ::boost::is_reference<T>::value
             , ::boost::is_array<T>::value
@@ -134,6 +157,6 @@ BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_pointer,T,::boost::detail::is_pointer_impl<T>::v
 
 } // namespace boost
 
-#include "boost/type_traits/detail/bool_trait_undef.hpp"
+#include <boost/type_traits/detail/bool_trait_undef.hpp>
 
 #endif // BOOST_TT_IS_POINTER_HPP_INCLUDED

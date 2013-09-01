@@ -1,14 +1,16 @@
-//  (C) Copyright Boost.org 2001. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright John Maddock 2001 - 2003. 
+//  (C) Copyright Darin Adler 2001. 
+//  (C) Copyright Jens Maurer 2001 - 2003. 
+//  Use, modification and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
 
 //  generic SGI STL:
 
 #if !defined(__STL_CONFIG_H)
-#  include <utility>
+#  include <boost/config/no_tr1/utility.hpp>
 #  if !defined(__STL_CONFIG_H)
 #      error "This is not the SGI STL!"
 #  endif
@@ -38,6 +40,17 @@
 #  define BOOST_NO_STRINGSTREAM
 #endif
 
+// Apple doesn't seem to reliably defined a *unix* macro
+#if !defined(CYGWIN) && (  defined(__unix__)  \
+                        || defined(__unix)    \
+                        || defined(unix)      \
+                        || defined(__APPLE__) \
+                        || defined(__APPLE)   \
+                        || defined(APPLE))
+#  include <unistd.h>
+#endif
+
+
 //
 // Assume no std::locale without own iostreams (this may be an
 // incorrect assumption in some cases):
@@ -56,7 +69,7 @@
 //
 // SGI's new iostreams have missing "const" in messages<>::open
 //
-#if defined(__sgi) && (_COMPILER_VERSION <= 730) && defined(__STL_USE_NEW_IOSTREAMS)
+#if defined(__sgi) && (_COMPILER_VERSION <= 740) && defined(__STL_USE_NEW_IOSTREAMS)
 #  define BOOST_NO_STD_MESSAGES
 #endif
 
@@ -103,5 +116,30 @@
 //
 #define BOOST_HAS_SGI_TYPE_TRAITS
 
+//  C++0x headers not yet implemented
+//
+#  define BOOST_NO_0X_HDR_ARRAY
+#  define BOOST_NO_0X_HDR_CHRONO
+#  define BOOST_NO_0X_HDR_CODECVT
+#  define BOOST_NO_0X_HDR_CONDITION_VARIABLE
+#  define BOOST_NO_0X_HDR_FORWARD_LIST
+#  define BOOST_NO_0X_HDR_FUTURE
+#  define BOOST_NO_0X_HDR_INITIALIZER_LIST
+#  define BOOST_NO_0X_HDR_MUTEX
+#  define BOOST_NO_0X_HDR_RANDOM
+#  define BOOST_NO_0X_HDR_RATIO
+#  define BOOST_NO_0X_HDR_REGEX
+#  define BOOST_NO_0X_HDR_SYSTEM_ERROR
+#  define BOOST_NO_0X_HDR_THREAD
+#  define BOOST_NO_0X_HDR_TUPLE
+#  define BOOST_NO_0X_HDR_TYPE_TRAITS
+#  define BOOST_NO_0X_HDR_TYPEINDEX
+#  define BOOST_NO_STD_UNORDERED        // deprecated; see following
+#  define BOOST_NO_0X_HDR_UNORDERED_MAP
+#  define BOOST_NO_0X_HDR_UNORDERED_SET
+#  define BOOST_NO_NUMERIC_LIMITS_LOWEST
+
 #define BOOST_STDLIB "SGI standard library"
+
+
 

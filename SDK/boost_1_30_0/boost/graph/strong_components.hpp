@@ -3,25 +3,9 @@
 // Copyright 1997, 1998, 1999, 2000 University of Notre Dame.
 // Authors: Andrew Lumsdaine, Lie-Quan Lee, Jeremy G. Siek
 //
-// This file is part of the Boost Graph Library
-//
-// You should have received a copy of the License Agreement for the
-// Boost Graph Library along with the software; see the file LICENSE.
-// If not, contact Office of Research, University of Notre Dame, Notre
-// Dame, IN 46556.
-//
-// Permission to modify the code and to distribute modified code is
-// granted, provided the text of this NOTICE is retained, a notice that
-// the code was modified is included with the above COPYRIGHT NOTICE and
-// with the COPYRIGHT NOTICE in the LICENSE file, and that the LICENSE
-// file is distributed with the modified code.
-//
-// LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.
-// By way of example, but not limitation, Licensor MAKES NO
-// REPRESENTATIONS OR WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-// PARTICULAR PURPOSE OR THAT THE USE OF THE LICENSED SOFTWARE COMPONENTS
-// OR DOCUMENTATION WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS
-// OR OTHER RIGHTS.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
 //
 
@@ -33,6 +17,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/type_traits/conversion_traits.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/graph/overloading.hpp>
 
 namespace boost {
 
@@ -60,7 +45,7 @@ namespace boost {
       void discover_vertex(typename graph_traits<Graph>::vertex_descriptor v,
                            const Graph&) {
         put(root, v, v);
-        put(comp, v, std::numeric_limits<comp_type>::max());
+        put(comp, v, (std::numeric_limits<comp_type>::max)());
         put(discover_time, v, dfs_time++);
         s.push(v);
       }
@@ -69,9 +54,9 @@ namespace boost {
                          const Graph& g) {
         typename graph_traits<Graph>::vertex_descriptor w;
         typename graph_traits<Graph>::out_edge_iterator ei, ei_end;
-        for (tie(ei, ei_end) = out_edges(v, g); ei != ei_end; ++ei) {
+        for (boost::tie(ei, ei_end) = out_edges(v, g); ei != ei_end; ++ei) {
           w = target(*ei, g);
-          if (get(comp, w) == std::numeric_limits<comp_type>::max())
+          if (get(comp, w) == (std::numeric_limits<comp_type>::max)())
             put(root, v, this->min_discover_time(get(root,v), get(root,w)));
         }
         if (get(root, v) == v) {
@@ -235,7 +220,8 @@ namespace boost {
             class P, class T, class R>
   inline typename property_traits<ComponentMap>::value_type
   strong_components(const Graph& g, ComponentMap comp,
-                    const bgl_named_params<P, T, R>& params)
+                    const bgl_named_params<P, T, R>& params
+                    BOOST_GRAPH_ENABLE_IF_MODELS_PARM(Graph, vertex_list_graph_tag))
   {
     typedef typename graph_traits<Graph>::directed_category DirCat;
     BOOST_STATIC_ASSERT((is_convertible<DirCat*, directed_tag*>::value == true));
@@ -245,7 +231,8 @@ namespace boost {
 
   template <class Graph, class ComponentMap>
   inline typename property_traits<ComponentMap>::value_type
-  strong_components(const Graph& g, ComponentMap comp)
+  strong_components(const Graph& g, ComponentMap comp
+                    BOOST_GRAPH_ENABLE_IF_MODELS_PARM(Graph, vertex_list_graph_tag))
   {
     typedef typename graph_traits<Graph>::directed_category DirCat;
     BOOST_STATIC_ASSERT((is_convertible<DirCat*, directed_tag*>::value == true));
@@ -262,7 +249,7 @@ namespace boost {
   {
     components.resize(num_scc);
     typename graph_traits<Graph>::vertex_iterator vi, vi_end;
-    for (tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
       components[component_number[*vi]].push_back(*vi);
   }
 
@@ -317,7 +304,7 @@ namespace boost {
 
     // initialize G_T
     typename graph_traits<Graph>::vertex_iterator ui, ui_end;
-    for (tie(ui, ui_end) = vertices(G_T); ui != ui_end; ++ui)
+    for (boost::tie(ui, ui_end) = vertices(G_T); ui != ui_end; ++ui)
       put(color, *ui, Color::white());
 
     typedef typename property_traits<FinishTime>::value_type D;
@@ -327,10 +314,10 @@ namespace boost {
     std::priority_queue<Vertex, std::vector<Vertex>, Compare > Q(fl);
 
     typename graph_traits<Graph>::vertex_iterator i, j, iend, jend;
-    tie(i, iend) = vertices(G_T);
-    tie(j, jend) = vertices(G);
+    boost::tie(i, iend) = vertices(G_T);
+    boost::tie(j, jend) = vertices(G);
     for ( ; i != iend; ++i, ++j) {
-      put(f, *i, get(finish_time, *j));
+      put(finish_time, *i, get(finish_time, *j));
        Q.push(*i);
     }
 
@@ -346,5 +333,9 @@ namespace boost {
   }
 
 } // namespace boost
+
+#ifdef BOOST_GRAPH_USE_MPI
+#  include <boost/graph/distributed/strong_components.hpp>
+#endif
 
 #endif // BOOST_GRAPH_STRONG_COMPONENTS_HPP

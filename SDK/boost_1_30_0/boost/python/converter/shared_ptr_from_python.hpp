@@ -1,13 +1,19 @@
-// Copyright David Abrahams 2002. Permission to copy, use,
-// modify, sell and distribute this software is granted provided this
-// copyright notice appears in all copies. This software is provided
-// "as is" without express or implied warranty, and with no claim as
-// to its suitability for any purpose.
+// Copyright David Abrahams 2002.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef SHARED_PTR_FROM_PYTHON_DWA20021130_HPP
 # define SHARED_PTR_FROM_PYTHON_DWA20021130_HPP
 
 # include <boost/python/handle.hpp>
 # include <boost/python/converter/shared_ptr_deleter.hpp>
+# include <boost/python/converter/from_python.hpp>
+# include <boost/python/converter/rvalue_from_python_data.hpp>
+# include <boost/python/converter/registered.hpp>
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+# include <boost/python/converter/pytype_function.hpp>
+#endif
+# include <boost/shared_ptr.hpp>
 
 namespace boost { namespace python { namespace converter { 
 
@@ -16,17 +22,20 @@ struct shared_ptr_from_python
 {
     shared_ptr_from_python()
     {
-        converter::registry::insert(&convertible, &construct, type_id<shared_ptr<T> >());
+        converter::registry::insert(&convertible, &construct, type_id<shared_ptr<T> >()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+                      , &converter::expected_from_python_type_direct<T>::get_pytype
+#endif
+                      );
     }
 
-    static shared_ptr_from_python const registration;
  private:
     static void* convertible(PyObject* p)
     {
-        return p == Py_None
-            ? p
-            : converter::get_lvalue_from_python(p, registered<T>::converters)
-            ;
+        if (p == Py_None)
+            return p;
+        
+        return converter::get_lvalue_from_python(p, registered<T>::converters);
     }
     
     static void construct(PyObject* source, rvalue_from_python_stage1_data* data)
@@ -36,17 +45,18 @@ struct shared_ptr_from_python
         if (data->convertible == source)
             new (storage) shared_ptr<T>();
         else
+        {
+            boost::shared_ptr<void> hold_convertible_ref_count(
+              (void*)0, shared_ptr_deleter(handle<>(borrowed(source))) );
+            // use aliasing constructor
             new (storage) shared_ptr<T>(
-                static_cast<T*>(data->convertible),
-                shared_ptr_deleter(handle<>(borrowed(source)))
-                );
+                hold_convertible_ref_count,
+                static_cast<T*>(data->convertible));
+        }
         
         data->convertible = storage;
     }
 };
-
-template <class T>
-shared_ptr_from_python<T> const shared_ptr_from_python<T>::registration;
 
 }}} // namespace boost::python::converter
 

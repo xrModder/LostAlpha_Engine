@@ -1,21 +1,20 @@
 
-// (C) Copyright Steve Cleary, Beman Dawes, Howard Hinnant & John Maddock 2000.
-// Permission to copy, use, modify, sell and distribute this software is 
-// granted provided this copyright notice appears in all copies. This software 
-// is provided "as is" without express or implied warranty, and with no claim 
-// as to its suitability for any purpose.
+//  (C) Copyright Steve Cleary, Beman Dawes, Howard Hinnant & John Maddock 2000.
+//  Use, modification and distribution are subject to the Boost Software License,
+//  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt).
 //
-// See http://www.boost.org for most recent version including documentation.
+//  See http://www.boost.org/libs/type_traits for most recent version including documentation.
 
 #ifndef BOOST_TT_ADD_REFERENCE_HPP_INCLUDED
 #define BOOST_TT_ADD_REFERENCE_HPP_INCLUDED
 
-#include "boost/type_traits/is_reference.hpp"
-#include "boost/detail/workaround.hpp"
-#include "boost/config.hpp"
+#include <boost/type_traits/is_reference.hpp>
+#include <boost/detail/workaround.hpp>
+#include <boost/config.hpp>
 
 // should be the last #include
-#include "boost/type_traits/detail/type_trait_def.hpp"
+#include <boost/type_traits/detail/type_trait_def.hpp>
 
 namespace boost {
 
@@ -52,11 +51,29 @@ struct add_reference_impl
 };
 
 #else
+//
+// We can't filter out rvalue_references at the same level as
+// references or we get ambiguities from msvc:
+//
+
+template <typename T>
+struct add_reference_rvalue_layer
+{
+    typedef T& type;
+};
+
+#ifndef BOOST_NO_RVALUE_REFERENCES
+template <typename T>
+struct add_reference_rvalue_layer<T&&>
+{
+    typedef T&& type;
+};
+#endif
 
 template <typename T>
 struct add_reference_impl
 {
-    typedef T& type;
+    typedef typename add_reference_rvalue_layer<T>::type type;
 };
 
 #ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
@@ -75,16 +92,16 @@ BOOST_TT_AUX_TYPE_TRAIT_IMPL_SPEC1(add_reference,void const volatile,void const 
 
 } // namespace detail
 
-BOOST_TT_AUX_TYPE_TRAIT_DEF1(add_reference,T,typename detail::add_reference_impl<T>::type)
+BOOST_TT_AUX_TYPE_TRAIT_DEF1(add_reference,T,typename boost::detail::add_reference_impl<T>::type)
 
-// agurt, 07/mar/03: workaround Borland's ill-formed sensitivity to an additional 
+// agurt, 07/mar/03: workaround Borland's ill-formed sensitivity to an additional
 // level of indirection, here
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x561))
+#if BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 BOOST_TT_AUX_TYPE_TRAIT_PARTIAL_SPEC1_1(typename T,add_reference,T&,T&)
 #endif
 
 } // namespace boost
 
-#include "boost/type_traits/detail/type_trait_undef.hpp"
+#include <boost/type_traits/detail/type_trait_undef.hpp>
 
 #endif // BOOST_TT_ADD_REFERENCE_HPP_INCLUDED

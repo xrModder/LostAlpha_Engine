@@ -1,17 +1,16 @@
-//  (C) Copyright Boost.org 2001. Permission to copy, use, modify, sell and
-//  distribute this software is granted provided this copyright notice appears
-//  in all copies. This software is provided "as is" without express or implied
-//  warranty, and with no claim as to its suitability for any purpose.
+//  (C) Copyright John Maddock 2001 - 2003. 
+//  Use, modification and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
 
 //  cygwin specific config options:
 
 #define BOOST_PLATFORM "Cygwin"
-#define BOOST_NO_CWCTYPE
-#define BOOST_NO_CWCHAR
-#define BOOST_NO_SWPRINTF
 #define BOOST_HAS_DIRENT_H
+#define BOOST_HAS_LOG1P
+#define BOOST_HAS_EXPM1
 
 //
 // Threading API:
@@ -32,8 +31,28 @@
 #  define BOOST_HAS_FTIME
 #endif
 
+//
+// find out if we have a stdint.h, there should be a better way to do this:
+//
+#include <sys/types.h>
+#ifdef _STDINT_H
+#define BOOST_HAS_STDINT_H
+#endif
+
+/// Cygwin has no fenv.h
+#define BOOST_NO_FENV_H
+
 // boilerplate code:
 #include <boost/config/posix_features.hpp>
+
+//
+// Cygwin lies about XSI conformance, there is no nl_types.h:
+//
+#ifdef BOOST_HAS_NL_TYPES_H
+#  undef BOOST_HAS_NL_TYPES_H
+#endif
  
+
+
 
 

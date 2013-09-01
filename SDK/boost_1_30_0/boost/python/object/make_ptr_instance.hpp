@@ -1,8 +1,7 @@
-// Copyright David Abrahams 2002. Permission to copy, use,
-// modify, sell and distribute this software is granted provided this
-// copyright notice appears in all copies. This software is provided
-// "as is" without express or implied warranty, and with no claim as
-// to its suitability for any purpose.
+// Copyright David Abrahams 2002.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MAKE_PTR_INSTANCE_DWA200296_HPP
 # define MAKE_PTR_INSTANCE_DWA200296_HPP
 
@@ -10,6 +9,7 @@
 # include <boost/python/converter/registry.hpp>
 # include <boost/type_traits/is_polymorphic.hpp>
 # include <boost/get_pointer.hpp>
+# include <boost/detail/workaround.hpp>
 # include <typeinfo>
 
 namespace boost { namespace python { namespace objects { 
@@ -29,12 +29,22 @@ struct make_ptr_instance
     {
         return get_class_object_impl(get_pointer(x));
     }
-
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+    static inline PyTypeObject const* get_pytype()
+    {
+        return converter::registered<T>::converters.get_class_object();
+    }
+#endif
  private:
     template <class U>
     static inline PyTypeObject* get_class_object_impl(U const volatile* p)
     {
-        PyTypeObject* derived = get_derived_class_object(is_polymorphic<U>::type(), p);
+        if (p == 0)
+            return 0; // means "return None".
+
+        PyTypeObject* derived = get_derived_class_object(
+            BOOST_DEDUCED_TYPENAME is_polymorphic<U>::type(), p);
+        
         if (derived)
             return derived;
         return converter::registered<T>::converters.get_class_object();
@@ -43,19 +53,15 @@ struct make_ptr_instance
     template <class U>
     static inline PyTypeObject* get_derived_class_object(mpl::true_, U const volatile* x)
     {
-        converter::registration const* r = converter::registry::query(type_info(typeid(*x)));
+        converter::registration const* r = converter::registry::query(
+            type_info(typeid(*get_pointer(x)))
+        );
         return r ? r->m_class_object : 0;
     }
     
     template <class U>
-    static inline PyTypeObject* get_derived_class_object(mpl::false_, U* x)
+    static inline PyTypeObject* get_derived_class_object(mpl::false_, U*)
     {
-# if BOOST_WORKAROUND(__MWERKS__, <= 0x2407)
-        if (typeid(*x) != typeid(U))
-            return get_derived_class_object(mpl::true_(), x);
-# else
-        (void)x;
-# endif 
         return 0;
     }
 };

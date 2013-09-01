@@ -1,16 +1,14 @@
 // Copyright (c) Jeremy Siek 2001, Marc Wintermantel 2002
 //
-// Permission to use, copy, modify, distribute and sell this software
-// and its documentation for any purpose is hereby granted without fee,
-// provided that the above copyright notice appears in all copies and
-// that both that copyright notice and this permission notice appear
-// in supporting documentation.  Silicon Graphics makes no
-// representations about the suitability of this software for any
-// purpose.  It is provided "as is" without express or implied warranty.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_GRAPH_BANDWIDTH_HPP
 #define BOOST_GRAPH_BANDWIDTH_HPP
 
+#include <algorithm> // for std::min and std::max
+#include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/detail/numeric_traits.hpp>
 
@@ -22,15 +20,15 @@ namespace boost {
                 const Graph& g,
                 VertexIndexMap index)
   {
-    typedef typename graph_traits<Graph>::vertices_size_type size_type;
-    size_type b = 0;
+    BOOST_USING_STD_MAX();
+    using std::abs;
+    typedef typename graph_traits<Graph>::vertices_size_type vertices_size_type;
+    vertices_size_type b = 0;
     typename graph_traits<Graph>::out_edge_iterator e, end;
-    for (tie(e, end) = out_edges(i, g); e != end; ++e) {
+    for (boost::tie(e, end) = out_edges(i, g); e != end; ++e) {
       int f_i = get(index, i);
       int f_j = get(index, target(*e, g));
-      using namespace std; // to call abs() unqualified
-      if(f_i > f_j)
-      b = std::max(b, size_type(f_i - f_j));
+      b = max BOOST_PREVENT_MACRO_SUBSTITUTION (b, vertices_size_type(abs(f_i - f_j)));
     }
     return b;
   }
@@ -47,10 +45,16 @@ namespace boost {
   typename graph_traits<Graph>::vertices_size_type
   bandwidth(const Graph& g, VertexIndexMap index)
   {
-    typename graph_traits<Graph>::vertices_size_type b = 0;
-    typename graph_traits<Graph>::vertex_iterator i, end;
-    for (tie(i, end) = vertices(g); i != end; ++i)
-        b = std::max(b, ith_bandwidth(*i, g, index));
+    BOOST_USING_STD_MAX();
+    using std::abs;
+    typedef typename graph_traits<Graph>::vertices_size_type vertices_size_type;
+    vertices_size_type b = 0;
+    typename graph_traits<Graph>::edge_iterator i, end;
+    for (boost::tie(i, end) = edges(g); i != end; ++i) {
+      int f_i = get(index, source(*i, g));
+      int f_j = get(index, target(*i, g));
+      b = max BOOST_PREVENT_MACRO_SUBSTITUTION (b, vertices_size_type(abs(f_i - f_j)));
+    }
     return b;
   }
 
@@ -69,7 +73,7 @@ namespace boost {
     typedef typename detail::numeric_traits<size_type>::difference_type diff_t;
     size_type sum = 0;
     typename graph_traits<Graph>::edge_iterator i, end;
-    for (tie(i, end) = edges(g); i != end; ++i) {
+    for (boost::tie(i, end) = edges(g); i != end; ++i) {
       diff_t f_u = get(index_map, source(*i, g));
       diff_t f_v = get(index_map, target(*i, g));
       using namespace std; // to call abs() unqualified

@@ -1,16 +1,11 @@
 // tuple_comparison.hpp -----------------------------------------------------
 //  
-// Copyright (C) 2001 Jaakko Järvi (jaakko.jarvi@cs.utu.fi)
+// Copyright (C) 2001 Jaakko Jarvi (jaakko.jarvi@cs.utu.fi)
 // Copyright (C) 2001 Gary Powell (gary.powell@sierra.com)
 //
-// Permission to copy, use, sell and distribute this software is granted
-// provided this copyright notice appears in all copies. 
-// Permission to modify the code and to distribute modified code is granted
-// provided this copyright notice appears in all copies, and a notice 
-// that the code was modified is included with the copyright notice.
-// 
-// This software is provided "as is" without express or implied warranty, 
-// and with no claim as to its suitability for any purpose.
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 // 
 // For more information, see http://www.boost.org
 // 
@@ -74,8 +69,8 @@ inline bool neq<null_type,null_type>(const null_type&, const null_type&) { retur
 template<class T1, class T2>
 inline bool lt(const T1& lhs, const T2& rhs) {
   return lhs.get_head() < rhs.get_head()  ||
-            !(rhs.get_head() < lhs.get_head()) &&
-            lt(lhs.get_tail(), rhs.get_tail());
+          ( !(rhs.get_head() < lhs.get_head()) &&
+            lt(lhs.get_tail(), rhs.get_tail()));
 }
 template<>
 inline bool lt<null_type,null_type>(const null_type&, const null_type&) { return false; }
@@ -83,8 +78,8 @@ inline bool lt<null_type,null_type>(const null_type&, const null_type&) { return
 template<class T1, class T2>
 inline bool gt(const T1& lhs, const T2& rhs) {
   return lhs.get_head() > rhs.get_head()  ||
-            !(rhs.get_head() > lhs.get_head()) &&
-            gt(lhs.get_tail(), rhs.get_tail());
+          ( !(rhs.get_head() > lhs.get_head()) &&
+            gt(lhs.get_tail(), rhs.get_tail()));
 }
 template<>
 inline bool gt<null_type,null_type>(const null_type&, const null_type&) { return false; }

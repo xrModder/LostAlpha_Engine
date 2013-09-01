@@ -1,20 +1,16 @@
 // Boost.Function library
 
-// Copyright (C) 2001, 2002 Doug Gregor (gregod@cs.rpi.edu)
-//
-// Permission to copy, use, sell and distribute this software is granted
-// provided this copyright notice appears in all copies.
-// Permission to modify the code and to distribute modified code is granted
-// provided this copyright notice appears in all copies, and a notice
-// that the code was modified is included with the copyright notice.
-//
-// This software is provided "as is" without express or implied warranty,
-// and with no claim as to its suitability for any purpose.
+//  Copyright Douglas Gregor 2001-2003. Use, modification and
+//  distribution is subject to the Boost Software License, Version
+//  1.0. (See accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
 
 // For more information, see http://www.boost.org/libs/function
 
 // William Kempf, Jesse Jones and Karl Nelson were all very helpful in the
 // design of this library.
+
+#include <functional> // unary_function, binary_function
 
 #include <boost/preprocessor/iterate.hpp>
 #include <boost/detail/workaround.hpp>
@@ -27,8 +23,8 @@
 // in anything that may be included by function_template.hpp doesn't break
 #include <boost/function/detail/prologue.hpp>
 
-// Visual Age C++ doesn't handle the file iteration well
-#if BOOST_WORKAROUND(__IBMCPP__, <= 600)
+// Older Visual Age C++ version do not handle the file iteration well
+#if BOOST_WORKAROUND(__IBMCPP__, >= 500) && BOOST_WORKAROUND(__IBMCPP__, < 800)
 #  if BOOST_FUNCTION_MAX_ARGS >= 0
 #    include <boost/function/function0.hpp>
 #  endif

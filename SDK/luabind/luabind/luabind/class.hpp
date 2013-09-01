@@ -88,7 +88,7 @@
 #include <boost/mpl/lambda.hpp>
 #include <boost/mpl/logical.hpp>
 #include <boost/mpl/find_if.hpp>
-#include <boost/mpl/apply_if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/logical.hpp>
 
 #include <luabind/config.hpp>
@@ -188,7 +188,7 @@ namespace luabind
 		{
 			typedef typename get_predicate<Predicate>::type pred;
 			typedef typename boost::mpl::find_if<Parameters, pred>::type iterator;
-			typedef typename boost::mpl::apply_if<boost::is_same<iterator, typename boost::mpl::end<Parameters>::type>
+			typedef typename boost::mpl::eval_if<boost::is_same<iterator, typename boost::mpl::end<Parameters>::type>
 				, boost::mpl::identity<DefaultValue>
 				, iterator
 			>::type type;
@@ -239,7 +239,7 @@ namespace luabind
 		template<class Policies>
 		struct has_pure_virtual
 		{
-			typedef typename boost::mpl::apply_if<
+			typedef typename boost::mpl::eval_if<
 				boost::is_same<pure_virtual_tag, typename Policies::head>
 			  , boost::mpl::true_
 			  , has_pure_virtual<typename Policies::tail>

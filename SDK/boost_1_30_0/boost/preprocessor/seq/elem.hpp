@@ -1,10 +1,9 @@
 # /* **************************************************************************
 #  *                                                                          *
-#  *     (C) Copyright Paul Mensonides 2002.  Permission to copy, use,        *
-#  *     modify, sell, and distribute this software is granted provided       *
-#  *     this copyright notice appears in all copies.  This software is       *
-#  *     provided "as is" without express or implied warranty, and with       *
-#  *     no claim at to its suitability for any purpose.                      *
+#  *     (C) Copyright Paul Mensonides 2002.
+#  *     Distributed under the Boost Software License, Version 1.0. (See
+#  *     accompanying file LICENSE_1_0.txt or copy at
+#  *     http://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
@@ -13,7 +12,9 @@
 # ifndef BOOST_PREPROCESSOR_SEQ_ELEM_HPP
 # define BOOST_PREPROCESSOR_SEQ_ELEM_HPP
 #
+# include <boost/preprocessor/cat.hpp>
 # include <boost/preprocessor/config/config.hpp>
+# include <boost/preprocessor/facilities/empty.hpp>
 #
 # /* BOOST_PP_SEQ_ELEM */
 #
@@ -26,7 +27,7 @@
 # if BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_MSVC()
 #    define BOOST_PP_SEQ_ELEM_I(i, seq) BOOST_PP_SEQ_ELEM_II((BOOST_PP_SEQ_ELEM_ ## i seq))
 #    define BOOST_PP_SEQ_ELEM_II(res) BOOST_PP_SEQ_ELEM_IV(BOOST_PP_SEQ_ELEM_III res)
-#    define BOOST_PP_SEQ_ELEM_III(x, _) x
+#    define BOOST_PP_SEQ_ELEM_III(x, _) x BOOST_PP_EMPTY()
 #    define BOOST_PP_SEQ_ELEM_IV(x) x
 # elif BOOST_PP_CONFIG_FLAGS() & BOOST_PP_CONFIG_MWCC()
 #    define BOOST_PP_SEQ_ELEM_I(par) BOOST_PP_SEQ_ELEM_II ## par
@@ -34,7 +35,11 @@
 #    define BOOST_PP_SEQ_ELEM_III(im) BOOST_PP_SEQ_ELEM_IV(im)
 #    define BOOST_PP_SEQ_ELEM_IV(x, _) x
 # else
-#    define BOOST_PP_SEQ_ELEM_I(i, seq) BOOST_PP_SEQ_ELEM_II(BOOST_PP_SEQ_ELEM_ ## i seq)
+#    if defined(__IBMC__) || defined(__IBMCPP__)
+#        define BOOST_PP_SEQ_ELEM_I(i, seq) BOOST_PP_SEQ_ELEM_II(BOOST_PP_CAT(BOOST_PP_SEQ_ELEM_ ## i, seq))
+#    else
+#        define BOOST_PP_SEQ_ELEM_I(i, seq) BOOST_PP_SEQ_ELEM_II(BOOST_PP_SEQ_ELEM_ ## i seq)
+#    endif
 #    define BOOST_PP_SEQ_ELEM_II(im) BOOST_PP_SEQ_ELEM_III(im)
 #    define BOOST_PP_SEQ_ELEM_III(x, _) x
 # endif
