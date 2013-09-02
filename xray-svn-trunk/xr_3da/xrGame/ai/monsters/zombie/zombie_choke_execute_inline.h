@@ -48,7 +48,7 @@ void CStateZombieChokeExecuteAbstract::initialize()
 TEMPLATE_SPECIALIZATION
 void CStateZombieChokeExecuteAbstract::execute()
 {
-	if (!object->CControlledActor::is_turning() && !m_effector_activated) {
+	if (/*!object->CControlledActor::is_turning() &&*/ !m_effector_activated) {
 		object->ActivateChokeEffector	();
 		m_effector_activated			= true;
 	}

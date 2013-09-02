@@ -10,6 +10,7 @@
 
 #define DUMP_CONST(C) C->name,C->type,C->destination
 #pragma todo("cjayho to all: Hello all in this chat :)")
+#pragma todo("sky: yo mate :)")
 
 CRender										RImplementation;
 
