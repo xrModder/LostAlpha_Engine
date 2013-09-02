@@ -6,34 +6,34 @@
 #pragma warning(default:4995)
 #include "fmesh.h"
 
-BOOL ValidateIndices(u32 vCount, u32 iCount, u16* pIndices)
-{
-	if (vCount>65535)	return FALSE;
-	if (iCount%3)		return FALSE;
+//BOOL ValidateIndices(u32 vCount, u32 iCount, u16* pIndices)
+//{
+//	if (vCount>65535)	return FALSE;
+//	if (iCount%3)		return FALSE;
+//
+//	for (u32 I=0; I<iCount; I++)
+//	{
+//		if (u32(pIndices[I])>=vCount)	return FALSE;
+//	}
+//	return TRUE;
+//}
 
-	for (u32 I=0; I<iCount; I++)
-	{
-		if (u32(pIndices[I])>=vCount)	return FALSE;
-	}
-	return TRUE;
-}
+//static u32 dwPositionPart[8] =
+//{
+//	0,	// no position
+//	3,	// x,y,z
+//	4,	// sx,sy,sz,rhw
+//	4,	// x,y,z,b1
+//	5,	// x,y,z,b1,b2
+//	6,	// x,y,z,b1,b2,b3
+//	7,	// x,y,z,b1,b2,b3,b4
+//	8	// x,y,z,b1,b2,b3,b4,b5
+//};
 
-//-----------------------------------------------------------------------------------------------------------------
-static u32 dwPositionPart[8] =
-{
-	0,	// no position
-	3,	// x,y,z
-	4,	// sx,sy,sz,rhw
-	4,	// x,y,z,b1
-	5,	// x,y,z,b1,b2
-	6,	// x,y,z,b1,b2,b3
-	7,	// x,y,z,b1,b2,b3,b4
-	8	// x,y,z,b1,b2,b3,b4,b5
-};
+//#define FAKES 0xffffffff
+//#define FAKEZ 0xfffffffe
 
-#define FAKES 0xffffffff
-#define FAKEZ 0xfffffffe
-
+/*
 void ConvertVertices(u32 dwTypeDest, void *pDest, u32 dwTypeSrc, void *pSource, u32 dwCount)
 // assuming that pDest is large enought to maintain all the data
 {
@@ -161,7 +161,7 @@ void ConvertVertices(u32 dwTypeDest, void *pDest, u32 dwTypeSrc, void *pSource, 
 	}
 	return;
 }
-
+*/
 void ogf_desc::Load(IReader& F)
 {
 	F.r_stringZ	(source_file);

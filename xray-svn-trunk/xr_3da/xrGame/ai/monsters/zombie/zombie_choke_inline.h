@@ -78,18 +78,7 @@ bool CStateZombieChokeAbstract::check_start_conditions()
 	if (!object->WantChoke()) return false;
 
 	const CEntityAlive *m_enemy = object->EnemyMan.get_enemy();
-	if (m_enemy->CLS_ID != CLSID_OBJECT_ACTOR)							return false;
 	if (!object->EnemyMan.see_enemy_now())								return false;
-	if (object->CControlledActor::is_installed() && object->CControlledActor::is_controlling())	return false;
-
-	const CActor *m_actor = smart_cast<const CActor*>(m_enemy);
-	VERIFY(m_actor);
-	if (m_actor->input_external_handler_installed())						return false;
-
-	float dist_to_enemy = object->EnemyMan.get_enemy_position().distance_to(object->Position());
-	if (dist_to_enemy > MAX_DISTANCE_TO_ENEMY)							return false;
-
-	if (controlling_value == 1)									return false;
 
 	if (!get_state(eStateChoke_Execute)->check_start_conditions())					return false;
 
@@ -105,6 +94,8 @@ bool CStateZombieChokeAbstract::check_completion()
 	// если актера уже душит второй зомби
 	if ((current_substate != eStateChoke_Execute) && 
 		object->CControlledActor::is_controlling())	return true;
+
+	if (current_substate == eStateChoke_Execute && get_state(eStateChoke_Execute)->check_completion())	return true;
 
 	return false;
 }

@@ -1103,7 +1103,7 @@ void CSE_ALifeCreatureAbstract::kill_entity			(ALife::_OBJECT_ID id)
 	{
 		m_game_death_time			= Level().GetGameTime(); //from on_death()
 		fHealth					= -1.f; //from on_death()
-		m_killer_id				= (id ? id : ALife::_OBJECT_ID(-1));
+		m_killer_id				= (id);
 	}
 }
 

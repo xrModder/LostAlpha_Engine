@@ -2,7 +2,7 @@
 #define fmeshH
 #pragma once
 
-BOOL ValidateIndices		(u32 vCount, u32 iCount, u16* pIndices);
+//BOOL ValidateIndices		(u32 vCount, u32 iCount, u16* pIndices);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // MESH as it is represented in file
@@ -30,8 +30,8 @@ enum OGF_Chuncks {
 	OGF_INDICES				= 4,
 	OGF_P_MAP				= 5,	//---------------------- unused
 	OGF_SWIDATA				= 6,
-	OGF_VCONTAINER			= 7,
-	OGF_ICONTAINER			= 8,
+	OGF_VCONTAINER			= 7, // not used ??
+	OGF_ICONTAINER			= 8, // not used ??
     OGF_CHILDREN			= 9,	// * For skeletons only
 	OGF_CHILDREN_L			= 10,	// Link to child visuals
 	OGF_LODDEF2				= 11,	// + 5 channel data

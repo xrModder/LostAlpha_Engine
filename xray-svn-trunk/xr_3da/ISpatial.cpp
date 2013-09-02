@@ -148,6 +148,11 @@ ISpatial_DB::ISpatial_DB()
 
 ISpatial_DB::~ISpatial_DB()
 {
+	if ( m_root )
+	{
+		_node_destroy(m_root);
+	}
+
 	while (!allocator_pool.empty()){
 		allocator.destroy		(allocator_pool.back());
 		allocator_pool.pop_back	();
