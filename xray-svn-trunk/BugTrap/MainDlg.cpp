@@ -77,10 +77,10 @@ static CHyperLink g_hlURL;
  */
 static void SaveReport(HWND hwndParent)
 {
-	TCHAR szFileName[MAX_PATH];
+	TCHAR szFileName[MAX_PATH] = _T("");
 	OPENFILENAME ofn;
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = hwndParent;
 	ofn.lpstrFile = szFileName;
 	ofn.nMaxFile = countof(szFileName);

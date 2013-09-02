@@ -1287,12 +1287,37 @@ static HWND GetAppWindow(void)
  * @brief Hide application window.
  * @param hwndParent - application window handle.
  */
+static bool is_main_thread( HWND hwndParent )
+{
+	DWORD dwProcessID = 0;
+	return ( GetWindowThreadProcessId( hwndParent, &dwProcessID ) == GetCurrentThreadId() );
+}
 static void HideAppWindow(HWND hwndParent)
 {
-	if (hwndParent != NULL)
-	{
+	if (hwndParent != NULL) {
 		__try {
-			ShowWindow(hwndParent, SW_HIDE);
+			if( is_main_thread( hwndParent ) )
+			{
+				ShowWindow(hwndParent, SW_HIDE );//SW_FORCEMINIMIZE //SW_HIDE
+			}
+			else
+			{
+				// так у нас из второго потока  в полноэкранном режиме вывести диалог и не получилость
+				// закрываем процесс чтобы не зависнуть - в xrDebugNew теперь дамп сохраняется всегда
+				TerminateProcess	(GetCurrentProcess(),1);
+/*
+				HANDLE h = OpenThread( THREAD_ALL_ACCESS, FALSE, GetWindowThreadProcessId( hwndParent, NULL ) );
+				TerminateThread( h, DWORD(-1) );
+				CloseHandle( h );
+				//TerminateThread GetCurrentThread()
+				//THREAD_ALL_ACCESS
+				ShowWindow( hwndParent, SW_FORCEMINIMIZE );
+				// ShowWindow(hwnd, nCmdShow);
+				 //UpdateWindow(hwnd);
+				//_endthreadex //HANDLE GetCurrentThread() //HANDLE GetCurrentThreadId() //AttachThreadInput //GetWindowThreadProcessId
+				//TerminateThread DuplicateHandle
+*/
+			}
 		} __except (EXCEPTION_EXECUTE_HANDLER) {
 			// ignore any exception in broken app...
 		}
@@ -1312,8 +1337,10 @@ void StartHandlerThread(void)
 	if (g_eActivityType == BTA_SHOWUI)
 	{
 		hwndParent = GetAppWindow();
-		g_pResManager = new CResManager(hwndParent);
-		HideAppWindow(hwndParent);
+		//pass NULL to prevent calling SendMessage to main window and resulting hanging secondary threads calls
+		g_pResManager = new CResManager( NULL );
+		//_endthreadex //HANDLE GetCurrentThread() //HANDLE GetCurrentThreadId() //AttachThreadInput //GetWindowThreadProcessId
+		HideAppWindow( hwndParent );
 	}
 	else
 		hwndParent = NULL;
