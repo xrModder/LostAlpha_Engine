@@ -1,5 +1,5 @@
 /*
-** $Id: lstate.h,v 2.23 2005/07/09 13:22:34 roberto Exp $
+** $Id: lstate.h,v 2.24.1.2 2008/01/03 15:20:39 roberto Exp $
 ** Global State
 ** See Copyright Notice in lua.h
 */
@@ -77,9 +77,9 @@ typedef struct global_State {
   void *ud;         /* auxiliary data to `frealloc' */
   lu_byte currentwhite;
   lu_byte gcstate;  /* state of garbage collector */
+  int sweepstrgc;  /* position of sweep in `strt' */
   GCObject *rootgc;  /* list of all collectable objects */
   GCObject **sweepgc;  /* position of sweep in `rootgc' */
-  int sweepstrgc;  /* position of sweep in `strt' */
   GCObject *gray;  /* list of gray objects */
   GCObject *grayagain;  /* list of objects to be traversed atomically */
   GCObject *weak;  /* list of weak tables (to be cleared) */
@@ -111,8 +111,6 @@ typedef struct global_State {
 struct lua_State {
   CommonHeader;
   lu_byte status;
-  lu_byte hookmask;
-  int stacksize;
   StkId top;  /* first free slot in the stack */
   StkId base;  /* base of current function */
   global_State *l_G;
@@ -122,8 +120,10 @@ struct lua_State {
   StkId stack;  /* stack base */
   CallInfo *end_ci;  /* points after end of ci array*/
   CallInfo *base_ci;  /* array of CallInfo's */
+  int stacksize;
   int size_ci;  /* size of array `base_ci' */
   unsigned short nCcalls;  /* number of nested C calls */
+  lu_byte hookmask;
   lu_byte allowhook;
   int basehookcount;
   int hookcount;

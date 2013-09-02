@@ -1,9 +1,10 @@
 /*
 ** Lua library for the JIT engine.
-** Copyright (C) 2005 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2012 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #define ljitlib_c
 #define LUA_LIB
@@ -12,9 +13,6 @@
 #include "lauxlib.h"
 #include "luajit.h"
 #include "lualib.h"
-#ifndef COCO_DISABLE
-#include "lcoco.h"
-#endif
 
 /* This file is not a pure C API user. Some internals are required. */
 #include "lobject.h"
@@ -34,8 +32,9 @@
 /* ------------------------------------------------------------------------ */
 
 /* Static pointer addresses used as registry keys. */
-static const int regkey_frontend = 1;
-static const int regkey_comthread = 1;
+/* The values do not matter, but must be different to prevent joining. */
+static const int regkey_frontend = 0x6c6a6c01;
+static const int regkey_comthread = 0x6c6a6c02;
 
 /* Check that the first argument is a Lua function and return its closure. */
 static Closure *check_LCL(lua_State *L)
@@ -135,7 +134,7 @@ static int compstatus(lua_State *L, int status)
   }
 }
 
-/* Compile a function. Pass typical args to help the analyzer. */
+/* Compile a function. Pass typical args to help the optimizer. */
 static int j_compile(lua_State *L)
 {
   int nargs = lua_gettop(L) - 1;
@@ -265,27 +264,8 @@ static int j_frontend(lua_State *L)
   return 1;
 }
 
-/* Preallocation for the hash part of the compiler state table. */
-#define COMSTATE_PREALLOC	128
-
-/* Helper function to efficiently fill the state table. */
-static void createstate(lua_State *L, StkId func, int nargs)
-{
-  Table *t;
-  int i;
-  /* Create compiler state table. */
-  lua_createtable(L, nargs, COMSTATE_PREALLOC);
-  lua_lock(L);
-  t = hvalue(L->top-1);
-  /* Copy function and args (from different stack). */
-  setobj2t(L, luaH_setstr(L, t, luaS_newliteral(L, "func")), func);
-  for (i = 1; i <= nargs; i++)
-    setobj2t(L, luaH_setnum(L, t, i), func+i);
-  lua_unlock(L);
-}
-
 /* Compiler frontend wrapper. */
-static int frontwrap(lua_State *L, int nargs)
+static int frontwrap(lua_State *L, Table *st)
 {
   jit_State *J = G(L)->jit_state;
   lua_State *JL;
@@ -293,14 +273,14 @@ static int frontwrap(lua_State *L, int nargs)
 
   /* Allocate compiler thread on demand. */
   if (J->L == NULL) {
-    if (!lua_checkstack(L, 2)) return JIT_S_COMPILER_ERROR;
+    if (!lua_checkstack(L, 3)) return JIT_S_COMPILER_ERROR;
+    sethvalue(L, L->top++, st);  /* Prevent GC of state table. */
     lua_pushlightuserdata(L, (void *)&regkey_comthread);
-#if !defined(COCO_DISABLE) && defined(LUAJIT_COMPILER_CSTACK)
-    J->L = lua_newcthread(L, LUAJIT_COMPILER_CSTACK);  /* Ensure C stack. */ 
-#else
+    /* Cannot use C stack, since it's deallocated early in Coco. */
+    /* But we don't need one -- the compiler thread never yields, anyway. */
     J->L = lua_newthread(L);
-#endif
     lua_rawset(L, LUA_REGISTRYINDEX);
+    L->top--;  /* Remove state table from this stack. */
   }
   JL = J->L;
 
@@ -308,7 +288,8 @@ static int frontwrap(lua_State *L, int nargs)
   lua_settop(JL, 0);
   lua_pushlightuserdata(JL, (void *)&regkey_frontend);
   lua_rawget(JL, LUA_REGISTRYINDEX);
-  createstate(JL, L->top - (nargs+1), nargs);
+  sethvalue(JL, JL->top, st);
+  JL->top++;
 
   /* Start the frontend by resuming the compiler thread. */
   if (lua_resume(JL, 1) != 0) {  /* Failed? */
@@ -350,6 +331,23 @@ static void makepipeline(lua_State *L)
 
 /* ------------------------------------------------------------------------ */
 
+/* Calculate total mcode size without mfm and only for active mcode blocks. */
+static size_t mcodesize(Proto *pt)
+{
+  jit_MCTrailer tr;
+  size_t sz = 0;
+  tr.mcode = (char *)pt->jit_mcode;
+  tr.sz = pt->jit_szmcode;
+  do {
+    jit_Mfm *mfm = JIT_MCMFM(tr.mcode, tr.sz);
+    if (sz != 0 && jit_mfm_ismain(mfm)) break;  /* Stop at old main mfm. */
+    while (*mfm != JIT_MFM_STOP) mfm--;  /* Search for end of mcode. */
+    sz += (char *)mfm-(char *)tr.mcode;  /* Add size of mcode without mfm. */
+    memcpy((void *)&tr, JIT_MCTRAILER(tr.mcode, tr.sz), sizeof(jit_MCTrailer));
+  } while (tr.mcode != NULL);
+  return sz;
+}
+
 #define setintfield(name, i) \
   do { lua_pushinteger(L, i); lua_setfield(L, -2, name); } while (0)
 
@@ -372,8 +370,8 @@ static int ju_stats(lua_State *L)
     lua_setfield(L, -2, "isvararg");
     lua_getfenv(L, 1);
     lua_setfield(L, -2, "env");
-    if (pt->jit_sizemcode != 0) {
-      setintfield("mcodesize", pt->jit_sizemcode);
+    if (pt->jit_szmcode != 0) {
+      setintfield("mcodesize", (int)mcodesize(pt));
       lua_pushnumber(L, (lua_Number)(size_t)pt->jit_mcode);
       lua_setfield(L, -2, "mcodeaddr");
     }
@@ -391,17 +389,28 @@ static int ju_bytecode(lua_State *L)
   if (pc >= 1 && pc <= pt->sizecode) {
     Instruction ins = pt->code[pc-1];
     OpCode op = GET_OPCODE(ins);
-    /* Just in case we accidentally decode a count following OP_SETLIST. */
-    if (op >= NUM_OPCODES) return 0;
+    if (pc > 1 && (((int)OP_SETLIST) << POS_OP) ==
+	(pt->code[pc-2] & (MASK1(SIZE_OP,POS_OP) | MASK1(SIZE_C,POS_C)))) {
+      lua_pushstring(L, luaP_opnames[OP_SETLIST]);
+      lua_pushnumber(L, (lua_Number)ins);  /* Fake extended op. */
+      return 1;
+    }
+    if (op >= NUM_OPCODES) return 0;  /* Just in case. */
     lua_pushstring(L, luaP_opnames[op]);
     lua_pushinteger(L, GETARG_A(ins));
     switch (getOpMode(op)) {
     case iABC: {
       int b = GETARG_B(ins), c = GETARG_C(ins);
-      if (getBMode(op) == OpArgN) lua_pushnil(L);
-      else lua_pushinteger(L, ISK(b) ? (-1-INDEXK(b)) : b);
-      if (getCMode(op) == OpArgN) lua_pushnil(L);
-      else lua_pushinteger(L, ISK(c) ? (-1-INDEXK(c)) : c);
+      switch (getBMode(op)) {
+      case OpArgN: lua_pushnil(L); break;
+      case OpArgK: if (ISK(b)) b = -1-INDEXK(b);
+      case OpArgR: case OpArgU: lua_pushinteger(L, b); break;
+      }
+      switch (getCMode(op)) {
+      case OpArgN: lua_pushnil(L); break;
+      case OpArgK: if (ISK(c)) c = -1-INDEXK(c);
+      case OpArgR: case OpArgU: lua_pushinteger(L, c); break;
+      }
       lua_pushboolean(L, testTMode(op));
       return 5;
     }
@@ -450,19 +459,6 @@ static int ju_upvalue(lua_State *L)
   return 2;
 }
 
-/* local subfunc = jit.util.closure(func, idx, upvalues...) */
-static int ju_closure(lua_State *L)
-{
-  Closure *cl = check_LCL(L);
-  Proto *pt = cl->l.p;
-  int idx = luaL_checkint(L, 2);
-  if (idx >= 0 && idx < pt->sizep) {
-    push_LCL(L, pt->p[idx], cl->l.env);
-    return 1;
-  }
-  return 0;
-}
-
 /* local nup = jit.util.closurenup(func, idx) */
 static int ju_closurenup(lua_State *L)
 {
@@ -476,41 +472,80 @@ static int ju_closurenup(lua_State *L)
   return 0;
 }
 
-/* local mcode, addr = jit.util.mcode(func) */
+/* for tag, mark in mfmiter do ... end. */
+static int ju_mfmiter(lua_State *L)
+{
+  jit_Mfm *mfm = (jit_Mfm *)lua_touserdata(L, lua_upvalueindex(1));
+  int m = *mfm--;
+  switch (m) {
+  case JIT_MFM_STOP: return 0;
+  case JIT_MFM_COMBINE: lua_pushliteral(L, "COMBINE"); lua_pushnil(L); break;
+  case JIT_MFM_DEAD: lua_pushliteral(L, "DEAD"); lua_pushnil(L); break;
+  default:
+    lua_pushinteger(L, m & JIT_MFM_MASK);
+    lua_pushboolean(L, m & JIT_MFM_MARK);
+    break;
+  }
+  lua_pushlightuserdata(L, (void *)mfm);
+  lua_replace(L, lua_upvalueindex(1));
+  return 2;
+}
+
+/* local addr, mcode, mfmiter = jit.util.mcode(func, block) */
 static int ju_mcode(lua_State *L)
 {
   Proto *pt = check_LCL(L)->l.p;
-  if (pt->jit_sizemcode == 0) { /* Not compiled (yet): return nil, status. */
+  if (pt->jit_szmcode == 0) {  /* Not compiled (yet): return nil, status. */
     lua_pushnil(L);
     lua_pushinteger(L, pt->jit_status);
     return 2;
   } else {
-    lua_pushlstring(L, (const char *)pt->jit_mcode, pt->jit_sizemcode);
-    lua_pushnumber(L, (lua_Number)(size_t)pt->jit_mcode);
-    return 2;
+    jit_Mfm *mfm;
+    jit_MCTrailer tr;
+    int block = luaL_checkint(L, 2);
+    tr.mcode = (char *)pt->jit_mcode;
+    tr.sz = pt->jit_szmcode;
+    while (--block > 0) {
+      void *trp = JIT_MCTRAILER(tr.mcode, tr.sz);
+      memcpy((void *)&tr, trp, sizeof(jit_MCTrailer));
+      if (tr.sz == 0) return 0;
+    }
+    mfm = JIT_MCMFM(tr.mcode, tr.sz);
+    while (*mfm != JIT_MFM_STOP) mfm--;  /* Search for end of mcode. */
+    lua_pushnumber(L, (lua_Number)(size_t)tr.mcode);
+    lua_pushlstring(L, (const char *)tr.mcode, (char *)mfm-(char *)tr.mcode);
+    lua_pushlightuserdata(L, (void *)JIT_MCMFM(tr.mcode, tr.sz));
+    lua_pushvalue(L, 1);  /* Must hold onto function to avoid GC. */
+    lua_pushcclosure(L, ju_mfmiter, 2);
+    return 3;
   }
 }
 
-/* local addr = jit.util.mcodeaddr(func, pc) */
-static int ju_mcodeaddr(lua_State *L)
-{
-  Proto *pt = check_LCL(L)->l.p;
-  int idx = luaL_checkint(L, 2);
-  /* Allow for PC 0 (currently unused), PC last+1 (.tail) and maybe more. */
-  if (pt->jit_pcaddr != NULL && idx >= 0 && idx < pt->sizecode+PCADDR_EXTRA) {
-    lua_pushnumber(L, (lua_Number)(size_t)pt->jit_pcaddr[idx]);
-    return 1;
-  }
-  return 0;
-}
-
-/* local mcode, base = jit.util.jsubmcode() */
+/* local addr [, mcode] = jit.util.jsubmcode([idx]) */
 static int ju_jsubmcode(lua_State *L)
 {
   jit_State *J = G(L)->jit_state;
-  lua_pushlstring(L, (const char *)J->jsubmcode, J->sizejsubmcode);
-  lua_pushnumber(L, (lua_Number)(size_t)J->jsubmcode);
-  return 2;
+  if (lua_isnoneornil(L, 1)) {
+    lua_pushnumber(L, (lua_Number)(size_t)J->jsubmcode);
+    lua_pushlstring(L, (const char *)J->jsubmcode, J->szjsubmcode);
+    return 2;
+  } else {
+    int idx = luaL_checkint(L, 1);
+    if (idx >= 0 && idx < J->numjsub) {
+      lua_pushnumber(L, (lua_Number)(size_t)J->jsub[idx]);
+      return 1;
+    }
+    return 0;
+  }
+}
+
+/* FOR INTERNAL DEBUGGING USE ONLY: local addr = jit.util.stackptr() */
+static int ju_stackptr(lua_State *L)
+{
+  jit_State *J = G(L)->jit_state;
+  size_t addr = cast(size_t (*)(void), J->jsub[0])();  /* JSUB_STACKPTR == 0! */
+  lua_pushnumber(L, (lua_Number)addr);
+  return 1;
 }
 
 /* jit.util.* functions. */
@@ -519,11 +554,10 @@ static const luaL_Reg jitutillib[] = {
   {"bytecode",		ju_bytecode },
   {"const",		ju_const },
   {"upvalue",		ju_upvalue },
-  {"closure",		ju_closure },
   {"closurenup",	ju_closurenup },
   {"mcode",		ju_mcode },
-  {"mcodeaddr",		ju_mcodeaddr },
   {"jsubmcode",		ju_jsubmcode },
+  {"stackptr",		ju_stackptr },
   { NULL, NULL }
 };
 
@@ -540,7 +574,7 @@ static void makehints(lua_State *L, const char *const *t, int tmax,
   lua_setfield(L, -2, name);
 }
 
-/* CHECK: This must match with ljit.h (grep "ORDER JIT_S"). */
+/* CHECK: must match with ljit.h (grep "ORDER JIT_S"). */
 static const char *const status_list[] = {
   "OK",
   "NONE",
@@ -556,7 +590,7 @@ static const char *const status_list[] = {
 static void makestatus(lua_State *L, const char *name)
 {
   int i;
-  lua_createtable(L, JIT_S_MAX, JIT_S_MAX);
+  lua_createtable(L, JIT_S_MAX-1, JIT_S_MAX+1);  /* Codes are not 1-based. */
   for (i = 0; i < JIT_S_MAX; i++) {
     lua_pushstring(L, status_list[i]);
     lua_pushinteger(L, i);
@@ -572,24 +606,31 @@ static void makestatus(lua_State *L, const char *name)
 /*
 ** Open JIT library
 */
-LUALIB_API int LUA_CC luaopen_jit(lua_State *L)
+LUALIB_API int luaopen_jit(lua_State *L)
 {
   /* Add the core JIT library. */
   luaL_register(L, LUA_JITLIBNAME, jitlib);
+  lua_pushliteral(L, LUAJIT_VERSION);
+  lua_setfield(L, -2, "version");
+  setintfield("version_num", LUAJIT_VERSION_NUM);
+  lua_pushstring(L, luaJIT_arch);
+  lua_setfield(L, -2, "arch");
   makepipeline(L);
 
   /* Add the utility JIT library. */
   luaL_register(L, LUA_JITLIBNAME ".util", jitutillib);
   makestatus(L, "status");
   makehints(L, hints_H, JIT_H_MAX, "hints");
-  makehints(L, hints_HF, JIT_HF_MAX, "fhints");
+  makehints(L, hints_FH, JIT_FH_MAX, "fhints");
   lua_pop(L, 1);
 
   /* Everything ok, so turn the JIT engine on. Vroooom! */
-  if (luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE|LUAJIT_MODE_ON) <= 0)
+  if (luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE|LUAJIT_MODE_ON) <= 0) {
     /* Ouch. Someone screwed up DynASM or the JSUBs. Probably me. */
-    return luaL_error(L, "JIT engine init failed (%08x)",
+    /* But if you get 999999999, look at jit_consistency_check(). */
+    return luaL_error(L, "JIT engine init failed (%d)",
 	G(L)->jit_state->dasmstatus);
+  }
 
   return 1;
 }

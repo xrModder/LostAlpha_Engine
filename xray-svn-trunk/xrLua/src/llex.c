@@ -1,11 +1,12 @@
 /*
-** $Id: llex.c,v 2.12 2005/05/17 19:49:15 roberto Exp $
+** $Id: llex.c,v 2.20.1.2 2009/11/23 14:58:22 roberto Exp $
 ** Lexical Analyzer
 ** See Copyright Notice in lua.h
 */
 
 
 #include <ctype.h>
+#include <locale.h>
 #include <string.h>
 
 #define llex_c
@@ -19,6 +20,7 @@
 #include "lparser.h"
 #include "lstate.h"
 #include "lstring.h"
+#include "ltable.h"
 #include "lzio.h"
 
 
@@ -65,7 +67,7 @@ void luaX_init (lua_State *L) {
     TString *ts = luaS_new(L, luaX_tokens[i]);
     luaS_fix(ts);  /* reserved words are never collected */
     lua_assert(strlen(luaX_tokens[i])+1 <= TOKEN_LEN);
-    ts->tsv.reserved = cast(lu_byte, i+1);  /* reserved word */
+    ts->tsv.reserved = cast_byte(i+1);  /* reserved word */
   }
 }
 
@@ -116,8 +118,10 @@ TString *luaX_newstring (LexState *ls, const char *str, size_t l) {
   lua_State *L = ls->L;
   TString *ts = luaS_newlstr(L, str, l);
   TValue *o = luaH_setstr(L, ls->fs->h, ts);  /* entry for `str' */
-  if (ttisnil(o))
+  if (ttisnil(o)) {
     setbvalue(o, 1);  /* make sure `str' will not be collected */
+    luaC_checkGC(L);
+  }
   return ts;
 }
 
@@ -134,6 +138,7 @@ static void inclinenumber (LexState *ls) {
 
 
 void luaX_setinput (lua_State *L, LexState *ls, ZIO *z, TString *source) {
+  ls->decpoint = '.';
   ls->L = L;
   ls->lookahead.token = TK_EOS;  /* no look-ahead token */
   ls->z = z;
@@ -155,35 +160,50 @@ void luaX_setinput (lua_State *L, LexState *ls, ZIO *z, TString *source) {
 
 
 
+static int check_next (LexState *ls, const char *set) {
+  if (!strchr(set, ls->current))
+    return 0;
+  save_and_next(ls);
+  return 1;
+}
+
+
+static void buffreplace (LexState *ls, char from, char to) {
+  size_t n = luaZ_bufflen(ls->buff);
+  char *p = luaZ_buffer(ls->buff);
+  while (n--)
+    if (p[n] == from) p[n] = to;
+}
+
+
+static void trydecpoint (LexState *ls, SemInfo *seminfo) {
+  /* format error: try to update decimal point separator */
+  struct lconv *cv = localeconv();
+  char old = ls->decpoint;
+  ls->decpoint = (cv ? cv->decimal_point[0] : '.');
+  buffreplace(ls, old, ls->decpoint);  /* try updated decimal separator */
+  if (!luaO_str2d(luaZ_buffer(ls->buff), &seminfo->r)) {
+    /* format error with correct decimal point: no more options */
+    buffreplace(ls, ls->decpoint, '.');  /* undo change (for error message) */
+    luaX_lexerror(ls, "malformed number", TK_NUMBER);
+  }
+}
+
 
 /* LUA_NUMBER */
 static void read_numeral (LexState *ls, SemInfo *seminfo) {
-  while (isdigit(ls->current)) {
+  lua_assert(isdigit(ls->current));
+  do {
     save_and_next(ls);
-  }
-  if (ls->current == '.') {
+  } while (isdigit(ls->current) || ls->current == '.');
+  if (check_next(ls, "Ee"))  /* `E'? */
+    check_next(ls, "+-");  /* optional exponent sign */
+  while (isalnum(ls->current) || ls->current == '_')
     save_and_next(ls);
-    if (ls->current == '.') {
-      save_and_next(ls);
-      luaX_lexerror(ls,
-                 "ambiguous syntax (decimal point x string concatenation)",
-                 TK_NUMBER);
-    }
-  }
-  while (isdigit(ls->current)) {
-    save_and_next(ls);
-  }
-  if (ls->current == 'e' || ls->current == 'E') {
-    save_and_next(ls);  /* read `E' */
-    if (ls->current == '+' || ls->current == '-')
-      save_and_next(ls);  /* optional exponent sign */
-    while (isdigit(ls->current)) {
-      save_and_next(ls);
-    }
-  }
   save(ls, '\0');
-  if (!luaO_str2d(luaZ_buffer(ls->buff), &seminfo->r))
-    luaX_lexerror(ls, "malformed number", TK_NUMBER);
+  buffreplace(ls, '.', ls->decpoint);  /* follow locale for decimal point */
+  if (!luaO_str2d(luaZ_buffer(ls->buff), &seminfo->r))  /* format error? */
+    trydecpoint(ls, seminfo); /* try to update decimal point separator */
 }
 
 
@@ -311,7 +331,7 @@ static void read_string (LexState *ls, int del, SemInfo *seminfo) {
 }
 
 
-int luaX_lex (LexState *ls, SemInfo *seminfo) {
+static int llex (LexState *ls, SemInfo *seminfo) {
   luaZ_resetbuffer(ls->buff);
   for (;;) {
     switch (ls->current) {
@@ -375,12 +395,9 @@ int luaX_lex (LexState *ls, SemInfo *seminfo) {
       }
       case '.': {
         save_and_next(ls);
-        if (ls->current == '.') {
-          next(ls);
-          if (ls->current == '.') {
-            next(ls);
+        if (check_next(ls, ".")) {
+          if (check_next(ls, "."))
             return TK_DOTS;   /* ... */
-          }
           else return TK_CONCAT;   /* .. */
         }
         else if (!isdigit(ls->current)) return '.';
@@ -392,27 +409,6 @@ int luaX_lex (LexState *ls, SemInfo *seminfo) {
       case EOZ: {
         return TK_EOS;
       }
-      case '/':
-        next(ls);
-        if (ls->current == '/') {
-          while (ls->current != '\n' && ls->current != EOZ)
-            next(ls);
-          continue;
-        } else if (ls->current == '*') {
-          next(ls);
-          while (ls->current != EOZ) {
-            if (ls->current == '*') {
-              next(ls);
-              if (ls->current == '/') {
-                next(ls);
-                break;
-              }
-            }
-            next(ls);
-          }
-          continue;
-        } else
-          return '/';
       default: {
         if (isspace(ls->current)) {
           lua_assert(!currIsNewline(ls));
@@ -448,4 +444,20 @@ int luaX_lex (LexState *ls, SemInfo *seminfo) {
   }
 }
 
-#undef next
+
+void luaX_next (LexState *ls) {
+  ls->lastline = ls->linenumber;
+  if (ls->lookahead.token != TK_EOS) {  /* is there a look-ahead token? */
+    ls->t = ls->lookahead;  /* use this one */
+    ls->lookahead.token = TK_EOS;  /* and discharge it */
+  }
+  else
+    ls->t.token = llex(ls, &ls->t.seminfo);  /* read next token */
+}
+
+
+void luaX_lookahead (LexState *ls) {
+  lua_assert(ls->lookahead.token == TK_EOS);
+  ls->lookahead.token = llex(ls, &ls->lookahead.seminfo);
+}
+

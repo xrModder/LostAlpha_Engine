@@ -2,7 +2,7 @@
 -- DynASM. A dynamic assembler for code generation engines.
 -- Originally designed and implemented for LuaJIT.
 --
--- Copyright (C) 2005 Mike Pall. All rights reserved.
+-- Copyright (C) 2005-2008 Mike Pall. All rights reserved.
 -- See below for full copyright notice.
 ------------------------------------------------------------------------------
 
@@ -10,14 +10,14 @@
 local _info = {
   name =	"DynASM",
   description =	"A dynamic assembler for code generation engines",
-  version =	"1.0.2",
-  vernum =	 10002,
-  release =	"2005-08-29",
+  version =	"1.1.4",
+  vernum =	 10104,
+  release =	"2008-01-29",
   author =	"Mike Pall",
-  url =		"http://luajit.luaforge.net/dynasm.html",
+  url =		"http://luajit.org/dynasm.html",
   license =	"MIT",
   copyright =	[[
-Copyright (C) 2005 Mike Pall. All rights reserved.
+Copyright (C) 2005-2008 Mike Pall. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -215,17 +215,20 @@ function opt_map.U(args)
   end
 end
 
+-- Helper for definesubst.
+local gotsubst
+
+local function definesubst_one(word)
+  local subst = map_def[word]
+  if subst then gotsubst = word; return subst else return word end
+end
+
 -- Iteratively substitute defines.
 local function definesubst(stmt)
-  local gotsubst
   -- Limit number of iterations.
   for i=1,100 do
     gotsubst = false
-    stmt = gsub(stmt, "#?[%w_]+", function(word)
-      local subst = map_def[word]
-      if subst then gotsubst = word; return subst
-      else return word end
-    end)
+    stmt = gsub(stmt, "#?[%w_]+", definesubst_one)
     if not gotsubst then break end
   end
   if gotsubst then wfatal("recursive define involving `"..gotsubst.."'") end
@@ -246,6 +249,95 @@ local function dumpdefines(out, lvl)
     out:write(format("  %-20s %s\n", name, subst))
   end
   out:write("\n")
+end
+
+------------------------------------------------------------------------------
+
+-- Support variables for conditional assembly.
+local condlevel = 0
+local condstack = {}
+
+-- Evaluate condition with a Lua expression. Substitutions already performed.
+local function cond_eval(cond)
+  local func, err = loadstring("return "..cond)
+  if func then
+    setfenv(func, {}) -- No globals. All unknown identifiers evaluate to nil.
+    local ok, res = pcall(func)
+    if ok then
+      if res == 0 then return false end -- Oh well.
+      return not not res
+    end
+    err = res
+  end
+  wfatal("bad condition: "..err)
+end
+
+-- Skip statements until next conditional pseudo-opcode at the same level.
+local function stmtskip()
+  local dostmt_save = dostmt
+  local lvl = 0
+  dostmt = function(stmt)
+    local op = match(stmt, "^%s*(%S+)")
+    if op == ".if" then
+      lvl = lvl + 1
+    elseif lvl ~= 0 then
+      if op == ".endif" then lvl = lvl - 1 end
+    elseif op == ".elif" or op == ".else" or op == ".endif" then
+      dostmt = dostmt_save
+      dostmt(stmt)
+    end
+  end
+end
+
+-- Pseudo-opcodes for conditional assembly.
+map_coreop[".if_1"] = function(params)
+  if not params then return "condition" end
+  local lvl = condlevel + 1
+  local res = cond_eval(params[1])
+  condlevel = lvl
+  condstack[lvl] = res
+  if not res then stmtskip() end
+end
+
+map_coreop[".elif_1"] = function(params)
+  if not params then return "condition" end
+  if condlevel == 0 then wfatal(".elif without .if") end
+  local lvl = condlevel
+  local res = condstack[lvl]
+  if res then
+    if res == "else" then wfatal(".elif after .else") end
+  else
+    res = cond_eval(params[1])
+    if res then
+      condstack[lvl] = res
+      return
+    end
+  end
+  stmtskip()
+end
+
+map_coreop[".else_0"] = function(params)
+  if condlevel == 0 then wfatal(".else without .if") end
+  local lvl = condlevel
+  local res = condstack[lvl]
+  condstack[lvl] = "else"
+  if res then
+    if res == "else" then wfatal(".else after .else") end
+    stmtskip()
+  end
+end
+
+map_coreop[".endif_0"] = function(params)
+  local lvl = condlevel
+  if lvl == 0 then wfatal(".endif without .if") end
+  condlevel = lvl - 1
+end
+
+-- Check for unfinished conditionals.
+local function checkconds()
+  if g_errcount ~= "fatal" and condlevel ~= 0 then
+    wprinterr(g_fname, ":*: error: unbalanced conditional\n")
+  end
 end
 
 ------------------------------------------------------------------------------
@@ -301,7 +393,7 @@ map_coreop[".macro_*"] = function(mparams)
   local mdup = {}
   for _,mp in ipairs(mparams) do
     if not match(mp, "^[%a_][%w_]*$") then
-      werror("bad macro parameter name `"..mp.."'")
+      wfatal("bad macro parameter name `"..mp.."'")
     end
     if mdup[mp] then wfatal("duplicate macro parameter name `"..mp.."'") end
     mdup[mp] = true
@@ -344,8 +436,9 @@ map_coreop[".macro_*"] = function(mparams)
       -- Loop through all captured statements
       for _,stmt in ipairs(lines) do
 	-- Substitute macro parameters.
-	local st = gsub(stmt, "[%w_]+", function(s) return subst[s] or s end)
-	st = gsub(st, "%s*##%s*", "") -- Token paste.
+	local st = gsub(stmt, "[%w_]+", subst)
+	st = definesubst(st)
+	st = gsub(st, "%s*%.%.%s*", "") -- Token paste a..b.
 	if mcom and sub(st, 1, 1) ~= "|" then wcomment(st) end
 	-- Emit statement. Use a protected call for better diagnostics.
 	local ok, err = pcall(dostmt, st)
@@ -363,7 +456,7 @@ end
 
 -- An .endmacro pseudo-opcode outside of a macro definition is an error.
 map_coreop[".endmacro_0"] = function(params)
-  wfatal(".endmacro without a valid .macro")
+  wfatal(".endmacro without .macro")
 end
 
 -- Dump all macros and their contents (with -PP only).
@@ -594,11 +687,15 @@ map_coreop[".nop_*"] = function(params)
   if not params then return "[ignored...]" end
 end
 
--- Pseudo-opcode to mark the position where the action list is to be emitted.
-map_coreop[".actionlist_1"] = function(params)
-  if not params then return "cvar" end
-  local name = params[1] -- No syntax check. You get to keep the pieces.
-  wline(function(out) g_arch.writelist(out, name) end)
+-- Pseudo-opcodes to raise errors.
+map_coreop[".error_1"] = function(params)
+  if not params then return "message" end
+  werror(params[1])
+end
+
+map_coreop[".fatal_1"] = function(params)
+  if not params then return "message" end
+  wfatal(params[1])
 end
 
 -- Dump all user defined elements.
@@ -614,6 +711,23 @@ end
 
 ------------------------------------------------------------------------------
 
+-- Helper for splitstmt.
+local splitlvl
+
+local function splitstmt_one(c)
+  if c == "(" then
+    splitlvl = ")"..splitlvl
+  elseif c == "[" then
+    splitlvl = "]"..splitlvl
+  elseif c == ")" or c == "]" then
+    if sub(splitlvl, 1, 1) ~= c then werror("unbalanced () or []") end
+    splitlvl = sub(splitlvl, 2)
+  elseif splitlvl == "" then
+    return " \0 "
+  end
+  return c
+end
+
 -- Split statement into (pseudo-)opcode and params.
 local function splitstmt(stmt)
   -- Convert label with trailing-colon into .label statement.
@@ -621,21 +735,9 @@ local function splitstmt(stmt)
   if label then return ".label", {label} end
 
   -- Split at commas and equal signs, but obey parentheses and brackets.
-  local lvl = ""
-  stmt = gsub(stmt, "[,%(%)%[%]]", function(c)
-    if c == "(" then
-      lvl = ")"..lvl
-    elseif c == "[" then
-      lvl = "]"..lvl
-    elseif c == ")" or c == "]" then
-      if sub(lvl, 1, 1) ~= c then werror("unbalanced () or []") end
-      lvl = sub(lvl, 2)
-    elseif lvl == "" then
-      return " \0 "
-    end
-    return c
-  end)
-  if lvl ~= "" then werror("unbalanced () or []") end
+  splitlvl = ""
+  stmt = gsub(stmt, "[,%(%)%[%]]", splitstmt_one)
+  if splitlvl ~= "" then werror("unbalanced () or []") end
 
   -- Split off opcode.
   local op, other = match(stmt, "^%s*([^%s%z]+)%s*(.*)$")
@@ -750,9 +852,13 @@ local function dasmhead(out)
 ** DO NOT EDIT! The original file is in "%s".
 */
 
+#if DASM_VERSION != %d
+#error "Version mismatch between DynASM and included encoding engine"
+#endif
+
 ]], _info.url,
     _info.version, g_arch._info.arch, g_arch._info.version,
-    g_fname))
+    g_fname, _info.vernum))
 end
 
 -- Read input file.
@@ -817,6 +923,10 @@ local function translate(infile, outfile)
   readfile(fin)
 
   -- Check for errors.
+  if not g_arch then
+    wprinterr(g_fname, ":*: error: missing .arch directive\n")
+  end
+  checkconds()
   checkmacros()
   checkcaptures()
 
