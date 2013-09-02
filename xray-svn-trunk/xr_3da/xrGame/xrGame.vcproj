@@ -7375,19 +7375,19 @@
 							>
 						</File>
 						<File
-							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.h"
-							>
-						</File>
-						<File
 							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.cpp"
 							>
 						</File>
 						<File
 							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.h"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.h"
 							>
 						</File>
 						<Filter
@@ -8504,6 +8504,15 @@
 							<File
 								RelativePath=".\ai\monsters\ghostboss\ghostboss_script.cpp"
 								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
 							</File>
 						</Filter>
 						<Filter

@@ -188,9 +188,14 @@ namespace luabind
 		{
 			typedef typename get_predicate<Predicate>::type pred;
 			typedef typename boost::mpl::find_if<Parameters, pred>::type iterator;
-			typedef typename boost::mpl::eval_if<boost::is_same<iterator, typename boost::mpl::end<Parameters>::type>
+			typedef typename boost::mpl::eval_if<
+				boost::is_same<
+					iterator
+					, typename boost::mpl::end<Parameters>::type
+				>
 				, boost::mpl::identity<DefaultValue>
-				, iterator
+				, boost::mpl::deref<iterator>
+
 			>::type type;
 		};
 

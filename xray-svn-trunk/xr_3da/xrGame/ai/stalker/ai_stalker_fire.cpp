@@ -919,7 +919,7 @@ void CAI_Stalker::throw_target_impl			(const Fvector &position, CObject *throw_i
 	float					distance_to_sqr = position.distance_to_sqr(m_throw_target_position);
 	float					distance = position.distance_to(m_throw_target_position);
 	float					precision = rank_precision[CharacterInfo().Rank().index()];
-	float					dist_factor = distance / min(distance, max_distance / 3);
+	float					dist_factor = distance / std::min(distance, max_distance / 3);
 	float					offset_x = dist_factor * precision * (::Random.randF(0.f, 1.f) - 0.5f) * 2;
 	float					offset_z = dist_factor * precision * (::Random.randF(0.f, 1.f) - 0.5f) * 2;
 	m_throw_actual			= m_throw_actual && (distance_to_sqr < _sqr(.1f));
