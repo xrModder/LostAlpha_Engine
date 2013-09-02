@@ -973,6 +973,7 @@ Global
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release_Dedicated|Win32.ActiveCfg = Release|Win32
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release_Priquel|Win32.ActiveCfg = Release|Win32
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|Win32.ActiveCfg = Release|Win32
+		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|Win32.Build.0 = Release|Win32
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Dedicated|Win32.ActiveCfg = Debug|Win32
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Priquel|Win32.ActiveCfg = Debug|Win32
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug_Priquel|Win32.Build.0 = Debug|Win32

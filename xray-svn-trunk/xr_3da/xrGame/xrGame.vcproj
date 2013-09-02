@@ -271,6 +271,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm111"
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -8506,6 +8507,15 @@
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
