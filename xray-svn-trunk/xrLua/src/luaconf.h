@@ -164,7 +164,7 @@
 #else
 
 #define LUA_API		extern
-
+#define LUA_CC	__cdecl
 #endif
 
 /* more often than not the libs go together with the core */
