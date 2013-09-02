@@ -151,7 +151,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK;../../SDK/Xiph/Include;../../SDK"
+				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="DEBUG,MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRSE_FACTORY_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				MinimalRebuild="false"
