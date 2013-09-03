@@ -128,12 +128,12 @@ void CUIStatsPlayerList::InitHeader(CUIXml& xml_doc, LPCSTR path)
 	float indent = 5;
 	if (!m_bSpectator || m_bStatus_mode)
 	{
-		for (u32 i = 0; i<m_field_info.size(); i++)
+		for (u32 i = 0; i<m_field_info.size(); ++i)
 		{
-			CUIStatic* st = xr_new<CUIStatic>();
+			CUITextWnd* st = xr_new<CUITextWnd>();
 			st->SetAutoDelete(true);
-			//#pragma todo("Satan->Satan: remove stub for height")
-			st->Init(indent,10,m_field_info[i].width, m_header->GetHeight());
+			st->SetWndPos(Fvector2().set(indent,10.0f));
+			st->SetWndSize(Fvector2().set(m_field_info[i].width, m_header->GetHeight()));
 			indent += m_field_info[i].width;
 
 			if (0 == xr_strcmp(m_field_info[i].name, "rank"))
@@ -157,16 +157,18 @@ void CUIStatsPlayerList::InitHeader(CUIXml& xml_doc, LPCSTR path)
 	}
 	else
 	{
-		CUIStatic* st = xr_new<CUIStatic>();
-		st->SetAutoDelete(true);
-		st->Init(10,0,this->GetDesiredChildWidth(),m_h.h);		
+		CUITextWnd* st			= xr_new<CUITextWnd>();
+		st->SetAutoDelete		(true);
+		st->SetWndPos			(Fvector2().set(10,0));
+		st->SetWndSize			(Fvector2().set(this->GetDesiredChildWidth(),m_h.h));
 		if (m_h.f)
-			m_header->SetFont(m_h.f);
-		st->SetTextColor(m_h.c);
-		st->SetVTextAlignment(valCenter);
-		st->SetTextComplexMode(false);
-		st->SetTextST("mp_spectators");
-		m_header->AttachChild(st);
+			st->SetFont	(m_h.f);
+
+		st->SetTextColor		(m_h.c);
+		st->SetVTextAlignment	(valCenter);
+		st->SetTextComplexMode	(false);
+		st->SetTextST			("mp_spectators");
+		m_header->AttachChild	(st);
 	}
 }
 
@@ -193,9 +195,9 @@ void CUIStatsPlayerList::InitTeamHeader(CUIXml& xml_doc, LPCSTR path){
 	CUIXmlInit::InitFont(xml_doc, strconcat(sizeof(_path),_path, path, ":team_header:text_format"), 0, t.c, t.f);
 	t.h = m_header_team->GetHeight();
 
-	m_header_text = xr_new<CUIStatic>();
+	m_header_text = xr_new<CUITextWnd>();
 	m_header_text->SetAutoDelete(true);
-	CUIXmlInit::InitStatic(xml_doc, strconcat(sizeof(_path),_path, path, ":team_header:header"), 0, m_header_text);
+	CUIXmlInit::InitTextWnd(xml_doc, strconcat(sizeof(_path),_path, path, ":team_header:header"), 0, m_header_text);
 	m_header_text->SetWidth(GetDesiredChildWidth());
 	m_header_text->SetVTextAlignment(valCenter);
 	m_header_team->AttachChild(m_header_text);
@@ -283,7 +285,7 @@ void CUIStatsPlayerList::Update()
 		for (int i = 0; i<n; i++)
 		{
             CUIStatsPlayerInfo* pi = xr_new<CUIStatsPlayerInfo>(&m_field_info, m_i.f, m_i.c);
-			pi->Init(0,0,this->GetDesiredChildWidth(),m_i.h);
+			pi->InitPlayerInfo( Fvector2().set(0,0), Fvector2().set(this->GetDesiredChildWidth(),m_i.h) );
 			CUIScrollView::AddWindow(pi, true);
 			m_flags.set			(eNeedRecalc,TRUE);
 		}

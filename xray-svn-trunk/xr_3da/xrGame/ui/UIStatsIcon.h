@@ -2,11 +2,14 @@
 
 #include "UIStatic.h"
 
-class CUIStatsIcon : public CUIStatic {
+class CUIStatsIcon : public CUIStatic 
+{
 	friend class CUIStatsPlayerList;
+	friend class UITeamPanels;
+
 public:
-	CUIStatsIcon();
-	virtual void SetText(LPCSTR str);
+	CUIStatsIcon		();
+	void SetValue		(LPCSTR str);
 
 
 protected:

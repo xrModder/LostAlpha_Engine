@@ -29,12 +29,15 @@ CUIStatsPlayerInfo::~CUIStatsPlayerInfo()
 	xr_delete(m_pBackground);
 }
 
-void CUIStatsPlayerInfo::Init(float x, float y, float width, float height){
-	CUIWindow::Init(x,y,width,height);
+void CUIStatsPlayerInfo::InitPlayerInfo(Fvector2 pos, Fvector2 size)
+{
+	CUIWindow::SetWndPos				(pos);
+	CUIWindow::SetWndSize				(size);
 	
-	m_pBackground->SetStretchTexture(true);
-	m_pBackground->Init(0,0, width, height);
-	m_pBackground->InitTexture("ui\\ui_mp_frags_selection");
+	m_pBackground->SetStretchTexture	(true);
+	m_pBackground->SetWndPos			(Fvector2().set(0,0));
+	m_pBackground->SetWndSize			(size);
+	m_pBackground->InitTexture			("ui\\ui_mp_frags_selection");
 	
 
 	xr_vector<PI_FIELD_INFO>&	field_info = *m_field_info;
@@ -66,25 +69,32 @@ void CUIStatsPlayerInfo::Update(){
 	xr_vector<PI_FIELD_INFO>&	field_info = *m_field_info;
 
 	for (u32 i = 0; i<m_fields.size(); i++)
-		m_fields[i]->SetText(GetInfoByID(*field_info[i].name));
+		m_fields[i]->TextItemControl()->SetText(GetInfoByID(*field_info[i].name));
 
 	m_pPlayerInfo = NULL;
 }
 
-void CUIStatsPlayerInfo::AddField(float len, CGameFont* pF, u32 text_col, bool icon){
+void CUIStatsPlayerInfo::AddField(float len, CGameFont* pF, u32 text_col, bool icon)
+{
 	CUIStatic* wnd = icon ? xr_new<CUIStatsIcon>() : xr_new<CUIStatic>();
+	wnd->SetAutoDelete	(true);
 
 	if (m_fields.empty())
-		wnd->Init(5,0,len,this->GetHeight());
-	else
 	{
-		wnd->Init(m_fields.back()->GetWndRect().right,0,len,this->GetHeight());
-		wnd->SetTextAlignment(CGameFont::alCenter);
+		wnd->SetWndPos	(Fvector2().set(5,0));
+		wnd->SetWndSize	(Fvector2().set(len,this->GetHeight()));
+	}else
+	{
+		wnd->SetWndPos	(Fvector2().set(m_fields.back()->GetWndRect().right,0.0f));
+		wnd->SetWndSize	(Fvector2().set(len,this->GetHeight()));
+
+		wnd->TextItemControl()->SetTextAlignment(CGameFont::alCenter);
 	}
 	if (pF)
-		wnd->SetFont(pF);
-	wnd->SetTextColor(text_col);
-	wnd->SetTextComplexMode(false);
+		wnd->TextItemControl()->SetFont(pF);
+
+	wnd->TextItemControl()->SetTextColor(text_col);
+	wnd->TextItemControl()->SetTextComplexMode(false);
 	m_fields.push_back(wnd);
 	AttachChild(wnd);
 }
@@ -94,7 +104,7 @@ const char* CUIStatsPlayerInfo::GetInfoByID(const char* id){
 	CStringTable st;
 
 	if (0 == xr_strcmp(id,"name"))
-		xr_strcpy(ans,m_pPlayerInfo->name);
+		xr_strcpy(ans,m_pPlayerInfo->getName());
 	else if (0 == xr_strcmp(id,"frags"))
 		xr_sprintf(ans,"%d",(int)m_pPlayerInfo->frags());
 	else if (0 == xr_strcmp(id,"deaths"))

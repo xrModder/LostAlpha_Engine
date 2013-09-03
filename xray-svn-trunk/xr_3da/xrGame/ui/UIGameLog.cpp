@@ -8,187 +8,117 @@
 #include "stdafx.h"
 #include "UIGameLog.h"
 #include "UIXmlInit.h"
-#include "UIColorAnimatorWrapper.h"
 #include "UIPdaMsgListItem.h"
 #include "UIPdaKillMessage.h"
 #include "UILines.h"
 
-const char * const	CHAT_LOG_ITEMS_ANIMATION	= "ui_main_msgs_short";
-
 CUIGameLog::CUIGameLog()
 {
-	toDelList.reserve				(30);
 	kill_msg_height					= 20;
 	txt_color						= 0xff000000;
+	m_pFont							= NULL;
 }
 
-CUIGameLog::~CUIGameLog()
-{}
-
-
-CUIStatic* CUIGameLog::AddLogMessage(LPCSTR msg)
+CUITextWnd* CUIGameLog::AddLogMessage(LPCSTR msg)
 {
-	CUIStatic* pItem				= NULL;
+	CUITextWnd* pItem				= NULL;
 	ADD_TEXT_TO_VIEW3				(msg, pItem, this);
-	pItem->SetTextComplexMode		(true);
-	pItem->SetFont					(GetFont());
+	pItem->SetFont					(m_pFont);
 	pItem->SetTextColor				(txt_color);
-	pItem->SetClrAnimDelay			(5000.0f);
-	pItem->SetClrLightAnim			(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
+	pItem->SetColorAnimation		("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR, 5000.0f);
 	ForceUpdate						();
 	return							pItem;
 }
 
-// warning: initialization of item is incomplete!
-// initialization of item's height, text static and icon still necessary
-CUIPdaMsgListItem* CUIGameLog::AddPdaMessage(LPCSTR msg, float delay, BOOL to_add){
+CUIPdaMsgListItem* CUIGameLog::AddPdaMessage()
+{
 	CUIPdaMsgListItem* pItem				= xr_new<CUIPdaMsgListItem>();
-	pItem->Init								(0,0, GetDesiredChildWidth(), 10);	//fake height
-	pItem->UIMsgText.SetTextST				(msg);
-	pItem->SetClrAnimDelay					(delay);
-    pItem->SetClrLightAnim					(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
-	if (to_add)
-		AddWindow							(pItem, true);
+	pItem->InitPdaMsgListItem				(Fvector2().set(GetDesiredChildWidth(),10.0f));
+	pItem->SetColorAnimation				("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR);
+	AddWindow								(pItem, true);
+
 	return pItem;
 }
 
-u32 CUIGameLog::GetTextColor(){
-	return txt_color;
+CUIPdaKillMessage* CUIGameLog::AddLogMessage(KillMessageStruct& msg)
+{
+	CUIPdaKillMessage* pItem	= xr_new<CUIPdaKillMessage>();	
+	pItem->SetWidth				(GetDesiredChildWidth());
+	pItem->SetHeight			(kill_msg_height);
+	pItem->Init					(msg, m_pFont);
+	AddWindow					(pItem, true);
+	return						pItem;
 }
 
-CUIPdaKillMessage* CUIGameLog::AddLogMessage(KillMessageStruct& msg){
-	CUIPdaKillMessage* pItem = pItem = xr_new<CUIPdaKillMessage>();	
-	pItem->SetFont(GetFont());
-	pItem->SetWidth(GetDesiredChildWidth());
-	pItem->SetHeight(kill_msg_height);
-	pItem->Init(msg);
-	pItem->SetClrAnimDelay(5000.0f);
-	pItem->SetClrLightAnim(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
-	AddWindow(pItem, true);
-	return pItem;
-}
+void CUIGameLog::AddChatMessage(LPCSTR msg, LPCSTR author)
+{
+	LPSTR fullLine;
+	STRCONCAT(fullLine, author, " ", msg);
 
-void CUIGameLog::AddChatMessage(LPCSTR msg, LPCSTR author){
-	string256 fullLine;
-	xr_sprintf(fullLine, "%s %s", author, msg);
-	_TrimRight	(fullLine);
+	_TrimRight(fullLine);
     
-	CUIStatic* pItem = NULL;
-
-	pItem = xr_new<CUIStatic>();
-	pItem->SetTextComplexMode		(true);
-	pItem->SetText(fullLine);
-    pItem->m_pLines->SetCutWordsMode(true);
-	pItem->SetFont(GetFont());
-	pItem->SetTextColor(txt_color);
-	pItem->SetClrAnimDelay(5000.0f);
-	pItem->SetClrLightAnim(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);	
-	pItem->SetWidth(this->GetDesiredChildWidth());
-	pItem->AdjustHeightToText();
-	AddWindow(pItem, true);	
+	CUITextWnd* pItem			= xr_new<CUITextWnd>();
+	pItem->SetTextComplexMode	(true);
+	pItem->SetText				(fullLine);
+    pItem->SetCutWordsMode		(true);
+	pItem->SetFont				(m_pFont);
+	pItem->SetTextColor			(txt_color);
+	pItem->SetColorAnimation	("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR, 5000.0f);
+	pItem->SetWidth				(this->GetDesiredChildWidth());
+	pItem->AdjustHeightToText	();
+	AddWindow					(pItem, true);	
 }
 
-void CUIGameLog::SetTextAtrib(CGameFont* pFont, u32 color){
-	SetFont(pFont);
-	txt_color = color;
-}
-
-template <> void CUIGameLog::CheckChildrenVisibility<ui_list<CUIWindow*>::iterator>()
+void CUIGameLog::SetTextAtrib(CGameFont* pFont, u32 color)
 {
-	Frect visible_rect;
-	GetAbsoluteRect(visible_rect);
-	for(	WINDOW_LIST_it it = m_pad->GetChildWndList().begin(),
-			last = m_pad->GetChildWndList().end(); 
-			last!=it; 
-			++it)
-	{
-		Frect	r;
-		(*it)->GetAbsoluteRect(r);
-		if(! (visible_rect.in(r.x1, r.y1) && visible_rect.in(r.x2, r.y1) && visible_rect.in(r.x1, r.y2) && visible_rect.in(r.x2, r.y2)))
-		{
-			toDelList.push_back(*it);			
-		}	
-	}
-}
-
-template <> void CUIGameLog::CheckChildrenVisibility<ui_list<CUIWindow*>::reverse_iterator>()
-{
-	Frect visible_rect;
-	GetAbsoluteRect(visible_rect);
-	for(	WINDOW_LIST::reverse_iterator it = m_pad->GetChildWndList().rbegin(),
-			last = m_pad->GetChildWndList().rend(); 
-			last!=it; 
-			++it)
-	{
-		Frect	r;
-		(*it)->GetAbsoluteRect(r);
-		if(! (visible_rect.in(r.x1, r.y1) && visible_rect.in(r.x2, r.y1) && visible_rect.in(r.x1, r.y2) && visible_rect.in(r.x2, r.y2)))
-		{
-			toDelList.push_back(*it);			
-		}	
-	}
+	m_pFont		= pFont;
+	txt_color	= color;
 }
 
 void CUIGameLog::Update()
 {
-	CUIScrollView::Update();
-	toDelList.clear();	
+	CUIScrollView::Update	();
+	toDelList.clear			();	
 
+	WINDOW_LIST_it it	= m_pad->GetChildWndList().begin();
+	WINDOW_LIST_it it_e	= m_pad->GetChildWndList().end();
 
-	// REMOVE ITEMS WITH COMPLETED ANIMATION
-	WINDOW_LIST_it end_it = m_pad->GetChildWndList().end();
-	WINDOW_LIST_it begin_it = m_pad->GetChildWndList().begin();
-
-	for(WINDOW_LIST_it it = begin_it; it!=end_it; ++it)
+	for(; it!=it_e; ++it)
 	{
-		CUIStatic* pItem = smart_cast<CUIStatic*>(*it);
-		VERIFY(pItem);
-		pItem->Update();
+		CUILightAnimColorConroller* pItem = smart_cast<CUILightAnimColorConroller*>(*it);
 
-		if (pItem->IsClrAnimStoped()) 
-		{
-			toDelList.push_back(pItem);
-		}
+		if(!pItem->IsColorAnimationPresent())
+			toDelList.push_back(*it);
 	}
 
 	// Delete elements
-	{
-		xr_vector<CUIWindow*>::iterator it;
-		for (it = toDelList.begin(); it != toDelList.end(); it++)
-			RemoveWindow(*it);
-	}
+	it_e = toDelList.end();
+
+	for (it = toDelList.begin(); it!=it_e; ++it)
+		RemoveWindow(*it);
 
 	// REMOVE INVISIBLE AND PART VISIBLE ITEMS
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
 
 	toDelList.clear();
-	/*
 	Frect visible_rect;
-	GetAbsoluteRect(visible_rect);
-	for(	WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); 
-			m_pad->GetChildWndList().end()!=it; 
-			++it)
+	GetAbsoluteRect	(visible_rect);
+	it_e			= m_pad->GetChildWndList().end();
+	for(it = m_pad->GetChildWndList().begin(); it!=it_e; ++it)
 	{
-		Frect	r;
-		(*it)->GetAbsoluteRect(r);
+		Frect					r;
+		(*it)->GetAbsoluteRect	(r);
+		r.shrink				(3.0f, 3.0f);
+
 		if(! (visible_rect.in(r.x1, r.y1) && visible_rect.in(r.x2, r.y1) && visible_rect.in(r.x1, r.y2) && visible_rect.in(r.x2, r.y2)))
-		{
 			toDelList.push_back(*it);			
-		}
-			
 	}
-	*/
-	if (GetVertFlip())
-		CheckChildrenVisibility<WINDOW_LIST::reverse_iterator>();
-	else
-		CheckChildrenVisibility<WINDOW_LIST_it>();
+
 	// Delete elements
-	{
-		xr_vector<CUIWindow*>::iterator it;
-		for (it = toDelList.begin(); it != toDelList.end(); it++)
-			RemoveWindow(*it);
-	}
+	it_e = toDelList.end();
+	for (it = toDelList.begin(); it != it_e; ++it)
+		RemoveWindow(*it);
 
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();

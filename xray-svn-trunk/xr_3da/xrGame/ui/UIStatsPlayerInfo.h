@@ -17,7 +17,7 @@ public:
 	virtual				~CUIStatsPlayerInfo	();
 
 			void		SetInfo				(game_PlayerState* pInfo);
-	virtual void		Init				(float x, float y, float width, float height);
+			void		InitPlayerInfo		(Fvector2 pos, Fvector2 size);
 	virtual void		Update				();
 
 protected:

@@ -4,6 +4,7 @@
 #include "UIStatsPlayerInfo.h"
 
 class CUIXml;
+class CUITextWnd;
 
 typedef bool(*player_cmp_func)(LPVOID v1, LPVOID v2);
 
@@ -39,7 +40,7 @@ protected:
 
 	CUIStatic*						m_header;
     CUIWindow*						m_header_team;
-	CUIStatic*						m_header_text;
+	CUITextWnd*						m_header_text;
 	u32								m_prev_upd_time;
 
 	typedef struct{

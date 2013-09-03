@@ -31,8 +31,7 @@ void CUIStatsWnd::Init(LPCSTR XML)
 	CUIXml uiXml;
 	if (XML) xr_strcpy(XML_NAME, XML);
 	else xr_strcpy(XML_NAME, STATS_XML);
-	bool xml_result = uiXml.Init(CONFIG_PATH, UI_PATH, XML_NAME);
-	R_ASSERT2(xml_result, "xml file not found");
+	uiXml.Load	(CONFIG_PATH, UI_PATH, XML_NAME);
 
 	CUIXmlInit xml_init;
 

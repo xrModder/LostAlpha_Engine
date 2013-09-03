@@ -8,7 +8,7 @@
 #include "../../xr_IOConsole.h"
 #include "../RegistryFuncs.h"
 #include "../xrGameSpy/xrGameSpy_MainDefs.h"
-//#include "player_name_modifyer.h"
+#include "../player_name_modifyer.h"
 
 #include "../gamespy/GameSpy_GP.h"
 

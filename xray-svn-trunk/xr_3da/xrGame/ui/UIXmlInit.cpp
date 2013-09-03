@@ -1133,7 +1133,7 @@ void CUIXmlInit::InitColorDefs()
 	m_pColorDefs = xr_new<ColorDefs>();
 
 	CUIXml					uiXml;
-	uiXml.Init				(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
+	uiXml.Load				(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
 
 	int num = uiXml.GetNodesNum("colors", 0, "color");
 

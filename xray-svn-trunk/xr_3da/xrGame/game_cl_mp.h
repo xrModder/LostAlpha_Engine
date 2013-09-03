@@ -204,6 +204,7 @@ public:
 	virtual		void				OnBuySpawnMenu_Ok		() {};
 	virtual		void				OnSellItemsFromRuck		() {};
 
+	virtual		void				OnTeamSelect			(int Result){};
 
 	virtual		void				OnGameMenuRespond				(NET_Packet& P);
 	virtual		void				OnGameMenuRespond_Spectator		(NET_Packet& P) {};

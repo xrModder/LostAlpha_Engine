@@ -7,25 +7,23 @@
 // Copyright 2005 GSC GameWorld
 
 #include "KillMessageStruct.h"
-#include "UIPdaMsgListItem.h"
+#include "UIStatic.h"
 
-class CUIPdaKillMessage : public CUIStatic {
-typedef CUIPdaMsgListItem inherited;
+class CUIPdaKillMessage : public CUIColorAnimConrollerContainer 
+{
+	typedef CUIColorAnimConrollerContainer inherited;
 public:
 	CUIPdaKillMessage();
 	virtual ~CUIPdaKillMessage();
 
-			void Init(KillMessageStruct& msg);
-	virtual void SetFont(CGameFont* pFont);
-	virtual void SetTextColor(u32 color);
-	virtual void SetColor(u32 color);
+			void Init				(KillMessageStruct& msg, CGameFont* F);
 
 protected:
-			float InitText(CUIStatic& refStatic, float x, PlayerInfo& info);
+			float InitText(CUITextWnd& refStatic, float x, PlayerInfo& info);
 			float InitIcon(CUIStatic& refStatic, float x, IconInfo& info);
 
-    CUIStatic	m_victim_name;
+	CUITextWnd	m_victim_name;
 	CUIStatic	m_initiator;
-	CUIStatic	m_killer_name;
+	CUITextWnd	m_killer_name;
 	CUIStatic	m_ext_info;
 };

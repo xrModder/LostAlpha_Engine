@@ -10,7 +10,6 @@
 	#pragma comment			(lib,"xrXMLParser.lib")
 #endif
 
-
 const LPCSTR GAMEDATA_PATH			= "$game_data$";
 const LPCSTR CONFIG_PATH			= "$game_config$";
 const LPCSTR UI_PATH				= "ui";
@@ -25,14 +24,15 @@ typedef TiXmlAttribute	XML_ATTRIBUTE;
 
 class XRXMLPARSER_API	CXml  
 {
+	void 				Load					(LPCSTR path_alias, LPCSTR xml_filename);
 public:
 	string_path			m_xml_file_name;
 						CXml					();
 	virtual				~CXml					();
 	void				ClearInternal			();
 
-	bool 				Init					(LPCSTR path_alias, LPCSTR path, LPCSTR  xml_filename);
-	bool 				Init					(LPCSTR path_alias, LPCSTR xml_filename);
+	void 				Load					(LPCSTR path_alias, LPCSTR path, LPCSTR  xml_filename);
+
 
 	//чтение элементов
 	LPCSTR 				Read					(LPCSTR path, int index,  LPCSTR   default_str_val);

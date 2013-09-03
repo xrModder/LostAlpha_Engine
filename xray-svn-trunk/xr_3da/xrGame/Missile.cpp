@@ -30,9 +30,8 @@ CUIProgressShape* g_MissileForceShape = NULL;
 void create_force_progress()
 {
 	VERIFY							(!g_MissileForceShape);
-	CUIXml uiXml;
-	bool xml_result					= uiXml.Init(CONFIG_PATH, UI_PATH, "grenade.xml");
-	R_ASSERT3						(xml_result, "xml file not found", "grenade.xml");
+	CUIXml						uiXml;
+	uiXml.Load					(CONFIG_PATH, UI_PATH, "grenade.xml");
 
 	CUIXmlInit xml_init;
 	g_MissileForceShape				= xr_new<CUIProgressShape>();

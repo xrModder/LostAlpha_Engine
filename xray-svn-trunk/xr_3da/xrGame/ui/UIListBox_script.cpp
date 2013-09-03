@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "pch_script.h"
+
 #include "UIListBox.h"
 #include "UIListBoxItem.h"
 #include "UIListBoxItemMsgChain.h"

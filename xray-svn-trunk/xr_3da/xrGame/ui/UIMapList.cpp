@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "UIMapList.h"
 #include "UIListBox.h"
-#include "UILabel.h"
 #include "UIFrameWindow.h"
+#include "UIFrameLineWnd.h"
 #include "UI3tButton.h"
 #include "UISpinText.h"
 #include "UIXmlInit.h"
@@ -27,8 +27,8 @@ CUIMapList::CUIMapList(){
 	m_pList2		= xr_new<CUIListBox>();
 	m_pFrame1		= xr_new<CUIFrameWindow>();
 	m_pFrame2		= xr_new<CUIFrameWindow>();
-	m_pLbl1			= xr_new<CUILabel>();
-	m_pLbl2			= xr_new<CUILabel>();
+	m_pLbl1			= xr_new<CUIFrameLineWnd>();
+	m_pLbl2			= xr_new<CUIFrameLineWnd>();
 	m_pBtnLeft		= xr_new<CUI3tButton>();
 	m_pBtnRight		= xr_new<CUI3tButton>();
 	m_pBtnUp		= xr_new<CUI3tButton>();
@@ -300,7 +300,7 @@ void CUIMapList::UpdateMapList(EGameTypes GameType)
 	u32 cnt						= M.m_map_names.size();
 	for (u32 i=0; i<cnt; ++i)
 	{
-		CUIListBoxItem* itm		= m_pList1->AddItem( CStringTable().translate(M.m_map_names[i].map_name).c_str() );
+		CUIListBoxItem* itm		= m_pList1->AddTextItem( CStringTable().translate(M.m_map_names[i].map_name).c_str() );
 		itm->SetData			( (void*)(__int64)i );
 		itm->Enable(m_pExtraContentFilter->IsDataEnabled(M.m_map_names[i].c_str()));
 	}

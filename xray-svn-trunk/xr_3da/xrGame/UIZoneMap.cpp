@@ -31,7 +31,7 @@ CUIZoneMap::~CUIZoneMap()
 void CUIZoneMap::Init()
 {
 	CUIXml uiXml;
-	uiXml.Init						(CONFIG_PATH, UI_PATH, "zone_map.xml");
+	uiXml.Load						(CONFIG_PATH, UI_PATH, "zone_map.xml");
 
 	CUIXmlInit						xml_init;
 	xml_init.InitStatic				(uiXml, "minimap:background",	0, &m_background);

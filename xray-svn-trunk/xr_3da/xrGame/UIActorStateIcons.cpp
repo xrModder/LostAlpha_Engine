@@ -22,8 +22,7 @@ CUIActorStateIcons::~CUIActorStateIcons()
 void CUIActorStateIcons::Init()
 {
 	CUIXml		xml;
-	bool		result			= xml.Init			(CONFIG_PATH, UI_PATH, STATE_ICONS_XML);
-	R_ASSERT3										(result, "xml file not found", STATE_ICONS_XML);
+	xml.Load			(CONFIG_PATH, UI_PATH, STATE_ICONS_XML);
 
 	CUIXmlInit	xml_init;
 	

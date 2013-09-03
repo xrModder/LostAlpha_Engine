@@ -39,13 +39,33 @@ void CUIMessagesWindow::AddLogMessage(const shared_str& msg){
 	m_pGameLog->AddLogMessage(*msg);
 }
 
+void CUIMessagesWindow::PendingMode(bool const is_pending_mode)
+{
+	if (is_pending_mode)
+	{
+		if (m_in_pending_mode)
+			return;
+		
+		m_pChatWnd->PendingMode	(is_pending_mode);
+		m_pChatLog->SetWndRect	(m_pending_chat_log_rect);
+		m_in_pending_mode		= true;
+		return;
+	}
+	if (!m_in_pending_mode)
+		return;
+	
+	m_pChatWnd->PendingMode		(is_pending_mode);
+	m_pChatLog->SetWndRect		(m_inprogress_chat_log_rect);
+	m_in_pending_mode			= false;
+}
+
 void CUIMessagesWindow::Init(float x, float y, float width, float height){
 
 	CUIXml		 xml;
 	u32			color;
 	CGameFont*	pFont;
 
-	xml.Init(CONFIG_PATH, UI_PATH, "messages_window.xml");
+	xml.Load	(CONFIG_PATH, UI_PATH, "messages_window.xml");
 
 	m_pGameLog = xr_new<CUIGameLog>();m_pGameLog->SetAutoDelete(true);
 	m_pGameLog->Show(true);
@@ -69,6 +89,23 @@ void CUIMessagesWindow::Init(float x, float y, float width, float height){
 		CUIXmlInit::InitScrollView(xml, "chat_log_list", 0, m_pChatLog);
 		CUIXmlInit::InitFont(xml, "chat_log_list:font", 0, color, pFont);
 		m_pChatLog->SetTextAtrib(pFont, color);
+
+		m_inprogress_chat_log_rect			= m_pChatLog->GetWndRect();
+		m_in_pending_mode					= false;
+
+		LPCSTR LogListName = "chat_log_list_pending";
+		XML_NODE* pending_chat_list			= xml.NavigateToNode(LogListName);
+
+		if (pending_chat_list)
+		{
+			m_pending_chat_log_rect.x1		= xml.ReadAttribFlt(LogListName, 0, "x");
+			m_pending_chat_log_rect.y1		= xml.ReadAttribFlt(LogListName, 0, "y");
+			m_pending_chat_log_rect.x2		= xml.ReadAttribFlt(LogListName, 0, "width");
+			m_pending_chat_log_rect.y2		= xml.ReadAttribFlt(LogListName, 0, "height");
+			m_pending_chat_log_rect.rb.add	(m_pending_chat_log_rect.lt);
+
+		}else
+			m_pending_chat_log_rect			= m_inprogress_chat_log_rect;
 		
 		m_pChatWnd->Init	(xml);
 	}	
@@ -77,7 +114,7 @@ void CUIMessagesWindow::Init(float x, float y, float width, float height){
 
 void CUIMessagesWindow::AddIconedPdaMessage(LPCSTR textureName, Frect originalRect, LPCSTR message, int iDelay){
 	
-	CUIPdaMsgListItem *pItem			= m_pGameLog->AddPdaMessage(message, float(iDelay), FALSE);
+	CUIPdaMsgListItem *pItem			= m_pGameLog->AddPdaMessage();
 	pItem->TextItemControl()->SetTextComplexMode			(true);
 	pItem->UIIcon.InitTexture			(textureName);
 	pItem->UIIcon.SetTextureRect		(originalRect.left, originalRect.top, originalRect.right, originalRect.bottom);

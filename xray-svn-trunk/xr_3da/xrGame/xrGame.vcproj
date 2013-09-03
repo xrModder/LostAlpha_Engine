@@ -30281,6 +30281,14 @@
 						Name="CDkey"
 						>
 						<File
+							RelativePath=".\player_name_modifyer.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\player_name_modifyer.h"
+							>
+						</File>
+						<File
 							RelativePath=".\ui\UICDkey.cpp"
 							>
 						</File>
@@ -30385,6 +30393,26 @@
 							</File>
 							<File
 								RelativePath=".\ui\UIStatsIcon.h"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="TeamStates"
+							>
+							<File
+								RelativePath=".\UITeamPanels.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\UITeamPanels.h"
+								>
+							</File>
+							<File
+								RelativePath=".\UITeamState.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\UITeamState.h"
 								>
 							</File>
 						</Filter>

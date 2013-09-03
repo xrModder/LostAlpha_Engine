@@ -3,17 +3,14 @@
 #include "UITextureMaster.h"
 #include "UIInventoryUtilities.h"
 
-#include "../../Include/xrRender/UIShader.h"
+#include "../Include/xrRender/UIShader.h"
 
 CUIStatsIcon::TEX_INFO		CUIStatsIcon::m_tex_info[MAX_DEF_TEX][2];
 
 CUIStatsIcon::CUIStatsIcon(){
 	SetStretchTexture(true);
 	InitTexInfo();
-	m_bAvailableTexture = true;
 }
-
-using namespace InventoryUtilities;
 
 void CUIStatsIcon::InitTexInfo(){
 	if (m_tex_info[RANK_0][0].sh->inited())
@@ -23,12 +20,12 @@ void CUIStatsIcon::InitTexInfo(){
 	for (int i = RANK_0; i <= RANK_4; i++)
 	{
 		xr_sprintf(rank_tex, "ui_hud_status_green_0%d", i+1);
-		m_tex_info[i][0].sh->create("hud\\default",		CUITextureMaster::GetTextureFileName(rank_tex));
-		m_tex_info[i][0].rect =						CUITextureMaster::GetTextureRect	(rank_tex);
+		CUITextureMaster::GetTextureShader		(rank_tex, m_tex_info[i][0].sh);
+		m_tex_info[i][0].rect =					CUITextureMaster::GetTextureRect	(rank_tex);
 
 		xr_sprintf(rank_tex, "ui_hud_status_blue_0%d", i+1);
-		m_tex_info[i][1].sh->create("hud\\default",		CUITextureMaster::GetTextureFileName(rank_tex));
-		m_tex_info[i][1].rect =						CUITextureMaster::GetTextureRect	(rank_tex);
+		CUITextureMaster::GetTextureShader		(rank_tex, m_tex_info[i][1].sh);
+		m_tex_info[i][1].rect =					CUITextureMaster::GetTextureRect	(rank_tex);
 	}
 
 	// artefact
@@ -44,13 +41,12 @@ void CUIStatsIcon::InitTexInfo(){
 		fYPos * INV_GRID_HEIGHT, 
 		fXPos * INV_GRID_WIDTH + fGridWidth * INV_GRID_WIDTH, 
 		fYPos * INV_GRID_HEIGHT + fGridHeight * INV_GRID_HEIGHT);
-
-//	m_tex_info[ARTEFACT][0].rect.set( 200, 400, 50, 50);
-
-
+	
+	m_tex_info[ARTEFACT][1] = m_tex_info[ARTEFACT][0];
 
 	// death
 	m_tex_info[DEATH][0].sh->create("hud\\default",	"ui\\ui_mp_icon_kill");
+	m_tex_info[DEATH][1] = m_tex_info[DEATH][0];
 	m_tex_info[DEATH][0].rect.x1 = 32;
 	m_tex_info[DEATH][0].rect.y1 = 202;
 	m_tex_info[DEATH][0].rect.x2 = m_tex_info[DEATH][0].rect.x1 + 30;
@@ -65,10 +61,12 @@ void CUIStatsIcon::FreeTexInfo(){
 		m_tex_info[i][1].sh->destroy();
 	}
 	m_tex_info[ARTEFACT][0].sh->destroy();
+	m_tex_info[ARTEFACT][1].sh->destroy();
 	m_tex_info[DEATH][0].sh->destroy();	
+	m_tex_info[DEATH][1].sh->destroy();	
 }
 
-void CUIStatsIcon::SetText(LPCSTR str){
+void CUIStatsIcon::SetValue(LPCSTR str){
 	if (0 == str[0])
 	{
 		SetVisible(false);
@@ -86,17 +84,17 @@ void CUIStatsIcon::SetText(LPCSTR str){
 		int rank = atoi(strstr(str,"0")) - 1;
 
 		SetShader(m_tex_info[rank][team].sh);
-		SetOriginalRect(m_tex_info[rank][team].rect);
+		SetTextureRect(m_tex_info[rank][team].rect);
 	}
 	else if (0 == xr_strcmp(str,"death"))
 	{
 		SetShader(m_tex_info[DEATH][0].sh);
-		SetOriginalRect(m_tex_info[DEATH][0].rect);
+		SetTextureRect(m_tex_info[DEATH][0].rect);
 	}
 	else if (0 == xr_strcmp(str,"artefact"))
 	{
 		SetShader(m_tex_info[ARTEFACT][0].sh);
-		SetOriginalRect(m_tex_info[ARTEFACT][0].rect);
+		SetTextureRect(m_tex_info[ARTEFACT][0].rect);
 	}
 	else
 	{

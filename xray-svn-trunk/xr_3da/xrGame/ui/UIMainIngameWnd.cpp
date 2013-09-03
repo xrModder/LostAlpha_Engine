@@ -107,7 +107,7 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 void CUIMainIngameWnd::Init()
 {
 	CUIXml						uiXml;
-	uiXml.Init					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
+	uiXml.Load					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
 	
 	CUIXmlInit					xml_init;
 	CUIWindow::SetWndRect		(Frect().set(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT));
@@ -1380,7 +1380,7 @@ void test_key	(int dik)
 		if(!pUIFrame)
 		{
 			CUIXml uiXML;
-			uiXML.Init(CONFIG_PATH, UI_PATH, "talk.xml");
+			uiXML.Load(CONFIG_PATH, UI_PATH, "talk.xml");
 
 			pUIFrame					= xr_new<CUIFrameWindow>();
 			CUIXmlInit::InitFrameWindow	(uiXML, "frame_window", 0, pUIFrame);
