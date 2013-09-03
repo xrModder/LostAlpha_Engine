@@ -1,50 +1,51 @@
 #include "../pch_script.h"
 #include "UIStatic.h"
+#include "UIAnimatedStatic.h"
 
 using namespace luabind;
 
 #pragma optimize("s",on)
+
 void CUIStatic::script_register(lua_State *L)
 {
 	module(L)
 	[
+		class_<CUILines>("CUILines")
+		.def("SetFont",				&CUILines::SetFont)
+		.def("SetText",				&CUILines::SetText)
+		.def("SetTextST",			&CUILines::SetTextST)
+		.def("GetText",				&CUILines::GetText)
+		.def("SetElipsis",			&CUILines::SetEllipsis)
+		.def("SetTextColor",		&CUILines::SetTextColor),
+
+
 		class_<CUIStatic, CUIWindow>("CUIStatic")
 		.def(						constructor<>())
-
-		.def("SetText",				(void (CUIStatic::*)(LPCSTR)) (&CUIStatic::SetText) )
-		.def("SetTextST",			(void (CUIStatic::*)(LPCSTR)) (&CUIStatic::SetTextST) )
-		.def("GetText",				&CUIStatic::GetText)
-
-		.def("SetTextX",				&CUIStatic::SetTextX)
-		.def("SetTextY",				&CUIStatic::SetTextY)
-		.def("GetTextX",				&CUIStatic::GetTextX)
-		.def("GetTextY",				&CUIStatic::GetTextY)
-		
-		.def("SetColor",			&CUIStatic::SetColor)
-		.def("GetColor",			&CUIStatic::GetColor)
-		.def("SetTextureColor",			&CUIStatic::SetTextureColor)
-		.def("GetTextureColor",			&CUIStatic::GetTextureColor)
-		.def("SetTextColor",		&CUIStatic::SetTextColor_script)
-		.def("Init",				(void(CUIStatic::*)(float,float,float,float))&CUIStatic::Init )
-		.def("Init",				(void(CUIStatic::*)(LPCSTR,float,float,float,float))&CUIStatic::Init )
+		.def("TextControl",			&CUIStatic::TextItemControl)
 		.def("InitTexture",			&CUIStatic::InitTexture )
-		.def("SetTextureOffset",	&CUIStatic::SetTextureOffset )
-
-
-		.def("SetOriginalRect",		(void(CUIStatic::*)(float,float,float,float))&CUIStatic::SetOriginalRect)
+		.def("SetTextureRect",		&CUIStatic::SetTextureRect_script)
 		.def("SetStretchTexture",	&CUIStatic::SetStretchTexture)
-		.def("GetStretchTexture",	&CUIStatic::GetStretchTexture)
+		.def("GetTextureRect",		&CUIStatic::GetTextureRect_script),
 
-		.def("SetTextAlign",		&CUIStatic::SetTextAlign_script)
-		.def("GetTextAlign",		&CUIStatic::GetTextAlign_script)
+		class_<CUITextWnd, CUIWindow>("CUITextWnd")
+		.def(						constructor<>())
+		.def("AdjustHeightToText",	&CUITextWnd::AdjustHeightToText)
+		.def("AdjustWidthToText",	&CUITextWnd::AdjustWidthToText)
+		.def("SetText",				&CUITextWnd::SetText)
+		.def("SetTextST",			&CUITextWnd::SetTextST)
+		.def("GetText",				&CUITextWnd::GetText)
+		.def("SetFont",				&CUITextWnd::SetFont)
+		.def("GetFont",				&CUITextWnd::GetFont)
+		.def("SetTextColor",		&CUITextWnd::SetTextColor)
+		.def("GetTextColor",		&CUITextWnd::GetTextColor)
+		.def("SetTextComplexMode",	&CUITextWnd::SetTextComplexMode)
+		.def("SetTextAlignment",	&CUITextWnd::SetTextAlignment)
+		.def("SetVTextAlignment",	&CUITextWnd::SetVTextAlignment)
+		.def("SetEllipsis",			&CUITextWnd::SetEllipsis)
+		.def("SetTextOffset",		&CUITextWnd::SetTextOffset),
+//		.def("",					&CUITextWnd::)
 
-		.def("SetHeading",			&CUIStatic::SetHeading)
-		.def("GetHeading",			&CUIStatic::GetHeading)
-	
-		.def("ClipperOn",			&CUIStatic::ClipperOn)
-		.def("ClipperOff",			(void(CUIStatic::*)(void))&CUIStatic::ClipperOff )
-		.def("GetClipperState",		&CUIStatic::GetClipperState)
-		.def("IsComplexMode",		&CUIStatic::IsComplexMode)
-		.def("SetComplexMode",		&CUIStatic::SetComplexMode)
+		class_<CUISleepStatic, CUIStatic>("CUISleepStatic")
+		.def(						constructor<>())
 	];
 }

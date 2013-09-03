@@ -31,6 +31,7 @@ protected:
 			LPCSTR			GetOptStringValue	();
 			void			SaveOptStringValue	(LPCSTR val);
 			// integer
+			int			GetOptIntegerValue	();
 			void			GetOptIntegerValue	(int& val, int& min, int& max);
 			void			SaveOptIntegerValue	(int val);
 			// float

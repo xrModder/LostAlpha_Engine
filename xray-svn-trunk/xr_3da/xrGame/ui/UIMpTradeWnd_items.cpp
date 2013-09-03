@@ -722,16 +722,16 @@ void CUICellItemTradeMenuDraw::OnDraw(CUICellItem* cell)
 
 	if(!b_can_buy_rank)
 	{
-		cell->SetColor						(m_trade_wnd->m_item_color_restr_rank);
+		cell->SetTextureColor						(m_trade_wnd->m_item_color_restr_rank);
 		return;
 	}
 	bool b_can_buy_money	= m_trade_wnd->CheckBuyPossibility(m_info_item->m_name_sect, CUIMpTradeWnd::bf_check_money, true);
 	if(!b_can_buy_money)
 	{
-		cell->SetColor					(m_trade_wnd->m_item_color_restr_money);
+		cell->SetTextureColor					(m_trade_wnd->m_item_color_restr_money);
 		return;
 	}
-	cell->SetColor						(m_trade_wnd->m_item_color_normal);
+	cell->SetTextureColor						(m_trade_wnd->m_item_color_normal);
 
 }
 

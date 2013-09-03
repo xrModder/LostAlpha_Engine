@@ -104,7 +104,7 @@ void CUIActorInfoWnd::FillPointsInfo			()
 	for(int i=0; i<items_num; ++i)
 	{
 		CUIActorStaticticHeader* itm		= xr_new<CUIActorStaticticHeader>(this);
-		itm->Load							(&uiXml, "master_part", i);
+		itm->Init							(&uiXml, "master_part", i);
 		
 		if(itm->m_id!="foo")
 		{

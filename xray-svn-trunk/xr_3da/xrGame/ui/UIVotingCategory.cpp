@@ -2,12 +2,12 @@
 #include "UIVotingCategory.h"
 #include "UIXmlInit.h"
 #include "UI3tButton.h"
-#include "../game_cl_teamdeathmatch.h"
 #include "UIKickPlayer.h"
 #include "UIChangeMap.h"
 #include "UIChangeWeather.h"
-#include "UITextVote.h"
+#include "../UIGameCustom.h"
 
+#include "../game_cl_teamdeathmatch.h"
 #include "../game_sv_mp_vote_flags.h"
 
 
@@ -17,7 +17,7 @@ CUIVotingCategory::CUIVotingCategory()
 	kick			= NULL;
 	change_weather	= NULL;
 	change_map		= NULL;
-	text_vote		= NULL;
+	change_gametype	= NULL;
 
 	bkgrnd			= xr_new<CUIStatic>(); bkgrnd->SetAutoDelete(true); AttachChild(bkgrnd);
 	header			= xr_new<CUIStatic>(); header->SetAutoDelete(true);	AttachChild(header);
@@ -42,7 +42,7 @@ CUIVotingCategory::~CUIVotingCategory()
 	xr_delete(kick);
 	xr_delete(change_map);
 	xr_delete(change_weather);
-	xr_delete(text_vote);
+	xr_delete(change_gametype);
 
 	xr_delete(xml_doc);
 }

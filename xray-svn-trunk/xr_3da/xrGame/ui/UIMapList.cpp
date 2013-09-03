@@ -73,11 +73,8 @@ void CUIMapList::StartDedicatedServer(){
 	Console->Execute		("quit");
 }
 
-void CUIMapList::Init(float x, float y, float width, float height){
-	CUIWindow::Init(x,y,width,height);	
-}
-
-void CUIMapList::SendMessage(CUIWindow* pWnd, s16 msg, void* pData ){
+void CUIMapList::SendMessage(CUIWindow* pWnd, s16 msg, void* pData )
+{
 	if (BUTTON_CLICKED == msg)
 	{
 		if (m_pBtnLeft == pWnd)
@@ -123,7 +120,7 @@ void CUIMapList::OnListItemClicked()
 	else
 		m_pMapPic->InitTexture("ui\\ui_noise");
 
-	m_pMapInfo->InitMap(_map_name.c_str());
+	m_pMapInfo->InitMap(M.map_name.c_str(), M.map_ver.c_str());
 }
 
 xr_token g_GameModes[];
@@ -173,7 +170,7 @@ const char* CUIMapList::GetCommandLine(LPCSTR player_name){
 	m_command += m_srv_params;
 	m_command += "/estime=";
 	
-	u32 id		= m_pWeatherSelector->GetListWnd()->GetSelectedItem()->GetTAG();
+	u32 id		= m_pWeatherSelector->m_list_box.GetSelectedItem()->GetTAG();
 
 	int estime  = m_mapWeather[id].weather_time;
 	m_command	+= itoa(estime/60,buf,10);

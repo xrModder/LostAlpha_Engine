@@ -187,16 +187,16 @@ bool CUIBuyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 	if (WINDOW_KEY_RELEASED == keyboard_action) return true;
 
 	if (m_propertiesBox.GetVisible())
-		m_propertiesBox.OnKeyboard		(dik, keyboard_action);
+		m_propertiesBox.OnKeyboardAction		(dik, keyboard_action);
 
 	switch (m_bag.GetMenuLevel())
 	{
 	case mlRoot:
-		if (m_tab.OnKeyboard(dik, keyboard_action))
+		if (m_tab.OnKeyboardAction(dik, keyboard_action))
 			return true;
 		break;
 	default:
-		if (m_bag.OnKeyboard(dik, keyboard_action))
+		if (m_bag.OnKeyboardAction(dik, keyboard_action))
 			return true;
 	}
 
@@ -494,7 +494,7 @@ bool CUIBuyWnd::ClearTooExpensiveItems()
 	{
 		CUICellItem* itm		= m_list[MP_SLOT_BELT]->GetItemIdx(i);
 
-		if (itm->GetColor() == PRICE_RESTR_COLOR)
+		if (itm->GetTextureColor() == PRICE_RESTR_COLOR)
 		{
 			itm->GetMessageTarget()->SendMessage(itm, DRAG_DROP_ITEM_DB_CLICK, NULL);
 			f					= true;
@@ -515,7 +515,7 @@ bool CUIBuyWnd::ClearSlot_ifTooExpensive(int slot)
 	{
 		CUICellItem *itm		= m_list[slot]->GetItemIdx(0);
 
-		if (itm->GetColor() == PRICE_RESTR_COLOR)
+		if (itm->GetTextureColor() == PRICE_RESTR_COLOR)
 		{
 			ToBag				(itm, false);
 			return				true;
@@ -528,7 +528,7 @@ bool CUIBuyWnd::ClearSlot_ifTooExpensive(int slot)
 		{
 			if (witm->get_addon_static(CUIWeaponCellItem::eScope) )
 			{
-				if (witm->get_addon_static(CUIWeaponCellItem::eScope)->GetColor() == PRICE_RESTR_COLOR)
+				if (witm->get_addon_static(CUIWeaponCellItem::eScope)->GetTextureColor() == PRICE_RESTR_COLOR)
 				{
 					wpn->Detach		(*wpn->GetScopeName(), true);
 					add_on			= true;
@@ -536,7 +536,7 @@ bool CUIBuyWnd::ClearSlot_ifTooExpensive(int slot)
 			}
 			if (witm->get_addon_static(CUIWeaponCellItem::eSilencer) )
 			{
-				if (witm->get_addon_static(CUIWeaponCellItem::eSilencer)->GetColor() == PRICE_RESTR_COLOR)
+				if (witm->get_addon_static(CUIWeaponCellItem::eSilencer)->GetTextureColor() == PRICE_RESTR_COLOR)
 				{
 					wpn->Detach		(*wpn->GetSilencerName(), true);
 					add_on			= true;
@@ -544,7 +544,7 @@ bool CUIBuyWnd::ClearSlot_ifTooExpensive(int slot)
 			}
 			if (witm->get_addon_static(CUIWeaponCellItem::eLauncher) )
 			{
-				if (witm->get_addon_static(CUIWeaponCellItem::eLauncher)->GetColor() == PRICE_RESTR_COLOR)
+				if (witm->get_addon_static(CUIWeaponCellItem::eLauncher)->GetTextureColor() == PRICE_RESTR_COLOR)
 				{
 					wpn->Detach		(*wpn->GetGrenadeLauncherName(), true);
 					add_on			= true;
@@ -642,12 +642,12 @@ bool CUIBuyWnd::OnItemSelected(CUICellItem* itm)
 
 void CUIBuyWnd::BindDragDropListEvents(CUIDragDropListEx* lst, bool bDrag)
 {
-	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemDrop);
-	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemDbClick);
-	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemSelected);
-	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemRButtonClick);
+	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemDrop);
+	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemDbClick);
+	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemSelected);
+	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemRButtonClick);
 	if(bDrag)
-		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemStartDrag);
+		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemStartDrag);
 
 }
 
@@ -1388,7 +1388,7 @@ bool CUIBuyWnd::CanBuyAllItems()
 		{
 			CUICellItem* itm		= m_list[slot]->GetItemIdx(i);
 
-			if (itm->GetColor() == PRICE_RESTR_COLOR)
+			if (itm->GetTextureColor() == PRICE_RESTR_COLOR)
 				return				false;
 
 			CUIWeaponCellItem*	witm = smart_cast<CUIWeaponCellItem*>(itm);
@@ -1397,17 +1397,17 @@ bool CUIBuyWnd::CanBuyAllItems()
 			{
 				if (witm->get_addon_static(CUIWeaponCellItem::eScope) )
 				{
-					if (witm->get_addon_static(CUIWeaponCellItem::eScope)->GetColor() == PRICE_RESTR_COLOR)
+					if (witm->get_addon_static(CUIWeaponCellItem::eScope)->GetTextureColor() == PRICE_RESTR_COLOR)
 						return false;
 				}
 				if (witm->get_addon_static(CUIWeaponCellItem::eSilencer) )
 				{
-					if (witm->get_addon_static(CUIWeaponCellItem::eSilencer)->GetColor() == PRICE_RESTR_COLOR)
+					if (witm->get_addon_static(CUIWeaponCellItem::eSilencer)->GetTextureColor() == PRICE_RESTR_COLOR)
 						return false;
 				}
 				if (witm->get_addon_static(CUIWeaponCellItem::eLauncher) )
 				{
-					if (witm->get_addon_static(CUIWeaponCellItem::eLauncher)->GetColor() == PRICE_RESTR_COLOR)
+					if (witm->get_addon_static(CUIWeaponCellItem::eLauncher)->GetTextureColor() == PRICE_RESTR_COLOR)
 						return false;
 				}
 			}

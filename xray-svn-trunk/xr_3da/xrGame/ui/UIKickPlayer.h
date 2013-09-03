@@ -13,14 +13,12 @@ struct game_PlayerState;
 class CUIKickPlayer : public CUIDialogWnd 
 {
 public:
-	using CUIDialogWnd::Init;
-
 					CUIKickPlayer	();
 
 			void	InitKick		(CUIXml& xml_doc);
 			void	InitBan			(CUIXml& xml_doc);
 
-	virtual bool	OnKeyboard		(int dik, EUIMessages keyboard_action);
+	virtual bool	OnKeyboardAction		(int dik, EUIMessages keyboard_action);
 	virtual void	SendMessage		(CUIWindow* pWnd, s16 msg, void* pData = 0);
 	virtual void	Update			();
 
@@ -30,7 +28,7 @@ public:
 protected:
 	typedef enum{MODE_KICK, MODE_BAN } E_MODE;
 
-	void			Init			(CUIXml& xml_doc);
+	void			Init_internal		(CUIXml& xml_doc);
 
 	E_MODE								mode;
 

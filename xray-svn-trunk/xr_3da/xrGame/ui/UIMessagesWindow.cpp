@@ -79,7 +79,7 @@ void CUIMessagesWindow::Init(float x, float y, float width, float height){
 		m_pChatLog			= xr_new<CUIGameLog>(); m_pChatLog->SetAutoDelete(true);
 		m_pChatLog->Show	(true);
 		AttachChild			(m_pChatLog);
-		m_pChatWnd			= xr_new<CUIChatWnd>(m_pChatLog); m_pChatWnd->SetAutoDelete(true);
+		m_pChatWnd			= xr_new<CUIChatWnd>(); m_pChatWnd->SetAutoDelete(true);
 		AttachChild			(m_pChatWnd);
 
 		CUIXmlInit::InitScrollView(xml, "mp_log_list", 0, m_pGameLog);

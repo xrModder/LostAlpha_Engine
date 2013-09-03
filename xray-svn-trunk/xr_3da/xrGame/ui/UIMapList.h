@@ -21,7 +21,6 @@ class CUIMapList : public CUIWindow {
 public:
 					CUIMapList();
 	virtual			~CUIMapList();
-	virtual void	Init(float x, float y, float width, float height);
 	virtual void	Update();
 	virtual void	SendMessage(CUIWindow* pWnd, s16 msg, void* pData  = NULL);
 			void	InitFromXml(CUIXml& xml_doc, const char* path);	

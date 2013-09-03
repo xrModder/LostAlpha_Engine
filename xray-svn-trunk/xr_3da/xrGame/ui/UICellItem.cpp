@@ -7,13 +7,12 @@
 #include "../../xr_input.h"
 #include "../HUDManager.h"
 #include "../level.h"
-#include "object_broker.h"
+#include "../object_broker.h"
 #include "UIXmlInit.h"
 #include "UIProgressBar.h"
 
-#include "Weapon.h"
-#include "CustomOutfit.h"
-#include "ActorHelmet.h"
+#include "../Weapon.h"
+#include "../CustomOutfit.h"
 
 CUICellItem* CUICellItem::m_mouse_selected_item = NULL;
 
@@ -109,11 +108,6 @@ void CUICellItem::Update()
 	PIItem item = (PIItem)m_pData;
 	if ( item )
 	{
-		m_has_upgrade = item->has_any_upgrades();
-
-//		Fvector2 size      = GetWndSize();
-//		Fvector2 up_size = m_upgrade->GetWndSize();
-//		pos.x = size.x - up_size.x - 4.0f;
 		Fvector2 pos;
 		pos.set( m_upgrade_pos );
 		if ( ChildsCount() )
@@ -197,36 +191,6 @@ CUIDragItem* CUICellItem::CreateDragItem()
 void CUICellItem::SetOwnerList(CUIDragDropListEx* p)	
 {
 	m_pParentList = p;
-	UpdateConditionProgressBar();
-}
-
-void CUICellItem::UpdateConditionProgressBar()
-{
-
-	if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
-	{
-		PIItem itm = (PIItem)m_pData;
-		CWeapon* pWeapon = smart_cast<CWeapon*>(itm);
-		CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(itm);
-		CHelmet* pHelmet = smart_cast<CHelmet*>(itm);
-		if(pWeapon || pOutfit || pHelmet)
-		{
-			Ivector2 itm_grid_size = GetGridSize();
-			if(m_pParentList->GetVerticalPlacement())
-				std::swap(itm_grid_size.x, itm_grid_size.y);
-
-			Ivector2 cell_size = m_pParentList->CellSize();
-			Ivector2 cell_space = m_pParentList->CellsSpacing();
-			float x = 1.f;
-			float y = itm_grid_size.y * (cell_size.y + cell_space.y) - m_pConditionState->GetHeight() - 2.f;
-
-			m_pConditionState->SetWndPos(Fvector2().set(x,y));
-			m_pConditionState->SetProgressPos(iCeil(itm->GetCondition()*13.0f)/13.0f);
-			m_pConditionState->Show(true);
-			return;
-		}
-	}
-	m_pConditionState->Show(false);
 }
 
 bool CUICellItem::EqualTo(CUICellItem* itm)

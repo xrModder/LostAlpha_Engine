@@ -40,7 +40,7 @@ CServerList::CServerList()
 
 	for (int i = 0; i<3; i++)
 	{
-		m_list[i].ShowSelectedItem	();
+		m_list[i].Show(true);
 		AttachChild					(&m_frame[i]);
 		AttachChild					(&m_list[i]);
 	}
@@ -50,7 +50,7 @@ CServerList::CServerList()
 
 	m_sort_func						= "none";
 	m_message_box					= xr_new<CUIMessageBoxEx>();
-	m_message_box->Init				("message_box_password");
+	m_message_box->InitMessageBox	("message_box_password");
 	m_message_box->SetMessageTarget	(this);
 	
 	m_b_local						= false;
@@ -418,22 +418,22 @@ void CServerList::InitFromXml(CUIXml& xml_doc, LPCSTR path)
 {
 	CUIXmlInit::InitWindow			(xml_doc, path, 0, this);
 	string256 buf;
-	CUIXmlInit::InitListWnd			(xml_doc, strconcat(sizeof(buf),buf,path,":list"),							0, &m_list[LST_SERVER]);
+	CUIXmlInit::InitListBox			(xml_doc, strconcat(sizeof(buf),buf,path,":list"),							0, &m_list[LST_SERVER]);
 	m_fListH[0] =					m_list[LST_SERVER].GetHeight();
 	m_fListH[1] =					xml_doc.ReadAttribFlt(buf,0,"height2");
-	CUIXmlInit::InitListWnd			(xml_doc, strconcat(sizeof(buf),buf,path,":list_server_properties"),		0, &m_list[LST_SRV_PROP]);
-	CUIXmlInit::InitListWnd			(xml_doc, strconcat(sizeof(buf),buf,path,":list_players_list"),				0, &m_list[LST_PLAYERS]);
+	CUIXmlInit::InitListBox			(xml_doc, strconcat(sizeof(buf),buf,path,":list_server_properties"),		0, &m_list[LST_SRV_PROP]);
+	CUIXmlInit::InitListBox			(xml_doc, strconcat(sizeof(buf),buf,path,":list_players_list"),				0, &m_list[LST_PLAYERS]);
 	CUIXmlInit::InitFrameWindow		(xml_doc, strconcat(sizeof(buf),buf,path,":frame"),							0, &m_frame[LST_SERVER]);
 	CUIXmlInit::InitFrameWindow		(xml_doc, strconcat(sizeof(buf),buf,path,":list_server_properties:frame"),	0, &m_frame[LST_SRV_PROP]);
 	CUIXmlInit::InitFrameWindow		(xml_doc, strconcat(sizeof(buf),buf,path,":list_players_list:frame"),		0, &m_frame[LST_PLAYERS]);
-	CUIXmlInit::InitFont			(xml_doc, strconcat(sizeof(buf),buf,path,":list_item:text"),				0, m_itemInfo.text_color, m_itemInfo.font);
+	CUIXmlInit::InitFont			(xml_doc, strconcat(sizeof(buf),buf,path,":list_item:text"),				0, m_itemInfo.text_color, m_itemInfo.text_font);
 	CUIXmlInit::InitEditBox			(xml_doc, strconcat(sizeof(buf),buf,path,":edit_gs_filter"),				0, &m_edit_gs_filter);
 	m_fEditPos[0] =					m_edit_gs_filter.GetWndPos().y;
 	m_fEditPos[1] =					xml_doc.ReadAttribFlt(buf,0,"y2");
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_server_properties"),			0, &m_header2[0]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_players_list"),				0, &m_header2[1]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_frags"),						0, &m_header2[2]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_death"),						0, &m_header2[3]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_server_properties"),			0, &m_header2[0]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_players_list"),				0, &m_header2[1]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_frags"),						0, &m_header2[2]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_death"),						0, &m_header2[3]);
 	
 	m_itemInfo.size.icon			= xml_doc.ReadAttribFlt( strconcat(sizeof(buf),buf, path, ":sizes"), 0, "icon");
 	m_itemInfo.size.server			= xml_doc.ReadAttribFlt( buf, 0, "server");
@@ -483,7 +483,7 @@ void CServerList::ConnectToSelected()
 	{
 		m_message_box->m_pMessageBox->SetUserPasswordMode	(item->GetInfo()->info.icons.user_pass);
 		m_message_box->m_pMessageBox->SetPasswordMode		(item->GetInfo()->info.icons.pass);
-		MainMenu()->StartStopMenu							(m_message_box,true);
+		m_message_box->ShowDialog(true);
 	}
 	else
 	{
@@ -504,27 +504,27 @@ void CServerList::InitHeader()
 	pos.x					+= m_itemInfo.size.icon;
 	m_header[1].SetWidth	(m_itemInfo.size.server);
 	m_header[1].SetWndPos	(pos);
-	m_header[1].SetTextST	("server name");
+	m_header[1].TextItemControl()->SetTextST	("server name");
 	pos.x					+= m_itemInfo.size.server;
 	m_header[2].SetWidth	(m_itemInfo.size.map);
 	m_header[2].SetWndPos	(pos);
-	m_header[2].SetTextST	("map");
+	m_header[2].TextItemControl()->SetTextST		("map");
 	pos.x					+= m_itemInfo.size.map;
 	m_header[3].SetWidth	(m_itemInfo.size.game);
 	m_header[3].SetWndPos	(pos);
-	m_header[3].SetTextST	("game type");
+	m_header[3].TextItemControl()->SetTextST	("game type");
 	pos.x					+= m_itemInfo.size.game;
 	m_header[4].SetWidth	(m_itemInfo.size.players);
 	m_header[4].SetWndPos	(pos);
-	m_header[4].SetTextST	("players");
+	m_header[4].TextItemControl()->SetTextST	("players");
 	pos.x					+= m_itemInfo.size.players;
 	m_header[5].SetWidth	(m_itemInfo.size.ping);
 	m_header[5].SetWndPos	(pos);
-	m_header[5].SetTextST	("ping");
+	m_header[5].TextItemControl()->SetTextST	("ping");
 	pos.x					+= m_itemInfo.size.ping;
 	m_header[6].SetWidth	(m_itemInfo.size.version);
 	m_header[6].SetWndPos	(pos);
-	m_header[6].SetTextST	("version");
+	m_header[6].TextItemControl()->SetTextST	("version");
 
 	for(int i=0; i<LST_COLUMN_COUNT;++i)
 	{

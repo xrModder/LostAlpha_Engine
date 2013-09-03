@@ -63,7 +63,7 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 		//update preset money
 		for(u32 i=_preset_idx_last; i<=_preset_idx_3; ++i)
 		{
-			CUIStatic* st				= m_static_preset_money[i];
+			CUITextWnd* st					= m_static_preset_money[i];
 			_cost						= GetPresetCost((ETradePreset)i);
 			xr_sprintf						(buff, "%d", _cost);
 			st->SetText					(buff);
@@ -93,15 +93,18 @@ void CUIMpTradeWnd::SetMoneyChangeString(int diff)
 	m_static_money_change->SetText			(buff);
 	u32 clr									= (diff>0)?m_text_color_money_positive:m_text_color_money_negative;
 	m_static_money_change->SetTextColor		(clr);
-	m_static_money_change->ResetClrAnimation();
+	m_static_money_change->ResetColorAnimation();
 //	Msg										("Money change:%s", buff);
 }
 
 void CUIMpTradeWnd::SetInfoString(LPCSTR str)
 {
 	m_static_information->SetText			(str);
-	m_static_information->ResetClrAnimation	();
+	m_static_information->ResetColorAnimation	();
+#ifndef MASTER_GOLD
 	Msg("Buy menu message:%s", str);
+#endif // #ifndef MASTER_GOLD
+
 }
 
 void CUIMpTradeWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -127,7 +130,7 @@ void CUIMpTradeWnd::SetCurrentItem(CUICellItem* itm)
 {
 	if(m_pCurrentCellItem == itm)		return;
 	m_pCurrentCellItem					= itm;
-	m_item_info->InitItem				(CurrentIItem());
+	m_item_info->InitItem				(itm);
 	if (m_pCurrentCellItem)
 	{
 		const shared_str& current_sect_name = CurrentIItem()->object().cNameSect();
@@ -166,12 +169,12 @@ int	CUIMpTradeWnd::GetItemPrice(CInventoryItem* itm)
 
 void CUIMpTradeWnd::BindDragDropListEvents(CUIDragDropListEx* lst, bool bDrag)
 {
-	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemDrop);
-	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemDbClick);
-	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemSelected);
-	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemRButtonClick);
+	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemDrop);
+	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemDbClick);
+	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemSelected);
+	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemRButtonClick);
 	if(bDrag)
-		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemStartDrag);
+		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemStartDrag);
 
 }
 
@@ -435,7 +438,10 @@ void CUIMpTradeWnd::SetMoneyAmount(u32 money)
 
 void CUIMpTradeWnd::ResetItems()
 {
+#ifdef DEBUG
 	Msg("--ResetItems");
+#endif // #ifdef DEBUG
+
 	ResetToOrigin						();
 	CleanUserItems						();
 	m_store_hierarchy->Reset			();

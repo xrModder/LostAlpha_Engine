@@ -43,6 +43,11 @@ void CUIOptionsItem::SaveOptStringValue(LPCSTR val)
 	Console->Execute	(command.c_str());
 }
 
+int CUIOptionsItem::GetOptIntegerValue()
+{
+	return Console->GetInteger(m_entry.c_str());
+}
+
 void CUIOptionsItem::GetOptIntegerValue(int& val, int& min, int& max)
 {
 	val = Console->GetInteger(m_entry.c_str(), min, max);

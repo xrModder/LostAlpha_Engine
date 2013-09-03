@@ -112,7 +112,7 @@ void CUIBagWnd::UpdateBuyPossibility()
 		{
 			if (m_info[m_allItems[i]->m_index].bought)
 			{
-				m_allItems[i]->SetColor(0x00ffffff);
+				m_allItems[i]->SetTextureColor(0x00ffffff);
 			}
 			else if (UpdateRank(m_allItems[i]))		// update price if there no restriction for rank
 			{
@@ -660,7 +660,7 @@ void CUIBagWnd::SellItem(CUICellItem* itm)
 
 	m_info[itm->m_index].bought = false;
 
-	if (itm->GetColor() == PRICE_RESTR_COLOR)		// Fuck... loose it
+	if (itm->GetTextureColor() == PRICE_RESTR_COLOR)		// Fuck... loose it
 		return;
 
 	if (!this->m_bIgnoreMoney)
@@ -738,22 +738,22 @@ void CUIBagWnd::ShowSectionEx(int iSection){
 
 void CUIBagWnd::OnBtnShotgunsClicked(){
 	m_boxesDefs[0].pButton->OnClick();
-	m_boxesDefs[0].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[0].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_31);
 }
 void CUIBagWnd::OnBtnMachinegunsClicked(){
 	m_boxesDefs[1].pButton->OnClick();
-	m_boxesDefs[1].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[1].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_32);
 }
 void CUIBagWnd::OnBtnSniperClicked(){
 	m_boxesDefs[2].pButton->OnClick();
-	m_boxesDefs[2].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[2].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_33);
 }
 void CUIBagWnd::OnBtnHeavyClicked(){
 	m_boxesDefs[3].pButton->OnClick();
-	m_boxesDefs[3].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[3].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_34);
 }
 

@@ -29727,6 +29727,30 @@
 							Name="TeamStates"
 							>
 							<File
+								RelativePath=".\UIPanelsClassFactory.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\UIPanelsClassFactory.h"
+								>
+							</File>
+							<File
+								RelativePath=".\UIPlayerItem.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\UIPlayerItem.h"
+								>
+							</File>
+							<File
+								RelativePath=".\UITeamHeader.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\UITeamHeader.h"
+								>
+							</File>
+							<File
 								RelativePath=".\UITeamPanels.cpp"
 								>
 							</File>
