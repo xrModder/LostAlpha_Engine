@@ -60,25 +60,25 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 
 	if(uiXml.NavigateToNode("static_name",0))
 	{
-		UIName						= xr_new<CUIStatic>();	 
+		UIName						= xr_new<CUITextWnd>();	 
 		AttachChild					(UIName);		
 		UIName->SetAutoDelete		(true);
-		xml_init.InitStatic			(uiXml, "static_name", 0,	UIName);
+		xml_init.InitTextWnd		(uiXml, "static_name", 0,	UIName);
 	}
 	if(uiXml.NavigateToNode("static_weight",0))
 	{
-		UIWeight				= xr_new<CUIStatic>();	 
+		UIWeight				= xr_new<CUITextWnd>();	 
 		AttachChild				(UIWeight);		
 		UIWeight->SetAutoDelete(true);
-		xml_init.InitStatic		(uiXml, "static_weight", 0,			UIWeight);
+		xml_init.InitTextWnd		(uiXml, "static_weight", 0,			UIWeight);
 	}
 
 	if(uiXml.NavigateToNode("static_cost",0))
 	{
-		UICost					= xr_new<CUIStatic>();	 
+		UICost					= xr_new<CUITextWnd>();	 
 		AttachChild				(UICost);
 		UICost->SetAutoDelete	(true);
-		xml_init.InitStatic		(uiXml, "static_cost", 0,			UICost);
+		xml_init.InitTextWnd		(uiXml, "static_cost", 0,			UICost);
 	}
 
 	if(uiXml.NavigateToNode("static_condition",0))
@@ -140,20 +140,26 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	if(!m_pInvItem)			return;
 
 	string256				str;
+
 	if(UIName)
 	{
-		UIName->TextItemControl()->SetText		(pInvItem->Name());
+		UIName->SetText		(pInvItem->Name());
+		UIName->AdjustHeightToText();
 	}
 	if(UIWeight)
 	{
 		xr_sprintf				(str, "%3.2f kg", pInvItem->Weight());
-		UIWeight->TextItemControl()->SetText	(str);
+		UIWeight->SetText	(str);
 	}
 	if( UICost && IsGameTypeSingle() )
 	{
 		xr_sprintf				(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
-		UICost->TextItemControl()->SetText		(str);
+		UICost->SetText		(str);
+		UICost->Show(true);
 	}
+	else
+		UICost->Show(false);
+
 
 	if(UICondProgresBar)
 	{

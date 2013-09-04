@@ -21,9 +21,9 @@ void CUIFrags2::Init(CUIXml& xml_doc, LPCSTR path, LPCSTR backgrnd_path){
 	CUIWindow* pTeam2 = NULL;
 	Fvector2 pos;
 
-	pTeam1 = m_pStats->Init(xml_doc, path, 1);
+	pTeam1 = m_pStats->InitStats(xml_doc, path, 1);
 	AttachChild(pTeam1);
-	pTeam2 = m_pStats2->Init(xml_doc, path, 2);
+	pTeam2 = m_pStats2->InitStats(xml_doc, path, 2);
 	AttachChild(pTeam2);
 
     // team 2 list

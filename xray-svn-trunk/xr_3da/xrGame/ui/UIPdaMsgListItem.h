@@ -7,10 +7,11 @@
 #include "UIStatic.h"
 #include "..\InventoryOwner.h"
 
-class CUIPdaMsgListItem : public CUIStatic
+class CUIPdaMsgListItem : public CUIColorAnimConrollerContainer
 {
+	typedef	CUIColorAnimConrollerContainer	inherited;
 public:
-	virtual void		Init							(float x, float y, float width, float height);
+			void		InitPdaMsgListItem				(const Fvector2& size);
 	virtual void		InitCharacter					(CInventoryOwner* pInvOwner);
 	virtual void		SetTextColor					(u32 color);
 	virtual void		SetFont							(CGameFont* pFont);
@@ -18,6 +19,6 @@ public:
 	
 	//информация о персонаже
 	CUIStatic			UIIcon;
-	CUIStatic			UIName;
-	CUIStatic			UIMsgText;
+	CUITextWnd			UIName;
+	CUITextWnd			UIMsgText;
 };

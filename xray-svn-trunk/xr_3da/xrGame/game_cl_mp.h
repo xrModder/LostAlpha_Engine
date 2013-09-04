@@ -121,6 +121,9 @@ protected:
 	BOOL							m_bSpectatorSelected;
 	
 	virtual void			LoadTeamData			(const shared_str&	TeamName);
+
+	virtual	void			ChatSay					(LPCSTR	phrase, bool bAll);
+
 	virtual	void			ChatSayTeam				(const shared_str&	phrase);
 	virtual	void			ChatSayAll				(const shared_str&	phrase);
 	virtual	void			OnChatMessage			(NET_Packet* P);

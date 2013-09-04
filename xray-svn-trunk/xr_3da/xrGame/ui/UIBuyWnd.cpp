@@ -15,6 +15,8 @@
 #include <dinput.h>
 #include "../actor.h"
 #include "restrictions.h"
+#include "uidialogwnd.h"
+#include "UIProgressBar.h"
 
 #define 	BELT_SLOT			5
 
@@ -60,7 +62,7 @@ CUIBuyWnd::CUIBuyWnd()
 	}
 
 	AttachChild				(&m_propertiesBox);
-	m_propertiesBox.Init	(0,0,300,300);
+	m_propertiesBox.InitPropertiesBox(Fvector2().set(0,0),Fvector2().set(300,300));
 	m_propertiesBox.Hide	();
 
 	m_pCurrentCellItem		= NULL;
@@ -81,29 +83,13 @@ void CUIBuyWnd::ResetItems()
 	m_bag.ReloadItemsPrices	();
 }
 
-void CUIBuyWnd::Show()
+void CUIBuyWnd::Show(bool status)
 {
-	m_pMouseCapturer		= NULL;
-	inherited::Show			();
+	inherited::Show				(status);
 
-	
 	CActor *pActor			= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor) 
-        pActor->SetWeaponHideState(INV_STATE_BUY_MENU, true);
-
-	m_tab.SetActiveState	();
-
-	CUIOutfitDragDropList* lst = (CUIOutfitDragDropList*)m_list[MP_SLOT_OUTFIT];
-	lst->SetItem			(NULL);
-}
-
-void CUIBuyWnd::Hide()
-{
-	inherited::Hide			();
-
-	CActor *pActor			= smart_cast<CActor*>(Level().CurrentEntity());
-	if(pActor)
-        pActor->SetWeaponHideState(INV_STATE_BUY_MENU, false);
+		pActor->SetWeaponHideState(INV_STATE_BUY_MENU, status);
 }
 
 void CUIBuyWnd::DestroyAllItems()
@@ -129,7 +115,7 @@ void CUIBuyWnd::Init(const shared_str& sectionName, const shared_str& sectionPri
 	m_sectionPrice						= sectionPrice;
 
 	CUIXml								xml_doc;
-	R_ASSERT							(xml_doc.Init(CONFIG_PATH, UI_PATH, "inventoryMP.xml"));
+	xml_doc.Load							(CONFIG_PATH, UI_PATH, "inventoryMP.xml");
 
 	CUIXmlInit::InitWindow				(xml_doc, "main",						0, this);
 
@@ -148,7 +134,7 @@ void CUIBuyWnd::Init(const shared_str& sectionName, const shared_str& sectionPri
 	CUIXmlInit::Init3tButton			(xml_doc, "btn_riffle_granades",		0, &m_btnRifleGrenade);
 	CUIXmlInit::Init3tButton			(xml_doc, "btn_rifle_bullets",			0, &m_btnRifleBullet);
 
-	CUIXmlInit::InitStatic				(xml_doc, "money_info",					0, &m_moneyInfo);
+	CUIXmlInit::InitTextWnd				(xml_doc, "money_info",					0, &m_moneyInfo);
 
 	m_btnPistolSilencer.Enable			(false);
 	m_btnPistolSilencer.SetVisible		(false);
@@ -466,14 +452,14 @@ void CUIBuyWnd::OnBtnOk()
 	if (!CanBuyAllItems())
 		return;
 
-	Game().StartStopMenu		(this,true);
+	HideDialog();
 	game_cl_Deathmatch * dm		= smart_cast<game_cl_Deathmatch *>(&(Game()));
 	dm->OnBuyMenu_Ok			();
 }
 
 void CUIBuyWnd::OnBtnCancel()
 {
-	Game().StartStopMenu		(this,true);
+	HideDialog();
 }
 
 bool CUIBuyWnd::ClearTooExpensiveItems()

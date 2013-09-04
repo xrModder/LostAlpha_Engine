@@ -78,8 +78,7 @@ public:
 	virtual bool 	OnKeyboard					(int dik, EUIMessages keyboard_action);
 	virtual void 	SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = 0);
 	virtual void 	Update						();
-	virtual void 	Show						();
-	virtual void 	Hide						();
+	virtual void 	Show						(bool status);
 
 	// drag drop handlers
 	bool	xr_stdcall	OnItemDrop				(CUICellItem* itm);
@@ -148,7 +147,7 @@ protected:
 	CUI3tButton 		m_btnRifleGrenadelauncer;
 	CUI3tButton 		m_btnRifleGrenade;
 
-	CUIStatic			m_moneyInfo;
+	CUITextWnd			m_moneyInfo;
 	
 	// controls
 	CUIPropertiesBox	m_propertiesBox;

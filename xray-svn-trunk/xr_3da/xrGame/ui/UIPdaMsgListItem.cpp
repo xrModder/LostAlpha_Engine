@@ -19,14 +19,12 @@ using namespace InventoryUtilities;
 
 
 void CUIPdaMsgListItem::SetFont(CGameFont* pFont){
-	UIMsgText.TextItemControl()->SetFont(pFont);
+	UIMsgText.SetFont(pFont);
 }
 
-void CUIPdaMsgListItem::Init(float x, float y, float width, float height)
+void CUIPdaMsgListItem::InitPdaMsgListItem(const Fvector2& size)
 {
-//	CUIStatic::Init			(x, y, width, height);
-	CUIStatic::SetWndPos	(x, y);
-	CUIStatic::SetWndSize	(Fvector2().set(width, height));
+	inherited::SetWndSize	(size);
 
 	CUIXml					uiXml;
 	uiXml.Load				(CONFIG_PATH, UI_PATH,PDA_MSG_MAINGAME_CHAR);
@@ -37,18 +35,18 @@ void CUIPdaMsgListItem::Init(float x, float y, float width, float height)
 
 	AttachChild(&UIName);
 	if(uiXml.NavigateToNode	("name_static",0))
-		xml_init.InitStatic	(uiXml, "name_static", 0, &UIName);
+		xml_init.InitTextWnd	(uiXml, "name_static", 0, &UIName);
 	else
 	{
 		UIName.Show			(false);
 		UIName.Enable		(false);
 	}
 	AttachChild				(&UIMsgText);
-	xml_init.InitStatic		(uiXml, "text_static", 0, &UIMsgText);	
+	xml_init.InitTextWnd		(uiXml, "text_static", 0, &UIMsgText);	
 }
 
 void CUIPdaMsgListItem::SetTextColor(u32 color){
-	UIMsgText.TextItemControl()->SetTextColor	(color);
+	UIMsgText.SetTextColor	(color);
 }
 
 void CUIPdaMsgListItem::SetColor(u32 color){
@@ -61,15 +59,7 @@ void CUIPdaMsgListItem::InitCharacter(CInventoryOwner* pInvOwner)
 
 	string256 str;
 	xr_sprintf(str, "name: %s", pInvOwner->Name());
-	UIName.TextItemControl()->SetText			(str);
+	UIName.SetText			(str);
 
 	UIIcon.InitTexture		( pInvOwner->CharacterInfo().IconName().c_str() );
-/*
-	UIIcon.SetShader(GetCharIconsShader());
-	UIIcon.GetUIStaticItem().SetOriginalRect(
-					float(pInvOwner->CharacterInfo().TradeIconX()*ICON_GRID_WIDTH),
-					float(pInvOwner->CharacterInfo().TradeIconY()*ICON_GRID_HEIGHT),
-					float(pInvOwner->CharacterInfo().TradeIconX()+CHAR_ICON_WIDTH*ICON_GRID_WIDTH),
-					float(pInvOwner->CharacterInfo().TradeIconY()+CHAR_ICON_HEIGHT*ICON_GRID_HEIGHT));
-*/
 }

@@ -611,7 +611,7 @@ void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 		string256			str;
 
 		xr_sprintf				(str, "%d RU", m_pOthersTrade->GetItemPrice(CurrentIItem(), bBuying) );
-		m_uidata->UIItemInfo.UICost->TextItemControl()->SetText (str);
+		m_uidata->UIItemInfo.UICost->SetText (str);
 	}
 }
 

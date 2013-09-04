@@ -97,6 +97,7 @@ public:
 
 	virtual		void				ChatSayTeam				(const shared_str &phrase)	{};
 	virtual		void				ChatSayAll				(const shared_str &phrase)	{};
+	virtual		void				ChatSay					(LPCSTR phrase, bool bAll)	{};
 	virtual		void				OnChatMessage			(NET_Packet* P)	{};
 	virtual		void				OnWarnMessage			(NET_Packet* P)	{};
 	virtual		void				OnRadminMessage			(u16 type, NET_Packet* P)	{};

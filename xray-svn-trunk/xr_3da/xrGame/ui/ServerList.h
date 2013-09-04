@@ -2,8 +2,10 @@
 
 #include "UIWindow.h"
 #include "UIListWnd.h"
+#include "UIListBox.h"
 #include "UIListItemServer.h"
 #include "UIFrameWindow.h"
+#include "UIFrameLineWnd.h"
 #include "UIEditBox.h"
 #include "UI3tButton.h"
 #include "../battleye.h"
@@ -38,7 +40,6 @@ public:
 	CServerList();
 	virtual ~CServerList();
 
-	virtual void 	Init				(float x, float y, float width, float height);
 	virtual void 	Update				();
 	virtual void 	SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 			void 	InitFromXml			(CUIXml& xml_doc, LPCSTR path);
@@ -85,7 +86,7 @@ protected:
 
 	LIST_SRV_ITEM	m_itemInfo;
 	SServerFilters	m_sf;
-	CUIListWnd		m_list[3];
+	CUIListBox		m_list[3];
 	CUIFrameWindow	m_frame[3];
 	CUI3tButton		m_header[LST_COLUMN_COUNT];
 	CUIFrameLineWnd	m_header2[4];

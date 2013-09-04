@@ -2,7 +2,7 @@
 
 #include "UIMapDesc.h"
 #include "UIStatic.h"
-#include "UICursor.h"
+#include "../UICursor.h"
 #include "UIScrollView.h"
 #include "UIXmlInit.h"
 #include "UI3tButton.h"
@@ -12,6 +12,8 @@
 #include "UIMapInfo.h"
 #include "../xr_level_controller.h"
 #include <dinput.h>
+#include "uidialogwnd.h"
+#include "uiwindow.h"
 
 #include "UIStatsPlayerList.h"
 
@@ -76,7 +78,8 @@ void CUIMapDesc::Init(){
 
 	CUIXmlInit::InitWindow(xml_doc, "map_desc:map_info", 0, m_pMapInfo);
 
-	m_pMapInfo->InitMap(*Level().name());
+	m_pMapInfo->InitMapInfo(m_pMapInfo->GetWndPos(), m_pMapInfo->GetWndSize());
+	m_pMapInfo->InitMap(Level().name().c_str(), NULL);
 
 	ADD_TEXT_TO_VIEW2(m_pMapInfo->GetLargeDesc(),m_pTextDesc);
 
@@ -103,7 +106,7 @@ void CUIMapDesc::SendMessage(CUIWindow* pWnd,s16 msg, void* pData){
 
 }
 
-bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIMapDesc::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (WINDOW_KEY_RELEASED == keyboard_action) 
 	{
 		if (dik == DIK_TAB)

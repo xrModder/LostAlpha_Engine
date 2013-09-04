@@ -9,6 +9,7 @@
 class CUIDragDropListEx;
 class CUI3tButton;
 class CUIStatic;
+class CUITextWnd;
 class CUIMpItemsStoreWnd;
 class CStoreHierarchy;
 class CUITabControl;
@@ -85,7 +86,7 @@ public:
 	
 	//
 	virtual void				Update						();				
-	virtual bool 				OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool 				OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 
 public:
 	virtual void 				Init						(const shared_str& sectionName, const shared_str& sectionPrice);
@@ -124,8 +125,7 @@ public:
 	virtual u32					GetPresetCost				(ETradePreset idx);
 	virtual	void				ClearPreset					(ETradePreset idx);
 	virtual	void				TryUsePreset				(ETradePreset idx);
-	virtual void 	Show						();
-	virtual void 	Hide						();
+	virtual void 				Show						(bool status);
 	virtual bool	IsIgnoreMoneyAndRank		();
 
 
@@ -142,12 +142,12 @@ private:
 	bool				m_bIgnoreMoneyAndRank;
 //controls
 	CUIWindow*			m_shop_wnd;
-	CUIStatic*			m_static_curr_items_money;
-	CUIStatic*			m_static_player_money;
-	CUIStatic*			m_static_preset_money[5];
+	CUITextWnd*			m_static_curr_items_money;
+	CUITextWnd*			m_static_player_money;
+	CUITextWnd*			m_static_preset_money[5];
 	CUIStatic*			m_static_player_rank;
-	CUIStatic*			m_static_information;
-	CUIStatic*			m_static_money_change;
+	CUITextWnd*			m_static_information;
+	CUITextWnd*			m_static_money_change;
 	CUI3tButton* 		m_btn_shop_back;
 	CUI3tButton* 		m_btn_ok;
 	CUI3tButton* 		m_btn_cancel;

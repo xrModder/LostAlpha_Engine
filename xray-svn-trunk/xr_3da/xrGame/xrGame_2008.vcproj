@@ -29409,14 +29409,6 @@
 					Name="Deathmatch"
 					>
 					<File
-						RelativePath=".\UIDMStatisticWnd.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\UIDMStatisticWnd.h"
-						>
-					</File>
-					<File
 						RelativePath="UIGameDM.cpp"
 						>
 					</File>
@@ -29652,14 +29644,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\ui\UIListItemAdv.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ui\UIListItemAdv.h"
-							>
-						</File>
-						<File
 							RelativePath=".\ui\UIListItemServer.cpp"
 							>
 						</File>
@@ -29784,18 +29768,6 @@
 							</File>
 							<File
 								RelativePath=".\ui\UIFrags2.h"
-								>
-							</File>
-						</Filter>
-						<Filter
-							Name="old"
-							>
-							<File
-								RelativePath=".\ui\UIStatsWnd.cpp"
-								>
-							</File>
-							<File
-								RelativePath=".\ui\UIStatsWnd.h"
 								>
 							</File>
 						</Filter>

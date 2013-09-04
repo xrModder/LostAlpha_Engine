@@ -353,6 +353,20 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 
 //////////////////////////////////////////////////////////////////////////
 
+void game_cl_mp::ChatSay(LPCSTR	phrase, bool bAll)
+{
+	s16 team = ModifyTeam(local_player->team)+1;
+
+	NET_Packet		P;	
+	P.w_begin		(M_CHAT_MESSAGE);
+	P.w_s16			((bAll)?-1:local_player->team); // -1 = all, 0 = green, 1 = blue
+	P.w_stringZ		(local_player->getName());
+	P.w_stringZ		(phrase);
+	P.w_s16			(team);
+	u_EventSend		(P);
+}
+
+
 void game_cl_mp::ChatSayAll(const shared_str &phrase)
 {
 	NET_Packet	P;	

@@ -4,6 +4,7 @@
 
 class CInventoryItem;
 class CUIStatic;
+class CUITextWnd;
 class CUIScrollView;
 class CUIProgressBar;
 class CUIWpnParams;
@@ -35,9 +36,9 @@ public:
 
 	virtual void		Draw				();
 	bool				m_b_force_drawing;
-	CUIStatic*			UIName;
-	CUIStatic*			UIWeight;
-	CUIStatic*			UICost;
+	CUITextWnd*			UIName;
+	CUITextWnd*			UIWeight;
+	CUITextWnd*			UICost;
 	CUIStatic*			UICondition;
 	CUIScrollView*		UIDesc;
 	CUIProgressBar*		UICondProgresBar;
