@@ -137,7 +137,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 				hr					= texture->GetSurfaceLevel(0,&surface);
 				if(hr!=D3D_OK)		goto _end_;
 				VERIFY				(surface);
-				hr					= D3DXLoadSurfaceFromSurface(surface,0,0,pFB,0,0,D3DX_DEFAULT,0);
+				hr					= D3DXLoadSurfaceFromSurface(surface,0,0,pFB,0,srcRect,D3DX_DEFAULT,0);
 				_RELEASE			(surface);
 				if(hr!=D3D_OK)		goto _end_;
 
