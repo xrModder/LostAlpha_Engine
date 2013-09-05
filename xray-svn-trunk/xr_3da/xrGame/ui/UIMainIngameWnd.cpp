@@ -179,7 +179,6 @@ void CUIMainIngameWnd::Init()
 	{
 		xml_init.InitStatic					(uiXml, "static_pda_online", 0, &UIPdaOnline);
 		UIZoneMap->Background().AttachChild	(&UIPdaOnline);
-		UIZoneMap->SetupCurrentMap();
 	}
 
 	//Полоса прогресса здоровья

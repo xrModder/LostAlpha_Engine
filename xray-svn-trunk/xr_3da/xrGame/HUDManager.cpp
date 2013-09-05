@@ -287,6 +287,8 @@ void CHUDManager::OnScreenRatioChanged()
 	pUI->UIMainIngameWnd->Init			();
 	pUI->UnLoad							();
 	pUI->Load							(pUI->UIGame());
+	if(b_online)
+		pUI->OnConnected();
 }
 
 void CHUDManager::OnDisconnected()
