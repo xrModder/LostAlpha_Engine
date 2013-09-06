@@ -1,4 +1,4 @@
-#include "../pch_script.h"
+#include "pch_script.h"
 #include "UIMapWnd.h"
 #include "UIMap.h"
 #include "UIXmlInit.h"

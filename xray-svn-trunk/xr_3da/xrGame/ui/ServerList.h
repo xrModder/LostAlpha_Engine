@@ -109,6 +109,11 @@ protected:
 	struct SrvItem{
 		CUIListItemServer*	m_ui_item;
 		bool				m_busy;
+		SrvItem(float h)
+		{
+			m_ui_item			= xr_new<CUIListItemServer>(h);
+			m_busy				= true;
+		}
 	};
 	CUIListItemServer*			GetFreeItem		();
 	void						DestroySrvItems	();	

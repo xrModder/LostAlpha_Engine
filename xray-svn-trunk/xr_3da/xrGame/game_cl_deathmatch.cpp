@@ -1219,6 +1219,18 @@ void		game_cl_Deathmatch::ShowBuyMenu				()
 	}
 };
 
+bool game_cl_Deathmatch::IsPlayerInTeam			(game_PlayerState* ps, ETeam team)
+{
+	if (ps->testFlag(GAME_PLAYER_FLAG_SPECTATOR) && (team == etSpectatorsTeam))
+	{
+		return true;
+	} else if (!ps->testFlag(GAME_PLAYER_FLAG_SPECTATOR) && (team == etGreenTeam))
+	{
+		return true;
+	}
+	return false;
+}
+
 void game_cl_Deathmatch::HideBuyMenu				()
 {
 	if (!pCurBuyMenu || !pCurBuyMenu->IsShown()) return;

@@ -1,7 +1,11 @@
 #include "stdafx.h"
+
+#if 0
 #include "uiFrameRect.h"
 #include "hudmanager.h"
 #include "ui\uitexturemaster.h"
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -203,3 +207,4 @@ void CUIFrameRect::SetTextureColor(u32 cl)
 	for (int i = 0; i < fmMax; ++i)
 		frame[i].SetColor(cl);
 }
+#endif

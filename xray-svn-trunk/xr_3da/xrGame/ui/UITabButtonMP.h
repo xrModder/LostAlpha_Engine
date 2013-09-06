@@ -15,7 +15,7 @@ public:
 			void 	SetOrientation			(bool bVert)		{m_orientationVertical = bVert;};
 			void	CreateHint				();
 	
-		shared_str	m_temp_id;
+		int	m_temp_index;
 
 		Fvector2	m_text_ident_normal;
 		Fvector2	m_text_ident_cursor_over;

@@ -10,6 +10,8 @@
 //=============================================================================
 
 #include "stdafx.h"
+
+#if 0
 #include "UIFrameLine.h"
 #include "../hudmanager.h"
 #include "UITextureMaster.h"
@@ -134,3 +136,4 @@ void CUIFrameLine::Render()
 		elements[i].Render();
 	}
 }
+#endif

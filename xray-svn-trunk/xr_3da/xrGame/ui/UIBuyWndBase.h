@@ -69,8 +69,7 @@ public:
 	virtual void				ClearPreset					(ETradePreset idx)												=0;
 	virtual void				TryUsePreset				(ETradePreset idx)												=0;
 
-	virtual void				Show						()																=0;
-	virtual void				Hide						()																=0;
+	virtual void				Show						(bool status)																=0;
 
 	virtual bool				IsIgnoreMoneyAndRank		()																=0;
 

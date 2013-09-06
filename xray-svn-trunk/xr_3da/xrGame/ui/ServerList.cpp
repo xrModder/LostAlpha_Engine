@@ -177,18 +177,14 @@ void CServerList::AfterDisappear()
 }
 
 void CServerList::FillUpDetailedServerInfo()
-{	
-	int si = m_list[LST_SERVER].GetSelectedItem();
-
+{
 	bool t1 = false;
 	bool t2 = false;
 	bool spect = false;
 		
-    if (-1 != si)
+	CUIListItemServer* pItem = (CUIListItemServer*)m_list[LST_SERVER].GetSelectedItem();
+	if(pItem)
 	{
-		CUIListItemServer* pItem = (CUIListItemServer*)m_list[LST_SERVER].GetItem(si);
-		R_ASSERT					(pItem);
-
 		ServerInfo srvInfo;
 		if (m_GSBrowser) m_GSBrowser->GetServerInfoByIndex(&srvInfo, pItem->GetInfo()->info.Index);
 		u32 teams = srvInfo.m_aTeams.size();
@@ -599,7 +595,7 @@ void	CServerList::RefreshList_internal()
 {
 	m_need_refresh_fr				= u32(-1);
 	SaveCurItem						();
-	m_list[LST_SERVER].RemoveAll	();
+	m_list[LST_SERVER].Clear();
 	ClearSrvItems					();
 	
 	if (!m_GSBrowser)				return;
@@ -642,10 +638,10 @@ void	CServerList::RefreshList_internal()
 
 void CServerList::RefreshQuick()
 {
-	int SvId = m_list[LST_SERVER].GetSelectedItem();
-	if (-1 == SvId)
+	CUIListItemServer* pItem = (CUIListItemServer*)m_list[LST_SERVER].GetSelectedItem();
+	if(!pItem)
 		return;
-	CUIListItemServer* pItem = (CUIListItemServer*)m_list[LST_SERVER].GetItem(SvId);
+
 	if (m_GSBrowser) m_GSBrowser->RefreshQuick(pItem->GetInfo()->info.Index);
 	
 	RefreshList();

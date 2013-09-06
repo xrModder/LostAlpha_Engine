@@ -155,6 +155,7 @@ public:
 
 	virtual		void				OnGameRoundStarted				();
 	virtual		void				UpdateMapLocations		();
+	virtual		bool				IsPlayerInTeam			(game_PlayerState* ps, ETeam team);
 	virtual		void				OnConnected				();
 };
 

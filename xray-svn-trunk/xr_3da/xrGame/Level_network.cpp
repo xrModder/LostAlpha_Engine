@@ -26,8 +26,6 @@ void CLevel::remove_objects	()
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - Start");
 	BOOL						b_stored = psDeviceFlags.test(rsDisableObjectsAsCrows);
 
-	Game().reset_ui				();
-
 	if (OnServer()) {
 		VERIFY					(Server);
 		Server->SLS_Clear		();

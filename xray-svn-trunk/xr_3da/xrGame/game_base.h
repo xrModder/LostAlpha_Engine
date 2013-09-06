@@ -79,7 +79,7 @@ public:
 			bool	testFlag				(u16 f) const;
 			void	setFlag					(u16 f);
 			void	resetFlag				(u16 f);
-			LPCSTR	getName					(){return name;}
+			LPCSTR	getName					() const {return name;}
 			void	setName					(LPCSTR s){xr_strcpy(name,s);}
 			void	SetGameID				(u16 NewID);
 			bool	HasOldID				(u16 ID);

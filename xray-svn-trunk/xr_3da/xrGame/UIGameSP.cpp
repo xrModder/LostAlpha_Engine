@@ -259,16 +259,6 @@ void CUIGameSP::EnableDownloads(bool val)
 	PdaMenu->EnableDownloads(val);
 }
 
-void CUIGameSP::reset_ui()
-{
-	inherited::reset_ui				();
-	InventoryMenu->Reset			();
-	PdaMenu->Reset					();
-	TalkMenu->Reset					();
-	UICarBodyMenu->Reset			();
-	UIChangeLevelWnd->Reset			();
-}
-
 CChangeLevelWnd::CChangeLevelWnd		()
 {
 	m_messageBox			= xr_new<CUIMessageBox>();	

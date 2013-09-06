@@ -537,10 +537,10 @@ public:
 		SDrawStaticStruct* _s		= CurrentGameUI()->AddCustomStatic("game_saved", true);
 		_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 		string_path					save_name;
-		strconcat					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
-		_s->wnd()->SetText			(save_name);
+		STRCONTAT					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
+		_s->wnd()->TextItemControl()->SetText(save_name);
 
-		strcat					(S,".dds");
+		xr_strcat					(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
 		
 #ifdef DEBUG
@@ -988,7 +988,7 @@ class CCC_DebugFonts : public IConsole_Command {
 public:
 	CCC_DebugFonts (LPCSTR N) : IConsole_Command(N) {bEmptyArgsHandled = true; }
 	virtual void Execute				(LPCSTR args) {
-		HUD().GetUI()->StartStopMenu( xr_new<CUIDebugFonts>(), true);		
+		xr_new<CUIDebugFonts>()->ShowDialog(true);	
 	}
 };
 

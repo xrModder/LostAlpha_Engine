@@ -1,9 +1,9 @@
-#include "../pch_script.h"
+#include "pch_script.h"
 #include "UIWindow.h"
 #include "UIFrameWindow.h"
 #include "UIFrameLineWnd.h"
 #include "UIDialogWnd.h"
-#include "../HUDManager.h"
+#include "UIDialogHolder.h"
 #include "../GamePersistent.h"
 #include "UILabel.h"
 #include "UIMMShniaga.h"
@@ -42,24 +42,11 @@ CGameFont* GetFontLetterica25()
 int GetARGB(u16 a, u16 r, u16 g, u16 b)
 {return color_argb(a,r,g,b);}
 
-
-Frect	get_texture_rect(LPCSTR icon_name)
+const Fvector2* get_wnd_pos(CUIWindow* w)
 {
-	return CUITextureMaster::GetTextureRect(icon_name);
+	return &w->GetWndPos();
 }
-
-LPCSTR	get_texture_name(LPCSTR icon_name)
-{
-	return CUITextureMaster::GetTextureFileName(icon_name);
-}
-
-TEX_INFO	get_texture_info(LPCSTR name, LPCSTR def_name)
-{
-	return CUITextureMaster::FindItem(name, def_name);
-}
-
 using namespace luabind;
-
 #pragma optimize("s",on)
 void CUIWindow::script_register(lua_State *L)
 {
@@ -69,8 +56,6 @@ void CUIWindow::script_register(lua_State *L)
 		def("GetFontSmall",				&GetFontSmall),
 		def("GetFontMedium",			&GetFontMedium),
 		def("GetFontDI",				&GetFontDI),
-//.		def("GetFontHeaderRussian",		&GetFontHeaderRussian),
-//.		def("GetFontHeaderEurope",		&GetFontHeaderEurope),
 		def("GetFontGraffiti19Russian",	&GetFontGraffiti19Russian),
 		def("GetFontGraffiti22Russian",	&GetFontGraffiti22Russian),
 		def("GetFontLetterica16Russian",&GetFontLetterica16Russian),
@@ -79,14 +64,6 @@ void CUIWindow::script_register(lua_State *L)
 		def("GetFontGraffiti50Russian",	&GetFontGraffiti50Russian),
 		def("GetFontLetterica25",		&GetFontLetterica25),
 
-		class_<TEX_INFO>("TEX_INFO")
-		.def("get_file_name",	 			&TEX_INFO::get_file_name)
-		.def("get_rect",					&TEX_INFO::get_rect),
-
-		def("GetTextureName",			&get_texture_name),
-		def("GetTextureRect",			&get_texture_rect),
-		def("GetTextureInfo",			&get_texture_info),
-
 		class_<CUIWindow>("CUIWindow")
 		.def(							constructor<>())
 		.def("AttachChild",				&CUIWindow::AttachChild, adopt(_2))
@@ -94,65 +71,57 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
-		.def("SetWndRect",				(void (CUIWindow::*)(Frect))					&CUIWindow::SetWndRect_script)
-		.def("SetWndRect",				(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
-		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::Init)
-		.def("Init",					(void (CUIWindow::*)(Frect*))			 &CUIWindow::Init)
-		.def("SetWndPos",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndPos)
-		.def("SetWndSize",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndSize)
+		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
+		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
+		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
+		.def("GetWndPos",				&get_wnd_pos)
 		.def("GetWidth",				&CUIWindow::GetWidth)
-		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
-		.def("SetHeight",				(void (CUIWindow::*)(float)) &CUIWindow::SetHeight)
 
 		.def("Enable",					&CUIWindow::Enable)
 		.def("IsEnabled",				&CUIWindow::IsEnabled)
 		.def("Show",					&CUIWindow::Show)
 		.def("IsShown",					&CUIWindow::IsShown)
-		.def("SetFont",					&CUIWindow::SetFont)
-		.def("GetFont",					&CUIWindow::GetFont)
 
 		.def("WindowName",				&CUIWindow::WindowName_script)
 		.def("SetWindowName",			&CUIWindow::SetWindowName)
 		.def("SetPPMode",				&CUIWindow::SetPPMode)
 		.def("ResetPPMode",				&CUIWindow::ResetPPMode),
 
-//		.def("",						&CUIWindow::)
-		
 		class_<CDialogHolder>("CDialogHolder")
-		.def("MainInputReceiver",		&CDialogHolder::MainInputReceiver)
-		.def("start_stop_menu",			&CDialogHolder::StartStopMenu)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("RemoveDialogToRender",	&CDialogHolder::RemoveDialogToRender),
 
 		class_<CUIDialogWnd, CUIWindow>("CUIDialogWnd")
-		.def("GetHolder",				&CUIDialogWnd::GetHolder)
-		.def("SetHolder",				&CUIDialogWnd::SetHolder),
+		.def("ShowDialog",				&CUIDialogWnd::ShowDialog)
+		.def("HideDialog",				&CUIDialogWnd::HideDialog)
+		.def("GetHolder",				&CUIDialogWnd::GetHolder),
 
 		class_<CUIFrameWindow, CUIWindow>("CUIFrameWindow")
-		.def(					constructor<>())
+		.def(							constructor<>())
 		.def("SetWidth",				&CUIFrameWindow::SetWidth)
 		.def("SetHeight",				&CUIFrameWindow::SetHeight)
-		.def("SetColor",				&CUIFrameWindow::SetColor)
-		.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic)
-		.def("Init",					(void(CUIFrameWindow::*)(LPCSTR,float,float,float,float))&CUIFrameWindow::Init),
+		.def("SetColor",				&CUIFrameWindow::SetTextureColor),
 
 		class_<CUIFrameLineWnd, CUIWindow>("CUIFrameLineWnd")
-		.def(					constructor<>())
-		.def("SetWidth",						&CUIFrameLineWnd::SetWidth)
-		.def("SetHeight",						&CUIFrameLineWnd::SetHeight)
-		.def("SetOrientation",					&CUIFrameLineWnd::SetOrientation)
-		.def("SetColor",						&CUIFrameLineWnd::SetColor)
-		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
-		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init),
-
-		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
-		.def(					constructor<>())
-		.def("SetText",						&CUILabel::SetText)
-		.def("GetText",						&CUILabel::GetText),
+		.def(							constructor<>())
+		.def("SetWidth",				&CUIFrameLineWnd::SetWidth)
+		.def("SetHeight",				&CUIFrameLineWnd::SetHeight)
+		.def("SetColor",				&CUIFrameLineWnd::SetTextureColor),
 
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
-		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),
+		.enum_("enum_page_id")
+		[
+			value("epi_main",				CUIMMShniaga::epi_main),
+			value("epi_new_game",			CUIMMShniaga::epi_new_game),
+			value("epi_new_network_game",	CUIMMShniaga::epi_new_network_game)
+		]
+		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier)
+		.def("SetPage",						&CUIMMShniaga::SetPage)
+		.def("ShowPage",					&CUIMMShniaga::ShowPage),
+		
+		
+
 
 		class_<CUIScrollView, CUIWindow>("CUIScrollView")
 		.def(							constructor<>())
@@ -166,11 +135,6 @@ void CUIWindow::script_register(lua_State *L)
 		.def("GetCurrentScrollPos",		&CUIScrollView::GetCurrentScrollPos)
 		.def("SetScrollPos",			&CUIScrollView::SetScrollPos),
 
-
-//		.def("",						&CUIFrameLineWnd::)
-//		.def("",						&CUIFrameLineWnd::)
-//		.def("",						&CUIFrameLineWnd::)
-
 		class_<enum_exporter<EUIMessages> >("ui_events")
 			.enum_("events")
 			[
@@ -183,13 +147,8 @@ void CUIWindow::script_register(lua_State *L)
 				value("WINDOW_LBUTTON_DB_CLICK",		int(WINDOW_LBUTTON_DB_CLICK)),
 				value("WINDOW_KEY_PRESSED",				int(WINDOW_KEY_PRESSED)),
 				value("WINDOW_KEY_RELEASED",			int(WINDOW_KEY_RELEASED)),
-				value("WINDOW_MOUSE_CAPTURE_LOST ",		int(WINDOW_MOUSE_CAPTURE_LOST )),
 				value("WINDOW_KEYBOARD_CAPTURE_LOST",	int(WINDOW_KEYBOARD_CAPTURE_LOST)),
 
-
-	// CUIStatic
-				value("STATIC_FOCUS_RECEIVED",			int(STATIC_FOCUS_RECEIVED)),
-				value("STATIC_FOCUS_LOST",				int(STATIC_FOCUS_LOST)),
 
 	// CUIButton
 				value("BUTTON_CLICKED",					int(BUTTON_CLICKED)),
@@ -197,8 +156,6 @@ void CUIWindow::script_register(lua_State *L)
 				
 	// CUITabControl
 				value("TAB_CHANGED",					int(TAB_CHANGED)),
-				value("EDIT_TEXT_COMMIT",				int(EDIT_TEXT_COMMIT)),
-				
 
 	// CUICheckButton
 				value("CHECK_BUTTON_SET",				int(CHECK_BUTTON_SET)),
@@ -206,12 +163,6 @@ void CUIWindow::script_register(lua_State *L)
 				
 	// CUIRadioButton
 				value("RADIOBUTTON_SET",				int(RADIOBUTTON_SET)),
-
-	// CUIdragDropItem
-				value("DRAG_DROP_ITEM_DRAG",			int(DRAG_DROP_ITEM_DRAG)),
-				value("DRAG_DROP_ITEM_DROP ",			int(DRAG_DROP_ITEM_DROP )),
-				value("DRAG_DROP_ITEM_DB_CLICK",		int(DRAG_DROP_ITEM_DB_CLICK)),
-				value("DRAG_DROP_ITEM_RBUTTON_CLICK",	int(DRAG_DROP_ITEM_RBUTTON_CLICK)),
 
 	// CUIScrollBox
 				value("SCROLLBOX_MOVE",					int(SCROLLBOX_MOVE)),
@@ -223,11 +174,7 @@ void CUIWindow::script_register(lua_State *L)
 	// CUIListWnd
 				value("LIST_ITEM_CLICKED",				int(LIST_ITEM_CLICKED)),
 				value("LIST_ITEM_SELECT",				int(LIST_ITEM_SELECT)),
-				value("LIST_ITEM_DB_CLICKED",				int(LIST_ITEM_DB_CLICKED)),
 	
-	// CUIInteractiveItem
-				value("INTERACTIVE_ITEM_CLICK",			int(INTERACTIVE_ITEM_CLICK)),
-
 	// UIPropertiesBox
 				value("PROPERTY_CLICKED",				int(PROPERTY_CLICKED)),
 
@@ -236,44 +183,13 @@ void CUIWindow::script_register(lua_State *L)
 				value("MESSAGE_BOX_YES_CLICKED",		int(MESSAGE_BOX_YES_CLICKED)),
 				value("MESSAGE_BOX_NO_CLICKED",			int(MESSAGE_BOX_NO_CLICKED)),
 				value("MESSAGE_BOX_CANCEL_CLICKED",		int(MESSAGE_BOX_CANCEL_CLICKED)),
+				value("MESSAGE_BOX_COPY_CLICKED",		int(MESSAGE_BOX_COPY_CLICKED)),
 				value("MESSAGE_BOX_QUIT_GAME_CLICKED",	int(MESSAGE_BOX_QUIT_GAME_CLICKED)),
 				value("MESSAGE_BOX_QUIT_WIN_CLICKED",	int(MESSAGE_BOX_QUIT_WIN_CLICKED)),
 
-				value("EDIT_TEXT_CHANGED",				int(EDIT_TEXT_CHANGED)),
 				value("EDIT_TEXT_COMMIT",				int(EDIT_TEXT_COMMIT)),
-	// CUITalkDialogWnd
-				value("TALK_DIALOG_TRADE_BUTTON_CLICKED",	int(TALK_DIALOG_TRADE_BUTTON_CLICKED)),
-				value("TALK_DIALOG_QUESTION_CLICKED",		int(TALK_DIALOG_QUESTION_CLICKED)),
-
-
-
-	// CUIPdaDialogWnd
-				value("PDA_DIALOG_WND_BACK_BUTTON_CLICKED",			int(PDA_DIALOG_WND_BACK_BUTTON_CLICKED)),
-				value("PDA_DIALOG_WND_MESSAGE_BUTTON_CLICKED",		int(PDA_DIALOG_WND_MESSAGE_BUTTON_CLICKED)),
-
-	// CUIPdaContactsWnd
-				value("PDA_CONTACTS_WND_CONTACT_SELECTED",			int(PDA_CONTACTS_WND_CONTACT_SELECTED)),
-
-	// CUITradeWnd
-				value("TRADE_WND_CLOSED",							int(TRADE_WND_CLOSED)),
-
-	// CUISleepWnd
-//				value("SLEEP_WND_PERFORM_BUTTON_CLICKED",			int(SLEEP_WND_PERFORM_BUTTON_CLICKED)),
-
-	// CUIOutfitSlot
-				value("UNDRESS_OUTFIT",								int(UNDRESS_OUTFIT)),
-				value("OUTFIT_RETURNED_BACK",						int(OUTFIT_RETURNED_BACK)),
-
-	// CUIInventroyWnd
-				value("INVENTORY_DROP_ACTION",						int(INVENTORY_DROP_ACTION)),
-				value("INVENTORY_EAT_ACTION",						int(INVENTORY_EAT_ACTION)),
-				value("INVENTORY_TO_BELT_ACTION ",					int(INVENTORY_TO_BELT_ACTION )),
-				value("INVENTORY_TO_SLOT_ACTION",					int(INVENTORY_TO_SLOT_ACTION)),
-				value("INVENTORY_TO_BAG_ACTION",					int(INVENTORY_TO_BAG_ACTION)),
-				value("INVENTORY_ATTACH_ADDON ",					int(INVENTORY_ATTACH_ADDON )),
-				value("INVENTORY_DETACH_SCOPE_ADDON",				int(INVENTORY_DETACH_SCOPE_ADDON)),
-				value("INVENTORY_DETACH_SILENCER_ADDON",			int(INVENTORY_DETACH_SILENCER_ADDON)),
-				value("INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON",	int(INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON))
+	// CMainMenu
+				value("MAIN_MENU_RELOADED",				int(MAIN_MENU_RELOADED))
 			]
 	];
 }

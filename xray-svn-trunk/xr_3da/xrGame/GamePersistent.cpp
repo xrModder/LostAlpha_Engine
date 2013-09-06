@@ -22,6 +22,7 @@
 #include "../CameraManager.h"
 #include "actor.h"
 #include "script_engine.h"
+#include "ui/UITextureMaster.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"

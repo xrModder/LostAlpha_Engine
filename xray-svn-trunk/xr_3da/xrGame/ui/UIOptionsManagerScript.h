@@ -2,7 +2,8 @@
 #pragma once
 #include "../script_export_space.h"
 
-class CUIOptionsManagerScript 
+class CUIOptionsManagerScript
+{
 public:
 	void 		SaveBackupValues		(LPCSTR group);
 	void 		SetCurrentValues		(LPCSTR group);

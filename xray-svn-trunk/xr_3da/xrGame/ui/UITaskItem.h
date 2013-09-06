@@ -33,6 +33,8 @@ public:
 	CUIEventsWnd*	m_EventsWnd;
 };
 
+class CUI3tButton;
+
 class CUITaskRootItem :public CUITaskItem
 {
 	typedef		CUITaskItem	inherited;

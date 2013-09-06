@@ -18,7 +18,6 @@
 #include "ui/UIMoneyIndicator.h"
 #include "ui/UIRankIndicator.h"
 #include "ui/UIVoteStatusWnd.h"
-#include "ui/UIActorMenu.h"
 #include "ui/UIHelper.h"
 #include "UITeamPanels.h"
 #include "object_broker.h"

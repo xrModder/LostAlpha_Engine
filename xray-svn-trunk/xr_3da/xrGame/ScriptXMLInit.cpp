@@ -96,14 +96,6 @@ CUIStatic* CScriptXmlInit::InitAnimStatic(LPCSTR path, CUIWindow* parent)
 	return pWnd;
 }
 
-CUIStatic* CScriptXmlInit::InitSleepStatic(LPCSTR path, CUIWindow* parent)
-{
-	CUISleepStatic* pWnd = xr_new<CUISleepStatic>();
-	CUIXmlInit::InitSleepStatic(m_xml, path, 0, pWnd);
-	_attach_child(pWnd, parent);
-	return pWnd;
-}
-
 CUIScrollView* CScriptXmlInit::InitScrollView(LPCSTR path, CUIWindow* parent)
 {
 	CUIScrollView* pWnd = xr_new<CUIScrollView>();
@@ -241,14 +233,6 @@ CUIEditBox* CScriptXmlInit::InitCDkey(LPCSTR path, CUIWindow* parent)
 	return							pWnd;	
 }
 
-CUIEditBox* CScriptXmlInit::InitMPPlayerName(LPCSTR path, CUIWindow* parent)
-{
-	CUIMPPlayerName* pWnd			= xr_new<CUIMPPlayerName>();
-	CUIXmlInit::InitEditBox			(m_xml, path, 0, pWnd);
-	_attach_child					(pWnd, parent);
-	return							pWnd;	
-}
-
 #pragma optimize("s",on)
 void CScriptXmlInit::script_register(lua_State *L){
 	module(L)
@@ -263,7 +247,6 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitStatic",				&CScriptXmlInit::InitStatic)
 		.def("InitTextWnd",				&CScriptXmlInit::InitTextWnd)
 		.def("InitAnimStatic",			&CScriptXmlInit::InitAnimStatic)		
-		.def("InitSleepStatic",			&CScriptXmlInit::InitSleepStatic)		
 		.def("Init3tButton",			&CScriptXmlInit::Init3tButton)
 		.def("InitCheck",				&CScriptXmlInit::InitCheck)
 		.def("InitSpinNum",				&CScriptXmlInit::InitSpinNum)
@@ -276,7 +259,6 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitMapInfo",				&CScriptXmlInit::InitMapInfo)
 		.def("InitTrackBar",			&CScriptXmlInit::InitTrackBar)
 		.def("InitCDkey",				&CScriptXmlInit::InitCDkey)
-		.def("InitMPPlayerName",		&CScriptXmlInit::InitMPPlayerName)
 		.def("InitKeyBinding",			&CScriptXmlInit::InitKeyBinding)
 		.def("InitMMShniaga",			&CScriptXmlInit::InitMMShniaga)
 		.def("InitScrollView",			&CScriptXmlInit::InitScrollView)

@@ -27,7 +27,7 @@
 #include "UIMainIngameWnd.h"
 #include "UITabButton.h"
 
-#include "../pch_script.h"
+#include "pch_script.h"
 #include "../script_engine.h"
 #include "../ai_space.h"
 

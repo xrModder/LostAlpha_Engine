@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIWindow.h"
+#include "..\uiGameCustom.h"
 #include "../game_base_space.h"
 
 class CUIListBox;
@@ -13,7 +14,6 @@ class CUISpinText;
 class CUIMapInfo;
 class CUIComboBox;
 class CUIXml;
-class CExtraContentFilter;
 
 #define	MAP_ROTATION_LIST	"maprot_list.ltx"
 
@@ -26,7 +26,7 @@ public:
 			void	InitFromXml(CUIXml& xml_doc, const char* path);	
 
 			void	SetWeatherSelector(CUIComboBox* ws);
-			void	SetModeSelector(CUISpinText* ms);
+			void	SetModeSelector(CUIWindow* ms);
 			void	SetMapPic(CUIStatic* map_pic);
 			void	SetMapInfo(CUIMapInfo* map_info);
 			void	SetServerParams(LPCSTR params);
@@ -35,13 +35,14 @@ public:
 			void	LoadMapList();
 			void	SaveMapList();
 	const char*		GetCommandLine(LPCSTR player_name);
-		EGameTypes	GetCurGameType();
+			EGameTypes	GetCurGameType();
 			void	StartDedicatedServer();
+			void	ClearList();
 			bool	IsEmpty();
-	const shared_str& GetMapNameInt(EGameTypes _type, u32 idx);
+			const	SGameTypeMaps::SMapItm&	GetMapNameInt(EGameTypes _type, u32 idx);
 
 private:
-	const char*		GetCLGameModeName(); // CL - command line
+	CUIListBoxItem* GetMapItem_fromList1(shared_str const& map_name);
 			void	UpdateMapList(EGameTypes GameType);						
 			void	SaveRightList();
 
@@ -64,19 +65,17 @@ private:
 	CUI3tButton*		m_pBtnDown;
 
 	CUIComboBox*		m_pWeatherSelector;
-	CUISpinText*		m_pModeSelector;
+	CUIWindow*			m_pModeSelector;
+//	CUISpinText*		m_pModeSelector;
 	CUIStatic*			m_pMapPic;
 	CUIMapInfo*			m_pMapInfo;
 
 	struct Sw{
 		shared_str	weather_name;
-		int			weather_time;
+		shared_str	weather_time;
 	};
 	xr_vector<Sw>		m_mapWeather;
 	xr_string			m_command;
 	xr_string			m_srv_params;
 
-	int					m_item2del;
-
-	CExtraContentFilter*	m_pExtraContentFilter;
 };

@@ -763,6 +763,19 @@ void				game_cl_TeamDeathmatch::OnGameMenuRespond_ChangeTeam	(NET_Packet& P)
 	}
 };
 
+bool				game_cl_TeamDeathmatch::IsPlayerInTeam(game_PlayerState* ps, ETeam team)
+{
+	if (ps->testFlag(GAME_PLAYER_FLAG_SPECTATOR))
+	{
+		if (team == etSpectatorsTeam)
+		{
+			return true;
+		}
+		return false;
+	}
+	return (ModifyTeam(s16(ps->team)) == s16(team));
+}
+
 void game_cl_TeamDeathmatch::OnConnected()
 {
 	inherited::OnConnected();

@@ -99,6 +99,32 @@ void game_cl_Single::SetEnvironmentGameTimeFactor		(const float fTimeFactor)
 		inherited::SetEnvironmentGameTimeFactor(fTimeFactor);
 }
 
+void game_cl_Single::SetEnvironmentGameTimeFactor (ALife::_TIME_ID GameTime, const float fTimeFactor)
+{
+	if (ai().get_alife() && ai().alife().initialized())
+	{
+		 alife().time_manager().set_game_time(GameTime);
+		 alife().time_manager().set_time_factor(fTimeFactor);
+	}
+	else
+	{
+		 inherited::SetEnvironmentGameTimeFactor(GameTime, fTimeFactor);
+	}
+}
+
+void game_cl_Single::SetGameTimeFactor	(ALife::_TIME_ID GameTime, const float fTimeFactor)
+{
+	if (ai().get_alife() && ai().alife().initialized())
+	{
+		 alife().time_manager().set_game_time(GameTime);
+		 alife().time_manager().set_time_factor(fTimeFactor);
+	}
+	else
+	{
+		inherited::SetGameTimeFactor(GameTime, fTimeFactor);
+	}
+}
+
 #pragma optimize("s",on)
 void CScriptGameDifficulty::script_register(lua_State *L)
 {

@@ -40,7 +40,6 @@ public:
 	CUIEditBox*			InitEditBox(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitStatic(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitAnimStatic(LPCSTR path, CUIWindow* parent);
-//	CUIStatic*			InitSleepStatic(LPCSTR path, CUIWindow* parent);
 	CUITextWnd*			InitTextWnd(LPCSTR path, CUIWindow* parent);
 	CUICheckButton*		InitCheck(LPCSTR path, CUIWindow* parent);
 	CUISpinNum*			InitSpinNum(LPCSTR path, CUIWindow* parent);
@@ -55,7 +54,6 @@ public:
 	CUIMapInfo*			InitMapInfo(LPCSTR path, CUIWindow* parent);
 	CUITrackBar*		InitTrackBar(LPCSTR path, CUIWindow* parent);
 	CUIEditBox*			InitCDkey(LPCSTR path, CUIWindow* parent);
-	CUIEditBox*			InitMPPlayerName(LPCSTR path, CUIWindow* parent);
 	CUIMMShniaga*		InitMMShniaga(LPCSTR path, CUIWindow* parent);
 	CUIWindow*			InitKeyBinding(LPCSTR path, CUIWindow* parent);
 	CUIScrollView*		InitScrollView(LPCSTR path, CUIWindow* parent);

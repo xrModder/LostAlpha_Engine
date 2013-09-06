@@ -49,6 +49,7 @@ public :
 	virtual			bool				Get_ShowPlayerNames		() {return m_bShowPlayersNames;};
 	virtual			s16					ModifyTeam				(s16 Team)	{return (Team != -1) ? Team-1 : Team;};
 	virtual			bool				Get_ShowPlayerNamesEnabled () {return m_bFriendlyNames;};
+	virtual			bool				IsPlayerInTeam			(game_PlayerState* ps, ETeam team);
 
 //from UIGameTDM
 protected:
