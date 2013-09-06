@@ -38,6 +38,12 @@ short QC (float v)
 
 void CDetailManager::hw_Load	()
 {
+	hw_Load_Geom();
+	hw_Load_Shaders();
+}
+
+void CDetailManager::hw_Load_Geom()
+{
 	// Analyze batch-size
 	hw_BatchSize	= (u32(HW.Caps.geometry.dwRegisters)-c_hdr)/c_size;
 	clamp			(hw_BatchSize,(u32)0,(u32)64);
@@ -108,6 +114,19 @@ void CDetailManager::hw_Load	()
 		R_CHK			(hw_IB->Unlock());
 	}
 
+	// Declare geometry
+	hw_Geom.create		(dwDecl, hw_VB, hw_IB);
+}
+
+void CDetailManager::hw_Unload()
+{
+	// Destroy VS/VB/IB
+	hw_Geom.destroy				();
+	_RELEASE					(hw_IB);
+	_RELEASE					(hw_VB);
+}
+void CDetailManager::hw_Load_Shaders()
+{
 	// Create shader to access constant storage
 	ref_shader		S;	S.create("details\\set");
 	R_constant_table&	T0	= *(S->E[0]->passes[0]->constants);
@@ -120,17 +139,8 @@ void CDetailManager::hw_Load	()
 	hwc_s_xform			= T1.get("xform");
 	hwc_s_array			= T1.get("array");
 
-	// Declare geometry
-	hw_Geom.create		(dwDecl, hw_VB, hw_IB);
 }
 
-void CDetailManager::hw_Unload()
-{
-	// Destroy VS/VB/IB
-	hw_Geom.destroy				();
-	_RELEASE					(hw_IB);
-	_RELEASE					(hw_VB);
-}
 
 void CDetailManager::hw_Render()
 {
@@ -189,8 +199,8 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 
 	vis_list& list	=	m_visibles	[var_id];
 
-	CEnvDescriptor&	desc	= g_pGamePersistent->Environment().CurrentEnv;
 	Fvector					c_sun,c_ambient,c_hemi;
+	CEnvDescriptor&	desc	= g_pGamePersistent->Environment().CurrentEnv;
 	c_sun.set				(desc.sun_color.x,	desc.sun_color.y,	desc.sun_color.z);	c_sun.mul(.5f);
 	c_ambient.set			(desc.ambient.x,	desc.ambient.y,		desc.ambient.z);
 	c_hemi.set				(desc.hemi_color.x, desc.hemi_color.y,	desc.hemi_color.z);

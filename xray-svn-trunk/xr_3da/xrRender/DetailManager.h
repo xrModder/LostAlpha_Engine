@@ -143,6 +143,8 @@ public:
 	ref_constant					hwc_s_xform;
 	ref_constant					hwc_s_array;
 	void							hw_Load			();
+	void							hw_Load_Geom	();
+	void							hw_Load_Shaders	();
 	void							hw_Unload		();
 	void							hw_Render		();
 	void							hw_Render_dump	(ref_constant array, u32 var_id, u32 lod_id, u32 c_base);
