@@ -332,10 +332,10 @@ BOOL CalculateSW(Object* object, VIPM_Result* result, u32 optimize_vertex_order)
 		string256 tmp;
 		for ( int i = 0; i <= iNumCollapses; i++ ){
 			VIPM_SWR *swr = result->swr_records.item ( i );
-			sprintf(tmp,"SWR %d [T:%d, V:%d, O:%d]\n",i,swr->num_tris,swr->num_verts,swr->offset); 
+			xr_sprintf(tmp,"SWR %d [T:%d, V:%d, O:%d]\n",i,swr->num_tris,swr->num_verts,swr->offset); 
 			OutputDebugString(tmp);
 			for ( int j = 0; j < swr->num_tris; j++ ){
-				sprintf(tmp,"%d - [%d,%d,%d]\n",j,*result->indices.item(j*3+0+swr->offset),*result->indices.item(j*3+1+swr->offset),*result->indices.item(j*3+2+swr->offset));
+				xr_sprintf(tmp,"%d - [%d,%d,%d]\n",j,*result->indices.item(j*3+0+swr->offset),*result->indices.item(j*3+1+swr->offset),*result->indices.item(j*3+2+swr->offset));
 				OutputDebugString(tmp);
 			}
 		}

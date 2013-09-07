@@ -291,7 +291,7 @@ namespace CDB
 		// Preallocate memory
 		verts.reserve	(apx_vertices);
 		faces.reserve	(apx_faces);
-		flags.reserve	(apx_faces);
+//		flags.reserve	(apx_faces);
 		int		_size	= (clpMX+1)*(clpMY+1)*(clpMZ+1);
 		int		_average= (apx_vertices/_size)/2;
 		for (int ix=0; ix<clpMX+1; ix++)
@@ -302,7 +302,7 @@ namespace CDB
 
 	void	CollectorPacked::add_face(
 		const Fvector& v0, const Fvector& v1, const Fvector& v2,	// vertices
-		u16 material, u16 sector, u32 _flags									// misc
+		u16 material, u16 sector/*, u32 _flags	*/								// misc
 		)
 	{
 		TRI T;
@@ -311,14 +311,14 @@ namespace CDB
 		T.verts	[2] = VPack(v2);
 		T.material		= material;
 		T.sector		= sector;
-		flags.push_back(_flags);
+	//	flags.push_back(_flags);
 		faces.push_back(T);
 
 	}
 
 	void	CollectorPacked::add_face_D(
 		const Fvector& v0, const Fvector& v1, const Fvector& v2,	// vertices
-		u32 dummy, u32 _flags										// misc
+		u32 dummy/*, u32 _flags	*/									// misc
 		)
 	{
 		TRI T;
@@ -327,7 +327,7 @@ namespace CDB
 		T.verts	[2] = VPack(v2);
 		T.dummy		= dummy;
 		faces.push_back(T);
-		flags.push_back(_flags);
+	//	flags.push_back(_flags);
 	}
 
 	u32		CollectorPacked::VPack(const Fvector& V)
@@ -381,7 +381,7 @@ namespace CDB
 	{
 		verts.clear_and_free	();
 		faces.clear_and_free	();
-		flags.clear_and_free	();
+//		flags.clear_and_free	();
 		for (u32 _x=0; _x<=clpMX; _x++)
 			for (u32 _y=0; _y<=clpMY; _y++)
 				for (u32 _z=0; _z<=clpMZ; _z++)

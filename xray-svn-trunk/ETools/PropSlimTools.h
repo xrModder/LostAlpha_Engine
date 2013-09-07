@@ -1,10 +1,15 @@
 #ifndef PropSlimToolsH
 #define PropSlimToolsH
 
-#ifdef ETOOLS_EXPORTS
-#define ETOOLS_API __declspec( dllexport )
+#ifndef _MAYA_EXPORT
+
+	#ifdef ETOOLS_EXPORTS
+		#define ETOOLS_API __declspec( dllexport )
+	#else
+		#define ETOOLS_API __declspec( dllimport )
+	#endif
 #else
-#define ETOOLS_API __declspec( dllimport )
+	#define ETOOLS_API
 #endif
 
 #include "ArbitraryList.h"

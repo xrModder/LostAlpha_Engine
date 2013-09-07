@@ -98,7 +98,7 @@ void MxHeap::insert(MxHeapable *t, float v)
 
 void MxHeap::update(MxHeapable *t, float v)
 {
-    VERIFY( t->is_in_heap() );
+//    VERIFY( t->is_in_heap() );
     t->heap_key(v);
 
     unsigned int i = t->get_heap_pos();
@@ -111,7 +111,7 @@ void MxHeap::update(MxHeapable *t, float v)
 
 MxHeapable *MxHeap::extract()
 {
-    if( length() < 1 ) return NULL;
+    if( length() < 1 ) return 0;//NULL;
 
     swap(0, length()-1);
     MxHeapable *dead=drop();
@@ -123,7 +123,7 @@ MxHeapable *MxHeap::extract()
 
 MxHeapable *MxHeap::remove(MxHeapable *t)
 {
-    if( !t->is_in_heap() ) return NULL;
+    if( !t->is_in_heap() ) return 0;//NULL;
 
     int i = t->get_heap_pos();
     swap(i, length()-1);

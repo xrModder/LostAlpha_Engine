@@ -54,7 +54,7 @@ void Startup(LPSTR     lpCmdLine)
 	char cmd[512],name[256];
 	BOOL bModifyOptions		= FALSE;
 
-	strcpy(cmd,lpCmdLine);
+	xr_strcpy(cmd,lpCmdLine);
 	strlwr(cmd);
 	if (strstr(cmd,"-?") || strstr(cmd,"-h"))			{ Help(); return; }
 	if (strstr(cmd,"-f")==0)							{ Help(); return; }
@@ -93,7 +93,7 @@ void Startup(LPSTR     lpCmdLine)
 	extern  HWND logWindow;
 	IReader*	F			= FS.r_open(prjName);
 	if (NULL==F){
-		sprintf				(inf,"Build failed!\nCan't find level: '%s'",name);
+		xr_sprintf				(inf,"Build failed!\nCan't find level: '%s'",name);
 		clMsg				(inf);
 		MessageBox			(logWindow,inf,"Error!",MB_OK|MB_ICONERROR);
 		return;
@@ -140,7 +140,7 @@ void Startup(LPSTR     lpCmdLine)
 	// Show statistic
 	extern	std::string make_time(u32 sec);
 	u32	dwEndTime			= dwStartupTime.GetElapsed_ms();
-	sprintf					(inf,"Time elapsed: %s",make_time(dwEndTime/1000).c_str());
+	xr_sprintf					(inf,"Time elapsed: %s",make_time(dwEndTime/1000).c_str());
 	clMsg					("Build succesful!\n%s",inf);
 	MessageBox				(logWindow,inf,"Congratulation!",MB_OK|MB_ICONINFORMATION);
 

@@ -14,6 +14,7 @@ Ernie Wright  17 Sep 00
 #include <math.h>
 #include "lwo2.h"
 
+#pragma warning (disable:4996)
 
 /* IDs specific to LWOB */
 
@@ -117,7 +118,7 @@ static int add_tvel( float pos[], float vel[], lwEnvelope **elist, int *nenvs )
       env->type = 0x0301 + i;
       env->name = malloc( 11 );
       if ( env->name ) {
-         strcpy( env->name, "Position.X" );
+         strcpy_s( env->name, 11, "Position.X" );
          env->name[ 9 ] += i;
       }
       env->key = key0;
@@ -680,3 +681,6 @@ Fail:
    lwFreeObject( object );
    return NULL;
 }
+
+
+#pragma warning (default:4996)

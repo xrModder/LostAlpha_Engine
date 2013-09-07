@@ -73,7 +73,7 @@ void CBuild::Flex2OGF()
 						R_ASSERT	(T.pSurface);
 						R_ASSERT	(pOGF);
 						pOGF->textures.push_back(T);					//.
-						sprintf		(fn,"%s_2",LM->lm_texture.name); 
+						xr_sprintf		(fn,"%s_2",LM->lm_texture.name); 
 						T.name		= fn;
 						pOGF->textures.push_back(T);
 					}

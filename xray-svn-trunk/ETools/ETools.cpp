@@ -11,7 +11,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 { 
 	switch(fdwReason) {
 		case DLL_PROCESS_ATTACH:
-			Core._initialize("XRayEditorTools",0,FALSE);
+			Debug._initialize	(false);
+			Core._initialize	("XRayEditorTools",0,FALSE);
 			//FPU::m64r	();
 			break;
 		case DLL_THREAD_ATTACH:
@@ -154,14 +155,16 @@ namespace ETOOLS{
 	}
 	ETOOLS_API void						 __stdcall collectorp_add_face_d	(CDB::CollectorPacked* CL, const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy)
 	{
-		CL->add_face_D					(v0,v1,v2,dummy,u32(-1));
+		CL->add_face_D					(v0,v1,v2,dummy);
 	}
 
 	ETOOLS_API CDB::COLLIDER* __stdcall get_collider	(){return XRC.collider();}
+
 	ETOOLS_API CDB::MODEL*	 __stdcall create_model_clp(CDB::CollectorPacked* CL)
 	{
 		return				create_model(CL->getV(), CL->getVS(), CL->getT(), CL->getTS());
 	}
+
 	ETOOLS_API CDB::MODEL*	 __stdcall create_model_cl	(CDB::Collector* CL)
 	{
 		return				create_model(CL->getV(), CL->getVS(), CL->getT(), CL->getTS());

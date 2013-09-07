@@ -13,6 +13,7 @@ Ernie Wright  17 Sep 00
 #include <math.h>
 #include "lwo2.h"
 
+#pragma warning (disable:4996)
 
 /*
 ======================================================================
@@ -538,3 +539,5 @@ int lwGetPolygonTags( FILE *fp, int cksize, lwTagList *tlist,
 
    return 1;
 }
+
+#pragma warning (default:4996)

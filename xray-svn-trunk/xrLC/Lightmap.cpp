@@ -137,8 +137,8 @@ void CLightmap::Save()
 		lm.Pack					(packed);
 
 		string_path				FN;
-		sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
-		sprintf					(FN,"%s%s_1.dds",	pBuild->path,lm_texture.name);
+		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
+		xr_sprintf					(FN,"%s%s_1.dds",	pBuild->path,lm_texture.name);
 		BYTE*	raw_data		= LPBYTE(&*packed.begin());
 		u32	w					= lm.width;
 		u32	h					= lm.height;
@@ -161,8 +161,8 @@ void CLightmap::Save()
 		u32	pitch				= w*4;
 
 		string_path				FN;
-		sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
-		sprintf					(FN,"%s%s_2.dds",	pBuild->path,lm_texture.name);
+		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
+		xr_sprintf					(FN,"%s%s_2.dds",	pBuild->path,lm_texture.name);
 		BYTE*	raw_data		= LPBYTE(&*packed.begin());
 
 		STextureParams fmt;

@@ -11,6 +11,7 @@ Ernie Wright  17 Sep 00
 #include <stdlib.h>
 #include "lwo2.h"
 
+#pragma warning (disable:4996)
 
 /*
 ======================================================================
@@ -273,3 +274,5 @@ Fail:
    lwFreeObject( object );
    return NULL;
 }
+
+#pragma warning (default:4996)

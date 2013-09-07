@@ -30,7 +30,7 @@ public:
 	virtual bool		IR_UIOnKeyboardPress	(int dik);
 	virtual void _BCL	OnFrame					();
 
-	void				StartTalk				(bool disable_break);
+	void				StartTalk				(bool disable_break = false);
 	void				StartTrade				(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner);
 //	void				StartUpgrade			(CInventoryOwner* pActorInv, CInventoryOwner* pMech);
 	void				StartCarBody			(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner);

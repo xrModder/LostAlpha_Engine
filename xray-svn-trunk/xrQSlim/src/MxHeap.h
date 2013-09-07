@@ -63,7 +63,7 @@ public:
     MxHeapable       *item(unsigned int i)       { return (*this)[i]; }
     const MxHeapable *item(unsigned int i) const { return (*this)[i]; }
     MxHeapable *extract();
-    MxHeapable *top() { return (length()<1 ? (MxHeapable *)NULL : item(0)); }
+    MxHeapable *top() { return (length()<1 ? (MxHeapable *)0 : item(0)); }
     MxHeapable *remove(MxHeapable *);
 };
 

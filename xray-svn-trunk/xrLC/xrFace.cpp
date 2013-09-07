@@ -151,7 +151,7 @@ Face::~Face()
 		v[i]->prep_remove(this);
 }
 
-#define VPUSH(a) a.x,a.y,a.z
+//#define VPUSH(a) a.x,a.y,a.z
 void	Face::Failure		()
 {
 	dwInvalidFaces			++;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "build.h"
 
-#define VPUSH(a) a.x,a.y,a.z
+//#define VPUSH(a) a.x,a.y,a.z
 
 IC float	SqrDistance2Segment(const Fvector& P, const Fvector& A, const Fvector& B)
 {

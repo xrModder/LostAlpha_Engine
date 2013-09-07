@@ -13,7 +13,7 @@ void set_status(char* N, int id, int f, int v)
 {
 	string1024 status_str;
 
-	sprintf	(status_str,"Model #%4d [F:%5d, V:%5d]: %s...",id,f,v,N);
+	xr_sprintf	(status_str,"Model #%4d [F:%5d, V:%5d]: %s...",id,f,v,N);
 	Status	(status_str);
 	clMsg	(status_str);
 }
