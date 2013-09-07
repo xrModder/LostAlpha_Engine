@@ -339,7 +339,7 @@ void remove_dialog_to_render(CUIDialogWnd* pDialog)
 
 CUIDialogWnd* main_input_receiver()
 {
-	return HUD().GetUI()->MainInputReceiver();
+	return HUD().GetUI()->TopInputReceiver();
 }
 #include "UIGameCustom.h"
 void hide_indicators()

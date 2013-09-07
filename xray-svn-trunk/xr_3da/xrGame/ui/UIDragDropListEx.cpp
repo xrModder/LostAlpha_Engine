@@ -416,6 +416,12 @@ int CUIDragDropListEx::ScrollPos()
 	return m_vScrollBar->GetScrollPos();
 }
 
+void CUIDragDropListEx::SetScrollPos(int pos)
+{
+	m_vScrollBar->SetScrollPos(pos);
+	m_container->SetWndPos		(m_container->GetWndPos().x, float(-m_vScrollBar->GetScrollPos()));
+}
+
 void CUIDragDropListEx::SetItem(CUICellItem* itm) //auto
 {
 	if(m_container->AddSimilar(itm)){

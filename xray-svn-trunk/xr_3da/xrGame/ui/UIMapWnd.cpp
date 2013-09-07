@@ -54,15 +54,13 @@ CUIMapWnd::~CUIMapWnd()
 void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 {
 	CUIXml uiXml;
-	bool xml_result					= uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT3						(xml_result, "xml file not found", xml_name);
+	uiXml.Load	(CONFIG_PATH, UI_PATH, xml_name);
 
 	string512	pth;
 	// load map background
 	CUIXmlInit xml_init;
 	strconcat(sizeof(pth),pth,start_from,":main_wnd");
 	xml_init.InitWindow				(uiXml, pth, 0, this);
-
 
 
 	m_UIMainFrame					= xr_new<CUIFrameWindow>(); m_UIMainFrame->SetAutoDelete(true);
@@ -78,22 +76,22 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 	Frect r							= m_UILevelFrame->GetWndRect();
 
 	m_UIMainScrollH					= xr_new<CUIScrollBar>(); m_UIMainScrollH->SetAutoDelete(true);
-	m_UIMainScrollH->Init			(r.left, r.bottom + SCROLLBARS_SHIFT, r.right - r.left, true, "pda");
+	m_UIMainScrollH->InitScrollBar			(Fvector2().set(r.left, r.bottom + SCROLLBARS_SHIFT), r.right - r.left, true, "pda");
 	m_UIMainScrollH->SetWindowName	("scroll_h");
 	m_UIMainScrollH->SetStepSize	(_max(1,iFloor(m_UILevelFrame->GetWidth()/10)));
 	m_UIMainScrollH->SetPageSize	(iFloor(m_UILevelFrame->GetWidth()));
 	m_UIMainFrame->AttachChild		(m_UIMainScrollH);
 	Register						(m_UIMainScrollH);
-	AddCallback						("scroll_h",SCROLLBAR_HSCROLL,CUIWndCallback::void_function(this,&CUIMapWnd::OnScrollH));
+	AddCallbackStr						("scroll_h",SCROLLBAR_HSCROLL,CUIWndCallback::void_function(this,&CUIMapWnd::OnScrollH));
 
 	m_UIMainScrollV					= xr_new<CUIScrollBar>(); m_UIMainScrollV->SetAutoDelete(true);
-	m_UIMainScrollV->Init			(r.right + SCROLLBARS_SHIFT, r.top, m_UIMainScrollH->GetWndRect().bottom - r.top , false, "pda");
+	m_UIMainScrollV->InitScrollBar			(Fvector2().set(r.right + SCROLLBARS_SHIFT, r.top), m_UIMainScrollH->GetWndRect().bottom - r.top, false, "pda");
 	m_UIMainScrollV->SetWindowName	("scroll_v");
 	m_UIMainScrollV->SetStepSize	(_max(1,iFloor(m_UILevelFrame->GetHeight()/10)));
 	m_UIMainScrollV->SetPageSize	(iFloor(m_UILevelFrame->GetHeight()));
 	m_UIMainFrame->AttachChild		(m_UIMainScrollV);
 	Register						(m_UIMainScrollV);
-	AddCallback						("scroll_v",SCROLLBAR_VSCROLL,CUIWndCallback::void_function(this,&CUIMapWnd::OnScrollV));
+	AddCallbackStr						("scroll_v",SCROLLBAR_VSCROLL,CUIWndCallback::void_function(this,&CUIMapWnd::OnScrollV));
 
 	UIMainMapHeader					= xr_new<CUIFrameLineWnd>(); UIMainMapHeader->SetAutoDelete(true);
 	m_UIMainFrame->AttachChild		(UIMainMapHeader);
@@ -112,7 +110,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUIMapWnd::OnToolGlobalMapClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUIMapWnd::OnToolGlobalMapClicked));
 	}
 
 	btnIndex		= eActor;
@@ -122,7 +120,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUIMapWnd::OnToolActorClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUIMapWnd::OnToolActorClicked));
 	}
 
 
@@ -133,7 +131,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolZoomInClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolZoomInClicked));
 	}
 	btnIndex		= eZoomOut;
 	strconcat(sizeof(pth),pth, sToolbar.c_str(), ":zoom_out_btn");
@@ -142,7 +140,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolZoomOutClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolZoomOutClicked));
 	}
 
 	btnIndex		= eAddSpot;
@@ -152,7 +150,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolAddSpotClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolAddSpotClicked));
 	}
 	/*btnIndex		= eRemoveSpot;
 	strconcat(sizeof(pth),pth, sToolbar.c_str(), ":remove_spot_btn");
@@ -161,7 +159,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolRemoveSpotClicked));
+		AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIMapWnd::OnToolRemoveSpotClicked));
 	}
 
 	btnIndex		= eHighlightSpot;
@@ -171,12 +169,12 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		xml_init.Init3tButton			(uiXml, pth, 0, m_ToolBar[btnIndex]);
 		UIMainMapHeader->AttachChild	(m_ToolBar[btnIndex]);
 		Register						(m_ToolBar[btnIndex]);
-		//AddCallback						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolHighlightSpotClicked,this,_1,_2));
+		//AddCallbackStr						(*m_ToolBar[btnIndex]->WindowName(),BUTTON_CLICKED,CUIWndCallback::void_function(&CUIMapWnd::OnToolHighlightSpotClicked,this,_1,_2));
 	}*/
 
-	m_text_hint							= xr_new<CUIStatic>();
+	m_text_hint							= xr_new<CUITextWnd>();
 	strconcat							(sizeof(pth),pth,start_from,":main_wnd:text_hint");
-	xml_init.InitStatic					(uiXml, pth, 0, m_text_hint);
+	xml_init.InitTextWnd					(uiXml, pth, 0, m_text_hint);
 
 	m_hint								= xr_new<CUIMapHint>();
 	m_hint->Init						();
@@ -188,12 +186,12 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 	m_GlobalMap								= xr_new<CUIGlobalMap>(this);
 	m_GlobalMap->SetAutoDelete				(true);
-	m_GlobalMap->Init						("global_map",gameLtx,"hud\\default");
+	m_GlobalMap->Initialize					();
 
 	m_UILevelFrame->AttachChild				(m_GlobalMap);
 	m_GlobalMap->OptimalFit					(m_UILevelFrame->GetWndRect());
-	m_GlobalMap->SetMinZoom					(m_GlobalMap->GetCurrentZoom());
-	m_currentZoom							= m_GlobalMap->GetCurrentZoom();
+	m_GlobalMap->SetMinZoom					(m_GlobalMap->GetCurrentZoom().x);
+	m_currentZoom							= m_GlobalMap->GetCurrentZoom().x;
 
 	// initialize local maps
 	xr_string sect_name;
@@ -214,7 +212,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 			l = xr_new<CUILevelMap>(this);
 			
-			l->Init(map_name, gameLtx, "hud\\default");
+			l->Initialize(map_name, "hud\\default");
 
 			l->OptimalFit( m_UILevelFrame->GetWndRect() );
 		}
@@ -250,12 +248,12 @@ void CUIMapWnd::Show(bool status)
 	if (status)
 	{
 		m_GlobalMap->Show			(true);
-		m_GlobalMap->SetClipRect	(ActiveMapRect());
+		m_GlobalMap->WorkingArea().set	(ActiveMapRect());
 		GameMaps::iterator	it		= m_GameMaps.begin();
 		for(;it!=m_GameMaps.end();++it){
 			m_GlobalMap->AttachChild(it->second);
 			it->second->Show		(true);
-			it->second->SetClipRect	(ActiveMapRect());
+			it->second->WorkingArea().set	(ActiveMapRect());
 		}
 		if(	m_flags.test(lmFirst)){
 			inherited::Update		();// only maps, not action planner
@@ -283,7 +281,7 @@ void CUIMapWnd::AddMapToRender			(CUICustomMap* m)
 	m_UILevelFrame->AttachChild			( m );
 	m->Show								( true );
 	m_UILevelFrame->BringToTop			( m );
-	m->SetClipRect						( ActiveMapRect() );
+	m->WorkingArea().set				( ActiveMapRect() );
 }
 
 void CUIMapWnd::RemoveMapToRender		(CUICustomMap* m)
@@ -333,10 +331,10 @@ void CUIMapWnd::SetTargetMap			(CUICustomMap* m, const Fvector2& pos, bool bZoom
 		m_tgtCenter.div					(gm->GetCurrentZoom());
  	}else{
 
-		if(bZoomIn && fsimilar(GlobalMap()->GetCurrentZoom(), GlobalMap()->GetMinZoom(),EPS_L ))
+		if(bZoomIn/* && fsimilar(GlobalMap()->GetCurrentZoom(), GlobalMap()->GetMinZoom(),EPS_L )*/)
 			SetZoom(GlobalMap()->GetMaxZoom());
 
-		m_tgtCenter						= m->ConvertRealToLocalNoTransform(pos);
+		m_tgtCenter						= m->ConvertRealToLocalNoTransform(pos, m->BoundRect());
 		m_tgtCenter.add					(m->GetWndPos()).div(GlobalMap()->GetCurrentZoom());
 	}
 	ResetActionPlanner				();
@@ -390,12 +388,12 @@ bool CUIMapWnd::OnKeyboard				(int dik, EUIMessages keyboard_action)
 			}break;
 	}
 	
-	return inherited::OnKeyboard	(dik, keyboard_action);
+	return inherited::OnKeyboardAction	(dik, keyboard_action);
 }
 
 bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 {
-	if(inherited::OnMouse(x,y,mouse_action)) return true;
+	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
 	Fvector2 cursor_pos = GetUICursor().GetCursorPosition();
 
 	if(GlobalMap() && !GlobalMap()->Locked() && ActiveMapRect().in( cursor_pos ) ){
@@ -496,7 +494,7 @@ void CUIMapWnd::ShowSettingsWindow(LPCSTR type, u16 id, Fvector pos, shared_str 
 {
 	luabind::functor<void>	lua_function;
 	string256		fn;
-	strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_settings_pda_spot"));
+	xr_strcpy		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_settings_pda_spot"));
 	R_ASSERT2 (ai().script_engine().functor<void>(fn,lua_function),make_string("Can't find function %s",fn));
 	
 	string256 MapName;
@@ -512,14 +510,14 @@ CMapLocation* CUIMapWnd::UnderSpot(Fvector RealPosition)
 	Locations Spots = Level().MapManager().Locations();
 	Locations_it it;
 	Fvector2 m_position_on_map;
-	Fvector2 m_position_mouse = m_tgtMap->ConvertRealToLocal(RealPositionXZ);
+	Fvector2 m_position_mouse = m_tgtMap->ConvertRealToLocal(RealPositionXZ, true);
 	float TargetLocationDistance = 100.0f;
 	CMapLocation* ml = NULL;
 
 	for (it = Spots.begin(); it!=Spots.end(); ++it) {
 		if ( (*it).location->IsUserDefined() ) {
 
-			m_position_on_map = m_tgtMap->ConvertRealToLocal((*it).location->Position());
+			m_position_on_map = m_tgtMap->ConvertRealToLocal((*it).location->Position(), true);
 
 			float distance = m_position_on_map.distance_to(m_position_mouse);
 
@@ -545,7 +543,7 @@ void CUIMapWnd::CreateSpotWindow(Fvector RealPosition)
 
 	luabind::functor<void>	lua_function;
 	string256		fn;
-	strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_pda_spot"));
+	xr_strcpy		(fn, pSettings->r_string("lost_alpha_cfg", "on_init_pda_spot"));
 	R_ASSERT2 (ai().script_engine().functor<void>(fn,lua_function),make_string("Can't find function %s",fn));
 	lua_function								(MapName, RealPosition);
 
@@ -606,7 +604,8 @@ void CUIMapWnd::OnScrollH(CUIWindow*, void*)
 
 void CUIMapWnd::Update()
 {
-	if(m_GlobalMap)m_GlobalMap->SetClipRect(ActiveMapRect());
+	if(m_GlobalMap)
+		m_GlobalMap->WorkingArea().set(ActiveMapRect());
 	inherited::Update			();
 	m_ActionPlanner->update		();
 }
@@ -879,18 +878,18 @@ void CUIMapWnd::ShowHintSpot( CMapSpot* spot )
 	CUIWindow* owner = m_hint->GetOwner();
 	if ( !owner )
 	{
-		m_hint->SetInfoMSpot( spot );
+		//m_hint->SetInfoMSpot( spot );
 		m_hint->SetOwner( spot );
-		ShowHint();
+		ShowHint(spot, spot->GetHint());
 		return;
 	}
 
 	CMapSpot* prev_spot = smart_cast<CMapSpot*>( owner );
 	if ( prev_spot && ( prev_spot->get_location_level() < spot->get_location_level() ) )
 	{
-		m_hint->SetInfoMSpot( spot );
+		//m_hint->SetInfoMSpot( spot );
 		m_hint->SetOwner( spot );
-		ShowHint();
+		ShowHint(spot, spot->GetHint());
 	}
 }
 

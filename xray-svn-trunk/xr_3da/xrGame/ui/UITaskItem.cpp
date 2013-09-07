@@ -45,7 +45,7 @@ void CUITaskItem::Init				()
 {
 	SetWindowName					("job_item");
 	Register						(this);
-	AddCallback						("job_item",BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUITaskItem::OnItemClicked));
+	AddCallbackStr						("job_item",BUTTON_CLICKED,CUIWndCallback::void_function(this,&CUITaskItem::OnItemClicked));
 }
 
 void CUITaskItem::OnItemClicked(CUIWindow*, void*)
@@ -76,7 +76,7 @@ void CUITaskRootItem::Init			()
 	
 	m_switchDescriptionBtn->SetWindowName("m_switchDescriptionBtn");
 	Register					(m_switchDescriptionBtn);
-	AddCallback					("m_switchDescriptionBtn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITaskRootItem::OnSwitchDescriptionClicked));
+	AddCallbackStr					("m_switchDescriptionBtn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITaskRootItem::OnSwitchDescriptionClicked));
 
 	CUIXmlInit xml_init;
 	CUIXml&						uiXml = m_EventsWnd->m_ui_task_item_xml;
@@ -101,8 +101,8 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 	m_taskImage->InitTexture		(*obj->icon_texture_name);
 
 	Frect r							= obj->icon_rect;
-	m_taskImage->SetOriginalRect	(r.x1, r.y1, r.x2, r.y2);
-	m_taskImage->ClipperOn			();
+	m_taskImage->SetTextureRect	(r.x1, r.y1, r.x2, r.y2);
+//	m_taskImage->ClipperOn			();
 	m_taskImage->SetStretchTexture	(true);
 
 	m_captionStatic->SetText		(*stbl.translate(m_GameTask->m_Title));
@@ -208,7 +208,7 @@ void CUITaskSubItem::Init			()
 	m_showDescriptionBtn->SetWindowName	("m_showDescriptionBtn");
 	Register						(m_showDescriptionBtn);
 
-	AddCallback						("m_showDescriptionBtn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITaskSubItem::OnShowDescriptionClicked));
+	AddCallbackStr						("m_showDescriptionBtn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITaskSubItem::OnShowDescriptionClicked));
 
 
 	CUIXmlInit xml_init;
@@ -376,8 +376,8 @@ void CUIUserTaskItem::SetGameTask				(CGameTask* gt, u16 obj_idx)
 
 	m_image->InitTexture		(*obj->icon_texture_name);
 	Frect r						= obj->icon_rect;
-	m_image->SetOriginalRect	(r.x1, r.y1, r.x2, r.y2);
-	m_image->ClipperOn			();
+	m_image->SetTextureRect	(r.x1, r.y1, r.x2, r.y2);
+//	m_image->ClipperOn			();
 	m_image->SetStretchTexture	(true);
 
 	m_captionStatic->SetText					(*stbl.translate(gt->m_Title));
@@ -450,7 +450,7 @@ void CUIUserTaskEditWnd::Start()
 //.	m_userTask = itm;
 	m_editCaption->SetText			(*stbl.translate(m_userTask->GameTask()->m_Title));
 	m_editDescription->SetText		(*stbl.translate(m_userTask->Objective()->description));
-	HUD().GetUI()->StartStopMenu	(this,true);
+	ShowDialog(true);
 }
 
 void CUIUserTaskEditWnd::OnOk			()
@@ -460,7 +460,7 @@ void CUIUserTaskEditWnd::OnOk			()
 	m_userTask->Objective()->LinkedMapLocation	()->SetHint(m_editDescription->GetText());
 	m_userTask->m_EventsWnd->Reload			();
 
-	GetHolder()->StartStopMenu				(this, false);
+	HideDialog();
 }
 
 void CUIUserTaskEditWnd::OnCancel				()

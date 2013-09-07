@@ -75,7 +75,7 @@ void CUIEventsWnd::Init				()
 	xml_init.InitTabControl			(uiXml, "main_wnd:left_frame:filter_tab", 0, m_TaskFilter);
 	m_TaskFilter->SetWindowName		("filter_tab");
 	Register						(m_TaskFilter);
-    AddCallback						("filter_tab",TAB_CHANGED,CUIWndCallback::void_function(this,&CUIEventsWnd::OnFilterChanged));
+    AddCallbackStr						("filter_tab",TAB_CHANGED,CUIWndCallback::void_function(this,&CUIEventsWnd::OnFilterChanged));
 /*
     m_primary_or_all_filter_btn		= xr_new<CUI3tButton>(); m_primary_or_all_filter_btn->SetAutoDelete(true);
 	m_UILeftFrame->AttachChild		(m_primary_or_all_filter_btn);

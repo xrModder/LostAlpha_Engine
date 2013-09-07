@@ -23,6 +23,11 @@ public:
 			void 	InitSoundH					(LPCSTR sound_file);
 			void 	InitSoundT					(LPCSTR sound_file);
 
+	// check button
+	bool			GetCheck					() {return m_eButtonState == BUTTON_PUSHED;}
+	void			SetCheck					(bool ch) {m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;}
+	
+	// behavior
 	virtual void 	OnClick						();
 	virtual void 	OnFocusReceive				();
 	virtual void	OnFocusLost					();

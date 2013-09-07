@@ -221,8 +221,8 @@ void CActor::RunTalkDialog(CInventoryOwner* talk_partner)
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP)
 		{
-			if(pGameSP->MainInputReceiver())
-				Game().StartStopMenu(pGameSP->MainInputReceiver(),true);
+			if(pGameSP->TopInputReceiver())
+				pGameSP->TopInputReceiver()->HideDialog();
 			pGameSP->StartTalk();
 		}
 	}

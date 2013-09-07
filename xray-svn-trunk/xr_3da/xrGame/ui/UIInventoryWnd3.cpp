@@ -19,6 +19,7 @@
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../battery.h"
+#include "../UICursor.h"
 
 void CUIInventoryWnd::EatItem(PIItem itm)
 {
@@ -84,7 +85,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		
 		luabind::functor<bool>	lua_function;
 		string256		fn;
-		strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_checking_repair_wpn"));
+		xr_strcpy		(fn, pSettings->r_string("lost_alpha_cfg", "on_checking_repair_wpn"));
 		R_ASSERT2 (ai().script_engine().functor<bool>(fn,lua_function),make_string("Can't find function %s",fn));
 	
 		if (lua_function(CurrentIItem()->object().ID())) {				//isRepairable?
@@ -267,7 +268,7 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			{
 				luabind::functor<void>	repair;
 				string256		fn;
-				strcpy_s		(fn, pSettings->r_string("lost_alpha_cfg", "on_repair_wpn_clicked"));
+				xr_strcpy		(fn, pSettings->r_string("lost_alpha_cfg", "on_repair_wpn_clicked"));
 				R_ASSERT2 (ai().script_engine().functor<void>(fn,repair),make_string("Can't find function %s",fn));
 
 				repair(CurrentIItem()->object().ID());																			//Repair

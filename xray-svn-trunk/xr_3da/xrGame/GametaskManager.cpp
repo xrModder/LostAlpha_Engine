@@ -69,18 +69,23 @@ CGameTask* CGameTaskManager::HasGameTask(const TASK_ID& id)
 
 CGameTask* CGameTaskManager::HasGameTask(const CMapLocation* ml, bool only_inprocess)
 {
-	GameTasks_it it			= GetGameTasks().begin();
-	GameTasks_it it_e		= GetGameTasks().end();
+	GameTasks_it it			= GameTasks().begin();
+	GameTasks_it it_e		= GameTasks().end();
 
 	for(; it!=it_e; ++it)
 	{
 		CGameTask* gt = (*it).game_task;
-		if(gt->LinkedMapLocation()==ml)
-		{
-			if(only_inprocess && gt->GetTaskState()!=eTaskStateInProgress)
-				continue;
 
-			return gt;
+		for(u16 i=0; i<gt->m_Objectives.size() ;++i)
+		{
+			SGameTaskObjective& obj = gt->Objective(i);
+			if(obj.LinkedMapLocation()==ml)
+			{
+				if(only_inprocess && obj.TaskState()!=eTaskStateInProgress)
+					continue;
+
+				return gt;
+			}
 		}
 	}
 	return NULL;

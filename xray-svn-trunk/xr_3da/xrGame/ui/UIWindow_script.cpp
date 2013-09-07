@@ -3,7 +3,7 @@
 #include "UIFrameWindow.h"
 #include "UIFrameLineWnd.h"
 #include "UIDialogWnd.h"
-#include "UIDialogHolder.h"
+#include "../UIDialogHolder.h"
 #include "../GamePersistent.h"
 #include "UILabel.h"
 #include "UIMMShniaga.h"
@@ -110,18 +110,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetColor",				&CUIFrameLineWnd::SetTextureColor),
 
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
-		.enum_("enum_page_id")
-		[
-			value("epi_main",				CUIMMShniaga::epi_main),
-			value("epi_new_game",			CUIMMShniaga::epi_new_game),
-			value("epi_new_network_game",	CUIMMShniaga::epi_new_network_game)
-		]
-		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier)
-		.def("SetPage",						&CUIMMShniaga::SetPage)
-		.def("ShowPage",					&CUIMMShniaga::ShowPage),
-		
-		
-
+		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),
 
 		class_<CUIScrollView, CUIWindow>("CUIScrollView")
 		.def(							constructor<>())

@@ -68,8 +68,7 @@ CUIPdaWnd::~CUIPdaWnd()
 void CUIPdaWnd::Init()
 {
 	CUIXml uiXml;
-	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH,PDA_XML);
-	R_ASSERT3				(xml_result, "xml file not found", PDA_XML);
+	uiXml.Load(CONFIG_PATH, UI_PATH,PDA_XML);
 
 	CUIXmlInit xml_init;
 	
@@ -163,7 +162,7 @@ void CUIPdaWnd::Init()
 void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	if (BUTTON_CLICKED == msg && m_pUIClose == pWnd)
-		GetHolder()->StartStopMenu(this,true);
+		HideDialog();
 
 	if(pWnd == UITabControl){
 		if (TAB_CHANGED == msg){

@@ -57,7 +57,7 @@ private:
 	CUI3tButton*				m_ToolBar[eMaxBtn];
 	CUIMapHint*					m_hint;
 	CMapLocation*				m_selected_location;
-	CUIStatic*					m_text_hint;
+	CUITextWnd*					m_text_hint;
 
 	void __stdcall				OnScrollV				(CUIWindow*, void*);
 	void __stdcall				OnScrollH				(CUIWindow*, void*);

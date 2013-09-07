@@ -174,15 +174,12 @@ bool CUI::IR_OnKeyboardPress(int dik)
 
 bool CUI::IR_OnKeyboardRelease(int dik)
 {
-	if ( MainInputReceiver() ){
-		if( MainInputReceiver()->IR_OnKeyboardRelease(dik) )
+	if ( TopInputReceiver() ){
+		if( TopInputReceiver()->IR_OnKeyboardRelease(dik) )
 			return true;
 	}
 
 	if (pUIGame&&pUIGame->IR_OnKeyboardRelease(dik)) 
-		return true;
-
-	if( MainInputReceiver() )
 		return true;
 
 	return false;
@@ -191,15 +188,15 @@ bool CUI::IR_OnKeyboardRelease(int dik)
 
 bool CUI::IR_OnMouseMove(int dx,int dy)
 {
-	if ( MainInputReceiver() ){
-		if ( MainInputReceiver()->IR_OnMouseMove(dx,dy) )
+	if ( TopInputReceiver() ){
+		if ( TopInputReceiver()->IR_OnMouseMove(dx,dy) )
 			return true;
 	}
 	
 	if (pUIGame&&pUIGame->IR_OnMouseMove(dx,dy)) 
 		return true;
 
-	if( MainInputReceiver() )
+	if( TopInputReceiver() )
 		return true;
 	
 	return false;

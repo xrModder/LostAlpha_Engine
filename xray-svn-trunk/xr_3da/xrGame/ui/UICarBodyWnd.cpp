@@ -52,7 +52,7 @@ CUICarBodyWnd::~CUICarBodyWnd()
 void CUICarBodyWnd::Init()
 {
 	CUIXml						uiXml;
-	uiXml.Init					(CONFIG_PATH, UI_PATH, CAR_BODY_XML);
+	uiXml.Load					(CONFIG_PATH, UI_PATH, CAR_BODY_XML);
 	
 	CUIXmlInit					xml_init;
 
@@ -108,20 +108,20 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUIDescWnd);
 	xml_init.InitFrameWindow		(uiXml, "frame_window", 0, m_pUIDescWnd);
 
-	m_pUIStaticDesc					= xr_new<CUIStatic>(); m_pUIStaticDesc->SetAutoDelete(true);
+	m_pUIStaticDesc					= xr_new<CUITextWnd>(); m_pUIStaticDesc->SetAutoDelete(true);
 	m_pUIDescWnd->AttachChild		(m_pUIStaticDesc);
-	xml_init.InitStatic				(uiXml, "descr_static", 0, m_pUIStaticDesc);
+	xml_init.InitTextWnd				(uiXml, "descr_static", 0, m_pUIStaticDesc);
 
 	m_pUIItemInfo					= xr_new<CUIItemInfo>(); m_pUIItemInfo->SetAutoDelete(true);
 	m_pUIDescWnd->AttachChild		(m_pUIItemInfo);
-	m_pUIItemInfo->Init				(0,0, m_pUIDescWnd->GetWidth(), m_pUIDescWnd->GetHeight(), CARBODY_ITEM_XML);
+	m_pUIItemInfo->InitItemInfo		(Fvector2().set(0,0),Fvector2().set(m_pUIDescWnd->GetWidth(), m_pUIDescWnd->GetHeight()), CARBODY_ITEM_XML);
 
 
 	xml_init.InitAutoStatic			(uiXml, "auto_static", this);
 
 	m_pUIPropertiesBox				= xr_new<CUIPropertiesBox>(); m_pUIPropertiesBox->SetAutoDelete(true);
 	AttachChild						(m_pUIPropertiesBox);
-	m_pUIPropertiesBox->Init		(0,0,300,300);
+	m_pUIPropertiesBox->InitPropertiesBox	(Fvector2().set(0,0),Fvector2().set(300,300));
 	m_pUIPropertiesBox->Hide		();
 
 	SetCurrentItem					(NULL);
@@ -227,7 +227,7 @@ void CUICarBodyWnd::Hide()
 	InventoryUtilities::SendInfoToActor			("ui_car_body_hide");
 	m_pUIOurBagList->ClearAll					(true);
 	m_pUIOthersBagList->ClearAll				(true);
-	inherited::Hide								();
+	inherited::HideDialog();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
 
@@ -337,16 +337,16 @@ void CUICarBodyWnd::Update()
 	
 	if(m_pOthersObject && (smart_cast<CGameObject*>(m_pOurObject))->Position().distance_to((smart_cast<CGameObject*>(m_pOthersObject))->Position()) > 3.0f)
 	{
-		GetHolder()->StartStopMenu(this,true);
+		HideDialog();
 	}
 	inherited::Update();
 }
 
 
 void CUICarBodyWnd::Show() 
-{ 
+{
 	InventoryUtilities::SendInfoToActor		("ui_car_body");
-	inherited::Show							();
+	inherited::ShowDialog(true);
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
 }
@@ -418,13 +418,13 @@ void CUICarBodyWnd::TakeAll()
 
 bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
-	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
+	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 
 	if(keyboard_action==WINDOW_KEY_PRESSED)
 	{
 		if(is_binded(kUSE, dik)) 
 		{
-			GetHolder()->StartStopMenu(this,true);
+			HideDialog();
 			return true;
 		}
 		if(DIK_LSHIFT == dik)

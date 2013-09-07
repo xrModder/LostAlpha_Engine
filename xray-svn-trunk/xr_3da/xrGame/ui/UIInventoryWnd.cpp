@@ -57,8 +57,7 @@ CUIInventoryWnd::CUIInventoryWnd()
 void CUIInventoryWnd::Init()
 {
 	CUIXml								uiXml;
-	bool xml_result						= uiXml.Init(CONFIG_PATH, UI_PATH, INVENTORY_XML);
-	R_ASSERT3							(xml_result, "file parsing error ", uiXml.m_xml_file_name);
+	uiXml.Load(CONFIG_PATH, UI_PATH, INVENTORY_XML);
 
 	CUIXmlInit							xml_init;
 
@@ -77,7 +76,7 @@ void CUIInventoryWnd::Init()
 	xml_init.InitStatic					(uiXml, "bag_static", 0, &UIBagWnd);
 
 	AttachChild							(&UIMoneyWnd);
-	xml_init.InitStatic					(uiXml, "money_static", 0, &UIMoneyWnd);
+	xml_init.InitTextWnd					(uiXml, "money_static", 0, &UIMoneyWnd);
 
 	AttachChild							(&UIDescrWnd);
 	xml_init.InitStatic					(uiXml, "descr_static", 0, &UIDescrWnd);
@@ -88,7 +87,7 @@ void CUIInventoryWnd::Init()
 
 
 	UIDescrWnd.AttachChild				(&UIItemInfo);
-	UIItemInfo.Init						(0, 0, UIDescrWnd.GetWidth(), UIDescrWnd.GetHeight(), INVENTORY_ITEM_XML);
+	UIItemInfo.InitItemInfo			(Fvector2().set(0,0),Fvector2().set(UIDescrWnd.GetWidth(), UIDescrWnd.GetHeight()), INVENTORY_ITEM_XML);
 
 	AttachChild							(&UIPersonalWnd);
 	xml_init.InitFrameWindow			(uiXml, "character_frame_window", 0, &UIPersonalWnd);
@@ -173,14 +172,14 @@ void CUIInventoryWnd::Init()
 
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
-	UIPropertiesBox.Init				(0,0,300,300);
+	UIPropertiesBox.InitPropertiesBox				(Fvector2().set(0,0),Fvector2().set(300,300));
 	UIPropertiesBox.Hide				();
 
 	AttachChild							(&UIStaticTime);
 	xml_init.InitStatic					(uiXml, "time_static", 0, &UIStaticTime);
 
 	UIStaticTime.AttachChild			(&UIStaticTimeString);
-	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
+	xml_init.InitTextWnd					(uiXml, "time_static_str", 0, &UIStaticTimeString);
 
 	UIExitButton						= xr_new<CUI3tButton>();UIExitButton->SetAutoDelete(true);
 	AttachChild							(UIExitButton);
@@ -263,7 +262,7 @@ bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		}
 	}
 
-	CUIWindow::OnMouse					(x, y, mouse_action);
+	CUIWindow::OnMouseAction					(x, y, mouse_action);
 
 	return true; // always returns true, because ::StopAnyMove() == true;
 }
@@ -329,7 +328,7 @@ void CUIInventoryWnd::Update()
 void CUIInventoryWnd::Show() 
 { 
 	InitInventory			();
-	inherited::Show			();
+	inherited::Show			(true);
 
 	if (!IsGameTypeSingle())
 	{
@@ -364,7 +363,7 @@ void CUIInventoryWnd::Show()
 void CUIInventoryWnd::Hide()
 {
 	PlaySnd								(eInvSndClose);
-	inherited::Hide						();
+	inherited::HideDialog						();
 
 	SendInfoToActor						("ui_inventory_hide");
 	ClearAllLists						();
@@ -523,7 +522,7 @@ bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 
 	if (UIPropertiesBox.GetVisible())
-		UIPropertiesBox.OnKeyboard(dik, keyboard_action);
+		UIPropertiesBox.OnKeyboardAction(dik, keyboard_action);
 
 	if ( is_binded(kDROP, dik) )
 	{
@@ -547,7 +546,7 @@ bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		}
 #endif
 	}
-	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
+	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 
 	return false;
 }

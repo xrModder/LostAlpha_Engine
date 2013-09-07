@@ -42,10 +42,6 @@ void CUIStatic::script_register(lua_State *L)
 		.def("SetTextAlignment",	&CUITextWnd::SetTextAlignment)
 		.def("SetVTextAlignment",	&CUITextWnd::SetVTextAlignment)
 		.def("SetEllipsis",			&CUITextWnd::SetEllipsis)
-		.def("SetTextOffset",		&CUITextWnd::SetTextOffset),
-//		.def("",					&CUITextWnd::)
-
-		class_<CUISleepStatic, CUIStatic>("CUISleepStatic")
-		.def(						constructor<>())
+		.def("SetTextOffset",		&CUITextWnd::SetTextOffset)
 	];
 }

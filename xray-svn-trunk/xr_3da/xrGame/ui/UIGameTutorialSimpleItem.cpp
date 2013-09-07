@@ -58,7 +58,7 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 	m_time_length			= xml->ReadFlt			("length_sec",0,0		);
 	m_desired_cursor_pos.x	= xml->ReadAttribFlt	("cursor_pos",0,"x",1024);
 	m_desired_cursor_pos.y	= xml->ReadAttribFlt	("cursor_pos",0,"y",768	);
-	strcpy					(m_pda_section, xml->Read("pda_section",0,"")	);
+	xr_strcpy					(m_pda_section, xml->Read("pda_section",0,"")	);
 
 	LPCSTR str				= xml->Read				("pause_state",0,"ignore");
 	m_flags.set										(etiNeedPauseOn, 0==_stricmp(str, "on"));
@@ -106,7 +106,7 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 		_si->m_length				= xml->ReadAttribFlt("auto_static",i,"length_sec",0);
 		_si->m_visible				= false;
 		_si->m_wnd					= smart_cast<CUIStatic*>(find_child_window(m_UIWindow, sname)); VERIFY(_si->m_wnd);
-		_si->m_wnd->SetTextComplexMode(true);
+		_si->m_wnd->TextItemControl()->SetTextComplexMode(true);
 		_si->m_wnd->Show			(false);
 
 		xml->SetLocalRoot			(_sr);
@@ -216,7 +216,7 @@ void CUISequenceSimpleItem::Start()
 		{
 		if( (!ui_game_sp->PdaMenu->IsShown() && bShowPda) || 
 			(ui_game_sp->PdaMenu->IsShown() && !bShowPda))
-			HUD().GetUI()->StartStopMenu			(ui_game_sp->PdaMenu,true);
+			ui_game_sp->PdaMenu->HideDialog();
 		}
 	}
 }
@@ -241,7 +241,7 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 	if (g_pGameLevel){
 		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 		if( ui_game_sp && ui_game_sp->PdaMenu->IsShown() ) 
-			HUD().GetUI()->StartStopMenu			(ui_game_sp->PdaMenu, true);
+			ui_game_sp->PdaMenu->HideDialog();
 	}
 	inherited::Stop				();
 	return true;

@@ -16,7 +16,7 @@
 
 game_cl_GameState::game_cl_GameState()
 {
-	local_player				= createPlayerState(NULL);	//initializing account info
+	local_player				= createPlayerState();	//initializing account info
 	m_WeaponUsageStatistic		= xr_new<WeaponUsageStatistic>();
 
 	m_game_type_name			= 0;
@@ -200,7 +200,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 			
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_connected"));
-			CommonMessageOut(Text);
+			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s connected", PlayerName);
 		}break;
@@ -277,13 +277,6 @@ ClientID game_cl_GameState::GetClientIDByOrderID	(u32 idx)
 	return I->first;
 }
 
-
-
-void game_cl_GameState::CommonMessageOut (LPCSTR msg)
-{
-	if (!HUD().GetUI()) return;
-	HUD().GetUI()->m_pMessagesWnd->AddLogMessage(msg);
-}
 
 float game_cl_GameState::shedule_Scale		()
 {

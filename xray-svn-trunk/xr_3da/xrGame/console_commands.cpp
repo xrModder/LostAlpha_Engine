@@ -537,7 +537,7 @@ public:
 		SDrawStaticStruct* _s		= CurrentGameUI()->AddCustomStatic("game_saved", true);
 		_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 		string_path					save_name;
-		STRCONTAT					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
+		strconcat					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
 		_s->wnd()->TextItemControl()->SetText(save_name);
 
 		xr_strcat					(S,".dds");

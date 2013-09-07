@@ -6,6 +6,7 @@
 
 class CUIDragDropListEx;
 class CUIItemInfo;
+class CUITextWnd;
 class CUICharacterInfo;
 class CUIPropertiesBox;
 class CUI3tButton;
@@ -62,7 +63,7 @@ protected:
 	CUIStatic*				m_pUIStaticBottom;
 
 	CUIFrameWindow*			m_pUIDescWnd;
-	CUIStatic*				m_pUIStaticDesc;
+	CUITextWnd*				m_pUIStaticDesc;
 	CUIItemInfo*			m_pUIItemInfo;
 
 	CUIStatic*				m_pUIOurBagWnd;

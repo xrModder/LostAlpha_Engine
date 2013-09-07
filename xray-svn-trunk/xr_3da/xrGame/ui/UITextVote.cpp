@@ -59,7 +59,7 @@ void CUITextVote::OnBtnOk(){
 		xr_sprintf(command, "cl_votestart $%s", name);		
 		Console->Execute(command);
 		game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
-		game->StartStopMenu(this, true);
+		HideDialog();
 	}
 	else
 		return;

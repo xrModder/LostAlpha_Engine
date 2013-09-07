@@ -1,4 +1,6 @@
 #pragma once
+
+/*
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
 
@@ -43,3 +45,4 @@ public:
 	virtual bool	NeedCursor				() const {return false;}
 	virtual bool OnKeyboard					(int dik, EUIMessages keyboard_action);
 };
+*/

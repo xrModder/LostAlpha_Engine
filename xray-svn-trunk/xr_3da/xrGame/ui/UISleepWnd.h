@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-/*
+
 #include "UIStatic.h"
 
 class CUIButton;
@@ -41,4 +41,4 @@ protected:
 	CUIButton*		UIPlusBtn;
 	CUIButton*		UIMinusBtn;
 	CUIButton*		UIRestBtn;
-};*/
+};
