@@ -344,6 +344,11 @@ void CRenderDevice::UpdateView()
 
     RCache.set_xform_view(mView);
     mFullTransform.mul(mProjection,mView);
+	
+	vCameraPosition_saved	= vCameraPosition;
+	mFullTransform_saved	= mFullTransform;
+	mView_saved				= mView;
+	mProject_saved			= mProject;
 
 // frustum culling sets
     ::Render->ViewBase.CreateFromMatrix(mFullTransform,FRUSTUM_P_ALL);

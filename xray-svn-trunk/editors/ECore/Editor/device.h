@@ -78,7 +78,14 @@ public:
 	Fmatrix 				mProjection;
 	Fmatrix					mFullTransform;
 
-    float					fFOV;
+	// Copies of corresponding members. Used for synchronization.
+	Fvector									vCameraPosition_saved;
+
+	Fmatrix									mView_saved;
+	Fmatrix									mProject_saved;
+	Fmatrix									mFullTransform_saved;
+
+    	float					fFOV;
 	float					fASPECT;
 
 	// Dependent classes
