@@ -35,7 +35,7 @@ xr_vector<record>*	vecEdges;
 
 void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 {
-	if (_sqrt(SqrDistance2Segment(vTEST->P,vE1->P,vE2->P))<0.005f)	
+	if (_sqrt(SqrDistance2Segment(vTEST->P,vE1->P,vE2->P))<0.002f)	
 	{
 		BOOL bWeld = FALSE;
 		
@@ -45,7 +45,7 @@ void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 		{
 			record&	rec = (*vecJunctions)[i];
 			if (rec.T==vTEST)						return;
-			if (rec.T->P.similar(vTEST->P,.005f))	bWeld = TRUE;
+			if (rec.T->P.similar(vTEST->P,.002f))	bWeld = TRUE; // was 0.005f
 		}
 		
 		// register
@@ -58,7 +58,7 @@ void check(Vertex* vE1, Vertex* vE2, Vertex* vTEST)
 		// display
 		// if (bWeld)	clMsg	("ERROR. unwelded vertex      [%3.1f,%3.1f,%3.1f]",	VPUSH(vTEST->P));
 		// else			clMsg	("ERROR. T-junction at vertex [%3.1f,%3.1f,%3.1f]",	VPUSH(vTEST->P));
-		pBuild->err_tjunction.w_fvector3	(vTEST->P);
+		//pBuild->err_tjunction.w_fvector3	(vTEST->P);
 	}
 }
 

@@ -18,6 +18,7 @@ public:
 	VBContainer()			{	R_DCL.clear();	}
 
 	// Methods
+	bool	is_empty		() const {return vDcl.empty() && vContainers.empty() && R_DCL .empty() && R_DATA.empty() ;}
 	void	Begin			(u32	dwFVF)
 	{
 		R_ASSERT		(R_DCL.empty());
@@ -101,6 +102,10 @@ class IBContainer
 		LIMIT = 1024ul * 1024ul
 	};
 public:
+	bool	is_empty		()const	
+	{
+		return data.empty();
+	}
 	void	Register		(u16* begin, u16* end, u32* dwContainerID, u32 *dwStart)
 	{
 		u32 size				= (u32)(end-begin);
@@ -139,6 +144,10 @@ class SWIContainer
 {
 	xr_vector<FSlideWindowItem*>	data;
 public:
+	bool	is_empty	() const
+	{ 
+		return data.empty(); 
+	}
 	void	Register	(u32* id, FSlideWindowItem* item)
 	{
 		data.push_back	(item);

@@ -37,6 +37,7 @@ void CBuild::SoftenLights()
 		RL.attenuation0			=	L->attenuation0;
 		RL.attenuation1			=	L->attenuation1;
 		RL.attenuation2			=	L->attenuation2;
+		RL.falloff				=   1.0f/(RL.range*(RL.attenuation0 + RL.attenuation1*RL.range + RL.attenuation2*RL.range2))
 		RL.energy				=	L->diffuse.magnitude_rgb();
 		
 		// select destination container

@@ -267,7 +267,7 @@ void xrLoad(LPCSTR name)
 					BT.bHasAlpha= TRUE;
 					BT.pSurface	= 0;
 				} else {
-					strcat			(N,".thm");
+					xr_strcat			(N,sizeof(string128),".thm");
 					IReader* THM	= FS.r_open("$textures$",N);
 					R_ASSERT2		(THM,	N);
 

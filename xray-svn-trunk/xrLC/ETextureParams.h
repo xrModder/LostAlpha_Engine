@@ -81,6 +81,9 @@ struct ECORE_API STextureParams{
 		flImplicitLighted	= (1<<24),
 		flHasAlpha			= (1<<25),
 		flBumpDetail		= (1<<26),
+		
+		flHasSurface		= (1<<27), //for compiler - save the fact the surface was loaded 
+									   //use when deleted pSurface for memory issues
 
 		flForceU32			= u32(-1)
 	};
@@ -125,6 +128,14 @@ struct ECORE_API STextureParams{
     	// исходная текстура содержит альфа канал
     	return flags.is(flHasAlpha);
     }
+	IC BOOL HasSurface()const
+	{
+		return flags.is(flHasSurface);
+	}
+	IC void	SetHasSurface(BOOL val)
+	{
+		flags.set( flHasSurface, val );
+	}
 	IC BOOL HasAlphaChannel() // игровая текстура содержит альфа канал
 	{
 		switch (fmt)

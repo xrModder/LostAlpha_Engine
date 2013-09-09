@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "build.h"
+#include "xrThread.h"
 
 const	float	aht_max_edge	= c_SS_maxsize/2.5f;	// 2.0f;			// 2 m
 //const	float	aht_min_edge	= .2f;					// 20 cm
@@ -14,7 +15,7 @@ bool	is_CCW	(int _1, int _2)
 }
 
 // Iterate on edges - select longest
-int		callback_edge_longest	(Face* F)
+int		callback_edge_longest	( Face* F)
 {
 	float	max_err				= -1;
 	int		max_id				= -1;
@@ -85,14 +86,14 @@ void GSaveAsSMF					(LPCSTR fname)
 	std::sort			(g_vertices.begin(),g_vertices.end());
 	for (u32 v_idx=0; v_idx<g_vertices.size(); v_idx++){
 		Fvector v		= g_vertices[v_idx]->P;
-		sprintf			(tmp,"v %f %f %f",v.x,v.y,-v.z);
+		xr_sprintf			(tmp,"v %f %f %f",v.x,v.y,-v.z);
 		W->w_string		(tmp);
 	}
 
 	// transfer faces
 	for (u32 f_idx=0; f_idx<g_faces.size(); f_idx++){
 		Face*	t		= g_faces	[f_idx];
-		sprintf			(tmp,"f %d %d %d",
+		xr_sprintf			(tmp,"f %d %d %d",
 			smfVertex(t->v[0]), smfVertex(t->v[2]), smfVertex(t->v[1]) 
 			);
 		W->w_string		(tmp);
@@ -103,13 +104,50 @@ void GSaveAsSMF					(LPCSTR fname)
 	for (u32 v_idx=0; v_idx<g_vertices.size(); v_idx++){
 		base_color_c	c;	g_vertices[v_idx]->C._get(c);
 		float			h	= c.hemi/2.f;
-		sprintf			(tmp,"c %f %f %f",h,h,h);
+		xr_sprintf			(tmp,"c %f %f %f",h,h,h);
 		W->w_string		(tmp);
 	}
 	
 	FS.w_close	(W);
 }
 */
+class CPrecalcBaseHemiThread: 
+public CThread
+{
+	u32 _from, _to;
+	CDB::COLLIDER	DB;
+	
+public:
+	CPrecalcBaseHemiThread(u32 ID, u32 from, u32 to ): CThread(ID), _from( from ), _to( to )
+	{
+		R_ASSERT(from!=u32(-1));
+		R_ASSERT(to!=u32(-1));
+		R_ASSERT( from < to );
+		R_ASSERT(from>=0);
+		R_ASSERT(to>0);
+	}
+virtual	void Execute()
+	{
+		DB.ray_options	(0);
+		for (u32 vit =_from; vit < _to; vit++)	
+		{
+			base_color_c		vC;
+			R_ASSERT( vit != u32(-1) );
+			R_ASSERT( vit>=0 );
+			R_ASSERT( vit<g_vertices.size() );
+			Vertex*		V		= g_vertices[vit];
+			
+			R_ASSERT( V );
+			V->normalFromAdj	();
+			LightPoint			(&DB, RCAST_Model, vC, V->P, V->N, pBuild->L_static, LP_dont_rgb+LP_dont_sun,0);
+			vC.mul				(0.5f);
+			V->C._set			(vC);
+		}
+	}
+};
+
+CThreadManager	precalc_base_hemi;
+
 void CBuild::xrPhase_AdaptiveHT	()
 {
 	CDB::COLLIDER	DB;
@@ -142,6 +180,7 @@ void CBuild::xrPhase_AdaptiveHT	()
 		Light_prepare				();
 
 		// calc approximate normals for vertices + base lighting
+/*
 		for (u32 vit=0; vit<g_vertices.size(); vit++)	
 		{
 			base_color_c		vC;
@@ -151,6 +190,18 @@ void CBuild::xrPhase_AdaptiveHT	()
 			vC.mul				(0.5f);
 			V->C._set			(vC);
 		}
+*/
+		u32	stride			= u32(-1);
+		
+		u32 threads			= u32(-1);
+		u32 rest			= u32(-1);
+		get_intervals( 8, g_vertices.size(), threads, stride, rest );
+		for (u32 thID=0; thID<threads; thID++)
+			precalc_base_hemi.start	( xr_new<CPrecalcBaseHemiThread> (thID,thID*stride,thID*stride + stride ) );
+		if(rest > 0)
+			precalc_base_hemi.start	( xr_new<CPrecalcBaseHemiThread> (threads,threads*stride,threads*stride + rest ) );
+		precalc_base_hemi.wait();
+		//precalc_base_hemi
 	}
 
 	//////////////////////////////////////////////////////////////////////////

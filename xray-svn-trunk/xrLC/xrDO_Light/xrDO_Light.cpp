@@ -36,7 +36,7 @@ void Startup(LPSTR     lpCmdLine)
 	char cmd[512],name[256];
 	BOOL bModifyOptions		= FALSE;
 
-	strcpy(cmd,lpCmdLine);
+	xr_strcpy(cmd,lpCmdLine);
 	strlwr(cmd);
 	if (strstr(cmd,"-?") || strstr(cmd,"-h"))			{ Help(); return; }
 	if (strstr(cmd,"-f")==0)							{ Help(); return; }
@@ -49,6 +49,12 @@ void Startup(LPSTR     lpCmdLine)
 	
 	// Load project
 	name[0]=0; sscanf	(strstr(cmd,"-f")+2,"%s",name);
+
+	extern  HWND logWindow;
+	string256			temp;
+	xr_sprintf			(temp, "%s - Detail Compiler", name);
+	SetWindowText		(logWindow, temp);
+
 	//FS.update_path	(name,"$game_levels$",name);
 	FS.get_path			("$level$")->_set	(name);
 
@@ -58,8 +64,7 @@ void Startup(LPSTR     lpCmdLine)
 	// Show statistic
 	char	stats[256];
 	extern	std::string make_time(u32 sec);
-	extern  HWND logWindow;
-	sprintf				(stats,"Time elapsed: %s",make_time((dwStartupTime.GetElapsed_ms())/1000).c_str());
+	xr_sprintf				(stats,"Time elapsed: %s",make_time((dwStartupTime.GetElapsed_ms())/1000).c_str());
 	MessageBox			(logWindow,stats,"Congratulation!",MB_OK|MB_ICONINFORMATION);
 
 	bClose				= TRUE;
@@ -72,6 +77,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      int       nCmdShow)
 {
 	// Initialize debugging
+	Debug._initialize	(false);
 	Core._initialize("xrdo_la");
 	Startup			(lpCmdLine);
 	

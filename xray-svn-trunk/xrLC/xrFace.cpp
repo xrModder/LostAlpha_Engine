@@ -55,10 +55,11 @@ void			base_Face::CacheOpacity	()
 	flags.bOpaque				= true;
 
 	b_material& M		= pBuild->materials		[dwMaterial];
-	b_texture&	T		= pBuild->textures		[M.surfidx];
+	b_BuildTexture&	T		= pBuild->textures		[M.surfidx];
 	if (T.bHasAlpha)	flags.bOpaque = false;
 	else				flags.bOpaque = true;
-	if (!flags.bOpaque && (0==T.pSurface))		{
+	if ( !flags.bOpaque && !(T.THM.HasSurface()) )	//(0==T.pSurface)//	pSurface was possible deleted
+	{
 		flags.bOpaque	= true;
 		clMsg			("Strange face detected... Has alpha without texture...");
 	}

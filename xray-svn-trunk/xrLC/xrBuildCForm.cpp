@@ -85,9 +85,14 @@ void CBuild::BuildCForm	()
 			if (F->Shader().flags.bCollision) 
 			{
 				cfFaces->push_back(F);
-				cfVertexMarks[GetVertexIndex(F->v[0])] = true;
-				cfVertexMarks[GetVertexIndex(F->v[1])] = true;
-				cfVertexMarks[GetVertexIndex(F->v[2])] = true;
+				int index = GetVertexIndex(F->v[0]);
+				cfVertexMarks[index] = true;
+
+				index = GetVertexIndex(F->v[1]);
+				cfVertexMarks[index] = true;
+
+				index = GetVertexIndex(F->v[2]);
+				cfVertexMarks[index] = true;
 			}
 		}
 

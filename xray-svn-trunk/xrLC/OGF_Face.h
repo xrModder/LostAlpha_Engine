@@ -30,6 +30,7 @@ struct OGF_Vertex
 };
 typedef xr_vector<OGF_Vertex>		vecOGF_V;
 typedef vecOGF_V::iterator			itOGF_V;
+typedef vecOGF_V::const_iterator	citOGF_V;
 struct x_vertex						// "fast" geometry, 16b/vertex
 {
 	Fvector				P;
@@ -64,9 +65,10 @@ struct OGF_Face
 		return false;
 	}
 };
-typedef xr_vector<OGF_Face>		vecOGF_F;
-typedef vecOGF_F::iterator		itOGF_F;
-typedef OGF_Face				x_face;
+typedef xr_vector<OGF_Face>			vecOGF_F;
+typedef vecOGF_F::iterator			itOGF_F;
+typedef vecOGF_F::const_iterator	citOGF_F;
+typedef OGF_Face					x_face;
 #pragma pack(pop)
 
 struct OGF;

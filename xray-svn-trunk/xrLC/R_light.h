@@ -4,6 +4,8 @@
 #define LT_POINT		1
 #define LT_SECONDARY	2
 
+#define USE_PORTED_XRLC
+
 struct R_Light
 {
 	u16				type;				// Type of light source		
@@ -13,6 +15,9 @@ struct R_Light
 	Fvector         direction;			// Direction in world space	
 	float		    range;				// Cutoff range
 	float			range2;				// ^2
+#ifdef USE_PORTED_XRLC
+	float			falloff;			// precalc to make light aqal to zero at light range
+#endif
 	float	        attenuation0;		// Constant attenuation		
 	float	        attenuation1;		// Linear attenuation		
 	float	        attenuation2;		// Quadratic attenuation	

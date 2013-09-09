@@ -64,7 +64,7 @@ static void _process_messages(void)
 std::string make_time	(u32 sec)
 {
 	char		buf[64];
-	sprintf		(buf,"%2.0d:%2.0d:%2.0d",sec/3600,(sec%3600)/60,sec%60);
+	xr_sprintf		(buf,"%2.0d:%2.0d:%2.0d",sec/3600,(sec%3600)/60,sec%60);
 	int len		= int(xr_strlen(buf));
 	for (int i=0; i<len; i++) if (buf[i]==' ') buf[i]='0';
 	return std::string(buf);
@@ -101,15 +101,15 @@ void Phase			(const char *phase_name)
 	char	tbuf		[512];
 	bPhaseChange		= TRUE;
 	phase_total_time	= timeGetTime()-phase_start_time;
-	sprintf				( tbuf,"%s : %s",make_time(phase_total_time/1000).c_str(),	phase);
+	xr_sprintf				( tbuf,"%s : %s",make_time(phase_total_time/1000).c_str(),	phase);
 	SendMessage			( hwPhaseTime, LB_DELETESTRING, SendMessage(hwPhaseTime,LB_GETCOUNT,0,0)-1,0);
 	SendMessage			( hwPhaseTime, LB_ADDSTRING, 0, (LPARAM) tbuf);
 
 	// Start _new phase
 	phase_start_time	= timeGetTime();
-	strcpy				(phase,  phase_name);
+	xr_strcpy				(phase,  phase_name);
 	SetWindowText		( hwStage,		phase_name );
-	sprintf				( tbuf,"--:--:-- * %s",phase);
+	xr_sprintf				( tbuf,"--:--:-- * %s",phase);
 	SendMessage			( hwPhaseTime,  LB_ADDSTRING, 0, (LPARAM) tbuf);
 	SendMessage			( hwPhaseTime,	LB_SETTOPINDEX, SendMessage(hwPhaseTime,LB_GETCOUNT,0,0)-1,0);
 	Progress			(0);
@@ -199,7 +199,7 @@ void logThread(void *dummy)
 				u32 dwTimeDiff	= dwCurrentTime-phase_start_time;
 				u32 secElapsed	= dwTimeDiff/1000;
 				u32 secRemain		= u32(float(secElapsed)/progress)-secElapsed;
-				sprintf(tbuf,
+				xr_sprintf(tbuf,
 					"Elapsed: %s\n"
 					"Remain:  %s",
 					make_time(secElapsed).c_str(),
@@ -211,7 +211,7 @@ void logThread(void *dummy)
 			}
 
 			// percentage text
-			sprintf(tbuf,"%3.2f%%",progress*100.f);
+			xr_sprintf(tbuf,"%3.2f%%",progress*100.f);
 			SetWindowText	( hwPText, tbuf );
 		}
 

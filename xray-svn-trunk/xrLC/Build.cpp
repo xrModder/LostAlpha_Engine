@@ -79,12 +79,24 @@ public:
 		u32 MU_THREADS = 4;
 		if (strstr(Core.Params,"-t "))
 			sscanf (strstr(Core.Params,"-t ")+3,"%d",&MU_THREADS);
-
+/*
 		// Light references
 		u32	stride			= pBuild->mu_refs.size()/MU_THREADS;
 		u32	last			= pBuild->mu_refs.size()-stride*(MU_THREADS-1);
 		for (u32 thID=0; thID<MU_THREADS; thID++)
 			mu_secondary.start	(xr_new<CMULight> (thID,thID*stride,thID*stride+((thID==(MU_THREADS-1))?last:stride)));
+*/
+
+		u32	stride			= pBuild->mu_refs.size()/MU_THREADS;
+		u32	last			= pBuild->mu_refs.size()-stride*(MU_THREADS-1);
+		u32 threads			= MU_THREADS;
+		get_intervals		( MU_THREADS, pBuild->mu_refs.size(), threads, stride, last );
+
+		for (u32 thID=0; thID<threads; thID++)
+			mu_secondary.start	( xr_new<CMULight> (thID,thID*stride,thID*stride + stride ) );
+		if(last > 0)
+			mu_secondary.start	( xr_new<CMULight> (threads,threads*stride,threads*stride + last ) );
+
 	}
 };
 

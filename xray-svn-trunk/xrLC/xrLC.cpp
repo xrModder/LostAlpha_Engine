@@ -26,6 +26,7 @@
 #endif // PROTECTED_BUILD
 
 CBuild*	pBuild		= NULL;
+u32		version		= 0;
 
 extern void logThread(void *dummy);
 extern volatile BOOL bClose;
@@ -84,13 +85,18 @@ void Startup(LPSTR     lpCmdLine)
 	
 	// Load project
 	name[0]=0;				sscanf(strstr(cmd,"-f")+2,"%s",name);
+
+	extern  HWND logWindow;
+	string256				temp;
+	xr_sprintf				(temp, "%s - Levels Compiler", name);
+	SetWindowText			(logWindow, temp);
+
 	string_path				prjName;
 	FS.update_path			(prjName,"$game_levels$",strconcat(sizeof(prjName),prjName,name,"\\build.prj"));
 	string256				phaseName;
 	Phase					(strconcat(sizeof(phaseName),phaseName,"Reading project [",name,"]..."));
 
 	string256 inf;
-	extern  HWND logWindow;
 	IReader*	F			= FS.r_open(prjName);
 	if (NULL==F){
 		xr_sprintf				(inf,"Build failed!\nCan't find level: '%s'",name);
@@ -100,7 +106,6 @@ void Startup(LPSTR     lpCmdLine)
 	}
 
 	// Version
-	u32 version;
 	F->r_chunk			(EB_Version,&version);
 	clMsg				("version: %d",version);
 	R_ASSERT(XRCL_CURRENT_VERSION==version);
@@ -162,6 +167,7 @@ int APIENTRY WinMain(HINSTANCE hInst,
 	g_dummy_stuff		= &trivial_encryptor::encode;
 
 	// Initialize debugging
+	Debug._initialize	(false);
 	Core._initialize	("xrlc_la");
 	Startup				(lpCmdLine);
 	Core._destroy		();

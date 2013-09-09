@@ -208,6 +208,9 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				RL.attenuation0			=	L.attenuation0;
 				RL.attenuation1			=	L.attenuation1;
 				RL.attenuation2			=	L.attenuation2;
+#ifdef USE_PORTED_XRLC
+				RL.falloff				=   1.0f/(RL.range*(RL.attenuation0 + RL.attenuation1*RL.range + RL.attenuation2*RL.range2));
+#endif
 				RL.energy				=	_e;
 
 				// place into layer
@@ -270,10 +273,12 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 			strlwr			(N);
 			if (0==xr_strcmp(N,"level_lods"))	{
 				// HACK for merged lod textures
-				BT.dwWidth	= 1024;
-				BT.dwHeight	= 1024;
-				BT.bHasAlpha= TRUE;
-				BT.pSurface	= 0;
+				BT.dwWidth		= 1024;
+				BT.dwHeight		= 1024;
+				BT.bHasAlpha	= TRUE;
+				BT.THM.SetHasSurface(FALSE);
+				BT.pSurface		= 0;
+				BT.THM.SetHasSurface(FALSE);
 			} else {
 				string_path			th_name;
 //#ifdef PRIQUEL
@@ -307,16 +312,22 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				BT.dwWidth	= BT.THM.width;
 				BT.dwHeight	= BT.THM.height;
 				BT.bHasAlpha= BT.THM.HasAlphaChannel();
+				BT.THM.SetHasSurface(FALSE);
 				if (!bLOD) 
 				{
 					if (BT.bHasAlpha || BT.THM.flags.test(STextureParams::flImplicitLighted) || b_radiosity)
 					{
 						clMsg		("- loading: %s",N);
 						u32			w=0, h=0;
-						BT.pSurface = Surface_Load(N,w,h);
+						BT.pSurface		=	Surface_Load(N,w,h);
+						BT.THM.SetHasSurface(TRUE);
 						R_ASSERT2	(BT.pSurface,"Can't load surface");
 						if ((w != BT.dwWidth) || (h != BT.dwHeight))
+						{
 							Msg		("! THM doesn't correspond to the texture: %dx%d -> %dx%d", BT.dwWidth, BT.dwHeight, w, h);
+							BT.dwWidth	= BT.THM.width = w;
+							BT.dwHeight	= BT.THM.height = h;
+						}
 						BT.Vflip	();
 					} else {
 						// Free surface memory
