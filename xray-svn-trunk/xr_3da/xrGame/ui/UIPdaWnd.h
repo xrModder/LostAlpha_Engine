@@ -71,7 +71,7 @@ public:
 
 	virtual void 			Draw				();
 	virtual void 			Update				();
-	virtual void 			Show				(bool status);
+	virtual void 			ShowDialog				(bool status);
 	
 	virtual void 			EnableSkills				(bool val);
 	virtual void 			EnableDownloads				(bool val);

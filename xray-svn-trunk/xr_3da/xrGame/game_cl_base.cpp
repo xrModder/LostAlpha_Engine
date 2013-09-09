@@ -135,6 +135,12 @@ void	game_cl_GameState::net_import_state	(NET_Packet& P)
 	net_import_GameTime(P);
 }
 
+void game_cl_GameState::CommonMessageOut (LPCSTR msg)
+{
+	if (!HUD().GetUI()) return;
+	HUD().GetUI()->m_pMessagesWnd->AddLogMessage(msg);
+}
+
 void	game_cl_GameState::net_import_update(NET_Packet& P)
 {
 	// Read
@@ -200,7 +206,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 			
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_connected"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s connected", PlayerName);
 		}break;
@@ -210,7 +216,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_disconnected"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s disconnected", PlayerName);
 		}break;
@@ -220,7 +226,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 
 			xr_sprintf(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_entered_game"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 		}break;
 	default:
 		{

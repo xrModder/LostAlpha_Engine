@@ -155,7 +155,6 @@ void CUIMessageBox::InitMessageBox(LPCSTR box_template)
 			m_UIButtonNo						= xr_new<CUI3tButton>();
 			AttachChild							(m_UIButtonNo);
 			xml_init.Init3tButton				(uiXml, str, 0, m_UIButtonNo);
-			//m_message_box_yes_no->func_on_ok = CUIWndCallback::void_function( this, &CUIActorMenu::OnMesBoxYes );
 
 			break;
 		case MESSAGEBOX_PASSWORD:{

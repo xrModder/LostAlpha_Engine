@@ -316,7 +316,10 @@ CClientSpawnManager	&get_client_spawn_manager()
 
 void start_stop_menu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-	HUD().GetUI()->StartStopMenu(pDialog,bDoHideIndicators);
+	if (bDoHideIndicators)
+		pDialog->ShowDialog(true);
+	else
+		pDialog->HideDialog();
 }
 
 void lua_debug_print(LPCSTR str)

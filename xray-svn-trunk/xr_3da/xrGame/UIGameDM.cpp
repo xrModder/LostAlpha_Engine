@@ -21,6 +21,8 @@
 #include "ui/UIHelper.h"
 #include "UITeamPanels.h"
 #include "object_broker.h"
+#include "ui/UIInventoryWnd.h"
+#include "HUDManager.h"
 
 #define MSGS_OFFS 510
 
@@ -46,6 +48,10 @@ CUIGameDM::CUIGameDM()
 {
 	m_game								= NULL; 
 	m_voteStatusWnd						= NULL;
+
+	m_pInventoryMenu	= xr_new<CUIInventoryWnd>	();
+	m_pPdaMenu			= xr_new<CUIPdaWnd>			();
+	m_pMapDesc			= NULL;//xr_new<CUIMapDesc>		();
 }
 
 //--------------------------------------------------------------------
@@ -110,6 +116,9 @@ void CUIGameDM::UnLoad()
 
 CUIGameDM::~CUIGameDM()
 {
+	delete_data(m_pInventoryMenu);
+	delete_data(m_pPdaMenu);	
+	delete_data(m_pMapDesc);	
 }
 
 
@@ -247,4 +256,11 @@ void CUIGameDM::UpdateTeamPanels()
 {
 	m_pTeamPanels->NeedUpdatePanels();
 	m_pTeamPanels->NeedUpdatePlayers();
+}
+
+void CUIGameDM::reset_ui				()
+{
+	inherited::reset_ui		();
+	//m_pInventoryMenu->Reset	();
+	m_pPdaMenu->Reset		();
 }

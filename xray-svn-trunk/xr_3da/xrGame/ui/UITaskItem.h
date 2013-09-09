@@ -11,9 +11,9 @@ class CUIEventsWnd;
 class CUIEditBoxEx;
 class CUIEditBox;
 
-class CUITaskItem :public CUIListItem, public CUIWndCallback
+class CUITaskItem :public CUIWindow, public CUIWndCallback
 {
-	typedef		CUIListItem	inherited;
+	typedef		CUIWindow	inherited;
 protected:
 	CGameTask*				m_GameTask;
 	u16						m_TaskObjectiveIdx;
@@ -25,6 +25,7 @@ public:
 	virtual void	SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 					
 	virtual void	SetGameTask				(CGameTask* gt, u16 obj_idx);
+	virtual void	MarkSelected				(bool b){};
 
 	CGameTask*		GameTask				()	{return m_GameTask;}
 	u16				ObjectiveIdx			()	{return m_TaskObjectiveIdx;}

@@ -543,9 +543,9 @@ void CUILevelMap::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	if(msg==MAP_HIDE_HINT)
 	{
 		MapWnd()->HideHint	(pWnd);
-	}else
+	}/*else
 	if(msg==MAP_SELECT_SPOT)
-		MapWnd()->SpotSelected	(pWnd);
+		MapWnd()->SpotSelected	(pWnd);*/
 }
 
 void CUILevelMap::OnFocusLost()

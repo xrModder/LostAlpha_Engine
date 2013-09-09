@@ -16,12 +16,8 @@ class CUIDialogWnd;
 class CUICaption;
 class CUIStatic;
 class CUIWindow;
-class CUIXml;
-class CUIInventoryWnd;
-class CUIPdaWnd;			
+class CUIXml;			
 struct KillMessageStruct;
-class CUIMainIngameWnd;
-class CUIMessagesWindow;
 enum EGameTypes;
 
 struct SDrawStaticStruct :public IPureDestroyableObject
@@ -40,7 +36,7 @@ struct SDrawStaticStruct :public IPureDestroyableObject
 	}
 };
 
-
+typedef xr_vector<SDrawStaticStruct>	st_vec;
 struct SGameTypeMaps
 {
 	shared_str				m_game_type_name;
@@ -71,7 +67,6 @@ class CMapListHelper
 	GAME_WEATHERS						m_weathers;
 
 	void						Load			();
-	void						LoadMapInfo		(LPCSTR file_name, const xr_string& map_name, LPCSTR map_ver="1.0");
 	SGameTypeMaps*				GetMapListInt	(const shared_str& game_type);
 public:
 	const SGameTypeMaps&		GetMapListFor	(const shared_str& game_type);
@@ -86,22 +81,12 @@ class CUIGameCustom :public DLL_Pure, public CDialogHolder
 protected:
 	CUIWindow*			m_window;
 	CUIXml*				m_msgs_xml;
-	typedef xr_vector<SDrawStaticStruct*>	st_vec;
-	typedef st_vec::iterator				st_vec_it;
+
 	st_vec									m_custom_statics;
 
-	CUIInventoryWnd*		m_ActorMenu;
-	CUIPdaWnd*			m_PdaMenu;
-
-	bool				m_bShowGameIndicators;
-
 public:
-	CUIMainIngameWnd*	UIMainIngameWnd;
-	CUIMessagesWindow*	m_pMessagesWnd;
-
+	virtual	void		shedule_Update			(u32 dt) {};
 	virtual void		SetClGame				(game_cl_GameState* g);
-	virtual void		OnInventoryAction		(PIItem item, u16 action_type);
-
 	
 						CUIGameCustom			();
 	virtual				~CUIGameCustom			();
@@ -110,20 +95,6 @@ public:
 	
 	virtual void		Render					();
 	virtual void _BCL	OnFrame					();
-	
-	IC CUIInventoryWnd&	ActorMenu				() const { return *m_ActorMenu; }
-	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }
-			bool		ShowActorMenu			();
-			void		HideActorMenu			();
-			bool		ShowPdaMenu				();
-			void		HidePdaMenu				();
-			void		ShowMessagesWindow		();
-			void		HideMessagesWindow		();
-
-	void				ShowGameIndicators		(bool b)			{m_bShowGameIndicators	= b;};
-	bool				GameIndicatorsShown		()					{return m_bShowGameIndicators;};
-	void				ShowCrosshair			(bool b)			{psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);}
-	bool				CrosshairShown			()					{return !!psHUD_Flags.test	(HUD_CROSSHAIR_RT);}
 
 	
 	virtual void		HideShownDialogs		(){};
@@ -132,20 +103,14 @@ public:
 	SDrawStaticStruct*	GetCustomStatic			(LPCSTR id);
 	void				RemoveCustomStatic		(LPCSTR id);
 
-	void				CommonMessageOut		(LPCSTR text);
-
 	virtual void		ChangeTotalMoneyIndicator(LPCSTR newMoneyString)		{};
 	virtual void		DisplayMoneyChange		(LPCSTR deltaMoney)			{};
 	virtual void		DisplayMoneyBonus		(KillMessageStruct* bonus)	{};
 	
 	virtual void		UnLoad					();
 	void				Load					();
-	
-	void				OnConnected				();
 
-	void				UpdatePda				();
-	void				update_fake_indicators	(u8 type, float power);
-	void				enable_fake_indicators	(bool enable);
+	virtual	void					reset_ui				();
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 }; // class CUIGameCustom

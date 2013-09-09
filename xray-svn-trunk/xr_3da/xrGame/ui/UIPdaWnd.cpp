@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../pch_script.h"
 #include "UIPdaWnd.h"
 #include "../Pda.h"
 
@@ -26,8 +27,6 @@
 #include "UIMessagesWindow.h"
 #include "UIMainIngameWnd.h"
 #include "UITabButton.h"
-
-#include "pch_script.h"
 #include "../script_engine.h"
 #include "../ai_space.h"
 
@@ -175,7 +174,7 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	}
 }
 
-void CUIPdaWnd::Show(bool status)
+void CUIPdaWnd::ShowDialog(bool status)
 {
 	
 	if (status)
@@ -194,12 +193,12 @@ void CUIPdaWnd::Show(bool status)
 
 	UITabControl->GetButtonsVector()->at(8)->Enable(val);
 
-	inherited::Show();
+	inherited::ShowDialog(true);
 	
 	}
 	else
 	{
-		inherited::Hide();
+		inherited::HideDialog();
 
 		InventoryUtilities::SendInfoToActor("ui_pda_hide");
 		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
@@ -217,7 +216,7 @@ void CUIPdaWnd::UpdateDateTime()
 
 	if (xr_strcmp(strTime.c_str(), prevStrTime))
 	{
-		UITimerBackground->UITitleText.SetText(strTime.c_str());
+		//UITimerBackground->UITitleText.TextItemControl()->SetText(strTime.c_str());
 		prevStrTime = strTime.c_str();
 	}
 }
@@ -454,9 +453,9 @@ void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_plac
 		if(idx!=0)
 		{
 			st = xr_new<CUIStatic>(); st->SetAutoDelete(true);pTab->AttachChild(st);
-			st->SetFont((*it)->GetFont());
-			st->SetTextColor	(color_rgba(90,90,90,255));
-			st->SetText("//");
+			st->TextItemControl()->SetFont((*it)->TextItemControl()->GetFont());
+			st->TextItemControl()->SetTextColor	(color_rgba(90,90,90,255));
+			st->TextItemControl()->SetText("//");
 			st->SetWndSize		((*it)->GetWndSize());
 			st->AdjustWidthToText();
 			st->SetWndPos		(pos);

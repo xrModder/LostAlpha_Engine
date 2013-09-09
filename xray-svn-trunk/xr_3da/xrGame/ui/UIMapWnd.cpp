@@ -929,24 +929,3 @@ void CUIMapWnd::Reset()
 	inherited::Reset			();
 	ResetActionPlanner			();
 }
-
-
-#include "../gametaskmanager.h"
-#include "../actor.h"
-#include "../map_spot.h"
-#include "../gametask.h"
-
-void CUIMapWnd::SpotSelected( CUIWindow* w )
-{
-	CMapSpot* sp	= smart_cast<CMapSpot*>( w );
-	if ( !sp )
-	{
-		return;
-	}
-	
-	CGameTask* t	= Actor()->GameTaskManager().HasGameTask( sp->MapLocation(), true );
-	if ( t )
-	{
-		Actor()->GameTaskManager().SetActiveTask( t );
-	}
-}

@@ -54,14 +54,6 @@ ALife::_TIME_ID game_cl_Single::GetGameTime		()
 		return(inherited::GetGameTime());
 }
 
-ALife::_TIME_ID game_cl_Single::GetStartGameTime	()
-{
-	if (ai().get_alife() && ai().alife().initialized())
-		return(ai().alife().time_manager().start_game_time());
-	else
-		return(inherited::GetStartGameTime());
-}
-
 float game_cl_Single::GetGameTimeFactor		()
 {
 	if (ai().get_alife() && ai().alife().initialized())
@@ -103,8 +95,9 @@ void game_cl_Single::SetEnvironmentGameTimeFactor (ALife::_TIME_ID GameTime, con
 {
 	if (ai().get_alife() && ai().alife().initialized())
 	{
-		 alife().time_manager().set_game_time(GameTime);
-		 alife().time_manager().set_time_factor(fTimeFactor);
+#pragma todo("SkyLoader to all: uncomment and fix it plz")
+		//ai().alife().time_manager().set_game_time(GameTime);
+		//ai().alife().time_manager().set_time_factor(fTimeFactor);
 	}
 	else
 	{
@@ -116,8 +109,9 @@ void game_cl_Single::SetGameTimeFactor	(ALife::_TIME_ID GameTime, const float fT
 {
 	if (ai().get_alife() && ai().alife().initialized())
 	{
-		 alife().time_manager().set_game_time(GameTime);
-		 alife().time_manager().set_time_factor(fTimeFactor);
+#pragma todo("SkyLoader to all: uncomment and fix it plz")
+		//ai().alife().time_manager().set_game_time(GameTime);
+		//ai().alife().time_manager().set_time_factor(fTimeFactor);
 	}
 	else
 	{

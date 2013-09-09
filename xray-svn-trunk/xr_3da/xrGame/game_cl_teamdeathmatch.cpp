@@ -134,7 +134,7 @@ void game_cl_TeamDeathmatch::TranslateGameMessage	(u32 msg, NET_Packet& P)
 							*st.translate("mp_joined"),
 							CTeamInfo::GetTeam_color_tag(int(Team)),							
 							CTeamInfo::GetTeam_name(int(Team)));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s %s %s", PlayerName, *st.translate("mp_joined"),
 				CTeamInfo::GetTeam_name(int(Team)));
@@ -157,7 +157,7 @@ void game_cl_TeamDeathmatch::TranslateGameMessage	(u32 msg, NET_Packet& P)
 							*st.translate("mp_switched_to"),
 							CTeamInfo::GetTeam_color_tag(int(NewTeam)), 
 							CTeamInfo::GetTeam_name(int(NewTeam)));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			//---------------------------------------
 			Msg("%s *s %s", pPlayer->name, *st.translate("mp_switched_to"), CTeamInfo::GetTeam_name(int(NewTeam)));
 		}break;
@@ -438,7 +438,7 @@ void game_cl_TeamDeathmatch::shedule_Update			(u32 dt)
 					if (!(pCurBuyMenu && pCurBuyMenu->IsShown()) && 
 						!(pCurSkinMenu && pCurSkinMenu->IsShown()) &&
 						!m_game_ui->IsServerInfoShown() &&
-						(CurrentGameUI() && CurrentGameUI()->GameIndicatorsShown())
+						(HUD().GetUI() && HUD().GetUI()->GameIndicatorsShown())
 						)
 					{
 						if (!m_bTeamSelected)
@@ -559,34 +559,13 @@ void	game_cl_TeamDeathmatch::OnRender				()
 #include "ui/uiinventorywnd.h"
 BOOL game_cl_TeamDeathmatch::CanCallBuyMenu			()
 {
-	if (Phase()!=GAME_PHASE_INPROGRESS)
-		return FALSE;
-
-	if (!m_game_ui)
-		return FALSE;
-
+	if(!m_game_ui)	return FALSE;
 	if (m_game_ui->m_pUITeamSelectWnd && m_game_ui->m_pUITeamSelectWnd->IsShown())
 		return FALSE;
+	if (!m_bTeamSelected) return FALSE;
+	if (!m_bSkinSelected) return FALSE;
 
-	if (!m_bTeamSelected)
-		return FALSE;
-
-	if (!m_bSkinSelected)
-		return FALSE;
-
-	if (!is_buy_menu_ready())
-		return FALSE;
-	
-	if (!m_bSkinSelected || m_bSpectatorSelected)
-		return FALSE;
-
-	if (pCurSkinMenu && pCurSkinMenu->IsShown())
-		return FALSE;
-	
-	if ( m_game_ui && m_game_ui->ActorMenu().IsShown() )
-		return FALSE;
-	
-	return m_bBuyEnabled;
+	return inherited::CanCallBuyMenu();
 };
 
 BOOL game_cl_TeamDeathmatch::CanCallSkinMenu			()
@@ -612,14 +591,10 @@ BOOL game_cl_TeamDeathmatch::CanCallTeamSelectMenu			()
 {
 	if (Phase()!=GAME_PHASE_INPROGRESS) return false;
 	if (!local_player) return false;
-	if ( m_game_ui && m_game_ui->ActorMenu().IsShown() )
+	if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
 	{
 		return FALSE;
-	}
-	/*if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
-	{
-		return FALSE;
-	};*/
+	};
 	if (pCurBuyMenu && pCurBuyMenu->IsShown())
 	{
 		return FALSE;

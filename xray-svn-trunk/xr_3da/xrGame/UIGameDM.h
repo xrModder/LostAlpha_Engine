@@ -13,12 +13,20 @@ class UIVoteStatusWnd;
 class CUIMapDesc;
 class UITeamPanels;
 class CUITextWnd;
+class CUIInventoryWnd;
+class CUIPdaWnd;
 
 class CUIGameDM: public UIGameMP
 {
 private:
 	game_cl_Deathmatch *	m_game;
 	typedef UIGameMP inherited;
+
+public:
+	CUIInventoryWnd*	m_pInventoryMenu;
+	CUIPdaWnd*			m_pPdaMenu;
+	CUIMapDesc*			m_pMapDesc;
+
 
 protected:
 	enum{
@@ -76,4 +84,6 @@ public:
 
 			void					ShowFragList					(bool bShow);
 			void					ShowPlayersList					(bool bShow);
+
+	virtual	void					reset_ui				();
 };

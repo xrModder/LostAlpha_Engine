@@ -52,13 +52,9 @@ void CUIGameSP::shedule_Update(u32 dt)
 
 void CUIGameSP::HideShownDialogs()
 {
-	HideActorMenu();
-	HidePdaMenu();
 	CUIDialogWnd* mir = TopInputReceiver();
-	if ( mir && mir == TalkMenu )
-	{
+ 	if(mir && (mir==InventoryMenu || mir==PdaMenu || mir==TalkMenu || mir==UICarBodyMenu))
 		mir->HideDialog();
-	}
 }
 
 void CUIGameSP::SetClGame (game_cl_GameState* g)
@@ -73,32 +69,6 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 	void hud_adjust_mode_keyb(int dik);
 	void hud_draw_adjust_mode();
 #endif
-
-void CUIGameSP::OnFrame()
-{
-	inherited::OnFrame();
-	
-	if(Device.Paused())	return;
-
-	if(m_game_objective)
-	{
-		bool b_remove = false;
-		int dik = get_action_dik(kSCORES, 0);
-		if(dik && !pInput->iGetAsyncKeyState(dik))
-			b_remove=true;
-		
-		dik = get_action_dik(kSCORES, 1);
-		if(!b_remove && dik && !pInput->iGetAsyncKeyState(dik))
-			b_remove=true;
-
-		if(b_remove)
-		{
-			RemoveCustomStatic		("main_task");
-			RemoveCustomStatic		("secondary_task");
-			m_game_objective		= NULL;
-		}
-	}
-}
 
 bool CUIGameSP::IR_UIOnKeyboardPress(int dik) 
 {
@@ -124,33 +94,43 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 
 	switch ( get_binded_action(dik) )
 	{
+	case kINVENTORY: 
+		if((!TopInputReceiver() || TopInputReceiver()==InventoryMenu) && !pActor->inventory().IsHandsOnly())
+		{
+			InventoryMenu->ShowDialog(true);
+			break;
+		}
+
 	case kACTIVE_JOBS:
+		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
 		{
-			if ( !pActor->inventory_disabled() )
-				ShowPdaMenu();
-			break;
-		}
+			PdaMenu->SetActiveSubdialog(eptQuests);
+			PdaMenu->ShowDialog(true);
+		}break;
 
-	case kINVENTORY:
+	case kMAP:
+		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
 		{
-			if ( !pActor->inventory_disabled() )
-				ShowActorMenu();
+			PdaMenu->SetActiveSubdialog(eptMap);
+			PdaMenu->ShowDialog(true);
+		}break;
 
+	case kCONTACTS:
+		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
+		{
+			PdaMenu->SetActiveSubdialog(eptContacts);
+			PdaMenu->ShowDialog(true);
 			break;
-		}
+		}break;
 
 	case kSCORES:
-		if ( !pActor->inventory_disabled() )
 		{
-			m_game_objective		= AddCustomStatic("main_task", true);
-			CGameTask* t1			= Level().GameTaskManager().ActiveTask();
-			m_game_objective->m_static->TextItemControl()->SetTextST((t1) ? t1->m_Title.c_str() : "st_no_active_task");
-
-			if ( t1 && t1->m_Description.c_str() )
-			{
-				SDrawStaticStruct* sm2		= AddCustomStatic("secondary_task", true);
-				sm2->m_static->TextItemControl()->SetTextST	(t1->m_Description.c_str());
-			}
+			SDrawStaticStruct* ss	= AddCustomStatic("main_task", true);
+			SGameTaskObjective* o	= pActor->GameTaskManager().ActiveObjective();
+			if(!o)
+				ss->m_static->TextItemControl()->SetTextST	("st_no_active_task");
+			else
+				ss->m_static->TextItemControl()->SetTextST	(*(o->description));
 		}break;
 	}
 
@@ -159,35 +139,18 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 #ifdef DEBUG
 void CUIGameSP::Render()
 {
-	inherited::Render();
+//	inherited::Render();
 	hud_draw_adjust_mode();
 	attach_draw_adjust_mode();
 }
 #endif
 
 
-void  CUIGameSP::StartTrade(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner)
+void  CUIGameSP::StartTalk()
 {
-//.	if( MainInputReceiver() )	return;
-
-	m_ActorMenu->SetActor		(pActorInv);
-	m_ActorMenu->SetPartner		(pOtherOwner);
-
-	m_ActorMenu->SetMenuMode	(mmTrade);
-	m_ActorMenu->ShowDialog		(true);
+	TalkMenu->ShowDialog		(true);
 }
-/*
-void  CUIGameSP::StartUpgrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech)
-{
-//.	if( MainInputReceiver() )	return;
 
-	m_ActorMenu->SetActor		(pActorInv);
-	m_ActorMenu->SetPartner		(pMech);
-
-	m_ActorMenu->SetMenuMode	(mmUpgrade);
-	m_ActorMenu->ShowDialog		(true);
-}
-*/
 void CUIGameSP::StartTalk(bool disable_break)
 {
 	RemoveCustomStatic		("main_task");
@@ -202,23 +165,16 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryOwner* pOther
 {
 	if( TopInputReceiver() )		return;
 
-	m_ActorMenu->SetActor		(pActorInv);
-	m_ActorMenu->SetPartner		(pOtherOwner);
-
-	m_ActorMenu->SetMenuMode	(mmDeadBodySearch);
-	m_ActorMenu->ShowDialog		(true);
+	UICarBodyMenu->InitCarBody		(pActorInv,  pOtherOwner);
+	UICarBodyMenu->ShowDialog		(true);
 }
 
 void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //Deadbody search
 {
 	if( TopInputReceiver() )		return;
 	
-	m_ActorMenu->SetActor		(pActorInv);
-	m_ActorMenu->SetInvBox		(pBox);
-	VERIFY( pBox );
-
-	m_ActorMenu->SetMenuMode	(mmDeadBodySearch);
-	m_ActorMenu->ShowDialog		(true);
+	UICarBodyMenu->InitCarBody		(pActorInv,  pBox);
+	UICarBodyMenu->ShowDialog		(true);
 }
 
 

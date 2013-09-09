@@ -50,6 +50,7 @@ public:
 	bool					CrosshairShown			();
 
 	SDrawStaticStruct*		AddInfoMessage			(LPCSTR message);
+	void					CommonMessageOut	(LPCSTR text);
 	void					OnConnected				();
 };
 

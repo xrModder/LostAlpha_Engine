@@ -2,6 +2,7 @@
 #include "UITalkWnd.h"
 
 #include "UITalkDialogWnd.h"
+#include "UITradeWnd.h"
 
 #include "../actor.h"
 #include "../trade.h"
@@ -47,6 +48,12 @@ void CUITalkWnd::InitTalkWnd()
 {
 	inherited::SetWndRect(Frect().set(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT));
 
+	/////////////////////////
+	//Меню торговли
+	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
+	AttachChild(UITradeWnd);
+	UITradeWnd->Hide();
+
 	UITalkDialogWnd			= xr_new<CUITalkDialogWnd>();
 	UITalkDialogWnd->SetAutoDelete(true);
 	AttachChild				(UITalkDialogWnd);
@@ -83,6 +90,8 @@ void CUITalkWnd::InitTalkDialog()
 
 	UITalkDialogWnd->SetOsoznanieMode		(m_pOthersInvOwner->NeedOsoznanieMode());
 	UITalkDialogWnd->Show					();
+
+	UITradeWnd->Hide							();
 	UITalkDialogWnd->UpdateButtonsLayout(b_disable_break, m_pOthersInvOwner->IsTradeEnabled());
 }
 
@@ -169,6 +178,11 @@ void CUITalkWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	else if(pWnd == UITalkDialogWnd && msg == TALK_DIALOG_QUESTION_CLICKED)
 	{
 		AskQuestion();
+	}
+	else if(pWnd == UITradeWnd && msg == TRADE_WND_CLOSED)
+	{
+		UITalkDialogWnd->Show();
+		UITradeWnd->Hide();
 	}
 	inherited::SendMessage(pWnd, msg, pData);
 }
@@ -342,17 +356,16 @@ void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
 
 void CUITalkWnd::SwitchToTrade()
 {
-	if ( m_pOurInvOwner->IsTradeEnabled() && m_pOthersInvOwner->IsTradeEnabled() )
+	if(m_pOurInvOwner->IsTradeEnabled() && m_pOthersInvOwner->IsTradeEnabled())
 	{
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>( CurrentGameUI() );
-		if ( pGameSP )
-		{
-/*			if ( pGameSP->TopInputReceiver() )
-			{
-				pGameSP->TopInputReceiver()->HideDialog();
-			}*/
-			pGameSP->StartTrade	(m_pOurInvOwner, m_pOthersInvOwner);
-		} // pGameSP
+
+		UITalkDialogWnd->Hide		();
+
+		UITradeWnd->InitTrade		(m_pOurInvOwner, m_pOthersInvOwner);
+		UITradeWnd->Show				();
+		UITradeWnd->StartTrade		();
+		UITradeWnd->BringAllToTop	();
+		StopSnd						();
 	}
 }
 

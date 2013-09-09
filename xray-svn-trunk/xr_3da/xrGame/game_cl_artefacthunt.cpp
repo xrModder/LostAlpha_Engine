@@ -51,7 +51,7 @@ game_cl_ArtefactHunt::game_cl_ArtefactHunt()
 
 void game_cl_ArtefactHunt::Init ()
 {
-//	pInventoryMenu	= xr_new<CUIInventoryWnd>();	
+//	pm_pInventoryMenu	= xr_new<CUIInventoryWnd>();	
 //	pPdaMenu = xr_new<CUIPdaWnd>();
 //	pMapDesc = xr_new<CUIMapDesc>();
 
@@ -189,7 +189,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				Color_Main,
 				Color_Artefact);
 			
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 
 			if (!Game().local_player) break;
 			if (Game().local_player->GameID == PlayerID)
@@ -216,7 +216,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				pPlayer->name, 
 				Color_Main,
 				Color_Artefact);
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 
 //			pMessageSounds[0].play_at_pos(NULL, Fvector().set(0,0,0), sm_2D, 0);
 			PlaySndMessage(ID_AF_LOST);
@@ -236,7 +236,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 				CTeamInfo::GetTeam_color_tag(int(Team)), 
 				CTeamInfo::GetTeam_name(int(Team)),
 				Color_Main);
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			
 			if (!Game().local_player) break;
 			if (Game().local_player->GameID == PlayerID)
@@ -251,7 +251,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 		{
 			xr_sprintf(Text, "%s%s", 
 				Color_Main, *st.translate("mp_art_spowned"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 
 			PlaySndMessage(ID_NEW_AF);
 		}break;
@@ -265,7 +265,7 @@ void game_cl_ArtefactHunt::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			if (pObj && xr_strlen(m_Eff_Af_Disappear))
 				PlayParticleEffect(m_Eff_Af_Disappear.c_str(), pObj->Position());
 			//-------------------------------------------
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 		}break;
 	default:
 		inherited::TranslateGameMessage(msg,P);
@@ -508,14 +508,10 @@ BOOL game_cl_ArtefactHunt::CanCallBuyMenu			()
 	{
 		return FALSE;
 	};
-	if ( m_game_ui && m_game_ui->ActorMenu().IsShown() )
+	if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
 	{
 		return FALSE;
-	}
-	/*if (m_game_ui->m_pInventoryMenu && m_game_ui->m_pInventoryMenu->IsShown())
-	{
-		return FALSE;
-	};*/
+	};
 
 	CActor* pCurActor = smart_cast<CActor*> (Level().CurrentEntity());
 	if (!pCurActor || !pCurActor->g_Alive()) return FALSE;

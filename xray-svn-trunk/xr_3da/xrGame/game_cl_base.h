@@ -47,6 +47,9 @@ public:
 
 
 	WeaponUsageStatistic				*m_WeaponUsageStatistic;
+
+	virtual		void				CommonMessageOut		(LPCSTR msg);
+
 private:
 				void				switch_Phase			(u32 new_phase)		{inherited::switch_Phase(new_phase);};
 protected:

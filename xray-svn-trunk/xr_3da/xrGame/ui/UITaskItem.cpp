@@ -105,7 +105,7 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 //	m_taskImage->ClipperOn			();
 	m_taskImage->SetStretchTexture	(true);
 
-	m_captionStatic->SetText		(*stbl.translate(m_GameTask->m_Title));
+	m_captionStatic->TextItemControl()->SetText		(*stbl.translate(m_GameTask->m_Title));
 	m_captionStatic->AdjustHeightToText	();
 	
 	xr_string	txt ="";
@@ -113,7 +113,7 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 	txt			+= " ";
 	txt			+= *(InventoryUtilities::GetTimeAsString(gt->m_ReceiveTime, InventoryUtilities::etpTimeToMinutes));
 
-	m_captionTime->SetText		(txt.c_str());
+	m_captionTime->TextItemControl()->SetText(txt.c_str());
 	m_captionTime->SetWndPos(m_captionTime->GetWndPos().x,m_captionStatic->GetWndPos().y+m_captionStatic->GetHeight()+3.0f);
 
 	float h = _max	(m_taskImage->GetWndPos().y+m_taskImage->GetHeight(),m_captionTime->GetWndPos().y+m_captionTime->GetHeight());
@@ -146,8 +146,6 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 
 void CUITaskRootItem::Update		()
 {
-	inherited::Update				();
-
 	if( m_curr_descr_mode	!= m_EventsWnd->GetDescriptionMode() ){
 		m_curr_descr_mode				= m_EventsWnd->GetDescriptionMode();
 		if(m_curr_descr_mode)
@@ -156,14 +154,14 @@ void CUITaskRootItem::Update		()
 			m_switchDescriptionBtn->InitTexture	("ui_icons_newPDA_showmap");
 	}
 
-	m_switchDescriptionBtn->SetButtonMode(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
+	m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
 
 	if(m_remTimeStatic->IsShown())
 	{
 		string512									buff, buff2;
 		InventoryUtilities::GetTimePeriodAsString	(buff, sizeof(buff), Level().GetGameTime(), GameTask()->m_TimeToComplete);
 		xr_sprintf										(buff2,"%s %s", *CStringTable().translate("ui_st_time_remains"), buff);
-		m_remTimeStatic->SetText					(buff2);
+		m_remTimeStatic->TextItemControl()->SetText					(buff2);
 	
 	}
 }
@@ -175,7 +173,7 @@ bool CUITaskRootItem::OnDbClick	()
 
 void CUITaskRootItem::OnSwitchDescriptionClicked	(CUIWindow*, void*)
 {
-	m_switchDescriptionBtn->SetButtonMode(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
+	m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
 
 	m_EventsWnd->SetDescriptionMode						(!m_EventsWnd->GetDescriptionMode());
 	OnItemClicked										(this, NULL);
@@ -231,7 +229,7 @@ void CUITaskSubItem::SetGameTask	(CGameTask* gt, u16 obj_idx)
 	CStringTable		stbl;
 	SGameTaskObjective	*obj = &m_GameTask->m_Objectives[m_TaskObjectiveIdx];
 
-	m_descriptionStatic->SetText				(*stbl.translate(obj->description));
+	m_descriptionStatic->TextItemControl()->SetText				(*stbl.translate(obj->description));
 	m_descriptionStatic->AdjustHeightToText		();
 	float h = _max(	m_ActiveObjectiveStatic->GetWndPos().y+m_ActiveObjectiveStatic->GetHeight(),
 					m_descriptionStatic->GetWndPos().y+ m_descriptionStatic->GetHeight());
@@ -241,15 +239,15 @@ void CUITaskSubItem::SetGameTask	(CGameTask* gt, u16 obj_idx)
 //.		case eTaskUserDefined:
 		case eTaskStateInProgress:
 			m_stateStatic->InitTexture				("ui_icons_PDA_subtask_active");
-			m_descriptionStatic->SetTextColor		(m_active_color);
+			m_descriptionStatic->SetTextureColor		(m_active_color);
 			break;
 		case eTaskStateFail:
 			m_stateStatic->InitTexture				("ui_icons_PDA_subtask_failed");
-			m_descriptionStatic->SetTextColor		(m_failed_color);
+			m_descriptionStatic->SetTextureColor		(m_failed_color);
 			break;
 		case eTaskStateCompleted:
 			m_stateStatic->InitTexture				("ui_icons_PDA_subtask_accomplished");
-			m_descriptionStatic->SetTextColor		(m_accomplished_color);
+			m_descriptionStatic->SetTextureColor		(m_accomplished_color);
 			break;
 		default:
 			NODEFAULT;
@@ -288,7 +286,7 @@ void CUITaskSubItem::OnShowDescriptionClicked (CUIWindow*, void*)
 
 void CUITaskSubItem::MarkSelected (bool b)
 {
-	m_showDescriptionBtn->SetButtonMode		(b ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
+	m_showDescriptionBtn->SetButtonState		(b ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
 }
 
 /*
@@ -361,10 +359,10 @@ void CUIUserTaskItem::Update					()
 	if(bHasLocation)
 	{
 		bool bPointer						= (Actor()->GameTaskManager().ActiveObjective() == obj);
-		m_showPointerBtn->SetButtonMode		(bPointer ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
+		m_showPointerBtn->SetButtonState		(bPointer ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
 //.		bool bShown							= m_GameTask->ShownLocations();
 		bool bShown							= true;
-		m_showLocationBtn->SetButtonMode	(bShown ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
+		m_showLocationBtn->SetButtonState	(bShown ? CUIButton::BUTTON_PUSHED : CUIButton::BUTTON_NORMAL);
 	}
 }
 

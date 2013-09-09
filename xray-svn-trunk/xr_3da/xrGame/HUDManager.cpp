@@ -310,7 +310,7 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUIGame->UnLoad						();
 	pUIGame->Load						();
 
-	pUIGame->OnConnected				();
+	pUI->OnConnected				();
 }
 
 bool   CHUDManager::RenderActiveItemUIQuery()

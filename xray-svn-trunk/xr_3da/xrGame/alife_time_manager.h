@@ -32,7 +32,7 @@ public:
 	IC		ALife::_TIME_ID			game_time				() const;
 	IC		float					time_factor				() const;
 	IC		float					normal_time_factor		() const;
-	IC		u32						start_game_time
+	IC		u32						start_game_time				() const;
 };
 
 #include "alife_time_manager_inline.h"

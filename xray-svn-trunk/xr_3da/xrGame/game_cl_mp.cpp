@@ -246,8 +246,7 @@ void	game_cl_mp::Vote()
 
 void	game_cl_mp::OnCantVoteMsg(LPCSTR Text)
 {
-	if(CurrentGameUI()) 
-		CurrentGameUI()->CommonMessageOut(Text);
+	CommonMessageOut(Text);
 }
 
 bool	game_cl_mp::OnKeyboardRelease		(int key)
@@ -279,13 +278,13 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 	case GAME_EVENT_VOTE_START:
 		{
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_started_msg"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			OnVoteStart(P);
 		}break;
 	case GAME_EVENT_VOTE_STOP:
 		{
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate("mp_voting_broken"));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 
 			OnVoteStop(P);
 		}break;
@@ -294,7 +293,7 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			string4096 Reason;
 			P.r_stringZ(Reason);
 			xr_sprintf(Text, "%s%s", Color_Main, *st.translate(Reason));
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 			OnVoteEnd(P);
 		}break;
 	case GAME_EVENT_PLAYER_NAME:
@@ -333,7 +332,7 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			string1024 mess;
 			P.r_stringZ(mess);
 			xr_sprintf( Text, "%s%s", Color_Red, *st.translate(mess) );
-			if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+			CommonMessageOut(Text);
 		}break;
 	case GAME_EVENT_SERVER_DIALOG_MESSAGE:
 		{
@@ -445,8 +444,8 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 	
 	LPSTR colPlayerName;
 	STRCONCAT(colPlayerName, Color_Teams[team], PlayerName, ":%c[default]");
-	if (Level().CurrentViewEntity() && CurrentGameUI())
-		CurrentGameUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
+	if (Level().CurrentViewEntity() && HUD().GetUI())
+		HUD().GetUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
 };
 
 void game_cl_mp::CommonMessageOut		(LPCSTR msg)
@@ -471,7 +470,7 @@ void game_cl_mp::shedule_Update(u32 dt)
 	{
 	case GAME_PHASE_PENDING:
 		{
-			//CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
+			//CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
 			//if (pChatWnd && pChatWnd->IsShown())
 			//	StartStopMenu(pChatWnd, false);
 
@@ -494,7 +493,7 @@ void game_cl_mp::shedule_Update(u32 dt)
 		}break;
 	default:
 		{
-			CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
+			CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
 			if (pChatWnd && pChatWnd->IsShown())
 				pChatWnd->HideDialog();
 		}break;
@@ -574,7 +573,7 @@ void game_cl_mp::OnPlayerVoted			(game_PlayerState* ps)
 	string1024 resStr;
 	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[ps->team], ps->getName(), Color_Main, *st.translate("mp_voted"),
 		ps->m_bCurrentVoteAgreed ? Color_Green : Color_Red, *st.translate(ps->m_bCurrentVoteAgreed ? "mp_voted_yes" : "mp_voted_no"));
-	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(resStr);
+	CommonMessageOut(resStr);
 }
 void game_cl_mp::LoadTeamData			(const shared_str& TeamName)
 {
@@ -617,10 +616,10 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		{
 			m_bSpectatorSelected = FALSE;
 
-			if(CurrentGameUI())
+			if(HUD().GetUI())
 			{
-				 CurrentGameUI()->ShowGameIndicators(true);
-				 CurrentGameUI()->m_pMessagesWnd->PendingMode(false);
+				 HUD().GetUI()->ShowGameIndicators();
+				 HUD().GetUI()->m_pMessagesWnd->PendingMode(false);
 			}
 		}break;
 	case GAME_PHASE_PENDING:
@@ -629,10 +628,10 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 			HideMessageMenus();
 			if (old_phase == GAME_PHASE_INPROGRESS)
 			{
-				if(CurrentGameUI())
+				if(HUD().GetUI())
 				{
-					 CurrentGameUI()->ShowGameIndicators(true);
-					 CurrentGameUI()->m_pMessagesWnd->PendingMode(true);
+					 HUD().GetUI()->ShowGameIndicators();
+					 HUD().GetUI()->m_pMessagesWnd->PendingMode(true);
 				}
 			}
 		};
@@ -648,8 +647,8 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		}break;
 	default:
 		{
-			if (g_hud && CurrentGameUI())
-				CurrentGameUI()->ShowGameIndicators(false);
+			if (g_hud && HUD().GetUI())
+				HUD().GetUI()->HideGameIndicators();
 			HideMessageMenus();
 		}break;
 	}
@@ -912,8 +911,8 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 	default:
 		break;
 	}
-	if (CurrentGameUI() && CurrentGameUI()->m_pMessagesWnd)
-		CurrentGameUI()->m_pMessagesWnd->AddLogMessage(KMS);
+	if (HUD().GetUI() && HUD().GetUI()->m_pMessagesWnd)
+		HUD().GetUI()->m_pMessagesWnd->AddLogMessage(KMS);
 };
 
 void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
@@ -928,7 +927,7 @@ void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
 
 	string1024 resStr;
 	xr_sprintf(resStr, "%s\"%s\" %s%s %s\"%s\"", Color_Teams[Team], OldName, Color_Main, *st.translate("mp_is_now"),Color_Teams[Team], NewName);
-	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(resStr);
+	CommonMessageOut(resStr);
 	Msg( NewName );
 	//-------------------------------------------
 	CObject* pObj = Level().Objects.net_Find(ObjID);
@@ -955,7 +954,7 @@ void	game_cl_mp::OnRankChanged	(u8 OldRank)
 	string1024 RankStr;
 	xr_sprintf(tmp, "rank_%d",local_player->rank);
 	xr_sprintf(RankStr, "%s : %s", *st.translate("mp_your_rank"), *st.translate(READ_IF_EXISTS(pSettings, r_string, tmp, "rank_name", "")));
-	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(RankStr);	
+	CommonMessageOut(RankStr);	
 #ifdef DEBUG
 	Msg("- %s", RankStr);
 #endif
@@ -1156,7 +1155,7 @@ void	game_cl_mp::OnGameRoundStarted				()
 	string512 Text;
 	CStringTable st;
 	xr_sprintf(Text, "%s%s",Color_Main, *st.translate("mp_match_started"));
-	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(Text);
+	CommonMessageOut(Text);
 	OnSwitchPhase_InProgress();
 	//-------------------------------
 	PlaySndMessage(ID_MATCH_STARTED);
