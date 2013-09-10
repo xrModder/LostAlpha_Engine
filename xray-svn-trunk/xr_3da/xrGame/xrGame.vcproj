@@ -27335,26 +27335,10 @@
 			<File
 				RelativePath=".\UI.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\UI.h"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ui_base.cpp"
@@ -28340,42 +28324,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="SleepWnd"
-					>
-					<File
-						RelativePath=".\ui\UISleepWnd.cpp"
-						>
-						<FileConfiguration
-							Name="Debug_Priquel|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Mixed_Priquel|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_Priquel|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ui\UISleepWnd.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="InventoryUtilities"
 					>
 					<File
@@ -28707,6 +28655,30 @@
 								Name="VCCustomBuildTool"
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ui\UILanimController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UILanimController.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIHint.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIHint.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIDialogHolder.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIDialogHolder.h"
+						>
 					</File>
 					<File
 						RelativePath=".\ui\UIStatic.cpp"
@@ -29798,101 +29770,6 @@
 							/>
 						</FileConfiguration>
 					</File>
-					<File
-						RelativePath=".\ui\UIListWnd.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ui\UIListWnd.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ui\UIListWnd_inline.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ui\UIListWnd_script.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Mixed|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug_Priquel|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Mixed_Priquel|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_Priquel|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								PrecompiledHeaderThrough="pch_script.h"
-								PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
-							/>
-						</FileConfiguration>
-					</File>
 					<Filter
 						Name="Ex"
 						>
@@ -30087,6 +29964,14 @@
 					</File>
 					<File
 						RelativePath="UIGameDM.h"
+						>
+					</File>
+					<File
+						RelativePath="UIGameMP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="UIGameMP.h"
 						>
 					</File>
 					<File

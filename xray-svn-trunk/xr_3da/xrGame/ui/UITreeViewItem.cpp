@@ -8,7 +8,6 @@
 
 #include "stdafx.h"
 #include "UITreeViewItem.h"
-//#include "UIListWnd.h"
 #include "../string_table.h"
 
 
@@ -137,7 +136,6 @@ void CUITreeViewItem::Open()
 	OnOpenClose();
 	
 	// Аттачим все подэлементы к родтельскому листбоксу
-//	CUIListWnd *pList = smart_cast<CUIListWnd*>(GetParent());
 	CUIListBox *pList = smart_cast<CUIListBox*>(GetParent());
 	
 	R_ASSERT(pList);
@@ -164,7 +162,6 @@ void CUITreeViewItem::Close()
 	OnOpenClose();
 
 	// Детачим все подэлементы
-//	CUIListWnd *pList = smart_cast<CUIListWnd*>(GetParent());
 	CUIListBox *pList = smart_cast<CUIListBox*>(GetParent());
 
 	R_ASSERT(pList);

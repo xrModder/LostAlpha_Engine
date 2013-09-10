@@ -159,7 +159,7 @@ void CUICDkey::SetCurrentOptValue()
 	CUIOptionsItem::SetCurrentOptValue();
 	string512		CDKeyStr;
 	CDKeyStr[0]		= 0;
-	GetCDKey_FromRegistry(CDKeyStr);
+	GetCDKey(CDKeyStr);
 	inherited::SetText( DelHyphens(CDKeyStr) );
 }
 
@@ -210,7 +210,7 @@ void CUIMPPlayerName::OnFocusLost()
 */
 // -------------------------------------------------------------------------------------------------
 
-void GetCDKey_FromRegistry(char* cdkey)
+void GetCDKey(char* cdkey)
 {
 	ReadRegistry_StrValue(REGISTRY_VALUE_GSCDKEY, cdkey);
 	if ( xr_strlen(cdkey) > 64 )
@@ -259,3 +259,45 @@ void WritePlayerName_ToRegistry(LPSTR name)
 	}
 	WriteRegistry_StrValue(REGISTRY_VALUE_USERNAME, name);
 }
+
+//-----------------------------------------------------------------------------------------------------
+LPCSTR AddHyphens( LPCSTR c )
+{
+	static string64 buf;
+
+	u32 sz = xr_strlen(c);
+	u32 j = 0; 
+
+	for ( u32 i = 1; i <= 3; ++i )
+	{
+		buf[i*5 - 1] = '-';
+	}
+
+	for ( u32 i = 0; i < sz; ++i )
+	{
+		j = i + iFloor(i/4.0f);
+		buf[j] = c[i];		
+	}
+	buf[sz + iFloor(sz/4.0f)] = 0;
+
+	return buf;
+}
+
+LPCSTR DelHyphens( LPCSTR c )
+{
+	static string64 buf;
+
+	u32 sz = xr_strlen( c );
+	u32 sz1 = _min( iFloor(sz/4.0f), 3 );
+
+	u32 j = 0; 
+	for ( u32 i = 0; i < sz - sz1; ++i )
+	{
+		j = i + iFloor( i/4.0f );
+		buf[i] = c[j];		
+	}
+	buf[sz - sz1] = 0;
+	
+	return buf;
+}
+

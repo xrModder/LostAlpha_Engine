@@ -8,7 +8,6 @@
 #include "../object_broker.h"
 #include "UITabControl.h"
 #include "UIScrollView.h"
-#include "UIListWnd.h"
 #include "UITreeViewItem.h"
 #include "UIEncyclopediaArticleWnd.h"
 #include "../level.h"

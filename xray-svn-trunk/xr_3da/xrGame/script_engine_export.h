@@ -79,7 +79,6 @@
 #	include "UI/UIMessageBox.h"
 #	include "UI/UIPropertiesBox.h"
 #	include "UI/UITabControl.h"
-#	include "UI/UIListWnd.h"
 #   include "UI/UIComboBox.h"
 #	include "ui/UIOptionsManagerScript.h"
 #	include "ui/UIMapInfo.h"

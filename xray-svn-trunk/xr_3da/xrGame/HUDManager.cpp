@@ -9,6 +9,8 @@
 #include "UIGameCustom.h"
 #include "UICursor.h"
 #include "UI.h"
+#include "MainMenu.h"
+
 
 extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
 
@@ -344,3 +346,12 @@ void   CHUDManager::RenderActiveItemUI()
 	g_player_hud->render_item_ui		();
 }
 */
+
+CDialogHolder* CurrentDialogHolder()
+{
+	if(MainMenu()->IsActive())
+		return MainMenu();
+	else
+		return HUD().GetGameUI();
+}
+

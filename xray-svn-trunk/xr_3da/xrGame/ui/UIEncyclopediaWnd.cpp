@@ -12,7 +12,6 @@
 #include "UIFrameWindow.h"
 #include "UIFrameLineWnd.h"
 #include "UIAnimatedStatic.h"
-#include "UIListWnd.h"
 #include "UIScrollView.h"
 #include "UITreeViewItem.h"
 #include "UIPdaAux.h"

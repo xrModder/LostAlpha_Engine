@@ -122,13 +122,13 @@ bool CUI::Render()
 
 bool	CUI::IR_OnMouseWheel			(int direction)
 {
-	if ( TopInputReceiver() ){
+	/*if ( TopInputReceiver() ){
 		if( TopInputReceiver()->IR_OnMouseWheel(direction) )
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->IR_OnMouseWheel(direction)) 
-		return true;
+	if (pUIGame&&pUIGame->OnMouseWheel(direction)) 
+		return true;*/
 
 	if( TopInputReceiver() )
 		return true;
@@ -140,7 +140,7 @@ bool	CUI::IR_OnMouseWheel			(int direction)
 bool CUI::IR_OnKeyboardHold(int dik)
 {
 	if ( TopInputReceiver() ) {
-		if( TopInputReceiver()->IR_OnKeyboardHold(dik) )
+		if( TopInputReceiver()->OnKeyboardHold(dik) )
 			return true;
 	}
 
@@ -154,15 +154,15 @@ bool CUI::IR_OnKeyboardHold(int dik)
 bool CUI::IR_OnKeyboardPress(int dik)
 {
 
-	if ( TopInputReceiver() ) {
-		if( TopInputReceiver()->IR_OnKeyboardPress(dik) )
+	/*if ( TopInputReceiver() ) {
+		if( TopInputReceiver()->OnKeyboardAction(dik) )
 			return true;
-	}
+	}*/
 
 	if(UIMainIngameWnd->OnKeyboardPress(dik))
 		return true;
 
-	if (pUIGame && pUIGame->IR_OnKeyboardPress(dik)) 
+	if (pUIGame && pUIGame->IR_UIOnKeyboardPress(dik)) 
 		return true;
 
 	if( TopInputReceiver() )
@@ -174,14 +174,14 @@ bool CUI::IR_OnKeyboardPress(int dik)
 
 bool CUI::IR_OnKeyboardRelease(int dik)
 {
-	if ( TopInputReceiver() )
+	/*if ( TopInputReceiver() )
 	{
-		if( TopInputReceiver()->IR_OnKeyboardRelease(dik) )
+		if( TopInputReceiver()->OnKeyboardRelease(dik) )
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->IR_OnKeyboardRelease(dik)) 
-		return true;
+	if (pUIGame&&pUIGame->OnKeyboardRelease(dik)) 
+		return true;*/
 
 	if( TopInputReceiver() )
 		return true;
@@ -192,14 +192,14 @@ bool CUI::IR_OnKeyboardRelease(int dik)
 
 bool CUI::IR_OnMouseMove(int dx,int dy)
 {
-	if ( TopInputReceiver() )
-	{
-		if ( TopInputReceiver()->IR_OnMouseMove(dx,dy) )
-			return true;
-	}
+	//if ( TopInputReceiver() )
+	//{
+	//	if ( TopInputReceiver()->OnMouseMove(dx,dy) )
+	//		return true;
+	//}
 	
-	if (pUIGame&&pUIGame->IR_OnMouseMove(dx,dy)) 
-		return true;
+	//if (pUIGame&&pUIGame->IR_OnMouseMove(dx,dy)) 
+	//	return true;
 
 	if( TopInputReceiver() )
 		return true;
@@ -253,7 +253,7 @@ void CUI::OnConnected()
 	{
 		UIMainIngameWnd = xr_new<CUIMainIngameWnd>();
 		UIMainIngameWnd->Init();
-		Load();
+		//Load();
 	}
 
 	UIMainIngameWnd->OnConnected();

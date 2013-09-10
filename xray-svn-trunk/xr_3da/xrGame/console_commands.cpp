@@ -79,7 +79,6 @@ extern	BOOL	g_ShowAnimationInfo		;
 extern	BOOL	g_bShowHitSectors		;
 extern	BOOL	g_bDebugDumpPhysicsStep	;
 extern	ESingleGameDifficulty g_SingleGameDifficulty;
-extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
@@ -1769,7 +1768,6 @@ void CCC_RegisterCommands()
 	CMD1(CCC_DumpObjects,							"dump_all_objects");
 	CMD3(CCC_String, "stalker_death_anim", dbg_stalker_death_anim, 32);
 	CMD4(CCC_Integer, "death_anim_velocity", &b_death_anim_velocity, FALSE,	TRUE );
-	CMD4(CCC_Integer,	"show_wnd_rect",				&g_show_wnd_rect, 0, 1);
 	CMD4(CCC_Integer,	"show_wnd_rect_all",			&g_show_wnd_rect2, 0, 1);
 	CMD1(CCC_Crash,		"crash"						);
 	CMD4(CCC_Integer,		"dbg_show_ani_info",	&g_ShowAnimationInfo,	0, 1)	;

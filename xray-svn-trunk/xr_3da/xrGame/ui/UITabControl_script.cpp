@@ -15,7 +15,7 @@ void CUITabControl::script_register(lua_State *L)
 		.def("AddItem",					(bool (CUITabControl::*)(LPCSTR, LPCSTR,Fvector2,Fvector2))	&CUITabControl::AddItem)
 		.def("RemoveAll",				&CUITabControl::RemoveAll)
 		.def("GetTabsCount",			&CUITabControl::GetTabsCount)
-		.def("SetActiveTab",			&CUITabControl::SetActiveTab_script),
+		.def("SetNewActiveTab",			&CUITabControl::SetNewActiveTab_script),
 
 		class_<CUITabButton, CUIButton>("CUITabButton")
 		.def(							constructor<>())		

@@ -28,7 +28,6 @@ using namespace InventoryUtilities;
 #include "../entitycondition.h"
 
 #include "../game_cl_base.h"
-#include "UISleepWnd.h"
 #include "../ActorCondition.h"
 #include "UIDragDropListEx.h"
 #include "UIOutfitSlot.h"
@@ -185,23 +184,7 @@ void CUIInventoryWnd::Init()
 	AttachChild							(UIExitButton);
 	xml_init.Init3tButton				(uiXml, "exit_button", 0, UIExitButton);
 
-//Load sounds
-
-
-CUISleepWnd                   UISleepWnd;
-AttachChild (&UISleepWnd);
-UISleepWnd.Init ();
-
-//	UIRestBtn				= xr_new<CUIButton>();UIRestBtn->SetAutoDelete(true);
-//	AttachChild              (UIRestBtn);
-//	xml_init.InitButton    (uiXml, "rest_button", 0, UIRestBtn);
-//UISleepBtn				= xr_new<CUIButton>();UIRestBtn->SetAutoDelete(true);
-//AttachChild              (UISleepBtn);
-//xml_init.InitButton				(uiXml, "sleep_button", 0, UISleepBtn);
-//UISleepWnd						= xr_new<CUISleepWnd>();UISleepWnd->SetAutoDelete(true);
-//AttachChild							(UISleepWnd);
-
-
+	//Load sounds
 	XML_NODE* stored_root				= uiXml.GetLocalRoot		();
 	uiXml.SetLocalRoot					(uiXml.NavigateToNode		("action_sounds",0));
 	::Sound->create						(sounds[eInvSndOpen],		uiXml.Read("snd_open",			0,	NULL),st_Effect,sg_SourceType);

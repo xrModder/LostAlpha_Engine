@@ -11,7 +11,6 @@ class CUIAnimatedStatic;
 class CUIStatic;
 class CUITabControl;
 class CUIScrollView;
-class CUIListWnd;
 class CEncyclopediaArticle;
 class CUIListBox;
 

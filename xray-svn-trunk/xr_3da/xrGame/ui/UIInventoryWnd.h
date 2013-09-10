@@ -14,14 +14,11 @@ class CInventory;
 #include "UIItemInfo.h"
 #include "../inventory_space.h"
 #include "../WeaponMagazined.h"
-#include "UISleepWnd.h"
 
 class CArtefact;
 class CUI3tButton;
 class CUIDragDropListEx;
 class CUICellItem;
-class CUISleepWnd;
-
 class CUIInventoryWnd: public CUIDialogWnd
 {
 private:
@@ -54,7 +51,6 @@ public:
 	void					DeleteFromInventory			(PIItem PIItem);
 
 protected:
-	  CUISleepWnd				UISleepWnd;
 	enum eInventorySndAction{	eInvSndOpen	=0,
 								eInvSndClose,
 								eInvItemToSlot,
@@ -82,7 +78,6 @@ protected:
 	CUIFrameWindow				UIPersonalWnd;
 
 	CUI3tButton*				UIExitButton;
-//	CUI3tButton*				UISleepWnd;
 //	CUIButton*		            UIRestBtn;
 	CUIStatic					UIStaticBottom;
 	CUIStatic					UIStaticTime;

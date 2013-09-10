@@ -27,7 +27,7 @@ void CUITabControl::SetCurrentOptValue()
 #endif // #ifndef MASTER_GOLD
 		v					= m_TabsArr[0]->m_btn_id;
 	}
-	SetActiveTab			(v);
+	SetNewActiveTab			(v);
 }
 
 void CUITabControl::SaveOptValue()
@@ -38,7 +38,7 @@ void CUITabControl::SaveOptValue()
 
 void CUITabControl::UndoOptValue()
 {
-	SetActiveTab		(m_opt_backup_value);
+	SetNewActiveTab		(m_opt_backup_value);
 	CUIOptionsItem::UndoOptValue();
 }
 
@@ -151,7 +151,7 @@ void CUITabControl::OnTabChange(const int iCur, const int iPrev)
 	GetMessageTarget()->SendMessage			(this, TAB_CHANGED, NULL);
 }
 
-void CUITabControl::SetActiveTab(const int iNewTab)
+void CUITabControl::SetNewActiveTab(const int iNewTab)
 {
 	if (m_iPushedIndex == iNewTab)
 		return;
@@ -171,7 +171,7 @@ bool CUITabControl::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		{
 			if (m_TabsArr[i]->IsAccelerator(dik) )
 			{
-				SetActiveTab(m_TabsArr[i]->m_btn_id);
+				SetNewActiveTab(m_TabsArr[i]->m_btn_id);
 				return	true;
 			}
 		}

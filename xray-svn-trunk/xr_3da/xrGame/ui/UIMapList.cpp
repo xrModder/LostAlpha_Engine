@@ -19,9 +19,6 @@ extern ENGINE_API string512		g_sLaunchOnExit_app;
 extern ENGINE_API string512		g_sLaunchOnExit_params;
 extern ENGINE_API string_path	g_sLaunchWorkingFolder;
 
-LPCSTR GameTypeToString(EGameTypes gt, bool bShort);
-
-
 CUIMapList::CUIMapList(){
 	m_pMapInfo		= NULL;
 	m_pMapPic		= NULL;
@@ -132,7 +129,8 @@ void CUIMapList::OnListItemClicked()
 	m_pMapInfo->InitMap				(M.map_name.c_str(), M.map_ver.c_str());
 }
 
-xr_token g_GameModes[];
+xr_token	game_types		[];
+xr_token	g_GameModes		[];
 
 void CUIMapList::OnModeChange()
 {
@@ -189,7 +187,7 @@ const char* CUIMapList::GetCommandLine(LPCSTR player_name){
 	m_command = "start server(";
 	m_command += M.map_name.c_str();
 	m_command += "/";
-	m_command += GameTypeToString(GetCurGameType(),true);
+	m_command += get_token_name(game_types, GetCurGameType());
 	m_command += m_srv_params;
 	m_command += "/ver=";
 	m_command += M.map_ver.c_str();

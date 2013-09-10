@@ -4,7 +4,6 @@
 #include "uistatic.h"
 #include "UIXmlInit.h"
 
-#include "UIListWnd.h"
 #include "UIProgressBar.h"
 #include "UIScrollView.h"
 

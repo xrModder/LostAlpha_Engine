@@ -39,8 +39,7 @@ public:
 			int			GetActiveIndex				()	const						{ return m_iPushedIndex; }
 			int			GetPrevActiveIndex			()	const						{ return m_iPrevPushedIndex; }
 			void		SetNewActiveTab				(const int iNewTab);	
-			void		SetActiveTab				(const int iNewTab);
-			void		SetActiveTab_script			(int iNewTab)				{SetActiveTab(iNewTab);};
+			void		SetNewActiveTab_script			(int iNewTab)				{SetNewActiveTab(iNewTab);};
 	const	u32			GetTabsCount				() const						{ return m_TabsArr.size(); }
 	
 	// –ежим клавилатурных акселераторов (вкл/выкл)
