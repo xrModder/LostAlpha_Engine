@@ -122,13 +122,15 @@ bool CUI::Render()
 
 bool	CUI::IR_OnMouseWheel			(int direction)
 {
-	/*if ( TopInputReceiver() ){
-		if( TopInputReceiver()->IR_OnMouseWheel(direction) )
+	Fvector2 pos			= GetUICursor().GetCursorPosition();
+
+	if ( TopInputReceiver() ){
+		if( TopInputReceiver()->OnMouseAction(pos.x,pos.y,(direction>0)?WINDOW_MOUSE_WHEEL_UP:WINDOW_MOUSE_WHEEL_DOWN) )
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->OnMouseWheel(direction)) 
-		return true;*/
+	if (pUIGame&&pUIGame->OnMouseAction(pos.x,pos.y,(direction>0)?WINDOW_MOUSE_WHEEL_UP:WINDOW_MOUSE_WHEEL_DOWN)) 
+		return true;
 
 	if( TopInputReceiver() )
 		return true;
@@ -140,7 +142,7 @@ bool	CUI::IR_OnMouseWheel			(int direction)
 bool CUI::IR_OnKeyboardHold(int dik)
 {
 	if ( TopInputReceiver() ) {
-		if( TopInputReceiver()->OnKeyboardHold(dik) )
+		if( TopInputReceiver()->OnKeyboardAction(dik, WINDOW_KEY_HOLD) )
 			return true;
 	}
 
@@ -154,15 +156,15 @@ bool CUI::IR_OnKeyboardHold(int dik)
 bool CUI::IR_OnKeyboardPress(int dik)
 {
 
-	/*if ( TopInputReceiver() ) {
-		if( TopInputReceiver()->OnKeyboardAction(dik) )
+	if ( TopInputReceiver() ) {
+		if( TopInputReceiver()->OnKeyboardAction(dik, WINDOW_KEY_PRESSED) )
 			return true;
-	}*/
+	}
 
 	if(UIMainIngameWnd->OnKeyboardPress(dik))
 		return true;
 
-	if (pUIGame && pUIGame->IR_UIOnKeyboardPress(dik)) 
+	if (pUIGame && pUIGame->OnKeyboardAction(dik, WINDOW_KEY_PRESSED)) 
 		return true;
 
 	if( TopInputReceiver() )
@@ -174,14 +176,14 @@ bool CUI::IR_OnKeyboardPress(int dik)
 
 bool CUI::IR_OnKeyboardRelease(int dik)
 {
-	/*if ( TopInputReceiver() )
+	if ( TopInputReceiver() )
 	{
-		if( TopInputReceiver()->OnKeyboardRelease(dik) )
+		if( TopInputReceiver()->OnKeyboardAction(dik, WINDOW_KEY_RELEASED) )
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->OnKeyboardRelease(dik)) 
-		return true;*/
+	if (pUIGame&&pUIGame->OnKeyboardAction(dik, WINDOW_KEY_RELEASED)) 
+		return true;
 
 	if( TopInputReceiver() )
 		return true;
@@ -192,14 +194,14 @@ bool CUI::IR_OnKeyboardRelease(int dik)
 
 bool CUI::IR_OnMouseMove(int dx,int dy)
 {
-	//if ( TopInputReceiver() )
-	//{
-	//	if ( TopInputReceiver()->OnMouseMove(dx,dy) )
-	//		return true;
-	//}
+	if ( TopInputReceiver() )
+	{
+		if ( TopInputReceiver()->OnMouseAction(dx,dy, WINDOW_MOUSE_MOVE) )
+			return true;
+	}
 	
-	//if (pUIGame&&pUIGame->IR_OnMouseMove(dx,dy)) 
-	//	return true;
+	if (pUIGame&&pUIGame->OnMouseAction(dx,dy, WINDOW_MOUSE_MOVE)) 
+		return true;
 
 	if( TopInputReceiver() )
 		return true;

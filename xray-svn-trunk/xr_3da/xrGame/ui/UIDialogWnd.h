@@ -19,6 +19,7 @@ public:
 
 	virtual bool OnKeyboardAction						(int dik, EUIMessages keyboard_action);
 	virtual bool OnKeyboardHold					(int dik);
+	virtual bool OnMouseAction					(float x, float y, EUIMessages mouse_action) {return false;};
 
 	CDialogHolder* GetHolder					()								{return m_pParentHolder;};
 			void SetHolder						(CDialogHolder* h)				{m_pParentHolder = h;};

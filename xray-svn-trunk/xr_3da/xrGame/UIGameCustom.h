@@ -8,6 +8,8 @@
 //#include "gametype_chooser.h"
 #include "UIDialogHolder.h"
 #include "../CustomHUD.h"
+#include "ui/UIMessages.h"
+
 // refs
 class CUI;
 class CTeamBaseZone;
@@ -106,6 +108,9 @@ public:
 	virtual void		ChangeTotalMoneyIndicator(LPCSTR newMoneyString)		{};
 	virtual void		DisplayMoneyChange		(LPCSTR deltaMoney)			{};
 	virtual void		DisplayMoneyBonus		(KillMessageStruct* bonus)	{};
+
+	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action) {return false;};
+	virtual bool		OnMouseAction					(float x, float y, EUIMessages mouse_action) {return false;};
 	
 	virtual void		UnLoad					();
 	void				Load					();

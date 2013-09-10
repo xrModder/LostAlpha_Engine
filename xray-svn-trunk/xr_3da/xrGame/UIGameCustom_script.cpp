@@ -7,7 +7,7 @@
 using namespace luabind;
 
 CUIGameCustom* get_hud(){
-	return HUD().GetUI()->UIGame();
+	return CurrentGameUI();
 }
 
 #pragma optimize("s",on)
@@ -21,7 +21,10 @@ void CUIGameCustom::script_register(lua_State *L)
 
 			class_< CUIGameCustom >("CUIGameCustom")
 			.def("AddDialogToRender",		&CUIGameCustom::AddDialogToRender)
-			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender),
+			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender)
+			.def("AddCustomStatic",			&CUIGameCustom::AddCustomStatic)
+			.def("RemoveCustomStatic",		&CUIGameCustom::RemoveCustomStatic)
+			.def("GetCustomStatic",			&CUIGameCustom::GetCustomStatic),
 			def("get_hud",					&get_hud)
 		];
 }
