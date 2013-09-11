@@ -87,6 +87,22 @@ public:
 			void			SetConstHeading			(bool b)				{m_bConstHeading = b;};
 			bool			GetConstHeading			()						{return m_bConstHeading;}
 
+
+			void			SetText					(LPCSTR txt)				{TextItemControl()->SetText(txt);}
+			void			SetTextST				(LPCSTR txt)				{TextItemControl()->SetTextST(txt);}
+			LPCSTR			GetText					()							{return TextItemControl()->GetText();}
+			void			SetFont					(CGameFont* F)				{TextItemControl()->SetFont(F);}
+			CGameFont*		GetFont					()							{return TextItemControl()->GetFont();}
+			void			SetTextColor			(u32 r, u32 g, u32 b, u32 a)					{TextItemControl()->SetTextColor(color_rgba(r,g,b,a));}
+			u32			GetTextColor			()							{return TextItemControl()->GetTextColor();}
+			void			SetTextComplexMode		(bool mode = true)			{TextItemControl()->SetTextComplexMode(mode);}
+			void			SetTextAlignment		(ETextAlignment al)			{TextItemControl()->SetTextAlignment(al);}
+			void			SetVTextAlignment		(EVTextAlignment al)		{TextItemControl()->SetVTextAlignment(al);}
+			void			SetEllipsis				(bool mode)					{TextItemControl()->SetEllipsis(mode);}
+			void			SetCutWordsMode			(bool mode)					{TextItemControl()->SetCutWordsMode(mode);}
+			void			SetTextOffset			(float x, float y)			{TextItemControl()->m_TextOffset.x = x; TextItemControl()->m_TextOffset.y = y;}
+
+
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
@@ -114,6 +130,10 @@ public:
 private:
 	CUIFrameWindow* m_mask;
 };
+add_to_type_list(CUIStatic)
+#undef script_type_list
+#define script_type_list save_type_list(CUIStatic)
+
 
 class CUITextWnd :public CUIWindow, public CUILightAnimColorConrollerImpl
 {

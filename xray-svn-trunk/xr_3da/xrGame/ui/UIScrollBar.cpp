@@ -29,7 +29,10 @@ void CUIScrollBar::InitScrollBar(Fvector2 pos, float length, bool bIsHorizontal,
 	xml_doc.Load	(CONFIG_PATH, UI_PATH, "scroll_bar.xml");
 
 	float height					= xml_doc.ReadAttribFlt(profile, 0, (bIsHorizontal)? "height" : "height_v");
-	R_ASSERT						(height>0);
+	if (bIsHorizontal)
+		R_ASSERT2						(height>0, make_string("'height'<=0 or doesn't exist for [%s] in 'scroll_bar.xml', scrollbar is horizontal", profile));
+	else
+		R_ASSERT2						(height>0, make_string("'height_v'<=0 or doesn't exist for [%s] in 'scroll_bar.xml', scrollbar is vertical", profile));
 	m_hold_delay					= xml_doc.ReadAttribFlt(profile, 0, "hold_delay", 50.0f);
 
 	inherited::SetWndPos			(pos);

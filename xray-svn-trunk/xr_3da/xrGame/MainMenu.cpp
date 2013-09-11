@@ -58,6 +58,7 @@ CMainMenu::CMainMenu	()
 	ReadTextureInfo					();
 	CUIXmlInit::InitColorDefs		();
 	g_btnHint						= NULL;
+	g_statHint						= NULL;
 	m_deactivated_frame				= 0;	
 	
 	m_sPatchURL						= "";
@@ -72,6 +73,7 @@ CMainMenu::CMainMenu	()
 	if(!g_dedicated_server)
 	{
 		g_btnHint						= xr_new<CUIButtonHint>();
+		g_statHint						= xr_new<CUIButtonHint>();
 		m_pGameSpyFull					= xr_new<CGameSpy_Full>();
 		
 		for (u32 i=0; i<u32(ErrMax); i++)
@@ -92,6 +94,7 @@ CMainMenu::~CMainMenu	()
 {
 	Device.seqFrame.Remove			(this);
 	xr_delete						(g_btnHint);
+	xr_delete						(g_statHint);
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
 	xr_delete						(m_pGameSpyFull);

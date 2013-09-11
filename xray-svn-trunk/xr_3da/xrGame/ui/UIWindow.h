@@ -143,6 +143,7 @@ public:
 	IC void					GetAbsolutePos		(Fvector2& p) 	{Frect abs; GetAbsoluteRect(abs); p.set(abs.x1,abs.y1);}
 
 
+			void			SetWndRect_script	(float x, float y, float w, float h)							{CUISimpleWindow::SetWndRect(Frect().set(x, y, w, h));}
 			void			SetWndRect_script	(Frect rect)										{CUISimpleWindow::SetWndRect(rect);}
 			void			SetWndPos_script	(Fvector2 pos)										{CUISimpleWindow::SetWndPos(pos);}
 			void			SetWndSize_script	(Fvector2 size)										{CUISimpleWindow::SetWndSize(size);}
@@ -227,5 +228,10 @@ protected:
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CUIWindow)
+#undef script_type_list
+#define script_type_list save_type_list(CUIWindow)
+
 
 bool fit_in_rect(CUIWindow* w, Frect const& vis_rect, float border = 0.0f, float dx16pos = 0.0f );

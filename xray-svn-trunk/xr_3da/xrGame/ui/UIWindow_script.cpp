@@ -71,6 +71,9 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
+		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
+		.def("Init",					(void (CUIWindow::*)(Frect))			 &CUIWindow::SetWndRect_script)
+
 		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
