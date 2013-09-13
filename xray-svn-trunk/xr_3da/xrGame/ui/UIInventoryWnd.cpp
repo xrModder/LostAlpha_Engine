@@ -49,8 +49,7 @@ CUIInventoryWnd::CUIInventoryWnd()
 	SetCurrentItem						(NULL);
 
 	g_pInvWnd							= this;	
-	m_b_need_reinit						= false;
-	Hide								();	
+	m_b_need_reinit						= false;	
 }
 
 void CUIInventoryWnd::Init()

@@ -499,7 +499,7 @@ CInifile::Sect& CInifile::r_section( LPCSTR S )const
 		//g_pStringContainer->dump(F);
 		//FS.w_close			(F);
 
-		Debug.fatal			(DEBUG_INFO,"Can't open section '%s'. Please attach [*.ini_log] file to your bug report",S);
+		Debug.fatal			(DEBUG_INFO,"Can't open section '%s'",S);
 	}
 	return	**I;
 }

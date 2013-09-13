@@ -85,10 +85,12 @@ void CUIEventsWnd::Init				()
 	m_primary_or_all_filter_btn->	SetWindowName("btn_primary_or_all");
     AddCallback						("btn_primary_or_all",BUTTON_CLICKED,boost::bind(&CUIEventsWnd::OnFilterChanged,this,_1,_2));
 */
-   m_currFilter						= eActiveTask;
-   SetDescriptionMode				(true);
+	m_currFilter						= eActiveTask;
 
-   m_ui_task_item_xml.Load			(CONFIG_PATH, UI_PATH, "job_item.xml");
+	m_UIRightWnd->AttachChild		(m_UIMapWnd);
+	m_flags.set(flMapMode, TRUE);
+
+	m_ui_task_item_xml.Load			(CONFIG_PATH, UI_PATH, "job_item.xml");
 }
 
 void CUIEventsWnd::Update			()

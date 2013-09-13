@@ -223,7 +223,13 @@ void CUIWindow::DetachChild(CUIWindow* pChild)
 
 //.	SafeRemoveChild			(pChild);
 	WINDOW_LIST_it it		= std::find(m_ChildWndList.begin(),m_ChildWndList.end(),pChild); 
-	R_ASSERT				(it!=m_ChildWndList.end());
+#if 1 //#ifndef DEBUG
+	Fvector2 p;
+	GetAbsolutePos		(p);
+	R_ASSERT2				(it!=m_ChildWndList.end(), make_string("Can't detach child with position [%3.1f][%3.1f] because it not found", p.x, p.y));
+#else
+	if (it==m_ChildWndList.end()) return;
+#endif
 	m_ChildWndList.erase	(it);
 
 	pChild->SetParent		(NULL);

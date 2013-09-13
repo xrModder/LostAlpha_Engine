@@ -15,7 +15,7 @@ void dxApplicationRender::LoadBegin()
 {
 	ll_hGeom.create		(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
 	sh_progress.create	("hud\\default","ui\\ui_load");
-	//hLevelLogo_Add.create	("hud\\default","ui\\ui_actor_widescreen_sidepanels.dds");
+	hLevelLogo_Add.create	("hud\\default","ui\\ui_load_sidepanels.dds");
 	ll_hGeom2.create		(FVF::F_TL, RCache.Vertex.Buffer(),NULL);
 }
 

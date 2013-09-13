@@ -39,7 +39,6 @@ CUICarBodyWnd::CUICarBodyWnd()
 	m_pCar				= NULL;
     m_pOthersObject		= NULL;
 	Init				();
-	Hide				();
 	m_b_need_update		= false;
 }
 

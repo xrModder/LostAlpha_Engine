@@ -823,7 +823,7 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	string256 buf;
 
 	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
-	R_ASSERT(stretch_flag==false);
+//.	R_ASSERT(stretch_flag==false);
 //.	pWnd->SetStretchTexture( stretch_flag );
 
 	Fvector2 pos, size;
@@ -839,7 +839,7 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	strconcat		(sizeof(buf),buf,path,":texture");
 	shared_str base_name = xml_doc.Read(buf, index, NULL);
 
-	VERIFY			(base_name);
+	VERIFY2			(base_name, path);
 
 	u32 color		= GetColor	(xml_doc,buf,index,0xff);
 	pWnd->SetTextureColor	(color);
