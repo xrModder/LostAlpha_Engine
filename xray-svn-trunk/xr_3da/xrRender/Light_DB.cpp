@@ -145,7 +145,9 @@ void	CLight_DB::LoadHemi	()
 						L->set_attenuation_params(Ldata.attenuation0, Ldata.attenuation1, Ldata.attenuation2, 
 							1.0f/(Ldata.range * (Ldata.attenuation0 + Ldata.attenuation1 * Ldata.range + Ldata.attenuation2 * Ldata.range2)));
 #else
-						L->set_attenuation_params(Ldata.attenuation0, Ldata.attenuation1, Ldata.attenuation2, Ldata.falloff);	
+//						L->set_attenuation_params(Ldata.attenuation0, Ldata.attenuation1, Ldata.attenuation2, Ldata.falloff);	
+						L->set_attenuation_params(Ldata.attenuation0, Ldata.attenuation1, Ldata.attenuation2, 
+							1.0f/(Ldata.range * (Ldata.attenuation0 + Ldata.attenuation1 * Ldata.range + Ldata.attenuation2 * Ldata.range2)));
 #endif
 						L->spatial.type = STYPE_LIGHTSOURCEHEMI;
 						//				R_ASSERT			(L->spatial.sector	);

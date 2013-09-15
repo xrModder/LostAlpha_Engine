@@ -21,7 +21,7 @@ template <typename TList> struct Register
 	{
 		Register<TList::Tail>::_Register(L);
 #ifdef XRGAME_EXPORTS
-#	ifdef _DEBUG
+#	ifdef DEBUG
 		Msg("Exporting %s",typeid(TList::Head).name());
 #	endif
 #endif

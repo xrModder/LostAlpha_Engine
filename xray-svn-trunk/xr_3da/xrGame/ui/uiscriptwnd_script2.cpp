@@ -20,6 +20,7 @@
 using namespace luabind;
 
 #pragma optimize("s",on)
+/*
 export_class &script_register_ui_window2(export_class &instance)
 {
 	instance
@@ -31,10 +32,11 @@ export_class &script_register_ui_window2(export_class &instance)
 		.def("GetProgressBar",	(CUIProgressBar* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIProgressBar>)
 		.def("GetTabControl",	(CUITabControl* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUITabControl>)
 		.def("GetListWnd",		(CUIListWnd* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIListBox>)*/
-
+/*
 		.def("OnKeyboard",		&BaseType::OnKeyboardAction, &WrapType::OnKeyboard_static)
 		.def("Update",			&BaseType::Update, &WrapType::Update_static)
 		.def("Dispatch",		&BaseType::Dispatch, &WrapType::Dispatch_static)
 
 	;return	(instance);
 }
+*/

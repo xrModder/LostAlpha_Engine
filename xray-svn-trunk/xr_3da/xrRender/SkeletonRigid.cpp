@@ -131,7 +131,8 @@ void CKinematics::CLBone( const CBoneData* bd, CBoneInstance &bi, const Fmatrix 
 		if ( bi.callback_overwrite() ){
 			if ( bi.callback() )	bi.callback()( &bi );
 		} else {
-			bi.mTransform.c = (*parent).c;
+	//		bi.mTransform.c = (*parent).c;
+			bi.mTransform.mul_43	(*parent,bd->bind_transform);
 			if (bi.callback())
 			{
 				bi.callback()(&bi);

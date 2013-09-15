@@ -93,6 +93,8 @@ private:
 	_face*					load_create_face	(Fvector& P1, Fvector& P2, Fvector& P3, b_face& F);
 	_vertex*				load_create_vertex	(Fvector& P);
 public:
+							xrMU_Model			()													{ }
+	virtual					~xrMU_Model			()													{ }
 	void					Load				(IReader& fs);
 	void					calc_normals		();
 	void					calc_materials		();
@@ -102,6 +104,7 @@ public:
 	void					calc_ogf			();
 	void					export_geometry		();
 	void					export_cform_rcast	(CDB::CollectorPacked& CL, Fmatrix& xform);
+
 };
 
 class xrMU_Reference
@@ -125,5 +128,5 @@ public:
 	void					export_ogf			();
 };
 
-extern	poolSS<xrMU_Model::_vertex,8*1024>	mu_vertices;
-extern	poolSS<xrMU_Model::_face,8*1024>	mu_faces;
+extern	poolSS<xrMU_Model::_vertex,16*1024>	mu_vertices;
+extern	poolSS<xrMU_Model::_face,16*1024>	mu_faces;

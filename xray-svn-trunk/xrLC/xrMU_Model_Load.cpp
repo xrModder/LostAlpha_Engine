@@ -16,6 +16,7 @@ void xrMU_Reference::Load(IReader& F)
 	c_bias.rgb.set		(0,0,0);
 	c_bias.hemi			= 0;
 	c_bias.sun			= 0;
+
 }
 
 void xrMU_Model::Load	(IReader& F)

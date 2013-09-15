@@ -130,10 +130,6 @@ public:
 private:
 	CUIFrameWindow* m_mask;
 };
-add_to_type_list(CUIStatic)
-#undef script_type_list
-#define script_type_list save_type_list(CUIStatic)
-
 
 class CUITextWnd :public CUIWindow, public CUILightAnimColorConrollerImpl
 {

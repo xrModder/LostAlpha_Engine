@@ -17,14 +17,15 @@
 #include "uiscriptwnd_script.h"
 
 using namespace luabind;
-
+/*
 extern export_class &script_register_ui_window1(export_class &);
 extern export_class &script_register_ui_window2(export_class &);
-
+*/
 #pragma optimize("s",on)
 void CUIDialogWndEx::script_register(lua_State *L)
 {
-	export_class				instance("CUIScriptWnd");
+/*
+	export_class				instance("CUIScriptWnd"); 
 
 	module(L)
 	[
@@ -35,8 +36,21 @@ void CUIDialogWndEx::script_register(lua_State *L)
 		)
 		.def("Load",			&BaseType::Load)
 	];
-}
+*/
 
+	module(L)
+	[
+		export_class("CUIScriptWnd")
+			.def(					constructor<>())
+			.def("OnKeyboard",		&BaseType::OnKeyboardAction, &WrapType::OnKeyboard_static)
+			.def("Update",			&BaseType::Update, &WrapType::Update_static)
+			.def("Dispatch",		&BaseType::Dispatch, &WrapType::Dispatch_static)
+			.def("AddCallback",		(void(BaseType::*)(LPCSTR, s16, const luabind::functor<void>&, const luabind::object&))&BaseType::AddCallback)
+			.def("Register",		(void (BaseType::*)(CUIWindow*,LPCSTR))&BaseType::Register)
+			.def("Load",			&BaseType::Load)
+	];
+}
+/*
 export_class &script_register_ui_window1(export_class &instance)
 {
 	instance
@@ -48,3 +62,4 @@ export_class &script_register_ui_window1(export_class &instance)
 
 	;return	(instance);
 }
+*/

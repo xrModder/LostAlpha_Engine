@@ -43,7 +43,7 @@ void CBlender_Compile::r_CullMode(D3DCULL Mode)
 void CBlender_Compile::r_dx10Texture(LPCSTR ResourceName,	LPCSTR texture)
 {
 	VERIFY(ResourceName);
-	if (!texture) return;
+	if (!(texture && texture[0])) return;
 	//
 	string256				TexName;
 	xr_strcpy				(TexName,texture);
