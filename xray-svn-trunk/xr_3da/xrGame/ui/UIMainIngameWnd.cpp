@@ -162,7 +162,7 @@ void CUIMainIngameWnd::Init()
 
 	//индикаторы 
 	UIZoneMap->Init				();
-//	UIZoneMap->SetScale			(DEFAULT_MAP_SCALE);
+	UIZoneMap->SetScale			(DEFAULT_MAP_SCALE);
 
 	if(IsGameTypeSingle())
 	{
@@ -557,11 +557,10 @@ void CUIMainIngameWnd::Update()
 		UIStaticTurret.Show(false);
 		UITurretBar.Show(false);
 	}
-	UIZoneMap->Update				();
-//	UIZoneMap->UpdateRadar			(Device.vCameraPosition);
-//	float h,p;
-//	Device.vCameraDirection.getHP	(h,p);
-//	UIZoneMap->SetHeading			(-h);
+	UIZoneMap->UpdateRadar			(Device.vCameraPosition);
+	float h,p;
+	Device.vCameraDirection.getHP	(h,p);
+	UIZoneMap->SetHeading			(-h);
 	UIActorStateIcons.SetIcons		(m_pActor->GetActorState());
 
 	UpdatePickUpItem				();

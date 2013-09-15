@@ -40,7 +40,6 @@ protected:
 	Fvector2				m_upgrade_pos;
 
 	virtual void			UpdateItemText			();
-			void			init					();
 public:
 							CUICellItem				();
 	virtual					~CUICellItem			();

@@ -96,14 +96,14 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	//progress bar
 	
 	back_tex_size.set			(506,4);
-	back_size.set				(506,4);
+	back_size.set				(268,37);
 	if(b_ws)
 		back_size.x				*= ws_k; //ws
 
-	back_tex_coords.lt.set		(0,772);
+	back_tex_coords.lt.set		(0,768);
 	back_tex_coords.rb.add		(back_tex_coords.lt, back_tex_size);
 
-	back_coords.lt.set			(260,599);
+	back_coords.lt.set			(379,726);
 	if(b_ws)
 		back_coords.lt.x		*= ws_k;
 	back_coords.lt.add			(back_offset);
@@ -202,9 +202,10 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	// Draw title
 	VERIFY							(owner.pFontSystem);
 	owner.pFontSystem->Clear		();
-	owner.pFontSystem->SetColor		(color_rgba(103,103,103,255));
+	owner.pFontSystem->SetColor		(color_rgba(157,140,120,255));
 	owner.pFontSystem->SetAligment	(CGameFont::alCenter);
-	back_size.set					(_w/2,622.0f*k.y);
+	back_size.set					(_w/2,670.0f);
+
 	owner.pFontSystem->OutSet		(back_size.x, back_size.y);
 	owner.pFontSystem->OutNext		(owner.ls_header);
 	owner.pFontSystem->OutNext		("");
@@ -219,7 +220,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	if(hLevelLogo)
 	{
 		Frect						r;
-		r.lt.set					(0,173);
+		r.lt.set					(257,369);
 
 		if(b_ws)
 			r.lt.x					*= ws_k;
@@ -227,7 +228,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 
 		r.lt.x						+= offs;
 		r.lt.y						+= offs;
-		back_size.set				(1024,399);
+		back_size.set				(512,256);
 
 		if(b_ws)
 			back_size.x				*= ws_k; //ws 0.625

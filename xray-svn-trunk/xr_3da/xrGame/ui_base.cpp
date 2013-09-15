@@ -284,7 +284,10 @@ shared_str	ui_core::get_xml_name(LPCSTR fn)
 		}else
 			xr_sprintf				(str, "%s_16", fn);
 
-		if(NULL==FS.exist(str_, "$game_config$", "ui\\" , str) )
+		string_path	str_bak;
+		xr_sprintf	(str_bak, "ui\\%s", str);
+
+		if(!FS.exist(str_, "$game_config$", str_bak) )
 		{
 			xr_sprintf(str, "%s", fn);
 			if ( NULL==strext(fn) ) xr_strcat(str, ".xml");

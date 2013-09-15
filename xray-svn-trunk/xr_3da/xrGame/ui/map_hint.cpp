@@ -11,7 +11,7 @@ void CUIMapHint::Init		()
 {
 	CUIXmlInit		xml_init;
 	CUIXml			uiXml;
-	uiXml.Load		(CONFIG_PATH, UI_PATH, "hint_item.xml");
+	uiXml.Load		(CONFIG_PATH, UI_PATH, "hint_item_map.xml");
 
 	xml_init.InitWindow(uiXml,"hint_item",0,this);
 	
