@@ -171,8 +171,11 @@ void  CDialogHolder::OnExternalHideIndicators()
 
 CUIDialogWnd* CDialogHolder::TopInputReceiver()
 { 
+#pragma todo("sky to gri: ctd is here")
+#if 0
 	if ( !m_input_receivers.empty() ) 
 		return m_input_receivers.back().m_item; 
+#endif
 	return NULL; 
 };
 

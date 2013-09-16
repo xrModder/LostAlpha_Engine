@@ -93,7 +93,7 @@ extern bool g_block_pause;
 
 void CLevel::IR_OnKeyboardPress	(int key)
 {
-	bool b_ui_exist = (!!CurrentGameUI());
+	bool b_ui_exist = (!!HUD().GetUI());
 
 //.	if (DIK_F10 == key)		vtune.enable();
 //.	if (DIK_F11 == key)		vtune.disable();
@@ -395,7 +395,7 @@ case DIK_MULTIPLY:
 
 void CLevel::IR_OnKeyboardRelease(int key)
 {
-	bool b_ui_exist = (!!CurrentGameUI());
+	bool b_ui_exist = (!!HUD().GetUI());
 
 	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
 	if ( b_ui_exist && HUD().GetUI() && HUD().GetUI()->IR_OnKeyboardRelease(key)) return;
@@ -413,7 +413,7 @@ void CLevel::IR_OnKeyboardHold(int key)
 {
 	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
 
-	bool b_ui_exist = (!!CurrentGameUI());
+	bool b_ui_exist = (!!HUD().GetUI());
 
 	if (HUD().GetUI() && HUD().GetUI()->IR_OnKeyboardHold(key)) return;
 	if ( b_ui_exist && CurrentGameUI()->TopInputReceiver() )return;

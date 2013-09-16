@@ -1386,6 +1386,7 @@ HRESULT	CRender::shader_compile			(
 
 		if (SUCCEEDED(_result))
 		{
+/*
 			IWriter* file = FS.w_open(file_name);
 
 			boost::crc_32_type		processor;
@@ -1395,6 +1396,7 @@ HRESULT	CRender::shader_compile			(
 			file->w_u32				(crc);
 			file->w					(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
 			FS.w_close				(file);
+*/
 			
 			_result					= create_shader(pTarget, (DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), file_name, result, o.disasm);
 		}
