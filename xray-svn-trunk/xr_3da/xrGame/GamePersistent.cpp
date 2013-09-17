@@ -92,6 +92,8 @@ CGamePersistent::CGamePersistent(void)
 
 	eQuickLoad					= Engine.Event.Handler_Attach("Game:QuickLoad",this);
 
+	Fvector3* DofValue		= Console->GetFVectorPtr("r2_dof");
+	SetBaseDof				(*DofValue);
 }
 
 CGamePersistent::~CGamePersistent(void)
@@ -347,13 +349,9 @@ void CGamePersistent::game_loaded()
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == GAME_SINGLE)
 		{
-//	TODO: Clear Title
-			//pApp->ClearTitle();
+			pApp->ClearTitle();
 
 			if (NULL!=m_intro)	return;
-
-			HUD().GetUI()->HideGameIndicators();
-			HUD().GetUI()->HideCrosshair();
 
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
@@ -377,9 +375,6 @@ void CGamePersistent::start_game_intro		()
 {
 	if (g_pGameLevel && g_pGameLevel->bReady && Device.dwPrecacheFrame<=2){
 		m_intro_event.bind		(this,&CGamePersistent::update_game_intro);
-
-		HUD().GetUI()->ShowGameIndicators();
-		HUD().GetUI()->ShowCrosshair();
 
 		LPCSTR spawn_name = ai().alife().spawns().GetSpawnName();
 		bool load_spawn = (0==stricmp(m_game_params.m_new_or_load,"load") && 0==xr_strcmp(m_game_params.m_game_or_spawn, spawn_name));	//skyloader: flag if load save and (save == spawn_name), for example, all.sav
@@ -533,6 +528,11 @@ void CGamePersistent::OnFrame	()
 
 #include "game_sv_single.h"
 #include "xrServer.h"
+#include "UIGameCustom.h"
+#include "hudmanager.h"
+#include "UI.h"
+#include "ui/UIMainIngameWnd.h"
+#include "ui/UIPdaWnd.h"
 
 void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 {
@@ -540,6 +540,20 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 	{
 		if (Device.Paused())
 			Device.Pause		(FALSE, TRUE, TRUE, "eQuickLoad");
+
+		if(HUD().GetUI())
+		{
+			if (HUD().GetUI()->UIGame())
+				HUD().GetUI()->UIGame()->HideShownDialogs();
+			HUD().GetUI()->UIMainIngameWnd->reset_ui();
+		}
+
+		if(g_tutorial)
+			g_tutorial->Stop();
+
+		if(g_tutorial2)
+			g_tutorial2->Stop();
+
 		
 		LPSTR		saved_name	= (LPSTR)(P1);
 

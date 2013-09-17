@@ -28115,14 +28115,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ui\UIDialogHolder.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ui\UIDialogHolder.h"
-						>
-					</File>
-					<File
 						RelativePath=".\ui\UIStatic.cpp"
 						>
 					</File>

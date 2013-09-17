@@ -204,7 +204,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	owner.pFontSystem->Clear		();
 	owner.pFontSystem->SetColor		(color_rgba(157,140,120,255));
 	owner.pFontSystem->SetAligment	(CGameFont::alCenter);
-	back_size.set					(_w/2,670.0f);
+	back_size.set					(_w/2,670.0f*k.y);
 
 	owner.pFontSystem->OutSet		(back_size.x, back_size.y);
 	owner.pFontSystem->OutNext		(owner.ls_header);

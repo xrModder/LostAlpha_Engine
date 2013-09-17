@@ -129,7 +129,7 @@ bool	CUI::IR_OnMouseWheel			(int direction)
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->OnMouseAction(pos.x,pos.y,(direction>0)?WINDOW_MOUSE_WHEEL_UP:WINDOW_MOUSE_WHEEL_DOWN)) 
+	if (pUIGame&&pUIGame->IR_UIOnMouseWheel(direction)) 
 		return true;
 
 	if( TopInputReceiver() )
@@ -164,7 +164,7 @@ bool CUI::IR_OnKeyboardPress(int dik)
 	if(UIMainIngameWnd->OnKeyboardPress(dik))
 		return true;
 
-	if (pUIGame && pUIGame->OnKeyboardAction(dik, WINDOW_KEY_PRESSED)) 
+	if (pUIGame && pUIGame->IR_UIOnKeyboardPress(dik)) 
 		return true;
 
 	if( TopInputReceiver() )
@@ -182,7 +182,7 @@ bool CUI::IR_OnKeyboardRelease(int dik)
 			return true;
 	}
 
-	if (pUIGame&&pUIGame->OnKeyboardAction(dik, WINDOW_KEY_RELEASED)) 
+	if (pUIGame&&pUIGame->IR_UIOnKeyboardRelease(dik)) 
 		return true;
 
 	if( TopInputReceiver() )
@@ -200,7 +200,7 @@ bool CUI::IR_OnMouseMove(int dx,int dy)
 			return true;
 	}
 	
-	if (pUIGame&&pUIGame->OnMouseAction(dx,dy, WINDOW_MOUSE_MOVE)) 
+	if (pUIGame&&pUIGame->IR_UIOnMouseMove(dx,dy)) 
 		return true;
 
 	if( TopInputReceiver() )

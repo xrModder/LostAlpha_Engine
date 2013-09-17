@@ -1226,6 +1226,11 @@ void CApplication::LoadTitleInt(LPCSTR str1/*, LPCSTR str2, LPCSTR str3*/)
 //	LoadDraw					();
 }
 
+void CApplication::ClearTitle()
+{
+	ls_header[ 0 ] = '\0';
+}
+
 void CApplication::LoadStage()
 {
 	load_stage++;
