@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 #include "gamefont.h"
-#include "dxerr8.h"
+#include "dxerr.h"
 #include "ImageManager.h"
 #include "ui_main.h"
 #include "render.h"
@@ -348,7 +348,6 @@ void CRenderDevice::UpdateView()
 	vCameraPosition_saved	= vCameraPosition;
 	mFullTransform_saved	= mFullTransform;
 	mView_saved				= mView;
-	mProject_saved			= mProject;
 
 // frustum culling sets
     ::Render->ViewBase.CreateFromMatrix(mFullTransform,FRUSTUM_P_ALL);
