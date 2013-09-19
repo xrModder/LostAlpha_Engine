@@ -124,7 +124,7 @@
     <LIBRARIES value="editorB.lib editor.lib bcbsmp.lib"/>
     <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib elpproB6.lib 
       editorB.lib"/>
-    <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi elpackB6.bpi elpkdbB6.bpi elpproB6.bpi"/>
+    <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi elpackB6.bpi elpkdbB6.bpi elpproB6.bpi dceldbB6.bpi"/>
     <PATHCPP value=".;Edit;..\..\xr_3da;..\..\xr_3da\xrRender"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -313,7 +313,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=2
-Build=146
+Build=147
 Debug=1
 PreRelease=0
 Special=0
@@ -325,7 +325,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.2.146
+FileVersion=1.0.2.147
 InternalName=
 LegalCopyright=
 LegalTrademarks=

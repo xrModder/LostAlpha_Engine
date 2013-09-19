@@ -21,9 +21,9 @@
     <RESDEPEN value="$(RESFILES) BonePart.dfm ClipEditor.dfm KeyBar.dfm LeftBar.dfm Splash.dfm 
       main.dfm TopBar.dfm BottomBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editorB.lib editor.lib elpackB6.lib"/>
+    <LIBRARIES value="editorB.lib editor.lib"/>
     <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editor.lib editorB.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi dceldbB6.bpi elpackB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -91,7 +91,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=2
-Build=162
+Build=163
 Debug=1
 PreRelease=0
 Special=0
@@ -103,7 +103,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.2.162
+FileVersion=1.0.2.163
 InternalName=
 LegalCopyright=
 LegalTrademarks=

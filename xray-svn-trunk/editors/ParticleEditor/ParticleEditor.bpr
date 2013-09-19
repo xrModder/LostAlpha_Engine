@@ -23,9 +23,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Splash.dfm main.dfm BottomBar.dfm TopBar.dfm LeftBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editorB.lib elpackB6.lib editor.lib"/>
+    <LIBRARIES value="editorB.lib editor.lib"/>
     <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi dceldbB6.bpi elpackB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;..\..\xr_3da;..\ECore\Editor"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
