@@ -251,7 +251,7 @@ public:
 __published:
 	__property int Margin = {read=FMargin, write=SetMargin, default=4};
 	__property int Spacing = {read=FSpacing, write=SetSpacing, default=8};
-	__property int GroupWidth = {read=FGroupWidth, write=SetGroupWidth, default=88};
+	__property int GroupWidth = {read=FGroupWidth, write=SetGroupWidth, default=0};
 	__property Elini::TElIniFile* Storage = {read=FStorage, write=FStorage};
 	__property AnsiString StoragePath = {read=FStoragePath, write=FStoragePath};
 public:

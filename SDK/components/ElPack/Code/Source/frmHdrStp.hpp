@@ -10,6 +10,9 @@
 #pragma delphiheader begin
 #pragma option push -w-
 #pragma option push -Vx
+#include <ElListBox.hpp>	// Pascal unit
+#include <ElLabel.hpp>	// Pascal unit
+#include <ElCLabel.hpp>	// Pascal unit
 #include <ElXPThemedControl.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
 #include <ElPopBtn.hpp>	// Pascal unit
@@ -41,10 +44,10 @@ class PASCALIMPLEMENTATION TfrmHeaderSetup : public Forms::TForm
 	
 __published:
 	Extctrls::TPanel* pnlSections;
-	Elactrls::TElAdvancedListBox* lbxAvailable;
-	Elactrls::TElAdvancedListBox* lbxVisible;
-	Stdctrls::TLabel* lblAvailable;
-	Stdctrls::TLabel* lblVisible;
+	Ellistbox::TElListBox* lbxAvailable;
+	Ellistbox::TElListBox* lbxVisible;
+	Ellabel::TElLabel* lblAvailable;
+	Ellabel::TElLabel* lblVisible;
 	Elpopbtn::TElPopupButton* btnAdd;
 	Elpopbtn::TElPopupButton* btnDelete;
 	Elpopbtn::TElPopupButton* btnUp;

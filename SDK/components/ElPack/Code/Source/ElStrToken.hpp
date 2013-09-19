@@ -67,9 +67,10 @@ class PASCALIMPLEMENTATION TElStringTokenizer : public System::TObject
 private:
 	int FPos;
 	AnsiString FSourceString;
-	bool FReturnTokens;
+	bool FReturnDelims;
 	AnsiString FDelimiters;
 	bool FLastWasToken;
+	bool FSkipEmptyTokens;
 	void __fastcall SetSourceString(AnsiString newValue);
 	bool __fastcall IntHasMoreTokens(void);
 	bool __fastcall IntNextToken(AnsiString &AResult);
@@ -78,7 +79,7 @@ public:
 	__fastcall TElStringTokenizer(void);
 	__fastcall TElStringTokenizer(AnsiString str);
 	__fastcall TElStringTokenizer(AnsiString str, AnsiString Delim);
-	__fastcall TElStringTokenizer(AnsiString str, AnsiString Delim, bool ReturnTokens);
+	__fastcall TElStringTokenizer(AnsiString str, AnsiString Delim, bool ReturnDelims);
 	bool __fastcall HasMoreTokens(void);
 	AnsiString __fastcall NextToken();
 	int __fastcall CountTokens(void);
@@ -87,8 +88,9 @@ public:
 	
 __published:
 	__property AnsiString SourceString = {read=FSourceString, write=SetSourceString};
-	__property bool ReturnTokens = {read=FReturnTokens, write=FReturnTokens, nodefault};
+	__property bool ReturnDelims = {read=FReturnDelims, write=FReturnDelims, nodefault};
 	__property AnsiString Delimiters = {read=FDelimiters, write=FDelimiters};
+	__property bool SkipEmptyTokens = {read=FSkipEmptyTokens, write=FSkipEmptyTokens, nodefault};
 public:
 	#pragma option push -w-inl
 	/* TObject.Destroy */ inline __fastcall virtual ~TElStringTokenizer(void) { }

@@ -147,9 +147,9 @@ __published:
 	__property Index ;
 	__property int Tag = {read=FTag, write=FTag, nodefault};
 	__property WideString Hint = {read=FHint, write=FHint};
-	__property bool Visible = {read=FVisible, write=SetVisible, nodefault};
-	__property bool Enabled = {read=FEnabled, write=SetEnabled, nodefault};
-	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, nodefault};
+	__property bool Visible = {read=FVisible, write=SetVisible, default=1};
+	__property bool Enabled = {read=FEnabled, write=SetEnabled, default=1};
+	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, default=-1};
 	__property WideString Caption = {read=FCaption, write=SetCaption};
 public:
 	#pragma option push -w-inl
@@ -382,20 +382,20 @@ public:
 	void __fastcall GetHitTest(int X, int Y, TElSideBarPart &BarPart, TElSideBarSection* &Section, TElSideBarItem* &Item);
 	
 __published:
-	__property bool AutoSelectItem = {read=FAutoSelectItem, write=FAutoSelectItem, nodefault};
+	__property bool AutoSelectItem = {read=FAutoSelectItem, write=FAutoSelectItem, default=1};
 	__property TElSideBarSections* Sections = {read=FSections, write=SetSections};
 	__property int SectionIndex = {read=GetSectionIndex, write=SetSectionIndex, nodefault};
 	__property int ItemIndex = {read=GetItemIndex, write=SetItemIndex, nodefault};
-	__property Graphics::TColor SectionsColor = {read=FSectionsColor, write=SetSectionsColor, nodefault};
+	__property Graphics::TColor SectionsColor = {read=FSectionsColor, write=SetSectionsColor, default=-2147483633};
 	__property bool WordWrap = {read=FWordWrap, write=SetWordWrap, nodefault};
-	__property int Spacing = {read=FSpacing, write=SetSpacing, nodefault};
-	__property int TopSpacing = {read=FTopSpacing, write=SetTopSpacing, nodefault};
-	__property int ScrollDelay = {read=FScrollDelay, write=SetScrollDelay, nodefault};
+	__property int Spacing = {read=FSpacing, write=SetSpacing, default=4};
+	__property int TopSpacing = {read=FTopSpacing, write=SetTopSpacing, default=8};
+	__property int ScrollDelay = {read=FScrollDelay, write=SetScrollDelay, default=100};
 	__property AnsiString ItemChangeSound = {read=FItemChangeSound, write=FItemChangeSound};
 	__property AnsiString SectionChangeSound = {read=FSectionChangeSound, write=FSectionChangeSound};
-	__property bool SectionTracking = {read=FSectionTracking, write=SetSectionTracking, nodefault};
-	__property bool ItemTracking = {read=FItemTracking, write=SetItemTracking, nodefault};
-	__property bool UnderlineTracked = {read=FUnderlineTracked, write=SetUnderlineTracked, nodefault};
+	__property bool SectionTracking = {read=FSectionTracking, write=SetSectionTracking, default=1};
+	__property bool ItemTracking = {read=FItemTracking, write=SetItemTracking, default=1};
+	__property bool UnderlineTracked = {read=FUnderlineTracked, write=SetUnderlineTracked, default=1};
 	__property Elsndmap::TElSoundMap* SoundMap = {read=FSoundMap, write=SetSoundMap};
 	__property int ChangeDelay = {read=FChangeDelay, write=FChangeDelay, default=500};
 	__property Controls::TImageList* SectionImages = {read=FSectionImages, write=SetSectionImages};
@@ -404,10 +404,10 @@ __published:
 	__property Controls::TImageList* ItemDisabledImages = {read=FItemDisabledImages, write=SetItemDisabledImages};
 	__property Controls::TImageList* ItemImages = {read=FItemImages, write=SetItemImages};
 	__property Controls::TImageList* ItemHotImages = {read=FItemHotImages, write=SetItemHotImages};
-	__property bool FlatSections = {read=FFlatSections, write=SetFlatSections, nodefault};
-	__property bool FlatItems = {read=FFlatItems, write=SetFlatItems, nodefault};
+	__property bool FlatSections = {read=FFlatSections, write=SetFlatSections, default=1};
+	__property bool FlatItems = {read=FFlatItems, write=SetFlatItems, default=1};
 	__property bool FlatActiveItem = {read=FFlatActiveItem, write=SetFlatActiveItem, nodefault};
-	__property int ItemSize = {read=FItemSize, write=SetItemSize, nodefault};
+	__property int ItemSize = {read=FItemSize, write=SetItemSize, default=36};
 	__property bool RightAlignedBar = {read=FRightAlignedBar, write=SetRightAlignedBar, nodefault};
 	__property int SectionHeight = {read=FSectionHeight, write=SetSectionHeight, nodefault};
 	__property Menus::TPopupMenu* ItemsPopupMenu = {read=FItemsPopup, write=SetItemsPopupMenu};
@@ -415,16 +415,16 @@ __published:
 	__property int TopIndex = {read=GetTopIndex, write=SetTopIndex, nodefault};
 	__property Graphics::TFontStyles ActiveSectionStyle = {read=FActiveSectionStyle, write=SetActiveSectionStyle, nodefault};
 	__property Graphics::TFontStyles ActiveItemStyle = {read=FActiveItemStyle, write=SetActiveItemStyle, nodefault};
-	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, nodefault};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, nodefault};
-	__property bool Flat = {read=FFlat, write=SetFlat, nodefault};
+	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
+	__property bool Flat = {read=FFlat, write=SetFlat, default=0};
 	__property Graphics::TFont* ItemsFont = {read=FItemsFont, write=SetItemsFont};
 	__property Graphics::TFont* SectionsFont = {read=GetSectionsFont, write=SetSectionsFont};
-	__property bool VisibleSections = {read=FVisibleSections, write=SetVisibleSections, nodefault};
-	__property Graphics::TColor TrackSectionFontColor = {read=FTrackSectionFontColor, write=SetTrackSectionFontColor, nodefault};
-	__property Graphics::TColor TrackSectionBkColor = {read=FTrackSectionBkColor, write=SetTrackSectionBkColor, nodefault};
-	__property Graphics::TColor TrackItemFontColor = {read=FTrackItemFontColor, write=SetTrackItemFontColor, nodefault};
-	__property Graphics::TColor TrackItemBkColor = {read=FTrackItemBkColor, write=SetTrackItemBkColor, nodefault};
+	__property bool VisibleSections = {read=FVisibleSections, write=SetVisibleSections, default=1};
+	__property Graphics::TColor TrackSectionFontColor = {read=FTrackSectionFontColor, write=SetTrackSectionFontColor, default=-2147483635};
+	__property Graphics::TColor TrackSectionBkColor = {read=FTrackSectionBkColor, write=SetTrackSectionBkColor, default=-2147483633};
+	__property Graphics::TColor TrackItemFontColor = {read=FTrackItemFontColor, write=SetTrackItemFontColor, default=-2147483635};
+	__property Graphics::TColor TrackItemBkColor = {read=FTrackItemBkColor, write=SetTrackItemBkColor, default=-2147483632};
 	__property bool KeepSelection = {read=FKeepSelection, write=SetKeepSelection, default=1};
 	__property TElSideBarIconLocation IconLocation = {read=FIconLocation, write=SetIconLocation, default=1};
 	__property Elvclutils::TElBorderSides BorderSides = {read=FBorderSides, write=SetBorderSides, nodefault};

@@ -82,6 +82,7 @@ protected:
 public:
 	__fastcall virtual ~TElStack(void);
 	void __fastcall Clear(void);
+	void __fastcall ShiftUp(int ACount);
 	void __fastcall Push(void * value);
 	void * __fastcall Pop(void);
 	bool __fastcall Empty(void);

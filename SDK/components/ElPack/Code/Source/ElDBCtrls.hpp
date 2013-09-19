@@ -447,7 +447,7 @@ __published:
 	__property Margin  = {default=-1};
 	__property Spacing  = {default=4};
 	__property UseArrow  = {default=0};
-	__property ShadowFollowsColor ;
+	__property ShadowFollowsColor  = {default=1};
 	__property ShowGlyph  = {default=1};
 	__property ShowText  = {default=1};
 	__property OnArrowClick ;
@@ -556,8 +556,8 @@ __published:
 	__property bool ConfirmDelete = {read=FConfirmDelete, write=FConfirmDelete, default=1};
 	__property Classes::TNotifyEvent OnSearch = {read=FOnSearch, write=FOnSearch};
 	__property bool IsToolbar = {read=FIsToolbar, write=SetIsToolbar, default=1};
-	__property BtnOffsHorz  = {default=3};
-	__property BtnOffsVert  = {default=3};
+	__property BtnOffsHorz  = {default=0};
+	__property BtnOffsVert  = {default=0};
 	__property BevelOuter  = {default=0};
 public:
 	#pragma option push -w-inl
@@ -644,7 +644,7 @@ __published:
 	__property InactiveBorderType  = {default=3};
 	__property LineBorderActiveColor ;
 	__property LineBorderInactiveColor ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property VertScrollBarStyles ;
 	__property HorzScrollBarStyles ;
@@ -782,7 +782,7 @@ __published:
 	__property InactiveBorderType  = {default=3};
 	__property LineBorderActiveColor ;
 	__property LineBorderInactiveColor ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property VertScrollBarStyles ;
 	__property HorzScrollBarStyles ;

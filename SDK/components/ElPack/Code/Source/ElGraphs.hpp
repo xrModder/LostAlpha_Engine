@@ -176,9 +176,9 @@ public:
 	__property int Value[int index] = {read=GetValue/*, default*/};
 	__property int ValueCount = {read=GetValueCount, nodefault};
 	__property Graphics::TColor Color = {read=FColor, write=SetColor, nodefault};
-	__property int MinGrid = {read=FMinGrid, write=SetMinGrid, nodefault};
-	__property int MaxGrid = {read=FMaxGrid, write=SetMaxGrid, nodefault};
-	__property bool Visible = {read=FVisible, write=SetVisible, nodefault};
+	__property int MinGrid = {read=FMinGrid, write=SetMinGrid, default=0};
+	__property int MaxGrid = {read=FMaxGrid, write=SetMaxGrid, default=100};
+	__property bool Visible = {read=FVisible, write=SetVisible, default=1};
 	__property int Limit = {read=GetLimit, write=SetLimit, default=1000};
 	__property bool AutoGrid = {read=FAutoGrid, write=FAutoGrid, nodefault};
 	__property int Faults = {read=FFaults, nodefault};

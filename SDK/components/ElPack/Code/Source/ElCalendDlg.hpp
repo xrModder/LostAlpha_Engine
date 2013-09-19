@@ -147,19 +147,19 @@ public:
 	
 __published:
 	__property System::TDateTime Date = {read=FDate, write=FDate};
-	__property bool ShowHolidays = {read=FShowHolidays, write=FShowHolidays, nodefault};
+	__property bool ShowHolidays = {read=FShowHolidays, write=FShowHolidays, default=1};
 	__property bool ShowPeriods = {read=FShowPeriods, write=FShowPeriods, nodefault};
 	__property Elcalendardefs::TDayOfWeek StartOfWeek = {read=FStartOfWeek, write=FStartOfWeek, nodefault};
 	__property bool UseCurrentDate = {read=FUseCurrentDate, write=FUseCurrentDate, nodefault};
-	__property int GridLineWidth = {read=FGridLineWidth, write=FGridLineWidth, nodefault};
-	__property bool ShowWeekNum = {read=FShowWeekNum, write=FShowWeekNum, nodefault};
+	__property int GridLineWidth = {read=FGridLineWidth, write=FGridLineWidth, default=1};
+	__property bool ShowWeekNum = {read=FShowWeekNum, write=FShowWeekNum, default=0};
 	__property Elcalendardefs::TElWeekEndDays WeekEndDays = {read=FWeekEndDays, write=FWeekEndDays, nodefault};
 	__property System::TDateTime PeriodStart = {read=FPeriodStart, write=FPeriodStart};
-	__property int PeriodLength = {read=FPeriodLength, write=FPeriodLength, nodefault};
-	__property int PeriodInterval = {read=FPeriodInterval, write=FPeriodInterval, nodefault};
-	__property Graphics::TColor PeriodColor = {read=FPeriodColor, write=FPeriodColor, nodefault};
+	__property int PeriodLength = {read=FPeriodLength, write=FPeriodLength, default=1};
+	__property int PeriodInterval = {read=FPeriodInterval, write=FPeriodInterval, default=28};
+	__property Graphics::TColor PeriodColor = {read=FPeriodColor, write=FPeriodColor, default=16776960};
 	__property Graphics::TColor HolidayColor = {read=FHolidayColor, write=FHolidayColor, nodefault};
-	__property Graphics::TColor WeekEndColor = {read=FWeekEndColor, write=FWeekEndColor, nodefault};
+	__property Graphics::TColor WeekEndColor = {read=FWeekEndColor, write=FWeekEndColor, default=-2147483630};
 	__property Elcalendardefs::TElHolidays* Holidays = {read=FHolidays};
 	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
 	__property bool UseSystemStartOfWeek = {read=FUseSystemStartOfWeek, write=FUseSystemStartOfWeek, nodefault};

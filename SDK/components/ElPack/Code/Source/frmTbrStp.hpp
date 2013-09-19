@@ -10,6 +10,11 @@
 #pragma delphiheader begin
 #pragma option push -w-
 #pragma option push -Vx
+#include <ElCombos.hpp>	// Pascal unit
+#include <ElEdits.hpp>	// Pascal unit
+#include <ElLabel.hpp>	// Pascal unit
+#include <ElCLabel.hpp>	// Pascal unit
+#include <ElListBox.hpp>	// Pascal unit
 #include <ElXPThemedControl.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
 #include <ElList.hpp>	// Pascal unit
@@ -42,20 +47,20 @@ class PASCALIMPLEMENTATION TfrmToolbarSetup : public Forms::TForm
 	
 __published:
 	Extctrls::TPanel* pnlSections;
-	Elactrls::TElAdvancedListBox* lbxAvailable;
-	Elactrls::TElAdvancedListBox* lbxVisible;
-	Stdctrls::TLabel* lblAvailable;
-	Stdctrls::TLabel* lblVisible;
 	Elpopbtn::TElPopupButton* btnAdd;
 	Elpopbtn::TElPopupButton* btnDelete;
 	Elpopbtn::TElPopupButton* btnUp;
 	Elpopbtn::TElPopupButton* btnDown;
 	Elpopbtn::TElPopupButton* btnOk;
 	Elpopbtn::TElPopupButton* btnCancel;
-	Stdctrls::TLabel* TextOptionsLabel;
-	Elactrls::TElAdvancedComboBox* TextOptionsCombo;
-	Stdctrls::TLabel* IconOptionsLabel;
-	Elactrls::TElAdvancedComboBox* IconOptionsCombo;
+	Ellistbox::TElListBox* lbxAvailable;
+	Ellistbox::TElListBox* lbxVisible;
+	Ellabel::TElLabel* lblAvailable;
+	Ellabel::TElLabel* lblVisible;
+	Ellabel::TElLabel* TextOptionsLabel;
+	Ellabel::TElLabel* IconOptionsLabel;
+	Elcombos::TElComboBox* TextOptionsCombo;
+	Elcombos::TElComboBox* IconOptionsCombo;
 	void __fastcall FormShow(System::TObject* Sender);
 	void __fastcall lbxVisibleEnter(System::TObject* Sender);
 	void __fastcall lbxAvailableEnter(System::TObject* Sender);

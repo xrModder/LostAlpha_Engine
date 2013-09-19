@@ -10,13 +10,14 @@
 #pragma delphiheader begin
 #pragma option push -w-
 #pragma option push -Vx
-#include <ElUnicodeStrings.hpp>	// Pascal unit
 #include <ElScrollBar.hpp>	// Pascal unit
 #include <ElXPThemedControl.hpp>	// Pascal unit
 #include <ElFrmPers.hpp>	// Pascal unit
 #include <ElStrUtils.hpp>	// Pascal unit
 #include <ElListBox.hpp>	// Pascal unit
 #include <ElEdits.hpp>	// Pascal unit
+#include <ElUnicodeStrings.hpp>	// Pascal unit
+#include <StdCtrls.hpp>	// Pascal unit
 #include <ElUxTheme.hpp>	// Pascal unit
 #include <ElPopBtn.hpp>	// Pascal unit
 #include <Buttons.hpp>	// Pascal unit
@@ -80,7 +81,7 @@ public:
 	__property bool Down = {read=FDown, write=SetDown, nodefault};
 	__property bool Focused = {read=FFocused, write=SetFocused, nodefault};
 	__property bool Transparent = {read=FTransparent, write=SetTransparent, nodefault};
-	__property bool DrawFrame = {read=FDrawFrame, write=SetDrawFrame, nodefault};
+	__property bool DrawFrame = {read=FDrawFrame, write=SetDrawFrame, default=1};
 };
 
 
@@ -115,6 +116,15 @@ protected:
 	bool FCanDrop;
 	bool FDroppedDown;
 	bool FAdjustDropDownPos;
+	Stdctrls::TComboBoxStyle FStyle;
+	Stdctrls::TDrawItemEvent FOnDrawItem;
+	Stdctrls::TMeasureItemEvent FOnMeasureItem;
+	Graphics::TCanvas* FEditCanvas;
+	Graphics::TCanvas* FCanvas;
+	Classes::TAlignment FDropDownAlignment;
+	int __fastcall GetItemHeight(void);
+	void __fastcall SetItemHeight(int Value);
+	virtual void __fastcall ComboWndProc(Messages::TMessage &Message, HWND ComboWnd, void * ComboProc);
 	bool __fastcall GetListTransparentSelection(void);
 	void __fastcall SetListTransparentSelection(bool Value);
 	void __fastcall SetDropDownWidth(const int Value);
@@ -151,7 +161,7 @@ protected:
 	void __fastcall SetDropDownCount(const int Value);
 	void __fastcall SetDroppedDown(const bool Value);
 	void __fastcall SetCanDrop(const bool Value);
-	HIDESBASE void __fastcall SetEditRect(void);
+	virtual void __fastcall SetEditRect(const Types::TRect &Value);
 	void __fastcall SetItemIndex(const int Value);
 	void __fastcall SetItems(const Elunicodestrings::TElWideStrings* Value);
 	void __fastcall SetListColor(const Graphics::TColor Value);
@@ -161,10 +171,11 @@ protected:
 	int __fastcall GetDroppedIndex(void);
 	HIDESBASE MESSAGE void __fastcall WMKillFocus(Messages::TMessage &Msg);
 	HIDESBASE MESSAGE void __fastcall WMSetFocus(Messages::TMessage &Msg);
-	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TMessage &Msg);
+	virtual void __fastcall Paint(void);
+	virtual void __fastcall MeasureItem(int Index, int &Height);
+	virtual void __fastcall DrawItem(int Index, const Types::TRect &R, Windows::TOwnerDrawState State);
 	Elimgfrm::TElImageForm* __fastcall GetListImageForm(void);
 	void __fastcall SetListImageForm(Elimgfrm::TElImageForm* newValue);
-	virtual void __fastcall CreateWnd(void);
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);
 	HIDESBASE MESSAGE void __fastcall WMThemeChanged(Messages::TMessage &Message);
 	virtual void __fastcall DoDropDown(void);
@@ -197,6 +208,13 @@ protected:
 	virtual void __fastcall SetFlat(const bool Value);
 	HIDESBASE MESSAGE void __fastcall CMDialogKey(Messages::TWMKey &Message);
 	virtual void __fastcall DestroyWnd(void);
+	HIDESBASE MESSAGE void __fastcall WMGetDlgCode(Messages::TMessage &Message);
+	bool __fastcall GetShowLineHint(void);
+	void __fastcall SetShowLineHint(bool Value);
+	virtual void __fastcall SetStyle(Stdctrls::TComboBoxStyle Value);
+	HWND __fastcall GetEditHandle(void);
+	void __fastcall SetDropDownAlignment(Classes::TAlignment Value);
+	__property HWND EditHandle = {read=GetEditHandle, nodefault};
 	
 public:
 	__fastcall virtual TElComboBox(Classes::TComponent* AOwner);
@@ -206,6 +224,9 @@ public:
 	void __fastcall DropDown(void);
 	__property bool DroppedDown = {read=GetDroppedDown, write=SetDroppedDown, nodefault};
 	__property int DroppedIndex = {read=GetDroppedIndex, nodefault};
+	__property Ctl3D ;
+	__property ParentCtl3D  = {default=1};
+	__property Graphics::TCanvas* Canvas = {read=FCanvas};
 	
 __published:
 	__property ActiveBorderType  = {default=1};
@@ -248,6 +269,7 @@ __published:
 	__property Classes::TNotifyEvent OnDropDown = {read=FOnDropDown, write=FOnDropDown};
 	__property bool AdjustDropDownPos = {read=FAdjustDropDownPos, write=FAdjustDropDownPos, default=1};
 	__property int ItemIndex = {read=FItemIndex, write=SetItemIndex, default=-1};
+	__property AutoSelect  = {default=0};
 	__property AutoSize  = {default=1};
 	__property CharCase  = {default=0};
 	__property TopMargin  = {default=1};
@@ -307,6 +329,12 @@ __published:
 	__property OnStartDrag ;
 	__property Classes::TShortCut AltButtonShortcut = {read=FAltButtonShortcut, write=FAltButtonShortcut, nodefault};
 	__property Classes::TShortCut ButtonShortcut = {read=FButtonShortcut, write=FButtonShortcut, nodefault};
+	__property bool ShowLineHint = {read=GetShowLineHint, write=SetShowLineHint, default=0};
+	__property Stdctrls::TComboBoxStyle Style = {read=FStyle, write=SetStyle, default=0};
+	__property int ItemHeight = {read=GetItemHeight, write=SetItemHeight, nodefault};
+	__property Stdctrls::TDrawItemEvent OnDrawItem = {read=FOnDrawItem, write=FOnDrawItem};
+	__property Stdctrls::TMeasureItemEvent OnMeasureItem = {read=FOnMeasureItem, write=FOnMeasureItem};
+	__property Classes::TAlignment DropDownAlignment = {read=FDropDownAlignment, write=SetDropDownAlignment, default=1};
 public:
 	#pragma option push -w-inl
 	/* TWinControl.CreateParented */ inline __fastcall TElComboBox(HWND ParentWindow) : Eledits::TCustomElEdit(ParentWindow) { }
@@ -333,6 +361,9 @@ protected:
 	DYNAMIC void __fastcall ResetContent(void);
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);
 	virtual Graphics::TBitmap* __fastcall GetBackground(void);
+	virtual void __fastcall DrawItem(int Index, const Types::TRect &R, Windows::TOwnerDrawState State);
+	virtual void __fastcall MeasureItem(int Index, int &Height);
+	virtual void __fastcall WndProc(Messages::TMessage &Message);
 	
 public:
 	__fastcall virtual TElComboListBox(Classes::TComponent* AOwner);

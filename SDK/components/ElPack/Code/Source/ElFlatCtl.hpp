@@ -83,9 +83,9 @@ __published:
 	__property bool FlatFocusedScrollbars = {read=FFlatFocusedScrollbars, write=SetFlatFocusedScrollbars, nodefault};
 	__property bool Active = {read=GetActive, write=SetActive, nodefault};
 	__property Controls::TWinControl* Control = {read=GetControl, write=SetControl};
-	__property bool DesignActive = {read=GetDesignActive, write=SetDesignActive, nodefault};
-	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, nodefault};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, nodefault};
+	__property bool DesignActive = {read=GetDesignActive, write=SetDesignActive, default=1};
+	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
 	__property Elvclutils::TElBorderSides BorderSides = {read=FBorderSides, write=SetBorderSides, nodefault};
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
@@ -188,12 +188,12 @@ public:
 	
 __published:
 	__property TElFlatEntries* Entries = {read=FEntries, write=SetEntries};
-	__property bool Active = {read=GetActive, write=SetActive, nodefault};
-	__property bool DesignActive = {read=GetDesignActive, write=SetDesignActive, nodefault};
-	__property bool AutoAddControls = {read=FAutoAddControls, write=SetAutoAddControls, nodefault};
+	__property bool Active = {read=GetActive, write=SetActive, default=1};
+	__property bool DesignActive = {read=GetDesignActive, write=SetDesignActive, default=1};
+	__property bool AutoAddControls = {read=FAutoAddControls, write=SetAutoAddControls, default=1};
 	__property bool FlatFocusedScrollbars = {read=FFlatFocusedScrollbars, write=SetFlatFocusedScrollbars, nodefault};
-	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, nodefault};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, nodefault};
+	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
 	__property Elvclutils::TElBorderSides BorderSides = {read=FBorderSides, write=SetBorderSides, nodefault};

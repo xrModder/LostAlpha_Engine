@@ -4,18 +4,18 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="dceldbB6.bpl"/>
-    <OBJFILES value="dceldbB6.obj ElDBReg.obj Design\ElDbNavDsgn.obj"/>
-    <RESFILES value="dceldbB6.res"/>
+    <OBJFILES value="dceldbB6.obj"/>
+    <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value="designide.bpi rtl.lib elpkdbB6.lib"/>
-    <PACKAGES value="vclx.bpi VCL.bpi VCLDB.bpi designide.bpi DBRTL.bpi elpackB6.bpi elpkdbB6.bpi rtl.bpi"/>
+    <LIBRARIES value="designide.bpi Vcl.lib"/>
+    <SPARELIBS value="Vcl.lib rtl.lib designide.bpi"/>
+    <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;Design"/>
+    <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -32,9 +32,11 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-src_suffix cpp -IDesign -I$(BCB)\include -I$(BCB)\include\vcl -boa"/>
-    <CFLAG1 value="-Od -H=j:\borland\CBUILD~4\lib\vcl.csm -Hc -Vx -Ve -Tkh30000 -X- -r- -a8 
-      -b- -k -y -v -vi- -c -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M -LUdesignide -LUelpkdbb6"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl.csm -Hc -Vx -Ve -Tkh30000 -X- -r- -a8 -b- -k -y -v 
+      -vi- -c -tWM  "/>
+    <PFLAGS value="-U$(BCB)\lib\release;source;design;$(BCB)\lib\obj;$(BCB)\lib;$(RELEASELIBPATH) 
+      -Idesign;$(BCB)\include;$(BCB)\include\vcl -$YD -$W -$O- -$A8 -v -JPHNE -M 
+      -LUvcl -LUdesignide"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-D&quot;EldoS DB-Aware Controls (Design-Time)&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>
@@ -48,21 +50,14 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="dceldbB6.cpp" FORMNAME="" UNITNAME="dceldbB6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="dceldbB6.res" FORMNAME="" UNITNAME="dceldbB6" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="VCL.bpi" FORMNAME="" UNITNAME="VCL" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="VCLDB.bpi" FORMNAME="" UNITNAME="VCLDB" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="DBRTL.bpi" FORMNAME="" UNITNAME="DBRTL" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ElDBReg.pas" FORMNAME="" UNITNAME="ElDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="Design\ElDbNavDsgn.pas" FORMNAME="" UNITNAME="ElDbNavDsgn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="elpackB6.bpi" FORMNAME="" UNITNAME="elpackB6" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="elpkdbB6.bpi" FORMNAME="" UNITNAME="elpkdbB6" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
   <IDEOPTIONS>
 [Version Info]
-IncludeVerInfo=1
+IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -73,9 +68,6 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1049
-CodePage=1251
-
 [Version Info Keys]
 CompanyName=
 FileDescription=
@@ -87,35 +79,7 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Linker]
-LibPrefix=
-LibSuffix=
-LibVersion=
   </IDEOPTIONS>
 </PROJECT>

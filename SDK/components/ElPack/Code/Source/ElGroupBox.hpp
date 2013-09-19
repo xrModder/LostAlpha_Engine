@@ -14,7 +14,6 @@
 #include <ElStrUtils.hpp>	// Pascal unit
 #include <ElCheckCtl.hpp>	// Pascal unit
 #include <ElSndMap.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <ElUxTheme.hpp>	// Pascal unit
 #include <ElTmSchema.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
@@ -31,6 +30,7 @@
 #include <Controls.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <StdCtrls.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
@@ -52,6 +52,10 @@ protected:
 	bool FIsHTML;
 	Elvclutils::TElBorderSides FBorderSides;
 	#pragma pack(push, 1)
+	Types::TRect FTextRect;
+	#pragma pack(pop)
+	
+	#pragma pack(push, 1)
 	Types::TRect FCheckRect;
 	#pragma pack(pop)
 	
@@ -66,6 +70,7 @@ protected:
 	bool FCheckBoxChecked;
 	bool FShowFocus;
 	Graphics::TColor FCaptionColor;
+	bool FMouseInText;
 	bool FMouseInCheckBox;
 	bool FFlat;
 	bool FFlatAlways;
@@ -113,7 +118,7 @@ protected:
 	int __fastcall GetLineTopOffset(void);
 	HIDESBASE MESSAGE void __fastcall CMEnabledChanged(Messages::TMessage &Message);
 	void __fastcall SetAutoDisableChildren(bool Value);
-	void __fastcall SetMoneyFlat(bool Value);
+	virtual void __fastcall SetMoneyFlat(bool Value);
 	virtual void __fastcall SetMoneyFlatInactiveColor(Graphics::TColor Value);
 	virtual void __fastcall SetMoneyFlatActiveColor(Graphics::TColor Value);
 	virtual void __fastcall SetMoneyFlatDownColor(Graphics::TColor Value);

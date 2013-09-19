@@ -10,9 +10,9 @@
 #pragma delphiheader begin
 #pragma option push -w-
 #pragma option push -Vx
+#include <ElScrollBox.hpp>	// Pascal unit
 #include <ElEdits.hpp>	// Pascal unit
 #include <ElXPThemedControl.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <ElCombos.hpp>	// Pascal unit
 #include <ElHook.hpp>	// Pascal unit
 #include <ElList.hpp>	// Pascal unit
@@ -72,6 +72,7 @@ __published:
 	Elpanel::TElPanel* MainPagePanel;
 	Elhook::TElHook* ElHook1;
 	Elcombos::TElComboBox* ScaleCombo;
+	Elhook::TElHook* ElHook2;
 	void __fastcall PrintBtnClick(System::TObject* Sender);
 	void __fastcall ScrollBoxResize(System::TObject* Sender);
 	void __fastcall MainPagePanelPaint(System::TObject* Sender);
@@ -91,6 +92,8 @@ __published:
 	void __fastcall ScaleComboChange(System::TObject* Sender);
 	void __fastcall MultipageBtnClick(System::TObject* Sender);
 	void __fastcall OnePageBtnClick(System::TObject* Sender);
+	void __fastcall ScrollBoxKeyDown(System::TObject* Sender, Word &Key, Classes::TShiftState Shift);
+	void __fastcall ElHook2AfterProcess(System::TObject* Sender, Messages::TMessage &Msg, bool &Handled);
 	
 private:
 	int FScale;

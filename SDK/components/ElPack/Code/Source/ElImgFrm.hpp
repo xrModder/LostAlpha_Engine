@@ -17,7 +17,6 @@
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
 #include <ElHook.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <Forms.hpp>	// Pascal unit
 #include <ExtCtrls.hpp>	// Pascal unit
@@ -25,6 +24,7 @@
 #include <Controls.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <Windows.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <TypInfo.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
 #include <System.hpp>	// Pascal unit
@@ -56,6 +56,7 @@ private:
 	Graphics::TColor FGradientEndColor;
 	bool FNoBk;
 	Ellist::TElList* FCLients;
+	Graphics::TBitmap* CacheBackground;
 	void __fastcall AfterMessage(System::TObject* Sender, Messages::TMessage &Msg, bool &Handled);
 	void __fastcall BeforeMessage(System::TObject* Sender, Messages::TMessage &Msg, bool &Handled);
 	void __fastcall PictureChanged(System::TObject* Sender);
@@ -83,15 +84,17 @@ protected:
 	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation);
 	void __fastcall SetControl(Controls::TWinControl* Value);
 	void __fastcall SetTransparentColor(Graphics::TColor Value);
+	void __fastcall CreateCacheBackground(void);
+	void __fastcall DisposeCacheBackground(void);
 	__property Controls::TGraphicControl* CaptionControl = {read=FCaptionControl, write=SetCaptionControl};
 	__property bool ChangeFormRegion = {read=FChangeRegion, write=SetChangeRegion, nodefault};
 	__property bool MoveForm = {read=FMoveForm, write=SetMoveForm, default=0};
 	__property Extctrls::TImage* FormImage = {read=FImage, write=SetImage};
 	__property Graphics::TBitmap* Background = {read=FBkImage, write=SetBkImage};
-	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, nodefault};
+	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, default=2};
 	__property Graphics::TColor GradientStartColor = {read=FGradientStartColor, write=SetGradientStartColor, nodefault};
 	__property Graphics::TColor GradientEndColor = {read=FGradientEndColor, write=SetGradientEndColor, nodefault};
-	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, nodefault};
+	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, default=16};
 	
 public:
 	__fastcall virtual TCustomElImageForm(Classes::TComponent* AOwner);
@@ -139,10 +142,10 @@ __published:
 	__property FormImage ;
 	__property MoveForm  = {default=0};
 	__property Background ;
-	__property BackgroundType ;
+	__property BackgroundType  = {default=2};
 	__property GradientStartColor ;
 	__property GradientEndColor ;
-	__property GradientSteps ;
+	__property GradientSteps  = {default=16};
 public:
 	#pragma option push -w-inl
 	/* TCustomElImageForm.Create */ inline __fastcall virtual TElImageForm(Classes::TComponent* AOwner) : TCustomElImageForm(AOwner) { }

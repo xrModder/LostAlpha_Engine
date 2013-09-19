@@ -114,7 +114,7 @@ __published:
 	__property bool ShowNextTime = {read=FShowNextTime, write=FShowNextTime, nodefault};
 	__property int StartID = {read=FStartID, write=SetStartID, default=10001};
 	__property int EndID = {read=FEndID, write=SetEndID, default=10001};
-	__property bool ShowTipNumber = {read=FShowTipNumber, write=FShowTipNumber, nodefault};
+	__property bool ShowTipNumber = {read=FShowTipNumber, write=FShowTipNumber, default=1};
 	__property Elstrpool::TElStringPool* StringPool = {read=FStringPool, write=SetStringPool};
 	__property bool IsHTML = {read=FIsHTML, write=SetIsHTML, nodefault};
 	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};

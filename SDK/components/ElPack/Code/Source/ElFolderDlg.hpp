@@ -72,6 +72,7 @@ private:
 	bool FShowCustomButton;
 	bool JustInit;
 	bool OriginalSelect;
+	bool FVisible;
 	AnsiString __fastcall GetFolder();
 	Controls::TWinControl* __fastcall GetParent(void);
 	void __fastcall SetFolder(const AnsiString Value);
@@ -80,7 +81,10 @@ private:
 	
 protected:
 	AnsiString FCustomRootFolder;
+	AnsiString FStatusText;
+	AnsiString FPrompt;
 	int __fastcall Perform(unsigned Msg, int WParam, int LParam);
+	void __fastcall SetStatusText(const AnsiString Value);
 	
 public:
 	__fastcall virtual TElFolderDialog(Classes::TComponent* AOwner);
@@ -105,6 +109,8 @@ __published:
 	__property Elshellutils::TShellFolders RootFolder = {read=FRootFolder, write=SetRootFolder, nodefault};
 	__property bool ShowCustomButton = {read=FShowCustomButton, write=FShowCustomButton, nodefault};
 	__property AnsiString CustomRootFolder = {read=FCustomRootFolder, write=FCustomRootFolder};
+	__property AnsiString StatusText = {read=FStatusText, write=SetStatusText};
+	__property AnsiString Prompt = {read=FPrompt, write=FPrompt};
 };
 
 

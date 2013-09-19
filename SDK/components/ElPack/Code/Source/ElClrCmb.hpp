@@ -88,7 +88,7 @@ __published:
 	__property bool Transparent = {read=FDummyBool, write=FDummyBool, nodefault};
 	__property TColorComboOptions Options = {read=FOptions, write=SetOptions, nodefault};
 	__property Dialogs::TColorDialogOptions DialogOptions = {read=FDialogOptions, write=FDialogOptions, default=1};
-	__property Graphics::TColor SelectedColor = {read=FSelectedColor, write=SetSelectedColor, nodefault};
+	__property Graphics::TColor SelectedColor = {read=FSelectedColor, write=SetSelectedColor, default=65280};
 	__property TTranslateColorNameEvent OnTranslateColorName = {read=FOnTranslateColorName, write=FOnTranslateColorName};
 	__property Enabled  = {default=1};
 	__property Width ;

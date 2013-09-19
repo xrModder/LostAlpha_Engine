@@ -98,7 +98,7 @@ __published:
 	__property int DarkValue = {read=FDarkValue, write=SetDarkValue, nodefault};
 	__property bool Additive = {read=FAdditive, write=SetAdditive, nodefault};
 	__property AnsiString Caption = {read=FCaption, write=SetCaption};
-	__property TProgrShowMode ProgressShowMode = {read=FProgrShowMode, write=SetProgrShowMode, nodefault};
+	__property TProgrShowMode ProgressShowMode = {read=FProgrShowMode, write=SetProgrShowMode, default=0};
 	__property bool LightTextFullLine = {read=FLightTextFullLine, write=SetLightTextFullLine, nodefault};
 	__property bool DarkTextFullLine = {read=FDarkTextFullLine, write=SetDarkTextFullLine, nodefault};
 	__property AnsiString DarkText = {read=FDarkText, write=SetDarkText};

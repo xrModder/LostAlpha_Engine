@@ -143,6 +143,7 @@ protected:
 	void __fastcall DeinitDragLine(void);
 	DYNAMIC void __fastcall Resize(void);
 	void __fastcall SetHint(WideString Value);
+	virtual void __fastcall Loaded(void);
 	
 public:
 	__fastcall virtual TElStatusBar(Classes::TComponent* AOwner);
@@ -264,7 +265,7 @@ public:
 	
 __published:
 	__property bool Resizable = {read=FResizable, write=FResizable, default=1};
-	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, nodefault};
+	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, default=0};
 	__property TElStatusPanelBevel Bevel = {read=FBevel, write=SetBevel, default=0};
 	__property TElStatusPanelStyle Style = {read=FStyle, write=SetStyle, default=0};
 	__property WideString Text = {read=FText, write=SetText};

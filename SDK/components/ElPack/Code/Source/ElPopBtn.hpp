@@ -16,6 +16,8 @@
 #include <ElSndMap.hpp>	// Pascal unit
 #include <ElList.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
+#include <ElHandPt.hpp>	// Pascal unit
+#include <HTMLRender.hpp>	// Pascal unit
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <ActnList.hpp>	// Pascal unit
 #include <ImgList.hpp>	// Pascal unit
@@ -199,27 +201,27 @@ private:
 	void __fastcall Repaint(void);
 	int __fastcall CreateButtonGlyph(TElButtonState State);
 	void __fastcall DrawButtonGlyph(Graphics::TCanvas* Canvas, const Types::TPoint &GlyphPos, TElButtonState State, bool Transparent, Graphics::TColor Color, bool AlphaBlended);
-	void __fastcall DrawButtonText(Graphics::TCanvas* Canvas, const WideString Caption, const Types::TRect &TextBounds, TElButtonState State, bool Multiline, bool Active, bool Transparent, Elvclutils::TElTextDrawType TextDrawType, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool ShowAccelChar);
-	void __fastcall CalcButtonLayout(Graphics::TCanvas* Canvas, const Types::TRect &Client, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, Types::TPoint &GlyphPos, Types::TRect &TextBounds, bool ShowGlyph, bool ShowText, bool MultiLine, int ArrowWidth, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState);
+	void __fastcall DrawButtonText(Graphics::TCanvas* Canvas, const WideString Caption, const Types::TRect &TextBounds, TElButtonState State, bool Multiline, Classes::TAlignment Alignment, bool Active, bool Transparent, Elvclutils::TElTextDrawType TextDrawType, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool ShowAccelChar, bool IsHTML, Htmlrender::TElHTMLRender* HTMLRender, bool ChangeDisabledText);
+	void __fastcall CalcButtonLayout(Graphics::TCanvas* Canvas, const Types::TRect &Client, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, Types::TPoint &GlyphPos, Types::TRect &TextBounds, bool ShowGlyph, bool ShowText, bool MultiLine, int ArrowWidth, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool IsHTML, Htmlrender::TElHTMLRender* HTMLRender);
 	Types::TRect __fastcall GetGlyphSize();
 	void __fastcall SetUseIcon(bool NewValue);
 	
 protected:
 	__property Controls::TImageList* ImageList = {read=FImageList, write=SetImageList};
-	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, nodefault};
+	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, default=-1};
 	__property bool UseImageList = {read=FUseImageList, write=FUseImageList, nodefault};
 	
 public:
 	__fastcall TElButtonGlyph(void);
 	__fastcall virtual ~TElButtonGlyph(void);
 	void __fastcall ResetNumGlyphs(void);
-	Types::TRect __fastcall Draw(Graphics::TCanvas* Canvas, const Types::TRect &Client, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, TElButtonState State, TElButtonState GlyphState, bool Transparent, bool Multiline, bool Active, bool ShowGlyph, bool ShowText, int ArrowWidth, Elvclutils::TElTextDrawType TextDrawType, Graphics::TColor Color, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool ShowAccelChar, bool ImageIsAlphaBlended);
+	Types::TRect __fastcall Draw(Graphics::TCanvas* Canvas, const Types::TRect &Client, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, TElButtonState State, TElButtonState GlyphState, Classes::TAlignment Alignment, bool Transparent, bool Multiline, bool Active, bool ShowGlyph, bool ShowText, int ArrowWidth, Elvclutils::TElTextDrawType TextDrawType, Graphics::TColor Color, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool ShowAccelChar, bool ImageIsAlphaBlended, bool IsHTML, Htmlrender::TElHTMLRender* HTMLRender, bool ChangeDisabledText);
 	void __fastcall GetPaintGlyphSize(const Types::TRect &R, Types::TPoint &Size);
-	int __fastcall CalcButtonWidth(Graphics::TCanvas* Canvas, int &MaxHeight, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, bool ShowGlyph, bool ShowText, bool MultiLine, int ArrowWidth, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState);
+	int __fastcall CalcButtonWidth(Graphics::TCanvas* Canvas, int &MaxHeight, const Types::TPoint &Offset, const WideString Caption, Buttons::TButtonLayout Layout, int Margin, int Spacing, bool ShowGlyph, bool ShowText, bool MultiLine, int ArrowWidth, bool UseThemesForText, unsigned Theme, int ThemePart, int ThemeState, bool IsHTML, Htmlrender::TElHTMLRender* HTMLRender);
 	__property bool UseIcon = {read=FUseIcon, write=SetUseIcon, nodefault};
 	__property Graphics::TIcon* Icon = {read=FIcon};
 	__property Graphics::TBitmap* Glyph = {read=FOriginal, write=SetGlyph};
-	__property Buttons::TNumGlyphs NumGlyphs = {read=FNumGlyphs, write=SetNumGlyphs, nodefault};
+	__property Buttons::TNumGlyphs NumGlyphs = {read=FNumGlyphs, write=SetNumGlyphs, default=1};
 	__property Types::TRect GlyphSize = {read=GetGlyphSize};
 	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
 };
@@ -229,10 +231,9 @@ class PASCALIMPLEMENTATION TCustomElPopupButton : public Elbtnctl::TElButtonCont
 {
 	typedef Elbtnctl::TElButtonControl inherited;
 	
-private:
-	int FNumGlyphs;
-	
 protected:
+	int FNumGlyphs;
+	Controls::TCursor FCursor;
 	bool FShadowsUseCustom;
 	Graphics::TColor FShadowBtnHighlight;
 	Graphics::TColor FShadowBtnShadow;
@@ -292,6 +293,26 @@ protected:
 	bool FShowBorder;
 	bool FAdjustSpaceForGlyph;
 	unsigned FArrTheme;
+	bool FIsHTML;
+	Htmlrender::TElHTMLRender* FRender;
+	Htmlrender::TElHTMLImageNeededEvent FOnImageNeeded;
+	Htmlrender::TElHTMLLinkClickEvent FOnLinkClick;
+	TElButtonState FOrigState;
+	TElButtonState FState;
+	bool FDrawDefaultFrame;
+	bool FImageIsAlphaBlended;
+	bool FDrawFocusFrame;
+	Graphics::TColor FLinkColor;
+	Menus::TPopupMenu* FLinkPopupMenu;
+	Graphics::TFontStyles FLinkStyle;
+	#pragma pack(push, 1)
+	Types::TRect FTextRect;
+	#pragma pack(pop)
+	
+	bool FChangeDisabledText;
+	Classes::TAlignment FAlignment;
+	void __fastcall SetAlignment(Classes::TAlignment Value);
+	void __fastcall SetIsHTML(bool Value);
 	void __fastcall SetShowBorder(bool newValue);
 	void __fastcall ImageFormChange(System::TObject* Sender);
 	void __fastcall SetImageForm(Elimgfrm::TElImageForm* newValue);
@@ -364,10 +385,12 @@ protected:
 	void __fastcall SetShadowBtnShadow(Graphics::TColor Value);
 	void __fastcall SetShadowBtnDkShadow(Graphics::TColor Value);
 	void __fastcall SetAdjustSpaceForGlyph(bool Value);
-	TElButtonState FOrigState;
-	TElButtonState FState;
-	bool FDrawDefaultFrame;
-	bool FImageIsAlphaBlended;
+	void __fastcall SetLinkPopupMenu(Menus::TPopupMenu* newValue);
+	virtual void __fastcall SetLinkColor(Graphics::TColor newValue);
+	virtual void __fastcall SetLinkStyle(Graphics::TFontStyles newValue);
+	void __fastcall DoLinkPopup(const Types::TPoint &MousePos);
+	void __fastcall TriggerImageNeededEvent(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
+	virtual void __fastcall TriggerLinkClickEvent(WideString HRef);
 	virtual void __fastcall SetUseArrow(bool newValue);
 	virtual void __fastcall CreateThemeHandle(void);
 	virtual void __fastcall FreeThemeHandle(void);
@@ -386,12 +409,17 @@ protected:
 	virtual void __fastcall SetChecked(bool newValue);
 	DYNAMIC TMetaClass* __fastcall GetActionLinkClass(void);
 	DYNAMIC void __fastcall ActionChange(System::TObject* Sender, bool CheckDefaults);
+	HIDESBASE MESSAGE void __fastcall WMContextMenu(Messages::TWMContextMenu &Message);
+	HIDESBASE MESSAGE void __fastcall WMRButtonUp(Messages::TWMMouse &Message);
 	__property bool ClicksDisabled = {read=FClicksDisabled, write=FClicksDisabled, nodefault};
 	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation operation);
 	void __fastcall SetDrawDefaultFrame(bool Value);
 	virtual int __fastcall GetArrowSize(void);
 	bool __fastcall DoSaveShadows(void);
 	void __fastcall SetImageIsAlphaBlended(bool Value);
+	void __fastcall SetDrawFocusFrame(bool Value);
+	HIDESBASE virtual void __fastcall SetCursor(Controls::TCursor Value);
+	void __fastcall SetChangeDisabledText(bool Value);
 	__property Menus::TPopupMenu* PullDownMenu = {read=FPullDownMenu, write=SetPullDownMenu};
 	__property TPopupPlace PopupPlace = {read=FPopupPlace, write=SetPopupPlace, default=0};
 	__property bool DisableAutoPopup = {read=FDisableAp, write=SetDisableAp, default=0};
@@ -440,7 +468,17 @@ protected:
 	__property bool BackgroundDrawBorder = {read=FBackgroundDrawBorder, write=SetBackgroundDrawBorder, default=0};
 	__property bool AdjustSpaceForGlyph = {read=FAdjustSpaceForGlyph, write=SetAdjustSpaceForGlyph, default=1};
 	__property bool DrawDefaultFrame = {read=FDrawDefaultFrame, write=SetDrawDefaultFrame, nodefault};
+	__property bool DrawFocusFrame = {read=FDrawFocusFrame, write=SetDrawFocusFrame, default=0};
 	__property bool ImageIsAlphaBlended = {read=FImageIsAlphaBlended, write=SetImageIsAlphaBlended, default=0};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=1};
+	__property bool IsHTML = {read=FIsHTML, write=SetIsHTML, default=0};
+	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
+	__property Htmlrender::TElHTMLLinkClickEvent OnLinkClick = {read=FOnLinkClick, write=FOnLinkClick};
+	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, default=16711680};
+	__property Menus::TPopupMenu* LinkPopupMenu = {read=FLinkPopupMenu, write=SetLinkPopupMenu};
+	__property Graphics::TFontStyles LinkStyle = {read=FLinkStyle, write=SetLinkStyle, nodefault};
+	__property Controls::TCursor Cursor = {read=FCursor, write=SetCursor, nodefault};
+	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, default=2};
 	
 public:
 	__fastcall virtual TCustomElPopupButton(Classes::TComponent* AOwner);
@@ -465,6 +503,7 @@ protected:
 	DYNAMIC void __fastcall MouseDown(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
 	
 __published:
+	__property Alignment  = {default=2};
 	__property Background ;
 	__property BackgroundDrawBorder  = {default=0};
 	__property DownBackground ;
@@ -475,6 +514,7 @@ __published:
 	__property HotImages ;
 	__property DisabledImages ;
 	__property DrawDefaultFrame ;
+	__property DrawFocusFrame  = {default=0};
 	__property PullDownMenu ;
 	__property PopupPlace  = {default=0};
 	__property DisableAutoPopup  = {default=0};
@@ -492,6 +532,10 @@ __published:
 	__property Flat  = {default=0};
 	__property Glyph ;
 	__property ImageForm ;
+	__property IsHTML  = {default=0};
+	__property LinkColor  = {default=16711680};
+	__property LinkPopupMenu ;
+	__property LinkStyle ;
 	__property Layout  = {default=0};
 	__property Margin  = {default=-1};
 	__property NumGlyphs ;
@@ -522,6 +566,7 @@ __published:
 	__property OldStyled  = {default=0};
 	__property UseXPThemes  = {default=1};
 	__property Caption ;
+	__property Cursor ;
 	__property Enabled  = {default=1};
 	__property TabStop  = {default=1};
 	__property TabOrder  = {default=-1};
@@ -535,6 +580,8 @@ __published:
 	__property ParentShowHint  = {default=1};
 	__property ShowHint ;
 	__property Visible  = {default=1};
+	__property OnImageNeeded ;
+	__property OnLinkClick ;
 	__property OnClick ;
 	__property OnDblClick ;
 	__property OnMouseDown ;
@@ -617,11 +664,10 @@ class PASCALIMPLEMENTATION TCustomElGraphicButton : public Controls::TGraphicCon
 {
 	typedef Controls::TGraphicControl inherited;
 	
-private:
+protected:
 	int FNumGlyphs;
 	Classes::TWndMethod FMenuWindowProc;
-	
-protected:
+	Controls::TCursor FCursor;
 	bool FShadowsUseCustom;
 	Graphics::TColor FShadowBtnHighlight;
 	Graphics::TColor FShadowBtnShadow;
@@ -680,10 +726,20 @@ protected:
 	Elimgfrm::TImgFormChangeLink* FImgFormChLink;
 	bool FShowBorder;
 	bool FAdjustSpaceForGlyph;
+	Graphics::TColor FLinkColor;
+	Menus::TPopupMenu* FLinkPopupMenu;
+	Graphics::TFontStyles FLinkStyle;
+	bool FIsHTML;
+	Htmlrender::TElHTMLRender* FRender;
+	Htmlrender::TElHTMLImageNeededEvent FOnImageNeeded;
+	Htmlrender::TElHTMLLinkClickEvent FOnLinkClick;
 	bool FUseXPThemes;
 	unsigned FTheme;
 	unsigned FArrTheme;
 	HWND FWnd;
+	Classes::TAlignment FAlignment;
+	void __fastcall SetAlignment(Classes::TAlignment Value);
+	void __fastcall SetIsHTML(bool Value);
 	HIDESBASE bool __fastcall IsColorStored(void);
 	void __fastcall SetShowBorder(bool newValue);
 	void __fastcall ImageFormChange(System::TObject* Sender);
@@ -761,6 +817,19 @@ protected:
 	Graphics::TColor FMoneyFlatInactiveColor;
 	bool FShortcutsEnabled;
 	bool FImageIsAlphaBlended;
+	#pragma pack(push, 1)
+	Types::TRect FTextRect;
+	#pragma pack(pop)
+	
+	bool FChangeDisabledText;
+	void __fastcall SetLinkPopupMenu(Menus::TPopupMenu* newValue);
+	virtual void __fastcall SetLinkColor(Graphics::TColor newValue);
+	virtual void __fastcall SetLinkStyle(Graphics::TFontStyles newValue);
+	void __fastcall DoLinkPopup(const Types::TPoint &MousePos);
+	void __fastcall TriggerImageNeededEvent(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
+	virtual void __fastcall TriggerLinkClickEvent(WideString HRef);
+	HIDESBASE MESSAGE void __fastcall WMContextMenu(Messages::TWMContextMenu &Message);
+	HIDESBASE MESSAGE void __fastcall WMRButtonUp(Messages::TWMMouse &Message);
 	virtual void __fastcall SetUseArrow(bool newValue);
 	DYNAMIC HPALETTE __fastcall GetPalette(void);
 	virtual void __fastcall Loaded(void);
@@ -800,6 +869,8 @@ protected:
 	virtual bool __fastcall Focused(void);
 	void __fastcall SetImageIsAlphaBlended(bool Value);
 	void __fastcall SetHint(WideString Value);
+	HIDESBASE virtual void __fastcall SetCursor(Controls::TCursor Value);
+	void __fastcall SetChangeDisabledText(bool Value);
 	__property bool ClicksDisabled = {read=FClicksDisabled, write=FClicksDisabled, nodefault};
 	__property Menus::TPopupMenu* PullDownMenu = {read=FPullDownMenu, write=SetPullDownMenu};
 	__property TPopupPlace PopupPlace = {read=FPopupPlace, write=SetPopupPlace, default=0};
@@ -816,7 +887,7 @@ protected:
 	__property Buttons::TNumGlyphs NumGlyphs = {read=GetNumGlyphs, write=SetNumGlyphs, nodefault};
 	__property int Spacing = {read=FSpacing, write=SetSpacing, default=4};
 	__property bool UseArrow = {read=FUseArrow, write=SetUseArrow, default=0};
-	__property bool ShadowFollowsColor = {read=FShadowFollowsColor, write=SetShadowFollowsColor, nodefault};
+	__property bool ShadowFollowsColor = {read=FShadowFollowsColor, write=SetShadowFollowsColor, default=1};
 	__property bool ShowGlyph = {read=FShowGlyph, write=SetShowGlyph, default=1};
 	__property bool ShowText = {read=FShowText, write=SetShowText, default=1};
 	__property Classes::TNotifyEvent OnArrowClick = {read=FOnArrowClick, write=FOnArrowClick};
@@ -857,6 +928,15 @@ protected:
 	__property Graphics::TColor MoneyFlatActiveColor = {read=FMoneyFlatActiveColor, write=SetMoneyFlatActiveColor, stored=GetMoneyFlat, nodefault};
 	__property Graphics::TColor MoneyFlatInactiveColor = {read=FMoneyFlatInactiveColor, write=SetMoneyFlatInactiveColor, stored=GetMoneyFlat, nodefault};
 	__property bool ImageIsAlphaBlended = {read=FImageIsAlphaBlended, write=SetImageIsAlphaBlended, default=0};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=1};
+	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, default=2};
+	__property bool IsHTML = {read=FIsHTML, write=SetIsHTML, default=0};
+	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
+	__property Htmlrender::TElHTMLLinkClickEvent OnLinkClick = {read=FOnLinkClick, write=FOnLinkClick};
+	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, default=16711680};
+	__property Menus::TPopupMenu* LinkPopupMenu = {read=FLinkPopupMenu, write=SetLinkPopupMenu};
+	__property Graphics::TFontStyles LinkStyle = {read=FLinkStyle, write=SetLinkStyle, nodefault};
+	__property Controls::TCursor Cursor = {read=FCursor, write=SetCursor, nodefault};
 	
 public:
 	__fastcall virtual TCustomElGraphicButton(Classes::TComponent* AOwner);
@@ -882,6 +962,7 @@ class PASCALIMPLEMENTATION TElGraphicButton : public TCustomElGraphicButton
 	typedef TCustomElGraphicButton inherited;
 	
 __published:
+	__property Alignment  = {default=2};
 	__property Background ;
 	__property BackgroundDrawBorder  = {default=0};
 	__property DownBackground ;
@@ -895,6 +976,7 @@ __published:
 	__property PopupPlace  = {default=0};
 	__property DisableAutoPopup  = {default=0};
 	__property Cancel  = {default=0};
+	__property ChangeDisabledText  = {default=1};
 	__property ModalResult  = {default=0};
 	__property MoneyFlat  = {default=0};
 	__property MoneyFlatInactiveColor ;
@@ -907,10 +989,11 @@ __published:
 	__property Flat  = {default=0};
 	__property Glyph ;
 	__property ImageForm ;
+	__property IsHTML  = {default=0};
 	__property Layout  = {default=0};
 	__property Margin  = {default=-1};
 	__property NumGlyphs ;
-	__property ShadowFollowsColor ;
+	__property ShadowFollowsColor  = {default=1};
 	__property ShadowsUseCustom  = {default=0};
 	__property ShadowBtnHighlight  = {default=16250869};
 	__property ShadowBtnShadow  = {default=7764576};
@@ -922,6 +1005,9 @@ __published:
 	__property IsSwitch  = {default=0};
 	__property OnArrowClick ;
 	__property Icon ;
+	__property LinkColor  = {default=16711680};
+	__property LinkPopupMenu ;
+	__property LinkStyle ;
 	__property UseIcon  = {default=0};
 	__property ThinFrame  = {default=0};
 	__property TextDrawType  = {default=0};
@@ -937,6 +1023,7 @@ __published:
 	__property OldStyled  = {default=0};
 	__property UseXPThemes  = {default=1};
 	__property Caption ;
+	__property Cursor ;
 	__property Enabled  = {default=1};
 	__property PopupMenu ;
 	__property Color ;
@@ -947,6 +1034,8 @@ __published:
 	__property ParentShowHint  = {default=1};
 	__property ShowHint ;
 	__property Visible  = {default=1};
+	__property OnImageNeeded ;
+	__property OnLinkClick ;
 	__property OnClick ;
 	__property OnDblClick ;
 	__property OnMouseDown ;
@@ -986,6 +1075,8 @@ protected:
 	virtual void __fastcall AssignClient(System::TObject* AClient);
 	virtual bool __fastcall IsCheckedLinked(void);
 	virtual bool __fastcall IsImageIndexLinked(void);
+	virtual bool __fastcall IsHintLinked(void);
+	virtual bool __fastcall IsCaptionLinked(void);
 	virtual void __fastcall SetImageIndex(int Value);
 	virtual void __fastcall SetChecked(bool Value);
 	virtual void __fastcall SetCaption(const AnsiString Value);

@@ -218,15 +218,15 @@ __published:
 	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, default=2};
 	__property Menus::TPopupMenu* PopupMenu = {read=FPopupMenu, write=SetPopupMenu};
 	__property int NumColors = {read=FNumColors, write=SetNumColors, default=64};
-	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, nodefault};
+	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, default=0};
 	__property Graphics::TBitmap* ActiveBitmap = {read=FBitmap, write=SetBitmap};
-	__property TElPaintBkgndType PaintBkgnd = {read=FPaintBkgnd, write=SetPaintBkgnd, nodefault};
+	__property TElPaintBkgndType PaintBkgnd = {read=FPaintBkgnd, write=SetPaintBkgnd, default=2};
 	__property TElCaptionButtons* Buttons = {read=FButtons, write=SetButtons};
 	__property Graphics::TBitmap* InactiveBitmap = {read=FInactiveBitmap, write=SetInactiveBitmap};
 	__property TElCaptionDrawEvent OnDrawCaption = {read=FOnDrawCaption, write=FOnDrawCaption};
 	__property TCaptionButtonEvent OnButtonClick = {read=FOnButtonClick, write=FOnButtonClick};
 	__property TCaptionButtonEvent OnButtonDblClick = {read=FOnButtonDblClick, write=FOnButtonDblClick};
-	__property bool SystemFont = {read=FSystemFont, write=SetSystemFont, nodefault};
+	__property bool SystemFont = {read=FSystemFont, write=SetSystemFont, default=1};
 	__property Graphics::TFont* Font = {read=FFont, write=SetFont};
 	__property TElCaptionTexts* Texts = {read=FTexts, write=SetTexts};
 	__property bool UseXPThemes = {read=FUseXPThemes, write=SetUseXPThemes, default=1};
@@ -313,16 +313,16 @@ public:
 	
 __published:
 	__property Graphics::TBitmap* Glyph = {read=GetGlyph, write=SetGlyph};
-	__property Buttons::TButtonLayout Layout = {read=FLayout, write=SetLayout, nodefault};
-	__property Classes::TAlignment Align = {read=FAlign, write=SetAlign, nodefault};
+	__property Buttons::TButtonLayout Layout = {read=FLayout, write=SetLayout, default=0};
+	__property Classes::TAlignment Align = {read=FAlign, write=SetAlign, default=1};
 	__property WideString Caption = {read=FCaption, write=SetCaption};
 	__property bool Enabled = {read=FEnabled, write=SetEnabled, default=1};
 	__property bool FixClick = {read=FFixClick, write=FFixClick, nodefault};
 	__property bool Down = {read=FDown, write=SetDown, default=0};
 	__property bool Visible = {read=FVisible, write=SetVisible, default=1};
 	__property bool OwnerStyle = {read=FOwnerStyle, write=SetOwnerStyle, default=1};
-	__property Graphics::TColor ActiveColor = {read=FActiveColor, write=SetActiveColor, nodefault};
-	__property Graphics::TColor InactiveColor = {read=FInactiveColor, write=SetInactiveColor, nodefault};
+	__property Graphics::TColor ActiveColor = {read=FActiveColor, write=SetActiveColor, default=-2147483630};
+	__property Graphics::TColor InactiveColor = {read=FInactiveColor, write=SetInactiveColor, default=-2147483630};
 	__property Graphics::TFont* Font = {read=FFont, write=SetFont};
 	__property Classes::TNotifyEvent OnClick = {read=FOnClick, write=FOnClick};
 	__property Classes::TNotifyEvent OnDblClick = {read=FOnDblClick, write=FOnDblClick};

@@ -76,6 +76,7 @@ __published:
 	Elimglst::TElImageList* DisabledImages;
 	Elimglst::TElImageList* EnabledImages;
 	Elcaption::TElFormCaption* Captions;
+	Elpopbtn::TElPopupButton* ElPopupButton1;
 	void __fastcall TimerTimer(System::TObject* Sender);
 	void __fastcall HelpBtnClick(System::TObject* Sender);
 	void __fastcall FormShow(System::TObject* Sender);
@@ -145,6 +146,7 @@ protected:
 	WideString FShowAgainText;
 	WideString FDlgCaption;
 	bool FIsHTML;
+	Forms::TPosition FPosition;
 	Classes::TNotifyEvent FOnBeforeShow;
 	Classes::TNotifyEvent FOnTimer;
 	TPromptCloseEvent FOnClose;
@@ -182,7 +184,7 @@ __published:
 	__property Elunicodestrings::TElWideStringArray* ControlTexts = {read=FControlTexts, write=SetControlTexts};
 	__property WideString DialogCaption = {read=FDlgCaption, write=FDlgCaption};
 	__property WideString Message = {read=FMessage, write=FMessage};
-	__property int MessageIdx = {read=FMessageIdx, write=FMessageIdx, nodefault};
+	__property int MessageIdx = {read=FMessageIdx, write=FMessageIdx, default=-1};
 	__property Dialogs::TMsgDlgType DlgType = {read=FDlgType, write=FDlgType, nodefault};
 	__property Dialogs::TMsgDlgButtons Buttons = {read=FButtons, write=FButtons, nodefault};
 	__property bool ShowAgainCheck = {read=FShowOnceMore, write=FShowOnceMore, nodefault};
@@ -193,6 +195,7 @@ __published:
 	__property int HelpContext = {read=FHelpCtx, write=FHelpCtx, nodefault};
 	__property bool IsHTML = {read=FIsHTML, write=FIsHTML, nodefault};
 	__property bool TopMost = {read=FTopmost, write=FTopmost, nodefault};
+	__property Forms::TPosition Position = {read=FPosition, write=FPosition, nodefault};
 	__property Classes::TNotifyEvent OnTimer = {read=FOnTimer, write=FOnTimer};
 	__property TPromptCloseEvent OnClose = {read=FOnClose, write=FOnClose};
 	__property Classes::TNotifyEvent OnBeforeShow = {read=FOnBeforeShow, write=FOnBeforeShow};
@@ -209,9 +212,9 @@ extern PACKAGE System::ResourceString _SShowNextTime;
 #define Elpromptdlg_SShowNextTime System::LoadResourceString(&Elpromptdlg::_SShowNextTime)
 extern PACKAGE System::ResourceString _SDSecondsLeft;
 #define Elpromptdlg_SDSecondsLeft System::LoadResourceString(&Elpromptdlg::_SDSecondsLeft)
-extern PACKAGE Word __fastcall ElMessageDlg(const AnsiString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx);
-extern PACKAGE Word __fastcall ElMessageDlgEx2(const AnsiString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx, bool IsHTML, Htmlrender::TElHTMLLinkClickEvent OnLinkClick);
-extern PACKAGE Word __fastcall ElMessageDlgEx(const AnsiString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx, TMetaClass* FormClass);
+extern PACKAGE Word __fastcall ElMessageDlg(const WideString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx);
+extern PACKAGE Word __fastcall ElMessageDlgEx2(const WideString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx, bool IsHTML, Htmlrender::TElHTMLLinkClickEvent OnLinkClick);
+extern PACKAGE Word __fastcall ElMessageDlgEx(const WideString Msg, Dialogs::TMsgDlgType DlgType, Dialogs::TMsgDlgButtons Buttons, int HelpCtx, TMetaClass* FormClass);
 
 }	/* namespace Elpromptdlg */
 using namespace Elpromptdlg;

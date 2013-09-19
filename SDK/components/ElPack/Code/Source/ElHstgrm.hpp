@@ -14,7 +14,6 @@
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <ElImgFrm.hpp>	// Pascal unit
 #include <ExtCtrls.hpp>	// Pascal unit
 #include <Forms.hpp>	// Pascal unit
@@ -22,6 +21,7 @@
 #include <Graphics.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <Windows.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
 #include <System.hpp>	// Pascal unit
 
@@ -101,7 +101,7 @@ __published:
 	__property Graphics::TColor BgColor = {read=FBgColor, write=SetBgColor, default=0};
 	__property int BufferSize = {read=GetBufferSize, write=SetBufferSize, default=16384};
 	__property Color  = {default=16776960};
-	__property Graphics::TColor Color2 = {read=FColor2, write=SetColor2, nodefault};
+	__property Graphics::TColor Color2 = {read=FColor2, write=SetColor2, default=65280};
 	__property Constraints ;
 	__property DockOrientation ;
 	__property THistoDoubleMode DoubleMode = {read=FDoubleMode, write=SetDoubleMode, nodefault};
@@ -135,7 +135,7 @@ __published:
 	__property bool VGrid = {read=FVGrid, write=SetVGrid, default=0};
 	__property Visible  = {default=1};
 	__property Width  = {default=100};
-	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, nodefault};
+	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, default=1};
 };
 
 

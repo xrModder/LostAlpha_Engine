@@ -30,12 +30,6 @@
 namespace Htmlrender
 {
 //-- type declarations -------------------------------------------------------
-typedef TElWideStrings TElFStrings;
-;
-
-typedef TElWideStringList TElFStringList;
-;
-
 typedef WideString TElFString;
 
 typedef void __fastcall (__closure *TElHTMLImageNeededEvent)(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
@@ -92,7 +86,7 @@ class PASCALIMPLEMENTATION TElHTMLData : public System::TObject
 {
 	typedef System::TObject inherited;
 	
-private:
+protected:
 	TElHTMLRender* FRender;
 	Graphics::TColor FLinkColor;
 	Graphics::TColor FDefaultColor;
@@ -106,6 +100,10 @@ private:
 	Graphics::TColor FHighlightBgColor;
 	Graphics::TColor FHighlightColor;
 	TElHTMLItem* FSelectedItem;
+	#pragma pack(push, 1)
+	Types::TRect FRect;
+	#pragma pack(pop)
+	
 	#pragma pack(push, 1)
 	tagSIZE FTextSize;
 	#pragma pack(pop)
@@ -128,6 +126,7 @@ public:
 	__property Graphics::TColor HighlightBgColor = {read=FHighlightBgColor, write=FHighlightBgColor, nodefault};
 	__property Graphics::TColor HighlightColor = {read=FHighlightColor, write=FHighlightColor, nodefault};
 	__property TElHTMLItem* SelectedItem = {read=FSelectedItem, write=FSelectedItem};
+	__property Types::TRect Rect = {read=FRect, write=FRect};
 };
 
 

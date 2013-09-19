@@ -41,11 +41,7 @@
 namespace Ellistbox
 {
 //-- type declarations -------------------------------------------------------
-typedef TElWideStrings TElFStrings;
-;
-
-typedef TElWideStringList TElFStringList;
-;
+typedef void __fastcall (__closure *TDrawTextEvent)(Graphics::TCanvas* ACanvas, int Index, Types::TRect &Rect, int Flags);
 
 typedef int TIntArray[536870911];
 
@@ -109,6 +105,13 @@ protected:
 	int FSaveTopIndex;
 	int FSaveItemIndex;
 	WideString FHint;
+	TDrawTextEvent FOnDrawText;
+	Stdctrls::TListBoxStyle FStyle;
+	Stdctrls::TDrawItemEvent FOnDrawItem;
+	Stdctrls::TMeasureItemEvent FOnMeasureItem;
+	bool FUseSelectedFont;
+	Graphics::TColor FSelectedFontColor;
+	void __fastcall SetStyle(Stdctrls::TListBoxStyle Value);
 	void __fastcall SetActiveBorderType(const Elvclutils::TElFlatBorderType Value);
 	void __fastcall SetBackground(const Graphics::TBitmap* Value);
 	void __fastcall SetBorderSides(Elvclutils::TElBorderSides Value);
@@ -140,7 +143,7 @@ protected:
 	void __fastcall IntMouseMove(short XPos, short YPos);
 	MESSAGE void __fastcall LBGetTopIndex(Messages::TMessage &Msg);
 	void __fastcall OnLineHintTimer(System::TObject* Sender);
-	void __fastcall ResetHorizontalExtent(void);
+	virtual void __fastcall ResetHorizontalExtent(void);
 	void __fastcall SelectedFontChanged(System::TObject* Sender);
 	HIDESBASE MESSAGE void __fastcall WMEraseBkgnd(Messages::TWMEraseBkgnd &Msg);
 	HIDESBASE MESSAGE void __fastcall WMHScroll(Messages::TMessage &Message);
@@ -153,11 +156,12 @@ protected:
 	HIDESBASE MESSAGE void __fastcall WMVScroll(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall WMWindowPosChanged(Messages::TWMWindowPosMsg &Message);
 	void __fastcall ResetHorizontalExtent1(void);
-	void __fastcall SetHorizontalExtent(void);
+	virtual void __fastcall SetHorizontalExtent(void);
 	void __fastcall SetColumnWidth(void);
 	HIDESBASE MESSAGE void __fastcall CMCtl3DChanged(Messages::TMessage &Message);
 	MESSAGE void __fastcall CNCommand(Messages::TWMCommand &Message);
 	MESSAGE void __fastcall CNDrawItem(Messages::TWMDrawItem &Message);
+	MESSAGE void __fastcall CNMeasureItem(Messages::TWMMeasureItem &Message);
 	HIDESBASE MESSAGE void __fastcall WMLButtonDown(Messages::TWMMouse &Message);
 	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Message);
 	int __fastcall GetItemHeight(void);
@@ -186,7 +190,7 @@ protected:
 	virtual void __fastcall CreateThemeHandle(void);
 	virtual void __fastcall CreateWnd(void);
 	virtual void __fastcall DestroyWnd(void);
-	void __fastcall DrawItem(int Index, const Types::TRect &R, Windows::TOwnerDrawState State);
+	virtual void __fastcall DrawItem(int Index, const Types::TRect &R, Windows::TOwnerDrawState State);
 	virtual void __fastcall FreeThemeHandle(void);
 	virtual int __fastcall GetItemWidth(int Index);
 	virtual int __fastcall GetParentCtlHeight(void);
@@ -222,6 +226,10 @@ protected:
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
 	void __fastcall SetHint(WideString Value);
 	void __fastcall ItemsChange(System::TObject* Sender);
+	virtual void __fastcall DoDrawText(Graphics::TCanvas* ACanvas, const WideString ACaption, Types::TRect &Rect, int Flags);
+	virtual void __fastcall MeasureItem(int Index, int &Height);
+	void __fastcall SetUseSelectedFont(bool Value);
+	void __fastcall SetSelectedFontColor(Graphics::TColor Value);
 	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, default=1};
 	__property int Columns = {read=FColumns, write=SetColumns, default=0};
 	__property bool ExtendedSelect = {read=FExtendedSelect, write=SetExtendedSelect, default=1};
@@ -257,6 +265,9 @@ protected:
 	__property bool ShowCheckBox = {read=FShowCheckBox, write=SetShowCheckBox, default=0};
 	__property bool AllowGrayed = {read=FAllowGrayed, write=SetAllowGrayed, default=1};
 	__property Controls::TImageList* Images = {read=FImages, write=SetImages};
+	__property Stdctrls::TListBoxStyle Style = {read=FStyle, write=SetStyle, default=0};
+	__property bool UseSelectedFont = {read=FUseSelectedFont, write=SetUseSelectedFont, default=0};
+	__property Graphics::TColor SelectedFontColor = {read=FSelectedFontColor, write=SetSelectedFontColor, default=-2147483634};
 	
 public:
 	__fastcall virtual TCustomElListBox(Classes::TComponent* AOwner);
@@ -268,6 +279,9 @@ public:
 	__property bool Selected[int Index] = {read=GetSelected, write=SetSelected};
 	__property Stdctrls::TCheckBoxState State[int Index] = {read=GetState, write=SetState};
 	__property int ImageIndex[int Index] = {read=GetImageIndex, write=SetImageIndex};
+	__property TDrawTextEvent OnDrawText = {read=FOnDrawText, write=FOnDrawText};
+	__property Stdctrls::TDrawItemEvent OnDrawItem = {read=FOnDrawItem, write=FOnDrawItem};
+	__property Stdctrls::TMeasureItemEvent OnMeasureItem = {read=FOnMeasureItem, write=FOnMeasureItem};
 	
 __published:
 	__property WideString Hint = {read=FHint, write=SetHint};
@@ -358,6 +372,7 @@ __published:
 	__property Transparent  = {default=0};
 	__property TransparentSelection  = {default=0};
 	__property UseBackground  = {default=0};
+	__property UseSelectedFont  = {default=0};
 	__property UseXPThemes  = {default=1};
 	__property TabStop  = {default=1};
 	__property ParentFont  = {default=1};
@@ -395,6 +410,9 @@ __published:
 	__property ShowHint ;
 	__property TabOrder  = {default=-1};
 	__property Visible  = {default=1};
+	__property Style  = {default=0};
+	__property OnDrawItem ;
+	__property OnMeasureItem ;
 public:
 	#pragma option push -w-inl
 	/* TCustomElListBox.Create */ inline __fastcall virtual TElListBox(Classes::TComponent* AOwner) : TCustomElListBox(AOwner) { }

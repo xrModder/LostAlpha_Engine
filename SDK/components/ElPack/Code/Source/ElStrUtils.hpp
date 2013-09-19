@@ -31,6 +31,26 @@ enum ElStrUtils__1 { wrfReplaceAll, wrfIgnoreCase };
 
 typedef Set<ElStrUtils__1, wrfReplaceAll, wrfIgnoreCase>  TWideReplaceFlags;
 
+typedef unsigned UTF32;
+
+typedef Word UTF16;
+
+typedef Byte UTF8;
+
+typedef unsigned *pUTF32;
+
+typedef Word *pUTF16;
+
+typedef Byte *pUTF8;
+
+#pragma option push -b-
+enum ConversionResult { conversionOK, sourceExhausted, targetExhausted, sourceIllegal };
+#pragma option pop
+
+#pragma option push -b-
+enum ConversionFlags { strictConversion, lenientConversion };
+#pragma option pop
+
 //-- var, const, procedure ---------------------------------------------------
 #define oleaut "oleaut32.dll"
 extern "C" wchar_t * __stdcall SysAllocStringLen(wchar_t * P, int Len);
@@ -39,6 +59,20 @@ extern "C" int __stdcall SysStringLen(wchar_t * S);
 extern PACKAGE bool doti;
 #define SPathDelimiters "/\\"
 #define SWidePathDelimiters L"/\\"
+extern PACKAGE unsigned UNI_REPLACEMENT_CHAR;
+extern PACKAGE unsigned UNI_MAX_BMP;
+extern PACKAGE unsigned UNI_MAX_UTF16;
+extern PACKAGE unsigned UNI_MAX_UTF32;
+extern PACKAGE int halfShift;
+extern PACKAGE unsigned halfBase;
+extern PACKAGE unsigned halfMask;
+extern PACKAGE unsigned UNI_SUR_HIGH_START;
+extern PACKAGE unsigned UNI_SUR_HIGH_END;
+extern PACKAGE unsigned UNI_SUR_LOW_START;
+extern PACKAGE unsigned UNI_SUR_LOW_END;
+extern PACKAGE Byte trailingBytesForUTF8[256];
+extern PACKAGE unsigned offsetsFromUTF8[6];
+extern PACKAGE Byte firstByteMark[7];
 extern PACKAGE AnsiString __fastcall IntToStrFmt(int value);
 extern PACKAGE AnsiString __fastcall FloatToStrFmt(Extended value, int decims);
 extern PACKAGE AnsiString __fastcall IntToStrPad(int value, int MinSize);
@@ -69,6 +103,7 @@ extern PACKAGE bool __fastcall IsAlphaStr(const AnsiString S);
 extern PACKAGE bool __fastcall IsIdentStr(const AnsiString S);
 extern PACKAGE AnsiString __fastcall ExtractStr(AnsiString &S, int SPos, int SLen);
 extern PACKAGE int __fastcall LeftBreak(AnsiString S, int Pos);
+extern PACKAGE AnsiString __fastcall EscapeURLString(AnsiString aString, char EscapeChar);
 extern PACKAGE AnsiString __fastcall EscapeString(AnsiString aString, AnsiString UnsafeChars, char EscapeChar);
 extern PACKAGE AnsiString __fastcall UnEscapeString(AnsiString aString, char EscapeChar);
 extern PACKAGE bool __fastcall StrStartsWith(char * Source, char * Seq);
@@ -83,6 +118,7 @@ extern PACKAGE WideString __fastcall uni2uppers(WideString s);
 extern PACKAGE WideString __fastcall uni2lowers(WideString s);
 extern PACKAGE WideString __fastcall uni2upperf(WideString s);
 extern PACKAGE WideString __fastcall uni2lowerf(WideString s);
+extern PACKAGE AnsiString __fastcall CreateUnicodeHintString(WideString Value);
 extern PACKAGE wchar_t * __fastcall WideStringDup(WideString S);
 extern PACKAGE int __fastcall WidePos(const WideString Substr, const WideString S);
 extern PACKAGE wchar_t * __fastcall WideStrScan(const wchar_t * Str, wchar_t Chr);
@@ -135,6 +171,9 @@ extern PACKAGE void __fastcall TStrDelete(WideString &S, int SPos, int SLen);
 extern PACKAGE WideString __fastcall TStrExtractStr(WideString &S, int SPos, int SLen);
 extern PACKAGE void __fastcall SetTStr(WideString &S, PElFChar Buffer, int Len);
 extern PACKAGE AnsiString __fastcall GetCharRangeString(char FirstChar, char LastChar);
+extern PACKAGE ConversionResult __fastcall ConvertUTF16toUTF8(WideString &source, unsigned sourcelen, AnsiString &target, unsigned targetlen, ConversionFlags flags);
+extern PACKAGE ConversionResult __fastcall ConvertUTF8toUTF16(AnsiString &source, unsigned sourcelen, WideString &target, unsigned targetlen, ConversionFlags flags);
+extern PACKAGE bool __fastcall isLegalUTF8Sequence(AnsiString source, unsigned sourcelen);
 
 }	/* namespace Elstrutils */
 using namespace Elstrutils;

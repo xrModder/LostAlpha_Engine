@@ -98,6 +98,7 @@ protected:
 	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation operation);
 	void __fastcall SetKeepWithinWindow(bool Value);
 	void __fastcall SetAutoAdjustLocation(bool Value);
+	__property TElMousehintLocations Locations = {read=FLocations, write=FLocations, nodefault};
 	
 public:
 	__fastcall virtual TElMouseHint(Classes::TComponent* AOwner);

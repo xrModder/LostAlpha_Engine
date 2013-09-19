@@ -107,7 +107,7 @@ protected:
 	void __fastcall SetMinValue(int newValue);
 	void __fastcall SetAllowEdit(bool newValue);
 	void __fastcall SetIncrement(int newValue);
-	HIDESBASE void __fastcall SetEditRect(void);
+	virtual void __fastcall SetEditRect(const Types::TRect &Value);
 	HIDESBASE MESSAGE void __fastcall WMKeyDown(Messages::TWMKey &Msg);
 	HIDESBASE MESSAGE void __fastcall CMEnter(Messages::TWMNoParams &Msg);
 	HIDESBASE MESSAGE void __fastcall CMExit(Messages::TWMNoParams &Msg);
@@ -164,8 +164,8 @@ __published:
 	__property int MaxValue = {read=FMaxValue, write=SetMaxValue, default=100};
 	__property int MinValue = {read=FMinValue, write=SetMinValue, default=0};
 	__property bool AllowEdit = {read=FAllowEdit, write=SetAllowEdit, default=1};
-	__property int Increment = {read=FIncrement, write=SetIncrement, nodefault};
-	__property int LargeIncrement = {read=FLargeIncrement, write=FLargeIncrement, nodefault};
+	__property int Increment = {read=FIncrement, write=SetIncrement, default=1};
+	__property int LargeIncrement = {read=FLargeIncrement, write=FLargeIncrement, default=10};
 	__property int ButtonWidth = {read=FButtonWidth, write=SetButtonWidth, stored=FUseButtonWidth, nodefault};
 	__property bool UseButtonWidth = {read=FUseButtonWidth, write=SetUseButtonWidth, default=0};
 	__property Elspinbtn::TElSpinBtnType ButtonType = {read=GetButtonType, write=SetButtonType, default=0};
@@ -186,6 +186,7 @@ __published:
 	__property HandleDialogKeys  = {default=0};
 	__property HideSelection  = {default=1};
 	__property ImageForm ;
+	__property ChangeDisabledText  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;
@@ -275,7 +276,6 @@ protected:
 	bool FValueUndefined;
 	bool FButtonThinFrame;
 	void __fastcall SetAllowEdit(bool newValue);
-	HIDESBASE void __fastcall SetEditRect(void);
 	void __fastcall SetIncrement(double newValue);
 	void __fastcall SetMaxValue(double newValue);
 	void __fastcall SetMinValue(double newValue);
@@ -320,6 +320,7 @@ protected:
 	void __fastcall SetButtonThinFrame(bool Value);
 	virtual void __fastcall SetLineBorderActiveColor(Graphics::TColor Value);
 	virtual void __fastcall SetLineBorderInactiveColor(Graphics::TColor Value);
+	virtual void __fastcall SetEditRect(const Types::TRect &Value);
 	
 public:
 	__fastcall virtual TElFloatSpinEdit(Classes::TComponent* AOwner);
@@ -355,6 +356,7 @@ __published:
 	__property HandleDialogKeys  = {default=0};
 	__property HideSelection  = {default=1};
 	__property ImageForm ;
+	__property ChangeDisabledText  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;

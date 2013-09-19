@@ -25,21 +25,6 @@
 namespace Elunicodestrings
 {
 //-- type declarations -------------------------------------------------------
-struct TWideStringItem;
-typedef TWideStringItem *PWideStringItem;
-
-#pragma pack(push, 4)
-struct TWideStringItem
-{
-	WideString FString;
-	System::TObject* FObject;
-} ;
-#pragma pack(pop)
-
-typedef TWideStringItem TWideStringItemList[134217728];
-
-typedef TWideStringItem *PWideStringItemList;
-
 class DELPHICLASS TElWideStrings;
 class PASCALIMPLEMENTATION TElWideStrings : public Classes::TPersistent 
 {
@@ -50,6 +35,8 @@ public:
 	
 private:
 	int FUpdateCount;
+	bool FSaveUnicode;
+	bool FSaved;
 	WideString __fastcall GetCommaText();
 	WideString __fastcall GetName(int Index);
 	WideString __fastcall GetValue(const WideString Name);
@@ -57,6 +44,7 @@ private:
 	void __fastcall SetCommaText(WideString Value);
 	void __fastcall SetValue(const WideString Name, const WideString Value);
 	void __fastcall WriteData(Classes::TWriter* Writer);
+	void __fastcall StrSwapByteOrder(wchar_t * Str);
 	
 protected:
 	virtual void __fastcall DefineProperties(Classes::TFiler* Filer);
@@ -103,6 +91,7 @@ public:
 	__property int Count = {read=GetCount, nodefault};
 	__property WideString Names[int Index] = {read=GetName};
 	__property System::TObject* Objects[int Index] = {read=GetObject, write=PutObject};
+	__property bool SaveUnicode = {read=FSaveUnicode, write=FSaveUnicode, nodefault};
 	__property WideString Strings[int Index] = {read=Get, write=Put/*, default*/};
 	__property WideString Text = {read=GetTextStr, write=SetTextStr};
 	__property WideString Values[WideString Name] = {read=GetValue, write=SetValue};
@@ -113,8 +102,21 @@ public:
 	
 };
 
+typedef TElWideStrings TElFStrings;
 
 class DELPHICLASS TElWideStringList;
+#pragma pack(push, 4)
+struct TWideStringItem
+{
+	WideString FString;
+	System::TObject* FObject;
+} ;
+#pragma pack(pop)
+
+typedef TWideStringItem TWideStringItemList[134217728];
+
+typedef TWideStringItem *PWideStringItemList;
+
 typedef int __fastcall (*TElWideStringListSortCompare)(TElWideStringList* List, int Index1, int Index2);
 
 class PASCALIMPLEMENTATION TElWideStringList : public TElWideStrings 
@@ -169,6 +171,9 @@ public:
 	
 };
 
+typedef TElWideStringList TElFStringList;
+
+typedef TWideStringItem *PWideStringItem;
 
 class DELPHICLASS TElWideStringArray;
 class PASCALIMPLEMENTATION TElWideStringArray : public TElWideStrings 
@@ -227,6 +232,8 @@ __published:
 
 
 //-- var, const, procedure ---------------------------------------------------
+static const wchar_t U_LSB_FIRST = wchar_t(0xfeff);
+static const wchar_t U_MSB_FIRST = wchar_t(0xfffe);
 
 }	/* namespace Elunicodestrings */
 using namespace Elunicodestrings;

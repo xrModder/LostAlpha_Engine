@@ -20,6 +20,7 @@
 #include <ElXPThemedControl.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <Menus.hpp>	// Pascal unit
 #include <ExtCtrls.hpp>	// Pascal unit
 #include <Forms.hpp>	// Pascal unit
@@ -323,6 +324,7 @@ __published:
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;
+	__property OnStartDrag ;
 	__property Anchors  = {default=3};
 	__property Action ;
 	__property Constraints ;

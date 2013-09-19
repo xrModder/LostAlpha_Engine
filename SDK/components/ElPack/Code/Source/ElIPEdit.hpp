@@ -125,6 +125,7 @@ private:
 protected:
 	Graphics::TColor FLineBorderActiveColor;
 	Graphics::TColor FLineBorderInactiveColor;
+	bool FChangeDisabledText;
 	void __fastcall DrawFlatBorder(HDC DC);
 	virtual void __fastcall AdjustEditorPositions(void);
 	HIDESBASE MESSAGE void __fastcall CMColorChanged(Messages::TMessage &Message);
@@ -154,6 +155,7 @@ protected:
 	void __fastcall SetLineBorderInactiveColor(Graphics::TColor Value);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
+	void __fastcall SetChangeDisabledText(bool Value);
 	
 public:
 	__fastcall virtual TElIPEdit(Classes::TComponent* AOwner);
@@ -168,7 +170,7 @@ __published:
 	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, default=1};
 	__property bool Flat = {read=FFlat, write=SetFlat, default=0};
 	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=0};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
 	__property Byte Part1 = {read=GetPart, write=SetPart, index=1, default=0};
 	__property Byte Part2 = {read=GetPart, write=SetPart, index=2, default=0};
 	__property Byte Part3 = {read=GetPart, write=SetPart, index=3, default=0};
@@ -181,24 +183,25 @@ __published:
 	__property Elvclutils::TElBorderSides BorderSides = {read=FBorderSides, write=SetBorderSides, nodefault};
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=0};
 	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
 	__property Anchors  = {default=3};
 	__property Color  = {default=-2147483643};
 	__property Constraints ;
-	__property Ctl3D ;
+	__property Ctl3D  = {default=1};
 	__property DragCursor  = {default=-12};
 	__property DragKind  = {default=0};
 	__property DragMode  = {default=0};
 	__property Enabled  = {default=1};
 	__property Font ;
-	__property ParentColor  = {default=1};
+	__property ParentColor  = {default=0};
 	__property ParentCtl3D  = {default=1};
 	__property ParentFont  = {default=1};
 	__property ParentShowHint  = {default=1};
 	__property PopupMenu ;
 	__property ShowHint ;
 	__property TabOrder  = {default=-1};
-	__property TabStop  = {default=0};
+	__property TabStop  = {default=1};
 	__property Visible  = {default=1};
 	__property UseXPThemes  = {default=1};
 	__property OnClick ;

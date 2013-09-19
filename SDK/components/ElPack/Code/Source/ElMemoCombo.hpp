@@ -108,18 +108,17 @@ private:
 protected:
 	virtual void __fastcall TriggerDropEvent(bool &Dropped, AnsiString &Text);
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);
-	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Message);
+	virtual void __fastcall CreateWnd(void);
 	
 public:
 	__fastcall virtual TElMemoCombo(Classes::TComponent* AOwner);
 	__fastcall virtual ~TElMemoCombo(void);
-	virtual void __fastcall CreateWnd(void);
 	void __fastcall Drop(bool Dropped);
 	Elactrls::TElAdvancedMemo* __fastcall GetMemo(void);
 	
 __published:
 	__property bool DropAutoWidth = {read=FDropAutoWidth, write=SetDropAutoWidth, default=1};
-	__property int DropHeight = {read=FDropHeight, write=SetDropHeight, nodefault};
+	__property int DropHeight = {read=FDropHeight, write=SetDropHeight, default=80};
 	__property int DropWidth = {read=FDropWidth, write=SetDropWidth, nodefault};
 	__property bool Dropped = {read=FDropped, write=SetDropped, nodefault};
 	__property TElMemoComboDropEvent OnDrop = {read=FOnDrop, write=FOnDrop};
@@ -148,7 +147,7 @@ __published:
 	__property TabSpaces  = {default=4};
 	__property Lines  = {stored=false};
 	__property ImageForm ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
@@ -156,7 +155,7 @@ __published:
 	__property OnChange ;
 	__property OnSelectionChange ;
 	__property Text ;
-	__property Multiline ;
+	__property Multiline  = {default=1};
 	__property Align  = {default=0};
 	__property ActiveBorderType  = {default=1};
 	__property AutoSelect  = {default=0};
@@ -167,7 +166,7 @@ __published:
 	__property ButtonSoundMap ;
 	__property ButtonColor ;
 	__property ButtonHint ;
-	__property ButtonWidth ;
+	__property ButtonWidth  = {default=15};
 	__property Color  = {default=-2147483643};
 	__property Ctl3D ;
 	__property DragCursor  = {default=-12};

@@ -84,6 +84,7 @@ private:
 	Controls::TMouseEvent FOnMouseDown;
 	Controls::TMouseEvent FOnMouseUp;
 	Controls::TMouseMoveEvent FOnMouseMove;
+	Imglist::TChangeLink* StaticChangeLink;
 	Imglist::TChangeLink* MyChangeLink;
 	bool FSet;
 	_NOTIFYICONDATAA FIconData;
@@ -100,6 +101,10 @@ private:
 	bool FExtFormInt;
 	bool FNoShow;
 	Controls::TMouseEvent FOnDblClickEx;
+	Controls::TImageList* FStaticIcons;
+	bool FAnimateOnce;
+	bool FUseStaticIcons;
+	int FStaticIconIndex;
 	void *NewMenuProc;
 	void *OldMenuProc;
 	void __fastcall SetExtForm(AnsiString newValue);
@@ -116,9 +121,10 @@ private:
 	void __fastcall SetHint(AnsiString newValue);
 	bool __fastcall DoPopupMenu(int X, int Y);
 	bool __fastcall DoDblClick(bool Perform);
+	void __fastcall SetStaticIcons(Controls::TImageList* Value);
+	void __fastcall OnStaticIconsChange(System::TObject* Sender);
 	
 protected:
-	bool FAnimateOnce;
 	virtual void __fastcall TriggerClickEvent(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
 	virtual void __fastcall TriggerDblClickEvent(void);
 	virtual void __fastcall TriggerMouseDownEvent(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
@@ -139,6 +145,10 @@ protected:
 	virtual void __fastcall TriggerBeforeExtendedHintShowEvent(bool &DoShow);
 	TMetaClass* __fastcall FindExtForm(AnsiString Name);
 	virtual void __fastcall TriggerDblClickExEvent(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
+	void __fastcall SetUseStaticIcons(bool Value);
+	int __fastcall GetStaticIconIndex(void);
+	void __fastcall SetStaticIconIndex(int Value);
+	void __fastcall UpdateStaticIcon(void);
 	
 public:
 	__fastcall virtual TElTrayIcon(Classes::TComponent* AOwner);
@@ -173,6 +183,9 @@ __published:
 	__property TElTrayExtHintCreateEvent OnExtHintFormCreate = {read=FOnExtHintFormCreate, write=FOnExtHintFormCreate};
 	__property Controls::TMouseEvent OnDblClickEx = {read=FOnDblClickEx, write=FOnDblClickEx};
 	__property bool AnimateOnce = {read=FAnimateOnce, write=FAnimateOnce, default=0};
+	__property Controls::TImageList* StaticIcons = {read=FStaticIcons, write=SetStaticIcons};
+	__property bool UseStaticIcons = {read=FUseStaticIcons, write=SetUseStaticIcons, default=0};
+	__property int StaticIconIndex = {read=GetStaticIconIndex, write=SetStaticIconIndex, default=-1};
 };
 
 

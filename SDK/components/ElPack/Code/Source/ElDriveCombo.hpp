@@ -70,7 +70,7 @@ __published:
 	__property int Items = {read=FDummyInt, nodefault};
 	__property int Style = {read=FDummyInt, nodefault};
 	__property int ItemHeight = {read=FDummyInt, nodefault};
-	__property Elvclutils::TElTextCase TextCase = {read=FTextCase, write=SetTextCase, nodefault};
+	__property Elvclutils::TElTextCase TextCase = {read=FTextCase, write=SetTextCase, default=2};
 	__property TElDriveComboOptions Options = {read=FOptions, write=SetOptions, nodefault};
 public:
 	#pragma option push -w-inl

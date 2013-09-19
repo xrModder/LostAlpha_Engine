@@ -124,8 +124,8 @@ __published:
 	__property int MinSizeTopLeft = {read=FMinSizeTopLeft, write=SetMinSizeTopLeft, default=20};
 	__property int MinSizeBottomRight = {read=FMinSizeBottomRight, write=FMinSizeBottomRight, default=20};
 	__property bool AutoSnap = {read=FAutoSnap, write=FAutoSnap, default=0};
-	__property bool SnapTopLeft = {read=FSnapTopLeft, write=SetSnapTopLeft, nodefault};
-	__property bool SnapBottomRight = {read=FSnapBottomRight, write=SetSnapBottomRight, nodefault};
+	__property bool SnapTopLeft = {read=FSnapTopLeft, write=SetSnapTopLeft, default=1};
+	__property bool SnapBottomRight = {read=FSnapBottomRight, write=SetSnapBottomRight, default=1};
 	__property Controls::TControl* ControlTopLeft = {read=FControlTopLeft, write=SetControlTopLeft};
 	__property Controls::TControl* ControlBottomRight = {read=FControlBottomRight, write=SetControlBottomRight};
 	__property bool AutoHide = {read=FAutoHide, write=SetAutoHide, nodefault};

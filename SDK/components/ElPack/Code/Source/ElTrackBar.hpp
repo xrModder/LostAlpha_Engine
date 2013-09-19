@@ -210,8 +210,8 @@ __published:
 	__property int Position = {read=GetPosition, write=SetPosition, default=0};
 	__property bool ShowTrackHint = {read=FShowTrackHint, write=FShowTrackHint, default=0};
 	__property TElTrackTickPosition TickPosition = {read=FTickPosition, write=SetTickPosition, default=1};
-	__property int OffsetLeft = {read=FOffsetLeft, write=SetOffsetLeft, default=0};
-	__property int OffsetRight = {read=FOffsetRight, write=SetOffsetRight, default=0};
+	__property int OffsetLeft = {read=FOffsetLeft, write=SetOffsetLeft, default=5};
+	__property int OffsetRight = {read=FOffsetRight, write=SetOffsetRight, default=5};
 	__property bool Transparent = {read=FTransparent, write=SetTransparent, default=0};
 	__property bool OwnerDraw = {read=FOwnerDraw, write=SetOwnerDraw, default=0};
 	__property TElTrackThumbType ThumbType = {read=FThumbType, write=SetThumbType, default=0};
@@ -226,7 +226,7 @@ __published:
 	__property int TrackWidth = {read=FTrackWidth, write=SetTrackWidth, default=10};
 	__property Graphics::TColor TrackSelColor = {read=FTrackSelColor, write=SetTrackSelColor, default=-2147483635};
 	__property bool ShowSelection = {read=FShowSelection, write=SetShowSelection, default=0};
-	__property int SelectionMarkSize = {read=FSelectionMarkSize, write=SetSelectionMarkSize, default=5};
+	__property int SelectionMarkSize = {read=FSelectionMarkSize, write=SetSelectionMarkSize, default=3};
 	__property int ThumbWidth = {read=FThumbWidth, write=SetThumbWidth, default=9};
 	__property bool ThumbVisible = {read=FThumbVisible, write=SetThumbVisible, default=1};
 	__property TElTrackDrawPartEvent OnDrawPart = {read=FOnDrawPart, write=FOnDrawPart};

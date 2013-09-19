@@ -20,6 +20,7 @@ namespace Elshutdownwatcher
 //-- type declarations -------------------------------------------------------
 //-- var, const, procedure ---------------------------------------------------
 extern PACKAGE bool IsShuttingDown;
+extern PACKAGE bool WatcherActive;
 
 }	/* namespace Elshutdownwatcher */
 using namespace Elshutdownwatcher;

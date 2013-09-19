@@ -38,6 +38,10 @@
 namespace Elnameedits
 {
 //-- type declarations -------------------------------------------------------
+typedef void __fastcall (__closure *TBeforeFileDialogEvent)(System::TObject* Sender, Dialogs::TOpenDialog* Dialog);
+
+typedef void __fastcall (__closure *TBeforeFolderDialogEvent)(System::TObject* Sender, Elfolderdlg::TElFolderDialog* Dialog);
+
 class DELPHICLASS TElFolderNameEdit;
 class PASCALIMPLEMENTATION TElFolderNameEdit : public Elbtnedit::TCustomElButtonEdit 
 {
@@ -54,9 +58,17 @@ private:
 	
 protected:
 	AnsiString FDialogTitle;
+	Classes::TNotifyEvent FOnDialogExecute;
+	TBeforeFolderDialogEvent FOnBeforeDialogExecute;
 	void __fastcall BtnClick(System::TObject* Sender);
 	virtual void __fastcall CreateHandle(void);
 	virtual void __fastcall Loaded(void);
+	void __fastcall SetStatusText(const AnsiString Value);
+	AnsiString __fastcall GetStatusText();
+	AnsiString __fastcall GetCustomRootFolder();
+	void __fastcall SetCustomRootFolder(const AnsiString Value);
+	virtual void __fastcall TriggerBeforeDialogExecute(Elfolderdlg::TElFolderDialog* Dialog);
+	virtual void __fastcall TriggerDialogExecute(void);
 	
 public:
 	__fastcall virtual TElFolderNameEdit(Classes::TComponent* AOwner);
@@ -64,9 +76,14 @@ public:
 	
 __published:
 	__property Elfolderdlg::TBrowseForFolderOptions Options = {read=GetOptions, write=SetOptions, nodefault};
-	__property AnsiString Title = {read=GetTitle, write=SetTitle};
+	__property AnsiString Title = {read=GetTitle, write=SetTitle, stored=false};
 	__property Elshellutils::TShellFolders RootFolder = {read=GetRootFolder, write=SetRootFolder, nodefault};
-	__property AnsiString DialogTitle = {read=FDialogTitle, write=FDialogTitle};
+	__property AnsiString DialogTitle = {read=GetTitle, write=SetTitle};
+	__property AnsiString StatusText = {read=GetStatusText, write=SetStatusText};
+	__property AnsiString CustomRootFolder = {read=GetCustomRootFolder, write=SetCustomRootFolder};
+	__property TBeforeFolderDialogEvent OnBeforeDialogExecute = {read=FOnBeforeDialogExecute, write=FOnBeforeDialogExecute};
+	__property Classes::TNotifyEvent OnDialogExecute = {read=FOnDialogExecute, write=FOnDialogExecute};
+	__property ButtonVisible ;
 	__property TopMargin  = {default=1};
 	__property LeftMargin  = {default=1};
 	__property RightMargin  = {default=2};
@@ -90,7 +107,8 @@ __published:
 	__property UseBackground  = {default=0};
 	__property Alignment ;
 	__property AutoSelect  = {default=0};
-	__property Multiline ;
+	__property Multiline  = {default=0};
+	__property ChangeDisabledText  = {default=0};
 	__property Background ;
 	__property ButtonClickSound ;
 	__property ButtonDownSound ;
@@ -202,9 +220,14 @@ private:
 protected:
 	AnsiString FDialogTitle;
 	TElFileDialogType FDialogType;
+	Classes::TNotifyEvent FOnDialogExecute;
+	bool FParseParameters;
+	TBeforeFileDialogEvent FOnBeforeDialogExecute;
 	void __fastcall BtnClick(System::TObject* Sender);
 	virtual void __fastcall CreateHandle(void);
 	virtual void __fastcall Loaded(void);
+	virtual void __fastcall TriggerDialogExecute(void);
+	virtual void __fastcall TriggerBeforeDialogExecute(Dialogs::TOpenDialog* Dialog);
 	
 public:
 	__fastcall virtual TElFileNameEdit(Classes::TComponent* AOwner);
@@ -218,9 +241,13 @@ __published:
 	__property int FilterIndex = {read=GetFilterIndex, write=SetFilterIndex, default=1};
 	__property AnsiString InitialDir = {read=GetInitialDir, write=SetInitialDir};
 	__property Dialogs::TOpenOptions Options = {read=GetOptions, write=SetOptions, default=524292};
-	__property AnsiString Title = {read=GetTitle, write=SetTitle};
-	__property AnsiString DialogTitle = {read=FDialogTitle, write=FDialogTitle};
+	__property AnsiString Title = {read=GetTitle, write=SetTitle, stored=false};
+	__property AnsiString DialogTitle = {read=GetTitle, write=SetTitle};
 	__property TElFileDialogType DialogType = {read=FDialogType, write=FDialogType, nodefault};
+	__property bool ParseParameters = {read=FParseParameters, write=FParseParameters, default=1};
+	__property Classes::TNotifyEvent OnDialogExecute = {read=FOnDialogExecute, write=FOnDialogExecute};
+	__property TBeforeFileDialogEvent OnBeforeDialogExecute = {read=FOnBeforeDialogExecute, write=FOnBeforeDialogExecute};
+	__property ButtonVisible ;
 	__property TopMargin  = {default=1};
 	__property LeftMargin  = {default=1};
 	__property RightMargin  = {default=2};
@@ -244,7 +271,8 @@ __published:
 	__property UseBackground  = {default=0};
 	__property Alignment ;
 	__property AutoSelect  = {default=0};
-	__property Multiline ;
+	__property Multiline  = {default=0};
+	__property ChangeDisabledText  = {default=0};
 	__property Background ;
 	__property ButtonClickSound ;
 	__property ButtonDownSound ;

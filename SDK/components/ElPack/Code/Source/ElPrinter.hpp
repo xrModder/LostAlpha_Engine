@@ -120,7 +120,7 @@ public:
 	void __fastcall InsertPage(int Index);
 	virtual void __fastcall Loaded(void);
 	void __fastcall NewPage(void);
-	void __fastcall Preview(void);
+	int __fastcall Preview(void);
 	void __fastcall PrintPages(int StartIndex, int EndIndex);
 	void __fastcall SavePage(AnsiString FileName, int Index);
 	int __fastcall HorzMMToPixel(int MM100s);
@@ -130,17 +130,17 @@ public:
 	__property Graphics::TMetafile* Page[int Index] = {read=GetPage, write=SetPage};
 	__property int PageCount = {read=GetPageCount, nodefault};
 	__property int PageHeight = {read=FPageHeight, nodefault};
-	__property int PageIndex = {read=FPageIndex, write=SetPageIndex, nodefault};
+	__property int PageIndex = {read=FPageIndex, write=SetPageIndex, default=-1};
 	__property int PageWidth = {read=FPageWidth, nodefault};
 	__property int PrintOffsetX = {read=FPrintOffsetX, nodefault};
 	__property int PrintOffsetY = {read=FPrintOffsetY, nodefault};
 	__property HDC PrinterDC = {read=FDC, nodefault};
 	
 __published:
-	__property int BottomMargin = {read=FBottomMargin, write=SetBottomMargin, nodefault};
-	__property int LeftMargin = {read=FLeftMargin, write=SetLeftMargin, nodefault};
-	__property int RightMargin = {read=FRightMargin, write=SetRightMargin, nodefault};
-	__property int TopMargin = {read=FTopMargin, write=SetTopMargin, nodefault};
+	__property int BottomMargin = {read=FBottomMargin, write=SetBottomMargin, default=2000};
+	__property int LeftMargin = {read=FLeftMargin, write=SetLeftMargin, default=2000};
+	__property int RightMargin = {read=FRightMargin, write=SetRightMargin, default=2000};
+	__property int TopMargin = {read=FTopMargin, write=SetTopMargin, default=2000};
 	__property AnsiString Title = {read=FTitle, write=FTitle};
 	__property TPageEvent OnAfterPage = {read=FOnAfterPage, write=FOnAfterPage};
 	__property TPageEvent OnBeforePage = {read=FOnBeforePage, write=FOnBeforePage};

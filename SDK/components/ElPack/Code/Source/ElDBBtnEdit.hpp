@@ -93,14 +93,14 @@ __published:
 	__property HideSelection  = {default=1};
 	__property TabSpaces  = {default=4};
 	__property ImageForm ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;
 	__property OnChange ;
 	__property OnSelectionChange ;
-	__property Multiline ;
+	__property Multiline  = {default=0};
 	__property Flat  = {default=0};
 	__property ActiveBorderType  = {default=1};
 	__property InactiveBorderType  = {default=3};
