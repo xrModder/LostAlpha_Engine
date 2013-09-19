@@ -204,12 +204,19 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	owner.pFontSystem->Clear		();
 	owner.pFontSystem->SetColor		(color_rgba(157,140,120,255));
 	owner.pFontSystem->SetAligment	(CGameFont::alCenter);
+
+#if 0
+	//skyloader: cop
 	back_size.set					(_w/2,670.0f*k.y);
 
 	owner.pFontSystem->OutSet		(back_size.x, back_size.y);
 	owner.pFontSystem->OutNext		(owner.ls_header);
 	owner.pFontSystem->OutNext		("");
 	owner.pFontSystem->OutNext		(owner.ls_tip_number);
+#else
+	//skyloader: as in shoc
+	owner.pFontSystem->OutI			(0.f,0.815f,owner.ls_header);
+#endif
 
 	float fTargetWidth				= 600.0f*k.x*(b_ws?0.8f:1.0f);
 	draw_multiline_text				(owner.pFontSystem, fTargetWidth, owner.ls_tip);
