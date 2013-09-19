@@ -73,8 +73,20 @@ void CEngine::ReloadSettings()
 	pSettings				= xr_new<CInifile>(si_name,TRUE);// FALSE,TRUE,TRUE);
 }
 
+
+typedef void __cdecl ttapi_Done_func(void);
+
+
 void CEngine::Destroy()
 {
     xr_delete				(pSettings);
-	if (hPSGP)	{ FreeLibrary(hPSGP); hPSGP=0; }
+
+	if (hPSGP)	
+	{ 
+		ttapi_Done_func*  ttapi_Done =	(ttapi_Done_func*) GetProcAddress(hPSGP, "ttapi_Done");
+		if (ttapi_Done)
+		ttapi_Done						();
+		FreeLibrary(hPSGP); 
+		hPSGP=0;
+	}
 }
