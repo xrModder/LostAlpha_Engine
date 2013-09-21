@@ -131,8 +131,7 @@ void CKinematics::CLBone( const CBoneData* bd, CBoneInstance &bi, const Fmatrix 
 		if ( bi.callback_overwrite() ){
 			if ( bi.callback() )	bi.callback()( &bi );
 		} else {
-	//		bi.mTransform.c = (*parent).c;
-			BuildBoneMatrix( bd, bi, parent, channel_mask );
+			bi.mTransform.c = (*parent).c;
 			if (bi.callback())
 			{
 				bi.callback()(&bi);

@@ -207,7 +207,9 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 
 	R_ASSERT		(data->find_chunk(OGF_S_BONE_NAMES));
 
-    visimask.zero	();
+	hidden_bones.zero();
+	visimask.zero	();
+
 	int dwCount 	= data->r_u32();
 	// Msg				("!!! %d bones",dwCount);
 	// if (dwCount >= 64)	Msg			("!!! More than 64 bones is a crazy thing! (%d), %s",dwCount,N);
@@ -230,7 +232,9 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 		L_parents.push_back			(buf);
 
 		data->r						(&pBone->obb,sizeof(Fobb));
-        visimask.set				(u64(1)<<ID,TRUE);
+
+		visimask.set				(u64(1)<<ID,TRUE);
+		hidden_bones.set				(u64(1)<<ID,TRUE);
 	}
 	std::sort	(bone_map_N->begin(),bone_map_N->end(),pred_sort_N);
 	std::sort	(bone_map_P->begin(),bone_map_P->end(),pred_sort_P);
@@ -373,6 +377,7 @@ void CKinematics::Copy(dxRender_Visual *P)
 	bone_map_N = pFrom->bone_map_N;
 	bone_map_P = pFrom->bone_map_P;
 	visimask   = pFrom->visimask;
+	hidden_bones = pFrom->hidden_bones;
 
 	IBoneInstances_Create	();
 
@@ -412,6 +417,7 @@ void CKinematics::Depart		()
 
 	// unmask all bones
 	visimask.zero				();
+	hidden_bones.zero			();
 	if(bones)
 	{
 		u32 count = bones->size();
@@ -419,7 +425,7 @@ void CKinematics::Depart		()
     	if (count > 64)
         	Msg("ahtung !!! %d", count);
 #endif // #ifdef DEBUG
-		for (u32 b=0; b<count; b++) visimask.set((u64(1)<<b),TRUE);
+		for (u32 b=0; b<count; b++) {visimask.set((u64(1)<<b),TRUE); hidden_bones.set((u64(1)<<b),TRUE);}
 	}
 	// visibility
 	children.insert				(children.end(),children_invisible.begin(),children_invisible.end());
@@ -471,7 +477,7 @@ void CKinematics::LL_HideBoneVisible(u16 bone_id, BOOL bRecursive)
 {
 	VERIFY				(bone_id<LL_BoneCount());      
     	u64 mask 			= u64(1)<<bone_id;
-  	hidden_bones.set		(mask,bRecursive);
+	hidden_bones.set		(mask,bRecursive);
 
 	if (!hidden_bones.is(mask))
 	{
@@ -479,9 +485,8 @@ void CKinematics::LL_HideBoneVisible(u16 bone_id, BOOL bRecursive)
 		u16 ParentID		= LL_GetData(bone_id).GetParentID();
 		CBoneInstance 	&BI	= LL_GetBoneInstance(ParentID);
 	        bone_instances[bone_id].mTransform.c = BI.mTransform.c;
-	} else {
+	} else
 		CalculateBones_Invalidate	();
-	}
 
 	bone_instances[bone_id].mRenderTransform.mul_43(bone_instances[bone_id].mTransform,(*bones)[bone_id]->m2b_transform);
 
