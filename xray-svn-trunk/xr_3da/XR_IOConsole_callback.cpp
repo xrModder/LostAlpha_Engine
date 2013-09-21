@@ -76,6 +76,8 @@ void CConsole::Find_cmd() // DIK_TAB
 	IConsole_Command* cc = find_next_cmd( ec().str_edit(), out_str );
 	if ( cc && out_str.size() )
 	{
+		LPSTR buf;
+		STRCONCAT( buf, out_str.c_str(), " " );
 		ec().set_edit( out_str.c_str() );
 	}
 }

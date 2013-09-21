@@ -32,13 +32,10 @@ struct SDrawStaticStruct :public IPureDestroyableObject
 	void			Draw();
 	void			Update();
 	CUIStatic*		wnd()		{return m_static;}
-	bool			IsActual();
-	bool operator ==(LPCSTR str){
-		return (m_name == str);
-	}
+	bool			IsActual()	const;
+	void			SetText		(LPCSTR);
 };
 
-typedef xr_vector<SDrawStaticStruct>	st_vec;
 struct SGameTypeMaps
 {
 	shared_str				m_game_type_name;
@@ -84,6 +81,8 @@ protected:
 	CUIWindow*			m_window;
 	CUIXml*				m_msgs_xml;
 
+	typedef xr_vector<SDrawStaticStruct*>	st_vec;
+	typedef st_vec::iterator				st_vec_it;
 	st_vec									m_custom_statics;
 
 public:

@@ -573,7 +573,7 @@ void CUIMiniMap::UpdateSpots()
 	for(Locations_it it=ls.begin(); it!=ls.end(); ++it)
 		(*it).location->UpdateMiniMap(this);
 }
-
+/* //skyloader: round minimap
 void  CUIMiniMap::Draw()
 {
 	u32	segments_count			= 20;
@@ -637,6 +637,7 @@ void  CUIMiniMap::Draw()
 //------------
 	CUIWindow::Draw(); //draw childs
 }
+*/
 
 bool CUIMiniMap::GetPointerTo(const Fvector2& src, float item_radius, Fvector2& pos, float& heading)
 {

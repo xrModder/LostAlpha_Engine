@@ -246,6 +246,7 @@ void					CRender::create					()
 	if (strstr(Core.Params,"-smap2560"))	o.smapsize	= 2560;
 	if (strstr(Core.Params,"-smap3072"))	o.smapsize	= 3072;
 	if (strstr(Core.Params,"-smap4096"))	o.smapsize	= 4096;
+	if (strstr(Core.Params,"-smap8192"))	o.smapsize	= 8192;
 
 	// gloss
 	char*	g			= strstr(Core.Params,"-gloss ");

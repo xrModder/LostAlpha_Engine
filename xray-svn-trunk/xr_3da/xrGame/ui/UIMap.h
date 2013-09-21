@@ -126,7 +126,7 @@ class CUIMiniMap: public CUICustomMap
 public:
 								CUIMiniMap			();
 	virtual						~CUIMiniMap			();
-	virtual void				Draw				();
+	//virtual void				Draw				();
 	virtual bool				GetPointerTo		(const Fvector2& src, float item_radius, Fvector2& pos, float& heading);//position and heading for drawing pointer to src pos
 	virtual	bool				NeedShowPointer		(Frect r);
 	virtual bool				IsRectVisible		(Frect r);
