@@ -86,7 +86,7 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	case kINVENTORY: 
 		if((!TopInputReceiver() || TopInputReceiver()==InventoryMenu) && !pActor->inventory().IsHandsOnly())
 		{
-			InventoryMenu->ShowDialog(true);
+			InventoryMenu->Show();
 			break;
 		}
 
@@ -143,7 +143,7 @@ void CUIGameSP::StartTalk(bool disable_break)
 	RemoveCustomStatic		("secondary_task");
 
 	TalkMenu->b_disable_break = disable_break;
-	TalkMenu->ShowDialog		(true);
+	TalkMenu->Show		(true);
 }
 
 
@@ -152,7 +152,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryOwner* pOther
 	if( TopInputReceiver() )		return;
 
 	UICarBodyMenu->InitCarBody		(pActorInv,  pOtherOwner);
-	UICarBodyMenu->ShowDialog		(true);
+	UICarBodyMenu->Show			();
 }
 
 void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //Deadbody search
@@ -160,7 +160,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //
 	if( TopInputReceiver() )		return;
 	
 	UICarBodyMenu->InitCarBody		(pActorInv,  pBox);
-	UICarBodyMenu->ShowDialog		(true);
+	UICarBodyMenu->Show			();
 }
 
 

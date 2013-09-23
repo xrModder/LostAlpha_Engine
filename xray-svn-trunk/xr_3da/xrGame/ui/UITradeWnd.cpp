@@ -75,7 +75,6 @@ CUITradeWnd::CUITradeWnd()
 {
 	m_uidata = xr_new<CUITradeInternal>();
 	Init();
-	Hide();
 	SetCurrentItem			(NULL);
 }
 

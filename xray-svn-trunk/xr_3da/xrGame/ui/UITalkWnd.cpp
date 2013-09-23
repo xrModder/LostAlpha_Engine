@@ -52,7 +52,6 @@ void CUITalkWnd::InitTalkWnd()
 	//Меню торговли
 	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
 	AttachChild(UITradeWnd);
-	UITradeWnd->Hide();
 
 	UITalkDialogWnd			= xr_new<CUITalkDialogWnd>();
 	UITalkDialogWnd->SetAutoDelete(true);
