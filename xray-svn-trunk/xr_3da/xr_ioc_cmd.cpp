@@ -620,8 +620,8 @@ void CCC_Register()
 	CMD4(CCC_Float,		"mouse_sens",			&psMouseSens,		0.05f, 0.6f);
 
 	// Camera
-	CMD2(CCC_Float,		"cam_inert",			&psCamInert);
-	CMD2(CCC_Float,		"cam_slide_inert",		&psCamSlideInert);
+	CMD4(CCC_Float,		"cam_inert",			&psCamInert, 	0.f,	0.5f);
+	CMD4(CCC_Float,		"cam_slide_inert",		&psCamSlideInert, 0.f,	0.5f);
 
 	CMD1(CCC_r2,		"renderer"					);
 	//psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff,			EPS_S,	2.f);

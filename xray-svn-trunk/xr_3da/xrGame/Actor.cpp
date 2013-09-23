@@ -91,7 +91,7 @@ CActor::CActor() : CEntityAlive()
 	encyclopedia_registry	= xr_new<CEncyclopediaRegistryWrapper	>();
 	game_news_registry		= xr_new<CGameNewsRegistryWrapper		>();
 	// Cameras
-	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this);
+	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this, CCameraBase::flPositionRigid);
 	cameras[eacFirstEye]->Load("actor_firsteye_cam");
 
 	psActorFlags.set(AF_PSP, TRUE);
