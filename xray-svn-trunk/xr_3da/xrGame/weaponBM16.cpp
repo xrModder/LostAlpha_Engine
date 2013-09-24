@@ -15,8 +15,12 @@ void CWeaponBM16::Load	(LPCSTR section)
 	animGet	(mhud_shot1,	pSettings->r_string(*hud_sect,"anim_shoot_1"));
 	animGet	(mhud_idle1,		pSettings->r_string(*hud_sect,"anim_idle_1"));
 	animGet	(mhud_idle2,		pSettings->r_string(*hud_sect,"anim_idle_2"));
-	animGet	(mhud_zoomed_idle1,		pSettings->r_string(*hud_sect,"anim_zoomed_idle_1"));
-	animGet	(mhud_zoomed_idle2,		pSettings->r_string(*hud_sect,"anim_zoomedidle_2"));
+	animGet	(mhud_zoomed_idle1,		pSettings->r_string(*hud_sect,"anim_idle_aim_1"));
+	animGet	(mhud_zoomed_idle2,		pSettings->r_string(*hud_sect,"anim_idle_aim_2"));
+	animGet	(mhud_hide1,		pSettings->r_string(*hud_sect,"anim_holster_1"));
+	animGet	(mhud_hide2,		pSettings->r_string(*hud_sect,"anim_holster_2"));
+	animGet	(mhud_show1,		pSettings->r_string(*hud_sect,"anim_draw_1"));
+	animGet	(mhud_show2,		pSettings->r_string(*hud_sect,"anim_draw_2"));
 
 
 	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundShot);
@@ -85,5 +89,38 @@ void CWeaponBM16::PlayAnimIdle()
 			m_pHUD->animPlay(random_anim(mhud_idle2), TRUE, NULL, GetState());
 		}break;
 		};
+	}
+}
+
+void CWeaponBM16::PlayAnimShow()
+{
+	switch (m_magazine.size())
+	{
+		case 0:{
+			m_pHUD->animPlay(random_anim(mhud.mhud_show), FALSE, this, GetState());
+		}break;
+		case 1:{
+			m_pHUD->animPlay(random_anim(mhud_show1), FALSE, this, GetState());
+		}break;
+		case 2:{
+			m_pHUD->animPlay(random_anim(mhud_show2), FALSE, this, GetState());
+		}break;
+	}
+}
+
+
+void CWeaponBM16::PlayAnimHide()
+{
+	switch (m_magazine.size())
+	{
+		case 0:{
+			m_pHUD->animPlay(random_anim(mhud.mhud_hide), TRUE, this, GetState());
+		}break;
+		case 1:{
+			m_pHUD->animPlay(random_anim(mhud_hide1), TRUE, this, GetState());
+		}break;
+		case 2:{
+			m_pHUD->animPlay(random_anim(mhud_hide2), TRUE, this, GetState());
+		}break;
 	}
 }

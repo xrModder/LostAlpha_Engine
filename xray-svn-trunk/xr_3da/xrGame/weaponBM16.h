@@ -14,6 +14,10 @@ protected:
 	MotionSVec		mhud_idle_zoomed_empty;
 	MotionSVec		mhud_zoomed_idle1;
 	MotionSVec		mhud_zoomed_idle2;
+	MotionSVec		mhud_hide1;
+	MotionSVec		mhud_hide2;
+	MotionSVec		mhud_show1;
+	MotionSVec		mhud_show2;
 
 	HUD_SOUND		m_sndReload1;
 
@@ -26,6 +30,8 @@ protected:
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();
 	virtual void	PlayAnimIdle					();
+	virtual void	PlayAnimShow					();
+	virtual void	PlayAnimHide					();
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
