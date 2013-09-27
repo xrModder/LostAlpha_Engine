@@ -836,6 +836,9 @@ void CSpawnPoint::OnProfileChange(PropValue* prop)
 				R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
 				m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
 				destroy_entity		(tmp);
+			} else {
+				m_SpawnData.m_Data->set_name(*s_name);
+				m_SpawnData.m_Profile = SectionToEditor(m_SpawnData.m_Data->name());
 			}
 		}
 	}else{
