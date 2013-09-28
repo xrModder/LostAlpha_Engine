@@ -20,6 +20,7 @@ private:
 //	ref_shader				ll_hLogo;
 //	ref_shader				ll_hLogo1;
 	ref_shader				hLevelLogo;
+	ref_shader				hLevelLogo_Add;
 	ref_geom				ll_hGeom;
 	ref_geom				ll_hGeom2;
 
@@ -35,6 +36,7 @@ private:
 	EVENT					eDisconnect;
 
 	void					Level_Append		(LPCSTR lname);
+	void					draw_face		(ref_shader& sh, Frect& coords, Frect& tex_coords, const Fvector2& tex_size);
 public:
 	CGameFont*				pFontSystem;
 
