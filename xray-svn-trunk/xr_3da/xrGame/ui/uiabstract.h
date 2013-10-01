@@ -128,6 +128,7 @@ public:
 	IC		void			SetVisible(bool vis)						{m_bShowMe = vis;}
 	IC		bool			GetVisible()						const	{return m_bShowMe;}
 	IC		void			SetAlignment(EWindowAlignment al)			{m_alignment = al;};
+	IC		EWindowAlignment			GetAlignment()			const	{return m_alignment;}
 	virtual void			SetWndRect(float x, float y, float width, float height) {
 																						m_wndPos.set(x,y); 
 																						m_wndSize.set(width,height); }

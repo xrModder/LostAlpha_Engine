@@ -48,6 +48,7 @@ void CFontManager::InitializeFonts()
 	InitializeFont(pFontGraffiti50Russian	,"ui_font_graff_50"				);
 	InitializeFont(pFontLetterica25			,"ui_font_letter_25"			);
 	InitializeFont(pFontStat				,"stat_font",					CGameFont::fsDeviceIndependent);
+	pFontStat->SetInterval	(0.75f, 1.0f);
 
 }
 
@@ -67,7 +68,7 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	u32 h = Device.dwHeight;
 
 	if(h<=600)		idx = 0;
-	else if(h<=900)	idx = 1;
+	else if(h<1024)	idx = 1;
 	else 			idx = 2;
 #endif
 
