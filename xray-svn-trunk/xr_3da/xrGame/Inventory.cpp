@@ -882,7 +882,7 @@ void CInventory::UpdateDropTasks()
 
 void CInventory::UpdateDropItem(PIItem pIItem)
 {
-	if( pIItem->GetDropManual() )
+	if(pIItem && pIItem->GetDropManual() )
 	{
 		pIItem->SetDropManual(FALSE);
 		if ( OnServer() )
