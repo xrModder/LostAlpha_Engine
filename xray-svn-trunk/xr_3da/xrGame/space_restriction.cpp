@@ -255,10 +255,12 @@ void CSpaceRestriction::initialize					()
 		m_out_space_restriction->initialize();
 
 #ifdef DEBUG
-	if (m_out_space_restriction) {
-		if (!m_out_space_restriction->object().correct()) {
-			Msg						("~ BAD out restrictions combination :");
-			Msg						("~ %s",*m_out_space_restriction->name());
+	if (psAI_Flags.test(aiTestCorrectness)) {
+		if (m_out_space_restriction) {
+			if (!m_out_space_restriction->object().correct()) {
+				Msg						("~ BAD out restrictions combination :");
+				Msg						("~ %s",*m_out_space_restriction->name());
+			}
 		}
 	}
 #endif
