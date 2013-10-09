@@ -1820,10 +1820,9 @@ u16 CActor::GetTurretTemp()
 void CActor::SetDirectionSlowly(Fvector pos, float time)
 {
 	if(!m_ScriptCameraDirection)
-	{
 		m_ScriptCameraDirection = xr_new<CScriptCameraDirection>();
-		m_ScriptCameraDirection->Start(this, pos, time);
-	}
+
+	m_ScriptCameraDirection->Start(this, pos, time);
 }
 
 void CActor::SetActorState(EActorState state, bool show)
