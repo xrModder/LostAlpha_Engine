@@ -221,6 +221,9 @@ void CTorch::Switch	(bool light_on)
 	if (!m_current_battery_state && m_actor_item)
 	{
 		light_on = false;
+
+		SDrawStaticStruct* s	= HUD().GetUI()->UIGame()->AddCustomStatic("torch_battery_low", true);
+		s->m_endTime		= Device.fTimeGlobal+3.0f;// 3sec
 	}
 	m_switched_on			= light_on;
 	if (can_use_dynamic_lights())

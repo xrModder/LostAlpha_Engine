@@ -18,6 +18,7 @@
 #include "string_table.h"
 #include "ui/UIXmlInit.h"
 #include "ui/UIWindow.h"
+#include "UIGameCustom.h"
 
 CUIXml*				pWpnScopeXml = NULL;
 
@@ -153,26 +154,38 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 void CWeaponMagazined::FireStart		()
 {
-	if(IsValid() && !IsMisfire()) 
+	if(!IsMisfire())
 	{
-		if(!IsWorking() || AllowFireWhileWorking())
+		if(IsValid()) 
 		{
-			if(GetState()==eReload) return;
-			if(GetState()==eShowing) return;
-			if(GetState()==eHiding) return;
-			if(GetState()==eMisfire) return;
+			if(!IsWorking() || AllowFireWhileWorking())
+			{
+				if(GetState()==eReload) return;
+				if(GetState()==eShowing) return;
+				if(GetState()==eHiding) return;
+				if(GetState()==eMisfire) return;
 
-			inherited::FireStart();
-			
-			if (iAmmoElapsed == 0) 
+				inherited::FireStart();
+				
+				if (iAmmoElapsed == 0) 
+					OnMagazineEmpty();
+				else
+					SwitchState(eFire);
+			}
+		}else 
+		{
+			if(eReload!=GetState()) 
 				OnMagazineEmpty();
-			else
-				SwitchState(eFire);
 		}
-	} 
-	else 
-	{
-		if(eReload!=GetState() && eMisfire!=GetState()) OnMagazineEmpty();
+	}else
+	{//misfire
+		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
+		{
+			SDrawStaticStruct* s	= HUD().GetUI()->UIGame()->AddCustomStatic("gun_jammed", true);
+			s->m_endTime		= Device.fTimeGlobal+3.0f;// 3sec
+		}
+
+		OnEmptyClick();
 	}
 }
 
@@ -431,7 +444,10 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		break;
 	case eMisfire:
 		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
-			HUD().GetUI()->AddInfoMessage("gun_jammed");
+		{
+			SDrawStaticStruct* s	= HUD().GetUI()->UIGame()->AddCustomStatic("gun_jammed", true);
+			s->m_endTime		= Device.fTimeGlobal+3.0f;// 3sec
+		}
 		break;
 	case eMagEmpty:
 		switch2_Empty	();
