@@ -26,6 +26,7 @@
 #include "game_cl_single.h"
 #include "../xr_input.h"
 #include "UIGameSP.h"
+#include "UIGameCustom.h"
 
 #include "map_manager.h"
 #include "map_location.h"
@@ -332,36 +333,36 @@ void lua_debug_print(LPCSTR str)
 
 void add_dialog_to_render(CUIDialogWnd* pDialog)
 {
-	HUD().GetUI()->AddDialogToRender(pDialog);
+	CurrentGameUI()->AddDialogToRender(pDialog);
 }
 
 void remove_dialog_to_render(CUIDialogWnd* pDialog)
 {
-	HUD().GetUI()->RemoveDialogToRender(pDialog);
+	CurrentGameUI()->RemoveDialogToRender(pDialog);
 }
 
 CUIDialogWnd* main_input_receiver()
 {
-	return HUD().GetUI()->TopInputReceiver();
+	return CurrentGameUI()->TopInputReceiver();
 }
-#include "UIGameCustom.h"
+
 void hide_indicators()
 {
 	CurrentGameUI()->HideShownDialogs();
 
-	HUD().GetUI()->HideGameIndicators();
-	HUD().GetUI()->HideCrosshair();
+	CurrentGameUI()->ShowGameIndicators(false);
+	CurrentGameUI()->ShowCrosshair(false);
 }
 
 void show_indicators()
 {
-	HUD().GetUI()->ShowGameIndicators();
-	HUD().GetUI()->ShowCrosshair();
+	CurrentGameUI()->ShowGameIndicators(true);
+	CurrentGameUI()->ShowCrosshair(true);
 }
 
 bool indicators_shown()
 {
-	return (HUD().GetUI()->GameIndicatorsShown());
+	return (CurrentGameUI()->GameIndicatorsShown());
 }
 
 bool is_level_present()
@@ -645,13 +646,13 @@ int get_button_count(void)
 
 void enable_pda_skills(bool val)
 {
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(pGameSP)pGameSP->EnableSkills(val);
 }
 
 void enable_pda_downloads(bool val)
 {
-	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(pGameSP)pGameSP->EnableDownloads(val);
 }
 

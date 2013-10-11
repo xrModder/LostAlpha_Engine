@@ -205,10 +205,10 @@ void CUISequenceSimpleItem::Update()
 
 		if(ui_game_sp)
 		{
-			if ( ui_game_sp->PdaMenu->IsShown()			||
-				ui_game_sp->InventoryMenu->IsShown()	||
+			if ( ui_game_sp->m_PdaMenu->IsShown()			||
+				ui_game_sp->m_InventoryMenu->IsShown()	||
 				ui_game_sp->TalkMenu->IsShown()			||
-				ui_game_sp->UICarBodyMenu->IsShown()	||
+				ui_game_sp->m_UICarBodyMenu->IsShown()	||
 				ui_game_sp->UIChangeLevelWnd->IsShown()		||
 				(MainMenu()->IsActive() && !m_owner->m_flags.test(CUISequencer::etsOverMainMenu) )
 				)
@@ -251,41 +251,41 @@ void CUISequenceSimpleItem::Start()
 			bool bShowPda			= false;
 			CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 			if(!stricmp(m_pda_section,"pda_contacts")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptContacts);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptContacts);
 				bShowPda = true;
 			}else{
 			if(!stricmp(m_pda_section,"pda_map")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptMap);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptMap);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_quests")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptQuests);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptQuests);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_diary")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptDiary);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptDiary);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_ranking")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptRanking);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptRanking);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_statistics")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptActorStatistic);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptActorStatistic);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_encyclopedia")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptEncyclopedia);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptEncyclopedia);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_skills")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptSkills);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptSkills);
 				bShowPda = true;
 			}else if(!stricmp(m_pda_section,"pda_downloads")){
-				ui_game_sp->PdaMenu->SetActiveSubdialog(eptDownloads);
+				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptDownloads);
 				bShowPda = true;
 			}
 		}
 
 		if(ui_game_sp)
 		{
-			if( (!ui_game_sp->PdaMenu->IsShown() && bShowPda) || 
-				(ui_game_sp->PdaMenu->IsShown() && !bShowPda))
-				ui_game_sp->PdaMenu->HideDialog();
+			if( (!ui_game_sp->m_PdaMenu->IsShown() && bShowPda) || 
+				(ui_game_sp->m_PdaMenu->IsShown() && !bShowPda))
+				ui_game_sp->m_PdaMenu->HideDialog();
 		}
 	}
 
@@ -313,8 +313,8 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 	if ( g_pGameLevel )
 	{
 		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
-		if( ui_game_sp && ui_game_sp->PdaMenu->IsShown() ) 
-			ui_game_sp->PdaMenu->HideDialog();
+		if( ui_game_sp && ui_game_sp->m_PdaMenu->IsShown() ) 
+			ui_game_sp->m_PdaMenu->HideDialog();
 	}
 	inherited::Stop				();
 	return true;

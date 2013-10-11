@@ -4,11 +4,11 @@
 #include "xrMessages.h"
 #include "../../xrNetServer/net_utils.h"
 #include "Level.h"
-#include "HUDManager.h"
 #include "ui/UIMessagesWindow.h"
 #include "string_table.h"
 #include "map_manager.h"	
 #include "map_location.h"
+#include "UIGameCustom.h"
 
 void				game_cl_mp::AddMessageMenu			(LPCSTR	menu_section, LPCSTR snd_path, LPCSTR team_prefix)
 {
@@ -155,8 +155,8 @@ void				game_cl_mp::OnSpeechMessage			(NET_Packet& P)
 	if (ps->team == local_player->team)
 	{
 		CStringTable st;
-		if (HUD().GetUI())
-			HUD().GetUI()->m_pMessagesWnd->AddChatMessage(*st.translate(*(pMMessage->pMessage)), ps->getName());
+		if (CurrentGameUI())
+			CurrentGameUI()->m_pMessagesWnd->AddChatMessage(*st.translate(*(pMMessage->pMessage)), ps->getName());
 
 		if (!Level().MapManager().HasMapLocation(FRIEND_RADION_LOCATION, ps->GameID))
 		{

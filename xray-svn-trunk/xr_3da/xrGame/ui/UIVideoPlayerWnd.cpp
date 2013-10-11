@@ -132,14 +132,14 @@ bool CUIVideoPlayerWnd::IsPlaying	()
 void CUIActorSleepVideoPlayer::Activate	()
 {
 	if(!IsShown())
-		HUD().GetUI()->StartStopMenu	(this,true);
+		CurrentGameUI()->StartStopMenu	(this,true);
 }
 
 void CUIActorSleepVideoPlayer::DeActivate	()
 {
 	if(IsShown()){
 		Stop							();
-		HUD().GetUI()->StartStopMenu	(this,true);
+		CurrentGameUI()->StartStopMenu	(this,true);
 	}
 }
 

@@ -529,8 +529,6 @@ void CGamePersistent::OnFrame	()
 #include "game_sv_single.h"
 #include "xrServer.h"
 #include "UIGameCustom.h"
-#include "hudmanager.h"
-#include "UI.h"
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIPdaWnd.h"
 
@@ -541,11 +539,11 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 		if (Device.Paused())
 			Device.Pause		(FALSE, TRUE, TRUE, "eQuickLoad");
 
-		if(HUD().GetUI())
+		if(CurrentGameUI())
 		{
-			if (HUD().GetUI()->UIGame())
-				HUD().GetUI()->UIGame()->HideShownDialogs();
-			HUD().GetUI()->UIMainIngameWnd->reset_ui();
+			if (CurrentGameUI())
+				CurrentGameUI()->HideShownDialogs();
+			CurrentGameUI()->UIMainIngameWnd->reset_ui();
 		}
 
 		if(g_tutorial)
@@ -686,8 +684,6 @@ void CGamePersistent::RestoreEffectorDOF()
 	SetEffectorDOF			(m_dof[3]);
 }
 
-#include "ui.h"
-#include "HudManager.h"
 #include "UIGameSP.h"
 
 void CGamePersistent::UpdateDof()

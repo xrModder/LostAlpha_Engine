@@ -5,7 +5,6 @@
 #include "script_export_space.h"
 #include "object_interfaces.h"
 #include "inventory_space.h"
-//#include "gametype_chooser.h"
 #include "UIDialogHolder.h"
 #include "../CustomHUD.h"
 #include "ui/UIMessages.h"
@@ -18,8 +17,15 @@ class CUIDialogWnd;
 class CUICaption;
 class CUIStatic;
 class CUIWindow;
-class CUIXml;			
+class CUIXml;
+class CUIInventoryWnd;
+class CUITradeWnd;
+class CUIPdaWnd;
+class CUICarBodyWnd;
 struct KillMessageStruct;
+class CUIMainIngameWnd;
+class CUIMessagesWindow;
+
 enum EGameTypes;
 
 struct SDrawStaticStruct :public IPureDestroyableObject
@@ -85,7 +91,15 @@ protected:
 	typedef st_vec::iterator				st_vec_it;
 	st_vec									m_custom_statics;
 
+	bool				m_bShowGameIndicators;
+
 public:
+	CUIMainIngameWnd*	UIMainIngameWnd;
+	CUIInventoryWnd*	m_InventoryMenu;
+	CUIMessagesWindow*	m_pMessagesWnd;
+	CUIPdaWnd*			m_PdaMenu;
+	CUICarBodyWnd*		m_UICarBodyMenu;
+
 	virtual	void		shedule_Update			(u32 dt) {};
 	virtual void		SetClGame				(game_cl_GameState* g);
 	
@@ -97,12 +111,19 @@ public:
 	virtual void		Render					();
 	virtual void _BCL	OnFrame					();
 
+
+	void			ShowGameIndicators		(bool b)			{m_bShowGameIndicators	= b;};
+	bool			GameIndicatorsShown		()					{return m_bShowGameIndicators;};
+	void			ShowCrosshair			(bool b)			{psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);}
+	bool			CrosshairShown			()					{return !!psHUD_Flags.test	(HUD_CROSSHAIR_RT);}
 	
 	virtual void		HideShownDialogs		(){};
 
 	SDrawStaticStruct*	AddCustomStatic			(LPCSTR id, bool bSingleInstance);
 	SDrawStaticStruct*	GetCustomStatic			(LPCSTR id);
 	void				RemoveCustomStatic		(LPCSTR id);
+
+	void				CommonMessageOut		(LPCSTR text);
 
 	virtual void		ChangeTotalMoneyIndicator(LPCSTR newMoneyString)		{};
 	virtual void		DisplayMoneyChange		(LPCSTR deltaMoney)			{};
@@ -115,6 +136,7 @@ public:
 	void				Load					();
 
 	virtual	void					reset_ui				();
+	void				OnConnected				();
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 }; // class CUIGameCustom

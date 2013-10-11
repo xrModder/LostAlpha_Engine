@@ -43,7 +43,8 @@ void CLevel::IR_OnMouseWheel( int direction )
 {
 	if(	g_bDisableAllInput	) return;
 
-	if (HUD().GetUI()->IR_OnMouseWheel(direction)) return;
+	if (CurrentGameUI()->IR_UIOnMouseWheel(direction)) return;
+
 	if( Device.Paused()		) return;
 	if (CURRENT_ENTITY())		{
 			IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
@@ -64,7 +65,7 @@ void CLevel::IR_OnMouseHold(int btn)
 void CLevel::IR_OnMouseMove( int dx, int dy )
 {
 	if(g_bDisableAllInput)						return;
-	if (HUD().GetUI()->IR_OnMouseMove(dx,dy))		return;
+	if (CurrentGameUI()->IR_UIOnMouseMove(dx,dy))		return;
 	if (Device.Paused())							return;
 	if (CURRENT_ENTITY())		{
 		IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
@@ -93,7 +94,7 @@ extern bool g_block_pause;
 
 void CLevel::IR_OnKeyboardPress	(int key)
 {
-	bool b_ui_exist = (!!HUD().GetUI());
+	bool b_ui_exist = (!!CurrentGameUI());
 
 //.	if (DIK_F10 == key)		vtune.enable();
 //.	if (DIK_F11 == key)		vtune.disable();
@@ -116,7 +117,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		{
 			if(b_ui_exist && CurrentGameUI()->TopInputReceiver() )
 			{
-					if(HUD().GetUI()->IR_OnKeyboardPress(key))	return;//special case for mp and main_menu
+					if(CurrentGameUI()->IR_UIOnKeyboardPress(key))	return;//special case for mp and main_menu
 					CurrentGameUI()->TopInputReceiver()->HideDialog();
 			}else
 			{
@@ -125,16 +126,12 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		}break;
 
 	case kPAUSE:
-		/*
-		if(!g_block_pause)
+		if (!g_block_pause && (IsGameTypeSingle() || IsDemoPlay()))
 		{
-			if ( IsGameTypeSingle() )
-			{
 				Device.Pause(!Device.Paused(), TRUE, TRUE, "li_pause_key");
-			}
 		}
 		return;
-		*/
+
 		break;
 /*	
 	case DIK_DIVIDE:
@@ -167,9 +164,9 @@ case DIK_MULTIPLY:
 	};
 	
 	if(	g_bDisableAllInput || g_bDisableKeyboardInput)	return;
-	if ( !b_ui_exist )			return;
+	if ( !bReady || !b_ui_exist )			return;
 
-	if ( b_ui_exist && HUD().GetUI()->IR_OnKeyboardPress(key)) return;
+	if ( b_ui_exist && CurrentGameUI()->IR_UIOnKeyboardPress(key)) return;
 
 	if( Device.Paused() )		return;
 
@@ -395,15 +392,13 @@ case DIK_MULTIPLY:
 
 void CLevel::IR_OnKeyboardRelease(int key)
 {
-	bool b_ui_exist = (!!HUD().GetUI());
-
-	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
-	if ( b_ui_exist && HUD().GetUI() && HUD().GetUI()->IR_OnKeyboardRelease(key)) return;
-	if (Device.Paused()		) return;
+	if (!bReady || g_bDisableAllInput	)								return;
+	if ( CurrentGameUI() && CurrentGameUI()->IR_UIOnKeyboardRelease(key)) return;
 	if (game && game->OnKeyboardRelease(get_binded_action(key)) )		return;
+	if (Device.Paused() )				return;
 
-	if( b_ui_exist && CurrentGameUI()->TopInputReceiver() )return;
-	if (CURRENT_ENTITY())		{
+	if (CURRENT_ENTITY())		
+	{
 		IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
 		if (IR)				IR->IR_OnKeyboardRelease			(get_binded_action(key));
 	}
@@ -412,13 +407,10 @@ void CLevel::IR_OnKeyboardRelease(int key)
 void CLevel::IR_OnKeyboardHold(int key)
 {
 	if (g_bDisableAllInput || g_bDisableKeyboardInput) return;
-
-	bool b_ui_exist = (!!HUD().GetUI());
-
-	if (HUD().GetUI() && HUD().GetUI()->IR_OnKeyboardHold(key)) return;
-	if ( b_ui_exist && CurrentGameUI()->TopInputReceiver() )return;
-	if ( Device.Paused() ) return;
-	if (CURRENT_ENTITY())		{
+	if (CurrentGameUI() && CurrentGameUI()->IR_UIOnKeyboardHold(key)) return;
+	if (Device.Paused() && !Level().IsDemoPlay() ) return;
+	if (CURRENT_ENTITY())
+	{
 		IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
 		if (IR)				IR->IR_OnKeyboardHold				(get_binded_action(key));
 	}

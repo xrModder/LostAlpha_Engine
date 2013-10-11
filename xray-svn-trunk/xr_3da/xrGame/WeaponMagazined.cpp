@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "hudmanager.h"
 #include "WeaponHUD.h"
 #include "WeaponMagazined.h"
 #include "entity.h"
@@ -16,6 +15,7 @@
 #include "level.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include "UIGameCustom.h"
 
 CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapon(name)
 {
@@ -386,7 +386,7 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		break;
 	case eMisfire:
 		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
-			HUD().GetUI()->AddInfoMessage("gun_jammed");
+			CurrentGameUI()->AddCustomStatic("gun_jammed", true);
 		break;
 	case eMagEmpty:
 		switch2_Empty	();

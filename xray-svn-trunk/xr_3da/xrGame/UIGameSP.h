@@ -4,14 +4,11 @@
 #include "../../xrNetServer/net_utils.h"
 #include "game_graph_space.h"
 
-class CUIInventoryWnd;
 class CUITradeWnd;			
-class CUIPdaWnd;			
-class CUITalkWnd;			
-class CUICarBodyWnd;
 class CInventory;
 
 class game_cl_Single;
+class CUITalkWnd;
 class CChangeLevelWnd;
 class CUIMessageBox;
 class CInventoryBox;
@@ -46,10 +43,7 @@ public:
 	void				EnableSkills		(bool val);
 	void				EnableDownloads		(bool val);
 
-	CUIInventoryWnd*	InventoryMenu;
-	CUIPdaWnd*			PdaMenu;
 	CUITalkWnd*			TalkMenu;
-	CUICarBodyWnd*		UICarBodyMenu;
 	CChangeLevelWnd*	UIChangeLevelWnd;
 };
 

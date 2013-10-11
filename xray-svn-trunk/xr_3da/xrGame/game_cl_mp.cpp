@@ -86,7 +86,7 @@ game_cl_mp::~game_cl_mp()
 CUIGameCustom*		game_cl_mp::createGameUI			()
 {
 //	m_pSpeechMenu = xr_new<CUISpeechMenu>("test_speech_section");
-	HUD().GetUI()->m_pMessagesWnd->SetChatOwner(this);
+	CurrentGameUI()->m_pMessagesWnd->SetChatOwner(this);
 		
 	return NULL;
 };
@@ -158,7 +158,7 @@ bool game_cl_mp::OnKeyboardPress(int key)
 		case kCHAT:
 		case kCHAT_TEAM:
 			{
-				CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
+				CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
 				R_ASSERT					(!pChatWnd->IsShown());
 				string512					prefix;
 				xr_sprintf(prefix, "%s> ", st.translate((kCHAT_TEAM==key)?"st_mp_say_to_team":"st_mp_say_to_all").c_str());
@@ -444,16 +444,16 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 	
 	LPSTR colPlayerName;
 	STRCONCAT(colPlayerName, Color_Teams[team], PlayerName, ":%c[default]");
-	if (Level().CurrentViewEntity() && HUD().GetUI())
-		HUD().GetUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
+	if (Level().CurrentViewEntity() && CurrentGameUI())
+		CurrentGameUI()->m_pMessagesWnd->AddChatMessage(ChatMsg, colPlayerName);
 };
 
 void game_cl_mp::CommonMessageOut		(LPCSTR msg)
 {
 	if(g_dedicated_server)	return;
 
-	if (HUD().GetUI())
-        HUD().GetUI()->m_pMessagesWnd->AddLogMessage(msg);
+	if (CurrentGameUI())
+        CurrentGameUI()->m_pMessagesWnd->AddLogMessage(msg);
 };
 
 
@@ -470,7 +470,7 @@ void game_cl_mp::shedule_Update(u32 dt)
 	{
 	case GAME_PHASE_PENDING:
 		{
-			//CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
+			//CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
 			//if (pChatWnd && pChatWnd->IsShown())
 			//	StartStopMenu(pChatWnd, false);
 
@@ -493,7 +493,7 @@ void game_cl_mp::shedule_Update(u32 dt)
 		}break;
 	default:
 		{
-			CUIChatWnd* pChatWnd = HUD().GetUI()->m_pMessagesWnd->GetChatWnd();
+			CUIChatWnd* pChatWnd = CurrentGameUI()->m_pMessagesWnd->GetChatWnd();
 			if (pChatWnd && pChatWnd->IsShown())
 				pChatWnd->HideDialog();
 		}break;
@@ -616,10 +616,10 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		{
 			m_bSpectatorSelected = FALSE;
 
-			if(HUD().GetUI())
+			if(CurrentGameUI())
 			{
-				 HUD().GetUI()->ShowGameIndicators();
-				 HUD().GetUI()->m_pMessagesWnd->PendingMode(false);
+				 CurrentGameUI()->ShowGameIndicators(true);
+				 CurrentGameUI()->m_pMessagesWnd->PendingMode(false);
 			}
 		}break;
 	case GAME_PHASE_PENDING:
@@ -628,10 +628,10 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 			HideMessageMenus();
 			if (old_phase == GAME_PHASE_INPROGRESS)
 			{
-				if(HUD().GetUI())
+				if(CurrentGameUI())
 				{
-					 HUD().GetUI()->ShowGameIndicators();
-					 HUD().GetUI()->m_pMessagesWnd->PendingMode(true);
+					 CurrentGameUI()->ShowGameIndicators(true);
+					 CurrentGameUI()->m_pMessagesWnd->PendingMode(true);
 				}
 			}
 		};
@@ -647,8 +647,8 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		}break;
 	default:
 		{
-			if (g_hud && HUD().GetUI())
-				HUD().GetUI()->HideGameIndicators();
+			if (g_hud && CurrentGameUI())
+				CurrentGameUI()->ShowGameIndicators(false);
 			HideMessageMenus();
 		}break;
 	}
@@ -911,8 +911,8 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 	default:
 		break;
 	}
-	if (HUD().GetUI() && HUD().GetUI()->m_pMessagesWnd)
-		HUD().GetUI()->m_pMessagesWnd->AddLogMessage(KMS);
+	if (CurrentGameUI() && CurrentGameUI()->m_pMessagesWnd)
+		CurrentGameUI()->m_pMessagesWnd->AddLogMessage(KMS);
 };
 
 void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)

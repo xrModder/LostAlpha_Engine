@@ -14,7 +14,7 @@
 #include "level_graph.h"
 #include "../customhud.h"
 #include "ai_space.h"
-#include "hudmanager.h"
+#include "ui_base.h"
 #include "game_graph.h"
 #include "game_sv_single.h"
 #include "custommonster.h"

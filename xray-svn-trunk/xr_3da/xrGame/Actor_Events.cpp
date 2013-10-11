@@ -20,6 +20,9 @@
 #include "holder_custom.h"
 #include "ui/uiinventoryWnd.h"
 #include "game_base_space.h"
+#include "UIGameCustom.h"
+#include "ui/UIInventoryWnd.h"
+
 #ifdef DEBUG
 #include "PHDebug.h"
 #endif
@@ -72,9 +75,9 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				//добавить отсоединенный аддон в инвентарь
 				if(pGameSP)
 				{
-					if(pGameSP->TopInputReceiver() == pGameSP->InventoryMenu)
+					if(pGameSP->TopInputReceiver() == pGameSP->m_InventoryMenu)
 					{
-						pGameSP->InventoryMenu->AddItemToBag(smart_cast<CInventoryItem*>(O));
+						pGameSP->m_InventoryMenu->AddItemToBag(smart_cast<CInventoryItem*>(O));
 					}
 				}
 				

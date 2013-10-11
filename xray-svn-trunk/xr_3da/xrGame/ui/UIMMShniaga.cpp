@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 
 #include "UIMMShniaga.h"
+#include "../UICursor.h"
 #include "UIStatic.h"
 #include "UIScrollView.h"
 #include "UIXmlInit.h"
 #include "MMsound.h"
-#include "../hudmanager.h"
 #include "../game_base_space.h"
 #include "../level.h"
 #include "../object_broker.h"

@@ -24,6 +24,7 @@
 #include "Grenade.h"
 #include "WeaponMagazined.h"
 #include "CustomOutfit.h"
+#include "UIGameCustom.h"
 
 #include "actor_anim_defs.h"
 
@@ -541,7 +542,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	//убрать все артефакты с пояса
 	m_ArtefactsOnBelt.clear();
 //.	if(	TRUE == E->s_flags.test(M_SPAWN_OBJECT_LOCAL) && TRUE == E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER))
-//.		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
+//.		CurrentGameUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
 		
 
 	ROS()->force_mode	(IRender_ObjectSpecific::TRACE_ALL);
@@ -726,7 +727,7 @@ void CActor::net_Destroy	()
 	
 	m_ArtefactsOnBelt.clear();
 	if (Level().CurrentViewEntity() == this)
-		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);	
+		CurrentGameUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);	
 
 	SetDefaultVisualOutfit(NULL);
 	SetDefaultVisualOutfit_legs(NULL);

@@ -42,7 +42,6 @@ public:
 
 protected:
 	
-	CUIStatic			UIStaticDiskIO;
 	CUIStatic			UIStaticHealth;
 	//CUIStatic			UIStaticArmor;
 	CUIStatic			UIStaticQuickHelp;

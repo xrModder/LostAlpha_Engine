@@ -2,17 +2,15 @@
 
 #include "../CustomHUD.h"
 #include "HitMarker.h"
-#include "UI.h"
 
-class CContextMenu;
 class CHUDTarget;
+class CUIGameCustom;
 
 class CHUDManager :
 	public CCustomHUD
 {
 	friend class CUI;
 private:
-	CUI*					pUI;
 	CUIGameCustom*			pUIGame;
 	CHitMarker				HitMarker;
 	CHUDTarget*				m_pHUDTarget;
@@ -21,9 +19,6 @@ public:
 							CHUDManager			();
 	virtual					~CHUDManager		();
 	virtual		void		OnEvent				(EVENT E, u64 P1, u64 P2);
-
-	virtual void			OnScreenResolutionChanged();
-	virtual		void		Load				();
 	
 	virtual		void		Render_First		();
 	virtual		void		Render_Last			();	   
@@ -31,7 +26,6 @@ public:
 
 	virtual		void		RenderUI			();
 
-	virtual		IC CUI*		GetUI				(){return pUI;}
 		CUIGameCustom*		GetGameUI			(){return pUIGame;}
 
 				void		Hit					(int idx, float power, const Fvector& dir);
@@ -45,7 +39,8 @@ public:
 	void					ShowCrosshair		(bool show);
 
 	void					SetHitmarkType		(LPCSTR tex_name);
-	virtual void			OnScreenRatioChanged();
+	virtual void			OnScreenResolutionChanged();
+	virtual	void			Load				();
 	virtual void			OnDisconnected		();
 	virtual void			OnConnected			();
 

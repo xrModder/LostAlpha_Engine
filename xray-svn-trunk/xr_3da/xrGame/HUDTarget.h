@@ -34,4 +34,6 @@ public:
 	void					Render		();
 	void					Load		();
 	collide::rq_result&		GetRQ		() {return RQ;};
+	CHUDCrosshair&			GetHUDCrosshair	() {return HUDCrosshair;}
+	void					ShowCrosshair	(bool b);
 };

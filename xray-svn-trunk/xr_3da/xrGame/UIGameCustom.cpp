@@ -11,6 +11,8 @@
 #include "ui/UIPdaWnd.h"
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIMessagesWindow.h"
+#include "ui/UIInventoryWnd.h"
+#include "ui/UICarBodyWnd.h"
 
 #include "actor.h"
 #include "inventory.h"
@@ -34,8 +36,10 @@ struct predicate_find_stat
 };
 
 CUIGameCustom::CUIGameCustom()
-:m_msgs_xml(NULL),m_window(NULL)
+:m_msgs_xml(NULL),m_window(NULL), m_InventoryMenu(NULL), m_PdaMenu(NULL), m_UICarBodyMenu(NULL), UIMainIngameWnd(NULL),m_pMessagesWnd(NULL)
 {
+	ShowGameIndicators		(true);
+	ShowCrosshair			(true);
 }
 bool g_b_ClearGameCaptions = false;
 
@@ -69,6 +73,12 @@ void CUIGameCustom::OnFrame()
 		g_b_ClearGameCaptions	= false;
 	}
 	m_window->Update();
+
+	//update windows
+	if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) )
+		UIMainIngameWnd->Update	();
+
+	m_pMessagesWnd->Update();
 }
 
 void CUIGameCustom::Render()
@@ -79,6 +89,29 @@ void CUIGameCustom::Render()
 		(*it)->Draw();
 
 	m_window->Draw();
+
+	CEntity* pEntity = smart_cast<CEntity*>(Level().CurrentEntity());
+	if (pEntity)
+	{
+		CActor* pActor			=	smart_cast<CActor*>(pEntity);
+		if(pActor)
+		{
+			PIItem item		=  pActor->inventory().ActiveItem();
+			if(item && pActor->HUDview() && smart_cast<CHudItem*>(item))
+				(smart_cast<CHudItem*>(item))->OnDrawUI();
+		}
+
+		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )
+		{
+			UIMainIngameWnd->Draw();
+			m_pMessagesWnd->Draw();
+		} else {  //hack - draw messagess wnd in scope mode
+			if (!m_PdaMenu->GetVisible())
+				m_pMessagesWnd->Draw();
+		}	
+	}
+	else
+		m_pMessagesWnd->Draw();
 
 	DoRenderDialogs();
 }
@@ -154,6 +187,11 @@ void CUIGameCustom::UnLoad()
 {
 	xr_delete					(m_msgs_xml);
 	xr_delete					(m_window);
+	xr_delete					(UIMainIngameWnd);
+	xr_delete					(m_pMessagesWnd);
+	xr_delete					(m_InventoryMenu);
+	xr_delete					(m_PdaMenu);
+	xr_delete					(m_UICarBodyMenu);
 }
 
 void CUIGameCustom::Load()
@@ -163,14 +201,46 @@ void CUIGameCustom::Load()
 		R_ASSERT				(NULL==m_msgs_xml);
 		m_msgs_xml				= xr_new<CUIXml>();
 		m_msgs_xml->Load		(CONFIG_PATH, UI_PATH, "ui_custom_msgs.xml");
+
+		R_ASSERT				(NULL==m_PdaMenu);
+		m_PdaMenu				= xr_new<CUIPdaWnd>			();
 		
 		R_ASSERT				(NULL==m_window);
 		m_window				= xr_new<CUIWindow>			();
+
+		R_ASSERT				(NULL==UIMainIngameWnd);
+		UIMainIngameWnd			= xr_new<CUIMainIngameWnd>	();
+		UIMainIngameWnd->Init	();
+
+		R_ASSERT				(NULL==m_InventoryMenu);
+		m_InventoryMenu	= xr_new<CUIInventoryWnd>	();
+
+		R_ASSERT				(NULL==m_UICarBodyMenu);
+		m_UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
+
+		R_ASSERT				(NULL==m_pMessagesWnd);
+		m_pMessagesWnd			= xr_new<CUIMessagesWindow>();
 		
 		Init					(0);
 		Init					(1);
 		Init					(2);
 	}
+}
+
+void CUIGameCustom::OnConnected()
+{
+	if(g_pGameLevel)
+	{
+		if(!UIMainIngameWnd)
+			Load();
+
+		UIMainIngameWnd->OnConnected();
+	}
+}
+
+void CUIGameCustom::CommonMessageOut(LPCSTR text)
+{
+	m_pMessagesWnd->AddLogMessage(text);
 }
 
 SDrawStaticStruct::SDrawStaticStruct	()

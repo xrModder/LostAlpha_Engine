@@ -5,8 +5,6 @@
 #include "../../../actor.h"
 #include "../../../ActorEffector.h"
 #include "../ai_monster_effector.h"
-//#include "../../../hudmanager.h"
-//#include "../../../ui.h"
 #include "../../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../level.h"
 #include "../../../sound_player.h"

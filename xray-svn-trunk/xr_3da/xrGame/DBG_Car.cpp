@@ -10,6 +10,7 @@
 #include "Car.h"
 #include "hudmanager.h"
 #include "Level.h"
+#include "ui_base.h"
 
 void CCar::InitDebug()
 {

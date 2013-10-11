@@ -411,9 +411,9 @@ void CUISequencer::IR_OnKeyboardPress	(int dik)
 
 		if (ui_game_sp)
 		{
-			if(ui_game_sp->InventoryMenu->IsShown())
+			if(ui_game_sp->m_InventoryMenu->IsShown())
 			{
-				ui_game_sp->InventoryMenu->HideDialog();
+				ui_game_sp->m_InventoryMenu->HideDialog();
 				return;
 			}
 
@@ -423,15 +423,15 @@ void CUISequencer::IR_OnKeyboardPress	(int dik)
 				return;
 			}
 
-			if(ui_game_sp->UICarBodyMenu->IsShown())
+			if(ui_game_sp->m_UICarBodyMenu->IsShown())
 			{
-				ui_game_sp->UICarBodyMenu->HideDialog();
+				ui_game_sp->m_UICarBodyMenu->HideDialog();
 				return;
 			}
 
-			if (ui_game_sp->PdaMenu->IsShown())
+			if (ui_game_sp->m_PdaMenu->IsShown())
 			{
-				ui_game_sp->PdaMenu->HideDialog();
+				ui_game_sp->m_PdaMenu->HideDialog();
 				return;
 			}
 			Console->Execute("main_menu");

@@ -13,30 +13,24 @@
 #include "GameTaskManager.h"
 #include "GameTask.h"
 #include "inventory.h"
-#include "ui/UIInventoryWnd.h"
 #include "ui/UITradeWnd.h"
-#include "ui/UIPdaWnd.h"
 #include "ui/UITalkWnd.h"
-#include "ui/UICarBodyWnd.h"
 #include "ui/UIMessageBox.h"
+#include "ui/UIInventoryWnd.h"
+#include "ui/UIPdaWnd.h"
+#include "ui/UICarBodyWnd.h"
 
 CUIGameSP::CUIGameSP()
 {
 	m_game			= NULL;
-	
-	InventoryMenu	= xr_new<CUIInventoryWnd>	();
-	PdaMenu			= xr_new<CUIPdaWnd>			();
+
 	TalkMenu		= xr_new<CUITalkWnd>		();
-	UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
 	UIChangeLevelWnd= xr_new<CChangeLevelWnd>		();
 }
 
 CUIGameSP::~CUIGameSP() 
-{
-	delete_data(InventoryMenu);
-	delete_data(PdaMenu);	
+{	
 	delete_data(TalkMenu);
-	delete_data(UICarBodyMenu);
 	delete_data(UIChangeLevelWnd);
 }
 
@@ -52,9 +46,20 @@ void CUIGameSP::shedule_Update(u32 dt)
 
 void CUIGameSP::HideShownDialogs()
 {
+	if (m_InventoryMenu->IsShown())
+		m_InventoryMenu->Hide();
+
+	if (m_PdaMenu->IsShown())
+		m_PdaMenu->ShowDialog(false);
+
+	if (m_UICarBodyMenu->IsShown())
+		m_UICarBodyMenu->Hide();
+
 	CUIDialogWnd* mir = TopInputReceiver();
- 	if(mir && (mir==InventoryMenu || mir==PdaMenu || mir==TalkMenu || mir==UICarBodyMenu))
+	if ( mir && mir == TalkMenu )
+	{
 		mir->HideDialog();
+	}
 }
 
 void CUIGameSP::SetClGame (game_cl_GameState* g)
@@ -84,31 +89,31 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	switch ( get_binded_action(dik) )
 	{
 	case kINVENTORY: 
-		if((!TopInputReceiver() || TopInputReceiver()==InventoryMenu) && !pActor->inventory().IsHandsOnly())
+		if((!TopInputReceiver() || TopInputReceiver()==m_InventoryMenu) && !pActor->inventory().IsHandsOnly())
 		{
-			InventoryMenu->Show();
+			m_InventoryMenu->Show();
 			break;
 		}
 
 	case kACTIVE_JOBS:
-		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
+		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			PdaMenu->SetActiveSubdialog(eptQuests);
-			PdaMenu->ShowDialog(true);
+			m_PdaMenu->SetActiveSubdialog(eptQuests);
+			m_PdaMenu->ShowDialog(true);
 		}break;
 
 	case kMAP:
-		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
+		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			PdaMenu->SetActiveSubdialog(eptMap);
-			PdaMenu->ShowDialog(true);
+			m_PdaMenu->SetActiveSubdialog(eptMap);
+			m_PdaMenu->ShowDialog(true);
 		}break;
 
 	case kCONTACTS:
-		if( !TopInputReceiver() || TopInputReceiver()==PdaMenu)
+		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			PdaMenu->SetActiveSubdialog(eptContacts);
-			PdaMenu->ShowDialog(true);
+			m_PdaMenu->SetActiveSubdialog(eptContacts);
+			m_PdaMenu->ShowDialog(true);
 			break;
 		}break;
 
@@ -151,16 +156,16 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryOwner* pOther
 {
 	if( TopInputReceiver() )		return;
 
-	UICarBodyMenu->InitCarBody		(pActorInv,  pOtherOwner);
-	UICarBodyMenu->Show			();
+	m_UICarBodyMenu->InitCarBody		(pActorInv,  pOtherOwner);
+	m_UICarBodyMenu->Show			();
 }
 
 void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //Deadbody search
 {
 	if( TopInputReceiver() )		return;
 	
-	UICarBodyMenu->InitCarBody		(pActorInv,  pBox);
-	UICarBodyMenu->Show			();
+	m_UICarBodyMenu->InitCarBody		(pActorInv,  pBox);
+	m_UICarBodyMenu->Show			();
 }
 
 
@@ -193,12 +198,12 @@ void CUIGameSP::ChangeLevel(	GameGraph::_GRAPH_ID game_vert_id,
 
 void CUIGameSP::EnableSkills(bool val)
 {
-	PdaMenu->EnableSkills(val);
+	m_PdaMenu->EnableSkills(val);
 }
 
 void CUIGameSP::EnableDownloads(bool val)
 {
-	PdaMenu->EnableDownloads(val);
+	m_PdaMenu->EnableDownloads(val);
 }
 
 CChangeLevelWnd::CChangeLevelWnd		()

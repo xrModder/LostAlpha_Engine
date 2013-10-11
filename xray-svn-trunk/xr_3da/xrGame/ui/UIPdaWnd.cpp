@@ -7,7 +7,7 @@
 #include "UIXmlInit.h"
 #include "UIInventoryUtilities.h"
 
-#include "../HUDManager.h"
+#include "../UIGameCustom.h"
 #include "../level.h"
 #include "../game_cl_base.h"
 
@@ -201,7 +201,7 @@ void CUIPdaWnd::ShowDialog(bool status)
 		inherited::HideDialog();
 
 		InventoryUtilities::SendInfoToActor("ui_pda_hide");
-		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
 
 	}
 	
@@ -335,7 +335,7 @@ void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 
 	if(b){
 		g_pda_info_state |= type;
-		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
 	}
 
 }

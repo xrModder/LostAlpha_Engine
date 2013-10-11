@@ -46,6 +46,22 @@ const Fvector2* get_wnd_pos(CUIWindow* w)
 {
 	return &w->GetWndPos();
 }
+
+Frect	get_texture_rect(LPCSTR icon_name)
+{
+	return CUITextureMaster::GetTextureRect(icon_name);
+}
+
+LPCSTR	get_texture_name(LPCSTR icon_name)
+{
+	return CUITextureMaster::GetTextureFileName(icon_name);
+}
+
+TEX_INFO	get_texture_info(LPCSTR name, LPCSTR def_name)
+{
+	return CUITextureMaster::FindItem(name);
+}
+
 using namespace luabind;
 #pragma optimize("s",on)
 void CUIWindow::script_register(lua_State *L)
@@ -63,6 +79,14 @@ void CUIWindow::script_register(lua_State *L)
 		def("GetFontGraffiti32Russian",	&GetFontGraffiti32Russian),
 		def("GetFontGraffiti50Russian",	&GetFontGraffiti50Russian),
 		def("GetFontLetterica25",		&GetFontLetterica25),
+
+		class_<TEX_INFO>("TEX_INFO")
+		.def("get_file_name",	 			&TEX_INFO::get_file_name)
+		.def("get_rect",					&TEX_INFO::get_rect),
+
+		def("GetTextureName",			&get_texture_name),
+		def("GetTextureRect",			&get_texture_rect),
+		def("GetTextureInfo",			&get_texture_info),
 
 		class_<CUIWindow>("CUIWindow")
 		.def(							constructor<>())
@@ -92,13 +116,16 @@ void CUIWindow::script_register(lua_State *L)
 		.def("ResetPPMode",				&CUIWindow::ResetPPMode),
 
 		class_<CDialogHolder>("CDialogHolder")
+		.def("start_stop_menu",			&CDialogHolder::StartStopMenu)
+		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("RemoveDialogToRender",	&CDialogHolder::RemoveDialogToRender),
 
 		class_<CUIDialogWnd, CUIWindow>("CUIDialogWnd")
 		.def("ShowDialog",				&CUIDialogWnd::ShowDialog)
 		.def("HideDialog",				&CUIDialogWnd::HideDialog)
-		.def("GetHolder",				&CUIDialogWnd::GetHolder),
+		.def("GetHolder",				&CUIDialogWnd::GetHolder)
+		.def("SetHolder",				&CUIDialogWnd::SetHolder),
 
 		class_<CUIFrameWindow, CUIWindow>("CUIFrameWindow")
 		.def(							constructor<>())

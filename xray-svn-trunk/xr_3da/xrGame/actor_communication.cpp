@@ -1,7 +1,6 @@
 #include "pch_script.h"
 #include "actor.h"
 #include "UIGameSP.h"
-#include "UI.h"
 #include "PDA.h"
 #include "HUDManager.h"
 #include "level.h"
@@ -76,7 +75,7 @@ void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
 				case ARTICLE_DATA::eTaskArticle:			p = pda_section::quests;		break;
 				default: NODEFAULT;
 			};
-			pGameSP->PdaMenu->PdaContentsChanged			(p);
+			pGameSP->m_PdaMenu->PdaContentsChanged			(p);
 		}
 
 	}
@@ -104,11 +103,11 @@ void  CActor::AddGameNews			 (GAME_NEWS_DATA& news_data)
 	news_data.receive_time			= Level().GetGameTime();
 	news_vector.push_back			(news_data);
 
-	if(HUD().GetUI()){
-		HUD().GetUI()->UIMainIngameWnd->ReceiveNews(&news_data);
+	if(CurrentGameUI()){
+		CurrentGameUI()->UIMainIngameWnd->ReceiveNews(&news_data);
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP) 
-			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::news);
+			pGameSP->m_PdaMenu->PdaContentsChanged	(pda_section::news);
 	}
 }
 
@@ -262,8 +261,8 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 
 	bool b_alive = !!(smart_cast<CEntityAlive*>(pInvOwner))->g_Alive();
 
-	if(HUD().GetUI())
-		HUD().GetUI()->UIMainIngameWnd->AnimateContacts(b_alive);
+	if(CurrentGameUI())
+		CurrentGameUI()->UIMainIngameWnd->AnimateContacts(b_alive);
 
 	Level().MapManager().AddRelationLocation		( pInvOwner );
 
@@ -271,7 +270,7 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 
 		if(pGameSP)
-			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::contacts);
+			pGameSP->m_PdaMenu->PdaContentsChanged	(pda_section::contacts);
 	}
 }
 
@@ -290,7 +289,7 @@ void CActor::LostPdaContact		(CInventoryOwner* pInvOwner)
 	if( CurrentGameUI() ){
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 		if(pGameSP){
-			pGameSP->PdaMenu->PdaContentsChanged	(pda_section::contacts);
+			pGameSP->m_PdaMenu->PdaContentsChanged	(pda_section::contacts);
 		}
 	}
 

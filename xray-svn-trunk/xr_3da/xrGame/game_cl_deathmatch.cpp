@@ -537,7 +537,7 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 					if (!(pCurBuyMenu && pCurBuyMenu->IsShown()) && 
 						!(pCurSkinMenu && pCurSkinMenu->IsShown()) &&
 						!m_game_ui->IsServerInfoShown() &&
-						(HUD().GetUI() && HUD().GetUI()->GameIndicatorsShown())
+						(CurrentGameUI() && CurrentGameUI()->GameIndicatorsShown())
 						)
 					{
 						if (!m_bSkinSelected)
@@ -552,7 +552,7 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 
 				if (Level().CurrentControlEntity() && 
 					smart_cast<CSpectator*>(Level().CurrentControlEntity()) &&
-					(HUD().GetUI()->GameIndicatorsShown())
+					(CurrentGameUI()->GameIndicatorsShown())
 					)
 				{
 					

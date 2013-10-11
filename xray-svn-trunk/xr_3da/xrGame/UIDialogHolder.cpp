@@ -7,7 +7,6 @@
 #include "actor.h"
 #include "xr_level_controller.h"
 #include "../CustomHud.h"
-#include "hudmanager.h"
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -56,12 +55,12 @@ void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 		bool b							= !!psHUD_Flags.test(HUD_CROSSHAIR_RT);
 		m_input_receivers.back().m_flags.set(recvItem::eCrosshair, b);
 
-		b								= HUD().GetUI()->GameIndicatorsShown();
+		b								= CurrentGameUI()->GameIndicatorsShown();
 		m_input_receivers.back().m_flags.set(recvItem::eIndicators, b);
 		
 		if(bDoHideIndicators){
 			psHUD_Flags.set				(HUD_CROSSHAIR_RT, FALSE);
-			HUD().GetUI()->HideGameIndicators();
+			CurrentGameUI()->ShowGameIndicators(false);
 		}
 	}
 	pDialog->SetHolder				(this);
@@ -97,10 +96,7 @@ void CDialogHolder::StopMenu(CUIDialogWnd* pDialog)
 			bool b					= !!m_input_receivers.back().m_flags.test(recvItem::eCrosshair);
 			psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);
 			b						= !!m_input_receivers.back().m_flags.test(recvItem::eIndicators);
-			if (b)
-				HUD().GetUI()->ShowGameIndicators();
-			else
-				HUD().GetUI()->HideGameIndicators();
+			CurrentGameUI()->ShowGameIndicators(b);
 		}
 		
 		SetMainInputReceiver	(NULL, false);
@@ -171,11 +167,9 @@ void  CDialogHolder::OnExternalHideIndicators()
 
 CUIDialogWnd* CDialogHolder::TopInputReceiver()
 { 
-#pragma todo("sky to gri: ctd is here")
-#if 0
 	if ( !m_input_receivers.empty() ) 
 		return m_input_receivers.back().m_item; 
-#endif
+
 	return NULL; 
 };
 
@@ -208,6 +202,17 @@ void CDialogHolder::SetMainInputReceiver	(CUIDialogWnd* ir, bool _find_remove)
 		m_input_receivers.push_back(recvItem(ir));
 	}
 };
+
+void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
+{
+ 	if (pDialog && pDialog->NeedCenterCursor())
+ 		GetUICursor().SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
+
+	if( pDialog->IsShown() )
+		StopMenu(pDialog);
+	else
+		StartMenu(pDialog, bDoHideIndicators);
+}
 
 void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
@@ -283,11 +288,9 @@ bool CDialogHolder::IR_UIOnKeyboardPress(int dik)
 		if( O ){
 			IInputReceiver*		IR	= smart_cast<IInputReceiver*>( smart_cast<CGameObject*>(O) );
 			if (IR)
-//				IR->IR_OnKeyboardPress(get_binded_action(dik));
 			{
 				EGameActions action = get_binded_action(dik);
-	//			if(action!=kQUICK_USE_1 && action!=kQUICK_USE_2 && action!=kQUICK_USE_3 && action!=kQUICK_USE_4)
-					IR->IR_OnKeyboardPress(action);
+				IR->IR_OnKeyboardPress(action);
 			}
 			return			(false);
 		}

@@ -26845,14 +26845,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UI.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UI.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ui_base.cpp"
 				>
 			</File>

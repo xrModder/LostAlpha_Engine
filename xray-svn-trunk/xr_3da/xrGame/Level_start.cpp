@@ -10,6 +10,8 @@
 #include "../IGame_Persistent.h"
 #include "../xr_ioconsole.h"
 #include "MainMenu.h"
+#include "UIGameCustom.h"
+
 /*
 shared_str CLevel::OpenDemoFile(LPCSTR demo_file_name)
 {
@@ -294,7 +296,7 @@ bool CLevel::net_start6()
 		if	(!g_dedicated_server)
 		{
 			if (g_hud)
-				HUD().GetUI()->OnConnected();
+				CurrentGameUI()->OnConnected();
 		}
 	}
 

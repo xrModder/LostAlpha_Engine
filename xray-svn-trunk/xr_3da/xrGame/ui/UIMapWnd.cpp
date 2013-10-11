@@ -19,6 +19,7 @@
 
 #include "../HUDManager.h"
 #include "../script_engine.h"
+#include "../uicursor.h"
 
 #include <dinput.h>				//remove me !!!
 #include "../../xr_input.h"		//remove me !!!

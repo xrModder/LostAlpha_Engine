@@ -3,6 +3,7 @@
 #include "../xr_object.h"
 #include "level.h"
 #include "HUDManager.h"
+#include "ui_base.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"

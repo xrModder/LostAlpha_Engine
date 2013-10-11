@@ -24,7 +24,6 @@ public:
 
 class PROTECT_API CDialogHolder :public pureFrame
 {
-public:
 	//dialogs
 	xr_vector<recvItem>										m_input_receivers;
 	xr_vector<dlgItem>										m_dialogsToRender;
@@ -49,6 +48,7 @@ public:
 	virtual void	_BCL	OnFrame							();
 	virtual bool			UseIndicators					()						{return true;}
 
+	virtual void			StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual void			StartDialog						(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual void			StopDialog						(CUIDialogWnd* pDialog);
 	virtual bool			IgnorePause						()	{return false;}

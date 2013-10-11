@@ -27,6 +27,7 @@
 #include "../script_game_object.h"
 #include "../BottleItem.h"
 #include "../Car.h"
+#include "../uicursor.h"
 
 #define				CAR_BODY_XML		"carbody_new.xml"
 #define				CARBODY_ITEM_XML	"carbody_item.xml"
@@ -415,7 +416,7 @@ void CUICarBodyWnd::TakeAll()
 
 #include "../xr_level_controller.h"
 
-bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUICarBodyWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 

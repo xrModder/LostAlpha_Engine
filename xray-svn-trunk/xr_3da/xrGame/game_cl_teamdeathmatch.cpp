@@ -438,7 +438,7 @@ void game_cl_TeamDeathmatch::shedule_Update			(u32 dt)
 					if (!(pCurBuyMenu && pCurBuyMenu->IsShown()) && 
 						!(pCurSkinMenu && pCurSkinMenu->IsShown()) &&
 						!m_game_ui->IsServerInfoShown() &&
-						(HUD().GetUI() && HUD().GetUI()->GameIndicatorsShown())
+						(CurrentGameUI() && CurrentGameUI()->GameIndicatorsShown())
 						)
 					{
 						if (!m_bTeamSelected)

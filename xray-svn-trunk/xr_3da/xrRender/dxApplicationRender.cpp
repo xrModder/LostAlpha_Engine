@@ -245,7 +245,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 		r.rb.mul					(k);						
 		Frect						logo_tex_coords;
 		logo_tex_coords.lt.set		(0,0);
-		logo_tex_coords.rb.set		(1.0f,0.77926f);
+		logo_tex_coords.rb.set		(1,1);
 
 		draw_face					(hLevelLogo, r, logo_tex_coords, Fvector2().set(1,1));
 	}

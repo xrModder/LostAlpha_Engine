@@ -229,7 +229,7 @@ CUIInventoryWnd::~CUIInventoryWnd()
 	ClearAllLists						();
 }
 
-bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIInventoryWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if(m_b_need_reinit)
 		return true;
@@ -498,7 +498,7 @@ void CUIInventoryWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 #include "../xr_level_controller.h"
 #include <dinput.h>
 
-bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if(m_b_need_reinit)
 		return true;

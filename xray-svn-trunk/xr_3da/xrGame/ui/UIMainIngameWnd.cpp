@@ -279,34 +279,14 @@ void CUIMainIngameWnd::Init()
 		this->AttachChild					(m_artefactPanel);	
 	}
 
-	AttachChild								(&UIStaticDiskIO);
-	UIStaticDiskIO.SetWndRect				(Frect().set(1000,750,16,16));
-	UIStaticDiskIO.GetUIStaticItem().SetTextureRect(0,0,16,16);
-	UIStaticDiskIO.InitTexture				("ui\\ui_disk_io");
-	UIStaticDiskIO.SetTextureRect			(0,0,32,32);
-	UIStaticDiskIO.SetStretchTexture		(TRUE);
-
-
 	HUD_SOUND::LoadSound					("maingame_ui", "snd_new_contact"		, m_contactSnd		, SOUND_TYPE_IDLE);
 }
 
-float UIStaticDiskIO_start_time = 0.0f;
 void CUIMainIngameWnd::Draw()
 {
 #ifdef DEBUG
 	test_draw				();
 #endif
-	// show IO icon
-	bool IOActive	= (FS.dwOpenCounter>0);
-	if	(IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
-
-	if ((UIStaticDiskIO_start_time+1.0f) < Device.fTimeGlobal)	UIStaticDiskIO.Show(false); 
-	else {
-		u32		alpha			= clampr(iFloor(255.f*(1.f-(Device.fTimeGlobal-UIStaticDiskIO_start_time)/1.f)),0,255);
-		UIStaticDiskIO.Show		( true  ); 
-		UIStaticDiskIO.SetTextureColor	(color_rgba(255,255,255,alpha));
-	}
-	FS.dwOpenCounter = 0;
 
 	if(!IsGameTypeSingle())
 	{
@@ -1060,14 +1040,14 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		{
 		case DIK_NUMPADMINUS:
 			//.HideAll();
-			HUD().GetUI()->HideGameIndicators();
-			HUD().GetUI()->HideCrosshair();
+			CurrentGameUI()->ShowGameIndicators(false);
+			CurrentGameUI()->ShowCrosshair(false);
 			return true;
 			break;
 		case DIK_NUMPADPLUS:
 			//.ShowAll();
-			HUD().GetUI()->ShowGameIndicators();
-			HUD().GetUI()->ShowCrosshair();
+			CurrentGameUI()->ShowGameIndicators(true);
+			CurrentGameUI()->ShowCrosshair(true);
 			return true;
 			break;
 		}
@@ -1103,7 +1083,7 @@ void CUIMainIngameWnd::ReceiveNews(GAME_NEWS_DATA* news)
 {
 	VERIFY(news->texture_name.size());
 
-	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time);
+	CurrentGameUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time);
 }
 
 void CUIMainIngameWnd::SetWarningIconColor(CUIStatic* s, const u32 cl)

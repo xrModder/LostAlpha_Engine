@@ -37,7 +37,7 @@ void CUIInventoryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	}else 
 	if (UIExitButton == pWnd && BUTTON_CLICKED == msg)
 	{
-		GetHolder()->StopMenu			(this);
+		HideDialog();
 	}
 
 	CUIWindow::SendMessage(pWnd, msg, pData);

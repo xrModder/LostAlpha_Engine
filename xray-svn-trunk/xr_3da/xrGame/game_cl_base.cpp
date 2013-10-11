@@ -137,8 +137,8 @@ void	game_cl_GameState::net_import_state	(NET_Packet& P)
 
 void game_cl_GameState::CommonMessageOut (LPCSTR msg)
 {
-	if (!HUD().GetUI()) return;
-	HUD().GetUI()->m_pMessagesWnd->AddLogMessage(msg);
+	if (!CurrentGameUI()) return;
+	CurrentGameUI()->m_pMessagesWnd->AddLogMessage(msg);
 }
 
 void	game_cl_GameState::net_import_update(NET_Packet& P)

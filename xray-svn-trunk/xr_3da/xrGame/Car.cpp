@@ -479,13 +479,13 @@ void CCar::UpdateCL				( )
 			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms);
 		}
 
-		if(HUD().GetUI())//
+		if(CurrentGameUI())//
 		{
-			HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(true);
-			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f*/);
-			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetSpeed(lin_vel.magnitude()/1000.f*3600.f/100.f);
-			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetRPM(m_current_rpm/m_max_rpm/2.f);
-			HUD().GetUI()->UIMainIngameWnd->CarPanel().SetFuel(100.0f * (m_fuel / m_fuel_tank));
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(true);
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f*/);
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().SetSpeed(lin_vel.magnitude()/1000.f*3600.f/100.f);
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().SetRPM(m_current_rpm/m_max_rpm/2.f);
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().SetFuel(100.0f * (m_fuel / m_fuel_tank));
 		}
 	}
 
@@ -557,7 +557,7 @@ void	CCar::Hit							(SHit* pHDS)
 	}
 	CDamagableItem::HitEffect();
 	if(Owner()&&Owner()->ID()==Level().CurrentEntity()->ID())
-		HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f */);
+		CurrentGameUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f */);
 }
 
 void CCar::ChangeCondition	(float fDeltaCondition)	
@@ -568,7 +568,7 @@ void CCar::ChangeCondition	(float fDeltaCondition)
 	if (Local() && !g_Alive() && !AlreadyDie())
 		KillEntity	(Initiator());
 	if(Owner()&&Owner()->ID()==Level().CurrentEntity()->ID())
-		HUD().GetUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f */);
+		CurrentGameUI()->UIMainIngameWnd->CarPanel().SetCarHealth(GetfHealth()/* /100.f */);
 }
 
 void CCar::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type)
@@ -650,7 +650,7 @@ void CCar::detach_Actor()
 	Unclutch();
 	ResetKeys();
 	m_current_rpm=m_min_rpm;
-	HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(false);
+	CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
 	HandBreak();
 	if (HasWeapon()) m_car_weapon->Action(CCarWeapon::eWpnFire, 0);
 	processing_deactivate();
@@ -1881,8 +1881,8 @@ void CCar::CarExplode()
 
 	if(CPHDestroyable::CanDestroy())
 		CPHDestroyable::Destroy(ID(),"physic_destroyable_object");	
-	if (HUD().GetUI()->UIMainIngameWnd->CarPanel().IsShown())
-		HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(false);
+	if (CurrentGameUI()->UIMainIngameWnd->CarPanel().IsShown())
+		CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
 
 }
 //void CCar::object_contactCallbackFun(bool& do_colide,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)

@@ -2,9 +2,6 @@
 #ifdef USE_TIMERS_MANAGER
 #include "script_export_space.h"
 #include "CustomTimer.h"
-//#include "alife_registry_wrappers.h"
-#include "ui.h"
-#include "HudManager.h"
 #include "UIGameSP.h"
 
 class CTimersManager : public IPureSerializeObject<IReader, IWriter>

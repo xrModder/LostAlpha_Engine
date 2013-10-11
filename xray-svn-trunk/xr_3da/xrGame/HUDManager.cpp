@@ -8,9 +8,8 @@
 #include "GamePersistent.h"
 #include "UIGameCustom.h"
 #include "UICursor.h"
-#include "UI.h"
 #include "MainMenu.h"
-
+#include "game_cl_base.h"
 
 extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
 
@@ -53,7 +52,7 @@ void CFontManager::InitializeFonts()
 	InitializeFont(pFontGraffiti50Russian	,"ui_font_graff_50"				);
 	InitializeFont(pFontLetterica25			,"ui_font_letter_25"			);
 	InitializeFont(pFontStat				,"stat_font",					CGameFont::fsDeviceIndependent);
-
+	pFontStat->SetInterval	(0.75f, 1.0f);
 }
 
 LPCSTR CFontManager::GetFontTexName (LPCSTR section)
@@ -128,37 +127,33 @@ void CFontManager::OnDeviceReset()
 }
 
 //--------------------------------------------------------------------
-CHUDManager::CHUDManager()
+CHUDManager::CHUDManager() : pUIGame(NULL), m_pHUDTarget(xr_new<CHUDTarget>())
 { 
-	pUI						= 0;
-	m_pHUDTarget			= xr_new<CHUDTarget>();
-	OnDisconnected			();
 }
 //--------------------------------------------------------------------
 CHUDManager::~CHUDManager()
 {
-	xr_delete			(pUI);
-	xr_delete			(m_pHUDTarget);
-	b_online			= false;
+	OnDisconnected();
+
+	if(pUIGame)		
+		pUIGame->UnLoad	();
+
+	xr_delete		(pUIGame);
+	xr_delete		(m_pHUDTarget);
 }
 
-//--------------------------------------------------------------------
-
-void CHUDManager::Load()
-{
-	if(pUI){
-		pUI->Load			( pUI->UIGame() );
-		return;
-	}
-	pUI					= xr_new<CUI> (this);
-	pUI->Load			(NULL);
-	OnDisconnected		();
-}
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
-	if(!b_online)					return;
-	if (pUI) pUI->UIOnFrame();
+	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
+		return;
+
+	if(!b_online)						
+		return;
+
+	if (pUIGame) 
+		pUIGame->OnFrame();
+
 	m_pHUDTarget->CursorOnFrame();
 }
 //--------------------------------------------------------------------
@@ -168,7 +163,7 @@ ENGINE_API extern float psHUD_FOV;
 void CHUDManager::Render_First()
 {
 	//if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return; 	//skyloader: commented because it has problems with 'actor shadow'/'actor body'
-	if (0==pUI)						return;
+	if (0==pUIGame)					return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;
 	CActor*		A					= smart_cast<CActor*> (O);
@@ -187,7 +182,7 @@ void CHUDManager::Render_First()
 void CHUDManager::Render_Last()
 {
 	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2|HUD_DRAW_RT2))return;
-	if (0==pUI)						return;
+	if (0==pUIGame)					return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;
 	CActor*		A					= smart_cast<CActor*> (O);
@@ -213,11 +208,13 @@ void  CHUDManager::RenderUI()
 	if(!b_online)					return;
 
 	BOOL bAlready					= FALSE;
-	if (true || psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+	if (true /*|| psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT)*/)
 	{
 		HitMarker.Render			();
-		bAlready					= ! (pUI && !pUI->Render());
-		UI().RenderFont();
+		if(pUIGame)
+			pUIGame->Render			();
+
+		UI().RenderFont				();
 	}
 
 	if (psHUD_Flags.is(HUD_CROSSHAIR|HUD_CROSSHAIR_RT|HUD_CROSSHAIR_RT2) && !bAlready)	
@@ -246,7 +243,7 @@ void CHUDManager::OnEvent(EVENT E, u64 P1, u64 P2)
 
 collide::rq_result&	CHUDManager::GetCurrentRayQuery	() 
 {
-	return m_pHUDTarget->RQ;
+	return m_pHUDTarget->GetRQ();
 }
 
 void CHUDManager::SetCrosshairDisp	(float dispf, float disps)
@@ -256,7 +253,7 @@ void CHUDManager::SetCrosshairDisp	(float dispf, float disps)
 
 void  CHUDManager::ShowCrosshair	(bool show)
 {
-	m_pHUDTarget->m_bShowCrosshair = show;
+	m_pHUDTarget->ShowCrosshair	(show);
 }
 
 
@@ -269,38 +266,19 @@ void CHUDManager::SetHitmarkType		(LPCSTR tex_name)
 {
 	HitMarker.InitShader				(tex_name);
 }
+
 #include "ui\UIMainInGameWnd.h"
-void CHUDManager::OnScreenRatioChanged()
-{
-	xr_delete							(pUI->UIMainIngameWnd);
+//extern CUIXml*			pWpnScopeXml; //skyloader: from master branch
 
-	pUI->UIMainIngameWnd				= xr_new<CUIMainIngameWnd>	();
-	pUI->UIMainIngameWnd->Init			();
-	pUI->UnLoad							();
-	pUI->Load							(pUI->UIGame());
-}
-
-void CHUDManager::OnDisconnected()
+void CHUDManager::Load()
 {
-//.	if(!b_online)			return;
-	b_online				= false;
-	if(pUI)
-		Device.seqFrame.Remove	(pUI);
-}
-
-void CHUDManager::OnConnected()
-{
-	if(b_online)			return;
-	b_online				= true;
-	if(pUI){
-		Device.seqFrame.Add	(pUI,REG_PRIORITY_LOW-1000);
+	if (!pUIGame)
+	{
+		pUIGame				= Game().createGameUI();
+	} else
+	{
+		pUIGame->SetClGame	(&Game());
 	}
-}
-
-void CHUDManager::net_Relcase	(CObject *object)
-{
-	VERIFY						(m_pHUDTarget);
-	m_pHUDTarget->net_Relcase	(object);
 }
 
 void CHUDManager::OnScreenResolutionChanged()
@@ -312,7 +290,29 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUIGame->UnLoad						();
 	pUIGame->Load						();
 
-	pUI->OnConnected				();
+	pUIGame->OnConnected				();
+}
+
+void CHUDManager::OnDisconnected()
+{
+
+	b_online				= false;
+	if(pUIGame)
+		Device.seqFrame.Remove	(pUIGame);
+}
+
+void CHUDManager::OnConnected()
+{
+	if(b_online)			return;
+	b_online				= true;
+	if(pUIGame)
+		Device.seqFrame.Add	(pUIGame,REG_PRIORITY_LOW-1000);
+}
+
+void CHUDManager::net_Relcase	(CObject *object)
+{
+	VERIFY						(m_pHUDTarget);
+	m_pHUDTarget->net_Relcase	(object);
 }
 
 bool   CHUDManager::RenderActiveItemUIQuery()
@@ -323,29 +323,6 @@ bool   CHUDManager::RenderActiveItemUIQuery()
 void   CHUDManager::RenderActiveItemUI()
 {
 }
-
-/*
-#include "player_hud.h"
-bool   CHUDManager::RenderActiveItemUIQuery()
-{
-	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
-		return false;
-
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return false;
-
-	if(!need_render_hud())			return false;
-
-	return (g_player_hud && g_player_hud->render_item_ui_query() );
-}
-
-void   CHUDManager::RenderActiveItemUI()
-{
-	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
-		return;
-
-	g_player_hud->render_item_ui		();
-}
-*/
 
 CDialogHolder* CurrentDialogHolder()
 {

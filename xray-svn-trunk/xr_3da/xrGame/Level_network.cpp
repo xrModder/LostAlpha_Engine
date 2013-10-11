@@ -13,11 +13,13 @@
 #include "stalker_animation_data_storage.h"
 #include "client_spawn_manager.h"
 #include "seniority_hierarchy_holder.h"
+#include "UIGameCustom.h"
+#include "UI/UIGameTutorial.h"
 
 ENGINE_API bool g_dedicated_server;
 
 const int max_objects_size			= 2*1024;
-const int max_objects_size_in_save	= 4*1024;
+const int max_objects_size_in_save	= 8*1024;
 
 extern bool	g_b_ClearGameCaptions;
 
@@ -25,47 +27,46 @@ void CLevel::remove_objects	()
 {
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - Start");
 	BOOL						b_stored = psDeviceFlags.test(rsDisableObjectsAsCrows);
+	
+	int loop = 5;
+	while(loop)
+	{
+		if (OnServer()) 
+		{
+			R_ASSERT				(Server);
+			Server->SLS_Clear		();
+		}
 
-	if (OnServer()) {
-		VERIFY					(Server);
-		Server->SLS_Clear		();
+		if (OnClient())
+			ClearAllObjects			();
+
+		for (int i=0; i<20; ++i) 
+		{
+			snd_Events.clear		();
+			psNET_Flags.set			(NETFLAG_MINIMIZEUPDATES,FALSE);
+			// ugly hack for checks that update is twice on frame
+			// we need it since we do updates for checking network messages
+			++(Device.dwFrame);
+			psDeviceFlags.set		(rsDisableObjectsAsCrows,TRUE);
+			ClientReceive			();
+			ProcessGameEvents		();
+			Objects.Update			(false);
+			#ifdef DEBUG
+			Msg						("Update objects list...");
+			#endif // #ifdef DEBUG
+			Objects.dump_all_objects();
+		}
+
+		if(Objects.o_count()==0)
+			break;
+		else
+		{
+			--loop;
+			Msg						("Objects removal next loop. Active objects count=%d", Objects.o_count());
+		}
+
 	}
-/*	
-	snd_Events.clear			();
-	for (int i=0; i<6; ++i) {
-		psNET_Flags.set			(NETFLAG_MINIMIZEUPDATES,FALSE);
-		// ugly hack for checks that update is twice on frame
-		// we need it since we do updates for checking network messages
-		++(Device.dwFrame);
-		psDeviceFlags.set		(rsDisableObjectsAsCrows,TRUE);
-		ClientReceive			();
-		ProcessGameEvents		();
-		Objects.Update			(true);
-		Sleep					(100);
-	}
 
-	if (OnClient())
-		ClearAllObjects			();
-*/
-	if (OnClient())
-		ClearAllObjects			();
-
-	snd_Events.clear			();
-
-	for (int i=0; i<20; ++i) {
-		psNET_Flags.set			(NETFLAG_MINIMIZEUPDATES,FALSE);
-		// ugly hack for checks that update is twice on frame
-		// we need it since we do updates for checking network messages
-		++(Device.dwFrame);
-		psDeviceFlags.set		(rsDisableObjectsAsCrows,TRUE);
-		ClientReceive			();
-		ProcessGameEvents		();
-		Objects.Update			(false);
-#ifdef DEBUG
-		Msg						("Update objects list...");
-#endif // #ifdef DEBUG
-//		Objects.dump_all_objects();
-	}
 	BulletManager().Clear		();
 	ph_commander().clear		();
 	ph_commander_scripts().clear();
@@ -83,6 +84,7 @@ void CLevel::remove_objects	()
 	
 	VERIFY										(Render);
 	Render->models_Clear						(FALSE);
+	
 	Render->clear_static_wallmarks				();
 
 #ifdef DEBUG
@@ -95,13 +97,7 @@ void CLevel::remove_objects	()
 		VERIFY										(client_spawn_manager().registry().empty());
 		client_spawn_manager().clear			();
 	}
-/*
-	for (int i=0; i<6; i++)
-	{
-		++(Device.dwFrame);
-		Objects.Update(true);
-	}
-*/
+
 	g_pGamePersistent->destroy_particles		(false);
 
 //.	xr_delete									(m_seniority_hierarchy_holder);
@@ -113,9 +109,26 @@ void CLevel::remove_objects	()
 	extern void	show_animation_stats	();
 #endif // DEBUG
 
+extern CUISequencer * g_tutorial;
+extern CUISequencer * g_tutorial2;
+
 void CLevel::net_Stop		()
 {
 	Msg							("- Disconnect");
+
+	if(CurrentGameUI())
+	{
+		CurrentGameUI()->HideShownDialogs();
+		//CurrentGameUI()->PdaMenu().Reset();
+	}
+
+	if(g_tutorial && !g_tutorial->Persistent())
+		g_tutorial->Stop();
+
+	if(g_tutorial2 && !g_tutorial->Persistent())
+		g_tutorial2->Stop();
+
+
 	bReady						= false;
 	m_bGameConfigStarted		= FALSE;
 	game_configured				= FALSE;
