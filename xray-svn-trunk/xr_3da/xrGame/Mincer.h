@@ -46,6 +46,8 @@ public:
 	virtual void	Center						(Fvector& C) const;
 	virtual	void	NotificateDestroy			(CPHDestroyableNotificate *dn);
 	virtual float	BlowoutRadiusPercent		(CPhysicsShellHolder* GO);
+protected:
+	virtual void	exit_Zone (SZoneObjectInfo& io);
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
