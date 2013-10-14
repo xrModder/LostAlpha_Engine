@@ -56,7 +56,7 @@ void ParseFile(LPCSTR path, CMemoryWriter& W, IReader *F, CXml* xml )
 	}
 }
 
-void CXml::Load(LPCSTR path_alias, LPCSTR path, LPCSTR _xml_filename)
+bool CXml::Load(LPCSTR path_alias, LPCSTR path, LPCSTR _xml_filename)
 {
 	shared_str fn			= correct_file_name(path, _xml_filename);
 
@@ -66,7 +66,7 @@ void CXml::Load(LPCSTR path_alias, LPCSTR path, LPCSTR _xml_filename)
 }
 
 //инициализация и загрузка XML файла
-void CXml::Load(LPCSTR path, LPCSTR  xml_filename)
+bool CXml::Load(LPCSTR path, LPCSTR  xml_filename)
 {
 	xr_strcpy					(m_xml_file_name, xml_filename);
 	// Load and parse xml file
@@ -88,6 +88,8 @@ void CXml::Load(LPCSTR path, LPCSTR  xml_filename)
 	} 
 
 	m_root					= m_Doc.FirstChildElement();
+
+	return true;
 }
 
 XML_NODE* CXml::NavigateToNode(XML_NODE* start_node, LPCSTR  path, int node_index)
