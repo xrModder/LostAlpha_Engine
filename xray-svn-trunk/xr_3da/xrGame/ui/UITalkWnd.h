@@ -63,7 +63,7 @@ protected:
 
 	// Функции добавления строк в листы вопросов и ответов
 public:
-	void				AddQuestion				(const shared_str& text, const shared_str& id);
+	void				AddQuestion				(const shared_str& text, const shared_str& id, int number);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
 	bool				b_disable_break;
 protected:

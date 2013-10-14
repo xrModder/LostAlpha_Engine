@@ -33,7 +33,7 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/integral_c.hpp>
 #include <boost/mpl/equal_to.hpp>
-#include <boost/mpl/apply_if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/is_pointer.hpp>
@@ -189,7 +189,7 @@ namespace luabind { namespace detail
 		typedef typename
 			boost::mpl::if_<is_primitive<T>
 				, const type<T>&
-				, typename boost::mpl::apply_if<boost::mpl::or_<boost::is_reference<T>, boost::is_pointer<T> >
+				, typename boost::mpl::eval_if<boost::mpl::or_<boost::is_reference<T>, boost::is_pointer<T> >
 					, identity<T>
 					, boost::add_reference<T>
 				>::type

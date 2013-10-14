@@ -15,7 +15,7 @@ bool	is_CCW	(int _1, int _2)
 }
 
 // Iterate on edges - select longest
-int		callback_edge_longest	( Face* F)
+int		callback_edge_longest	( const Face* F )
 {
 	float	max_err				= -1;
 	int		max_id				= -1;
@@ -280,7 +280,7 @@ void CBuild::u_Tesselate	(tesscb_estimator* cb_E, tesscb_face* cb_F, tesscb_vert
 		V->P.lerp			(V1->P, V2->P, .5f);
 
 		// iterate on faces which share this 'problematic' edge
-		for (u32 af_it=0; af_it<adjacent.size(); af_it++)
+		for (u32 af_it=0; af_it<adjacent.size(); ++af_it)
 		{
 			Face*	AF			= adjacent[af_it];
 			VERIFY				(false==AF->flags.bSplitted);
@@ -340,8 +340,8 @@ void CBuild::u_Tesselate	(tesscb_estimator* cb_E, tesscb_face* cb_F, tesscb_vert
 	}
 
 	// Cleanup
-	for (u32 I=0; I<g_faces.size(); I++)	if (0!=g_faces[I] && g_faces[I]->flags.bSplitted)	FacePool.destroy	(g_faces[I]);
-	for (u32 I=0; I<g_vertices.size(); I++)	if (0==g_vertices[I]->adjacent.size())				VertexPool.destroy	(g_vertices[I]);
+	for (u32 I=0; I<g_faces.size(); ++I)	if (0!=g_faces[I] && g_faces[I]->flags.bSplitted)	FacePool.destroy	(g_faces[I]);
+	for (u32 I=0; I<g_vertices.size(); ++I)	if (0==g_vertices[I]->adjacent.size())				VertexPool.destroy	(g_vertices[I]);
 	g_faces.erase		(std::remove(g_faces.begin(),g_faces.end(),(Face*)0),g_faces.end());
 	g_vertices.erase	(std::remove(g_vertices.begin(),g_vertices.end(),(Vertex*)0),g_vertices.end());
 	g_bUnregister		= true;
@@ -349,17 +349,17 @@ void CBuild::u_Tesselate	(tesscb_estimator* cb_E, tesscb_face* cb_F, tesscb_vert
 
 void CBuild::u_SmoothVertColors(int count)
 {
-	for (int iteration=0; iteration<count; iteration++)
+	for (int iteration=0; iteration<count; ++iteration)
 	{
 		// Gather
 		xr_vector<base_color>	colors;
 		colors.resize			(g_vertices.size());
-		for (u32 it=0; it<g_vertices.size(); it++)
+		for (u32 it=0; it<g_vertices.size(); ++it)
 		{
 			// Circle
 			xr_vector<Vertex*>	circle;
 			Vertex*		V		= g_vertices[it];
-			for (u32 fit=0; fit<V->adjacent.size(); fit++)	{
+			for (u32 fit=0; fit<V->adjacent.size(); ++fit)	{
 				Face*	F		= V->adjacent[fit];
 				circle.push_back(F->v[0]);
 				circle.push_back(F->v[1]);
@@ -370,7 +370,7 @@ void CBuild::u_SmoothVertColors(int count)
 
 			// Average
 			base_color_c		avg,tmp;
-			for (u32 cit=0; cit<circle.size(); cit++)
+			for (u32 cit=0; cit<circle.size(); ++cit)
 			{
 				circle[cit]->C._get	(tmp);
 				avg.add				(tmp);
@@ -380,7 +380,7 @@ void CBuild::u_SmoothVertColors(int count)
 		}
 
 		// Transfer
-		for (u32 it=0; it<g_vertices.size(); it++)
+		for (u32 it=0; it<g_vertices.size(); ++it)
 			g_vertices[it]->C	= colors[it];
 	}
 }

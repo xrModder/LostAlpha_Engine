@@ -408,6 +408,8 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 		pWnd->SetAccelerator(acc, 1);
 	}
 
+	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
+	pWnd->SetStretch(stretch_flag);
 	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
 	if(text_hint)
 		pWnd->m_hint_text	= CStringTable().translate(text_hint);
@@ -823,8 +825,7 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	string256 buf;
 
 	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
-//.	R_ASSERT(stretch_flag==false);
-//.	pWnd->SetStretchTexture( stretch_flag );
+	pWnd->SetStretchTexture( stretch_flag );
 
 	Fvector2 pos, size;
 	pos.x			= xml_doc.ReadAttribFlt(path, index, "x");
@@ -846,6 +847,11 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 
 	InitWindow		(xml_doc, path, index, pWnd);
 	pWnd->InitFrameLineWnd(*base_name, pos, size, !vertical);
+
+	strconcat(sizeof(buf),buf,path,":title");
+	//TODO: FOR SKYLOADER!!!
+	//if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
+
 	return true;
 }
 

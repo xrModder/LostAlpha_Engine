@@ -90,6 +90,12 @@ void CUIInventoryWnd::InitInventory()
 		CUICellItem* itm				= create_cell_item(_itm);
 		m_pUIBinocularList->SetItem		(itm);
 	}
+	_itm								= m_pInv->m_slots[TORCH_SLOT].m_pIItem;
+	if(_itm)
+	{
+		CUICellItem* itm				= create_cell_item(_itm);
+		m_pUITorchList->SetItem		(itm);
+	}
 
 	PIItem _outfit						= m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
 	CUICellItem* outfit					= (_outfit)?create_cell_item(_outfit):NULL;
@@ -460,6 +466,10 @@ CUIDragDropListEx* CUIInventoryWnd::GetSlotList(u32 slot_idx)
 			return m_pUIBinocularList;
 			break;
 
+		case TORCH_SLOT:
+			return m_pUITorchList;
+			break;
+
 		case OUTFIT_SLOT:
 			return m_pUIOutfitList;
 			break;
@@ -479,4 +489,5 @@ void CUIInventoryWnd::ClearAllLists()
 	m_pUIAutomaticList->ClearAll(true);
 	m_pUIKnifeList->ClearAll(true);
 	m_pUIBinocularList->ClearAll(true);
+	m_pUITorchList->ClearAll(true);
 }

@@ -230,7 +230,7 @@ void CSE_PHSkeleton::STATE_Write		(NET_Packet	&tNetPacket)
 	{
 		data_save(tNetPacket);
 	}
-}
+} 
 
 void CSE_PHSkeleton::data_load(NET_Packet &tNetPacket)
 {

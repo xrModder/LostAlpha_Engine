@@ -51,12 +51,12 @@
 				EnableIntrinsicFunctions="false"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				GeneratePreprocessedFile="0"
 				StringPooling="false"
 				MinimalRebuild="true"
-				ExceptionHandling="1"
+				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				SmallerTypeCheck="true"
 				RuntimeLibrary="2"
@@ -167,7 +167,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;X:\STALKER\SDK\boost_1_30_0;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;X:\STALKER\SDK;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\Xiph\Include"
 				PreprocessorDefinitions="DEBUG,MIXED,WIN32;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -272,6 +272,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm111"
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -279,7 +280,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/DPlay;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki"
 				PreprocessorDefinitions="WIN32;NDEBUG;DRENDER;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -7376,6 +7377,14 @@
 							>
 						</File>
 						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\Monsters\Zombie\zombie_choke_effector.h"
+							>
+						</File>
+						<File
 							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.cpp"
 							>
 						</File>
@@ -7383,6 +7392,26 @@
 							RelativePath=".\ai\Monsters\Zombie\zombie_state_manager.h"
 							>
 						</File>
+						<Filter
+							Name="Choke State"
+							>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_execute.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_execute_inline.h"
+								>
+							</File>
+							<File
+								RelativePath=".\ai\Monsters\Zombie\zombie_choke_inline.h"
+								>
+							</File>
+						</Filter>
 						<Filter
 							Name="States"
 							>
@@ -8477,6 +8506,24 @@
 							<File
 								RelativePath=".\ai\monsters\ghostboss\ghostboss_script.cpp"
 								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
 							</File>
 						</Filter>
 						<Filter
@@ -9697,6 +9744,84 @@
 												>
 											</File>
 										</Filter>
+									</Filter>
+								</Filter>
+								<Filter
+									Name="search_planner"
+									>
+									<File
+										RelativePath=".\stalker_search_planner.cpp"
+										>
+									</File>
+									<File
+										RelativePath=".\stalker_search_planner.h"
+										>
+									</File>
+									<Filter
+										Name="actions"
+										>
+										<File
+											RelativePath=".\stalker_search_actions.cpp"
+											>
+											<FileConfiguration
+												Name="Debug|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+											<FileConfiguration
+												Name="Mixed|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+											<FileConfiguration
+												Name="Release|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+											<FileConfiguration
+												Name="Debug_Priquel|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+											<FileConfiguration
+												Name="Mixed_Priquel|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+											<FileConfiguration
+												Name="Release_Priquel|Win32"
+												>
+												<Tool
+													Name="VCCLCompilerTool"
+													PrecompiledHeaderThrough="pch_script.h"
+													PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+												/>
+											</FileConfiguration>
+										</File>
+										<File
+											RelativePath=".\stalker_search_actions.h"
+											>
+										</File>
 									</Filter>
 								</Filter>
 								<Filter
@@ -21409,6 +21534,10 @@
 								>
 							</File>
 							<File
+								RelativePath=".\HudItemCallback.cpp"
+								>
+							</File>
+							<File
 								RelativePath=".\HudSound.cpp"
 								>
 							</File>
@@ -23830,11 +23959,11 @@
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_info.cpp"
+					RelativePath=".\xrServer_info.cpp"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_info.h"
+					RelativePath=".\xrServer_info.h"
 					>
 				</File>
 				<File
@@ -23842,7 +23971,7 @@
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_updates_compressor.cpp"
+					RelativePath=".\xrServer_updates_compressor.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -23900,7 +24029,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\xrServer_updates_compressor.h"
+					RelativePath=".\xrServer_updates_compressor.h"
 					>
 				</File>
 				<Filter
@@ -24789,11 +24918,11 @@
 						>
 					</File>
 					<File
-						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\gamespy\GameSpy_GP.cpp"
+						RelativePath=".\gamespy\GameSpy_GP.cpp"
 						>
 					</File>
 					<File
-						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\gamespy\GameSpy_GP.h"
+						RelativePath=".\gamespy\GameSpy_GP.h"
 						>
 					</File>
 					<File
@@ -27264,6 +27393,70 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ik_calculate_data.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_calculate_data.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_calculate_state.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_collide_data.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_dbg_matrix.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_dbg_matrix.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_foot_collider.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_foot_collider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_limb_state_predict.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_object_shift.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ik_object_shift.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot.h"
+					>
+				</File>
+				<File
+					RelativePath=".\IKFoot_inl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Ik\IKLimb.cpp"
 					>
 				</File>
@@ -27309,6 +27502,14 @@
 				</File>
 				<File
 					RelativePath=".\Ik\mathTrig.h"
+					>
+				</File>
+				<File
+					RelativePath=".\pose_extrapolation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\pose_extrapolation.h"
 					>
 				</File>
 			</Filter>

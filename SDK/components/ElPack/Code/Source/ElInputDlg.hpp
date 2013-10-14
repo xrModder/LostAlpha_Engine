@@ -12,9 +12,12 @@
 #pragma option push -Vx
 #include <ElPopBtn.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
+#include <ElCaption.hpp>	// Pascal unit
+#include <ElStrUtils.hpp>	// Pascal unit
 #include <ExtCtrls.hpp>	// Pascal unit
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <HTMLRender.hpp>	// Pascal unit
+#include <ElEdits.hpp>	// Pascal unit
 #include <ElPanel.hpp>	// Pascal unit
 #include <ElACtrls.hpp>	// Pascal unit
 #include <ElHTMLLbl.hpp>	// Pascal unit
@@ -46,34 +49,40 @@ private:
 	Htmlrender::TElHTMLLinkClickEvent FOnLinkClick;
 	
 protected:
-	AnsiString FPrompt;
-	AnsiString FCaption;
+	WideString FPrompt;
+	WideString FCaption;
 	bool FIsHTML;
-	AnsiString FValue;
+	WideString FValue;
+	Graphics::TFont* FFont;
+	bool FParentFont;
+	Forms::TPosition FPosition;
+	void __fastcall SetFont(Graphics::TFont* Value);
+	void __fastcall SetParentFont(bool Value);
+	void __fastcall FontChange(System::TObject* Sender);
 	
 public:
 	bool __fastcall Execute(void);
+	__fastcall virtual TElInputDialog(Classes::TComponent* AOwner);
+	__fastcall virtual ~TElInputDialog(void);
 	
 __published:
-	__property AnsiString Prompt = {read=FPrompt, write=FPrompt};
-	__property AnsiString Caption = {read=FCaption, write=FCaption};
+	__property WideString Prompt = {read=FPrompt, write=FPrompt};
+	__property WideString Caption = {read=FCaption, write=FCaption};
 	__property bool IsHTML = {read=FIsHTML, write=FIsHTML, nodefault};
-	__property AnsiString Value = {read=FValue, write=FValue};
+	__property Forms::TPosition Position = {read=FPosition, write=FPosition, nodefault};
+	__property WideString Value = {read=FValue, write=FValue};
 	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
 	__property Htmlrender::TElHTMLLinkClickEvent OnLinkClick = {read=FOnLinkClick, write=FOnLinkClick};
-public:
-	#pragma option push -w-inl
-	/* TComponent.Create */ inline __fastcall virtual TElInputDialog(Classes::TComponent* AOwner) : Classes::TComponent(AOwner) { }
-	#pragma option pop
-	#pragma option push -w-inl
-	/* TComponent.Destroy */ inline __fastcall virtual ~TElInputDialog(void) { }
-	#pragma option pop
-	
+	__property Graphics::TFont* Font = {read=FFont, write=SetFont};
+	__property bool ParentFont = {read=FParentFont, write=SetParentFont, default=1};
 };
 
 
+typedef TMetaClass*TInputDlgClass;
+
 //-- var, const, procedure ---------------------------------------------------
-extern PACKAGE bool __fastcall InputQuery(const AnsiString ACaption, const AnsiString APrompt, AnsiString &AValue, bool AIsHTML);
+extern PACKAGE TMetaClass*InputDlgClass;
+extern PACKAGE bool __fastcall InputQuery(const WideString ACaption, const WideString APrompt, WideString &AValue, bool AIsHTML);
 
 }	/* namespace Elinputdlg */
 using namespace Elinputdlg;

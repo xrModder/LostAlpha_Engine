@@ -20,11 +20,14 @@
 
 #if !defined (_STLP_NATIVE_HEADER)
 #  if !defined (_STLP_NATIVE_INCLUDE_PATH)
-#    ifdef _XBOX
+#    if defined (_XBOX)
 #      define _STLP_NATIVE_INCLUDE_PATH ../xbox
-#    else
+#    elif defined(SN_TARGET_PS3) // #if defined (_XBOX)
 #      define _STLP_NATIVE_INCLUDE_PATH ../include
-#    endif
+#	   define _STLP_NATIVE_OLD_STREAMS_HEADER(file) <_STLP_NATIVE_INCLUDE_PATH##file>
+#    else // #elif defined(SN_TARGET_PS3)
+#      define _STLP_NATIVE_INCLUDE_PATH ../include
+#    endif // #if defined (_XBOX)
 #  endif
 #  define _STLP_NATIVE_HEADER(header) _STLP_MAKE_HEADER(_STLP_NATIVE_INCLUDE_PATH,header)
 #endif

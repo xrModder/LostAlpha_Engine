@@ -37,7 +37,7 @@ class ESoundSource: public CCustomObject
     };
     ECommand		m_Command;
 public:
-	enum ESoundType{
+    enum ESoundType{
     	stStaticSource = 0,
     };
     ESoundType		m_Type;

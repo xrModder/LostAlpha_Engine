@@ -124,6 +124,7 @@ public:
 	void __fastcall Hide(void);
 	__fastcall virtual TElTrayInfo(Classes::TComponent* AOwner);
 	__fastcall virtual ~TElTrayInfo(void);
+	__property TTrayInfoForm* InfoForm = {read=FInfoForm};
 	
 __published:
 	__property Graphics::TColor Color = {read=FColor, write=SetColor, default=-2147483624};
@@ -140,8 +141,10 @@ __published:
 };
 
 
+typedef TMetaClass*TTrayInfoFormClass;
+
 //-- var, const, procedure ---------------------------------------------------
-extern PACKAGE TTrayInfoForm* TrayInfoForm;
+extern PACKAGE TMetaClass*TrayInfoFormClass;
 
 }	/* namespace Eltrayinfo */
 using namespace Eltrayinfo;

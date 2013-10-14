@@ -292,3 +292,32 @@ void CStalkerActionCombatBase::play_start_search_sound	(u32 max_start_time, u32 
 		id
 	);
 }
+
+void CStalkerActionCombatBase::play_enemy_lost_sound	(u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
+{
+	if (!object().agent_manager().member().can_cry_noninfo_phrase())
+		return;
+
+#ifdef DEBUG
+	if (object().agent_manager().member().combat_members().empty())
+		Msg					("! I am in combat, but there is no combat members at all (including me), npc[%s],team[%d],squad[%d],group[%d]",
+			*object().cName(),
+			object().g_Team(),
+			object().g_Squad(),
+			object().g_Group()
+		);
+#endif // DEBUG
+
+	bool					search_with_allies = object().agent_manager().member().combat_members().size() > 1;
+
+	object().sound().play	(
+		search_with_allies ?
+		eStalkerSoundSearch1WithAllies :
+		eStalkerSoundSearch1NoAllies,
+		max_start_time,
+		min_start_time,
+		max_stop_time,
+		min_stop_time,
+		id
+	);
+}

@@ -4,7 +4,7 @@
 
 CUIFrameLineWnd::CUIFrameLineWnd()
 :bHorizontal(true),
-m_bTextureVisible(false)
+		m_bTextureVisible(false)
 {
 	m_texture_color				= color_argb(255,255,255,255);
 }

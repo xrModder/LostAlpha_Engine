@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "uber_deffer.h"
+#include "..\xrRender\ResourceManager.h"
+
 void fix_texture_name(LPSTR fn);
 
 #include "dxRenderDeviceRender.h"

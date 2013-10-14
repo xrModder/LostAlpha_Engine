@@ -118,6 +118,7 @@ protected:
 	Graphics::TColor FLineBorderActiveColor;
 	Graphics::TColor FLineBorderInactiveColor;
 	WideString FHint;
+	bool FChangeDisabledText;
 	AnsiString __fastcall FracValue(System::Currency AValue);
 	void __fastcall SetDecimalPlaces(const Byte Value);
 	void __fastcall SetUseSystemDecimalPlaces(const bool Value);
@@ -234,6 +235,7 @@ protected:
 	void __fastcall SetLineBorderInactiveColor(Graphics::TColor Value);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
+	void __fastcall SetChangeDisabledText(bool Value);
 	
 public:
 	__fastcall virtual TElCurrencyEdit(Classes::TComponent* AOwner);
@@ -256,7 +258,7 @@ __published:
 	__property Byte DecimalPlaces = {read=FDecimalPlaces, write=SetDecimalPlaces, stored=StoreDecimalPlaces, nodefault};
 	__property bool UseSystemDecimalPlaces = {read=FUseSystemDecimalPlaces, write=SetUseSystemDecimalPlaces, default=1};
 	__property WideString CurrencySymbol = {read=FCurrencySymbol, write=SetCurrencySymbol, stored=StoreCurrencySymbol};
-	__property TElCurrencySymbolPosition CurrencySymbolPosition = {read=FCurrencySymbolPosition, write=SetCurrencySymbolPosition, stored=StoreCurrencySymbol, nodefault};
+	__property TElCurrencySymbolPosition CurrencySymbolPosition = {read=FCurrencySymbolPosition, write=SetCurrencySymbolPosition, stored=StoreCurrencySymbol, default=1};
 	__property bool UseSystemCurrencySymbol = {read=FUseSystemCurrencySymbol, write=SetUseSystemCurrencySymbol, default=0};
 	__property WideString ButtonCaption = {read=GetButtonCaption, write=SetButtonCaption, index=0};
 	__property Graphics::TColor ButtonColor = {read=GetButtonColor, write=SetButtonColor, index=0, default=-2147483633};
@@ -282,11 +284,12 @@ __published:
 	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, default=1};
 	__property bool Flat = {read=FFlat, write=SetFlat, default=0};
 	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=0};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
 	__property Elvclutils::TElBorderSides BorderSides = {read=FBorderSides, write=SetBorderSides, nodefault};
 	__property bool HandleDialogKeys = {read=FHandleDialogKeys, write=FHandleDialogKeys, nodefault};
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=0};
 	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
 	__property Anchors  = {default=3};
 	__property Color  = {default=-2147483643};
@@ -297,14 +300,14 @@ __published:
 	__property DragMode  = {default=0};
 	__property Enabled  = {default=1};
 	__property Font ;
-	__property ParentColor  = {default=1};
+	__property ParentColor  = {default=0};
 	__property ParentCtl3D  = {default=1};
 	__property ParentFont  = {default=1};
 	__property ParentShowHint  = {default=1};
 	__property PopupMenu ;
 	__property ShowHint ;
 	__property TabOrder  = {default=-1};
-	__property TabStop  = {default=0};
+	__property TabStop  = {default=1};
 	__property Visible  = {default=1};
 	__property UseXPThemes  = {default=1};
 	__property OnClick ;

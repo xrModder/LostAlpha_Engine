@@ -8,6 +8,7 @@
 #include <dinput.h>
 #include "../level.h"
 #include "../string_table.h"
+#include "../hudmanager.h"
 
 CUISpeechMenu::CUISpeechMenu(LPCSTR section_name)
 {
@@ -15,7 +16,13 @@ CUISpeechMenu::CUISpeechMenu(LPCSTR section_name)
 	AttachChild					(m_pList);
 	m_pList->SetAutoDelete		(true);
 	CUIXml						xml_doc;
-	xml_doc.Load				(CONFIG_PATH, UI_PATH, "maingame.xml");
+	string128		XmlName;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	xr_sprintf		(XmlName, "maingame_%d.xml", ui_hud_type);
+
+	xml_doc.Load(CONFIG_PATH, UI_PATH, XmlName);
 	CUIXmlInit::InitWindow		(xml_doc, "speech_menu",0,this);
 	CUIXmlInit::InitScrollView	(xml_doc, "speech_menu",0,m_pList);
 	m_pList->SetWndPos			(Fvector2().set(0,0));

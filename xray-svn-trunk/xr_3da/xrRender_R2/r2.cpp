@@ -12,6 +12,10 @@
 #include "../xrRender/dxUIShader.h"
 //#include "../../xrServerEntities/smart_cast.h"
 
+#define DUMP_CONST(C) C->name,C->type,C->destination
+#pragma todo("cjayho to all: Hello all in this chat :)")
+#pragma todo("sky: yo mate :)")
+
 CRender										RImplementation;
 
 //////////////////////////////////////////////////////////////////////////

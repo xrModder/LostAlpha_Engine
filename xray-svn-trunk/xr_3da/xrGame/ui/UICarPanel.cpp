@@ -2,14 +2,19 @@
 #include "UIMainIngameWnd.h"
 #include "UICarPanel.h"
 #include "UIXmlInit.h"
+#include "../hudmanager.h"
 
-const LPCSTR CAR_PANEL_XML = "car_panel.xml";
 const LPCSTR POINTER_ARROW_TEX = "ui\\ui_car_arrow";
 
 void CUICarPanel::Init			(float x, float y, float width, float height)
 {
-	CUIXml		uiXml;
-	uiXml.Load	(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
+	CUIXml uiXml;
+
+	string128		CAR_PANEL_XML;
+	xr_sprintf		(CAR_PANEL_XML, "car_panel_%d.xml", ui_hud_type);
+
+	bool result = uiXml.Load(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
+	R_ASSERT3(result, "xml file not found", CAR_PANEL_XML);
 
 	CUIXmlInit	xml_init;
 	////////////////////////////////////////////////////////////////////

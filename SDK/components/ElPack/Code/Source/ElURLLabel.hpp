@@ -73,7 +73,7 @@ __published:
 	__property AnsiString URL = {read=FURI, write=FURI};
 	__property Graphics::TColor VisitedColor = {read=FVisitedColor, write=SetVisitedColor, nodefault};
 	__property bool Visited = {read=FVisited, write=SetVisited, nodefault};
-	__property Graphics::TColor HyperLinkColor = {read=FHyperLinkColour, write=SetHyperLinkColour, nodefault};
+	__property Graphics::TColor HyperLinkColor = {read=FHyperLinkColour, write=SetHyperLinkColour, default=16711680};
 	__property Graphics::TFontStyles HyperLinkStyle = {read=FHyperLinkStyle, write=SetHyperLinkStyle, nodefault};
 	__property bool ShowURLInHint = {read=FShowURLInHint, write=FShowURLInHint, default=1};
 	__property WideString Hint = {read=FHint, write=SetHint};

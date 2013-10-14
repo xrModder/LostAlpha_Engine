@@ -12,6 +12,7 @@
 #pragma option push -Vx
 #include <Classes.hpp>	// Pascal unit
 #include <ElContBase.hpp>	// Pascal unit
+#include <ElTools.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
 #include <System.hpp>	// Pascal unit
 
@@ -82,7 +83,7 @@ public:
 
 
 //-- var, const, procedure ---------------------------------------------------
-static const Word AlignMem = 0x100;
+static const Word AlignMem = 0x500;
 
 }	/* namespace Ellist */
 using namespace Ellist;

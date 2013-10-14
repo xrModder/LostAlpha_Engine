@@ -245,8 +245,8 @@ int scale_goal(const float l1[3],
 
     if (g_len > max_len)
     {
-	vecscalarmult(g,g,max_len/(g_len/**1.01f*/));
-	return 1;
+		vecscalarmult(g,g,max_len/(g_len/**1.01f*/));
+		return 1;
     }	
     /*
     if (g_len < min_len)
@@ -343,7 +343,7 @@ int SRS::SetGoal(const Matrix  GG, float &rangle)
     get_translation(T, p_r1);
     get_translation(S, s);
 
-    if (project_to_workspace && scale_goal(p_r1,s,ee))
+    if ( project_to_workspace && scale_goal( p_r1, s, ee ) )
         set_translation(G,ee);
 
     EvaluateCircle(ee);

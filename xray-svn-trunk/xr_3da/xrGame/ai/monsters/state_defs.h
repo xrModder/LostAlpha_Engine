@@ -193,6 +193,9 @@ enum EMonsterState
 	eStateGhostBossAttack_Melee		= eStateCustom | eStateAttack | 20,
 	eStateGhostBossAttack_Teleport	= eStateCustom | eStateAttack | 21,
 
+	eStateCustom_Choke			= eStateCustom | eStateAttack | 22,
+	eStateChoke_Execute			= eStateCustom | eStateAttack | 23,
+
 	// -------------------------------------------------------------
 
 

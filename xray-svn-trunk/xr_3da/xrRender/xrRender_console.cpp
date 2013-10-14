@@ -23,10 +23,10 @@ xr_token							qsmap_size_token						[ ]={
 };
 u32			ps_r_ssao_mode			=	1;
 xr_token							qssao_mode_token						[ ]={
-	{ "disabled",					0											},
-	{ "default",					1											},
-	{ "hdao",						2											},
-	{ "hbao",						3											},
+	{ "st_opt_off",					0											},
+	{ "ui_mm_ssao",					1											},
+	{ "ui_mm_hdao",					2											},
+	{ "ui_mm_hbao",					3											},
 	{ 0,							0											}
 };
 
@@ -89,9 +89,9 @@ xr_token							qminmax_sm_token					[ ]={
 	{ 0,							0												}
 };
 
-//	‚ÄúOff‚Äù
-//	‚ÄúDX10.0 style [Standard]‚Äù
-//	‚ÄúDX10.1 style [Higher quality]‚Äù
+//	ìOffî
+//	ìDX10.0 style [Standard]î
+//	ìDX10.1 style [Higher quality]î
 
 // Common
 extern int			psSkeletonUpdate;
@@ -176,19 +176,19 @@ float		ps_r2_df_parallax_range		= 75.f;
 float		ps_r2_tonemap_middlegray	= 1.f;			// r2-only
 float		ps_r2_tonemap_adaptation	= 1.f;				// r2-only
 float		ps_r2_tonemap_low_lum		= 0.0001f;			// r2-only
-float		ps_r2_tonemap_amount		= 0.7f;				// r2-only
-float		ps_r2_ls_bloom_kernel_g		= 3.f;				// r2-only
-float		ps_r2_ls_bloom_kernel_b		= .7f;				// r2-only
-float		ps_r2_ls_bloom_speed		= 100.f;				// r2-only
-float		ps_r2_ls_bloom_kernel_scale	= .7f;				// r2-only	// gauss
-float		ps_r2_ls_dsm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_psm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_ssm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_bloom_threshold	= .00001f;				// r2-only
-Fvector		ps_r2_aa_barier				= { .8f, .1f, 0};	// r2-only
-Fvector		ps_r2_aa_weight				= { .25f,.25f,0};	// r2-only
-float		ps_r2_aa_kernel				= .5f;				// r2-only
-float		ps_r2_mblur					= .0f;				// .5f
+float		ps_r2_tonemap_amount		= 2.f;				// r2-only
+float		ps_r2_ls_bloom_kernel_g		= 3.f;	// was 3.3f			// r2-only
+float		ps_r2_ls_bloom_kernel_b		= .5f;		// was 0.7f		// r2-only
+float		ps_r2_ls_bloom_speed		= 100.f;	// was 10.f			// r2-only
+float		ps_r2_ls_bloom_kernel_scale	= 0.7f;		// was 0.5f		// r2-only	// gauss
+float		ps_r2_ls_dsm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_psm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_ssm_kernel			= 0.7f;				// r2-only
+float		ps_r2_ls_bloom_threshold	= 0.00001f;		// was 0.3f		// r2-only
+Fvector		ps_r2_aa_barier				= {0.800000, 0.100000, 0.000000}; //{ .8f, .1f, 0};	// r2-only
+Fvector		ps_r2_aa_weight				= { 0.250000, 0.250000, 0.000000};	// r2-only
+float		ps_r2_aa_kernel				= 0.5f;				// r2-only
+float		ps_r2_mblur					= 0.03f;				// .5f
 int			ps_r2_GI_depth				= 1;				// 1..5
 int			ps_r2_GI_photons			= 16;				// 8..64
 float		ps_r2_GI_clip				= EPS_L;			// EPS
@@ -200,16 +200,15 @@ float		ps_r2_sun_tsm_projection	= 0.3f;			// 0.18f
 float		ps_r2_sun_tsm_bias			= -0.01f;			// 
 float		ps_r2_sun_near				= 20.f;				// 12.0f
 
-extern float OLES_SUN_LIMIT_27_01_07;	//	actually sun_far
-
-float		ps_r2_sun_near_border		= 0.75f;			// 1.0f
+float		ps_r2_sun_far				= 100.0f;	//	actually sun_far
+float		ps_r2_sun_near_border		= 0.75f;			// 0.99f // 1.0f
 float		ps_r2_sun_depth_far_scale	= 1.00000f;			// 1.00001f
 float		ps_r2_sun_depth_far_bias	= -0.00002f;			// -0.0000f
 float		ps_r2_sun_depth_near_scale	= 1.0000f;			// 1.00001f
 float		ps_r2_sun_depth_near_bias	= 0.00001f;		// -0.00005f
 float		ps_r2_sun_lumscale			= 1.0f;				// 1.0f
-float		ps_r2_sun_lumscale_hemi		= 1.0f;				// 1.0f
-float		ps_r2_sun_lumscale_amb		= 1.0f;
+float		ps_r2_sun_lumscale_hemi		= 0.65f;				// 1.0f
+float		ps_r2_sun_lumscale_amb		= 0.25f;
 float		ps_r2_gmaterial				= 2.2f;				// 
 float		ps_r2_zfill					= 0.25f;				// .1f
 float		ps_r2_specularExponentMul					= 1.f;				// 1.f
@@ -730,10 +729,10 @@ void		xrRender_initconsole	()
 
 	Fvector	tw_min,tw_max;
 	
-	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,	2.0f		);
+	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,	2.0f /*1.2f*/	);
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
-	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.2f,	1.0f	);
+	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.026f,	1.0f	);
 
 	CMD4(CCC_Float,		"r__detail_l_ambient",	&ps_r__Detail_l_ambient,	.5f,	.95f	);
 	CMD4(CCC_Float,		"r__detail_l_aniso",	&ps_r__Detail_l_aniso,		.1f,	.5f		);
@@ -824,7 +823,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r2_sun_tsm_bias",		&ps_r2_sun_tsm_bias,		-0.5,	+0.5	);
 	CMD4(CCC_Float,		"r2_sun_near",			&ps_r2_sun_near,			1.f,	50.f	);
 #if RENDER!=R_R1
-	CMD4(CCC_Float,		"r2_sun_far",			&OLES_SUN_LIMIT_27_01_07,	51.f,	180.f	);
+	CMD4(CCC_Float,		"r2_sun_far",			&ps_r2_sun_far,				51.f,	180.f	);
 #endif
 	CMD4(CCC_Float,		"r2_sun_near_border",	&ps_r2_sun_near_border,		.5f,	1.0f	);
 	CMD4(CCC_Float,		"r2_sun_depth_far_scale",&ps_r2_sun_depth_far_scale,0.5,	1.5		);
@@ -880,6 +879,10 @@ void		xrRender_initconsole	()
 	CMD4( CCC_DofNear,	"r2_dof_near",	&ps_r2_dof.x, tw_min.x, tw_max.x);
 	CMD4( CCC_DofFocus,	"r2_dof_focus", &ps_r2_dof.y, tw_min.y, tw_max.y);
 	CMD4( CCC_DofFar,	"r2_dof_far",	&ps_r2_dof.z, tw_min.z, tw_max.z);
+	CMD4( CCC_Dof,		"r2_dof",		&ps_r2_dof, tw_min, tw_max);
+	CMD4( CCC_DofNear,	"r2_dof_near",	&ps_r2_dof.x, tw_min.x, tw_max.x);
+	CMD4( CCC_DofFocus,	"r2_dof_focus", &ps_r2_dof.y, tw_min.y, tw_max.y);
+	CMD4( CCC_DofFar,	"r2_dof_far",	&ps_r2_dof.z, tw_min.z, tw_max.z);
 
 	CMD4(CCC_Float,		"r2_dof_kernel",&ps_r2_dof_kernel_size,				.0f,	10.f);
 	CMD4(CCC_Float,		"r2_dof_sky",	&ps_r2_dof_sky,						-10000.f,	10000.f);
@@ -890,7 +893,7 @@ void		xrRender_initconsole	()
 	
 	CMD3(CCC_Mask,		"r2_volumetric_lights",			&ps_r2_ls_flags,			R2FLAG_VOLUMETRIC_LIGHTS);
 	CMD3(CCC_Token,		"r2_sun_shafts",				&ps_r_sun_shafts,			qsun_shafts_token);
-	CMD3(CCC_SMapSize_Mode,	"r2_smap_size",					&ps_r_smap_size,			qsmap_size_token);
+	CMD3(CCC_SMapSize_Mode,	"r2_smap_size",				&ps_r_smap_size,			qsmap_size_token);
 	CMD3(CCC_SSAO_Mode,	"r2_ssao_mode",					&ps_r_ssao_mode,			qssao_mode_token);
 	CMD3(CCC_Token,		"r2_ssao",						&ps_r_ssao,					qssao_token);
 	CMD3(CCC_Mask,		"r2_ssao_blur",                 &ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_BLUR);//Need restart

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 2005 Mike Pall. All rights reserved.
+** Copyright (C) 2005-2012 Mike Pall. All rights reserved.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining
 ** a copy of this software and associated documentation files (the
@@ -23,7 +23,7 @@
 ** [ MIT license: http://www.opensource.org/licenses/mit-license.php ]
 */
 
-/* LuaJIT -- a Just-In-Time Compiler for Lua. http://luajit.luaforge.net/ */
+/* LuaJIT -- a Just-In-Time Compiler for Lua. http://luajit.org/ */
 
 /* LuaJIT public C API. */
 #ifndef luajit_h
@@ -31,6 +31,12 @@
 
 #include "lua.h"
 
+
+#define LUAJIT_VERSION		"LuaJIT 1.1.8"
+#define LUAJIT_VERSION_NUM	10108  /* Version 1.1.8 = 01.01.08. */
+#define LUAJIT_VERSION_SYM	luaJIT_version_1_1_8
+#define LUAJIT_COPYRIGHT	"Copyright (C) 2005-2012 Mike Pall"
+#define LUAJIT_URL		"http://luajit.org/"
 
 /* Modes for luaJIT_setmode. */
 #define LUAJIT_MODE_MASK	0x00ff
@@ -51,10 +57,12 @@ enum {
 
 
 /* Compile a Lua function. Pass arguments as hints. */
-LUA_API int LUA_CC luaJIT_compile(lua_State *L, int nargs);
+LUA_API int luaJIT_compile(lua_State *L, int nargs);
 
 /* Set the JIT mode for the whole engine or a function (idx = 0: self). */
-LUA_API int LUA_CC luaJIT_setmode(lua_State *L, int idx, int mode);
+LUA_API int luaJIT_setmode(lua_State *L, int idx, int mode);
 
+/* Enforce (dynamic) linker error for version mismatches. Call from main. */
+LUA_API void LUAJIT_VERSION_SYM(void);
 
 #endif

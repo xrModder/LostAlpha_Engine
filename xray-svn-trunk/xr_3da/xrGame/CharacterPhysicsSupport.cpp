@@ -29,10 +29,8 @@
 
 #include "../device.h"
 
-#ifdef PRIQUEL
-#	define USE_SMART_HITS
-#	define USE_IK
-#endif // PRIQUEL
+#define USE_SMART_HITS
+//#define USE_IK
 
 void  NodynamicsCollide(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
 {
@@ -259,7 +257,8 @@ void CCharacterPhysicsSupport::SpawnInitPhysics(CSE_Abstract* e)
 		}
 #endif
 #ifdef	USE_IK
-		if( etStalker == m_eType || etActor == m_eType || (m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData() && m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData()->section_exist("ik")) )
+		//		if( etStalker == m_eType || etActor == m_eType || (m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData() && m_EntityAlife.Visual()->dcast_PKinematics()->LL_UserData()->section_exist("ik")) )
+		if( etStalker == m_eType || etActor == m_eType )
 				CreateIKController( );
 #endif
 		if( !m_EntityAlife.animation_movement_controlled( ) )
@@ -754,7 +753,19 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 }
 void CCharacterPhysicsSupport::in_ChangeVisual()
 {
-	
+	if(m_ik_controller)
+	{
+		DestroyIKController();
+		CreateIKController();
+	}
+
+	IKinematicsAnimated* KA = smart_cast<IKinematicsAnimated*>( m_EntityAlife.Visual( ) );
+	if( KA )
+	{
+		if(Type()==etStalker)
+			m_hit_animations.SetupHitMotions( *KA );
+	}
+
 	if(!m_physics_skeleton&&!m_pPhysicsShell) return;
 
 	if(m_pPhysicsShell)
@@ -770,11 +781,6 @@ void CCharacterPhysicsSupport::in_ChangeVisual()
 		if(m_pPhysicsShell)m_pPhysicsShell->Deactivate();
 		xr_delete(m_pPhysicsShell);
 		ActivateShell(NULL);
-	}
-	if(m_ik_controller)
-	{
-		DestroyIKController();
-		CreateIKController();
 	}
 }
 

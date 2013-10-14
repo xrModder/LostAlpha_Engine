@@ -93,7 +93,7 @@ __published:
 	__property bool IsHTML = {read=FIsHTML, write=SetIsHTML, nodefault};
 	__property bool WordWrap = {read=GetWordWrap, write=SetWordWrap, nodefault};
 	__property WideString Caption = {read=FCaption, write=SetCaption};
-	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, nodefault};
+	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, default=16711680};
 	__property Menus::TPopupMenu* LinkPopupMenu = {read=FLinkPopupMenu, write=SetLinkPopupMenu};
 	__property Graphics::TFontStyles LinkStyle = {read=FLinkStyle, write=SetLinkStyle, nodefault};
 	__property Htmlrender::TElHTMLLinkClickEvent OnLinkClick = {read=FOnLinkClick, write=FOnLinkClick};

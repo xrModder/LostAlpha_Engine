@@ -114,6 +114,7 @@ protected:
 	DYNAMIC TMetaClass* __fastcall GetActionLinkClass(void);
 	virtual void __fastcall Loaded(void);
 	void __fastcall SetOwnerSettings(bool Value);
+	virtual void __fastcall SetImageIndex(int newValue);
 	__property Transparent  = {default=0};
 	__property bool Wrap = {read=FWrap, write=SetWrap, nodefault};
 	__property TElToolButtonType ButtonType = {read=FButtonType, write=SetButtonType, nodefault};
@@ -132,7 +133,7 @@ protected:
 public:
 	__fastcall virtual TCustomElToolButton(Classes::TComponent* AOwner);
 	__fastcall virtual ~TCustomElToolButton(void);
-	__property bool RealVisible = {read=FRealVisible, nodefault};
+	__property bool RealVisible = {read=FRealVisible, default=1};
 	
 __published:
 	__property Controls::TBevelKind BevelKind = {read=FFakeBevelKind, write=FFakeBevelKind, stored=false, nodefault};
@@ -167,7 +168,7 @@ __published:
 	__property Margin  = {default=-1};
 	__property Spacing  = {default=4};
 	__property UseArrow  = {default=0};
-	__property ShadowFollowsColor ;
+	__property ShadowFollowsColor  = {default=1};
 	__property ShowGlyph  = {default=1};
 	__property ShowText  = {default=1};
 	__property OnArrowClick ;
@@ -381,12 +382,12 @@ __published:
 	__property bool LargeSize = {read=FLargeSize, write=SetLargeSize, default=0};
 	__property int LargeBtnWidth = {read=FLargeBtnWidth, write=SetLargeBtnWidth, default=48};
 	__property int LargeBtnHeight = {read=FLargeBtnHeight, write=SetLargeBtnHeight, default=48};
-	__property Buttons::TButtonLayout GlyphLayout = {read=FGlyphLayout, write=SetGlyphLayout, nodefault};
+	__property Buttons::TButtonLayout GlyphLayout = {read=FGlyphLayout, write=SetGlyphLayout, default=0};
 	__property int Spacing = {read=FSpacing, write=SetSpacing, default=4};
 	__property int Margin = {read=FMargin, write=SetMargin, default=-1};
 	__property bool Flat = {read=FFlat, write=SetFlat, default=1};
 	__property bool AutoSize = {read=FAutoSize, write=SetAutoSize, default=1};
-	__property int MinSize = {read=FMinSize, write=SetMinSize, default=8};
+	__property int MinSize = {read=FMinSize, write=SetMinSize, default=24};
 	__property Graphics::TColor ButtonColor = {read=FButtonColor, write=SetButtonColor, default=-2147483633};
 	__property Elimgfrm::TElImageForm* ButtonImageForm = {read=FButtonImageForm, write=SetButtonImageForm};
 	__property TElBarOrientation Orientation = {read=FOrientation, write=SetOrientation, default=0};

@@ -3,6 +3,9 @@
 #include "../CustomHUD.h"
 #include "HitMarker.h"
 
+extern	u32	ui_hud_type;
+
+class CContextMenu;
 class CHUDTarget;
 class CUIGameCustom;
 
@@ -48,6 +51,8 @@ public:
 	bool			RenderActiveItemUIQuery();
 
 	virtual void			net_Relcase			(CObject *object);
+
+	virtual		IC u32		GetUIHudType				(){return ui_hud_type;}
 };
 
 IC CHUDManager&			HUD()		{ return *((CHUDManager*)g_hud);}

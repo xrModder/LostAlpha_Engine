@@ -68,24 +68,12 @@ protected:
 	CUIStatic			UIWeaponSignAmmo;
 	CUIStatic			UIWeaponIcon;
 	Frect				UIWeaponIcon_rect;
+	CUIStatic			UIWeaponFiremode;
 public:
 	CUIStatic*			GetPDAOnline					() { return &UIPdaOnline; };
 protected:
 
-
-	// 5 статиков для отображения иконок:
-	// - сломанного оружия
-	// - радиации
-	// - ранения
-	// - голода
-	// - усталости
-	CUIStatic			UIWeaponJammedIcon;
-	CUIStatic			UIRadiaitionIcon;
-	CUIStatic			UIWoundIcon;
-	CUIStatic			UIStarvationIcon;
-	CUIStatic			UIPsyHealthIcon;
 	CUIStatic			UIInvincibleIcon;
-//	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
 
 	CUIScrollView*		m_UIIcons;
@@ -125,7 +113,8 @@ public:
 	enum EFlashingIcons
 	{
 		efiPdaTask	= 0,
-		efiMail
+		efiMail,
+		efiEncyclopedia
 	};
 	
 	void				SetFlashIconState_				(EFlashingIcons type, bool enable);

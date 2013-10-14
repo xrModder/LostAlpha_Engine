@@ -1,6 +1,6 @@
 /*
 ** LuaJIT wrapper for architecture-specific compiler backend.
-** Copyright (C) 2005 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2012 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #include <math.h>
@@ -22,6 +22,7 @@
 #include "lvm.h"
 #include "lopcodes.h"
 #include "ldebug.h"
+#include "lzio.h"
 
 #include "ljit.h"
 #include "ljit_hints.h"
@@ -29,8 +30,21 @@
 
 /* ------------------------------------------------------------------------ */
 
+/* Get target of combined JMP op. */
+static int jit_jmp_target(jit_State *J)
+{
+  J->combine++;
+  jit_assert(GET_OPCODE(*J->nextins)==OP_JMP);
+  return J->nextpc + 1 + GETARG_sBx(*J->nextins);
+}
+
+/* ------------------------------------------------------------------------ */
+
 /* Include pre-processed architecture-specific backend. */
 #if defined(__i386) || defined(__i386__) || defined(_M_IX86)
+#ifndef LUA_NUMBER_DOUBLE
+#error "No support for other number types on x86 (yet)"
+#endif
 #include "ljit_x86.h"
 #else
 #error "No support for this architecture (yet)"
@@ -38,22 +52,12 @@
 
 /* ------------------------------------------------------------------------ */
 
-#define jit_next_jmp(J) \
-  (jit_assert(GET_OPCODE(*J->nextins)==OP_JMP), \
-   (++J->nextpc) + GETARG_sBx(*J->nextins++))
-
-/* Compile prototype. */
-static int jit_compile_proto(jit_State *J)
+/* Compile instruction range. */
+static void jit_compile_irange(jit_State *J, int firstpc, int lastpc)
 {
-  int status, lastpc;
-
-  J->nextpc = 1;
-  J->nextins = J->pt->code;
-  lastpc = J->pt->sizecode;
-  dasm_setup(Dst, jit_actionlist, lastpc+PCADDR_EXTRA);
-
-  jit_prologue(J);
-
+  J->combine = 0;
+  J->nextpc = firstpc;
+  J->nextins = J->pt->code + (firstpc-1);
   while (J->nextpc <= lastpc) {
     Instruction ins = *J->nextins++;
     OpCode op = GET_OPCODE(ins);
@@ -61,12 +65,21 @@ static int jit_compile_proto(jit_State *J)
     int rb = GETARG_B(ins);
     int rc = GETARG_C(ins);
     int rbx = GETARG_Bx(ins);
+    const TValue *combinehint;
 
     jit_ins_start(J);
     J->nextpc++;
 
-    if (hint_isset(J, DEAD))
-      continue;
+    combinehint = hint_get(J, COMBINE);
+    if (ttisboolean(combinehint)) {
+      if (bvalue(combinehint)) {  /* COMBINE = true: combine with next ins. */
+	if (!(J->flags & JIT_F_DEBUG))  /* But not when debugging. */
+	  J->combine = 1;
+      } else {  /* COMBINE = false: dead instruction. */
+	*J->mfm++ = JIT_MFM_DEAD;
+	continue;
+      }
+    }  /* Other COMBINE hint value types are not defined (yet). */
 
     if (J->flags & JIT_F_DEBUG_INS)
       jit_ins_debug(J, luaG_checkopenop(ins));
@@ -89,25 +102,25 @@ static int jit_compile_proto(jit_State *J)
     case OP_SELF: jit_op_self(J, ra, rb, rc); break;
     case OP_SETLIST: jit_op_setlist(J, ra, rb, rc); break;
 
-    case OP_ADD: jit_op_arith(J, ra, rb, rc, TM_ADD, 0); break;
-    case OP_SUB: jit_op_arith(J, ra, rb, rc, TM_SUB, 0); break;
-    case OP_MUL: jit_op_arith(J, ra, rb, rc, TM_MUL, 0); break;
-    case OP_DIV: jit_op_arith(J, ra, rb, rc, TM_DIV, 0); break;
-    case OP_MOD: jit_op_arith(J, ra, rb, rc, TM_MOD, 0); break;
-    case OP_POW: jit_op_arith(J, ra, rb, rc, TM_POW, 0); break;
+    case OP_ADD: jit_op_arith(J, ra, rb, rc, TM_ADD); break;
+    case OP_SUB: jit_op_arith(J, ra, rb, rc, TM_SUB); break;
+    case OP_MUL: jit_op_arith(J, ra, rb, rc, TM_MUL); break;
+    case OP_DIV: jit_op_arith(J, ra, rb, rc, TM_DIV); break;
+    case OP_MOD: jit_op_arith(J, ra, rb, rc, TM_MOD); break;
+    case OP_POW: jit_op_arith(J, ra, rb, rc, TM_POW); break;
+    case OP_UNM: jit_op_arith(J, ra, rb, rb, TM_UNM); break;  /* rc unused. */
 
-    case OP_UNM: jit_op_unm(J, ra, rb); break;
     case OP_LEN: jit_op_len(J, ra, rb); break;
     case OP_NOT: jit_op_not(J, ra, rb); break;
 
     case OP_CONCAT: jit_op_concat(J, ra, rb, rc); break;
 
-    case OP_EQ: jit_op_eq(J, ra, rb, rc, jit_next_jmp(J)); break;
-    case OP_LT: jit_op_arith(J, ra, rb, rc, TM_LT, jit_next_jmp(J)); break;
-    case OP_LE: jit_op_arith(J, ra, rb, rc, TM_LE, jit_next_jmp(J)); break;
+    case OP_EQ: jit_op_eq(J, ra, rb, rc); break;
+    case OP_LT: jit_op_arith(J, ra, rb, rc, TM_LT); break;
+    case OP_LE: jit_op_arith(J, ra, rb, rc, TM_LE); break;
 
-    case OP_TEST: jit_op_test(J, rc, ra, ra, jit_next_jmp(J)); break;
-    case OP_TESTSET: jit_op_test(J, rc, ra, rb, jit_next_jmp(J)); break;
+    case OP_TEST: jit_op_test(J, rc, ra, ra); break;
+    case OP_TESTSET: jit_op_test(J, rc, ra, rb); break;
 
     case OP_JMP: jit_op_jmp(J, J->nextpc + rbx-MAXARG_sBx); break;
 
@@ -118,7 +131,7 @@ static int jit_compile_proto(jit_State *J)
     case OP_FORLOOP: jit_op_forloop(J, ra, J->nextpc + rbx-MAXARG_sBx); break;
     case OP_FORPREP: jit_op_forprep(J, ra, J->nextpc + rbx-MAXARG_sBx); break;
 
-    case OP_TFORLOOP: jit_op_tforloop(J, ra, rc, jit_next_jmp(J)); break;
+    case OP_TFORLOOP: jit_op_tforloop(J, ra, rc); break;
 
     case OP_CLOSE: jit_op_close(J, ra); break;
     case OP_CLOSURE: jit_op_closure(J, ra, rbx); break;
@@ -129,18 +142,130 @@ static int jit_compile_proto(jit_State *J)
     }
 
     /* Convention: all opcodes start and end with the .code section. */
-    if (dasm_checkstep(Dst, DASM_SECTION_CODE)) { J->nextpc--; goto asmerr; }
-  }
-  jit_ins_last(J);
+    if (dasm_checkstep(Dst, DASM_SECTION_CODE)) { J->nextpc--; return; }
 
-asmerr:
-  status = luaJIT_link(J, &J->pt->jit_mcode, &J->pt->jit_sizemcode);
+    *J->mfm++ = 0;  /* Placeholder mfm entry. Replaced later. */
+    if (J->combine > 0) {  /* Combine next J->combine ins with prev ins. */
+      J->nextpc += J->combine;
+      J->nextins += J->combine;
+      do { *J->mfm++ = JIT_MFM_COMBINE; } while (--J->combine);
+    }
+  }
+}
+
+/* Merge temporary mfm (forward) with PC labels to inverse mfm in mcode. */
+static void jit_mfm_merge(jit_State *J, jit_Mfm *from, jit_Mfm *to, int maxpc)
+{
+  int pc = 1, ofs = 0;
+  for (;;) {
+    int m = *from++;
+    if (m & JIT_MFM_MARK) {
+      switch (m) {
+      default: pc = m ^ JIT_MFM_MARK; break;
+      case JIT_MFM_COMBINE: case JIT_MFM_DEAD: break;
+      case JIT_MFM_STOP: return;
+      }
+    } else {
+      int idx, nofs;
+      for (idx = 0; from[idx] == JIT_MFM_COMBINE; idx++) ;
+      idx += pc;
+      if (idx == J->nextpc) idx = maxpc + 1;
+      nofs = dasm_getpclabel(Dst, idx);
+      m = nofs - ofs;
+      ofs = nofs;
+      jit_assert(nofs >= 0 && m >= 0 && m < JIT_MFM_MAX);
+    }
+    pc++;
+    *to-- = m;
+  }
+}
+
+/* Compile function prototype. */
+static int jit_compile_proto(jit_State *J, Table *deopt)
+{
+  jit_Mfm *tempmfm;
+  void *mcode;
+  size_t sz;
+  int firstpc = 0, maxpc = J->pt->sizecode;
+  int deoptidx = 1;
+  int status;
+  /* (Ab)use the global string concatenation buffer for the temporary mfm. */
+  /* Caveat: the GC must not be run while the backend is active. */
+  tempmfm = (jit_Mfm *)luaZ_openspace(J->L, &G(J->L)->buff,
+				      (1+maxpc+1+1+1)*sizeof(jit_Mfm));
+nextdeopt:
+  J->mfm = tempmfm;
+  J->tflags = 0;
+  /* Setup DynASM. */
+  dasm_growpc(Dst, 1+maxpc+2);  /* See jit_ins_last(). */
+  dasm_setup(Dst, jit_actionlist);
+  if (deopt) {  /* Partial deoptimization. */
+    /* TODO: check deopt chain length? problem: pairs TFOR_CTL migration. */
+    int pc, lastpc;
+    lua_Number n;
+    const TValue *obj = luaH_getnum(deopt, deoptidx++);
+    if (ttisnil(obj) && deoptidx != 2) return JIT_S_OK;
+    if (!ttisnumber(obj)) return JIT_S_COMPILER_ERROR;
+    n = nvalue(obj);
+    lua_number2int(pc, n);
+    firstpc = JIT_IH_IDX(pc);
+    lastpc = firstpc + JIT_IH_LIB(pc);
+    if (firstpc < 1 || firstpc > maxpc || lastpc > maxpc ||
+	J->pt->jit_szmcode == 0)
+      return JIT_S_COMPILER_ERROR;
+    *J->mfm++ = JIT_MFM_MARK+firstpc;  /* Seek to firstpc. */
+    jit_compile_irange(J, firstpc, lastpc);
+    jit_assert(J->nextpc == lastpc+1);  /* Problem with combined ins? */
+    if (J->nextpc <= maxpc) jit_ins_chainto(J, J->nextpc);
+    *J->mfm++ = JIT_MFM_MARK+maxpc+1;  /* Seek to .deopt/.tail. */
+    for (pc = 1; pc <= maxpc; pc++)
+      if (dasm_getpclabel(Dst, pc) == -1) {  /* Undefind label referenced? */
+	jit_ins_setpc(J, pc, luaJIT_findmcode(J->pt, pc));  /* => Old mcode. */
+      }
+  } else {  /* Full compile. */
+    *J->mfm++ = 0;  /* Placeholder mfm entry for prologue. */
+    jit_prologue(J);
+    jit_compile_irange(J, 1, maxpc);
+  }
+  *J->mfm++ = 0;  /* Placeholder mfm entry for .deopt/.tail. */
+  *J->mfm = JIT_MFM_STOP;
+  jit_ins_last(J, maxpc, (char *)J->mfm - (char *)tempmfm);
+
+  status = luaJIT_link(J, &mcode, &sz);
   if (status != JIT_S_OK)
     return status;
 
-  J->pt->jit_pcaddr = luaM_newvector(J->L, lastpc+PCADDR_EXTRA, void *);
-  dasm_getlabels(Dst, J->pt->jit_mcode, J->pt->jit_pcaddr);
+  jit_mfm_merge(J, tempmfm, JIT_MCMFM(mcode, sz), maxpc);
 
+  if (deopt) {
+    jit_MCTrailer tr;
+    /* Patch first instruction to jump to the deoptimized code. */
+    jit_patch_jmp(J, luaJIT_findmcode(J->pt, firstpc), mcode);
+    /* Mark instruction as deoptimized in main mfm. */
+    JIT_MCMFM(J->pt->jit_mcode, J->pt->jit_szmcode)[-firstpc] |= JIT_MFM_MARK;
+    /* Chain deopt mcode block between main mfm and existing mfms. */
+    memcpy(JIT_MCTRAILER(mcode, sz),
+	   JIT_MCTRAILER(J->pt->jit_mcode, J->pt->jit_szmcode),
+	   sizeof(jit_MCTrailer));
+    tr.mcode = (char *)mcode;
+    tr.sz = sz;
+    memcpy(JIT_MCTRAILER(J->pt->jit_mcode, J->pt->jit_szmcode), (void *)&tr,
+	   sizeof(jit_MCTrailer));
+    goto nextdeopt;
+  }
+
+  if (J->pt->jit_szmcode != 0) {  /* Full recompile? */
+    jit_MCTrailer tr;
+    /* Patch old mcode entry so other closures get the new callgate. */
+    jit_patch_jmp(J, J->pt->jit_mcode, J->jsub[JSUB_GATE_JL]);
+    /* Chain old main mfm after new main mfm. */
+    tr.mcode = (char *)J->pt->jit_mcode;
+    tr.sz = J->pt->jit_szmcode;
+    memcpy(JIT_MCTRAILER(mcode, sz), (void *)&tr, sizeof(jit_MCTrailer));
+  }
+  /* Set new main mcode block. */
+  J->pt->jit_mcode = mcode;
+  J->pt->jit_szmcode = sz;
   return JIT_S_OK;
 }
 
@@ -162,10 +287,10 @@ int luaJIT_backend(lua_State *L)
     J->pt = clvalue(cl)->l.p;
     if (J->pt->sizecode > LUAJIT_LIM_BYTECODE) {  /* Hard backend limit. */
       status = JIT_S_TOOLARGE;
-    } else if (J->pt->jit_sizemcode != 0) {  /* Prevent recompilation. */
-      status = JIT_S_OK;
-    } else {  /* Compile prototype. */
-      status = jit_compile_proto(J);
+    } else {
+      const TValue *obj = luaH_getstr(J->comstate,
+				      luaS_newliteral(J->L, "deopt"));
+      status = jit_compile_proto(J, ttistable(obj) ? hvalue(obj) : (Table *)0);
     }
   }
   lua_unlock(L);
@@ -191,13 +316,15 @@ int luaJIT_initbackend(lua_State *L)
   jit_State *J = G(L)->jit_state;
   J->L = L;
   J->pt = NULL;  /* Not in use. */
-  J->jsub = NULL;
-  J->jsubmcode = NULL;
-  J->sizejsubmcode = 0;
-  J->mcodeheap = NULL;
   J->D = NULL;
+  J->mcodeheap = NULL;
+  J->jsubmcode = NULL;
+  J->szjsubmcode = 0;
+  J->numjsub = JSUB__MAX;
+  J->jsub = luaM_newvector(J->L, JSUB__MAX, void *);
+  memset((void *)J->jsub, 0, JSUB__MAX*sizeof(void *));  /* Just in case. */
   dasm_init(Dst, DASM_MAXSECTION);
-  J->jsub = luaM_newvector(J->L, JSUB_MAX, void *);
+  dasm_setupglobal(Dst, J->jsub, JSUB__MAX);
   return jit_compile_jsub(J);
 }
 
@@ -206,7 +333,7 @@ void luaJIT_freebackend(lua_State *L)
 {
   jit_State *J = G(L)->jit_state;
   J->L = L;
-  if (J->jsub) luaM_freearray(L, J->jsub, JSUB_MAX, void *);
+  if (J->jsub) luaM_freearray(L, J->jsub, JSUB__MAX, void *);
   luaJIT_freemcodeheap(J);  /* Frees JSUB mcode, too. */
   dasm_free(Dst);
 }

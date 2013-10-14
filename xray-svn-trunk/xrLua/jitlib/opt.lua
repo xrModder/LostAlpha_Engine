@@ -1,22 +1,25 @@
 ----------------------------------------------------------------------------
 -- LuaJIT optimizer.
 --
--- Copyright (C) 2005 Mike Pall. All rights reserved.
+-- Copyright (C) 2005-2012 Mike Pall. All rights reserved.
 -- Released under the MIT/X license. See luajit.h for full copyright notice.
 ----------------------------------------------------------------------------
--- This module contains a simple optimizer that generates some
--- hints for the compiler backend.
+-- This module contains a simple optimizer that generates some hints for
+-- the compiler backend.
 --
 -- Compare: luajit -j dump -e 'return 1'
--- with:    luajit -O -j dump -e 'return 1'
+-- with:    luajit -O -j dumphints -j dump -e 'return 1'
 --
 -- This module uses a very simplistic (but fast) abstract interpretation
 -- algorithm. It mostly ignores control flow and/or basic block boundaries.
--- Thus the results of the analysis are really only _hints_. The backend
--- _must_ check the preconditions for these hints (e.g. the object type).
--- Still, the generated hints are pretty accurate and quite useful.
+-- Thus the results of the analysis are really only predictions (e.g. about
+-- monomorphic use of operators). The backend _must_ check all contracts
+-- (e.g. verify the object type) and use a (polymorphic) fallback or
+-- deoptimization in case a contract is broken.
 --
--- Note that some hints are really definitive (like DEAD or SHORTCUT_K).
+-- Although simplistic, the generated hints are pretty accurate. Note that
+-- some hints are really definitive and don't need to be checked (like
+-- COMBINE or FOR_STEP_K).
 --
 -- TODO: Try MFP with an extended lattice. But it's unclear whether the
 --       added complexity really pays off with the current backend.
@@ -34,7 +37,7 @@ local OPTLEVEL = 2
 -- Maybe a bit on the generous side. Check ljit.h for backend limits, too.
 -- TODO: make it depend on the bytecode distribution, too.
 local LIMITS = {
-  bytecodes =	1500,
+  bytecodes =	4000,
   stackslots =	150,
   params =	20,
   consts =	200,
@@ -43,10 +46,12 @@ local LIMITS = {
 
 -- Cache some library functions and objects.
 local jit = require("jit")
+assert(jit.version_num == 10108, "LuaJIT core/library version mismatch")
 local jutil = require("jit.util")
-local type, rawget, pcall = type, rawget, pcall
+local type, rawget, next, pcall = type, rawget, next, pcall
 local bytecode, const = jutil.bytecode, jutil.const
 local hints, fhints = jutil.hints, jutil.fhints
+local getmetatable = getmetatable
 
 -- Turn compilation off for the whole module. LuaJIT would do that anyway.
 jit.off(true, true)
@@ -80,12 +85,12 @@ local function marklive(func)
 	  work[workn] = fpc
 	end
       elseif op == "CLOSURE" then
-	pc = pc + jutil.closurenup(func, b)
+	pc = pc + jutil.closurenup(func, b) -- Do not mark pseudo-ins live.
       elseif op == "LOADBOOL" and c ~= 0 then
 	pc = pc + 1
 	live[-pc] = true
       elseif op == "SETLIST" and c == 0 then
-	pc = pc + 1
+	pc = pc + 1 -- Do not mark pseudo-ins live.
       end
     until live[pc]
     if workn == 0 then return live end -- Return if work list is empty.
@@ -97,20 +102,51 @@ end
 
 -- Empty objects.
 local function empty() end
-local emptytable = {}
 
--- Dummy function to set call hints. Replaced when jit.opt_lib is loaded.
-local function callhint(st, slot, pc, base, narg, res, nres)
+-- Dummy function to set call hints. Replaced when jit.opt_inline is loaded.
+local function callhint(st, slot, pc, base, narg, nres)
   st[pc+hints.TYPE] = slot[base]
-  for i=res,res+nres-1 do slot[i] = nil end
+  for i=base,base+nres-1 do slot[i] = nil end
 end
 
--- Set type hint for numbers, strings or tables.
+-- Set TYPE hint, but only for numbers, strings or tables.
 local function typehint(st, pc, o)
   local tp = type(o)
   if tp == "number" or tp == "string" or tp == "table" then
     st[pc+hints.TYPE] = o
   end
+end
+
+-- Set TYPE and TYPEKEY hints for table operations.
+local function tablehint(st, slot, pc, t, kslot)
+  local tp = type(t)
+  if tp == "table" or tp == "userdata" then st[pc+hints.TYPE] = t end
+  if kslot >= 0 then -- Don't need this hint for constants.
+    local key = slot[kslot]
+    local tp = type(key)
+    if tp == "number" or tp == "string" then st[pc+hints.TYPEKEY] = key end
+  end
+end
+
+-- Try to lookup a value. Guess the value or at least the value type.
+local function trylookup(st, t, k)
+  if k == nil then return nil end
+  if type(t) == "table" then
+    local v = rawget(t, k)
+    if v ~= nil then return v end
+  end
+  local mt = getmetatable(t)
+  if type(mt) == "table" then
+    -- One __index level is enough for our purposes.
+    local it = rawget(mt, "__index")
+    if type(it) == "table" then
+      local v = rawget(it, k)
+      if v ~= nil then return v end
+    end
+  end
+  local v = st.tableval[t] -- Resort to a generic guess.
+  if v == nil and type(t) == "table" then v = next(t) end -- Getting desperate.
+  return v
 end
 
 -- Check whether the previous instruction sets a const.
@@ -124,14 +160,25 @@ local function prevconst(st, slot, pc, reg)
   end
 end
 
--- Common handler for arithmetic opcodes.
-local function arithop(st, slot, pc, a, b, c)
-  local nb, nc = slot[b], slot[c]
-  if (type(nb) == "number" and nb % 1 ~= 0) or
-     (type(nc) == "number" and nc % 1 ~= 0) then
-    slot[a] = 0.5 -- Probably a non-integral number.
+-- Common handler for arithmetic and comparison opcodes.
+local function arithop(st, slot, pc, a, b, c, op)
+  local sb, sc = slot[b], slot[c]
+  if sb == nil then sb = sc elseif sc == nil then sc = sb end
+  local tb, tc = type(sb), type(sc)
+  if tb == tc then
+    if tb == "number" then -- Improve the guess for numbers.
+      if op == "DIV" or sb % 1 ~= 0 or sc % 1 ~= 0 then
+	sb = 0.5 -- Probably a non-integral number.
+      else
+	sb = 1 -- Optimistic guess.
+      end
+    end
+    if sb ~= nil then st[pc+hints.TYPE] = sb end
   else
-    slot[a] = 1 -- Optimistic guess.
+    st[pc+hints.TYPE] = false -- Marker for mixed types.
+  end
+  if op ~= "LT" and op ~= "LE" then
+    slot[a] = sb -- Assume coercion to 1st type if different.
   end
 end
 
@@ -140,7 +187,7 @@ local function testop(st, slot, pc, a, b, c)
   -- Optimize the 'expr and k1 or k2' idiom.
   local ok, k = prevconst(st, slot, pc, b)
   if k and a == b then
-    st[pc+hints.DEAD] = true -- Kill the TEST/TESTSET.
+    st[pc+hints.COMBINE] = false -- Kill the TEST/TESTSET.
     if c == 0 then st.live[pc+1] = nil end -- Kill the JMP.
   end
   slot[a] = slot[b]
@@ -169,13 +216,13 @@ local handler = {
   end,
 
   GETGLOBAL = function(st, slot, pc, a, b, c)
-    slot[a] = rawget(st.stats.env, const(st.func, b))
+    slot[a] = trylookup(st, st.stats.env, const(st.func, b))
   end,
 
   GETTABLE = function(st, slot, pc, a, b, c)
-    if c >= 0 then typehint(st, pc, slot[c]) end
     local t = slot[b]
-    slot[a] = type(t) == "table" and rawget(t, slot[c]) or nil
+    tablehint(st, slot, pc, t, c)
+    slot[a] = trylookup(st, t, slot[c])
   end,
 
   SETGLOBAL = empty,
@@ -183,26 +230,30 @@ local handler = {
   SETUPVAL = empty, -- TODO: shortcut -- but this is rare?
 
   SETTABLE = function(st, slot, pc, a, b, c)
-    if b >= 0 then typehint(st, pc, slot[b]) end
+    local t = slot[a]
+    tablehint(st, slot, pc, t, b)
+    if type(t) == "table" or type(t) == "userdata" then -- Must validate setkey.
+      local val = slot[c]
+      if val ~= nil then st.tableval[t] = val end
+    end
   end,
 
   NEWTABLE = function(st, slot, pc, a, b, c)
-    slot[a] = emptytable
+    slot[a] = {} -- Need unique tables for indexing st.tableval.
   end,
 
   SELF = function(st, slot, pc, a, b, c)
-    if c >= 0 then st[pc+hints.TYPE] = "" end -- Simplifies backend.
     local t = slot[b]
+    tablehint(st, slot, pc, t, c)
     slot[a+1] = t
-    if type(t) == "string" then t = string end -- String metatable.
-    slot[a] = type(t) == "table" and rawget(t, slot[c]) or nil
+    slot[a] = trylookup(st, t, slot[c])
   end,
 
   ADD = arithop, SUB = arithop, MUL = arithop, DIV = arithop,
-  MOD = arithop, POW = arithop,
-  
+  MOD = arithop, POW = arithop, LT = arithop, LE = arithop,
+
   UNM = function(st, slot, pc, a, b, c)
-    slot[a] = slot[b] or 1
+    return arithop(st, slot, pc, a, b, b, "UNM")
   end,
 
   NOT = function(st, slot, pc, a, b, c)
@@ -215,24 +266,37 @@ local handler = {
   end,
 
   CONCAT = function(st, slot, pc, a, b, c)
-    slot[a] = ""
+    local mixed
+    local sb = slot[b]
+    for i=b+1,c do
+      local si = slot[i]
+      if sb == nil then
+	sb = si
+      elseif si ~= nil and type(sb) ~= type(si) then
+	mixed = true
+	break
+      end
+    end
+    if sb == nil then
+      sb = ""
+    else
+      st[pc+hints.TYPE] = not mixed and sb or false
+      if type(sb) == "number" then sb = "" end
+    end
+    slot[a] = sb -- Assume coercion to 1st type (if different) or string.
   end,
 
   JMP = function(st, slot, pc, a, b, c)
     if b >= 0 then -- Kill JMPs across dead code.
       local tpc = pc + b
       while not st.live[tpc] do tpc = tpc - 1 end
-      if tpc == pc then st[pc+hints.DEAD] = true end
+      if tpc == pc then st[pc+hints.COMBINE] = false end
     end
   end,
 
   EQ = function(st, slot, pc, a, b, c)
     if b >= 0 and c >= 0 then typehint(st, pc, slot[b] or slot[c]) end
   end,
-
-  LT = empty,
-
-  LE = empty,
 
   TEST = function(st, slot, pc, a, b, c)
     return testop(st, slot, pc, a, a, c)
@@ -241,20 +305,16 @@ local handler = {
   TESTSET = testop,
 
   CALL = function(st, slot, pc, a, b, c)
-    callhint(st, slot, pc, a, b-1, a, c-1)
+    callhint(st, slot, pc, a, b-1, c-1)
   end,
 
   TAILCALL = function(st, slot, pc, a, b, c)
-    callhint(st, slot, pc, a, b-1, a, -1)
+    callhint(st, slot, pc, a, b-1, -1)
   end,
 
   RETURN = function(st, slot, pc, a, b, c)
-    if b == 2 then
-      local ok, k = prevconst(st, slot, pc, a)
-      if ok then
-	st[pc+hints.SHORTCUT_K] = k or empty -- Avoid nil.
-	st[pc-1+hints.SHORTCUT_K] = pc
-      end
+    if b == 2 and prevconst(st, slot, pc, a) then
+      st[pc-1+hints.COMBINE] = true -- Set COMBINE hint for prev. instruction.
     end
   end,
 
@@ -266,19 +326,28 @@ local handler = {
       st[pc+hints.FOR_STEP_K] = step
     end
     local nstart, nstep = slot[a], slot[a+2]
-    if (type(nstart) == "number" and nstart % 1 ~= 0) or
-       (type(nstep) == "number" and nstep % 1 ~= 0) then
-      slot[a+3] = 0.5
-    else
-      slot[a+3] = 1
+    local tnstart, tnstep = type(nstart), type(nstep)
+    local ntype = ((tnstart == "number" and nstart % 1 ~= 0) or
+		   (tnstep == "number" and nstep % 1 ~= 0)) and 0.5 or 1
+    slot[a+3] = ntype 
+    if tnstart == "number" and tnstep == "number" and
+       type(slot[a+1]) == "number" then
+      st[pc+hints.TYPE] = ntype
     end
   end,
 
+  -- TFORLOOP is at the end of the loop. Setting slots would be pointless.
+  -- Inlining is handled by the corresponding iterator constructor (CALL).
   TFORLOOP = function(st, slot, pc, a, b, c)
-    callhint(st, slot, pc, a, 2, a+2, c+1)
+    st[pc+hints.TYPE] = slot[a]
   end,
 
-  SETLIST = empty, -- TODO: if only (numeric) const: shortcut (+ nobarrier).
+  SETLIST =  function(st, slot, pc, a, b, c)
+    -- TODO: if only (numeric) const: shortcut (+ nobarrier).
+    local t = slot[a]
+    -- Very imprecise. But better than nothing.
+    if type(t) == "table" then st.tableval[t] = slot[a+1] end
+  end,
 
   CLOSE = empty,
 
@@ -304,6 +373,9 @@ local handler = {
 
 -- Generate some hints for the compiler backend.
 local function optimize(st)
+  -- Deoptimization is simple: just don't generate any hints. :-)
+  if st.deopt then return end
+
   local func = st.func
   local stats = jutil.stats(func)
   if not stats then return jutil.status.COMPILER_ERROR end -- Eh?
@@ -324,6 +396,7 @@ local function optimize(st)
   st.noclose = true
   st.stats = stats
   st.live = live
+  st.tableval = { [stats.env] = empty } -- Guess: unknown globals are functions.
 
   -- Initialize slots with argument hints and constants.
   local slot = {}
@@ -338,9 +411,9 @@ local function optimize(st)
   for pc=1,stats.bytecodes do
     if live[pc] then
       local op, a, b, c, test = bytecode(func, pc)
-      handler[op](st, slot, pc, a, b, c)
+      handler[op](st, slot, pc, a, b, c, op)
     else
-      st[pc+hints.DEAD] = true
+      st[pc+hints.COMBINE] = false -- Dead instruction hint.
     end
   end
 
@@ -351,11 +424,12 @@ local function optimize(st)
   st.noclose = nil
   st.stats = nil
   st.live = nil
+  st.tableval = nil
 end
 
 
 -- Active flags.
-local active, active_opt_lib
+local active, active_opt_inline
 
 -- Handler for compiler pipeline.
 local function h_opt(st)
@@ -385,7 +459,7 @@ local function loadaddon(opt)
 end
 
 -- Attach optimizer and set optimizer level or load add-on module.
-local function setlevel(opt)
+local function setlevel_(opt)
   -- Easier to always attach the optimizer (even for -O0).
   if not active then
     jit.attach(h_opt, PRIORITY)
@@ -409,10 +483,10 @@ local function setlevel(opt)
     end
   end
 
-  -- Load add-on module for hinting C library functions for -O2 and above.
-  if not active_opt_lib and optlevel >= 2 then
-    loadaddon("lib") -- Be silent if not installed.
-    active_opt_lib = true -- Try this only once.
+  -- Load add-on module for inlining functions for -O2 and above.
+  if not active_opt_inline and optlevel >= 2 then
+    loadaddon("inline") -- Be silent if not installed.
+    active_opt_inline = true -- Try this only once.
   end
 end
 
@@ -420,7 +494,7 @@ end
 -- Public module functions.
 module(...)
 
--- Callback to allow attaching a call hinter. Used by jit.opt_lib.
+-- Callback to allow attaching a call hinter. Used by jit.opt_inline.
 function attach_callhint(f)
   callhint = f
 end
@@ -429,6 +503,6 @@ function getlevel()
   return optlevel
 end
 
-setlevel = setlevel
-start = setlevel -- For -O command line option.
+setlevel = setlevel_
+start = setlevel_ -- For -O command line option.
 

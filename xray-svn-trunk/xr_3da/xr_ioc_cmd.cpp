@@ -113,7 +113,6 @@ public:
 	virtual void Execute(LPCSTR args) {
 		//g_pMotionsContainer->dump();
 		//	TODO: move this console commant into renderer
-		VERIFY(0);
 	}
 };
 class CCC_TexturesStat : public IConsole_Command
@@ -121,7 +120,6 @@ class CCC_TexturesStat : public IConsole_Command
 public:
 	CCC_TexturesStat(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = TRUE; };
 	virtual void Execute(LPCSTR args) {
-		Device.DumpResourcesMemoryUsage();
 		//Device.Resources->_DumpMemoryUsage();
 		//	TODO: move this console commant into renderer
 		//VERIFY(0);
@@ -184,7 +182,60 @@ public:
 		Log("- --- Command listing: end ----");
 	}
 };
+//-----------------------------------------------------------------------
+void 			crashthread			( void* )
+{
+	Sleep		(1000);
+	Msg			("~ crash thread activated")	;
+	u64			clk		= CPU::GetCLK		()	;
+	CRandom		rndg;
+	rndg.seed	(s32(clk));
+	for (;;)	{
+		Sleep	(1);
+		__try	{
+			//try {
+				union	{
+					struct {
+						u8	_b0;
+						u8	_b1;
+						u8	_b2;
+						u8	_b3;
+					};
+					uintptr_t	_ptri;
+					u32*		_ptr;
+				}		rndptr;
+				rndptr._b0		=	u8(rndg.randI(0,256));
+				rndptr._b1		=	u8(rndg.randI(0,256));
+				rndptr._b2		=	u8(rndg.randI(0,256));
+				rndptr._b3		=	u8(rndg.randI(0,256));
+				rndptr._ptri	&=  (1ul<31ul)-1;
+				*rndptr._ptr	=	0xBAADF00D;
+			//} catch(...) {
+			//	// OK
+			//}
+		} __except	(EXCEPTION_EXECUTE_HANDLER)	{
+			// OK
+		}
+	}
+}
+class CCC_Crash : public IConsole_Command
+{
+public:
+	CCC_Crash(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = TRUE; };
+	virtual void Execute(LPCSTR args) {
+		thread_spawn	(crashthread,"crash",0,0);
+	}
+};
 
+class CCC_DumpResources : public IConsole_Command
+{
+public:
+	CCC_DumpResources(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = TRUE; };
+	virtual void Execute(LPCSTR args) {
+		//Device.Resources->Dump(args!=NULL);
+		//	TODO: move this console commant into renderer
+	}
+};
 
 XRCORE_API void _dump_open_files(int mode);
 class CCC_DumpOpenFiles : public IConsole_Command
@@ -511,8 +562,8 @@ public:
 #endif
 */
 
-ENGINE_API BOOL r2_sun_static = TRUE;
-ENGINE_API BOOL r2_advanced_pp = FALSE;	//	advanced post process and effects
+ENGINE_API BOOL r2_sun_static	= TRUE;
+ENGINE_API BOOL r2_advanced_pp	= FALSE;	//	advanced post process and effects
 
 u32	renderer_value	= 3;
 //void fill_render_mode_list();
@@ -686,9 +737,10 @@ void CCC_Register()
 	CMD1(CCC_LoadCFG,	"cfg_load"				);
 
 #ifdef DEBUG
+
 	CMD1(CCC_MotionsStat,	"stat_motions"		);
 	CMD1(CCC_TexturesStat,	"stat_textures"		);
-#endif // DEBUG
+#endif
 
 #ifdef DEBUG_MEMORY_MANAGER
 	CMD1(CCC_MemStat,		"dbg_mem_dump"		);
@@ -708,7 +760,6 @@ void CCC_Register()
 	// Events
 	CMD1(CCC_E_Dump,	"e_list"				);
 	CMD1(CCC_E_Signal,	"e_signal"				);
-
 	CMD3(CCC_Mask,		"rs_wireframe",			&psDeviceFlags,		rsWireframe);
 	CMD3(CCC_Mask,		"rs_clear_bb",			&psDeviceFlags,		rsClearBB);
 	CMD3(CCC_Mask,		"rs_occlusion",			&psDeviceFlags,		rsOcclusion);
@@ -716,7 +767,7 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"rs_detail",			&psDeviceFlags,		rsDetails	);
 	//CMD4(CCC_Float,		"r__dtex_range",		&r__dtex_range,		5,		175	);
 
-//	CMD3(CCC_Mask,		"rs_constant_fps",		&psDeviceFlags,		rsConstantFPS			);
+	CMD3(CCC_Mask,		"rs_constant_fps",		&psDeviceFlags,		rsConstantFPS			);
 	CMD3(CCC_Mask,		"rs_render_statics",	&psDeviceFlags,		rsDrawStatic			);
 	CMD3(CCC_Mask,		"rs_render_dynamics",	&psDeviceFlags,		rsDrawDynamic			);
 #endif
@@ -761,6 +812,8 @@ void CCC_Register()
 	// Sound
 	CMD2(CCC_Float,		"snd_volume_eff",		&psSoundVEffects);
 	CMD2(CCC_Float,		"snd_volume_music",		&psSoundVMusic);
+//.	CMD3(CCC_Token,		"snd_freq",				&psSoundFreq,		snd_freq_token			);
+//.	CMD3(CCC_Token,		"snd_model",			&psSoundModel,		snd_model_token			);
 	CMD1(CCC_SND_Restart,"snd_restart"			);
 	CMD3(CCC_Mask,		"snd_acceleration",		&psSoundFlags,		ss_Hardware	);
 	CMD3(CCC_Mask,		"snd_efx",				&psSoundFlags,		ss_EAX		);
@@ -780,9 +833,9 @@ void CCC_Register()
 
 	// Mouse
 	CMD3(CCC_Mask,		"weapon_hold_zoom",			&psHoldZoom, 1);
-	CMD3(CCC_Mask,		"mouse_invert",			&psMouseInvert,1);
+	CMD3(CCC_Mask,		"mouse_invert",			&psMouseInvert, 1);
 	psMouseSens			= 0.12f;
-	CMD4(CCC_Float,		"mouse_sens",			&psMouseSens,		0.001f, 0.6f);
+	CMD4(CCC_Float,		"mouse_sens",			&psMouseSens,		0.05f, 0.6f);
 
 	// Camera
 	CMD4(CCC_Float,		"cam_inert",			&psCamInert, 	0.f,	0.5f);
@@ -814,10 +867,11 @@ void CCC_Register()
 	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);
 
 	CMD1(CCC_HideConsole,		"hide");
-
+	//CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
 #ifdef	DEBUG
 	extern BOOL debug_destroy;
 	CMD4(CCC_Integer, "debug_destroy", &debug_destroy, FALSE, TRUE );
 #endif
+	//CMD4(CCC_Integer,	"r1_software_skinning",&ps_r1_SoftwareSkinning,	0,		2	);
 };
  

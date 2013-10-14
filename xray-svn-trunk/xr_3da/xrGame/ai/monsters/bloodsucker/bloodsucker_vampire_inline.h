@@ -32,7 +32,7 @@ void CStateBloodsuckerVampireAbstract::reinit()
 {
 	inherited::reinit	();
 	
-	m_time_last_vampire	= 35;
+	m_time_last_vampire	= 0;
 }
 
 TEMPLATE_SPECIALIZATION
@@ -100,6 +100,8 @@ void CStateBloodsuckerVampireAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireAbstract::check_start_conditions()
 {
+	if (!object->WantVampire()) return false;
+	if (object->m_bDamaged) return false;
 
 	const CEntityAlive *m_enemy = object->EnemyMan.get_enemy();
 	if (m_enemy->CLS_ID != CLSID_OBJECT_ACTOR)							return false;

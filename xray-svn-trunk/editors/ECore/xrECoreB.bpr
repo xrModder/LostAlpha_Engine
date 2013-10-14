@@ -191,7 +191,7 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-Iblenders -I..\..\xr_3da\xrRender\blenders -I..\..\xr_3da\xrRender_R1 
+    <IDLCFLAGS value="-I..\..\xr_3da\xrRender\blenders -Iblenders -I..\..\xr_3da\xrRender_R1 
       -I..\..\xrCDB -I..\..\xr_3da\xrCPU_Pipe -IEngine\Blenders 
       -I..\..\xr_3da\xrRender -I..\..\xr_3da -I$(DXSDK_DIR)\Include -IWildMagic 
       -IEditor -IEngine -I$(BCB)\include -I$(BCB)\include\vcl 
@@ -205,7 +205,7 @@
       -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zi"/>
-    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\ecore -D&quot;&quot; -aa -Tpd -GD -s -Gn -Gi -v"/>
+    <LFLAGS value="-lx:\libraries -Ix:\intermediate_ed\ecore -D&quot;&quot; -aa -Tpd -GD -x -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>

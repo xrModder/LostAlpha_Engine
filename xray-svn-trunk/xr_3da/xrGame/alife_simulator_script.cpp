@@ -337,16 +337,16 @@ ALife::_SPAWN_ID CALifeSimulator__spawn_id		(CALifeSimulator *self, ALife::_SPAW
 	return								(((const CALifeSimulator *)self)->spawns().spawn_id(spawn_story_id));
 }
 
-void CALifeSimulator__release					(CALifeSimulator *self, CSE_Abstract *object, bool)
+void CALifeSimulator__release					(CALifeSimulator *self, CSE_Abstract *object, bool value)
 {
 	VERIFY								(self);
-//	self->release						(object,true);
 
-	THROW								(object);
+	R_ASSERT2(object, "CALifeSimulator__release: Object is not exist.");
+
 	CSE_ALifeObject						*alife_object = smart_cast<CSE_ALifeObject*>(object);
 	THROW								(alife_object);
 	if (!alife_object->m_bOnline) {
-		self->release					(object,true);
+		self->release					(object,value);
 		return;
 	}
 

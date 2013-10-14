@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="xrSE_Factory;../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK/boost_1_30_0;../../SDK/Xiph/Include"
+				AdditionalIncludeDirectories="xrSE_Factory;../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRSE_FACTORY_EXPORTS;MSVC;_SECURE_SCL=0;XR_EPROPS_EXPORTS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="false"
@@ -151,7 +151,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK/boost_1_30_0;../../SDK/Xiph/Include"
+				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="DEBUG,MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRSE_FACTORY_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -175,6 +175,7 @@
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4995"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -258,7 +259,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK/boost_1_30_0;../../SDK/Xiph/Include"
+				AdditionalIncludeDirectories="../xrCore;../xrLua/src;../../SDK/loki;../../SDK/luabind/luabind;../../SDK;../../SDK/Xiph/Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;XRSE_FACTORY_EXPORTS;LUABIND_NO_ERROR_CHECKING;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -278,6 +279,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4995"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

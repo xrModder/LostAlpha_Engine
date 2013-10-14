@@ -1,5 +1,5 @@
 /*
-** $Id: lparser.h,v 1.55 2005/04/25 19:24:10 roberto Exp $
+** $Id: lparser.h,v 1.57.1.1 2007/12/27 13:02:25 roberto Exp $
 ** Lua Parser
 ** See Copyright Notice in lua.h
 */
@@ -9,7 +9,6 @@
 
 #include "llimits.h"
 #include "lobject.h"
-#include "ltable.h"
 #include "lzio.h"
 
 
@@ -23,6 +22,7 @@ typedef enum {
   VTRUE,
   VFALSE,
   VK,		/* info = index of constant in `k' */
+  VKNUM,	/* nval = numerical value */
   VLOCAL,	/* info = local register */
   VUPVAL,       /* info = index of upvalue in `upvalues' */
   VGLOBAL,	/* info = index of table; aux = index of global name in `k' */
@@ -36,7 +36,10 @@ typedef enum {
 
 typedef struct expdesc {
   expkind k;
-  int info, aux;
+  union {
+    struct { int info, aux; } s;
+    lua_Number nval;
+  } u;
   int t;  /* patch list of `exit when true' */
   int f;  /* patch list of `exit when false' */
 } expdesc;

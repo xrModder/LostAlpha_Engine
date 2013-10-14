@@ -159,6 +159,7 @@ private:
 	unsigned FLastTick;
 	bool FPrecise;
 	HWND FWnd;
+	bool FBlockEvents;
 	void __fastcall SetItems(TElTimerPoolItems* Value);
 	void __fastcall WndProc(Messages::TMessage &Msg);
 	
@@ -174,7 +175,7 @@ public:
 	
 __published:
 	__property TElTimerPoolItems* Items = {read=FItems, write=SetItems};
-	__property bool Precise = {read=FPrecise, write=SetPrecise, nodefault};
+	__property bool Precise = {read=FPrecise, write=SetPrecise, default=0};
 };
 
 

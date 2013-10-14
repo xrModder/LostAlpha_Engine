@@ -188,25 +188,6 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-// CStalkerActionSearchEnemy
-//////////////////////////////////////////////////////////////////////////
-
-class CStalkerActionSearchEnemy : public CStalkerActionCombatBase {
-private:
-	const CCoverPoint	*m_enemy_cover;
-
-protected:
-	typedef CStalkerActionCombatBase inherited;
-
-public:
-						CStalkerActionSearchEnemy	(CAI_Stalker *object, LPCSTR action_name = "");
-	virtual void		initialize					();
-	virtual void		execute						();
-	virtual void		finalize					();
-};
-
-
-//////////////////////////////////////////////////////////////////////////
 // CStalkerActionPostCombatWait
 //////////////////////////////////////////////////////////////////////////
 

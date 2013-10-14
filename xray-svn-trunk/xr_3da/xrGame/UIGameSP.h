@@ -5,6 +5,10 @@
 #include "game_graph_space.h"
 
 class CUITradeWnd;			
+class CUIInventoryWnd;		
+class CUIPdaWnd;			
+class CUITalkWnd;			
+class CUICarBodyWnd;
 class CInventory;
 
 class game_cl_Single;
@@ -39,11 +43,13 @@ public:
 #ifdef DEBUG
 	virtual void		Render	();
 #endif
-
-	void				EnableSkills		(bool val);
+	virtual void		ReinitDialogs		();	void				EnableSkills		(bool val);
 	void				EnableDownloads		(bool val);
 
+	CUIInventoryWnd*	InventoryMenu;
+	CUIPdaWnd*			PdaMenu;
 	CUITalkWnd*			TalkMenu;
+	CUICarBodyWnd*		UICarBodyMenu;
 	CChangeLevelWnd*	UIChangeLevelWnd;
 };
 

@@ -36,6 +36,7 @@
 #include "stalker_movement_manager.h"
 #include "inventory.h"
 #include "weaponmagazined.h"
+#include "stalker_search_planner.h"
 
 using namespace StalkerSpace;
 using namespace StalkerDecisionSpace;
@@ -357,25 +358,26 @@ void CStalkerCombatPlanner::add_actions			()
 	add_effect				(action,eWorldPropertyEnemyDetoured,	true);
 	add_operator			(eWorldOperatorDetourEnemy,				action);
 
-	action					= xr_new<CStalkerActionSearchEnemy>		(m_object,"search_enemy");
-	add_condition			(action,eWorldPropertyCriticallyWounded,false);
-	add_condition			(action,eWorldPropertyDangerGrenade,	false);
-	add_condition			(action,eWorldPropertyUseSuddenness,	false);
-	add_condition			(action,eWorldPropertyReadyToKill,		true);
-	add_condition			(action,eWorldPropertySeeEnemy,			false);
-	add_condition			(action,eWorldPropertyInCover,			false);
-	add_condition			(action,eWorldPropertyLookedOut,		true);
-	add_condition			(action,eWorldPropertyPositionHolded,	true);
-	add_condition			(action,eWorldPropertyEnemyDetoured,	true);
-	add_condition			(action,eWorldPropertyPanic,			false);
-	add_condition			(action,eWorldPropertyEnemyWounded,		false);
-	add_condition			(action,eWorldPropertyPlayerOnThePath,	false);
-	if (grenades_throwing)
-		add_condition			(action,eWorldPropertyShouldThrowGrenade,false);
-	add_condition			(action,eWorldPropertyTooFarToKillEnemy,false);
-	add_effect				(action,eWorldPropertyPureEnemy,		false);
-	add_operator			(eWorldOperatorSearchEnemy,				action);
-	action->set_inertia_time(120000);
+	{
+		CStalkerSearchPlanner	*action = xr_new<CStalkerSearchPlanner>			(m_object,"search enemy planner");
+		add_condition			(action,eWorldPropertyCriticallyWounded,false);
+		add_condition			(action,eWorldPropertyDangerGrenade,	false);
+		add_condition			(action,eWorldPropertyUseSuddenness,	false);
+		add_condition			(action,eWorldPropertyReadyToKill,		true);
+		add_condition			(action,eWorldPropertySeeEnemy,			false);
+		add_condition			(action,eWorldPropertyInCover,			false);
+		add_condition			(action,eWorldPropertyLookedOut,		true);
+		add_condition			(action,eWorldPropertyPositionHolded,	true);
+		add_condition			(action,eWorldPropertyEnemyDetoured,	true);
+		add_condition			(action,eWorldPropertyPanic,			false);
+		add_condition			(action,eWorldPropertyEnemyWounded,		false);
+		add_condition			(action,eWorldPropertyPlayerOnThePath,	false);
+		if (grenades_throwing)
+			add_condition			(action,eWorldPropertyShouldThrowGrenade,false);
+		add_condition			(action,eWorldPropertyTooFarToKillEnemy,false);
+		add_effect				(action,eWorldPropertyPureEnemy,		false);
+		add_operator			(eWorldOperatorSearchEnemy,				action);
+	}
 
 	action					= xr_new<CStalkerActionKillEnemy>(m_object,"kill_if_not_visible");
 	add_condition			(action,eWorldPropertyCriticallyWounded,false);

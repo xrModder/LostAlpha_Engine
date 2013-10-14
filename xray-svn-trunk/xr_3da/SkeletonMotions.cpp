@@ -74,7 +74,7 @@ u16 find_bone_id(vecBones* bones, shared_str nm)
 //-----------------------------------------------------------------------
 BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 {
-
+	//Msg("starts to load %s", N);
 	m_id						= N;
 
 	bool bRes					= true;
@@ -154,6 +154,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 					m_cycle.insert	(mk_pair(nm,mot_i));
 
                 m_motion_map.insert	(mk_pair(nm,mot_i));
+//				Msg("# added motion map %s", *nm);
 			}
 		}
 		MP->close();
@@ -188,6 +189,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
         VERIFY3				(I->second==m_idx,"Invalid motion index:",mname);
 #endif
 		u32 dwLen			= MS->r_u32();
+//		Msg("~ loading motion %s - %d", mname, dwLen);
 		for (u32 i=0; i<bones->size(); i++){
 			u16 bone_id		= rm_bones[i];
 			VERIFY2			(bone_id!=BI_NONE,"Invalid remap index.");
@@ -225,6 +227,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
                 MS->r_fvector3	(M._initT);
             }
 		}
+
 	}
 //	Msg("Motions %d/%d %4d/%4d/%d, %s",p_cnt,m_cnt, m_load,m_total,m_r,N);
 	MS->close();

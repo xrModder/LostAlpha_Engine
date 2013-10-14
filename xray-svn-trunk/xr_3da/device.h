@@ -202,6 +202,14 @@ public:
 
 	Fmatrix									mInvFullTransform;
 
+
+	// Copies of corresponding members. Used for synchronization.
+	Fvector									vCameraPosition_saved;
+
+	Fmatrix									mView_saved;
+	Fmatrix									mProject_saved;
+	Fmatrix									mFullTransform_saved;
+
 	bool IsR2Active(void);
 
 	//float									fFOV;

@@ -34,6 +34,7 @@
 #include <Graphics.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <Windows.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
@@ -68,6 +69,7 @@ class PASCALIMPLEMENTATION TElDateTimePicker : public Elxpthemedcontrol::TElXPTh
 	typedef Elxpthemedcontrol::TElXPThemedControl inherited;
 	
 protected:
+	Elstrutils::TElFChar FUnassignedChar;
 	bool FHandleDialogKeys;
 	bool FModified;
 	bool FShowCheckBox;
@@ -124,6 +126,7 @@ protected:
 	bool FButtonThinFrame;
 	bool FAutoSize;
 	WideString FHint;
+	bool FChangeDisabledText;
 	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Msg);
 	HIDESBASE MESSAGE void __fastcall WMSysKeyDown(Messages::TWMKey &Msg);
 	MESSAGE void __fastcall CMCancelMode(Controls::TCMCancelMode &Msg);
@@ -258,6 +261,10 @@ protected:
 	HIDESBASE void __fastcall SetAutoSize(bool Value);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
+	WideString __fastcall GetUnassignedChar();
+	void __fastcall SetUnassignedChar(WideString Value);
+	WideString __fastcall MakeUnassignedString(int Length);
+	void __fastcall SetChangeDisabledText(bool Value);
 	
 public:
 	__fastcall virtual TElDateTimePicker(Classes::TComponent* AOwner);
@@ -278,11 +285,11 @@ __published:
 	__property Graphics::TColor GradientEndColor = {read=FGradientEndColor, write=SetGradientEndColor, default=0};
 	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, default=16};
 	__property Graphics::TBitmap* Background = {read=FBackground, write=SetBackground};
-	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, nodefault};
+	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, default=2};
 	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, default=1};
 	__property bool Transparent = {read=FTransparent, write=SetTransparent, default=0};
-	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, nodefault};
-	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, nodefault};
+	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
+	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
 	__property bool Flat = {read=FFlat, write=SetFlat, default=0};
 	__property bool ShowPopupCalendar = {read=FShowPopupCalendar, write=SetShowPopupCalendar, default=0};
 	__property bool NavigationInPopup = {read=FNavigationInPopup, write=SetNavigationInPopup, default=1};
@@ -351,6 +358,8 @@ __published:
 	__property bool ButtonShowOnFocus = {read=FButtonShowOnFocus, write=SetButtonShowOnFocus, default=0};
 	__property bool UseCurrentDate = {read=FUseCurrentDate, write=FUseCurrentDate, default=1};
 	__property bool ButtonThinFrame = {read=FButtonThinFrame, write=SetButtonThinFrame, default=1};
+	__property WideString UnassignedChar = {read=GetUnassignedChar, write=SetUnassignedChar};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=0};
 	__property WideString Hint = {read=FHint, write=SetHint};
 public:
 	#pragma option push -w-inl

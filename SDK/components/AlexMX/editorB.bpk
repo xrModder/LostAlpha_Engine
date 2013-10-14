@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="X:\stalker_addon\sources\sdk\components\AlexMX\editorB.bpl"/>
+    <PROJECT value="X:\STALKER\SDK\components\AlexMX\editorB.bpl"/>
     <OBJFILES value="MxRegister.obj"/>
     <RESFILES value="editor.res"/>
     <IDLFILES value=""/>
@@ -11,16 +11,17 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="teeqr.lib indy.lib dbxcds.lib 
-      dclocx.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib 
-      inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib 
-      dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib 
-      ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
+    <LIBRARIES value="elpproB6.lib elpackB6.lib elpkdbB6.lib dclusr.lib teeqr.lib indy.lib 
+      dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib 
+      inetdbxpress.lib inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib 
+      visualdbclx.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib 
+      cds.lib ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
     <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
       bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib visualdbclx.lib 
       dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib inetdbxpress.lib 
       dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib dbxcds.lib 
-      indy.lib bcb2kaxserver.lib teeqr.lib"/>
+      indy.lib bcb2kaxserver.lib teeqr.lib dclusr.lib elpkdbB6.lib elpackB6.lib 
+      elpproB6.lib"/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi bcb2kaxserver.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
@@ -33,7 +34,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="editorB.cpp"/>
     <INCLUDEPATH value="..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;X:\stalker_addon\sources\sdk\components\ElPack\Code;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;X:\STALKER\SDK\components\ElPack\Code;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -98,8 +99,8 @@ Item0=..\..\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=4
-Item0=$(BCB)\Projects\Lib;X:\stalker_addon\sources\sdk\components\ElPack\Code;$(BCB)\lib\obj;$(BCB)\lib
-Item1=$(BCB)\Projects\Lib;X:\stalker_addon\sources\sdk\components\ElPack\Code\;$(BCB)\lib\obj;$(BCB)\lib
+Item0=$(BCB)\Projects\Lib;X:\STALKER\SDK\components\ElPack\Code;$(BCB)\lib\obj;$(BCB)\lib
+Item1=$(BCB)\Projects\Lib;X:\STALKER\SDK\components\ElPack\Code\;$(BCB)\lib\obj;$(BCB)\lib
 Item2=$(BCB)\Projects\Lib;..\..\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 Item3=..\..\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
@@ -113,7 +114,7 @@ Item0=_DEBUG
 
 [HistoryLists\hlFinalOutputDir]
 Count=3
-Item0=X:\stalker_addon\sources\sdk\components\AlexMX\
+Item0=X:\STALKER\SDK\components\AlexMX\
 Item1=R:\Borland\Components6\AlexMX\
 Item2=R:\Borland\Components6\AlexMX
 

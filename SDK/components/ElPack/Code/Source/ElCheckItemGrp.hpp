@@ -11,19 +11,18 @@
 #pragma option push -w-
 #pragma option push -Vx
 #include <Menus.hpp>	// Pascal unit
-#include <ElUnicodeStrings.hpp>	// Pascal unit
-#include <ElStrUtils.hpp>	// Pascal unit
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <ElPanel.hpp>	// Pascal unit
 #include <ElSndMap.hpp>	// Pascal unit
 #include <ElGroupBox.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <ElCheckCtl.hpp>	// Pascal unit
 #include <ElUxTheme.hpp>	// Pascal unit
 #include <ElTmSchema.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
 #include <HTMLRender.hpp>	// Pascal unit
 #include <ElList.hpp>	// Pascal unit
+#include <ElStrUtils.hpp>	// Pascal unit
+#include <ElUnicodeStrings.hpp>	// Pascal unit
 #include <ImgList.hpp>	// Pascal unit
 #include <Forms.hpp>	// Pascal unit
 #include <ExtCtrls.hpp>	// Pascal unit
@@ -33,6 +32,7 @@
 #include <Controls.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <StdCtrls.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
@@ -58,6 +58,10 @@ protected:
 	Elunicodestrings::TElWideStrings* FItems;
 	bool FReading;
 	bool FUpdating;
+	int FHorzOffset;
+	int FItemHeight;
+	int FItemSpacing;
+	int FVertOffset;
 	void __fastcall ArrangeButtons(void);
 	HIDESBASE MESSAGE void __fastcall CMEnabledChanged(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall CMFontChanged(Messages::TMessage &Message);
@@ -90,13 +94,23 @@ protected:
 	virtual void __fastcall SetMoneyFlatInactiveColor(Graphics::TColor Value);
 	virtual void __fastcall SetMoneyFlatActiveColor(Graphics::TColor Value);
 	virtual void __fastcall SetMoneyFlatDownColor(Graphics::TColor Value);
+	virtual void __fastcall SetMoneyFlat(bool Value);
 	bool __fastcall GetItemEnabled(int Index);
 	void __fastcall SetItemEnabled(int Index, bool Value);
+	void __fastcall SetHorzOffset(int Value);
+	void __fastcall SetItemHeight(int Value);
+	void __fastcall SetItemSpacing(int Value);
+	void __fastcall SetVertOffset(int Value);
+	virtual void __fastcall Loaded(void);
 	__property Classes::TLeftRight Alignment = {read=FAlignment, write=SetAlignment, default=1};
 	__property int Columns = {read=FColumns, write=SetColumns, default=1};
 	__property Elunicodestrings::TElWideStrings* Hints = {read=FHints, write=SetHints};
 	__property Elunicodestrings::TElWideStrings* Items = {read=FItems, write=SetItems};
 	__property bool ItemEnabled[int Index] = {read=GetItemEnabled, write=SetItemEnabled};
+	__property int HorzOffset = {read=FHorzOffset, write=SetHorzOffset, default=0};
+	__property int ItemHeight = {read=FItemHeight, write=SetItemHeight, default=-1};
+	__property int ItemSpacing = {read=FItemSpacing, write=SetItemSpacing, default=-1};
+	__property int VertOffset = {read=FVertOffset, write=SetVertOffset, default=0};
 	
 public:
 	__fastcall virtual TElCheckItemGroup(Classes::TComponent* AOwner);
@@ -173,10 +187,13 @@ __published:
 	__property FlatAlways ;
 	__property Font ;
 	__property Hints ;
+	__property HorzOffset  = {default=0};
 	__property ImageForm ;
 	__property IsHTML  = {default=0};
 	__property ItemIndex  = {default=-1};
 	__property Items ;
+	__property ItemHeight  = {default=-1};
+	__property ItemSpacing  = {default=-1};
 	__property MoneyFlat  = {default=0};
 	__property MoneyFlatInactiveColor ;
 	__property MoneyFlatActiveColor ;
@@ -193,6 +210,7 @@ __published:
 	__property TabStop  = {default=1};
 	__property Transparent  = {default=0};
 	__property Visible  = {default=1};
+	__property VertOffset  = {default=0};
 	__property UseXPThemes  = {default=1};
 	__property CheckSound ;
 	__property SoundMap ;
@@ -294,9 +312,12 @@ __published:
 	__property FlatAlways ;
 	__property Font ;
 	__property Hints ;
+	__property HorzOffset  = {default=0};
 	__property ImageForm ;
 	__property IsHTML  = {default=0};
 	__property Items ;
+	__property ItemHeight  = {default=-1};
+	__property ItemSpacing  = {default=-1};
 	__property MoneyFlat  = {default=0};
 	__property MoneyFlatInactiveColor ;
 	__property MoneyFlatActiveColor ;
@@ -314,6 +335,7 @@ __published:
 	__property Transparent  = {default=0};
 	__property Visible  = {default=1};
 	__property UseXPThemes  = {default=1};
+	__property VertOffset  = {default=0};
 	__property CheckSound ;
 	__property SoundMap ;
 	__property Glyph ;

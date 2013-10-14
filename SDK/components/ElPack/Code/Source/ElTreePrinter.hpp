@@ -77,6 +77,14 @@ public:
 };
 
 
+typedef void __fastcall (__closure *TDrawPageNumberEvent)(System::TObject* Sender, WideString &Text, int PageNumber);
+
+typedef void __fastcall (__closure *TDrawPageCaptionEvent)(System::TObject* Sender, WideString &Text, int PageNumber, Types::TRect &Rec);
+
+#pragma option push -b-
+enum TPNLayout { plTop, plBottom };
+#pragma option pop
+
 class DELPHICLASS TElTreePrinter;
 class PASCALIMPLEMENTATION TElTreePrinter : public Elprinter::TElControlPrinter 
 {
@@ -87,6 +95,13 @@ private:
 	Elprinter::TPageEvent FOnBeforePage;
 	
 protected:
+	bool FShowPageNumbers;
+	TPNLayout FPageNambersLayout;
+	WideString FPageNumbersText;
+	Classes::TAlignment FPageNumbersAlignment;
+	WideString FCaption;
+	TDrawPageNumberEvent FOnDrawPageNumber;
+	TDrawPageCaptionEvent FOnDrawCaption;
 	bool FPrinting;
 	Htmlrender::TElHTMLRender* FRender;
 	Graphics::TColor FBkColor;
@@ -165,6 +180,8 @@ protected:
 	virtual void __fastcall TriggerAfterPage(int PageNumber);
 	virtual void __fastcall TriggerBeforePage(int PageNumber);
 	virtual void __fastcall Notification(Classes::TComponent* AComponent, Classes::TOperation Operation);
+	virtual void __fastcall DoDrawPageNumber(int PageNumber);
+	virtual void __fastcall DoDrawCaption(int PageNumber, Types::TRect &Rec);
 	
 public:
 	__fastcall virtual TElTreePrinter(Classes::TComponent* AOwner);
@@ -208,6 +225,13 @@ __published:
 	__property Graphics::TColor VertDivLinesColor = {read=FVertDivLinesColor, write=SetVertDivLinesColor, nodefault};
 	__property Elprinter::TPageEvent OnAfterPage = {read=FOnAfterPage, write=FOnAfterPage};
 	__property Elprinter::TPageEvent OnBeforePage = {read=FOnBeforePage, write=FOnBeforePage};
+	__property bool ShowPageNumbers = {read=FShowPageNumbers, write=FShowPageNumbers, nodefault};
+	__property TPNLayout PageNambersLayout = {read=FPageNambersLayout, write=FPageNambersLayout, default=0};
+	__property WideString PageNumbersText = {read=FPageNumbersText, write=FPageNumbersText};
+	__property Classes::TAlignment PageNumbersAlignment = {read=FPageNumbersAlignment, write=FPageNumbersAlignment, default=2};
+	__property WideString Caption = {read=FCaption, write=FCaption};
+	__property TDrawPageNumberEvent OnDrawPageNumber = {read=FOnDrawPageNumber, write=FOnDrawPageNumber};
+	__property TDrawPageCaptionEvent OnDrawCaption = {read=FOnDrawCaption, write=FOnDrawCaption};
 };
 
 

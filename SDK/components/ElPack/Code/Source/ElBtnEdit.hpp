@@ -100,7 +100,6 @@ private:
 	void __fastcall SetAltButtonWidth(int newValue);
 	int __fastcall GetAltButtonWidth(void);
 	void __fastcall AltButtonClickTransfer(System::TObject* Sender);
-	HIDESBASE MESSAGE void __fastcall CMCtl3DChanged(Messages::TMessage &Msg);
 	void __fastcall SetButtonFlat(bool newValue);
 	bool __fastcall GetButtonFlat(void);
 	void __fastcall SetAltButtonEnabled(bool newValue);
@@ -122,22 +121,18 @@ private:
 	AnsiString __fastcall GetAltButtonCaption();
 	void __fastcall SetButtonCaption(AnsiString newValue);
 	AnsiString __fastcall GetButtonCaption();
-	HIDESBASE void __fastcall SetMultiline(bool newValue);
 	void __fastcall SetAltBtnAlign(Classes::TLeftRight newValue);
-	HIDESBASE MESSAGE void __fastcall CMFontChanged(Messages::TMessage &Msg);
 	HIDESBASE MESSAGE void __fastcall WMGetDlgCode(Messages::TWMNoParams &Msg);
 	
 protected:
 	Elpopbtn::TCustomElGraphicButton* FAltButton;
 	Elpopbtn::TCustomElGraphicButton* FButton;
 	Classes::TAlignment FAltBtnAlign;
-	bool FMultiline;
 	TMetaClass*ButtonClass;
 	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Msg);
 	DYNAMIC void __fastcall KeyPress(char &Key);
 	DYNAMIC void __fastcall KeyDown(Word &Key, Classes::TShiftState Shift);
-	virtual void __fastcall Loaded(void);
-	HIDESBASE void __fastcall SetEditRect(void);
+	virtual void __fastcall SetEditRect(const Types::TRect &Value);
 	HIDESBASE MESSAGE void __fastcall WMKeyDown(Messages::TWMKey &Message);
 	Graphics::TColor __fastcall GetAltButtonColor(void);
 	void __fastcall SetAltButtonColor(Graphics::TColor Value);
@@ -196,13 +191,11 @@ protected:
 	__property bool AltButtonVisible = {read=GetAltButtonVisible, write=SetAltButtonVisible, nodefault};
 	__property int AltButtonWidth = {read=GetAltButtonWidth, write=SetAltButtonWidth, nodefault};
 	__property bool AltButtonEnabled = {read=GetAltButtonEnabled, write=SetAltButtonEnabled, nodefault};
-	__property bool Multiline = {read=FMultiline, write=SetMultiline, nodefault};
 	__property Classes::TNotifyEvent OnAltButtonClick = {read=FOnAltButtonClick, write=FOnAltButtonClick};
 	
 public:
 	__fastcall virtual TCustomElButtonEdit(Classes::TComponent* AOwner);
 	__fastcall virtual ~TCustomElButtonEdit(void);
-	virtual void __fastcall CreateWnd(void);
 	
 __published:
 	__property bool ButtonThinFrame = {read=GetButtonThinFrame, write=SetButtonThinFrame, default=0};
@@ -225,6 +218,7 @@ class PASCALIMPLEMENTATION TElButtonEdit : public TCustomElButtonEdit
 __published:
 	__property AlignBottom  = {default=1};
 	__property CharCase  = {default=0};
+	__property ChangeDisabledText  = {default=0};
 	__property TopMargin  = {default=1};
 	__property LeftMargin  = {default=1};
 	__property RightMargin  = {default=2};
@@ -241,7 +235,7 @@ __published:
 	__property TabSpaces  = {default=4};
 	__property Lines  = {stored=false};
 	__property ImageForm ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
@@ -249,7 +243,7 @@ __published:
 	__property OnChange ;
 	__property OnSelectionChange ;
 	__property Text ;
-	__property Multiline ;
+	__property Multiline  = {default=0};
 	__property VertScrollBarStyles ;
 	__property HorzScrollBarStyles ;
 	__property UseCustomScrollBars ;

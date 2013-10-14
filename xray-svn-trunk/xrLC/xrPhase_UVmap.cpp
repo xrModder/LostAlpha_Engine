@@ -21,9 +21,9 @@ void Detach			(vecFace* S)
 	verts.clear		();
 	
 	// Collect vertices
-	for (vecFaceIt F=S->begin(); F!=S->end(); F++)
+	for (vecFaceIt F=S->begin(); F!=S->end(); ++F)
 	{
-		for (int i=0; i<3; i++) {
+		for (int i=0; i<3; ++i) {
 			Vertex*		V=(*F)->v[i];
 			Vertex*		VC;
 			map_v2v_it	W=verts.find(V);	// iterator
@@ -57,7 +57,11 @@ void	CBuild::xrPhase_UVmap()
 	for (int SP = 0; SP<int(g_XSplit.size()); SP++) 
 	{
 		Progress			(p_total+=p_cost);
-		IsolateVertices		(FALSE);
+
+		// ManOwaR, unsure:
+		// Call to IsolateVertices() looks useless here
+		// Calculation speed up, so commented
+		// IsolateVertices		(FALSE);
 		
 		// Detect vertex-lighting and avoid this subdivision
 		R_ASSERT	(!g_XSplit[SP]->empty());
@@ -67,7 +71,8 @@ void	CBuild::xrPhase_UVmap()
 		if (Fvl->hasImplicitLighting())			continue;	// do-not touch (skip)
 		
 		//   find first poly that doesn't has mapping and start recursion
-		while (TRUE) {
+		while (TRUE) 
+		{
 			// Select maximal sized poly
 			Face *	msF		= NULL;
 			float	msA		= 0;
@@ -82,21 +87,24 @@ void	CBuild::xrPhase_UVmap()
 				}
 			}
 			if (msF) {
-				g_deflectors.push_back	(xr_new<CDeflector>());
+
+				CDeflector *D = xr_new<CDeflector>();
+
+				g_deflectors.push_back	(D);
 				
 				// Start recursion from this face
 				affected				= 1;
-				Deflector->OA_SetNormal	(msF->N);
+				D->OA_SetNormal	(msF->N);
 				msF->OA_Unwarp			();
 				
 				// break the cycle to startup again
-				Deflector->OA_Export	();
+				D->OA_Export	();
 				
 				// Detach affected faces
 				faces_affected.clear	();
 				for (int i=0; i<int(g_XSplit[SP]->size()); i++) {
 					Face *F = (*g_XSplit[SP])[i];
-					if ( F->pDeflector==Deflector ) {
+					if ( F->pDeflector == D ) {
 						faces_affected.push_back(F);
 						g_XSplit[SP]->erase		(g_XSplit[SP]->begin()+i); 
 						i--;

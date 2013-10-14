@@ -398,6 +398,9 @@ public:
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();
+
+			void				SetPortionsNum		(u32 num);
+			u32					GetPortionsNum		() const;
 			 
 	_DECLARE_FUNCTION10			(GetActionCount,u32);
 	
@@ -608,8 +611,12 @@ public:
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
 			// lost alpha start
-			void				SetTorchState(bool state);
-			bool				GetTorchState(void);
+			u16					GetTorchBatteryStatus				();
+			void				SetTorchBatteryStatus				(u16 value);
+			void				SetTorchState						(bool state);
+			bool				GetTorchState						(void);
+
+			float				SetActorWalkAccel					(float new_value);
 			
 
 

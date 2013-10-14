@@ -65,7 +65,7 @@ static float const NEAR_DISTANCE			= 2.5f;
 static u32	 const FIRE_MAKE_SENSE_INTERVAL	= 10000;
 
 //static float const min_throw_distance		= 10.f;
-static float const max_distance				= 45.f;
+static float const max_distance				= 40.f;
 
 float CAI_Stalker::GetWeaponAccuracy	() const
 {
@@ -192,7 +192,16 @@ void CAI_Stalker::g_WeaponBones	(int &L, int &R1, int &R2)
 void			CAI_Stalker::Hit					(SHit* pHDS)
 {
 	if (invulnerable())
+	{
+		callback(GameObject::eHit)(
+			lua_game_object(), 
+			pHDS->damage(),
+			pHDS->direction(),
+			smart_cast<const CGameObject*>(pHDS->initiator())->lua_game_object(),
+			pHDS->bone()
+		);
 		return;
+	}
 
 	if (m_bIsGhost) return;
 
@@ -287,6 +296,7 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 							CTorch* torch = smart_cast<CTorch*>(*it);
 							if (torch){		
 									torch->Broke();
+									torch->SetBatteryStatus(0);
 									break;
 							}
 						}
@@ -901,12 +911,21 @@ void CAI_Stalker::compute_throw_miss		( u32 const vertex_id )
 		return;
 	}
 }
+ 
+static float rank_precision[] = { 2.0, 1.5, 1.0, 0.5 };
 
 void CAI_Stalker::throw_target_impl			(const Fvector &position, CObject *throw_ignore_object )
 {
 	float					distance_to_sqr = position.distance_to_sqr(m_throw_target_position);
+	float					distance = position.distance_to(m_throw_target_position);
+	float					precision = rank_precision[CharacterInfo().Rank().index()];
+	float					dist_factor = distance / std::min(distance, max_distance / 3);
+	float					offset_x = dist_factor * precision * (::Random.randF(0.f, 1.f) - 0.5f) * 2;
+	float					offset_z = dist_factor * precision * (::Random.randF(0.f, 1.f) - 0.5f) * 2;
 	m_throw_actual			= m_throw_actual && (distance_to_sqr < _sqr(.1f));
 	m_throw_target_position	= position;
+	m_throw_target_position.x += offset_x;
+	m_throw_target_position.z += offset_z;
 	m_throw_ignore_object	= throw_ignore_object;
 }
 
@@ -1025,7 +1044,7 @@ void CAI_Stalker::update_throw_params		()
 
 	check_throw_trajectory	(time);
 	
-	m_throw_velocity.mul(::Random.randF(.99f,1.01f));
+	m_throw_velocity.mul(::Random.randF(.98f,1.02f));
 }
 
 void CAI_Stalker::on_throw_completed		()
@@ -1196,6 +1215,8 @@ bool CAI_Stalker::too_far_to_kill_enemy						(const Fvector &position)
 	int						weapon_type = best_weapon()->object().ef_weapon_type();
 	float					distance = position.distance_to(Position());
 	switch (weapon_type) {
+		// knife
+		case 1 : return		(distance > 2.f); 
 		// pistols
 		case 5 : return		(distance > 10.f);
 		// shotguns

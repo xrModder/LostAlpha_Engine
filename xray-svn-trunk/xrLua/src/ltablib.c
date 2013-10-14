@@ -1,5 +1,5 @@
 /*
-** $Id: ltablib.c,v 1.35 2005/08/26 17:36:32 roberto Exp $
+** $Id: ltablib.c,v 1.38.1.3 2008/02/14 16:46:58 roberto Exp $
 ** Library for Table Manipulation
 ** See Copyright Notice in lua.h
 */
@@ -40,9 +40,7 @@ static int foreach (lua_State *L) {
   luaL_checktype(L, 1, LUA_TTABLE);
   luaL_checktype(L, 2, LUA_TFUNCTION);
   lua_pushnil(L);  /* first key */
-  for (;;) {
-    if (lua_next(L, 1) == 0)
-      return 0;
+  while (lua_next(L, 1)) {
     lua_pushvalue(L, 2);  /* function */
     lua_pushvalue(L, -3);  /* key */
     lua_pushvalue(L, -3);  /* value */
@@ -51,6 +49,23 @@ static int foreach (lua_State *L) {
       return 1;
     lua_pop(L, 2);  /* remove value and result */
   }
+  return 0;
+}
+
+
+static int maxn (lua_State *L) {
+  lua_Number max = 0;
+  luaL_checktype(L, 1, LUA_TTABLE);
+  lua_pushnil(L);  /* first key */
+  while (lua_next(L, 1)) {
+    lua_pop(L, 1);  /* remove value */
+    if (lua_type(L, -1) == LUA_TNUMBER) {
+      lua_Number v = lua_tonumber(L, -1);
+      if (v > max) max = v;
+    }
+  }
+  lua_pushnumber(L, max);
+  return 1;
 }
 
 
@@ -75,16 +90,23 @@ static int setn (lua_State *L) {
 static int tinsert (lua_State *L) {
   int e = aux_getn(L, 1) + 1;  /* first empty element */
   int pos;  /* where to insert new element */
-  if (lua_isnone(L, 3))  /* called with only 2 arguments */
-    pos = e;  /* insert new element at the end */
-  else {
-    int i;
-    pos = luaL_checkint(L, 2);  /* 2nd argument is the position */
-    if (pos > e) e = pos;  /* `grow' array if necessary */
-    lua_settop(L, 3);  /* function may be called with more than 3 args */
-    for (i = e; i > pos; i--) {  /* move up elements */
-      lua_rawgeti(L, 1, i-1);
-      lua_rawseti(L, 1, i);  /* t[i] = t[i-1] */
+  switch (lua_gettop(L)) {
+    case 2: {  /* called with only 2 arguments */
+      pos = e;  /* insert new element at the end */
+      break;
+    }
+    case 3: {
+      int i;
+      pos = luaL_checkint(L, 2);  /* 2nd argument is the position */
+      if (pos > e) e = pos;  /* `grow' array if necessary */
+      for (i = e; i > pos; i--) {  /* move up elements */
+        lua_rawgeti(L, 1, i-1);
+        lua_rawseti(L, 1, i);  /* t[i] = t[i-1] */
+      }
+      break;
+    }
+    default: {
+      return luaL_error(L, "wrong number of arguments to " LUA_QL("insert"));
     }
   }
   luaL_setn(L, 1, e);  /* new size */
@@ -96,7 +118,8 @@ static int tinsert (lua_State *L) {
 static int tremove (lua_State *L) {
   int e = aux_getn(L, 1);
   int pos = luaL_optint(L, 2, e);
-  if (e == 0) return 0;  /* table is `empty' */
+  if (!(1 <= pos && pos <= e))  /* position is outside bounds? */
+   return 0;  /* nothing to remove */
   luaL_setn(L, 1, e - 1);  /* t.n = n-1 */
   lua_rawgeti(L, 1, pos);  /* result = t[pos] */
   for ( ;pos<e; pos++) {
@@ -109,23 +132,30 @@ static int tremove (lua_State *L) {
 }
 
 
+static void addfield (lua_State *L, luaL_Buffer *b, int i) {
+  lua_rawgeti(L, 1, i);
+  if (!lua_isstring(L, -1))
+    luaL_error(L, "invalid value (%s) at index %d in table for "
+                  LUA_QL("concat"), luaL_typename(L, -1), i);
+    luaL_addvalue(b);
+}
+
+
 static int tconcat (lua_State *L) {
   luaL_Buffer b;
   size_t lsep;
+  int i, last;
   const char *sep = luaL_optlstring(L, 2, "", &lsep);
-  int i = luaL_optint(L, 3, 1);
-  int last = luaL_optint(L, 4, -2);
   luaL_checktype(L, 1, LUA_TTABLE);
-  if (last == -2)
-    last = luaL_getn(L, 1);
+  i = luaL_optint(L, 3, 1);
+  last = luaL_opt(L, luaL_checkint, 4, luaL_getn(L, 1));
   luaL_buffinit(L, &b);
-  for (; i <= last; i++) {
-    lua_rawgeti(L, 1, i);
-    luaL_argcheck(L, lua_isstring(L, -1), 1, "table contains non-strings");
-    luaL_addvalue(&b);
-    if (i != last)
-      luaL_addlstring(&b, sep, lsep);
+  for (; i < last; i++) {
+    addfield(L, &b, i);
+    luaL_addlstring(&b, sep, lsep);
   }
+  if (i == last)  /* add last value (if interval was not empty) */
+    addfield(L, &b, i);
   luaL_pushresult(&b);
   return 1;
 }
@@ -241,6 +271,7 @@ static const luaL_Reg tab_funcs[] = {
   {"foreach", foreach},
   {"foreachi", foreachi},
   {"getn", getn},
+  {"maxn", maxn},
   {"insert", tinsert},
   {"remove", tremove},
   {"setn", setn},

@@ -96,13 +96,14 @@ CResManager::CResManager(HWND hwndParent)
 	m_hbrAppWorkspace = GetSysColorBrush(COLOR_APPWORKSPACE);
 
 	if (hwndParent != NULL)
-	{
+	{ 
+		//SendMessage was commented out to prevent hanging secondary threads calls
 		__try {
-			m_hBigAppIcon = (HICON)SendMessage(hwndParent, WM_GETICON, ICON_BIG, 0l);
-			if (m_hBigAppIcon == NULL)
+			//m_hBigAppIcon = (HICON)SendMessage(hwndParent, WM_GETICON, ICON_BIG, 0l);
+			//if (m_hBigAppIcon == NULL)
 				m_hBigAppIcon = (HICON)GetClassLong(hwndParent, GCL_HICON);
-			m_hSmallAppIcon = (HICON)SendMessage(hwndParent, WM_GETICON, ICON_SMALL, 0l);
-			if (m_hSmallAppIcon == NULL)
+			//m_hSmallAppIcon = (HICON)SendMessage(hwndParent, WM_GETICON, ICON_SMALL, 0l);
+			//if (m_hSmallAppIcon == NULL)
 				m_hSmallAppIcon = (HICON)GetClassLong(hwndParent, GCL_HICONSM);
 		} __except (EXCEPTION_EXECUTE_HANDLER) {
 			// ignore any exception in broken app...

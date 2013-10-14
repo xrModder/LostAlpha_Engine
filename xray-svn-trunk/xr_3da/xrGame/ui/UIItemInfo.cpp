@@ -18,7 +18,6 @@
 #define  INV_GRID_HEIGHT2 40.0f
 CUIItemInfo::CUIItemInfo()
 {
-	UIItemImageSize.set			(0.0f,0.0f);
 	UICondProgresBar			= NULL;
 	UICondition					= NULL;
 	UICost						= NULL;
@@ -118,7 +117,9 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 
 		UIItemImage->TextureOff			();
 //		UIItemImage->ClipperOn			();
-		UIItemImageSize.set				(UIItemImage->GetWidth(),UIItemImage->GetHeight());
+		UIItemImage->SetAlignment		(waNone);
+
+		UIItemImageRect				= UIItemImage->GetWndRect();
 	}
 
 	xml_init.InitAutoStaticGroup	(uiXml, "auto", 0, this);
@@ -201,16 +202,41 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIItemImage->TextureOn				();
 //		UIItemImage->ClipperOn				();
 		UIItemImage->SetStretchTexture		(true);
-		Frect v_r							= {	0.0f, 
-												0.0f, 
+
+
+		Frect v_r							= {	0.f, 
+												0.f, 
 												float(iGridWidth*INV_GRID_WIDTH),	
 												float(iGridHeight*INV_GRID_HEIGHT)};
 	
 		v_r.x2								*= UI().get_current_kx();
 
+		float width = v_r.width();
+		float height = v_r.height();
+		if (width > UIItemImageRect.width())
+		{
+			float coeff = UIItemImageRect.width()/width;
+			width *= coeff;
+			height *= coeff;
+		}
+
+		if (height > UIItemImageRect.height())
+		{
+			float coeff = UIItemImageRect.height()/height;
+			width *= coeff;
+			height *= coeff;
+		}
+
 		UIItemImage->GetUIStaticItem().SetTextureRect	(v_r);
-		UIItemImage->SetWidth					(_min(v_r.width(),	UIItemImageSize.x));
-		UIItemImage->SetHeight					(_min(v_r.height(),	UIItemImageSize.y));
+		float x = UIItemImageRect.x1;
+		float y = UIItemImageRect.y1;
+
+		x += UIItemImageRect.x2/2-width/2;
+		y += UIItemImageRect.y2/2-height/2;
+
+		UIItemImage->SetWndPos					(x, y);
+		UIItemImage->SetWidth					(width);
+		UIItemImage->SetHeight					(height);
 	}
 }
 

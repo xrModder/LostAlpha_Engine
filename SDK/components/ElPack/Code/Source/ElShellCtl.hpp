@@ -253,6 +253,7 @@ protected:
 	void __fastcall SetExpandRoot(bool Value);
 	virtual void __fastcall TriggerVirtualHintNeeded(Eltree::TElTreeItem* Item, WideString &Hint);
 	virtual int __fastcall DoGetPicture(Eltree::TElTreeItem* Item);
+	__property Items  = {stored=false};
 	
 public:
 	void __fastcall SetRootPIDL(Shlobj::PItemIDList PIDL);
@@ -272,11 +273,11 @@ __published:
 	__property Elshellutils::TShellFolders RootFolder = {read=GetRootFolder, write=SetRootFolder, nodefault};
 	__property AnsiString CustomRootFolder = {read=FCustomRootFolder, write=SetCustomRootFolder};
 	__property bool UseSystemMenus = {read=FUseSystemMenus, write=FUseSystemMenus, nodefault};
-	__property bool ClearOnCollapse = {read=FClearOnCollapse, write=FClearOnCollapse, nodefault};
+	__property bool ClearOnCollapse = {read=FClearOnCollapse, write=FClearOnCollapse, default=1};
 	__property bool CheckForChildren = {read=FCheckForChildren, write=FCheckForChildren, nodefault};
 	__property bool ShowHidden = {read=FShowHidden, write=SetShowHidden, default=1};
 	__property bool ShowFiles = {read=FShowFiles, write=SetShowFiles, default=0};
-	__property bool HighlightCompressed = {read=FHighlightCompressed, write=SetHighlightCompressed, nodefault};
+	__property bool HighlightCompressed = {read=FHighlightCompressed, write=SetHighlightCompressed, default=1};
 	__property Classes::TStrings* FileFilters = {read=GetFileFilters, write=SetFileFilters};
 	__property TShellTreeItemAddingEvent OnItemAdding = {read=FOnFilterItem, write=FOnFilterItem};
 	__property TShellTreeItemAddedEvent OnItemAdded = {read=FOnItemAdded, write=FOnItemAdded};
@@ -335,7 +336,7 @@ __published:
 	__property FullRowSelect  = {default=1};
 	__property GradientStartColor  = {default=0};
 	__property GradientEndColor  = {default=0};
-	__property GradientSteps  = {default=16};
+	__property GradientSteps  = {default=64};
 	__property HeaderActiveFilterColor  = {default=0};
 	__property HeaderColor  = {default=-2147483633};
 	__property HeaderHeight ;
@@ -381,7 +382,7 @@ __published:
 	__property MinusPicture ;
 	__property MoveColumnOnDrag  = {default=0};
 	__property MoveFocusOnCollapse  = {default=0};
-	__property MouseFrameSelect ;
+	__property MouseFrameSelect  = {default=1};
 	__property MultiSelect  = {default=1};
 	__property MultiSelectLevel  = {default=-1};
 	__property OwnerDrawByColumn  = {default=1};
@@ -730,6 +731,8 @@ protected:
 	virtual void __fastcall DoCompareItems(Eltree::TElTreeItem* Item1, Eltree::TElTreeItem* Item2, int &res);
 	virtual void __fastcall TriggerVirtualHintNeeded(Eltree::TElTreeItem* Item, WideString &Hint);
 	virtual int __fastcall DoGetPicture(Eltree::TElTreeItem* Item);
+	virtual void __fastcall DoItemAdded(AnsiString S, _di_IShellFolder ShellFolder, Shlobj::PItemIDList RelPIDL, TElShellListItem* Item);
+	__property Items  = {stored=false};
 	
 public:
 	void __fastcall RefreshList(void);
@@ -738,6 +741,7 @@ public:
 	void __fastcall SetRootPIDL(Shlobj::PItemIDList PIDL);
 	void __fastcall SetSelectionPIDL(Shlobj::PItemIDList PIDL);
 	Shlobj::PItemIDList __fastcall BuildRootPIDL(void);
+	virtual void __fastcall Loaded(void);
 	__property AnsiString FocusedDisplayName = {read=GetFocusedDisplayName};
 	__property Shlobj::PItemIDList FocusedPIDL = {read=GetFocusedPIDL};
 	__property TElShellListItem* ItemFocused = {read=GetItemFocused, write=SetItemFocused};
@@ -745,8 +749,8 @@ public:
 __published:
 	__property AnsiString CustomFolder = {read=FCustomFolder, write=SetCustomFolder};
 	__property bool DefaultColumns = {read=FDefaultColumns, write=SetDefaultColumns, nodefault};
-	__property bool HighlightCompressed = {read=FHighlightCompressed, write=SetHighlightCompressed, nodefault};
-	__property Elshellutils::TShellFolders Folder = {read=FFolder, write=SetFolder, nodefault};
+	__property bool HighlightCompressed = {read=FHighlightCompressed, write=SetHighlightCompressed, default=1};
+	__property Elshellutils::TShellFolders Folder = {read=FFolder, write=SetFolder, default=1};
 	__property bool ShowHidden = {read=FShowHidden, write=SetShowHidden, default=1};
 	__property TElShellSizeFormat SizeFormat = {read=FSizeFormat, write=SetSizeFormat, nodefault};
 	__property TElShellSortModifiers SortModifiers = {read=FSortModifiers, write=SetSortModifiers, nodefault};
@@ -805,7 +809,7 @@ __published:
 	__property FullRowSelect  = {default=1};
 	__property GradientStartColor  = {default=0};
 	__property GradientEndColor  = {default=0};
-	__property GradientSteps  = {default=16};
+	__property GradientSteps  = {default=64};
 	__property HeaderActiveFilterColor  = {default=0};
 	__property HeaderColor  = {default=-2147483633};
 	__property HeaderHeight ;
@@ -851,7 +855,7 @@ __published:
 	__property MinusPicture ;
 	__property MoveColumnOnDrag  = {default=0};
 	__property MoveFocusOnCollapse  = {default=0};
-	__property MouseFrameSelect ;
+	__property MouseFrameSelect  = {default=1};
 	__property MultiSelect  = {default=1};
 	__property MultiSelectLevel  = {default=-1};
 	__property OwnerDrawByColumn  = {default=1};
@@ -869,7 +873,7 @@ __published:
 	__property ScrollbarOpposite ;
 	__property ScrollTracking  = {default=0};
 	__property SelectColumn  = {default=-1};
-	__property ShowButtons  = {default=0};
+	__property ShowButtons  = {default=1};
 	__property ShowColumns  = {default=0};
 	__property ShowCheckboxes  = {default=0};
 	__property ShowEmptyImages  = {default=1};

@@ -48,7 +48,7 @@ public:
 	CUICharacterInfo	UICharacterInfoLeft;
 	CUICharacterInfo	UICharacterInfoRight;
 
-	void				AddQuestion			(LPCSTR str, LPCSTR value);
+	void				AddQuestion			(LPCSTR str, LPCSTR value, int number);
 	void				AddAnswer			(LPCSTR SpeakerName, const char* str, bool bActor);
 	void				AddIconedAnswer		(LPCSTR text, LPCSTR texture_name, Frect texture_rect, LPCSTR templ_name);
 	void				ClearAll			();
@@ -57,6 +57,7 @@ public:
 	void				SetOsoznanieMode	(bool b);
 	void				SetTradeMode		();
 	void				UpdateButtonsLayout	(bool b_disable_break, bool trade_enabled);
+	void				ShowTradeButton	(bool b);
 
 private:
 	CUIScrollView*			UIQuestionsList;

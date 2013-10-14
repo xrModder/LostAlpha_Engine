@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 #include "gamefont.h"
-#include "dxerr8.h"
+#include "dxerr.h"
 #include "ImageManager.h"
 #include "ui_main.h"
 #include "render.h"
@@ -344,6 +344,10 @@ void CRenderDevice::UpdateView()
 
     RCache.set_xform_view(mView);
     mFullTransform.mul(mProjection,mView);
+	
+	vCameraPosition_saved	= vCameraPosition;
+	mFullTransform_saved	= mFullTransform;
+	mView_saved				= mView;
 
 // frustum culling sets
     ::Render->ViewBase.CreateFromMatrix(mFullTransform,FRUSTUM_P_ALL);

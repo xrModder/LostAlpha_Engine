@@ -4,115 +4,106 @@
 #include "limb.h"
 #include "../mathutilsode.h"
 #include "../../Include/xrRender/KinematicsAnimated.h"
+#include "../ikfoot.h"
 #include "../ik_anim_state.h"
+#include "../ik_calculate_data.h"
+#include "../ik_limb_state.h"
+#include "../ik_collide_data.h"
+#include "../ik_limb_state_predict.h"
+
 class	IKinematics	;
 class	CDB::TRI	;
-struct SCalculateData;
-struct SIKCollideData;
-class  CGameObject;
-class motion_marks;
-struct SIKCollideData
-{
-	//CDB::TRI		*m_tri		;
-	Fplane			m_plane		;
-	Fvector			m_collide	;
-	Fvector			m_anime		;
-	Fvector			m_pick_dir	;
-	bool			collided	;
-	bool			clamp_down	;
-	SIKCollideData	(): collided( false ), clamp_down( false ){}
-};
-
-struct calculate_state
-{
-	u32		frame;
-
-	Fmatrix goal;
-	Fmatrix anim_pos;
-	Fmatrix	obj_pos;
-	Fmatrix	collide_pos;
-	Fvector pick;
-	float	speed_blend_l;
-	float	speed_blend_a;
-	bool	foot_step;
-	bool	blending;
-#ifdef DEBUG
-	int		count;
-#endif
-	calculate_state() : frame(0), foot_step(false), blending(false),
-						anim_pos(Fidentity), speed_blend_l(0), speed_blend_a(0),
-						pick(Fvector().set(0,0,0))
-#ifdef DEBUG
-						, count(-1)
-#endif
-	{}
-};
-
+struct	SCalculateData;
+struct	SIKCollideData;
+class	CGameObject;
+class	motion_marks;
+class	ik_goal_matrix;
+namespace extrapolation { class points; };
 class CIKLimb {
-public:
-							CIKLimb				();
-				void		Create				( u16 id, IKinematics* K, const u16 bones[3], const Fvector& toe_pos, bool collide_ );	
-				void		Destroy				( );
-				void		Calculate			( SCalculateData& cd );
-				void		Update				( CGameObject *O, const	CBlend *b, u16 interval );
-IC				u16			get_id				()	{ return m_id; }
 private:
-				void		Invalidate			();
-				void		GetFootStepMatrix	( Fmatrix	&m, const Fmatrix &gl_anim, const  SIKCollideData &cld, bool collide );
-IC				float		CollideFoot			( float angle, const Fmatrix &gl_anim, Fplane &p, Fvector &ax );
-IC				void		make_shift			(Fmatrix &xm, const Fplane &p,const Fvector &pick_dir );
-				void		ApplyContext		( SCalculateData& cd );
+//			friend		class	ik_limb_state;
+public:
+							CIKLimb				( );
+							CIKLimb				(const CIKLimb& l);
+
+				CIKLimb&	operator =			( const CIKLimb& l );
+public:
+				void		Create				( u16 id, IKinematicsAnimated	*K, bool collide_ );	
+				void		Destroy				( );
+public:
+				void		SolveBones			( SCalculateData& cd );
+				void		ApplyState			( SCalculateData& cd );
+				void		SetGoal				( SCalculateData& cd );
+				void		Update				( CGameObject *O, const CBlend *b, const extrapolation::points& object_pose_extrapolation );
+public:
+IC				u16			get_id				( )									const { return m_id; }
+				float		ObjShiftDown		( float current_shift, const SCalculateData& cd )		const ;
+IC				Fmatrix		&ref_bone_to_foot	( Fmatrix &ref_bone )				const ;
+IC		IKinematics			*Kinematics			( )									const { return m_foot.Kinematics(); }
+IC IKinematicsAnimated		*KinematicsAnimated	( )									const { return m_K; }
+IC				u16			ref_bone			( )									const { return m_foot.ref_bone();	}
+				Fmatrix		&transform			( Fmatrix &m, u16 bone0, u16 bone1 )const ;
+				float		time_to_footstep	( ) const	{ return state_predict.time_to_footstep; }
+				float		footstep_shift		( ) const	{ return state_predict.footstep_shift; }
+				void		step_predict		( CGameObject *O, const CBlend *b, ik_limb_state_predict &state, const extrapolation::points& object_pose_extrapolation ) ;//const;
+				bool		foot_step			() const { return sv_state.foot_step(); }
+				u16			foot_matrix_predict ( Fmatrix& foot, Fmatrix& toe, float time, IKinematicsAnimated *K ) const ;
+#if 0 //def		DEBUG
+				u16			dbg_ref_bone_id		() const { return m_bones[m_foot.ref_bone()]; }
+		const	CIKFoot		&dbg_ik_foot		() const { return m_foot; }
+#endif
+private:
+				float		get_time_to_step_begin( const CBlend& B )const ;
+				void		Invalidate			( );
+private:
 				void		Solve				( SCalculateData& cd );
-				void		Collide				( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot, bool foot_step );
-IC				void		AnimGoal			( Fmatrix &gl, IKinematicsAnimated	&K );
+IC				void		AnimGoal			( Fmatrix &gl );
 				void		SetAnimGoal			( SCalculateData& cd );
 				void		SetNewGoal			( const SIKCollideData &cld, SCalculateData& cd );
-				void		CalculateBones		(SCalculateData& cd);
-				Matrix&		Goal				( Matrix &gl, const Fmatrix &xm, SCalculateData& cd );
+				void		SetNewStepGoal		( const SIKCollideData &cld, SCalculateData& cd );
+				void		Blending			( SCalculateData& cd );
+				bool		blend_collide		( ik_goal_matrix &m, const SCalculateData& cd,  const ik_goal_matrix &m0, const ik_goal_matrix &m1 )const;
+				bool		SetGoalToLimb		( const SCalculateData& cd );
+				void		CalculateBones		( SCalculateData& cd );
+				Matrix&		Goal				( Matrix &gl, const Fmatrix &xm, const SCalculateData& cd );
 				Fmatrix&	GetHipInvert		( Fmatrix &ihip, const SCalculateData& cd );
+	
 				float		SwivelAngle			( const Fmatrix &ihip, const SCalculateData& cd );
 				void		GetKnee				( Fvector &knee, const SCalculateData& cd ) const;
-				void		GetPickDir			(Fvector &v, const Fmatrix &gl_bone ) ;
+				void		GetPickDir			( Fvector &v,  SCalculateData& cd ) const;
+				void		ToeTimeDiff			( Fvector &v, const SCalculateData& cd ) const;
+				void		ToeTimeDiffPredict	( Fvector &v ) const;
 IC		static	void		get_start			( Fmatrix &start, SCalculateData &D, u16 bone );
+#if 0 //def	DEBUG
+				void		DBGDrawSetNewGoal	( SCalculateData& cd, const SIKCollideData &cld );
+#endif	
 private:
 		static	void 	__stdcall	BonesCallback0		( CBoneInstance* B );
 		static	void 	__stdcall	BonesCallback1		( CBoneInstance* B );
 		static	void 	__stdcall	BonesCallback2		( CBoneInstance* B );
+		static	void 	__stdcall	get_matrix		( CBoneInstance* B );
 
 private:
-	Limb		m_limb;
-	Fvector		m_toe_position;
-	u16			m_bones[4];	
-	u16			m_id;
-	bool		m_collide;
-	SIKCollideData	collide_data;
-	ik_anim_state	anim_state;
-	calculate_state	sv_state;
-#ifdef DEBUG
-	calculate_state	sv_state_DBR;
+	
+	Limb					m_limb;
+	IKinematicsAnimated		*m_K;
+	CIKFoot					m_foot;
+	ik_foot_collider		collider;	
+	u16						m_bones[4];	
+	u16						m_id;
+
+	bool					m_collide;
+	SIKCollideData			collide_data;
+
+	ik_anim_state			anim_state;
+	ik_limb_state			sv_state;
+	ik_limb_state_predict	state_predict;
+#if 0 //def	DEBUG
+	bool				dbg_disabled;
 #endif
-};
+#ifdef	IK_DBG_STATE_SEQUENCE
+	friend	struct		dbg_matrises;
+	dbg_matrises		m_dbg_matrises;
+#endif
 
-#include <boost/noncopyable.hpp>
-class	ik_anim_state;
-struct SCalculateData : private boost::noncopyable {
-
-	float	const		*m_angles			;
-	IKinematicsAnimated	*m_K				;
-	CIKLimb				&m_limb				;
-	Fmatrix	const		&m_obj				;
-
-	bool				do_collide  		;
-
-	Fmatrix				goal				;
-	bool				apply				;
-	bool				foot_step			;
-
-
-//	const BlendSVec		&anim_base			;
-//	const motion_vec	&uneffected_motions	;
-
-	SCalculateData(CIKLimb& l,IKinematicsAnimated	*K,const Fmatrix &o):
-	m_limb(l), m_obj(o), m_K(K), m_angles(0), apply(false), 
-	do_collide(false), foot_step(false) {}
 };

@@ -43,7 +43,7 @@ struct b_BuildTexture : public b_texture
 
 //////////////////////////////////////////////////////////////////////////
 // tesselator callbacks
-typedef	int		tesscb_estimator	(Face*		F);	// -1 = none, 0,1,2 = edge-number
+typedef	int		tesscb_estimator	( const Face* F );	// -1 = none, 0,1,2 = edge-number
 typedef void	tesscb_face			(Face*		F);	// new face
 typedef void	tesscb_vertex		(Vertex*	V);	// new vertex
 

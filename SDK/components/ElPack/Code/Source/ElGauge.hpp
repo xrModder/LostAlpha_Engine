@@ -79,13 +79,13 @@ public:
 	__fastcall virtual ~TElGauge(void);
 	
 __published:
-	__property int Value = {read=FValue, write=SetValue, nodefault};
-	__property int MinValue = {read=FMinValue, write=SetMinValue, nodefault};
-	__property int MaxValue = {read=FMaxValue, write=SetMaxValue, nodefault};
-	__property bool ShowPoints = {read=FShowPoints, write=SetShowPoints, nodefault};
+	__property int Value = {read=FValue, write=SetValue, default=0};
+	__property int MinValue = {read=FMinValue, write=SetMinValue, default=0};
+	__property int MaxValue = {read=FMaxValue, write=SetMaxValue, default=100};
+	__property bool ShowPoints = {read=FShowPoints, write=SetShowPoints, default=1};
 	__property int Points = {read=FPoints, write=SetPoints, default=11};
-	__property Graphics::TColor BackColor = {read=FBackColor, write=SetBackColor, nodefault};
-	__property Graphics::TColor ForeColor = {read=FForeColor, write=SetForeColor, nodefault};
+	__property Graphics::TColor BackColor = {read=FBackColor, write=SetBackColor, default=-2147483628};
+	__property Graphics::TColor ForeColor = {read=FForeColor, write=SetForeColor, default=-2147483630};
 	__property int CriticalValue = {read=FCriticalValue, write=SetCriticalValue, nodefault};
 	__property Graphics::TColor CriticalColor = {read=FCriticalColor, write=SetCriticalColor, nodefault};
 	__property bool Transparent = {read=FTransparent, write=SetTransparent, default=0};

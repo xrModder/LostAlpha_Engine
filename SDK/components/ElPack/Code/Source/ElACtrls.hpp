@@ -497,6 +497,7 @@ private:
 	Elvclutils::TElFlatBorderType FInactiveBorderType;
 	bool FFlat;
 	Graphics::TCanvas* BtnCanvas;
+	int FDropDownWidth;
 	Elimgfrm::TElImageForm* FImgForm;
 	Elimgfrm::TImgFormChangeLink* FImgFormChLink;
 	bool FAutoCompletion;
@@ -531,6 +532,7 @@ private:
 	void __fastcall SetHorizontalExtent(void);
 	void __fastcall ResetHorizontalExtent(void);
 	HIDESBASE MESSAGE void __fastcall WMWindowPosChanged(Messages::TWMWindowPosMsg &Message);
+	HIDESBASE MESSAGE void __fastcall WMGetDlgCode(Messages::TMessage &Msg);
 	
 protected:
 	HWND FListHandle;
@@ -544,6 +546,7 @@ protected:
 	bool FBtnThinFrame;
 	Graphics::TColor FLineBorderActiveColor;
 	Graphics::TColor FLineBorderInactiveColor;
+	bool FHandleDialogKeys;
 	void __fastcall DrawFlatBorder(bool DrawButton);
 	void __fastcall UpdateFrame(void);
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);
@@ -569,7 +572,8 @@ protected:
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall CMEnabledChanged(Messages::TMessage &Message);
-	__property bool AutoCompletion = {read=FAutoCompletion, write=FAutoCompletion, nodefault};
+	DYNAMIC void __fastcall KeyDown(Word &Key, Classes::TShiftState Shift);
+	void __fastcall DoAutoComplete(void);
 	
 public:
 	__fastcall virtual TElAdvancedComboBox(Classes::TComponent* AOwner);
@@ -595,6 +599,9 @@ __published:
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
 	__property WideString Hint = {read=FHint, write=SetHint};
+	__property int DropDownWidth = {read=FDropDownWidth, write=FDropDownWidth, default=0};
+	__property bool AutoCompletion = {read=FAutoCompletion, write=FAutoCompletion, nodefault};
+	__property bool HandleDialogKeys = {read=FHandleDialogKeys, write=FHandleDialogKeys, nodefault};
 public:
 	#pragma option push -w-inl
 	/* TWinControl.CreateParented */ inline __fastcall TElAdvancedComboBox(HWND ParentWindow) : Stdctrls::TComboBox(ParentWindow) { }

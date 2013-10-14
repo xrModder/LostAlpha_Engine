@@ -18,6 +18,8 @@ namespace GameObject {
 		eInventoryPda,
 		eInventoryInfo,
 		eArticleInfo,
+		eHudAnimStarted,
+		eHudAnimCompleted,
 		eTaskStateChange,
 		eMapLocationAdded,
 
@@ -49,6 +51,7 @@ namespace GameObject {
 		eOnMoveToSlot,
 		eOnMoveToBelt,
 		eOnMoveToRuck,
+	//	eOnSoundPlayed,
 		//
 
 		eScriptAnimation,

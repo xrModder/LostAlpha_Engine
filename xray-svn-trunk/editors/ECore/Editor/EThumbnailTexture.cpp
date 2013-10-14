@@ -91,7 +91,7 @@ bool ETextureThumbnail::Load(LPCSTR src_name, LPCSTR path)
         FS.update_path(fn,path,fn);
     else
     {
-        FS.update_path                  (fn,_game_textures_,fn);
+        FS.update_path                  (fn,_textures_,fn);
     }
 
     if (!FS.exist(fn)) return false;

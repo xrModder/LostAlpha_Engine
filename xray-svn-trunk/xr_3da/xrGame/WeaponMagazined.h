@@ -24,6 +24,8 @@ protected:
 	HUD_SOUND		sndShot;
 	HUD_SOUND		sndEmptyClick;
 	HUD_SOUND		sndReload;
+	HUD_SOUND		sndReloadJammed;
+	HUD_SOUND		sndReloadNotEmpty;
 	//звук текущего выстрела
 	HUD_SOUND*		m_pSndShotCurrent;
 
@@ -39,10 +41,14 @@ protected:
 	ESoundTypes		m_eSoundShot;
 	ESoundTypes		m_eSoundEmptyClick;
 	ESoundTypes		m_eSoundReload;
+	ESoundTypes		m_eSoundReloadJammed;
+	ESoundTypes		m_eSoundReloadNotEmpty;
 	struct SWMmotions{
 		MotionSVec		mhud_idle;
 		MotionSVec		mhud_idle_aim;
 		MotionSVec		mhud_reload;	//
+		MotionSVec		mhud_reload_jammed;
+		MotionSVec		mhud_reload_not_empty;
 		MotionSVec		mhud_hide;		//
 		MotionSVec		mhud_show;		//
 		MotionSVec		mhud_shots;		//
@@ -77,6 +83,8 @@ protected:
 
 	bool			TryReload		();
 	bool			TryPlayAnimIdle	();
+public:
+	virtual void	ReinitZoomTexture	();
 
 protected:
 	virtual void	ReloadMagazine	();

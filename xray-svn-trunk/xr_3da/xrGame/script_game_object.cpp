@@ -353,6 +353,36 @@ u32 CScriptGameObject::GetAmmoCurrent() const
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+#include "eatable_item.h"
+
+void CScriptGameObject::SetPortionsNum(u32 num)
+{
+	CEatableItem	*item = smart_cast<CEatableItem*>(&object());
+	if (!item)
+	{
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CEatableItem : cannot access class member SetPortionsNum!");
+		return;
+	}
+
+	item->SetPortionsNum(num);
+}
+
+u32 CScriptGameObject::GetPortionsNum() const
+{
+	const CEatableItem	*item = smart_cast<const CEatableItem*>(&object());
+	if (!item)
+	{
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CEatableItem : cannot access class member GetPortionsNum!");
+		return 0;
+	}
+
+	return			(item->GetPortionsNum());
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 void CScriptGameObject::SetQueueSize(u32 queue_size)
 {
@@ -643,4 +673,14 @@ void CScriptGameObject::TeleportAliveEntity (Fvector pos, Fvector dir)
 
 	pAlive->character_physics_support()->set_movement_position(xform.c);
 	pAlive->character_physics_support()->movement()->SetVelocity(0,0,0);
+}
+
+float CScriptGameObject::SetActorWalkAccel (float new_value)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (!actor) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CActor : cannot access class member SetWalkAccel!");
+		return -1.f;
+	}
+	return actor->SetWalkAccel(new_value);
 }

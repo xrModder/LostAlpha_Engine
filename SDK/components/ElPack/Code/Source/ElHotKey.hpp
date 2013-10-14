@@ -94,6 +94,7 @@ __published:
 	__property InactiveBorderType  = {default=3};
 	__property LineBorderActiveColor ;
 	__property LineBorderInactiveColor ;
+	__property ChangeDisabledText  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;

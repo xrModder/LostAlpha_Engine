@@ -38,6 +38,8 @@ public:
 	virtual bool	use_crosshair		()	const {return false;}
 	virtual void	GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 	virtual void	net_Relcase			(CObject *object);
+
+	virtual LPCSTR	GetCurrentFireModeStr	() {return " ";};
 protected:
 	CBinocularsVision*					m_binoc_vision;
 

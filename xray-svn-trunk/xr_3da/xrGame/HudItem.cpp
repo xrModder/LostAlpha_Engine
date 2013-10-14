@@ -305,7 +305,7 @@ void CHudItem::animGet	(MotionSVec& lst, LPCSTR prefix)
 	if (lst.empty())
 	{
 		CInventoryItem	*I = smart_cast<CInventoryItem*>(this);
-		Debug.fatal(DEBUG_INFO,"%s animation not found in the weapon, which has the section %s", prefix, *I->object().cName());
+		Debug.fatal(DEBUG_INFO,"[%s] animation not found in weapon, which has section [%s]", prefix, *I->object().cName());
 	}
 
 }

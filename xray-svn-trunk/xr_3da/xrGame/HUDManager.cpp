@@ -11,6 +11,7 @@
 #include "MainMenu.h"
 #include "game_cl_base.h"
 
+u32	ui_hud_type;
 extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
 
 CFontManager::CFontManager()
@@ -169,8 +170,18 @@ void CHUDManager::Render_First()
 	CActor*		A					= smart_cast<CActor*> (O);
 	if (!A)							return;
 
-	if ((!A->HUDview() && A->IsActorShadowsOn()) || (!A->IsActorShadowsOn()))
-			return;
+	if (A->HUDview() && !A->IsActorShadowsOn() && !A->DrawLegs())
+		return;
+
+	if (A->UsingTurret())
+		return;
+
+	if ((!A->HUDview() && A->IsActorShadowsOn()) || !A->IsActorShadowsOn())
+	{
+		::Render->set_Object			(O->H_Root());
+		O->renderable_Render			();
+		return;
+	}
 
 	// only shadow 
 	::Render->set_Invisible			(TRUE);
@@ -291,6 +302,8 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUIGame->Load						();
 
 	pUIGame->OnConnected				();
+	if(b_online)
+		pUIGame->OnConnected();
 }
 
 void CHUDManager::OnDisconnected()

@@ -1,5 +1,5 @@
 /*
-** $Id: linit.c,v 1.13 2005/08/26 17:36:32 roberto Exp $
+** $Id: linit.c,v 1.14.1.1 2007/12/27 13:02:25 roberto Exp $
 ** Initialization of libraries for lua.c
 ** See Copyright Notice in lua.h
 */
@@ -12,24 +12,18 @@
 
 #include "lualib.h"
 #include "lauxlib.h"
-#ifndef COCO_DISABLE
-#include "lcoco.h"
-#endif
 
 
 static const luaL_Reg lualibs[] = {
   {"", luaopen_base},
+  {LUA_LOADLIBNAME, luaopen_package},
   {LUA_TABLIBNAME, luaopen_table},
   {LUA_IOLIBNAME, luaopen_io},
   {LUA_OSLIBNAME, luaopen_os},
   {LUA_STRLIBNAME, luaopen_string},
   {LUA_MATHLIBNAME, luaopen_math},
   {LUA_DBLIBNAME, luaopen_debug},
-  {LUA_LOADLIBNAME, luaopen_package},
   {LUA_JITLIBNAME, luaopen_jit},
-#ifndef COCO_DISABLE
-  {LUA_COLIBNAME, luaopen_coco},
-#endif
   {NULL, NULL}
 };
 

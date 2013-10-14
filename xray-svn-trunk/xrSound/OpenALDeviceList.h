@@ -1,8 +1,8 @@
 #ifndef ALDEVICELIST_H
 #define ALDEVICELIST_H
 
-#include "al.h"
-#include "alc.h"
+#include <al.h>
+#include <alc.h>
 
 #define AL_GENERIC_HARDWARE "Generic Hardware"
 #define AL_GENERIC_SOFTWARE "Generic Software"

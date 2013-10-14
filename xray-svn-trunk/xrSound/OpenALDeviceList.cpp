@@ -61,6 +61,7 @@ ALDeviceList::~ALDeviceList()
 	snd_devices_token			= NULL;
 }
 
+
 void ALDeviceList::Enumerate()
 {
 	char				*devices;
@@ -106,9 +107,10 @@ void ALDeviceList::Enumerate()
 			Msg("SOUND: OpenAL: default SndDevice name set to %s", m_defaultDeviceName);
 		}
 #endif
+
 		index				= 0;
 		// go through device list (each device terminated with a single NULL, list terminated with double NULL)
-		while (*devices != NULL) 
+		while(*devices != NULL) 
 		{
 			ALCdevice *device		= alcOpenDevice(devices);
 			if (device) 
@@ -138,8 +140,12 @@ void ALDeviceList::Enumerate()
 						m_devices.back().props.efx			= (alIsExtensionPresent("ALC_EXT_EFX") == TRUE);
 						m_devices.back().props.xram			= (alIsExtensionPresent("EAX_RAM") == TRUE);
 
+                                        #ifndef _EDITOR
+						m_devices.back().props.eax_unwanted	= force_sw_audio;
+                                        #else
 						m_devices.back().props.eax_unwanted	= ((0==xr_strcmp(actualDeviceName,AL_GENERIC_HARDWARE))||
-															(0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
+														   (0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
+                                        #endif
 						++index;
 					}
 					alcDestroyContext(context);

@@ -29,7 +29,6 @@ const LPCSTR goodwillField			= "goodwill_names";
 ui_shader	g_BuyMenuShader;
 ui_shader	g_EquipmentIconsShader;
 ui_shader	g_MPCharIconsShader;
-ui_shader	g_tmpWMShader;
 static CUIStatic*	GetUIStatic				();
 
 typedef				std::pair<CHARACTER_RANK_VALUE, shared_str>	CharInfoStringID;
@@ -41,7 +40,6 @@ CharInfoStrings		*charInfoGoodwillStrings	= NULL;
 
 void InventoryUtilities::CreateShaders()
 {
-	g_tmpWMShader->create("effects\\wallmark",  "wm\\wm_grenade");
 }
 
 void InventoryUtilities::DestroyShaders()
@@ -49,7 +47,6 @@ void InventoryUtilities::DestroyShaders()
 	g_BuyMenuShader->destroy		();
 	g_EquipmentIconsShader->destroy	();
 	g_MPCharIconsShader->destroy	();
-	g_tmpWMShader->destroy			();
 }
 
 bool InventoryUtilities::GreaterRoomInRuck(PIItem item1, PIItem item2)

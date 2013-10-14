@@ -49,13 +49,21 @@ private:
 	AnsiString FName;
 	int FData;
 	TElMRUSection* FOwner;
+	bool FDefault;
+	bool FChecked;
+	bool FPersistent;
 	void __fastcall SetName(AnsiString value);
 	void __fastcall SetData(int Value);
+	void __fastcall SetDefault(bool Value);
+	void __fastcall SetChecked(bool Value);
 	
 public:
 	__property AnsiString Name = {read=FName, write=SetName};
 	__property int Data = {read=FData, write=SetData, nodefault};
 	__property TElMRUSection* Section = {read=FOwner};
+	__property bool Default = {read=FDefault, write=SetDefault, nodefault};
+	__property bool Checked = {read=FChecked, write=SetChecked, nodefault};
+	__property bool Persistent = {read=FPersistent, write=FPersistent, nodefault};
 public:
 	#pragma option push -w-inl
 	/* TObject.Create */ inline __fastcall TElMRUEntry(void) : System::TObject() { }
@@ -146,7 +154,7 @@ public:
 	
 __published:
 	__property char AccelDelimiter = {read=FAccelDelimiter, write=SetAccelDelimiter, default=32};
-	__property TMRUAddMode AddMode = {read=FAddMode, write=FAddMode, nodefault};
+	__property TMRUAddMode AddMode = {read=FAddMode, write=FAddMode, default=1};
 	__property TElMRUSections* Sections = {read=FSections, write=SetSections};
 	__property Elini::TElIniFile* Storage = {read=FStorage, write=SetStorage};
 	__property AnsiString StoragePath = {read=FStoragePath, write=FStoragePath};

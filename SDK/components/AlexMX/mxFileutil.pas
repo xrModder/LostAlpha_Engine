@@ -851,7 +851,9 @@ begin
   DosCode := FindFirst(NormalDir(Path) + '*.*', faAnyFile, FileInfo);
   try
     while DosCode = 0 do begin
-      if (FileInfo.Name[1] <> '.') and (FileInfo.Attr <> faVolumeID) then
+//      if (FileInfo.Name[1] <> '.') and (FileInfo.Attr <> faVolumeID) then
+//      !!! BUG !!!
+      if (FileInfo.Name <> '.') and (FileInfo.Name <> '..') and (FileInfo.Attr <> faVolumeID) then
       begin
         if (FileInfo.Attr and faDirectory = faDirectory) then
           Result := ClearDir(NormalDir(Path) + FileInfo.Name, Delete) and Result

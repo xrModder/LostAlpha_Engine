@@ -1,10 +1,10 @@
-// Borland C++ Builder 
+// Borland C++ Builder
 // Copyright (c) 1995, 2002 by Borland Software Corporation
 // All rights reserved
 
 // (DO NOT EDIT: machine generated header) 'ElTree.pas' rev: 6.00
 
-#ifndef ElTreeHPP                                        
+#ifndef ElTreeHPP
 #define ElTreeHPP
 
 #pragma delphiheader begin
@@ -94,7 +94,7 @@ public:
 
 
 #pragma option push -b-
-enum TItemChangeMode { icmText, icmState, icmCheckState };
+enum TItemChangeMode { icmText, icmState, icmCheckState, icmColumnText };
 #pragma option pop
 
 #pragma option push -b-
@@ -161,12 +161,6 @@ enum TElDblClickMode { dcmNone, dcmExpand, dcmEdit };
 enum TDragTargetDraw { ColorFrame, ColorRect, SelColorRect, dtdNone, dtdUpColorLine, dtdDownColorLine, dtdUpSelColorLine, dtdDownSelColorLine };
 #pragma option pop
 
-typedef TElWideStrings TElFStrings;
-;
-
-typedef TElWideStringList TElFStringList;
-;
-
 class DELPHICLASS TElTreeItem;
 class DELPHICLASS TElTreeInplaceEditor;
 typedef void __fastcall (__closure *TInplaceEditorNeededEvent)(System::TObject* Sender, TElTreeItem* Item, int SectionIndex, Elheader::TElFieldType SupposedFieldType, TElTreeInplaceEditor* &Editor);
@@ -229,12 +223,8 @@ class PASCALIMPLEMENTATION TElTreeItems : public Classes::TPersistent
 public:
 	TElTreeItem* operator[](int Index) { return Item[Index]; }
 	
-private:
-	TCustomElTree* FOwner;
-	TElTreeItem* __fastcall GetItem(int index);
-	TElTreeItem* __fastcall GetVisItem(int index);
-	
 protected:
+	TCustomElTree* FOwner;
 	TElTreeItem* FRoot;
 	TMetaClass*FItemClass;
 	int __fastcall GetVisCount(void);
@@ -245,12 +235,17 @@ protected:
 	int __fastcall GetCount(void);
 	int __fastcall GetRootCount(void);
 	TElTreeItem* __fastcall GetRootItem(int Index);
+	TElTreeItem* __fastcall GetItem(int index);
+	TElTreeItem* __fastcall GetVisItem(int index);
 	
 public:
 	virtual void __fastcall Assign(Classes::TPersistent* Source);
 	__fastcall virtual TElTreeItems(TCustomElTree* AOwner);
 	__fastcall TElTreeItems(TCustomElTree* AOwner, TMetaClass* ItemClass);
 	__fastcall virtual ~TElTreeItems(void);
+	void __fastcall AddExistingItem(TElTreeItem* Item, TElTreeItem* Parent);
+	void __fastcall InsertExistingItem(TElTreeItem* Item, TElTreeItem* Parent, int Index);
+	void __fastcall RemoveItem(TElTreeItem* Child);
 	void __fastcall LoadFromStream(Classes::TStream* Stream);
 	void __fastcall SaveToStream(Classes::TStream* Stream);
 	void __fastcall SaveToFile(AnsiString FileName);
@@ -572,6 +567,7 @@ protected:
 	void __fastcall FitMostChildren(TElTreeItem* Item);
 	DYNAMIC void __fastcall DoEnter(void);
 	DYNAMIC void __fastcall DoExit(void);
+	virtual void __fastcall DestroyWnd(void);
 	void __fastcall DoSetSelected(TElTreeItem* value);
 	virtual int __fastcall GetVisCount2(void);
 	virtual TElTreeItem* __fastcall FindNewFocused(Word Key, System::PInteger PVal1, bool &Sel);
@@ -581,9 +577,10 @@ protected:
 	void __fastcall SelectMouseSelectItems(void);
 	HIDESBASE MESSAGE void __fastcall WMCancelMode(Messages::TMessage &Message);
 	void __fastcall CancelMouseSel(void);
-	MESSAGE void __fastcall IFMRepaintChildren(Messages::TMessage &Message);
 	MESSAGE void __fastcall CMDeactivate(Messages::TMessage &Message);
+	MESSAGE void __fastcall IFMRepaintChildren(Messages::TMessage &Message);
 	virtual void __fastcall InitiateEditOp(TElTreeItem* Item, int HCol, bool Immediate);
+	bool __fastcall IsControlCell(TElTreeItem* Item, int SectionIndex);
 	
 public:
 	__fastcall virtual TElTreeView(Classes::TComponent* Owner);
@@ -841,7 +838,12 @@ protected:
 	bool FVerticalLinesLong;
 	Elvclutils::TElBorderSides FBorderSides;
 	TInplaceEditorNeededEvent FOnInplaceEditorNeeded;
+	Controls::TCursor FCursor;
 	Htmlrender::TElHTMLImageNeededEvent FOnImageNeeded;
+	Htmlrender::TElHTMLLinkClickEvent FOnLinkClick;
+	Controls::TCursor FLinkCursor;
+	Graphics::TColor FLinkColor;
+	Graphics::TFontStyles FLinkStyle;
 	bool FQuickEditMode;
 	Elheader::TElFieldType FMainTextType;
 	Elscrollbar::TElScrollHitTestEvent FOnHorzScrollHitTest;
@@ -870,6 +872,9 @@ protected:
 	void __fastcall SetStripedEvenColor(Graphics::TColor Value);
 	void __fastcall SetStripedItems(bool Value);
 	virtual void __fastcall TriggerImageNeededEvent(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
+	virtual void __fastcall TriggerLinkClickEvent(AnsiString HRef, int X, int Y);
+	virtual void __fastcall SetLinkColor(Graphics::TColor newValue);
+	virtual void __fastcall SetLinkStyle(Graphics::TFontStyles newValue);
 	void __fastcall OnBeforeHook(System::TObject* Sender, Messages::TMessage &Message, bool &Handled);
 	virtual void __fastcall SetParent(Controls::TWinControl* AParent);
 	void __fastcall SetVirtualityLevel(TVirtualityLevel Value);
@@ -1301,7 +1306,7 @@ protected:
 	__property int ItemIndent = {read=ItemExt, write=SetItemIndent, default=17};
 	__property Graphics::TColor GradientStartColor = {read=FGradientStartColor, write=SetGradientStartColor, default=0};
 	__property Graphics::TColor GradientEndColor = {read=FGradientEndColor, write=SetGradientEndColor, default=0};
-	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, default=16};
+	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, default=64};
 	__property Controls::TCursor Cursor = {read=GetCursor, write=SetCursor, default=-2};
 	__property bool HeaderInvertSortArrows = {read=GetHeaderInvertSortArrows, write=SetHeaderInvertSortArrows, default=0};
 	__property bool MoveFocusOnCollapse = {read=FMoveFocusOnCollapse, write=SetMoveFocusOnCollapse, default=0};
@@ -1329,7 +1334,7 @@ protected:
 	__property TElHintType HintType = {read=FHintType, write=FHintType, default=2};
 	__property Elscrollbar::TElScrollHitTestEvent OnVertScrollHitTest = {read=FOnVertScrollHitTest, write=FOnVertScrollHitTest};
 	__property Elscrollbar::TElScrollHitTestEvent OnHorzScrollHitTest = {read=FOnHorzScrollHitTest, write=FOnHorzScrollHitTest};
-	__property bool MouseFrameSelect = {read=FMouseFrameSelect, write=FMouseFrameSelect, nodefault};
+	__property bool MouseFrameSelect = {read=FMouseFrameSelect, write=FMouseFrameSelect, default=1};
 	__property Graphics::TColor VertDivLinesColor = {read=FVertDivLinesColor, write=SetVertDivLinesColor, default=-2147483633};
 	__property TOnItemChangeEvent OnItemChange = {read=FOnItemChange, write=FOnItemChange};
 	__property TOnItemDrawEvent OnItemDraw = {read=FOnItemDraw, write=FOnItemDraw};
@@ -1371,6 +1376,10 @@ protected:
 	__property TElTreeItemPostDrawEvent OnItemPostDraw = {read=FOnItemPostDraw, write=FOnItemPostDraw};
 	__property TMeasureItemPartEvent OnMeasureItemPart = {read=FOnMeasureItemPart, write=FOnMeasureItemPart};
 	__property Htmlrender::TElHTMLImageNeededEvent OnHTMLImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
+	__property Htmlrender::TElHTMLLinkClickEvent OnLinkClick = {read=FOnLinkClick, write=FOnLinkClick};
+	__property Controls::TCursor LinkCursor = {read=FLinkCursor, write=FLinkCursor, default=-21};
+	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, default=16711680};
+	__property Graphics::TFontStyles LinkStyle = {read=FLinkStyle, write=SetLinkStyle, nodefault};
 	__property Classes::TNotifyEvent OnClick = {read=FOnClick, write=FOnClick};
 	__property Classes::TNotifyEvent OnDblClick = {read=FOnDblClick, write=FOnDblClick};
 	__property Controls::TDragDropEvent OnDragDrop = {read=FOnDrop, write=FOnDrop};
@@ -1416,7 +1425,7 @@ protected:
 	__property Graphics::TFont* HeaderFont = {read=FHeaderFont, write=SetHeaderFont};
 	__property bool HeaderUseTreeFont = {read=FHeaderUseTreeFont, write=SetHeaderUseTreeFont, default=1};
 	__property bool KeepSelectionWithinLevel = {read=FKeepSelectionWithinLevel, write=FKeepSelectionWithinLevel, nodefault};
-	__property bool AutoCollapse = {read=FAutoCollapse, write=FAutoCollapse, default=1};
+	__property bool AutoCollapse = {read=FAutoCollapse, write=FAutoCollapse, default=0};
 	__property bool SortUseCase = {read=FSortUseCase, write=SetSortUseCase, default=1};
 	__property Graphics::TColor LineBorderActiveColor = {read=FLineBorderActiveColor, write=SetLineBorderActiveColor, nodefault};
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
@@ -1516,6 +1525,7 @@ protected:
 	Types::TRect FCellRect;
 	#pragma pack(pop)
 	
+	bool CanReFocus;
 	TInplaceOperationEvent FOnBeforeOperation;
 	TInplaceAfterOperationEvent FOnAfterOperation;
 	TInplaceValidationEvent FOnValidateResult;
@@ -1585,7 +1595,7 @@ public:
 	__property Stdctrls::TCheckBoxState State = {read=FState, write=SetState, nodefault};
 	__property bool Checked = {read=GetChecked, write=SetChecked, nodefault};
 	__property bool AllowGrayed = {read=FAllowGrayed, write=SetAllowGrayed, nodefault};
-	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, nodefault};
+	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, default=1};
 };
 
 
@@ -1596,7 +1606,7 @@ class PASCALIMPLEMENTATION TElCellButtonGlyph : public Elpopbtn::TElButtonGlyph
 	
 public:
 	__property ImageList ;
-	__property ImageIndex ;
+	__property ImageIndex  = {default=-1};
 	__property UseImageList ;
 public:
 	#pragma option push -w-inl
@@ -1646,7 +1656,7 @@ public:
 	__property Graphics::TBitmap* Glyph = {read=GetGlyph, write=SetGlyph};
 	__property bool FixClick = {read=FFixClick, write=FFixClick, nodefault};
 	__property bool Down = {read=FDown, write=SetDown, default=0};
-	__property Buttons::TButtonLayout Layout = {read=FLayout, write=SetLayout, nodefault};
+	__property Buttons::TButtonLayout Layout = {read=FLayout, write=SetLayout, default=0};
 };
 
 
@@ -1680,13 +1690,13 @@ public:
 	virtual void __fastcall Assign(TElCellControl* Source);
 	virtual void __fastcall Paint(Graphics::TCanvas* Canvas, const Types::TRect &R);
 	__property int MinValue = {read=FMinValue, write=SetMinValue, nodefault};
-	__property int MaxValue = {read=FMaxValue, write=SetMaxValue, nodefault};
+	__property int MaxValue = {read=FMaxValue, write=SetMaxValue, default=100};
 	__property int Value = {read=FValue, write=SetValue, nodefault};
-	__property Graphics::TColor BarColor = {read=FBarColor, write=SetBarColor, nodefault};
-	__property Classes::TAlignment TextAlignment = {read=FTextAlignment, write=SetTextAlignment, nodefault};
-	__property bool ShowProgressText = {read=FShowProgressText, write=SetShowProgressText, nodefault};
-	__property Graphics::TColor FrameColor = {read=FFrameColor, write=SetFrameColor, nodefault};
-	__property Graphics::TColor Color = {read=FColor, write=SetColor, nodefault};
+	__property Graphics::TColor BarColor = {read=FBarColor, write=SetBarColor, default=-2147483635};
+	__property Classes::TAlignment TextAlignment = {read=FTextAlignment, write=SetTextAlignment, default=2};
+	__property bool ShowProgressText = {read=FShowProgressText, write=SetShowProgressText, default=1};
+	__property Graphics::TColor FrameColor = {read=FFrameColor, write=SetFrameColor, default=-2147483640};
+	__property Graphics::TColor Color = {read=FColor, write=SetColor, default=-2147483643};
 };
 
 
@@ -1736,7 +1746,7 @@ public:
 	__property Graphics::TColor TextColor = {read=FTextColor, write=SetTextColor, nodefault};
 	__property unsigned TextFlags = {read=FTextFlags, write=SetTextFlags, nodefault};
 	__property Graphics::TBitmap* Picture = {read=FPicture, write=SetPicture};
-	__property Elheader::TElFieldType CellType = {read=FCellType, write=SetCellType, nodefault};
+	__property Elheader::TElFieldType CellType = {read=FCellType, write=SetCellType, default=1};
 	__property Elheader::TElSectionStyle Style = {read=FStyle, write=SetStyle, nodefault};
 	__property bool OwnerProps = {read=FOwnerProps, write=SetOwnerColors, nodefault};
 	__property int FontSize = {read=FFontSize, write=SetFontSize, nodefault};
@@ -1858,12 +1868,12 @@ protected:
 	bool __fastcall GetState(int index);
 	void __fastcall SetState(int index, bool value);
 	void __fastcall RemoveChild(TElTreeItem* Child);
+	void __fastcall RemoveSubChild(TElTreeItem* Child);
 	void __fastcall DeleteChild(TElTreeItem* Child);
 	int __fastcall AddChild(TElTreeItem* Child);
+	void __fastcall AddExistingChild(TElTreeItem* Child);
 	int __fastcall AddLastChild(TElTreeItem* Child);
 	int __fastcall InsertChild(int index, TElTreeItem* Child);
-	virtual void __fastcall ReadData(Classes::TStream* Stream);
-	virtual void __fastcall WriteData(Classes::TStream* Stream);
 	void __fastcall ExchangeItems(int I, int J);
 	void __fastcall QuickSort(bool recursive, int L, int R, Elheader::TElSSortMode SM, TSortTypes SortType, int FSortSection);
 	void __fastcall AddSortData(TSortTypes SortType, int FSortSection);
@@ -1910,11 +1920,14 @@ protected:
 	void __fastcall SetBorderSpaceColor(Graphics::TColor Value);
 	void __fastcall SetOverlayIndex(Shortint value);
 	void __fastcall SetOverlayIndex2(Shortint value);
+	void __fastcall ClearSubChild(void);
 	
 public:
 	__fastcall virtual TElTreeItem(TCustomElTree* AOwner);
 	__fastcall virtual ~TElTreeItem(void);
 	virtual int __fastcall GetWidth(void);
+	virtual void __fastcall ReadData(Classes::TStream* Stream);
+	virtual void __fastcall WriteData(Classes::TStream* Stream);
 	bool __fastcall IsUnder(TElTreeItem* Item);
 	WideString __fastcall GetFullName(WideString separator);
 	WideString __fastcall GetFullNameEx(WideString separator, bool AddRoot);
@@ -1995,10 +2008,10 @@ public:
 	__property Graphics::TColor BkColor = {read=FBkColor, write=SetColor, index=2, nodefault};
 	__property bool UseBkColor = {read=GetUseBkColor, write=SetUseBkColor, nodefault};
 	__property bool ParentColors = {read=GetParentColors, write=SetParentColors, nodefault};
-	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, nodefault};
-	__property int StateImageIndex = {read=FStImageIndex, write=SetStImageIndex, nodefault};
-	__property int ImageIndex2 = {read=FImageIndex2, write=SetImageIndex2, nodefault};
-	__property int StateImageIndex2 = {read=FStImageIndex2, write=SetStImageIndex2, nodefault};
+	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, default=-1};
+	__property int StateImageIndex = {read=FStImageIndex, write=SetStImageIndex, default=-1};
+	__property int ImageIndex2 = {read=FImageIndex2, write=SetImageIndex2, default=-1};
+	__property int StateImageIndex2 = {read=FStImageIndex2, write=SetStImageIndex2, default=-1};
 	__property bool ForceButtons = {read=GetForceButtons, write=SetForceButtons, default=0};
 	__property bool SuppressButtons = {read=GetSuppressButtons, write=SetSuppressButtons, default=0};
 	__property bool SuppressLines = {read=GetSuppressLines, write=SetSuppressLines, nodefault};
@@ -2006,10 +2019,10 @@ public:
 	__property bool UseStyles = {read=GetUseStyles, write=SetUseStyles, nodefault};
 	__property TElCellStyle* MainStyle = {read=GetMainStyle};
 	__property int StylesCount = {read=GetStylesCount, nodefault};
-	__property Stdctrls::TCheckBoxState CheckBoxState = {read=FCheckBoxState, write=SetCheckBoxState, nodefault};
+	__property Stdctrls::TCheckBoxState CheckBoxState = {read=FCheckBoxState, write=SetCheckBoxState, default=0};
 	__property bool Checked = {read=GetChecked, write=SetChecked, default=0};
 	__property bool ShowCheckBox = {read=GetShowCheckBox, write=SetShowCheckBox, default=1};
-	__property TElCheckBoxType CheckBoxType = {read=FCheckBoxType, write=SetCheckBoxType, nodefault};
+	__property TElCheckBoxType CheckBoxType = {read=FCheckBoxType, write=SetCheckBoxType, default=0};
 	__property bool CheckBoxEnabled = {read=GetCheckBoxEnabled, write=SetCheckBoxEnabled, nodefault};
 	__property bool Enabled = {read=GetEnabled, write=SetEnabled, default=1};
 	__property bool Hidden = {read=GetHidden, write=SetHidden, nodefault};
@@ -2023,9 +2036,9 @@ public:
 	__property int IndentAdjust = {read=FIndentAdjust, write=SetIndentAdjust, nodefault};
 	__property bool DropTarget = {read=GetDropTarget, nodefault};
 	__property bool HintIsHTML = {read=GetHintIsHTML, write=SetHintIsHTML, nodefault};
-	__property Graphics::TColor BorderSpaceColor = {read=FBorderSpaceColor, write=SetBorderSpaceColor, nodefault};
-	__property Shortint OverlayIndex = {read=FOverlayIndex, write=SetOverlayIndex, nodefault};
-	__property Shortint OverlayIndex2 = {read=FOverlayIndex2, write=SetOverlayIndex2, nodefault};
+	__property Graphics::TColor BorderSpaceColor = {read=FBorderSpaceColor, write=SetBorderSpaceColor, default=-2147483643};
+	__property Shortint OverlayIndex = {read=FOverlayIndex, write=SetOverlayIndex, default=-1};
+	__property Shortint OverlayIndex2 = {read=FOverlayIndex2, write=SetOverlayIndex2, default=-1};
 };
 
 
@@ -2050,7 +2063,7 @@ __published:
 	__property Align  = {default=0};
 	__property AlwaysKeepFocus  = {default=0};
 	__property AlwaysKeepSelection  = {default=1};
-	__property AutoCollapse  = {default=1};
+	__property AutoCollapse  = {default=0};
 	__property AutoExpand  = {default=0};
 	__property AutoLineHeight  = {default=1};
 	__property AutoLookup  = {default=0};
@@ -2107,7 +2120,7 @@ __published:
 	__property FullRowSelect  = {default=1};
 	__property GradientStartColor  = {default=0};
 	__property GradientEndColor  = {default=0};
-	__property GradientSteps  = {default=16};
+	__property GradientSteps  = {default=64};
 	__property HeaderActiveFilterColor  = {default=0};
 	__property HeaderColor  = {default=-2147483633};
 	__property HeaderHeight ;
@@ -2160,7 +2173,7 @@ __published:
 	__property MinusPicture ;
 	__property MoveColumnOnDrag  = {default=0};
 	__property MoveFocusOnCollapse  = {default=0};
-	__property MouseFrameSelect ;
+	__property MouseFrameSelect  = {default=1};
 	__property MultiSelect  = {default=1};
 	__property MultiSelectLevel  = {default=-1};
 	__property OwnerDrawByColumn  = {default=1};
@@ -2271,6 +2284,10 @@ __published:
 	__property OnVertScrollDrawPart ;
 	__property OnVertScrollHintNeeded ;
 	__property OnHTMLImageNeeded ;
+	__property OnLinkClick ;
+	__property LinkCursor  = {default=-21};
+	__property LinkColor  = {default=16711680};
+	__property LinkStyle ;
 	__property OnVirtualTextNeeded ;
 	__property OnVirtualHintNeeded ;
 	__property OnVirtualValueNeeded ;

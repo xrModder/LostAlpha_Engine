@@ -1,5 +1,5 @@
 /*
-** $Id: lauxlib.h,v 1.85 2005/09/06 17:19:51 roberto Exp $
+** $Id: lauxlib.h,v 1.88.1.1 2007/12/27 13:02:25 roberto Exp $
 ** Auxiliary functions for building Lua libraries
 ** See Copyright Notice in lua.h
 */
@@ -58,35 +58,35 @@ LUALIB_API lua_Integer (luaL_checkinteger) (lua_State *L, int numArg);
 LUALIB_API lua_Integer (luaL_optinteger) (lua_State *L, int nArg,
                                           lua_Integer def);
 
-LUALIB_API void (LUA_CC luaL_checkstack) (lua_State *L, int sz, const char *msg);
-LUALIB_API void (LUA_CC luaL_checktype) (lua_State *L, int narg, int t);
-LUALIB_API void (LUA_CC luaL_checkany) (lua_State *L, int narg);
+LUALIB_API void (luaL_checkstack) (lua_State *L, int sz, const char *msg);
+LUALIB_API void (luaL_checktype) (lua_State *L, int narg, int t);
+LUALIB_API void (luaL_checkany) (lua_State *L, int narg);
 
-LUALIB_API int   (LUA_CC luaL_newmetatable) (lua_State *L, const char *tname);
-LUALIB_API void *(LUA_CC luaL_checkudata) (lua_State *L, int ud, const char *tname);
+LUALIB_API int   (luaL_newmetatable) (lua_State *L, const char *tname);
+LUALIB_API void *(luaL_checkudata) (lua_State *L, int ud, const char *tname);
 
-LUALIB_API void (LUA_CC luaL_where) (lua_State *L, int lvl);
-LUALIB_API int	(LUA_CC luaL_error) (lua_State *L, const char *fmt, ...);
+LUALIB_API void (luaL_where) (lua_State *L, int lvl);
+LUALIB_API int (luaL_error) (lua_State *L, const char *fmt, ...);
 
-LUALIB_API int	(LUA_CC luaL_checkoption) (lua_State *L, int narg, const char *def,
+LUALIB_API int (luaL_checkoption) (lua_State *L, int narg, const char *def,
                                    const char *const lst[]);
 
-LUALIB_API int	(LUA_CC luaL_ref) (lua_State *L, int t);
-LUALIB_API void (LUA_CC luaL_unref) (lua_State *L, int t, int ref);
+LUALIB_API int (luaL_ref) (lua_State *L, int t);
+LUALIB_API void (luaL_unref) (lua_State *L, int t, int ref);
 
-LUALIB_API int	(LUA_CC luaL_loadfile) (lua_State *L, const char *filename);
-LUALIB_API int	(LUA_CC luaL_loadbuffer) (lua_State *L, const char *buff, size_t sz,
+LUALIB_API int (luaL_loadfile) (lua_State *L, const char *filename);
+LUALIB_API int (luaL_loadbuffer) (lua_State *L, const char *buff, size_t sz,
                                   const char *name);
-LUALIB_API int	(LUA_CC luaL_loadstring) (lua_State *L, const char *s);
+LUALIB_API int (luaL_loadstring) (lua_State *L, const char *s);
 
-LUALIB_API lua_State *(LUA_CC luaL_newstate) (void);
+LUALIB_API lua_State *(luaL_newstate) (void);
 
 
-LUALIB_API const char *(LUA_CC luaL_gsub) (lua_State *L, const char *s, const char *p,
+LUALIB_API const char *(luaL_gsub) (lua_State *L, const char *s, const char *p,
                                                   const char *r);
 
-LUALIB_API const char *(LUA_CC luaL_findtable) (lua_State *L, int idx,
-                                         const char *fname);
+LUALIB_API const char *(luaL_findtable) (lua_State *L, int idx,
+                                         const char *fname, int szhint);
 
 
 
@@ -108,12 +108,15 @@ LUALIB_API const char *(LUA_CC luaL_findtable) (lua_State *L, int idx,
 
 #define luaL_typename(L,i)	lua_typename(L, lua_type(L,(i)))
 
-#define luaL_dofile(L, fn)	(luaL_loadfile(L, fn) || lua_pcall(L, 0, 0, 0))
+#define luaL_dofile(L, fn) \
+	(luaL_loadfile(L, fn) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
-#define luaL_dostring(L, s)	(luaL_loadstring(L, s) || lua_pcall(L, 0, 0, 0))
+#define luaL_dostring(L, s) \
+	(luaL_loadstring(L, s) || lua_pcall(L, 0, LUA_MULTRET, 0))
 
 #define luaL_getmetatable(L,n)	(lua_getfield(L, LUA_REGISTRYINDEX, (n)))
 
+#define luaL_opt(L,f,n,d)	(lua_isnoneornil(L,(n)) ? (d) : f(L,(n)))
 
 /*
 ** {======================================================

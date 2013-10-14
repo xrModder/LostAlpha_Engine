@@ -1031,7 +1031,8 @@ bool CAI_Stalker::use_center_to_aim		() const
 
 void CAI_Stalker::UpdateCamera			()
 {
-	float								new_range = eye_range, new_fov = eye_fov;
+	//skyloader: build code
+	/*float								new_range = eye_range, new_fov = eye_fov;
 	Fvector								temp = eye_matrix.k;
 	if (g_Alive()) {
 		update_range_fov				(new_range, new_fov, memory().visual().current_state().m_max_view_distance*eye_range, eye_fov);
@@ -1039,7 +1040,17 @@ void CAI_Stalker::UpdateCamera			()
 			temp						= weapon_shot_effector_direction(temp);
 	}
 
-	g_pGameLevel->Cameras().Update		(eye_matrix.c,temp,eye_matrix.j,new_fov,.75f,new_range,0);
+	g_pGameLevel->Cameras().Update		(eye_matrix.c,temp,eye_matrix.j,new_fov,.75f,new_range);*/
+
+	//my code
+
+	u16 bone_id			= smart_cast<IKinematics*>(Visual())->LL_BoneID				("bip01_head");
+	CBoneInstance &bone = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance	(bone_id);
+
+	Fmatrix	global_transform;
+	global_transform.mul	(XFORM(),bone.mTransform);
+
+	g_pGameLevel->Cameras().Update		(global_transform.c,global_transform.k,eye_matrix.j,g_fov,.75f,eye_range,0);
 }
 
 bool CAI_Stalker::can_attach			(const CInventoryItem *inventory_item) const

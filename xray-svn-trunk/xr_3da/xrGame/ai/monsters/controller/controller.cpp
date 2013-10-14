@@ -95,8 +95,8 @@ void CController::Load(LPCSTR section)
 	anim().AddReplacedAnim(&m_bDamaged, eAnimStandIdle,	eAnimStandDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimRun,		eAnimRunDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimWalkFwd,	eAnimWalkDamaged);
-	anim().AddReplacedAnim(&m_bRunTurnLeft,	eAnimRun,	eAnimStandTurnLeft);
-	anim().AddReplacedAnim(&m_bRunTurnRight, eAnimRun,	eAnimStandTurnRight);
+	//anim().AddReplacedAnim(&m_bRunTurnLeft,	eAnimRun,	eAnimStandTurnLeft);
+	//anim().AddReplacedAnim(&m_bRunTurnRight, eAnimRun,	eAnimStandTurnRight);
 
 	// Load control postprocess --------------------------------------------------------
 	LPCSTR ppi_section = pSettings->r_string(section, "control_effector");

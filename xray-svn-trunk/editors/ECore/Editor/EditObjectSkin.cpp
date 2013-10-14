@@ -121,12 +121,21 @@ bool CEditableObject::LoadSurfaceData(IReader& F)
 		ELog.Msg	(mtError,"Object surface count != load surface count");
 		bRes		= false; 
 	} else {
-		for (SurfaceIt s_it=m_Surfaces.begin(); s_it!=m_Surfaces.end(); s_it++)
+		for (int i=0; i<SurfaceCount(); i++)
 		{
-			F.r_stringZ	(buf);	(*s_it)->SetShader		(buf.c_str());
-			F.r_stringZ	(buf);	(*s_it)->SetShaderXRLC	(buf.c_str());
-			F.r_stringZ	(buf);	(*s_it)->SetGameMtl		(buf.c_str());
-			(*s_it)->m_Flags.assign(F.r_u32());
+			F.r_stringZ	(buf); //skyloader: get name
+
+			for (SurfaceIt s_it=m_Surfaces.begin(); s_it!=m_Surfaces.end(); s_it++)
+			{
+				if (!strcmp(buf.c_str(), (*s_it)->_Name()))
+				{
+					F.r_stringZ	(buf);	(*s_it)->SetShader		(buf.c_str());
+					F.r_stringZ	(buf);	(*s_it)->SetShaderXRLC	(buf.c_str());
+					F.r_stringZ	(buf);	(*s_it)->SetGameMtl		(buf.c_str());
+					(*s_it)->m_Flags.assign(F.r_u32());
+					break;
+				}
+			}
 		}
 	}
 
@@ -146,6 +155,7 @@ void CEditableObject::SaveSurfaceData(IWriter& F)
 	F.w_u32		(m_Surfaces.size());
 	for (SurfaceIt sf_it=m_Surfaces.begin(); sf_it!=m_Surfaces.end(); sf_it++)
 	{
+		F.w_stringZ	((*sf_it)->_Name		());
 		F.w_stringZ	((*sf_it)->_ShaderName		());
 		F.w_stringZ	((*sf_it)->_ShaderXRLCName	());
 		F.w_stringZ	((*sf_it)->_GameMtlName		());

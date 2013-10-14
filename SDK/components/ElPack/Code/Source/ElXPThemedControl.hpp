@@ -12,6 +12,7 @@
 #pragma option push -Vx
 #include <Messages.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
+#include <Forms.hpp>	// Pascal unit
 #include <Controls.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <ElTmSchema.hpp>	// Pascal unit

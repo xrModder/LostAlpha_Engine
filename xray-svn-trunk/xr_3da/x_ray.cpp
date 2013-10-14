@@ -1494,6 +1494,7 @@ void doBenchmark(LPCSTR name)
 	}
 }
 #pragma optimize("g", off)
+
 void CApplication::load_draw_internal()
 {
 	m_pRender->load_draw_internal(*this);

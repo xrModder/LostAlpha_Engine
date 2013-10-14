@@ -10,6 +10,7 @@
 #pragma delphiheader begin
 #pragma option push -w-
 #pragma option push -Vx
+#include <Menus.hpp>	// Pascal unit
 #include <ElStrUtils.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
 #include <Imm.hpp>	// Pascal unit
@@ -20,12 +21,12 @@
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <ElUxTheme.hpp>	// Pascal unit
 #include <ElTmSchema.hpp>	// Pascal unit
+#include <ElStack.hpp>	// Pascal unit
+#include <ElList.hpp>	// Pascal unit
 #include <ElImgFrm.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
 #include <Clipbrd.hpp>	// Pascal unit
 #include <StdCtrls.hpp>	// Pascal unit
-#include <Menus.hpp>	// Pascal unit
-#include <Dialogs.hpp>	// Pascal unit
 #include <Forms.hpp>	// Pascal unit
 #include <Controls.hpp>	// Pascal unit
 #include <Graphics.hpp>	// Pascal unit
@@ -41,11 +42,170 @@
 namespace Eledits
 {
 //-- type declarations -------------------------------------------------------
+class DELPHICLASS EElEditorError;
+class PASCALIMPLEMENTATION EElEditorError : public Sysutils::Exception 
+{
+	typedef Sysutils::Exception inherited;
+	
+public:
+	#pragma option push -w-inl
+	/* Exception.Create */ inline __fastcall EElEditorError(const AnsiString Msg) : Sysutils::Exception(Msg) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateFmt */ inline __fastcall EElEditorError(const AnsiString Msg, const System::TVarRec * Args, const int Args_Size) : Sysutils::Exception(Msg, Args, Args_Size) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateRes */ inline __fastcall EElEditorError(int Ident)/* overload */ : Sysutils::Exception(Ident) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateResFmt */ inline __fastcall EElEditorError(int Ident, const System::TVarRec * Args, const int Args_Size)/* overload */ : Sysutils::Exception(Ident, Args, Args_Size) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateHelp */ inline __fastcall EElEditorError(const AnsiString Msg, int AHelpContext) : Sysutils::Exception(Msg, AHelpContext) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateFmtHelp */ inline __fastcall EElEditorError(const AnsiString Msg, const System::TVarRec * Args, const int Args_Size, int AHelpContext) : Sysutils::Exception(Msg, Args, Args_Size, AHelpContext) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateResHelp */ inline __fastcall EElEditorError(int Ident, int AHelpContext)/* overload */ : Sysutils::Exception(Ident, AHelpContext) { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* Exception.CreateResFmtHelp */ inline __fastcall EElEditorError(System::PResStringRec ResStringRec, const System::TVarRec * Args, const int Args_Size, int AHelpContext)/* overload */ : Sysutils::Exception(ResStringRec, Args, Args_Size, AHelpContext) { }
+	#pragma option pop
+	
+public:
+	#pragma option push -w-inl
+	/* TObject.Destroy */ inline __fastcall virtual ~EElEditorError(void) { }
+	#pragma option pop
+	
+};
+
+
 typedef TElWideStrings TElFStrings;
 ;
 
 typedef TElWideStringList TElFStringList;
 ;
+
+#pragma option push -b-
+enum TElActionType { atInsert, atDelete, atLineBreak, atGroupBreak, atPaste, atBackSpace, atDeleteSel, atInsertSel };
+#pragma option pop
+
+class DELPHICLASS TElAction;
+class PASCALIMPLEMENTATION TElAction : public Classes::TPersistent 
+{
+	typedef Classes::TPersistent inherited;
+	
+protected:
+	TElActionType FAction;
+	#pragma pack(push, 1)
+	Types::TPoint FStartPos;
+	#pragma pack(pop)
+	
+	#pragma pack(push, 1)
+	Types::TPoint FEndPos;
+	#pragma pack(pop)
+	
+	WideString FStr;
+	
+public:
+	virtual void __fastcall Assign(Classes::TPersistent* Source);
+	__property TElActionType Action = {read=FAction, nodefault};
+	__property Types::TPoint StartPos = {read=FStartPos};
+	__property Types::TPoint EndPos = {read=FEndPos};
+	__property WideString CString = {read=FStr};
+public:
+	#pragma option push -w-inl
+	/* TPersistent.Destroy */ inline __fastcall virtual ~TElAction(void) { }
+	#pragma option pop
+	
+public:
+	#pragma option push -w-inl
+	/* TObject.Create */ inline __fastcall TElAction(void) : Classes::TPersistent() { }
+	#pragma option pop
+	
+};
+
+
+class DELPHICLASS TElActionList;
+class PASCALIMPLEMENTATION TElActionList : public Classes::TPersistent 
+{
+	typedef Classes::TPersistent inherited;
+	
+protected:
+	Elstack::TElStack* FAStack;
+	int FMaxUndo;
+	int FLockCount;
+	virtual bool __fastcall GetCanUndo(void);
+	virtual void __fastcall SetMaxUndo(const int Value);
+	
+public:
+	__fastcall TElActionList(void);
+	__fastcall virtual ~TElActionList(void);
+	void __fastcall Lock(void);
+	void __fastcall UnLock(void);
+	void __fastcall AddAction(TElActionType AAction, const Types::TPoint &ASPos, const Types::TPoint &AEPos, WideString AStr);
+	TElAction* __fastcall PeekItem(void);
+	TElAction* __fastcall PopItem(void);
+	void __fastcall PushItem(TElAction* Item);
+	__property bool CanUndo = {read=GetCanUndo, nodefault};
+	__property int MaxUndo = {read=FMaxUndo, write=SetMaxUndo, default=10};
+};
+
+
+class DELPHICLASS TElParagraph;
+class PASCALIMPLEMENTATION TElParagraph : public Elunicodestrings::TElWideStringList 
+{
+	typedef Elunicodestrings::TElWideStringList inherited;
+	
+protected:
+	int FPCount;
+	virtual void __fastcall SetTextStr(const WideString Value);
+	virtual WideString __fastcall GetTextStr();
+	virtual WideString __fastcall Get(int Index);
+	virtual void __fastcall Put(int Index, const WideString S);
+	
+public:
+	__property WideString Text = {read=GetTextStr, write=SetTextStr};
+public:
+	#pragma option push -w-inl
+	/* TElWideStringList.Destroy */ inline __fastcall virtual ~TElParagraph(void) { }
+	#pragma option pop
+	
+public:
+	#pragma option push -w-inl
+	/* TObject.Create */ inline __fastcall TElParagraph(void) : Elunicodestrings::TElWideStringList() { }
+	#pragma option pop
+	
+};
+
+
+class DELPHICLASS TElParagraphList;
+class PASCALIMPLEMENTATION TElParagraphList : public Ellist::TElList 
+{
+	typedef Ellist::TElList inherited;
+	
+public:
+	TElParagraph* operator[](int Index) { return Items[Index]; }
+	
+protected:
+	HIDESBASE TElParagraph* __fastcall Get(int Index);
+	HIDESBASE void __fastcall Put(int Index, const TElParagraph* Value);
+	HIDESBASE void __fastcall Delete(int Index);
+	
+public:
+	virtual void __fastcall Clear(void);
+	__property TElParagraph* Items[int Index] = {read=Get, write=Put/*, default*/};
+public:
+	#pragma option push -w-inl
+	/* TElList.Create */ inline __fastcall TElParagraphList(void) : Ellist::TElList() { }
+	#pragma option pop
+	#pragma option push -w-inl
+	/* TElList.Destroy */ inline __fastcall virtual ~TElParagraphList(void) { }
+	#pragma option pop
+	
+};
+
 
 class DELPHICLASS TElEditStrings;
 class DELPHICLASS TCustomElEdit;
@@ -53,11 +213,15 @@ class DELPHICLASS TCustomElEdit;
 enum TElEditCharCase { eecNormal, eecUpperCase, eecLowerCase };
 #pragma option pop
 
+#pragma option push -b-
+enum TElEditScrollDir { esdLineUp, esdLineDown, esdPageUp, esdPageDown };
+#pragma option pop
+
 class PASCALIMPLEMENTATION TCustomElEdit : public Elxpthemedcontrol::TElXPThemedControl 
 {
 	typedef Elxpthemedcontrol::TElXPThemedControl inherited;
 	
-private:
+protected:
 	bool FModified;
 	#pragma pack(push, 1)
 	Types::TRect FEditRect;
@@ -73,24 +237,25 @@ private:
 	Classes::TAlignment FAlignment;
 	bool FReadOnly;
 	bool FWantTabs;
-	WideString FText;
 	Elstrutils::TElFChar FPasswordChar;
 	int FMaxLength;
-	int FSelStart;
+	bool FSelected;
 	int FSelLength;
+	int FSelStartX;
+	int FSelStartY;
+	int FSelFirstX;
+	int FSelFirstY;
+	int FSelLastX;
+	int FSelLastY;
+	bool FMultiline;
 	bool FTransparent;
 	WideString FTabString;
 	int FTabSpaces;
 	bool FHasCaret;
-	#pragma pack(push, 1)
-	Types::TPoint FCaretPos;
-	#pragma pack(pop)
-	
-	#pragma pack(push, 1)
-	Types::TPoint FUndoSel;
-	#pragma pack(pop)
-	
-	WideString FUndoText;
+	int FCaretX;
+	int FCaretY;
+	TElActionList* FUndo;
+	TElActionList* FRedo;
 	int FModifyCount;
 	int FLineHeight;
 	int FLeftChar;
@@ -130,6 +295,15 @@ private:
 	WideString FKeys;
 	bool FKeyDown;
 	WideString FHint;
+	bool FRTLContent;
+	bool FAutoSize;
+	Graphics::TColor FLineBorderActiveColor;
+	Graphics::TColor FLineBorderInactiveColor;
+	bool FNotifyUserChangeOnly;
+	TElEditCharCase FCharCase;
+	bool FChangeDisabledText;
+	bool FEnd;
+	HIDESBASE MESSAGE void __fastcall CMCtl3DChanged(Messages::TMessage &Msg);
 	MESSAGE void __fastcall WMCaptureChanged(Messages::TMessage &Msg);
 	HIDESBASE MESSAGE void __fastcall WMKeyDown(Messages::TWMKey &Msg);
 	MESSAGE void __fastcall WMCut(Messages::TMessage &Msg);
@@ -163,7 +337,7 @@ private:
 	WideString __fastcall GetPasswordChar();
 	void __fastcall SetPasswordChar(WideString newValue);
 	void __fastcall SetTransparent(bool newValue);
-	void __fastcall SetEditRect(const Types::TRect &newValue);
+	void __fastcall DoSetEditRect(const Types::TRect &newValue);
 	void __fastcall SetTabSpaces(int newValue);
 	void __fastcall SetModified(bool newValue);
 	HIDESBASE void __fastcall SetText(WideString newValue);
@@ -178,26 +352,17 @@ private:
 	void __fastcall DrawParentControl(HDC DC);
 	void __fastcall SetScrollBars(const Stdctrls::TScrollStyle Value);
 	void __fastcall SetTopLine(const int Value);
-	void __fastcall AdjustHeight(void);
 	void __fastcall UpdateHeight(void);
 	HIDESBASE MESSAGE void __fastcall CMFontChanged(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall WMWindowPosChanged(Messages::TWMWindowPosMsg &Message);
 	void __fastcall BackgroundChanged(System::TObject* Sender);
 	void __fastcall SetFlatFocusedScrollBars(const bool Value);
-	
-protected:
-	bool FMultiLine;
-	bool FRTLContent;
-	bool FAutoSize;
-	Elunicodestrings::TElWideStrings* FLines;
-	Graphics::TColor FLineBorderActiveColor;
-	Graphics::TColor FLineBorderInactiveColor;
-	bool NotifyUserChangeOnly;
-	TElEditCharCase FCharCase;
+	void __fastcall AdjustHeight(void);
 	void __fastcall SetVertScrollBarStyles(Elscrollbar::TElScrollBarStyles* newValue);
 	void __fastcall SetHorzScrollBarStyles(Elscrollbar::TElScrollBarStyles* newValue);
 	void __fastcall SetUseCustomScrollBars(bool newValue);
 	virtual void __fastcall SetMaxLength(int newValue);
+	virtual int __fastcall GetSelStart(void);
 	virtual void __fastcall SetSelStart(int newValue);
 	virtual void __fastcall SetSelLength(int newValue);
 	virtual void __fastcall SetSelText(const WideString newValue);
@@ -218,7 +383,7 @@ protected:
 	DYNAMIC void __fastcall KeyPress(char &Key);
 	DYNAMIC void __fastcall KeyDown(Word &Key, Classes::TShiftState Shift);
 	virtual void __fastcall Paint(void);
-	void __fastcall PaintText(WideString AText, Graphics::TCanvas* Canvas);
+	void __fastcall PaintText(Graphics::TCanvas* Canvas);
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);
 	DYNAMIC void __fastcall MouseDown(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
 	DYNAMIC void __fastcall MouseUp(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
@@ -247,16 +412,45 @@ protected:
 	virtual void __fastcall SetLineBorderInactiveColor(Graphics::TColor Value);
 	MESSAGE void __fastcall EMSetRect(Messages::TMessage &Message);
 	MESSAGE void __fastcall EMSetRectNP(Messages::TMessage &Message);
-	void __fastcall SetMultiLine(bool Value);
 	virtual void __fastcall SetActiveBorderType(const Elvclutils::TElFlatBorderType Value);
 	virtual void __fastcall SetInactiveBorderType(const Elvclutils::TElFlatBorderType Value);
 	HIDESBASE MESSAGE void __fastcall CMEnabledChanged(Messages::TMessage &Message);
 	virtual void __fastcall SetUseXPThemes(const bool Value);
 	void __fastcall SetCharCase(TElEditCharCase Value);
+	void __fastcall SetSelection(int SelX, int SelY);
+	void __fastcall UnSelect(void);
+	void __fastcall DeleteSelection(void);
 	HIDESBASE MESSAGE void __fastcall WMSetCursor(Messages::TWMSetCursor &Message);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
 	void __fastcall SetBottomAlign(void);
+	HIDESBASE WideString __fastcall GetText();
+	WideString __fastcall ConvertToCRLF(WideString Str);
+	void __fastcall SetCaretX(const int value);
+	void __fastcall SetCaretY(const int value);
+	Types::TPoint __fastcall GetCaretXY();
+	void __fastcall SetCaretXY(const Types::TPoint &value);
+	void __fastcall CorrectLeftChar(void);
+	void __fastcall SetCaretPosition(const int X, const int Y);
+	void __fastcall SetMultiline(const bool Value);
+	void __fastcall SetMaxLevel(const int Value);
+	int __fastcall GetMaxLevel(void);
+	MESSAGE void __fastcall EMGetSel(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMGetLine(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMGetLineCount(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMLineIndex(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMSetSel(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMReplaceSel(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMGetFirstVisibleLine(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMScroll(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMLineScroll(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMScrollCaret(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMLineFromChar(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMPosFromChar(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMCanUndo(Messages::TMessage &Message);
+	MESSAGE void __fastcall EMUndo(Messages::TMessage &Message);
+	void __fastcall SetChangeDisabledText(bool Value);
+	virtual void __fastcall SetEditRect(const Types::TRect &Value);
 	__property bool RTLContent = {read=FRTLContent, write=FRTLContent, nodefault};
 	__property Graphics::TBitmap* Background = {read=FBackground, write=SetBackground};
 	__property bool UseBackground = {read=FUseBackground, write=SetUseBackground, default=0};
@@ -268,23 +462,18 @@ protected:
 	__property bool ReadOnly = {read=FReadOnly, write=SetReadOnly, default=0};
 	__property bool WantTabs = {read=FWantTabs, write=FWantTabs, default=0};
 	__property Classes::TAlignment Alignment = {read=FAlignment, write=SetAlignment, nodefault};
-	__property int LeftMargin = {read=FLeftMargin, write=SetLeftMargin, default=1};
-	__property int RightMargin = {read=FRightMargin, write=SetRightMargin, default=2};
 	__property Forms::TBorderStyle BorderStyle = {read=FBorderStyle, write=SetBorderStyle, nodefault};
 	__property bool AutoSelect = {read=FAutoSelect, write=FAutoSelect, default=0};
 	__property bool HideSelection = {read=FHideSelection, write=SetHideSelection, default=1};
 	__property Classes::TNotifyEvent OnResize = {read=FOnResize, write=FOnResize};
-	__property Types::TRect EditRect = {read=FEditRect, write=SetEditRect};
+	__property Types::TRect EditRect = {read=FEditRect, write=DoSetEditRect};
 	__property int TabSpaces = {read=FTabSpaces, write=SetTabSpaces, default=4};
-	__property bool Multiline = {read=FMultiLine, write=SetMultiLine, default=0};
 	__property Elimgfrm::TElImageForm* ImageForm = {read=FImgForm, write=SetImageForm};
 	__property Elvclutils::TElFlatBorderType ActiveBorderType = {read=FActiveBorderType, write=SetActiveBorderType, default=1};
 	__property bool Flat = {read=FFlat, write=SetFlat, default=0};
 	__property Elvclutils::TElFlatBorderType InactiveBorderType = {read=FInactiveBorderType, write=SetInactiveBorderType, default=3};
-	__property bool WordWrap = {read=FWordWrap, write=SetWordWrap, default=1};
+	__property bool WordWrap = {read=FWordWrap, write=SetWordWrap, default=0};
 	__property Stdctrls::TScrollStyle ScrollBars = {read=FScrollBars, write=SetScrollBars, default=0};
-	__property int TopLine = {read=FTopLine, write=SetTopLine, default=0};
-	__property int LeftChar = {read=FLeftChar, write=SetLeftChar, default=0};
 	__property Classes::TNotifyEvent OnMouseEnter = {read=FOnMouseEnter, write=FOnMouseEnter};
 	__property Classes::TNotifyEvent OnMouseLeave = {read=FOnMouseLeave, write=FOnMouseLeave};
 	__property bool AutoSize = {read=FAutoSize, write=SetAutoSize, default=1};
@@ -294,39 +483,55 @@ protected:
 	__property Graphics::TColor LineBorderInactiveColor = {read=FLineBorderInactiveColor, write=SetLineBorderInactiveColor, nodefault};
 	__property bool FlatFocusedScrollBars = {read=FFlatFocusedScrollBars, write=SetFlatFocusedScrollBars, default=0};
 	__property TElEditCharCase CharCase = {read=FCharCase, write=SetCharCase, default=0};
-	__property TabStop  = {default=1};
+	__property int MaxUndoLevel = {read=GetMaxLevel, write=SetMaxLevel, default=10};
+	__property bool Multiline = {read=FMultiline, write=SetMultiline, default=0};
+	__property bool ChangeDisabledText = {read=FChangeDisabledText, write=SetChangeDisabledText, default=0};
 	
 public:
 	__fastcall virtual TCustomElEdit(Classes::TComponent* AOwner);
 	__fastcall virtual ~TCustomElEdit(void);
-	int __fastcall GetNextWord(WideString FText, int CharNum);
-	int __fastcall GetPrevWord(WideString FText, int CharNum);
-	Types::TPoint __fastcall PosFromChar(WideString FText, int CharNum);
-	int __fastcall CharFromPos(WideString FText, const Types::TPoint &APos);
-	void __fastcall LineFromChar(WideString FText, int CharNum, int &LineNum, int &ColNum);
-	int __fastcall CharFromLine(int LineNum, int ColNum);
+	Types::TPoint __fastcall GetNextWord(const Types::TPoint &ACaret);
+	Types::TPoint __fastcall GetPrevWord(const Types::TPoint &ACaret);
+	Types::TPoint __fastcall CaretFromChar(const int CharNum);
+	int __fastcall CharFromCaret(const int X, const int Y);
+	virtual Types::TPoint __fastcall PosFromCaret(const int X, const int Y);
+	virtual void __fastcall CaretFromPos(const Types::TPoint &APos, int &ACaretX, int &ACaretY);
 	void __fastcall SelectAll(void);
 	void __fastcall CutToClipboard(void);
 	void __fastcall CopyToClipboard(void);
 	void __fastcall PasteFromClipboard(void);
 	void __fastcall Undo(void);
-	__property int SelStart = {read=FSelStart, write=SetSelStart, nodefault};
+	void __fastcall Scroll(TElEditScrollDir ScrollDir);
+	void __fastcall ScrollCaret(void);
+	bool __fastcall GetCanUndo(void);
+	virtual void __fastcall SetBounds(int ALeft, int ATop, int AWidth, int AHeight);
+	__property int SelStart = {read=GetSelStart, write=SetSelStart, nodefault};
 	__property int SelLength = {read=FSelLength, write=SetSelLength, nodefault};
 	__property WideString SelText = {read=GetSelectedText, write=SetSelText};
 	__property bool Modified = {read=FModified, write=SetModified, default=0};
 	__property WideString SelectedText = {read=GetSelectedText};
 	__property bool MouseOver = {read=FMouseOver, nodefault};
 	__property int LinesCount = {read=GetLinesCount, nodefault};
+	__property int TopLine = {read=FTopLine, write=SetTopLine, nodefault};
+	__property int LeftChar = {read=FLeftChar, write=SetLeftChar, nodefault};
+	__property int LeftMargin = {read=FLeftMargin, write=SetLeftMargin, default=1};
+	__property int RightMargin = {read=FRightMargin, write=SetRightMargin, default=2};
 	__property bool HandleDialogKeys = {read=FHandleDialogKeys, write=FHandleDialogKeys, default=0};
-	__property WideString Text = {read=FText, write=SetText};
+	__property WideString Text = {read=GetText, write=SetText};
 	__property int TopMargin = {read=FTopMargin, write=SetTopMargin, default=1};
 	__property bool AlignBottom = {read=FAlignBottom, write=SetAlignBottom, default=1};
+	__property int CaretX = {read=FCaretX, write=SetCaretX, nodefault};
+	__property int CaretY = {read=FCaretY, write=SetCaretY, nodefault};
+	__property Types::TPoint CaretXY = {read=GetCaretXY, write=SetCaretXY};
+	__property bool CanUndo = {read=GetCanUndo, nodefault};
 	
 __published:
 	__property Elscrollbar::TElScrollBarStyles* VertScrollBarStyles = {read=FVertScrollBarStyles, write=SetVertScrollBarStyles};
 	__property Elscrollbar::TElScrollBarStyles* HorzScrollBarStyles = {read=FHorzScrollBarStyles, write=SetHorzScrollBarStyles};
 	__property bool UseCustomScrollBars = {read=FUseCustomScrollBars, write=SetUseCustomScrollBars, nodefault};
+	__property bool NotifyUserChangeOnly = {read=FNotifyUserChangeOnly, write=FNotifyUserChangeOnly, nodefault};
 	__property WideString Hint = {read=FHint, write=SetHint};
+	__property TabStop  = {default=1};
 	__property UseXPThemes  = {default=1};
 public:
 	#pragma option push -w-inl
@@ -343,26 +548,48 @@ class PASCALIMPLEMENTATION TElEditStrings : public Elunicodestrings::TElWideStri
 private:
 	TCustomElEdit* FElEdit;
 	Classes::TStringList* RealStrings;
-	bool FInReformat;
-	bool FToText;
-	void __fastcall ListChange(System::TObject* Sender);
+	TElParagraphList* FParagraphs;
 	
 protected:
 	int FMaxLen;
 	int FIdxMaxLen;
+	WideString FMaxStr;
 	WideString FSaveStr;
+	Classes::TNotifyEvent FOnChange;
 	void __fastcall Reformat(void);
+	virtual void __fastcall Changed(void);
 	virtual WideString __fastcall Get(int Index);
-	WideString __fastcall GetCR(int Index);
+	virtual void __fastcall Put(int Index, const WideString S);
+	virtual void __fastcall SetTextStr(const WideString Value);
+	virtual WideString __fastcall GetTextStr();
+	virtual void __fastcall PutObject(int Index, System::TObject* AObject);
+	virtual System::TObject* __fastcall GetObject(int Index);
+	virtual int __fastcall GetCount(void);
+	void __fastcall ReformatParagraph(int Index);
+	void __fastcall ReCount(int Index);
+	WideString __fastcall GetParaString(int Index);
+	void __fastcall SetParaString(int Index, const WideString Value);
+	int __fastcall GetParaCount(void);
 	
 public:
 	__fastcall TElEditStrings(void);
 	__fastcall virtual ~TElEditStrings(void);
-	virtual void __fastcall SetTextStr(const WideString Value);
-	WideString __fastcall GetReText();
-	WideString __fastcall CutString(WideString &S, int Len, bool &RealStr);
+	virtual void __fastcall AddStrings(Elunicodestrings::TElWideStrings* Strings);
 	virtual int __fastcall Add(const WideString S);
 	virtual void __fastcall Insert(int Index, const WideString S);
+	void __fastcall InsertText(int &ACaretX, int &ACaretY, const WideString S);
+	virtual bool __fastcall Find(const WideString S, int &Index);
+	virtual void __fastcall Clear(void);
+	virtual void __fastcall Delete(int Index);
+	virtual void __fastcall Exchange(int Index1, int Index2);
+	void __fastcall IndexToParagraph(int index, int &Paragraph, int &ParaIndex);
+	void __fastcall CaretToParagraph(int ACaretX, int ACaretY, int &Paragraph, int &ParaOffs);
+	void __fastcall CaretFromParagraph(int Paragraph, int ParaOffs, int &ACaretX, int &ACaretY);
+	WideString __fastcall GetReText();
+	WideString __fastcall CutString(WideString &S, int Len, bool &RealStr);
+	__property WideString ParagraphStrings[int Index] = {read=GetParaString, write=SetParaString};
+	__property int ParagraphCount = {read=GetParaCount, nodefault};
+	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
 };
 
 
@@ -374,9 +601,11 @@ class PASCALIMPLEMENTATION TElEdit : public TCustomElEdit
 __published:
 	__property AutoSize  = {default=1};
 	__property Alignment ;
+	__property AlignBottom  = {default=1};
 	__property Background ;
 	__property BorderSides ;
 	__property CharCase  = {default=0};
+	__property ChangeDisabledText  = {default=0};
 	__property UseBackground  = {default=0};
 	__property RTLContent ;
 	__property PasswordChar ;
@@ -395,14 +624,15 @@ __published:
 	__property TabSpaces  = {default=4};
 	__property Lines  = {stored=false};
 	__property Text ;
-	__property Multiline  = {default=0};
 	__property ImageForm ;
 	__property ActiveBorderType  = {default=1};
 	__property Flat  = {default=0};
 	__property InactiveBorderType  = {default=3};
 	__property LineBorderActiveColor ;
 	__property LineBorderInactiveColor ;
-	__property WordWrap  = {default=1};
+	__property MaxUndoLevel  = {default=10};
+	__property WordWrap  = {default=0};
+	__property Multiline  = {default=0};
 	__property ScrollBars  = {default=0};
 	__property VertScrollBarStyles ;
 	__property HorzScrollBarStyles ;
@@ -465,10 +695,12 @@ public:
 
 //-- var, const, procedure ---------------------------------------------------
 extern PACKAGE bool RepaintAll;
+extern PACKAGE bool FlagEdit;
 static const wchar_t ElFSpace = wchar_t(0x20);
 static const wchar_t ElFTab = wchar_t(0x9);
 static const wchar_t ElFCR = wchar_t(0xd);
 static const wchar_t ElFLF = wchar_t(0xa);
+#define ElFCRLF L"\r\n"
 static const Word ID_UNDO = 0x304;
 static const Word ID_CUT = 0x300;
 static const Word ID_COPY = 0x301;

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -144,7 +144,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="WIN32;NDEBUG;DRENDER;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -247,7 +247,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK/boost_1_30_0;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
+				AdditionalIncludeDirectories="../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI"
 				PreprocessorDefinitions="MIXED;WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -485,40 +485,103 @@
 			Name="Details"
 			>
 			<File
-				RelativePath="DetailFormat.h"
+				RelativePath="..\xrRender\DetailFormat.h"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager.h"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager_CACHE.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager_Decompress.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager_soft.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailManager_VS.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailModel.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\xrRender\DetailModel.h"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

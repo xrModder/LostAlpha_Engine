@@ -17,7 +17,6 @@
 #include <ElBtnCtl.hpp>	// Pascal unit
 #include <ElVCLUtils.hpp>	// Pascal unit
 #include <ElSndMap.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <ElImgFrm.hpp>	// Pascal unit
 #include <ElUxTheme.hpp>	// Pascal unit
 #include <ElTmSchema.hpp>	// Pascal unit
@@ -32,6 +31,7 @@
 #include <Windows.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <Controls.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
 #include <System.hpp>	// Pascal unit
 
@@ -91,7 +91,6 @@ private:
 	void __fastcall SetFlat(bool newValue);
 	void __fastcall SetImages(Controls::TImageList* Value);
 	void __fastcall SetUseImageList(bool Value);
-	void __fastcall SetLinkPopupMenu(Menus::TPopupMenu* newValue);
 	
 protected:
 	bool FFlatAlways;
@@ -121,6 +120,7 @@ protected:
 	HIDESBASE virtual void __fastcall SetCursor(Controls::TCursor newValue);
 	Types::TRect __fastcall CalcTextRect();
 	DYNAMIC void __fastcall MouseMove(Classes::TShiftState Shift, int X, int Y);
+	void __fastcall SetLinkPopupMenu(Menus::TPopupMenu* newValue);
 	virtual void __fastcall SetLinkColor(Graphics::TColor newValue);
 	virtual void __fastcall SetLinkStyle(Graphics::TFontStyles newValue);
 	void __fastcall DoLinkPopup(const Types::TPoint &MousePos);
@@ -146,7 +146,7 @@ public:
 	DYNAMIC void __fastcall Click(void);
 	__property bool Modified = {read=FModified, write=FModified, nodefault};
 	__property Controls::TCursor Cursor = {read=FCursor, write=SetCursor, nodefault};
-	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, nodefault};
+	__property Graphics::TColor LinkColor = {read=FLinkColor, write=SetLinkColor, default=16711680};
 	__property Menus::TPopupMenu* LinkPopupMenu = {read=FLinkPopupMenu, write=SetLinkPopupMenu};
 	__property Graphics::TFontStyles LinkStyle = {read=FLinkStyle, write=SetLinkStyle, nodefault};
 	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
@@ -197,7 +197,7 @@ __published:
 	__property Images ;
 	__property Stdctrls::TCheckBoxState State = {read=FState, write=SetState, default=0};
 	__property Cursor ;
-	__property LinkColor ;
+	__property LinkColor  = {default=16711680};
 	__property LinkPopupMenu ;
 	__property LinkStyle ;
 	__property OnImageNeeded ;
@@ -278,7 +278,7 @@ __published:
 	__property AutoSize  = {default=1};
 	__property Checked  = {default=0};
 	__property Cursor ;
-	__property LinkColor ;
+	__property LinkColor  = {default=16711680};
 	__property LinkPopupMenu ;
 	__property LinkStyle ;
 	__property OnImageNeeded ;

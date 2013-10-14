@@ -47,6 +47,22 @@
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(IParticleCustom,	IRenderVisual)
 
+		DECLARE_SPECIALIZATION			(CKinematics,		CKinematicsAnimated,		dcast_PKinematics);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(CKinematics,		CKinematicsAnimated)
+
+		DECLARE_SPECIALIZATION			(CKinematicsAnimated,	CKinematics,		dcast_PKinematicsAnimated);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(CKinematicsAnimated,	CKinematics)
+
+		DECLARE_SPECIALIZATION			(IRender_Visual,		CKinematicsAnimated,		dcast_RenderVisual);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematicsAnimated)
+
+		DECLARE_SPECIALIZATION			(IRender_Visual,		CKinematics,		dcast_RenderVisual);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(IRender_Visual,		IKinematics)
+
 #		ifndef DO_NOT_DECLARE_TYPE_LIST
 			class ENGINE_API ISpatial;
 			namespace Feel { class ENGINE_API Sound; }
@@ -193,6 +209,10 @@
 		DECLARE_SPECIALIZATION	(CHolderCustom,		CGameObject,	cast_holder_custom);
 #		undef cast_type_list
 #		define cast_type_list save_cast_list	(CHolderCustom,	CGameObject)
+
+		DECLARE_SPECIALIZATION	(CMountedTurret,	CGameObject,	cast_mounted_turret);
+#		undef cast_type_list
+#		define cast_type_list save_cast_list	(CMountedTurret,	CGameObject)
 
 		DECLARE_SPECIALIZATION	(CAttachmentOwner,	CGameObject,	cast_attachment_owner);
 #		undef cast_type_list

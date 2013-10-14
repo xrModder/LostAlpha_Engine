@@ -32,6 +32,10 @@ namespace Eldblookupctrls
 //-- type declarations -------------------------------------------------------
 class DELPHICLASS TElDBLookupListControl;
 class DELPHICLASS TElDBLookupListBox;
+typedef DynamicArray<Classes::TStrings* >  ElDBLookupCtrls__4;
+
+typedef DynamicArray<int >  ElDBLookupCtrls__5;
+
 class PASCALIMPLEMENTATION TElDBLookupListBox : public Elactrls::TElAdvancedListBox 
 {
 	typedef Elactrls::TElAdvancedListBox inherited;
@@ -39,6 +43,10 @@ class PASCALIMPLEMENTATION TElDBLookupListBox : public Elactrls::TElAdvancedList
 private:
 	TElDBLookupListControl* FElDBLookupControl;
 	Classes::TNotifyEvent FOnChange;
+	bool FReadOnly;
+	int FFieldCount;
+	DynamicArray<Classes::TStrings* >  FFields;
+	DynamicArray<int >  FFieldWidth;
 	void __fastcall SetDataSource(Db::TDataSource* Value);
 	void __fastcall SetListSource(Db::TDataSource* Value);
 	void __fastcall SetDataFieldName(const AnsiString Value);
@@ -56,10 +64,19 @@ private:
 	Variant __fastcall GetKeyValue();
 	AnsiString __fastcall GetSelectedString();
 	HIDESBASE MESSAGE void __fastcall WMLButtonDown(Messages::TWMMouse &Message);
+	HIDESBASE MESSAGE void __fastcall WMLButtonDblClk(Messages::TWMMouse &Message);
 	HIDESBASE MESSAGE void __fastcall WMChar(Messages::TWMKey &Message);
+	Classes::TStrings* __fastcall GetFields(int Index);
+	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Message);
+	HIDESBASE MESSAGE void __fastcall WMKeyDown(Messages::TWMKey &Message);
 	
 protected:
+	virtual void __fastcall DrawItem(int Index, const Types::TRect &Rect, Windows::TOwnerDrawState State);
 	DYNAMIC void __fastcall MouseDown(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
+	void __fastcall SetFieldCount(int Value);
+	void __fastcall ClearFields(void);
+	HIDESBASE void __fastcall AddItem(const AnsiString Value, int Field);
+	__property Classes::TStrings* Fields[int Index] = {read=GetFields};
 	
 public:
 	__fastcall virtual TElDBLookupListBox(Classes::TComponent* AOwner);
@@ -78,6 +95,7 @@ __published:
 	__property AnsiString ListField = {read=GetListFieldName, write=SetListFieldName};
 	__property AnsiString KeyField = {read=GetKeyFieldName, write=SetKeyFieldName};
 	__property Classes::TNotifyEvent OnChange = {read=FOnChange, write=FOnChange};
+	__property bool ReadOnly = {read=FReadOnly, write=FReadOnly, default=0};
 public:
 	#pragma option push -w-inl
 	/* TWinControl.CreateParented */ inline __fastcall TElDBLookupListBox(HWND ParentWindow) : Elactrls::TElAdvancedListBox(ParentWindow) { }
@@ -120,7 +138,11 @@ public:
 
 class DELPHICLASS TElDBLookUpComboControl;
 class DELPHICLASS TElDBLookupComboBox;
-typedef DynamicArray<bool >  ElDBLookupCtrls__5;
+typedef DynamicArray<bool >  ElDBLookupCtrls__7;
+
+typedef DynamicArray<Classes::TStrings* >  ElDBLookupCtrls__8;
+
+typedef DynamicArray<int >  ElDBLookupCtrls__9;
 
 class PASCALIMPLEMENTATION TElDBLookupComboBox : public Elactrls::TElAdvancedComboBox 
 {
@@ -130,6 +152,10 @@ private:
 	TElDBLookUpComboControl* FElDBLookupControl;
 	DynamicArray<bool >  FSelected;
 	int FMaxItems;
+	int FFieldCount;
+	DynamicArray<Classes::TStrings* >  FFields;
+	DynamicArray<int >  FFieldWidth;
+	bool FReadOnly;
 	void __fastcall SetDataSource(Db::TDataSource* Value);
 	void __fastcall SetListSource(Db::TDataSource* Value);
 	void __fastcall SetDataFieldName(const AnsiString Value);
@@ -138,7 +164,6 @@ private:
 	void __fastcall SetKeyValue(const Variant &Value);
 	void __fastcall SetListFieldIndex(int Value);
 	void __fastcall SetSelected(int index, bool Value);
-	HIDESBASE void __fastcall AddItem(const AnsiString Value);
 	bool __fastcall GetSelected(int index);
 	Db::TField* __fastcall GetField(void);
 	int __fastcall GetListFieldIndex(void);
@@ -150,11 +175,21 @@ private:
 	Variant __fastcall GetKeyValue();
 	AnsiString __fastcall GetSelectedString();
 	HIDESBASE MESSAGE void __fastcall WMChar(Messages::TWMKey &Message);
+	Classes::TStrings* __fastcall GetFields(int Index);
+	HIDESBASE MESSAGE void __fastcall WMMouseWheel(Messages::TWMMouseWheel &Message);
+	void __fastcall SetHScrollBarWidth(void);
+	HIDESBASE MESSAGE void __fastcall CMFontChanged(Messages::TMessage &Msg);
 	
 protected:
 	virtual void __fastcall EditWndProc(Messages::TMessage &Message);
 	virtual void __fastcall ListWndProc(Messages::TMessage &Message);
 	virtual void __fastcall DrawItem(int Index, const Types::TRect &Rect, Windows::TOwnerDrawState State);
+	void __fastcall SetFieldCount(int Value);
+	void __fastcall ClearFields(void);
+	HIDESBASE void __fastcall AddItem(const AnsiString Value, int Field);
+	__property Classes::TStrings* Fields[int Index] = {read=GetFields};
+	DYNAMIC void __fastcall MouseDown(Controls::TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
+	DYNAMIC void __fastcall Change(void);
 	
 public:
 	__fastcall virtual TElDBLookupComboBox(Classes::TComponent* AOwner);
@@ -173,6 +208,7 @@ __published:
 	__property AnsiString DataField = {read=GetDataFieldName, write=SetDataFieldName};
 	__property AnsiString ListField = {read=GetListFieldName, write=SetListFieldName};
 	__property AnsiString KeyField = {read=GetKeyFieldName, write=SetKeyFieldName};
+	__property bool ReadOnly = {read=FReadOnly, write=FReadOnly, default=0};
 public:
 	#pragma option push -w-inl
 	/* TWinControl.CreateParented */ inline __fastcall TElDBLookupComboBox(HWND ParentWindow) : Elactrls::TElAdvancedComboBox(ParentWindow) { }

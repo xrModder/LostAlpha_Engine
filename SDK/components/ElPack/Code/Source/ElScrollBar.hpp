@@ -237,7 +237,7 @@ protected:
 	__property TElScrollThumbMode ThumbMode = {read=FThumbMode, write=SetThumbMode, default=1};
 	__property int ThumbSize = {read=GetThumbSize, write=SetThumbSize, default=0};
 	__property int MinThumbSize = {read=FMinThumbSize, write=SetMinThumbSize, default=4};
-	__property int Page = {read=FPage, write=SetPage, default=1};
+	__property int Page = {read=FPage, write=SetPage, default=14};
 	__property bool SecondaryButtons = {read=FSecondaryButtons, write=SetSecondaryButtons, default=0};
 	__property TElSecButtonsKind SecondBtnKind = {read=FSecondBtnKind, write=SetSecondBtnKind, default=0};
 	__property bool NoDisableButtons = {read=FNoDisableButtons, write=SetNoDisableButtons, default=0};
@@ -300,6 +300,7 @@ class PASCALIMPLEMENTATION TElScrollBarStyles : public Classes::TPersistent
 private:
 	TCustomElScrollBar* FElScrollBar;
 	Classes::TNotifyEvent FOnChange;
+	Controls::TControl* FOwner;
 	int __fastcall GetButtonSize(void);
 	void __fastcall SetButtonSize(int newValue);
 	bool __fastcall GetNoDisableButtons(void);
@@ -366,7 +367,7 @@ protected:
 	void __fastcall SetSysBkColor(bool Value);
 	
 public:
-	__fastcall TElScrollBarStyles(TCustomElScrollBar* AControl);
+	__fastcall TElScrollBarStyles(TCustomElScrollBar* AControl, Controls::TControl* AOwner);
 	virtual void __fastcall Assign(Classes::TPersistent* Source);
 	
 __published:
@@ -439,7 +440,7 @@ __published:
 	__property MinThumbSize  = {default=4};
 	__property NoDisableButtons  = {default=0};
 	__property NoSunkenThumb  = {default=0};
-	__property Page  = {default=1};
+	__property Page  = {default=14};
 	__property SecondaryButtons  = {default=0};
 	__property SecondBtnKind  = {default=0};
 	__property ShowLeftArrows  = {default=1};
@@ -455,6 +456,7 @@ __published:
 	__property Color ;
 	__property Ctl3D ;
 	__property Enabled  = {default=1};
+	__property ParentFont  = {default=1};
 	__property ParentColor  = {default=0};
 	__property ParentShowHint  = {default=1};
 	__property ShowHint ;

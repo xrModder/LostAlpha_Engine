@@ -40,6 +40,9 @@
 //#include "../xrRender/resourcemanager.h"
 #include "doug_lea_memory_allocator.h"
 #include "cameralook.h"
+#include "inventory.h"
+#include "WeaponMagazined.h"
+
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
 
@@ -84,6 +87,12 @@ extern	BOOL	g_show_wnd_rect2			;
 extern	float	g_fTimeFactor;
 int				g_keypress_on_start	= 1;
 
+xr_token			qhud_type_token		[ ]={
+	{ "hud_1",					1},
+	{ "hud_2",					2},
+	{ "hud_3",					3},
+	{ 0,						0}
+};
 
 void register_mp_console_commands();
 //-----------------------------------------------------------
@@ -91,6 +100,7 @@ void register_mp_console_commands();
 		BOOL	g_bCheckTime			= FALSE;
 		int		net_cl_inputupdaterate	= 50;
 		Flags32	g_mt_config				= {mtLevelPath | mtDetailPath | mtMap | mtObjectHandler | mtSoundPlayer | mtAiVision | mtBullets | mtLUA_GC | mtLevelSounds | mtALife};
+
 #ifdef DEBUG
 		Flags32	dbg_net_Draw_Flags		= {0};
 #endif
@@ -690,6 +700,47 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 			return;
 
 		F->w_printf				("%s %s\r\n",cName,g_language.c_str()); 
+	}
+
+	virtual void	Status	(TStatus& S)
+	{	
+		xr_sprintf	(S,"%s",g_language.c_str());	  
+	}
+};
+
+extern CUIXml*			pWpnScopeXml;
+
+class	CCC_UiHud_Mode		: public CCC_Token
+{
+public:
+	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N,V,T)	{}	;
+
+	virtual void	Execute	(LPCSTR args)	{
+		CCC_Token::Execute	(args);
+
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+		{
+			if (*value >= 1 && *value <= 3)
+			{
+				HUD().GetGameUI()->HideShownDialogs(); //skyloader: скрываем активные диалоги, ибо будем их дестроить
+				HUD().OnScreenResolutionChanged(); //юзанем чужую функу для maingame :)
+				HUD().GetGameUI()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
+				//HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
+				
+				CActor		*actor = Actor(); //перезапускаем текстуры прицелов для оружия в инвентаре
+				if (actor)
+				{
+					TIItemContainer::iterator it = actor->inventory().m_all.begin();
+					TIItemContainer::iterator it_e = actor->inventory().m_all.end();
+					for(;it!=it_e;++it) 
+					{
+						CWeaponMagazined *pWeaponMagazined = smart_cast<CWeaponMagazined*>(*it);
+						if (pWeaponMagazined)
+							pWeaponMagazined->InitAddons();
+					}
+				}
+			}
+		}
 	}
 };
 
@@ -1541,6 +1592,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
+	CMD3(CCC_UiHud_Mode,			"ui_hud_type",	&ui_hud_type,	qhud_type_token);
+
 	// alife
 #ifdef DEBUG
 	CMD1(CCC_ALifePath,			"al_path"				);		// build path
@@ -1650,9 +1703,10 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
 #endif //DRENDER
 
-#ifndef MASTER_GOLD
-	CMD3(CCC_Mask,				"ai_ignore_actor",		&psAI_Flags,	aiIgnoreActor);
-#endif // MASTER_GOLD
+
+#ifdef DEBUG
+	CMD3(CCC_Mask,				"ai_ignore_actor",		&psActorFlags,	AF_INVISIBLE);
+#endif // DEBUG
 
 	// Physics
 	CMD1(CCC_PHFps,				"ph_frequency"																					);

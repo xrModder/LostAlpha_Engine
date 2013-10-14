@@ -411,23 +411,23 @@ bool CVisualMemoryManager::visible				(const CGameObject *game_object, float tim
 extern Flags32 psActorFlags;
 bool   CVisualMemoryManager::should_ignore_object (CObject const* object) const
 {
-	if ( !object )
-	{
+	if (!object)
 		return true;
-	}
 
-	if ( smart_cast<CActor const*>(object) && psActorFlags.test(AF_INVISIBLE) )
-	{
+	if (smart_cast<CActor const*>(object) && psActorFlags.test(AF_INVISIBLE) )
 		return	true;
-	}
-	else
-	
-	if ( CBaseMonster const* const monster = smart_cast<CBaseMonster const*>(object) )
-	{
-		if ( !monster->can_be_seen()) return true;
 
-		//CZombie	*zombie = smart_cast<CZombie*>(object);
-		//if (zombie && zombie->fake_death_is_active()) return true;
+	CBaseMonster const* monster = smart_cast<CBaseMonster const*>(object);
+	
+	if (monster)
+	{
+		if (!monster->can_be_seen())
+			return true;
+
+		CZombie const* zombie = smart_cast<CZombie const*>(object);
+
+		if (zombie && zombie->fake_death_is_active())
+			return true;
 	}
 
 	return false;

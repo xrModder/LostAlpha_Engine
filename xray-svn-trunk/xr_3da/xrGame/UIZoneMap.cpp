@@ -30,10 +30,17 @@ CUIZoneMap::~CUIZoneMap()
 void CUIZoneMap::Init()
 {
 
-	CUIXml							uiXml;
-	uiXml.Load						(CONFIG_PATH, UI_PATH, "zone_map.xml");
+	CUIXml uiXml;
+	string128		XmlName;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
 
-	// load map background
+	xr_sprintf		(XmlName, "zone_map_%d.xml", ui_hud_type);
+
+	bool xml_result			= uiXml.Load(CONFIG_PATH, UI_PATH, XmlName);
+	R_ASSERT3(xml_result, "xml file not found", XmlName);
+
+	// load map backgroundwwwwwwwwwwwww
 	CUIXmlInit xml_init;
 	xml_init.InitStatic			(uiXml, "minimap:background", 0, &m_background);
 

@@ -127,7 +127,7 @@ private:
 	Controls::TStartDragEvent FOnStartDrag_FTree;
 	void __fastcall ProcessSelect(void);
 	Eltree::TElTreeItem* __fastcall GetSelection(void);
-	void __fastcall SetSelection(Eltree::TElTreeItem* newValue);
+	HIDESBASE void __fastcall SetSelection(Eltree::TElTreeItem* newValue);
 	Ellist::TElList* __fastcall GetSelectionList(void);
 	void __fastcall SetAutoLineHeight_FTree(bool newValue);
 	bool __fastcall GetAutoLineHeight_FTree(void);
@@ -471,6 +471,7 @@ private:
 	HIDESBASE MESSAGE void __fastcall WMSysKeyDown(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall WMSysKeyUp(Messages::TMessage &Message);
 	HIDESBASE MESSAGE void __fastcall WMGetDlgCode(Messages::TWMNoParams &Message);
+	HIDESBASE MESSAGE void __fastcall CMFontChanged(Messages::TMessage &Message);
 	
 protected:
 	bool FCloseOnClick;
@@ -532,7 +533,7 @@ public:
 	__property Eltree::TElTreeItem* Selection = {read=GetSelection, write=SetSelection};
 	
 __published:
-	__property ButtonWidth  = {stored=IsButtonWidthStored};
+	__property ButtonWidth  = {stored=IsButtonWidthStored, default=15};
 	__property TopMargin  = {default=1};
 	__property LeftMargin  = {default=1};
 	__property RightMargin  = {default=2};
@@ -547,15 +548,15 @@ __published:
 	__property HideSelection  = {default=1};
 	__property TabSpaces  = {default=4};
 	__property ImageForm ;
-	__property WordWrap  = {default=1};
+	__property WordWrap  = {default=0};
 	__property OnMouseEnter ;
 	__property OnMouseLeave ;
 	__property OnResize ;
 	__property OnChange ;
 	__property OnSelectionChange ;
 	__property ActiveBorderType  = {default=1};
-	__property ButtonFlat ;
-	__property ButtonColor ;
+	__property ButtonFlat  = {default=0};
+	__property ButtonColor  = {default=-2147483633};
 	__property Flat  = {default=0};
 	__property InactiveBorderType  = {default=3};
 	__property LineBorderActiveColor ;
@@ -645,7 +646,7 @@ __published:
 	__property Elini::TElIniFile* Storage = {read=GetStorage_FTree, write=SetStorage_FTree};
 	__property AnsiString StoragePath = {read=GetStoragePath_FTree, write=SetStoragePath_FTree};
 	__property int DropWidth = {read=FDropWidth, write=SetDropWidth, nodefault};
-	__property int DropHeight = {read=FDropHeight, write=SetDropHeight, nodefault};
+	__property int DropHeight = {read=FDropHeight, write=SetDropHeight, default=80};
 	__property int LineHeight = {read=GetLineHeight_FTree, write=SetLineHeight_FTree, nodefault};
 	__property Graphics::TColor LinesColor = {read=GetLinesColor_FTree, write=SetLinesColor_FTree, nodefault};
 	__property Graphics::TPenStyle LinesStyle = {read=GetLinesStyle_FTree, write=SetLinesStyle_FTree, nodefault};
@@ -819,6 +820,7 @@ class PASCALIMPLEMENTATION TDropdownElTree : public Eltree::TCustomElTree
 private:
 	TElTreeCombo* FOwner;
 	MESSAGE void __fastcall WMMouseActivate(Messages::TMessage &Msg);
+	HIDESBASE MESSAGE void __fastcall CMParentFontChanged(Messages::TMessage &Message);
 	
 protected:
 	virtual void __fastcall CreateParams(Controls::TCreateParams &Params);

@@ -253,6 +253,7 @@
 				AdditionalIncludeDirectories="../../SDK/dxsdk/include"
 				PreprocessorDefinitions="MIXED,WIN32;DEBUG;_WINDOWS;_USRDLL;XRCORE_EXPORTS;_SECURE_SCL=0"
 				StringPooling="true"
+				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="false"
@@ -1481,11 +1482,11 @@
 				Name="lzo"
 				>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xrCore\lzo_compressor.cpp"
+					RelativePath=".\lzo_compressor.cpp"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xrCore\lzo_compressor.h"
+					RelativePath=".\lzo_compressor.h"
 					>
 				</File>
 				<File

@@ -820,6 +820,9 @@ void CScriptGameObject::enable_attachable_item	(bool value)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAttachableItem : cannot access class member enable_attachable_item!");
 		return;
 	}
+
+	//Msg("enable_attachable_item for [%s][%d]", attachable_item->object().cNameSect().c_str(), value);
+
 	attachable_item->enable					(value);
 }
 
@@ -830,6 +833,9 @@ bool CScriptGameObject::attachable_item_enabled	() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAttachableItem : cannot access class member attachable_item_enabled!");
 		return								(false);
 	}
+
+	//Msg("attachable_item_enabled for [%s]", attachable_item->object().cNameSect().c_str());
+
 	return									(attachable_item->enabled());
 }
 
@@ -977,6 +983,29 @@ bool CScriptGameObject::movement_enabled()
 	return								(monster->movement().enabled());
 }
 
+void CScriptGameObject::SetTorchBatteryStatus(u16 value)
+{
+	CTorch *torch = smart_cast<CTorch*>(&object());
+	if (torch)
+	{
+		torch->SetBatteryStatus(value);
+	} else {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "This method works only for torch, check your code!");
+		return;
+	}
+}
+
+u16 CScriptGameObject::GetTorchBatteryStatus()
+{
+	CTorch *torch = smart_cast<CTorch*>(&object());
+	if (torch)
+		return (torch->GetBatteryStatus());
+	else {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "This method works only for torch, check your code!");
+		return -1;
+	}
+}
+
 void CScriptGameObject::SetTorchState(bool state)
 {
 	CActor *actor = smart_cast<CActor*>(&object());
@@ -986,7 +1015,7 @@ void CScriptGameObject::SetTorchState(bool state)
 		flashlight = actor->GetCurrentTorch();
 		if (!flashlight)
 		{
-			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor's flashlight does not exist!");
+			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor flashlight does not exist!");
 			return;
 		}
 		flashlight->Switch(state);
@@ -1007,7 +1036,7 @@ bool CScriptGameObject::GetTorchState(void)
 		flashlight = actor->GetCurrentTorch();
 		if (!flashlight)
 		{
-			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor's flashlight does not exist!");
+			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Actor flashlight does not exist!");
 			return false;
 		}
 		return flashlight->IsSwitchedOn();

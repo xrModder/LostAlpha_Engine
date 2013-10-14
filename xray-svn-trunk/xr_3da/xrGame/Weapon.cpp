@@ -1262,7 +1262,7 @@ void CWeapon::OnZoomOut()
 	StartHudInertion(false);
 }
 
-CUIStaticItem* CWeapon::ZoomTexture()
+CUIWindow* CWeapon::ZoomTexture()
 {
 	if (UseScopeTexture() && !g_bHudAdjustMode)
 		return m_UIScope;
@@ -1543,14 +1543,9 @@ void CWeapon::OnDrawUI()
 {
 	if(IsZoomed() && ZoomHideCrosshair())
 	{
-		CUIStaticItem* wnd = NULL;
-		if((wnd = ZoomTexture()) != NULL && !IsRotatingToZoom())
-		{
-			wnd->SetPos					(0,0);
-			wnd->SetTextureRect			(Frect().set(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT));
-			wnd->Render					();
-
-//			m_UILens.Draw();
+		if(ZoomTexture() && !IsRotatingToZoom()){
+			ZoomTexture()->Update	();
+			ZoomTexture()->Draw		();
 		}
 	}
 }

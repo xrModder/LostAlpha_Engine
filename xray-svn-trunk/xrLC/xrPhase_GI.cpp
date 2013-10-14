@@ -9,16 +9,16 @@ const	float			gi_reflect			= 0.9f;
 const	float			gi_clip				= 0.05f;
 const	u32				gi_maxlevel			= 4;
 //////////////////////////////////////////////////////////////////////////
-xr_vector<R_Light>*		task;
+static xr_vector<R_Light>*		task;
 xrCriticalSection		task_cs
 #ifdef PROFILE_CRITICAL_SECTIONS
 	(MUTEX_PROFILE_ID(task_cs))
 #endif // PROFILE_CRITICAL_SECTIONS
 ;
-u32						task_it;
+static u32						task_it;
 
 //////////////////////////////////////////////////////////////////////////
-Fvector		GetPixel_7x7		(CDB::RESULT& rpinf)
+static Fvector		GetPixel_7x7		(CDB::RESULT& rpinf)
 {
 	Fvector B,P,R={0,0,0};
 
@@ -26,13 +26,14 @@ Fvector		GetPixel_7x7		(CDB::RESULT& rpinf)
 	CDB::TRI& clT										= RCAST_Model->get_tris()[rpinf.id];
 	base_Face* F										= (base_Face*)(*((void**)&clT.dummy));
 	if (0==F)											return R;
-	Shader_xrLC&	SH									= F->Shader();
+	const Shader_xrLC&	SH									= F->Shader();
 	if (!SH.flags.bLIGHT_CastShadow)					return R;
 	if (!F->flags.bOpaque)								return R;	// don't use transparency
 
 	b_material& M	= pBuild->materials			[F->dwMaterial];
 	b_texture&	T	= pBuild->textures			[M.surfidx];
-	if (0==T.pSurface)									return R;
+	if (0==T.pSurface)									
+				return R;
 
 	// barycentric coords
 	// note: W,U,V order

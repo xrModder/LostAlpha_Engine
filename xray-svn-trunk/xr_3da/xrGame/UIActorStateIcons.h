@@ -9,13 +9,13 @@ class CUIActorStateIcons : public CUIStatic
 {		
 	private:
 		typedef		 CUIWindow			inherited;
-		enum	{ MAX_ICONS = 9, };
+		enum	{ MAX_ICONS = 28, };
 	public:
 		
 						CUIActorStateIcons				();
 		virtual			~CUIActorStateIcons				();
 		virtual void	Init							();
-				void	SetIcons						(Flags16 set);
+				void	SetIcons						(Flags32 set);
 	private:
 		CUIStatic		m_icons[MAX_ICONS];
 };

@@ -240,6 +240,11 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	m_pOwner->OnItemTake				(pIItem);
 
+	CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
+	if (pWeapon)
+		pWeapon->InitAddons(); //skyloader: need to do it as in CoP when UI will be ported | надо взять реализацию зум текстур из чн\зп, когда будет пересен уи из зп
+
+
 	CalcTotalWeight						();
 	InvalidateState						();
 
@@ -877,7 +882,7 @@ void CInventory::UpdateDropTasks()
 
 void CInventory::UpdateDropItem(PIItem pIItem)
 {
-	if( pIItem->GetDropManual() )
+	if(pIItem && pIItem->GetDropManual() )
 	{
 		pIItem->SetDropManual(FALSE);
 		if ( OnServer() )

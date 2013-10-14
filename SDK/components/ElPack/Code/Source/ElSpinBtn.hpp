@@ -119,7 +119,7 @@ public:
 	
 __published:
 	__property double Increment = {read=FIncrement, write=FIncrement};
-	__property bool UseDrag = {read=FUseDrag, write=SetUseDrag, nodefault};
+	__property bool UseDrag = {read=FUseDrag, write=SetUseDrag, default=1};
 	__property bool Flat = {read=FFlat, write=SetFlat, nodefault};
 	__property TElSpinBtnDir ButtonDirection = {read=FButtonDirection, write=SetButtonDirection, default=0};
 	__property TElSpinBtnType ButtonType = {read=FButtonType, write=SetButtonType, nodefault};

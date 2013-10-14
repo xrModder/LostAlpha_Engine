@@ -142,12 +142,14 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 	movement().detail().add_velocity(MonsterMovement::eVelocityParameterInvisible,CDetailPathManager::STravelParams(invisible_vel.linear, invisible_vel.angular));
 
 	LoadVampirePPEffector			(pSettings->r_string(section,"vampire_effector"));
-	m_vampire_min_delay				= pSettings->r_u32(section,"Vampire_Delay");
 
 	m_visual_predator				= pSettings->r_string(section,"Predator_Visual");
 
 	m_vampire_want_speed			= pSettings->r_float(section,"Vampire_Want_Speed");
 	m_vampire_wound					= pSettings->r_float(section,"Vampire_Wound");
+
+	m_vampire_runaway_time			= pSettings->r_float(section,"Vampire_RunAway_Time");
+	m_vampire_runaway_distance			= pSettings->r_float(section,"Vampire_RunAway_Distance");
 
 
 	invisible_particle_name			= pSettings->r_string(section,"Particle_Invisible");
@@ -178,7 +180,7 @@ void CAI_Bloodsucker::reinit()
 	// save visual	
 	m_visual_default			= cNameVisual();
 
-	m_vampire_want_value		= 1.f;
+	m_vampire_want_value		= 0.f;
 	m_threaten_time 		= 0;
 	m_predator					= false;
 }
@@ -322,7 +324,8 @@ void CAI_Bloodsucker::UpdateCL()
 	
 	// update vampire need
 	m_vampire_want_value += m_vampire_want_speed * client_update_fdelta();
-	clamp(m_vampire_want_value,1.f,1.f);
+	clamp(m_vampire_want_value,0.f,1.f);
+
 	if (m_threaten_time + 1670 < Device.dwTimeGlobal)
 		m_threaten_time = 0;
 }

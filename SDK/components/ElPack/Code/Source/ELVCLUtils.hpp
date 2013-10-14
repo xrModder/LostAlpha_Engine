@@ -15,7 +15,6 @@
 #include <ElStrUtils.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <Registry.hpp>	// Pascal unit
 #include <Controls.hpp>	// Pascal unit
 #include <StdCtrls.hpp>	// Pascal unit

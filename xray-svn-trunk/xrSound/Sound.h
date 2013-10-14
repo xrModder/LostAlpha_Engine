@@ -100,6 +100,7 @@ public:
 									ref_sound_data		(LPCSTR fName, esound_type sound_type, int game_type);
 	virtual							~ref_sound_data		();
 	float							get_length_sec		() const {return fTimeTotal;};
+	float							get_length_ms		() const {return fTimeTotal/1000;};
 };
 typedef resptr_core<ref_sound_data,resptr_base<ref_sound_data> >	ref_sound_data_ptr;
 /*! \class ref_sound
@@ -145,6 +146,7 @@ public:
 	IC const CSound_params*	get_params				( );
     IC void					set_params				( CSound_params* p );
 	IC float				get_length_sec			() const						{return _p?_p->get_length_sec():0.0f;};
+	IC float				get_length_ms			() const						{return _p?_p->get_length_ms():0.0f;};
 };
 
 /// definition (Sound Source)
@@ -152,6 +154,7 @@ class XRSOUND_API	CSound_source
 {
 public:
 	virtual	float			length_sec				( ) const			= 0;
+	virtual	float			length_ms				( ) const			= 0;
 	virtual u32				game_type				( ) const			= 0;
 	virtual LPCSTR			file_name				( ) const			= 0;
 	virtual u16				channels_num			( ) const			= 0;

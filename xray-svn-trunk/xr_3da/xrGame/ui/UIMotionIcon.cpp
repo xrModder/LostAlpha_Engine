@@ -2,7 +2,7 @@
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
-const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
+#include "../HUDManager.h"
 
 CUIMotionIcon::CUIMotionIcon()
 {
@@ -25,7 +25,12 @@ void CUIMotionIcon::ResetVisibility()
 void CUIMotionIcon::Init()
 {
 	CUIXml		uiXml;
-	uiXml.Load	(CONFIG_PATH, UI_PATH, MOTION_ICON_XML);
+
+	string128		MOTION_ICON_XML;
+	xr_sprintf		(MOTION_ICON_XML, "motion_icon_%d.xml", ui_hud_type);
+
+	bool result = uiXml.Load(CONFIG_PATH, UI_PATH, MOTION_ICON_XML);
+	R_ASSERT3(result, "xml file not found", MOTION_ICON_XML);
 
 	CUIXmlInit	xml_init;
 

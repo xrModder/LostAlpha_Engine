@@ -1,6 +1,6 @@
 /*
 ** Wrapper for architecture-specific DynASM encoder.
-** Copyright (C) 2005 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2012 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #define ljit_dasm_c
@@ -14,22 +14,19 @@
 #include "lmem.h"
 
 
-/* Glue functions for DynASM memory allocation. */
-static void dasm_m_grow(Dst_DECL, void **pp, size_t *szp, int need)
-{
-  size_t sz = *szp;
-  if (sz > (size_t)need) return;
-  if (sz < 16) sz = 16;
-  while (sz < (size_t)need) sz += sz;
-  *pp = luaM_realloc_(J->L, *pp, *szp, sz);
-  *szp = sz;
-}
+/* Glue macros for DynASM memory allocation. */
+#define DASM_M_GROW(J, t, p, sz, need) \
+  do { \
+    size_t _sz = (sz), _need = (need); \
+    if (_sz < _need) { \
+      if (_sz < 16) _sz = 16; \
+      while (_sz < _need) _sz += _sz; \
+      (p) = (t *)luaM_realloc_(J->L, (p), (sz), _sz); \
+      (sz) = _sz; \
+    } \
+  } while(0)
 
-static void dasm_m_free(Dst_DECL, void *p, size_t sz)
-{
-  luaM_freemem(J->L, p, sz);
-}
-
+#define DASM_M_FREE(J, p, sz)	luaM_freemem(J->L, p, sz)
 
 /* Embed architecture-specific DynASM encoder. */
 #if defined(__i386) || defined(__i386__) || defined(_M_IX86)

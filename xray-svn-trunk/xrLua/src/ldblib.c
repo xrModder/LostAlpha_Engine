@@ -1,5 +1,5 @@
 /*
-** $Id: ldblib.c,v 1.101 2005/08/26 17:36:32 roberto Exp $
+** $Id: ldblib.c,v 1.104.1.4 2009/08/04 18:50:18 roberto Exp $
 ** Interface from Lua to its debug API
 ** See Copyright Notice in lua.h
 */
@@ -17,6 +17,12 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+
+
+static int db_getregistry (lua_State *L) {
+  lua_pushvalue(L, LUA_REGISTRYINDEX);
+  return 1;
+}
 
 
 static int db_getmetatable (lua_State *L) {
@@ -39,6 +45,7 @@ static int db_setmetatable (lua_State *L) {
 
 
 static int db_getfenv (lua_State *L) {
+  luaL_checkany(L, 1);
   lua_getfenv(L, 1);
   return 1;
 }
@@ -110,7 +117,7 @@ static int db_getinfo (lua_State *L) {
     return luaL_argerror(L, arg+1, "function or level expected");
   if (!lua_getinfo(L1, options, &ar))
     return luaL_argerror(L, arg+2, "invalid option");
-  lua_newtable(L);
+  lua_createtable(L, 0, 2);
   if (strchr(options, 'S')) {
     settabss(L, "source", ar.source);
     settabss(L, "short_src", ar.short_src);
@@ -240,7 +247,7 @@ static void gethooktable (lua_State *L) {
   lua_rawget(L, LUA_REGISTRYINDEX);
   if (!lua_istable(L, -1)) {
     lua_pop(L, 1);
-    lua_newtable(L);
+    lua_createtable(L, 0, 1);
     lua_pushlightuserdata(L, (void *)&KEY_HOOK);
     lua_pushvalue(L, -2);
     lua_rawset(L, LUA_REGISTRYINDEX);
@@ -249,24 +256,25 @@ static void gethooktable (lua_State *L) {
 
 
 static int db_sethook (lua_State *L) {
-  int arg;
+  int arg, mask, count;
+  lua_Hook func;
   lua_State *L1 = getthread(L, &arg);
   if (lua_isnoneornil(L, arg+1)) {
     lua_settop(L, arg+1);
-    lua_sethook(L1, NULL, 0, 0);  /* turn off hooks */
+    func = NULL; mask = 0; count = 0;  /* turn off hooks */
   }
   else {
     const char *smask = luaL_checkstring(L, arg+2);
-    int count = luaL_optint(L, arg+3, 0);
     luaL_checktype(L, arg+1, LUA_TFUNCTION);
-    lua_sethook(L1, hookf, makemask(smask, count), count);
+    count = luaL_optint(L, arg+3, 0);
+    func = hookf; mask = makemask(smask, count);
   }
-  gethooktable(L1);
-  lua_pushlightuserdata(L1, L1);
+  gethooktable(L);
+  lua_pushlightuserdata(L, L1);
   lua_pushvalue(L, arg+1);
-  lua_xmove(L, L1, 1);
-  lua_rawset(L1, -3);  /* set new hook */
-  lua_pop(L1, 1);  /* remove hook table */
+  lua_rawset(L, -3);  /* set new hook */
+  lua_pop(L, 1);  /* remove hook table */
+  lua_sethook(L1, func, mask, count);  /* set hooks */
   return 0;
 }
 
@@ -280,11 +288,10 @@ static int db_gethook (lua_State *L) {
   if (hook != NULL && hook != hookf)  /* external hook? */
     lua_pushliteral(L, "external hook");
   else {
-    gethooktable(L1);
-    lua_pushlightuserdata(L1, L1);
-    lua_rawget(L1, -2);   /* get hook */
-    lua_remove(L1, -2);  /* remove hook table */
-    lua_xmove(L1, L, 1);
+    gethooktable(L);
+    lua_pushlightuserdata(L, L1);
+    lua_rawget(L, -2);   /* get hook */
+    lua_remove(L, -2);  /* remove hook table */
   }
   lua_pushstring(L, unmakemask(mask, buff));
   lua_pushinteger(L, lua_gethookcount(L1));
@@ -319,7 +326,7 @@ static int db_errorfb (lua_State *L) {
   lua_State *L1 = getthread(L, &arg);
   lua_Debug ar;
   if (lua_isnumber(L, arg+2)) {
-    level = lua_tointeger(L, arg+2);
+    level = (int)lua_tointeger(L, arg+2);
     lua_pop(L, 1);
   }
   else
@@ -371,6 +378,7 @@ static const luaL_Reg dblib[] = {
   {"gethook", db_gethook},
   {"getinfo", db_getinfo},
   {"getlocal", db_getlocal},
+  {"getregistry", db_getregistry},
   {"getmetatable", db_getmetatable},
   {"getupvalue", db_getupvalue},
   {"setfenv", db_setfenv},

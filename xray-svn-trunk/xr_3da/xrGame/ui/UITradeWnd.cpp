@@ -27,11 +27,6 @@
 #include "UICellItemFactory.h"
 
 
-#define				TRADE_XML			"trade.xml"
-#define				TRADE_CHARACTER_XML	"trade_character.xml"
-#define				TRADE_ITEM_XML		"trade_item.xml"
-
-
 struct CUITradeInternal{
 	CUIStatic			UIStaticTop;
 	CUIStatic			UIStaticBottom;
@@ -90,7 +85,21 @@ CUITradeWnd::~CUITradeWnd()
 void CUITradeWnd::Init()
 {
 	CUIXml								uiXml;
-	uiXml.Load							(CONFIG_PATH, UI_PATH, TRADE_XML);
+
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	string128		TRADE_XML;
+	xr_sprintf		(TRADE_XML, "trade_%d.xml", ui_hud_type);
+
+	string128		TRADE_CHARACTER_XML;
+	xr_sprintf		(TRADE_CHARACTER_XML, "trade_character_%d.xml", ui_hud_type);
+
+	string128		TRADE_ITEM_XML;
+	xr_sprintf		(TRADE_ITEM_XML, "trade_item_%d.xml", ui_hud_type);
+
+	bool xml_result						= uiXml.Load(CONFIG_PATH, UI_PATH, TRADE_XML);
+	R_ASSERT3							(xml_result, "xml file not found", TRADE_XML);
 	CUIXmlInit							xml_init;
 
 	xml_init.InitWindow					(uiXml, "main", 0, this);
@@ -183,7 +192,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 
 	m_pInvOwner							= pOur;
 	m_pOthersInvOwner					= pOthers;
-	m_uidata->UIOthersPriceCaption.SetText(*CStringTable().translate("ui_st_opponent_items"));
+	m_uidata->UIOthersPriceCaption.SetText(*CStringTable().translate("ui_st_buy_items"));
 
 	m_uidata->UICharacterInfoLeft.InitCharacter(m_pInvOwner->object_id());
 	m_uidata->UICharacterInfoRight.InitCharacter(m_pOthersInvOwner->object_id());
@@ -632,8 +641,8 @@ void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 {
 	//lost alpha starts
 	PIItem iitem		= (PIItem)itm->m_pData;
-	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
-		itm->SetTextureColor		(color_rgba(100,255,100,255));
-	else if(!b)
+	if(!b)
 		itm->SetTextureColor		(color_rgba(255,100,100,255));
+	else if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetTextureColor		(color_rgba(100,255,100,255));
 }

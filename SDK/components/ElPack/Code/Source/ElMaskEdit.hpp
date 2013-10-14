@@ -136,7 +136,7 @@ protected:
 public:
 	__fastcall virtual TCustomElMaskEdit(Classes::TComponent* AOwner);
 	__fastcall virtual ~TCustomElMaskEdit(void);
-	__property bool MouseOver = {read=FMouseOver, nodefault};
+	__property bool MouseOver = {read=FMouseOver, default=0};
 	__property unsigned Theme = {read=FTheme, nodefault};
 	
 __published:

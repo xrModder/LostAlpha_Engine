@@ -28,6 +28,7 @@ void CScriptSound::script_register(lua_State *L)
 			.enum_("sound_play_type")
 			[
 				value("looped",					sm_Looped),
+				value("looped_s2d",				sm_2D | sm_Looped),
 				value("s2d",					sm_2D),
 				value("s3d",					0)
 			]

@@ -161,6 +161,13 @@ int EScene::RaySelect(int flag, ObjClassID classfilter)
     int count					= 0;
     dist						= UI->ZFar();
     if (mt) count=mt->RaySelect	(flag,dist,UI->m_CurrentRStart,UI->m_CurrentRNorm,FALSE);
+
+	if (count==0)
+	{
+    		psDeviceFlags.set(rsChangeProfileParamsYes, FALSE);
+    		psDeviceFlags.set(rsChangeProfileParamsNo, FALSE);
+	}
+
 	return count;
 /*
 	CCustomObject *nearest_object = RayPickObject(flt_max,UI->m_CurrentRStart,UI->m_CurrentRNorm,classfilter,0,0);

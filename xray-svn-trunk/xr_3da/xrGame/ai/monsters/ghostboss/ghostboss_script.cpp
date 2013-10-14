@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "../../../pch_script.h"
+#include "pch_script.h"
 #include "ghostboss.h"
 
 using namespace luabind;
@@ -9,7 +8,7 @@ void CGhostBoss::script_register(lua_State *L)
 {
 	module(L)
 	[
-		class_<CGhostBoss,CGameObject>("CGhostBoss")
+		class_<CGhostBoss, CGameObject>("CGhostBoss")
 			.def(constructor<>())
 	];
 }

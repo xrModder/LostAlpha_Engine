@@ -1096,6 +1096,17 @@ void CSE_ALifeCreatureAbstract::set_visual_script			(LPCSTR visual_name)
 	visual()->set_visual(visual_name,true);
 }
 
+//skyloader: kill creature, which is offline
+void CSE_ALifeCreatureAbstract::kill_entity			(ALife::_OBJECT_ID id)
+{
+	if (fHealth>0.f)
+	{
+		m_game_death_time			= Level().GetGameTime(); //from on_death()
+		fHealth					= -1.f; //from on_death()
+		m_killer_id				= (id);
+	}
+}
+
 bool CSE_ALifeCreatureAbstract::can_switch_online	() const
 {
 	return						(inherited::can_switch_online());

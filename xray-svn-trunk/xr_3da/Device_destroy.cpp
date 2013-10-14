@@ -4,6 +4,7 @@
 #include "render.h"
 #include "IGame_Persistent.h"
 #include "xr_IOConsole.h"
+#include "customHUD.h"
 
 void CRenderDevice::_Destroy	(BOOL bKeepTextures)
 {
@@ -88,6 +89,18 @@ void CRenderDevice::Reset		(bool precache)
 #endif
 		
 	seqDeviceReset.Process(rp_DeviceReset);
+
+	{
+		//g_pGameLevel->pHUD->OnScreenRatioChanged(); //skyloader: эта функция реинитит не все, так что лучше юзануть вызов смены худа, в нем реинитится все без багов
+
+		if(g_hud)
+		{
+			u32	type	= g_hud->GetUIHudType();
+			string512		command;
+			sprintf_s		(command, "ui_hud_type hud_%d", type);
+			Console->Execute	(command);
+		}
+	}
 
 	if(dwWidth_before!=dwWidth || dwHeight_before!=dwHeight) 
 	{

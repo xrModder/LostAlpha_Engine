@@ -89,7 +89,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 				_F->dwMaterialGame	= B.dwMaterialGame;
 
 				// Vertices and adjacement info
-				for (u32 it=0; it<3; it++)
+				for (u32 it=0; it<3; ++it)
 				{
 					int id			= B.v[it];
 					R_ASSERT		(id<(int)g_vertices.size());

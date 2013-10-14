@@ -24,7 +24,7 @@ static const char* h_str =
 	"-f<NAME>	== compile level in gamedata\\levels\\<NAME>\\\n"
 	"-o			== modify build options\n"
 	"-t<NUM>			== numbers of threads \n"
-	"-high				== high priority \n"
+	"-p					== high priority \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 

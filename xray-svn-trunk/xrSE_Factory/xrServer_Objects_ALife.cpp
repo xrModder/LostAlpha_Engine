@@ -1427,9 +1427,7 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
 	health						= 1.0f;
-	fuel						= 10.0;
-	if (pSettings->line_exist(caSection,"fuel_tank"))
-		fuel		= pSettings->r_float(caSection,"fuel_tank");
+	fuel						= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
 }
 
 CSE_ALifeCar::~CSE_ALifeCar				()

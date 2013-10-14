@@ -145,6 +145,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("patrol",						&CScriptGameObject::GetPatrolPathName)
 
 		// lost alpha start
+		.def("get_torch_battery_status", &CScriptGameObject::GetTorchBatteryStatus)
+		.def("set_torch_battery_status", &CScriptGameObject::SetTorchBatteryStatus)
 		.def("set_torch_state", &CScriptGameObject::SetTorchState)
 		.def("get_torch_state", &CScriptGameObject::GetTorchState)
 
@@ -223,6 +225,9 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("path_type",					&CScriptGameObject::path_type				)
 		.def("detail_path_type",			&CScriptGameObject::detail_path_type		)
 
+		// eatable items
+		.def("get_portions_num",			&CScriptGameObject::GetPortionsNum		)
+		.def("set_portions_num",			&CScriptGameObject::SetPortionsNum		)
 		//
 		.def("set_desired_position",		(void (CScriptGameObject::*)())(&CScriptGameObject::set_desired_position))
 		.def("set_desired_position",		(void (CScriptGameObject::*)(const Fvector *))(&CScriptGameObject::set_desired_position))
@@ -280,6 +285,7 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("move_to_ruck",				&CScriptGameObject::MoveToRuck)
 		.def("move_to_slot",				&CScriptGameObject::MoveToSlot)
 		.def("remove_from_inventory",		&CScriptGameObject::RemoveFromInventory)
+		.def("set_actor_walk_accel",		&CScriptGameObject::SetActorWalkAccel)
 
 #ifdef DEBUG
 		.def("debug_planner",				&CScriptGameObject::debug_planner)

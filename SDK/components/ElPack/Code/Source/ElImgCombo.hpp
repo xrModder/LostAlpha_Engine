@@ -12,6 +12,8 @@
 #pragma option push -Vx
 #include <Menus.hpp>	// Pascal unit
 #include <Graphics.hpp>	// Pascal unit
+#include <ElStrUtils.hpp>	// Pascal unit
+#include <ElUnicodeStrings.hpp>	// Pascal unit
 #include <ElACtrls.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
 #include <Types.hpp>	// Pascal unit
@@ -30,7 +32,13 @@
 namespace Elimgcombo
 {
 //-- type declarations -------------------------------------------------------
-typedef void __fastcall (__closure *TElImageNameEvent)(System::TObject* Sender, int Index, AnsiString &Text);
+typedef TElWideStrings TElFStrings;
+;
+
+typedef TElWideStringList TElFStringList;
+;
+
+typedef void __fastcall (__closure *TElImageNameEvent)(System::TObject* Sender, int Index, WideString &Text);
 
 class DELPHICLASS TElImageComboBox;
 class PASCALIMPLEMENTATION TElImageComboBox : public Elactrls::TElAdvancedComboBox 
@@ -42,8 +50,10 @@ private:
 	Controls::TImageList* FImages;
 	bool FModified;
 	int FDummyInt;
+	Elunicodestrings::TElWideStrings* FImageNames;
 	int IOffs;
 	bool OwnMoveFlag;
+	bool FUseImageNames;
 	void __fastcall ImagesChanged(System::TObject* Sender);
 	void __fastcall SetImages(const Controls::TImageList* Value);
 	void __fastcall Remake(void);
@@ -52,6 +62,7 @@ private:
 	void __fastcall SetModified(const bool Value);
 	HIDESBASE MESSAGE void __fastcall WMPaint(Messages::TWMPaint &Msg);
 	HIDESBASE MESSAGE void __fastcall CNCommand(Messages::TWMCommand &Message);
+	void __fastcall SetImageNames(Elunicodestrings::TElWideStrings* Value);
 	
 protected:
 	TElImageNameEvent FOnImageName;
@@ -65,7 +76,7 @@ protected:
 	DYNAMIC void __fastcall Change(void);
 	virtual void __fastcall DrawItem(int Index, const Types::TRect &Rect, Windows::TOwnerDrawState State);
 	virtual void __fastcall ComboWndProc(Messages::TMessage &Message, HWND ComboWnd, void * ComboProc);
-	virtual void __fastcall TriggerImageNameEvent(int Index, AnsiString &Text);
+	virtual void __fastcall TriggerImageNameEvent(int Index, WideString &Text);
 	void __fastcall SetManualEdit(bool Value);
 	bool __fastcall GetShowEmptyValue(void);
 	void __fastcall SetShowEmptyValue(bool Value);
@@ -75,10 +86,12 @@ protected:
 	void __fastcall UpdateEditSize(void);
 	virtual void __fastcall Loaded(void);
 	void __fastcall SetEmptyValueText(const AnsiString Value);
+	void __fastcall RebuildList(void);
 	
 public:
 	__fastcall virtual TElImageComboBox(Classes::TComponent* AOwner);
 	__fastcall virtual ~TElImageComboBox(void);
+	__property int ItemIndex = {read=GetImageIndex, write=SetImageIndex, nodefault};
 	
 __published:
 	__property int Items = {read=FDummyInt, nodefault};
@@ -90,6 +103,8 @@ __published:
 	__property bool ShowEmptyValue = {read=GetShowEmptyValue, write=SetShowEmptyValue, default=1};
 	__property AnsiString EmptyValueText = {read=FEmptyValueText, write=SetEmptyValueText};
 	__property TElImageNameEvent OnImageName = {read=FOnImageName, write=FOnImageName};
+	__property Elunicodestrings::TElWideStrings* ImageNames = {read=FImageNames, write=SetImageNames};
+	__property bool UseImageNames = {read=FUseImageNames, write=FUseImageNames, default=0};
 	__property Anchors  = {default=3};
 	__property BiDiMode ;
 	__property Constraints ;

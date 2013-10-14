@@ -8,16 +8,14 @@
 #include "UITalkWnd.h"
 #include "UIInventoryUtilities.h"
 #include "UIBtnHint.h"
+#include "../HUDManager.h"
+#include <dinput.h>
 
 #include "../game_news.h"
 #include "../level.h"
 #include "../actor.h"
 #include "../alife_registry_wrappers.h"
 #include "dinput.h"
-
-#define				TALK_XML				"talk.xml"
-#define				TRADE_CHARACTER_XML		"trade_character.xml"
-
 //////////////////////////////////////////////////////////////////////////
 
 CUITalkDialogWnd::CUITalkDialogWnd()
@@ -33,7 +31,18 @@ CUITalkDialogWnd::~CUITalkDialogWnd()
 void CUITalkDialogWnd::InitTalkDialogWnd()
 {
 	m_uiXml						= xr_new<CUIXml>();
-	m_uiXml->Load				(CONFIG_PATH, UI_PATH, TALK_XML);
+
+	string128		TALK_XML;
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	xr_sprintf		(TALK_XML, "talk_%d.xml", ui_hud_type);
+
+	string128		TRADE_CHARACTER_XML;
+	xr_sprintf		(TRADE_CHARACTER_XML, "trade_character_%d.xml", ui_hud_type);
+
+	bool xml_result				= m_uiXml->Load(CONFIG_PATH, UI_PATH, TALK_XML);
+	R_ASSERT3					(xml_result, "xml file not found", TALK_XML);
 	CUIXmlInit					ml_init;
 
 	CUIXmlInit::InitWindow		(*m_uiXml, "main", 0, this);
@@ -160,11 +169,19 @@ void CUITalkDialogWnd::ClearQuestions()
 	UIQuestionsList->Clear();
 }
 
-
-void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value)
+void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number)
 {
 	CUIQuestionItem* itm			= xr_new<CUIQuestionItem>(m_uiXml,"question_item");
 	itm->Init						(value, str);
+	++number; //zero-based index
+	if(number<=10)
+	{
+		string16 buff;
+		xr_sprintf						(buff, "%d.", (number==10)?0:number);
+		itm->m_num_text->SetText		(buff);
+		itm->m_text->SetAccelerator		(DIK_ESCAPE+number, 0);
+	}
+
 	itm->SetWindowName				("question_item");
 	UIQuestionsList->AddWindow		(itm, true);
 	Register						(itm);
@@ -222,6 +239,11 @@ void CUITalkDialogWnd::UpdateButtonsLayout(bool b_disable_break, bool trade_enab
 	UIToTradeButton.Show		(trade_enabled);
 }
 
+void CUITalkDialogWnd::ShowTradeButton(bool b)
+{
+	UIToTradeButton.Show(b);
+}
+
 void CUIQuestionItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
@@ -250,7 +272,7 @@ CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 	m_num_text						= xr_new<CUITextWnd>();
 	m_num_text->SetAutoDelete		(true);
 	AttachChild						(m_num_text);
-	strconcat						(sizeof(str),str,path,":num_text");
+	strconcat						(sizeof(str),str,path,":number_phrase");
 	xml_init.InitTextWnd			(*xml_doc, str, 0, m_num_text);
 }
 

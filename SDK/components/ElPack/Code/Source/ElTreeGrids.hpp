@@ -89,14 +89,14 @@ protected:
 	void __fastcall EnsureColumnVisible(int SectionNumber);
 	__property bool goAlwaysShowEditor = {read=FgoAlwaysShowEditor, write=FgoAlwaysShowEditor, nodefault};
 	__property bool goRowSelect = {read=FgoRowSelect, write=SetgoRowSelect, nodefault};
-	__property bool goColMoving = {read=FgoColMoving, write=SetgoColMoving, nodefault};
+	__property bool goColMoving = {read=FgoColMoving, write=SetgoColMoving, default=1};
 	__property bool goTabs = {read=FgoTabs, write=FgoTabs, nodefault};
-	__property int ColCount = {read=GetColCount, write=SetColCount, nodefault};
-	__property int DefaultColWidth = {read=GetDefaultColWidth, write=SetDefaultColWidth, nodefault};
-	__property int DefaultRowHeight = {read=GetDefaultRowHeight, write=SetDefaultRowHeight, nodefault};
+	__property int ColCount = {read=GetColCount, write=SetColCount, default=5};
+	__property int DefaultColWidth = {read=GetDefaultColWidth, write=SetDefaultColWidth, default=64};
+	__property int DefaultRowHeight = {read=GetDefaultRowHeight, write=SetDefaultRowHeight, default=24};
 	__property bool EditorMode = {read=GetEditorMode, write=SetEditorMode, nodefault};
-	__property int RowCount = {read=GetRowCount, write=SetRowCount, nodefault};
-	__property bool goEditing = {read=GetgoEditing, write=SetgoEditing, nodefault};
+	__property int RowCount = {read=GetRowCount, write=SetRowCount, default=5};
+	__property bool goEditing = {read=GetgoEditing, write=SetgoEditing, default=1};
 	__property bool goTabSkipNonEditable = {read=FgoTabSkipNonEditable, write=FgoTabSkipNonEditable, nodefault};
 	
 public:
@@ -160,6 +160,7 @@ private:
 	Elunicodestrings::TElWideStringArray* FCols;
 	Elunicodestrings::TElWideStringArray* FRows;
 	Eltreebtnedit::TElTreeInplaceButtonEdit* FEditor;
+	Classes::TWndMethod FSavedEditWndProc;
 	Elunicodestrings::TElWideStrings* __fastcall GetCols(int Index);
 	void __fastcall SetCols(int Index, Elunicodestrings::TElWideStrings* Value);
 	Elunicodestrings::TElWideStrings* __fastcall GetRows(int Index);
@@ -176,6 +177,7 @@ protected:
 	virtual void __fastcall OnFontChange(System::TObject* Sender);
 	virtual void __fastcall KeyDownTransfer(System::TObject* Sender, Word &Key, Classes::TShiftState Shift);
 	void __fastcall EditorKeyDown(System::TObject* Sender, Word &Key, Classes::TShiftState Shift);
+	void __fastcall EditWndProc(Messages::TMessage &Message);
 	
 public:
 	__fastcall virtual TElTreeStringGrid(Classes::TComponent* Owner);
@@ -245,7 +247,7 @@ __published:
 	__property Font  = {stored=true};
 	__property GradientStartColor  = {default=0};
 	__property GradientEndColor  = {default=0};
-	__property GradientSteps  = {default=16};
+	__property GradientSteps  = {default=64};
 	__property HeaderActiveFilterColor  = {default=0};
 	__property HeaderColor  = {default=-2147483633};
 	__property HeaderHeight  = {default=0};

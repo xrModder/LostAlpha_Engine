@@ -92,6 +92,7 @@ void CGameObject::reinit	()
 
 	// clear callbacks	
 	for (CALLBACK_MAP_IT it = m_callbacks->begin(); it != m_callbacks->end(); ++it) it->second.clear();
+	m_callbacks->erase(m_callbacks->begin(), m_callbacks->end());
 }
 
 void CGameObject::reload	(LPCSTR section)

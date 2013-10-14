@@ -1,10 +1,12 @@
 /*
 ** Memory management for machine code.
-** Copyright (C) 2005 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2012 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #define ljit_mem_c
 #define LUA_CORE
+
+#include <string.h>
 
 #include "lua.h"
 
@@ -13,8 +15,6 @@
 #include "ljit.h"
 #include "ljit_dasm.h"
 
-// Massive stack and memory corruption on ManOwaR when enabled
-// #define LUAJIT_MCH_USE_MALLOC
 
 /*
 ** Define this if you want to run LuaJIT with valgrind. You will get random
@@ -23,7 +23,7 @@
 ** This macro evaluates to a no-op if not run with valgrind. I.e. you can
 ** use the same binary for regular runs, too (without a performance loss).
 */
-#ifdef LUAJIT_USE_VALGRIND
+#ifdef USE_VALGRIND
 #include <valgrind/valgrind.h>
 #define MCH_INVALIDATE(ptr, addr) VALGRIND_DISCARD_TRANSLATIONS(ptr, addr)
 #else
@@ -220,7 +220,7 @@ static void *mcode_alloc(jit_State *J, size_t sz)
 	    if (mh->next)
 	      mh->next->prev = mh->prev;
 	    *ptrailer |= MCH_USED;
-            MCH_DBG((MCH_DBGF, "NEW  %p %5x  FIT #%d%s\n",
+	    MCH_DBG((MCH_DBGF, "NEW  %p %5x  FIT #%d%s\n",
 		     mh, sz, slen, (*ptrailer & MCH_LAST) ? " LAST" : ""));
 	  } else {  /* Chunk is larger: rechain remainder chunk. */
 	    MCodeHead *fh = (MCodeHead *)((char *)mh + sz);
@@ -345,15 +345,38 @@ static void mcode_free_(jit_State *J, void *ptr, size_t sz)
 /* There's no heap to free, but the JSUB mcode is. */
 void luaJIT_freemcodeheap(jit_State *J)
 {
-  if (J->jsubmcode) luaM_freemem(J->L, J->jsubmcode, J->sizejsubmcode);
+  if (J->jsubmcode) luaM_freemem(J->L, J->jsubmcode, J->szjsubmcode);
 }
 
 #define mcode_alloc(J, sz)	luaM_realloc_(J->L, NULL, 0, (sz))
-#define mcode_free(L, J, p, sz)	luaM_freemem(L, p, sz);
+#define mcode_free(L, J, p, sz)	luaM_freemem(L, p, sz)
 
 #endif
 
 /* ------------------------------------------------------------------------ */
+
+/* Free mcode. */
+void luaJIT_freemcode(jit_State *J, void *mcode, size_t sz)
+{
+  mcode_free(J->L, J, mcode, sz);
+}
+
+/* Free JIT structures in function prototype. */
+void luaJIT_freeproto(lua_State *L, Proto *pt)
+{
+  char *mcode = (char *)pt->jit_mcode;
+  size_t sz = pt->jit_szmcode;
+  pt->jit_mcode = NULL;
+  pt->jit_szmcode = 0;
+  while (sz != 0) {  /* Free whole chain of mcode blocks for this proto. */
+    jit_MCTrailer next;
+    memcpy((void *)&next, JIT_MCTRAILER(mcode, sz), sizeof(jit_MCTrailer));
+    MCH_INVALIDATE(mcode, sz);
+    mcode_free(L, G(L)->jit_state, mcode, sz);
+    mcode = next.mcode;
+    sz = next.sz;
+  }
+}
 
 /* Link generated code. Return mcode address, size and status. */
 int luaJIT_link(jit_State *J, void **mcodep, size_t *szp)
@@ -371,27 +394,12 @@ int luaJIT_link(jit_State *J, void **mcodep, size_t *szp)
   mcode = mcode_alloc(J, sz);
 
   /* Pass 3: encode sections. */
-  if ((J->dasmstatus = dasm_encode(Dst, mcode))) {
+  if ((J->dasmstatus = dasm_encode(Dst, mcode)) != 0) {
     mcode_free(J->L, J, mcode, sz);
     return JIT_S_DASM_ERROR;
   }
   *mcodep = mcode;
   *szp = sz;
   return JIT_S_OK;
-}
-
-/* Free JIT structures in function prototype. */
-void luaJIT_freeproto(lua_State *L, Proto *pt)
-{
-  if (pt->jit_pcaddr) {
-    luaM_freearray(L, pt->jit_pcaddr, pt->sizecode+PCADDR_EXTRA, void *);
-    pt->jit_pcaddr = NULL;
-  }
-  if (pt->jit_sizemcode != 0) {
-    MCH_INVALIDATE(pt->jit_mcode, pt->jit_sizemcode);
-    mcode_free(L, G(L)->jit_state, pt->jit_mcode, pt->jit_sizemcode);
-    pt->jit_mcode = NULL;
-    pt->jit_sizemcode = 0;
-  }
 }
 

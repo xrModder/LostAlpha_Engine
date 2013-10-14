@@ -27,7 +27,8 @@
 #include "../xr_input.h"
 #include "UIGameSP.h"
 #include "UIGameCustom.h"
-
+#include "ui/UIInventoryWnd.h"
+#include "ui/UIPdaWnd.h"
 #include "map_manager.h"
 #include "map_location.h"
 #include "phworld.h"
@@ -468,6 +469,22 @@ void spawn_phantom(const Fvector &position)
 	Level().spawn_item("m_phantom", position, u32(-1), u16(-1), false);
 }
 
+void set_value_to_hunger_bar(float value)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetGameUI());
+
+	if(pGameSP)
+		pGameSP->InventoryMenu->SetProgessToHunger(value);
+}
+
+void set_value_to_thirst_bar(float value)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetGameUI());
+
+	if(pGameSP)
+		pGameSP->InventoryMenu->SetProgessToThirst(value);
+}
+
 Fbox get_bounding_volume()
 {
 	return Level().ObjectSpace.GetBoundingVolume();
@@ -656,6 +673,17 @@ void enable_pda_downloads(bool val)
 	if(pGameSP)pGameSP->EnableDownloads(val);
 }
 
+void upgrade_pda(bool upgrade)
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetGameUI());
+	if (!pGameSP) return;
+
+	Actor()->TransferInfo("pda_upgraded", upgrade);
+
+	xr_delete(pGameSP->PdaMenu);
+	pGameSP->PdaMenu = xr_new<CUIPdaWnd> ();
+}
+
 #include "level_sounds.h"
 void set_level_sound_enabled(bool state)
 {
@@ -733,6 +761,7 @@ void CLevel::script_register(lua_State *L)
 
 		def("enable_pda_skills",			&enable_pda_skills),
 		def("enable_pda_downloads",			&enable_pda_downloads),
+		def("upgrade_pda",			&upgrade_pda),
 		
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),
@@ -769,6 +798,8 @@ void CLevel::script_register(lua_State *L)
 		def("hide_indicators",					hide_indicators),
 		def("show_indicators",					show_indicators),
 		def("indicators_shown",					indicators_shown),
+		def("set_value_to_hunger_bar",					set_value_to_hunger_bar),
+		def("set_value_to_thirst_bar",					set_value_to_thirst_bar),
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),

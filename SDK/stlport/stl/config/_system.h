@@ -39,8 +39,14 @@
 #if defined (__sun)
 #  include <stl/config/_solaris.h>
 #  if defined (__GNUC__)
-#    include <stl/config/_gcc.h>
-#  elif defined (__SUNPRO_CC)
+
+#    if defined (SN_TARGET_PS3)
+#      include <stl/config/_gcc.h>
+//#      include <stl/config/_ps3.h>
+#    else
+#      include <stl/config/_gcc.h>
+#    endif
+#  elif defined (__SUNPRO_CC) || defined (__SUNPRO_C)
 #    include <stl/config/_sunprocc.h>
 /*
 #  ifdef __KCC
@@ -61,8 +67,10 @@
 #  endif
 #elif defined (linux) || defined (__linux__)
 #  include <stl/config/_linux.h>
+#  if defined (__BORLANDC__)
+#    include <stl/config/_bc.h> /* Borland C++ 0x570 */
 /* Intel's icc define __GNUC__! */
-#  if defined (__INTEL_COMPILER)
+#  elif defined (__INTEL_COMPILER)
 #    include <stl/config/_icc.h>
 #  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
@@ -81,11 +89,6 @@
 #  include <stl/config/_openbsd.h>
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
-#  endif
-#elif defined (N_PLAT_NLM) /* Novell NetWare */
-#  include <stl/config/_netware.h>
-#  ifdef __MWERKS__ /* Metrowerks CodeWarrior */
-#    include <stl/config/_mwccnlm.h>
 #  endif
 #elif defined (__sgi) /* IRIX? */
 #  define _STLP_PLATFORM "SGI Irix"
@@ -121,9 +124,6 @@
 #  include <stl/config/_mac.h>
 #  if defined (__MWERKS__)
 #    include <stl/config/_mwerks.h>
-#  elif defined (__MRC__) || (defined (__SC__) && (__SC__ >= 0x882))
-     /* Apple MPW SCpp 8.8.2, Apple MPW MrCpp 4.1.0 */
-#    include <stl/config/_apple.h>
 #  endif
 #elif defined (__APPLE__)
 #  include <stl/config/_macosx.h>
@@ -143,7 +143,7 @@
 #  include <stl/config/_windows.h>
 #elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || \
       defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  if defined ( __BORLANDC__ )  /* Borland C++ ( 4.x - 5.x ) */
+#  if defined ( __BORLANDC__ )  /* Borland C++ / CodeGear C++ */
 #    include <stl/config/_bc.h>
 #  elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)  /* Watcom C++ */
 #    include <stl/config/_watcom.h>
@@ -151,8 +151,6 @@
 #    include <stl/config/_como.h>
 #  elif defined (__DMC__)   /* Digital Mars C++ */
 #    include <stl/config/_dm.h>
-#  elif defined (__SC__) && (__SC__ < 0x800) /* Symantec 7.5 */
-#    include <stl/config/_symantec.h>
 #  elif defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
 #  elif defined (__MWERKS__)
@@ -166,6 +164,8 @@
 #  endif
 
 #  include <stl/config/_windows.h>
+#elif defined (SN_TARGET_PS3)
+#  include <stl/config/_gcc.h>
 #else
 #  error Unknown platform !!
 #endif

@@ -59,7 +59,8 @@ XRCORE_API	xrDebug		Debug;
 
 static bool	error_after_dialog = false;
 
-extern void BuildStackTrace();
+extern void BuildStackTrace			(void);
+extern void BuildStackTraceDirect	(PCONTEXT pContext);
 extern char g_stackTrace[100][4096];
 extern int	g_stackTraceCount;
 
@@ -79,6 +80,19 @@ void LogStackTrace	(LPCSTR header)
 void xrDebug::log_stack_trace()
 {
 	LogStackTrace("Error");
+}
+
+extern LPCTSTR ConvertSimpleException(DWORD dwExcept);
+
+LPCSTR xrDebug::exception_name(DWORD code)
+{
+	return ConvertSimpleException(code);
+}
+
+void xrDebug::exception_stacktrace(_EXCEPTION_POINTERS* ep)
+{
+	Msg("%s:", "exception stacktrace");
+	BuildStackTraceDirect(ep->ContextRecord);
 }
 
 void xrDebug::gather_info		(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, LPSTR assertion_info, u32 const assertion_info_size)

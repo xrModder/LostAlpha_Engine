@@ -71,6 +71,9 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	if (pSettings->line_exist(*hud_sect,"anim_idle_sprint_g"))
 		animGet				(mhud_idle_sprint_g,	pSettings->r_string(*hud_sect, "anim_idle_sprint_g"));
 
+	if (pSettings->line_exist(*hud_sect,"anim_idle_sprint_gl"))
+		animGet				(mhud_idle_sprint_gl,	pSettings->r_string(*hud_sect, "anim_idle_sprint_gl"));
+
 	animGet				(mhud_idle_w_gl,	pSettings->r_string(*hud_sect, "anim_idle_gl"));
 	animGet				(mhud_reload_w_gl,	pSettings->r_string(*hud_sect, "anim_reload_gl"));
 	animGet				(mhud_show_w_gl,	pSettings->r_string(*hud_sect, "anim_draw_gl"));
@@ -701,10 +704,22 @@ bool CWeaponMagazinedWGrenade::TryPlayAnimIdleWG()
 		{
 			CEntity::SEntityState st;
 			pActor->g_State(st);
-			if(st.bSprint && mhud_idle_sprint_g.size())
-			{
-				m_pHUD->animPlay(random_anim(mhud_idle_sprint_g), TRUE, NULL,GetState());
-				return true;
+			if(st.bSprint)
+			{ 
+				if(m_bGrenadeMode)
+				{
+					if (mhud_idle_sprint_g.size())
+					{
+						m_pHUD->animPlay(random_anim(mhud_idle_sprint_g), TRUE, NULL,GetState());
+						return true;
+					}
+				} else {
+					if (mhud_idle_sprint_gl.size())
+					{
+						m_pHUD->animPlay(random_anim(mhud_idle_sprint_gl), TRUE, NULL,GetState());
+						return true;
+					}
+				}
 			}
 		}
 	}

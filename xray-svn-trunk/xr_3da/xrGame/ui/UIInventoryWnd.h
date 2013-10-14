@@ -50,6 +50,9 @@ public:
 	void					AddItemToBag				(PIItem pItem);
 	void					DeleteFromInventory			(PIItem PIItem);
 
+	void					SetProgessToHunger				(float val);
+	void					SetProgessToThirst				(float val); 
+
 protected:
 	enum eInventorySndAction{	eInvSndOpen	=0,
 								eInvSndClose,
@@ -91,6 +94,7 @@ protected:
 	CUIDragDropListEx*			m_pUIAutomaticList;
 	CUIDragDropListEx*			m_pUIKnifeList;
 	CUIDragDropListEx*			m_pUIBinocularList;
+	CUIDragDropListEx*			m_pUITorchList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
@@ -110,10 +114,14 @@ protected:
 
 	CUIStatic					UIProgressBack;
 	CUIStatic					UIProgressBack_rank;
+
 	CUIProgressBar				UIProgressBarHealth;	
 	CUIProgressBar				UIProgressBarStamina;
 	CUIProgressBar				UIProgressBarRadiation;
-	CUIProgressBar              UIProgressBarHunger;
+	CUIProgressBar				UIProgressBarHunger;
+	CUIProgressBar				UIProgressBarThirst;
+	CUIProgressBar				UIProgressBarArmor;
+
 	CUIProgressBar				UIProgressBarRank;
 
 	CUIPropertiesBox			UIPropertiesBox;

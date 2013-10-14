@@ -7,6 +7,11 @@
 #include "../monster_velocity_space.h"
 #include "../../../characterphysicssupport.h"
 #include "../../../PHMovementControl.h"
+#include "../../../actor.h"
+#include "../../../ActorEffector.h"
+#include "zombie_choke_effector.h"
+#include "../../../../camerabase.h"
+
 #include "../control_animation_base.h"
 #include "../control_movement_base.h"
 #ifdef _DEBUG
@@ -68,6 +73,9 @@ void CZombie::Load(LPCSTR section)
 	anim().LinkAction(ACT_STEAL,			eAnimWalkFwd);
 	anim().LinkAction(ACT_LOOK_AROUND,	eAnimStandIdle);
 
+	LoadChokePPEffector			(pSettings->r_string(section,"choke_effector"));
+	m_choke_want_speed			= pSettings->r_float(section,"Choke_Need_Speed");
+
 #ifdef DEBUG	
 	anim().accel_chain_test		();
 #endif
@@ -78,12 +86,18 @@ void CZombie::reinit()
 {
 	inherited::reinit();
 
+	CControlledActor::reinit	();
+
 	Bones.Reset();
+
+	com_man().ta_fill_data(anim_triple_choke, "stand_attack_4_", "stand_attack_5_", "stand_attack_6_", TA_EXECUTE_LOOPED, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);
 	
 	time_dead_start			= 0;
 	last_hit_frame			= 0;
 	time_resurrect			= 0;
+	fakedeath_is_active		= false;
 	fake_death_left			= fake_death_count;
+	m_choke_want_value		= 0.f;
 
 	active_triple_idx		= u8(-1);
 }
@@ -156,6 +170,7 @@ void	CZombie::Hit								(SHit* pHDS)
 				if (g_Alive())
 					character_physics_support()->movement()->DestroyCharacter();
 				time_dead_start				= Device.dwTimeGlobal;
+				fakedeath_is_active			= true;
 				
 				if (fake_death_left == 0)	fake_death_left = 1;
 				fake_death_left--;
@@ -174,6 +189,7 @@ void CZombie::shedule_Update(u32 dt)
 	if (time_dead_start != 0) {
 		if (time_dead_start + TIME_FAKE_DEATH < Device.dwTimeGlobal) {
 			time_dead_start  = 0;
+			fakedeath_is_active = false;
 
 			com_man().ta_pointbreak();
 			if (g_Alive())	
@@ -184,6 +200,38 @@ void CZombie::shedule_Update(u32 dt)
 	}
 }
 
+void CZombie::UpdateCL()
+{
+	inherited::UpdateCL				();
+	CControlledActor::frame_update	();
+	
+	// update choke need
+	m_choke_want_value += m_choke_want_speed * client_update_fdelta();
+	clamp(m_choke_want_value,0.f,1.f);
+	//Msg("clamp=[%f]", m_choke_want_value);
+
+}
+
+void CZombie::LoadChokePPEffector(LPCSTR section)
+{
+	pp_choke_effector.duality.h			= pSettings->r_float(section,"duality_h");
+	pp_choke_effector.duality.v			= pSettings->r_float(section,"duality_v");
+	pp_choke_effector.gray				= pSettings->r_float(section,"gray");
+	pp_choke_effector.blur				= pSettings->r_float(section,"blur");
+	pp_choke_effector.noise.intensity		= pSettings->r_float(section,"noise_intensity");
+	pp_choke_effector.noise.grain			= pSettings->r_float(section,"noise_grain");
+	pp_choke_effector.noise.fps			= pSettings->r_float(section,"noise_fps");
+	VERIFY(!fis_zero(pp_choke_effector.noise.fps));
+
+	sscanf(pSettings->r_string(section,"color_base"),	"%f,%f,%f", &pp_choke_effector.color_base.r, &pp_choke_effector.color_base.g, &pp_choke_effector.color_base.b);
+	sscanf(pSettings->r_string(section,"color_gray"),	"%f,%f,%f", &pp_choke_effector.color_gray.r, &pp_choke_effector.color_gray.g, &pp_choke_effector.color_gray.b);
+	sscanf(pSettings->r_string(section,"color_add"),	"%f,%f,%f", &pp_choke_effector.color_add.r,  &pp_choke_effector.color_add.g,  &pp_choke_effector.color_add.b);
+}
+
+void CZombie::ActivateChokeEffector()
+{
+	Actor()->Cameras().AddPPEffector(xr_new<CChokePPEffector>(pp_choke_effector, 6.0f));
+}
 
 bool CZombie::fake_death_fall_down()
 {
@@ -191,6 +239,7 @@ bool CZombie::fake_death_fall_down()
 
 	com_man().ta_activate		(anim_triple_death[u8(Random.randI(FAKE_DEATH_TYPES_COUNT))]);
 	move().stop					();
+	fakedeath_is_active				= true;
 	if (g_Alive())
 		character_physics_support()->movement()->DestroyCharacter();
 
@@ -208,7 +257,9 @@ void CZombie::fake_death_stand_up()
 		}
 	}
 	if (!active) return;
-	
+
+	fakedeath_is_active	= false;
+
 	com_man().ta_pointbreak();
 
 	if (g_Alive())

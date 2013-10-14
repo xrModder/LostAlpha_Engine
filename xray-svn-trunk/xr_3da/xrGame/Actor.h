@@ -647,6 +647,7 @@ public:
 	virtual	shared_str		GetDefaultVisualOutfit_legs	() const	{return m_DefaultVisualOutfit_legs;};
 	virtual	void			SetDefaultVisualOutfit_legs	(shared_str DefaultOutfit) {m_DefaultVisualOutfit_legs = DefaultOutfit;};
 	virtual	void			SetDrawLegs	(bool DrawLegs) {m_bDrawLegs = DrawLegs;};
+	virtual bool			DrawLegs	() const {return m_bDrawLegs;}
 	virtual	void			SetActorShadows	(bool ActorShadows) {m_bActorShadows = ActorShadows;};
 	virtual bool			IsActorShadowsOn	() const {return m_bActorShadows;}
 	virtual bool			IsFirstEye	() const {return (m_bFirstEye);}
@@ -795,11 +796,13 @@ public:
 			u16					GetTurretTemp					();
 			void				SetDirectionSlowly				(Fvector pos, float time);
 			void				SetActorState					(EActorState state, bool show);
-			Flags16				&GetActorState					()											{  return m_actor_state; }
+			Flags32				&GetActorState					()											{  return m_actor_state; }
+
+			float				SetWalkAccel					(float new_value);					
 
 private:
 	CTorch				*m_current_torch;
-	Flags16				m_actor_state;
+	Flags32				m_actor_state;
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

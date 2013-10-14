@@ -119,6 +119,8 @@ public:
 	
 	virtual void		HideShownDialogs		(){};
 
+	virtual void		ReinitDialogs			(){};
+
 	SDrawStaticStruct*	AddCustomStatic			(LPCSTR id, bool bSingleInstance);
 	SDrawStaticStruct*	GetCustomStatic			(LPCSTR id);
 	void				RemoveCustomStatic		(LPCSTR id);

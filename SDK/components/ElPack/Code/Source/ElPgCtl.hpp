@@ -49,8 +49,14 @@ enum TElTabStyle { etsTabs, etsButtons, etsFlatButtons, etsNetTabs, etsFlatTabs,
 enum TElTabPosition { etpTop, etpBottom, etpRight, etpLeft };
 #pragma option pop
 
+#pragma option push -b-
+enum TElTabDrawState { edsBackground, edsEdges, edsContents };
+#pragma option pop
+
 class DELPHICLASS TElTabSheet;
-typedef void __fastcall (__closure *TElMeasureTabEvent)(System::TObject* Sender, TElTabSheet* Page, tagSIZE &Size);
+typedef void __fastcall (__closure *TElMeasureTabEvent)(System::TObject* Sender, Graphics::TCanvas* Canvas, TElTabSheet* Page, tagSIZE &Size);
+
+typedef void __fastcall (__closure *TElPaintTabEvent)(System::TObject* Sender, Graphics::TCanvas* Canvas, TElTabSheet* Page, const Types::TRect &Rect, TElTabDrawState DrawStep, bool &DefaultDrawing);
 
 typedef void __fastcall (__closure *TElTabGetImageEvent)(System::TObject* Sender, int PageIndex, int &ImageIndex);
 
@@ -147,7 +153,7 @@ class PASCALIMPLEMENTATION TElPageControl : public Elxpthemedcontrol::TElXPTheme
 {
 	typedef Elxpthemedcontrol::TElXPThemedControl inherited;
 	
-private:
+protected:
 	int ALines;
 	TElTabs* FTabs;
 	#pragma pack(push, 1)
@@ -180,8 +186,9 @@ private:
 	Eltimers::TElTimer* FHintTimer;
 	Controls::THintWindow* FHintWnd;
 	bool FNoDTAlert;
-	
-protected:
+	TElTabSheet* FDragTab;
+	int FDoStartDrag;
+	bool FDraggablePages;
 	AnsiString FActivateSound;
 	TElTabSheet* FActivePage;
 	Graphics::TColor FActiveTabColor;
@@ -231,7 +238,12 @@ protected:
 	Graphics::TColor FFlatTabBorderColor;
 	Graphics::TColor FTabBkColorNetStyle;
 	bool FVerticalSideCaptions;
+	Graphics::TFont* FActiveTabFont;
+	bool FUseActiveTabFont;
+	Controls::TCursor FTabCursor;
 	WideString FHint;
+	TElPaintTabEvent FOnDrawTab;
+	TElTabSheet* FDefaultPage;
 	DYNAMIC void __fastcall Resize(void);
 	virtual WideString __fastcall GetThemedClassName();
 	virtual void __fastcall FreeThemeHandle(void);
@@ -246,6 +258,7 @@ protected:
 	HIDESBASE MESSAGE void __fastcall WMNCPaint(Messages::TWMNCPaint &Message);
 	HIDESBASE MESSAGE void __fastcall WMSize(Messages::TWMSize &Msg);
 	HIDESBASE MESSAGE void __fastcall WMPaint(Messages::TWMPaint &Msg);
+	HIDESBASE MESSAGE void __fastcall WMSetCursor(Messages::TWMSetCursor &Message);
 	HIDESBASE MESSAGE void __fastcall WMLButtonDblClk(Messages::TWMMouse &Message);
 	HIDESBASE MESSAGE void __fastcall WMKeyDown(Messages::TWMKey &Message);
 	HIDESBASE MESSAGE void __fastcall WMLButtonDown(Messages::TWMMouse &Message);
@@ -332,7 +345,7 @@ protected:
 	bool __fastcall DoHitTest(int X, int Y, int &Res);
 	void __fastcall UpdateMultilineOrder(void);
 	virtual void __fastcall TriggerGetImageEvent(int PageIndex, int &ImageIndex);
-	virtual void __fastcall TriggerMeasureTabEvent(TElTabSheet* Page, tagSIZE &Size);
+	virtual void __fastcall TriggerMeasureTabEvent(Graphics::TCanvas* Canvas, TElTabSheet* Page, tagSIZE &Size);
 	MESSAGE void __fastcall IFMRepaintChildren(Messages::TMessage &Message);
 	MESSAGE void __fastcall IFMEffectiveSize(Messages::TMessage &Message);
 	MESSAGE void __fastcall IFMCanPaintBkgnd(Messages::TMessage &Message);
@@ -348,14 +361,19 @@ protected:
 	void __fastcall SetFlatTabBorderColor(Graphics::TColor Value);
 	void __fastcall SetTabBkColorNetStyle(Graphics::TColor Value);
 	void __fastcall SetVerticalSideCaptions(bool Value);
+	void __fastcall SetDraggablePages(bool Value);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
+	void __fastcall SetActiveTabFont(Graphics::TFont* Value);
+	void __fastcall SetUseActiveTabFont(bool Value);
+	void __fastcall ActiveTabFontChange(System::TObject* Sender);
+	virtual void __fastcall TriggerDrawTabEvent(Graphics::TCanvas* Canvas, TElTabSheet* Page, const Types::TRect &Rect, TElTabDrawState DrawStep, bool &DefaultDrawing);
 	__property TElPageScrollBtnState ScrollBtnState = {read=FScrollBtnState, write=SetScrollBtnState, nodefault};
 	__property Graphics::TBitmap* Background = {read=FBackground, write=SetBackground};
-	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, nodefault};
+	__property Elvclutils::TElBkGndType BackgroundType = {read=FBackgroundType, write=SetBackgroundType, default=2};
 	__property Graphics::TColor GradientEndColor = {read=FGradientEndColor, write=SetGradientEndColor, nodefault};
 	__property Graphics::TColor GradientStartColor = {read=FGradientStartColor, write=SetGradientStartColor, nodefault};
-	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, nodefault};
+	__property int GradientSteps = {read=FGradientSteps, write=SetGradientSteps, default=16};
 	
 public:
 	__fastcall virtual TElPageControl(Classes::TComponent* AOwner);
@@ -385,7 +403,7 @@ __published:
 	__property Color  = {default=-2147483633};
 	__property bool DrawFocus = {read=FDrawFocus, write=SetDrawFocus, nodefault};
 	__property bool Flat = {read=FFlat, write=SetFlat, nodefault};
-	__property bool HotTrack = {read=FHotTrack, write=SetHotTrack, nodefault};
+	__property bool HotTrack = {read=FHotTrack, write=SetHotTrack, default=1};
 	__property Elimgfrm::TElImageForm* ImageForm = {read=FImgForm, write=SetImageForm};
 	__property Controls::TImageList* Images = {read=FImages, write=SetImages};
 	__property Graphics::TColor InactiveTabColor = {read=FInactiveTabColor, write=SetInactiveTabColor, default=-2147483633};
@@ -412,8 +430,14 @@ __published:
 	__property TElTabSheet* ActivePage = {read=FActivePage, write=SetActivePage};
 	__property bool ShowTabHints = {read=FShowTabHints, write=FShowTabHints, default=1};
 	__property bool SavvyMode = {read=FSavvyMode, write=SetSavvyMode, default=0};
-	__property Graphics::TColor FlatTabBorderColor = {read=FFlatTabBorderColor, write=SetFlatTabBorderColor, nodefault};
+	__property Graphics::TColor FlatTabBorderColor = {read=FFlatTabBorderColor, write=SetFlatTabBorderColor, default=-2147483632};
 	__property bool VerticalSideCaptions = {read=FVerticalSideCaptions, write=SetVerticalSideCaptions, default=1};
+	__property bool DraggablePages = {read=FDraggablePages, write=SetDraggablePages, default=0};
+	__property Graphics::TFont* ActiveTabFont = {read=FActiveTabFont, write=SetActiveTabFont};
+	__property bool UseActiveTabFont = {read=FUseActiveTabFont, write=SetUseActiveTabFont, default=0};
+	__property Controls::TCursor TabCursor = {read=FTabCursor, write=FTabCursor, default=0};
+	__property TElPaintTabEvent OnDrawTab = {read=FOnDrawTab, write=FOnDrawTab};
+	__property TElTabSheet* DefaultPage = {read=FDefaultPage, write=FDefaultPage};
 	__property WideString Hint = {read=FHint, write=SetHint};
 	__property Align  = {default=0};
 	__property DragCursor  = {default=-12};
@@ -496,6 +520,7 @@ protected:
 	bool FTabEnabled;
 	Menus::TPopupMenu* FTabMenu;
 	WideString FHint;
+	bool FUseTabColor;
 	virtual void __fastcall TriggerShowEvent(void);
 	virtual void __fastcall TriggerHideEvent(void);
 	void __fastcall SetTabColor(Graphics::TColor Value);
@@ -515,6 +540,7 @@ protected:
 	virtual void __fastcall ReadState(Classes::TReader* Reader);
 	void __fastcall SetHint(WideString Value);
 	HIDESBASE MESSAGE void __fastcall CMHintShow(Messages::TMessage &Message);
+	void __fastcall SetUseTabColor(bool Value);
 	__property bool TabShowing = {read=FTabShowing, nodefault};
 	
 public:
@@ -533,12 +559,13 @@ __published:
 	__property Classes::TNotifyEvent OnShow = {read=FOnShow, write=FOnShow};
 	__property Classes::TNotifyEvent OnHide = {read=FOnHide, write=FOnHide};
 	__property TElPageControl* PageControl = {read=FPageControl, write=SetPageControl};
-	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, nodefault};
-	__property bool TabVisible = {read=FTabVisible, write=SetTabVisible, nodefault};
+	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, default=-1};
+	__property bool TabVisible = {read=FTabVisible, write=SetTabVisible, default=1};
 	__property WideString Caption = {read=FCaption, write=SetCaption};
 	__property int PageIndex = {read=GetPageIndex, write=SetPageIndex, stored=false, nodefault};
 	__property bool TabEnabled = {read=FTabEnabled, write=SetTabEnabled, default=1};
 	__property Menus::TPopupMenu* TabMenu = {read=FTabMenu, write=SetTabMenu};
+	__property bool UseTabColor = {read=FUseTabColor, write=SetUseTabColor, default=0};
 	__property WideString Hint = {read=FHint, write=SetHint};
 	__property Color  = {default=-2147483633};
 	__property ParentColor  = {default=0};

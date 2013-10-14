@@ -122,13 +122,13 @@ void CSE_ALifeInventoryItem::UPDATE_Write	(NET_Packet &tNetPacket)
 	tNetPacket.w_float_q8			(State.quaternion.z,0.f,1.f);
 	tNetPacket.w_float_q8			(State.quaternion.w,0.f,1.f);	
 
-	if (check(num_items.mask,inventory_item_angular_null)) {
+	if (!check(num_items.mask,inventory_item_angular_null)) {
 		tNetPacket.w_float_q8		(State.angular_vel.x,0.f,10*PI_MUL_2);
 		tNetPacket.w_float_q8		(State.angular_vel.y,0.f,10*PI_MUL_2);
 		tNetPacket.w_float_q8		(State.angular_vel.z,0.f,10*PI_MUL_2);
 	}
 
-	if (check(num_items.mask,inventory_item_linear_null)) {
+	if (!check(num_items.mask,inventory_item_linear_null)) {
 		tNetPacket.w_float_q8		(State.linear_vel.x,-32.f,32.f);
 		tNetPacket.w_float_q8		(State.linear_vel.y,-32.f,32.f);
 		tNetPacket.w_float_q8		(State.linear_vel.z,-32.f,32.f);
@@ -160,7 +160,7 @@ void CSE_ALifeInventoryItem::UPDATE_Read	(NET_Packet &tNetPacket)
 
 	State.enabled					= check(num_items.mask,inventory_item_state_enabled);
 
-	if (check(num_items.mask,inventory_item_angular_null)) {
+	if (!check(num_items.mask,inventory_item_angular_null)) {
 		tNetPacket.r_float_q8		(State.angular_vel.x,0.f,10*PI_MUL_2);
 		tNetPacket.r_float_q8		(State.angular_vel.y,0.f,10*PI_MUL_2);
 		tNetPacket.r_float_q8		(State.angular_vel.z,0.f,10*PI_MUL_2);
@@ -168,7 +168,7 @@ void CSE_ALifeInventoryItem::UPDATE_Read	(NET_Packet &tNetPacket)
 	else
 		State.angular_vel.set		(0.f,0.f,0.f);
 
-	if (check(num_items.mask,inventory_item_linear_null)) {
+	if (!check(num_items.mask,inventory_item_linear_null)) {
 		tNetPacket.r_float_q8		(State.linear_vel.x,-32.f,32.f);
 		tNetPacket.r_float_q8		(State.linear_vel.y,-32.f,32.f);
 		tNetPacket.r_float_q8		(State.linear_vel.z,-32.f,32.f);
@@ -308,6 +308,13 @@ CSE_ALifeItemTorch::~CSE_ALifeItemTorch		()
 {
 }
 
+BOOL	CSE_ALifeItemTorch::Net_Relevant			()
+{
+	if (m_attached) return true;
+	return inherited::Net_Relevant();
+}
+
+
 void CSE_ALifeItemTorch::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
 {
 	if (m_wVersion > 20)
@@ -353,13 +360,12 @@ void CSE_ALifeItemTorch::FillProps			(LPCSTR pref, PropItemVec& values)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
-	a_current					= 90;
-	a_elapsed					= 0;
-	wpn_flags					= 0;
-	wpn_state					= 0;
-	ammo_type					= 0;
-	a_elapsed_grenades.grenades_count	=	0;
-	a_elapsed_grenades.grenades_type	=	0;
+	a_current							=	90;
+	a_elapsed							=	0;
+	wpn_flags							=	0;
+	wpn_state							=	0;
+	ammo_type							=	0;
+
 	m_fHitPower					= pSettings->r_float(caSection,"hit_power");
 	m_tHitType					= ALife::g_tfString2HitType(pSettings->r_string(caSection,"hit_type"));
 	m_caAmmoSections			= pSettings->r_string(caSection,"ammo_class");
@@ -429,8 +435,6 @@ void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
 
 	if (m_wVersion > 46)
 		tNetPacket.r_u8			(ammo_type);
-
-	a_elapsed_grenades.unpack_from_byte(tNetPacket.r_u8());
 }
 
 void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
@@ -441,7 +445,6 @@ void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(wpn_state);
 	tNetPacket.w_u8				(m_addon_flags.get());
 	tNetPacket.w_u8				(ammo_type);
-	tNetPacket.w_u8				(a_elapsed_grenades.pack_to_byte());
 }
 
 void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time, ClientID sender )
@@ -459,6 +462,11 @@ void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time,
 					tNetPacket.r_u8();	
 			}break;
 	}
+}
+
+u8 CSE_ALifeItemWeapon::get_addon_flags		()
+{
+	return (m_addon_flags.get());
 }
 
 u8	 CSE_ALifeItemWeapon::get_slot			()
@@ -479,6 +487,11 @@ u16	 CSE_ALifeItemWeapon::get_ammo_total	()
 u16	 CSE_ALifeItemWeapon::get_ammo_elapsed	()
 {
 	return						((u16)a_elapsed);
+}
+
+void CSE_ALifeItemWeapon::set_ammo_elapsed	(u16 val)
+{
+	a_elapsed = val;
 }
 
 u16	 CSE_ALifeItemWeapon::get_ammo_magsize	()
@@ -600,7 +613,9 @@ void CSE_ALifeItemWeaponMagazined::FillProps			(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeaponMagazinedWGL::CSE_ALifeItemWeaponMagazinedWGL	(LPCSTR caSection) : CSE_ALifeItemWeaponMagazined(caSection)
 {
-	m_bGrenadeMode = 0;
+	m_bGrenadeMode				=	0;
+	a_elapsed_grenades.grenades_count	=	0;
+	a_elapsed_grenades.grenades_type	=	0;
 }
 
 CSE_ALifeItemWeaponMagazinedWGL::~CSE_ALifeItemWeaponMagazinedWGL	()
@@ -622,10 +637,12 @@ void CSE_ALifeItemWeaponMagazinedWGL::UPDATE_Write	(NET_Packet& P)
 void CSE_ALifeItemWeaponMagazinedWGL::STATE_Read		(NET_Packet& P, u16 size)
 {
 	inherited::STATE_Read(P, size);
+	a_elapsed_grenades.unpack_from_byte(P.r_u8());
 }
 void CSE_ALifeItemWeaponMagazinedWGL::STATE_Write		(NET_Packet& P)
 {
 	inherited::STATE_Write(P);
+	P.w_u8				(a_elapsed_grenades.pack_to_byte());
 }
 
 void CSE_ALifeItemWeaponMagazinedWGL::FillProps			(LPCSTR pref, PropItemVec& items)
@@ -671,6 +688,11 @@ void CSE_ALifeItemAmmo::UPDATE_Write		(NET_Packet	&tNetPacket)
 	inherited::UPDATE_Write		(tNetPacket);
 
 	tNetPacket.w_u16			(a_elapsed);
+}
+
+u16 CSE_ALifeItemAmmo::get_ammo_left		() const
+{
+	return a_elapsed;
 }
 
 void CSE_ALifeItemAmmo::FillProps			(LPCSTR pref, PropItemVec& values) {
@@ -848,7 +870,10 @@ void CSE_ALifeItemPDA::FillProps		(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemDocument::CSE_ALifeItemDocument(LPCSTR caSection): CSE_ALifeItem(caSection)
 {
-	m_wDoc					= NULL;
+	if (pSettings->line_exist(caSection, "info_portion"))
+		m_wDoc					= pSettings->r_string(caSection,"info_portion");
+	else
+		m_wDoc					= NULL;
 }
 
 CSE_ALifeItemDocument::~CSE_ALifeItemDocument()

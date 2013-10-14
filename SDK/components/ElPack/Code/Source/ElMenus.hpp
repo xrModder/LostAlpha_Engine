@@ -270,6 +270,7 @@ protected:
 	HIDESBASE void __fastcall UpdateItems(void);
 	int __fastcall GetImageWidth(void);
 	void __fastcall SetHint(WideString Value);
+	void __fastcall UpdateCommand(void);
 	
 public:
 	__fastcall virtual TElMenuItem(Classes::TComponent* AOwner);
@@ -286,6 +287,7 @@ public:
 	DYNAMIC bool __fastcall HasParent(void);
 	HIDESBASE void __fastcall Add(TElMenuItem* Item);
 	HIDESBASE void __fastcall Remove(TElMenuItem* Item);
+	HIDESBASE void __fastcall Clear(void);
 	__property HMENU Handle = {read=GetHandle, nodefault};
 	__property int Count = {read=GetCount, nodefault};
 	__property TElMenuItem* Items[int Index] = {read=GetItem/*, default*/};
@@ -331,6 +333,7 @@ private:
 	Imglist::TChangeLink* FImageChangeLink;
 	Controls::TImageList* FImages;
 	bool FOwnerDraw;
+	bool FRightToLeft;
 	bool FIsHTML;
 	Htmlrender::TElHTMLImageNeededEvent FOnImageNeeded;
 	Htmlrender::TElHTMLRender* FRender;
@@ -354,10 +357,12 @@ protected:
 	virtual HMENU __fastcall GetHandle(void);
 	HIDESBASE bool __fastcall DispatchCommand(Word ACommand);
 	virtual void __fastcall Loaded(void);
+	void __fastcall SetRightToLeft(bool Value);
 	void __fastcall SetSystemFont(bool Value);
 	void __fastcall GetFont(void);
 	void __fastcall FontChange(System::TObject* Sender);
 	void __fastcall TriggerImageNeededEvent(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
+	void __fastcall UpdateCommands(void);
 	
 public:
 	__fastcall virtual TElMainMenu(Classes::TComponent* AOwner);
@@ -365,6 +370,7 @@ public:
 	HIDESBASE TElMenuItem* __fastcall FindItem(int Value, Menus::TFindItemKind Kind);
 	DYNAMIC bool __fastcall IsShortCut(Messages::TWMKey &Message);
 	HIDESBASE void __fastcall UpdateItems(void);
+	HIDESBASE bool __fastcall DispatchPopup(HMENU AHandle);
 	
 __published:
 	__property TElMenuItem* Items = {read=FUnicodeItems};
@@ -372,6 +378,7 @@ __published:
 	__property TDrawStyle DrawStyle = {read=FDrawStyle, write=SetDrawStyle, default=0};
 	__property Controls::TImageList* Images = {read=FImages, write=SetImages};
 	__property bool OwnerDraw = {read=FOwnerDraw, write=SetOwnerDraw, default=0};
+	__property bool RightToLeft = {read=FRightToLeft, write=SetRightToLeft, default=0};
 	__property bool SystemFont = {read=FSystemFont, write=SetSystemFont, default=1};
 	__property bool IsHTML = {read=FIsHTML, write=SetIsHTML, default=0};
 	__property Htmlrender::TElHTMLImageNeededEvent OnImageNeeded = {read=FOnImageNeeded, write=FOnImageNeeded};
@@ -412,6 +419,7 @@ protected:
 	void __fastcall FontChange(System::TObject* Sender);
 	virtual void __fastcall Loaded(void);
 	void __fastcall TriggerImageNeededEvent(System::TObject* Sender, WideString Src, Graphics::TBitmap* &Image);
+	void __fastcall UpdateCommands(void);
 	
 public:
 	__fastcall virtual TElPopupMenu(Classes::TComponent* AOwner);
@@ -421,6 +429,7 @@ public:
 	DYNAMIC bool __fastcall IsShortCut(Messages::TWMKey &Message);
 	HIDESBASE void __fastcall ProcessMenuChar(Messages::TWMMenuChar &Message);
 	HIDESBASE void __fastcall UpdateItems(void);
+	HIDESBASE bool __fastcall DispatchPopup(HMENU AHandle);
 	__property Types::TPoint PopupPoint = {read=FPopupPoint};
 	__property Handle  = {read=GetHandle};
 	

@@ -123,7 +123,7 @@ __published:
 	__property int CountdownTime = {read=FCountdownTime, write=SetCountdownTime, nodefault};
 	__property bool CountdownActive = {read=FCountdownActive, write=SetCountdownActive, nodefault};
 	__property bool CountdownPaused = {read=FCountdownPaused, write=SetCountdownPaused, nodefault};
-	__property bool UseTimer = {read=GetTimer, write=SetTimer, nodefault};
+	__property bool UseTimer = {read=GetTimer, write=SetTimer, default=1};
 	__property Classes::TNotifyEvent OnCountdownDone = {read=FOnCountdownDone, write=FOnCountdownDone};
 	__property Classes::TNotifyEvent OnCountdownTick = {read=FOnCountdownTick, write=FOnCountdownTick};
 	__property Align ;

@@ -81,13 +81,18 @@ void CMissile::Load(LPCSTR section)
 	m_sAnimHide			= pSettings->r_string(*hud_sect, "anim_hide");
 	m_sAnimIdle			= pSettings->r_string(*hud_sect, "anim_idle");
 	m_sAnimPlaying		= pSettings->r_string(*hud_sect, "anim_playing");
+
+	if(pSettings->line_exist(*hud_sect,"anim_playing_fail"))
+		m_sAnimPlayingFail		= pSettings->r_string(*hud_sect, "anim_playing_fail");
+
+	m_sAnimPlaying		= pSettings->r_string(*hud_sect, "anim_playing");
 	m_sAnimThrowBegin	= pSettings->r_string(*hud_sect, "anim_throw_begin");
 	m_sAnimThrowIdle	= pSettings->r_string(*hud_sect, "anim_throw_idle");
 	m_sAnimThrowAct		= pSettings->r_string(*hud_sect, "anim_throw_act");
 	m_sAnimThrowEnd		= pSettings->r_string(*hud_sect, "anim_throw_end");
 
 	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
-	m_sAnimIdle_sprint			= pSettings->r_string(*hud_sect, "anim_idle_sprint");
+		m_sAnimIdle_sprint			= pSettings->r_string(*hud_sect, "anim_idle_sprint");
 
 	if(pSettings->line_exist(section,"snd_playing"))
 		HUD_SOUND::LoadSound(section,"snd_playing",sndPlaying);
@@ -192,17 +197,24 @@ void CMissile::UpdateCL()
 {
 	inherited::UpdateCL();
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
-	if(pActor && GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
-		OnStateSwitch(MS_PLAYING);
+	if (pActor && GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME )
+	{
+		CEntity::SEntityState st;
+		pActor->g_State(st);
+
+		if(!st.bSprint || !m_sAnimIdle_sprint.size())
+			OnStateSwitch(MS_PLAYING);
+		else
+			m_dwStateTime = 0;
+	}
 	
 	if(GetState() == MS_READY) 
 	{
-		if(m_throw){ 
+		if(m_throw)
 			SwitchState(MS_THROW);
-		}else 
-		{
-//			CActor	*actor = smart_cast<CActor*>(H_Parent());
-			if (pActor) {				
+		else {
+			if (pActor)
+			{				
 				m_fThrowForce		+= (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
 				clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
 			}
@@ -243,7 +255,9 @@ void CMissile::State(u32 state)
 	case MS_SHOWING:
         {
 			m_bPending = true;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimShow), FALSE, this, GetState());
+			MotionSVec anim;
+			animGet(anim, *m_sAnimShow);
+			m_pHUD->animPlay(anim[Random.randI(anim.size())], FALSE, this, GetState());
 		} break;
 	case MS_IDLE:
 		{
@@ -255,15 +269,23 @@ void CMissile::State(u32 state)
 
 					m_bPending = false;
 					if(st.bSprint && m_sAnimIdle_sprint.size())
-						m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle_sprint), TRUE, this, GetState());
-					else
-						m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle), TRUE, this, GetState());
+					{
+						MotionSVec anim;
+						animGet(anim, *m_sAnimIdle_sprint);
+						m_pHUD->animPlay(anim[Random.randI(anim.size())], TRUE, this, GetState());
+					} else {
+						MotionSVec anim;
+						animGet(anim, *m_sAnimIdle);
+						m_pHUD->animPlay(anim[Random.randI(anim.size())], TRUE, this, GetState());
+					}
 				}
 		} break;
 	case MS_HIDING:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimHide), TRUE, this, GetState());
+			MotionSVec anim;
+			animGet(anim, *m_sAnimHide);
+			m_pHUD->animPlay(anim[Random.randI(anim.size())], TRUE, this, GetState());
 		} break;
 	case MS_HIDDEN:
 		{
@@ -305,7 +327,12 @@ void CMissile::State(u32 state)
 	case MS_PLAYING:
 		{
 			PlaySound(sndPlaying,Position());
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimPlaying), TRUE, this, GetState());
+			MotionSVec anim;
+			if (m_sAnimPlayingFail.size() && Random.randI(30)==1)
+				animGet(anim, *m_sAnimPlayingFail);
+			else
+				animGet(anim, *m_sAnimPlaying);
+			m_pHUD->animPlay(anim[Random.randI(anim.size())], TRUE, this, GetState());
 		} break;
 	}
 }
@@ -359,6 +386,7 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	default: break;
 	}
+	inherited::OnAnimationEnd(state);
 }
 
 

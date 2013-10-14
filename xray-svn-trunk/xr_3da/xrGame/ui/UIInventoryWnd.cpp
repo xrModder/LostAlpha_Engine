@@ -34,10 +34,6 @@ using namespace InventoryUtilities;
 #include "UI3tButton.h"
 
 
-#define				INVENTORY_ITEM_XML		"inventory_item.xml"
-#define				INVENTORY_XML			"inventory_new.xml"
-
-
 
 CUIInventoryWnd*	g_pInvWnd = NULL;
 
@@ -55,7 +51,18 @@ CUIInventoryWnd::CUIInventoryWnd()
 void CUIInventoryWnd::Init()
 {
 	CUIXml								uiXml;
-	uiXml.Load(CONFIG_PATH, UI_PATH, INVENTORY_XML);
+
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+
+	string128		INVENTORY_ITEM_XML;
+	xr_sprintf		(INVENTORY_ITEM_XML, "inventory_item_%d.xml", ui_hud_type);
+
+	string128		INVENTORY_XML;
+	xr_sprintf		(INVENTORY_XML, "inventory_new_%d.xml", ui_hud_type);
+
+	bool xml_result						= uiXml.Load(CONFIG_PATH, UI_PATH, INVENTORY_XML);
+	R_ASSERT3							(xml_result, "file parsing error ", uiXml.m_xml_file_name);
 
 	CUIXmlInit							xml_init;
 
@@ -109,15 +116,21 @@ void CUIInventoryWnd::Init()
 
 	UIProgressBack.AttachChild (&UIProgressBarHealth);
 	xml_init.InitProgressBar (uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
-	
+
 	UIProgressBack.AttachChild	(&UIProgressBarStamina);
 	xml_init.InitProgressBar (uiXml, "progress_bar_stamina", 0, &UIProgressBarStamina);
+	
+	UIProgressBack.AttachChild	(&UIProgressBarArmor);
+	xml_init.InitProgressBar (uiXml, "progress_bar_armor", 0, &UIProgressBarArmor);
 
 	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
 	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
 
 	UIProgressBack.AttachChild    (&UIProgressBarHunger);
-    xml_init.InitProgressBar (uiXml, "progress_bar_hunger", 0, &UIProgressBarHunger);
+	xml_init.InitProgressBar (uiXml, "progress_bar_hunger", 0, &UIProgressBarHunger);
+
+	UIProgressBack.AttachChild	(&UIProgressBarThirst);
+	xml_init.InitProgressBar (uiXml, "progress_bar_thirst", 0, &UIProgressBarThirst);
 
 	UIPersonalWnd.AttachChild			(&UIStaticPersonal);
 	xml_init.InitStatic					(uiXml, "static_personal",0, &UIStaticPersonal);
@@ -168,6 +181,10 @@ void CUIInventoryWnd::Init()
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_binocular", 0, m_pUIBinocularList);
 	BindDragDropListEnents				(m_pUIBinocularList);
 
+	m_pUITorchList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUITorchList); m_pUITorchList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx			(uiXml, "dragdrop_torch", 0, m_pUITorchList);
+	BindDragDropListEnents				(m_pUITorchList);
+
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
 	UIPropertiesBox.InitPropertiesBox				(Fvector2().set(0,0),Fvector2().set(300,300));
@@ -210,6 +227,7 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	if(l==m_pUIOutfitList)		return iwSlot;
 	if(l==m_pUIKnifeList)	return iwSlot;
 	if(l==m_pUIBinocularList)	return iwSlot;
+	if(l==m_pUITorchList)	return iwSlot;
 
 	NODEFAULT;
 #ifdef DEBUG
@@ -265,33 +283,42 @@ void CUIInventoryWnd::Update()
 
 	if(pEntityAlive) 
 	{
-		float v = pEntityAlive->conditions().GetHealth()*100.0f;
+		float v = (1.f - pEntityAlive->conditions().BleedingSpeed())*100.0f;
 		UIProgressBarHealth.SetProgressPos		(v);
-
-		v = pEntityAlive->conditions().GetPower()*100.0f;
-		UIProgressBarStamina.SetProgressPos		(v);
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		UIProgressBarRadiation.SetProgressPos	(v);
 
+		v = pEntityAlive->conditions().GetPower()*100.0f;
+		UIProgressBarStamina.SetProgressPos		(v);
+
+		// Armor progress bar stuff
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-        v = pActor->conditions().GetSatiety()*100.0f;
-        UIProgressBarHunger.SetProgressPos    (v);
+		PIItem	pItem = pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
+		if (pItem)
+		{
+			v = pItem->GetCondition()*100;
+			UIProgressBarArmor.SetProgressPos	(v);
+		} else
+			UIProgressBarArmor.SetProgressPos	(0.f);
 
 
 		CInventoryOwner* pOurInvOwner	= smart_cast<CInventoryOwner*>(pEntityAlive);
 		u32 _money						= 0;
 
-		if (GameID() != GAME_SINGLE){
+		if (GameID() != GAME_SINGLE)
+		{
 			game_PlayerState* ps = Game().GetPlayerByGameID(pEntityAlive->ID());
-			if (ps){
+			if (ps)
+			{
 				UIProgressBarRank.SetProgressPos(ps->experience_D*100);
 				_money							= ps->money_for_round;
 			}
-		}else
-		{
+			UIProgressBarHunger.SetProgressPos	(100.f);
+			UIProgressBarThirst.SetProgressPos	(100.f);
+		} else
 			_money							= pOurInvOwner->get_money();
-		}
+
 		// update money
 		string64						sMoney;
 		xr_sprintf							(sMoney,"%d RU", _money);
@@ -531,4 +558,14 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 
 	return false;
+}
+
+void CUIInventoryWnd::SetProgessToHunger(float val)
+{
+	UIProgressBarHunger.SetProgressPos(val);
+}
+
+void CUIInventoryWnd::SetProgessToThirst(float val)
+{
+	UIProgressBarThirst.SetProgressPos(val);
 }

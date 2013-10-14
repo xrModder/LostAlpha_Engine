@@ -19,6 +19,8 @@ enum EPdaTabs
 	eptEncyclopedia,
 	eptSkills,
 	eptDownloads,
+	eptGames,
+	eptMPlayer,
 	eptNoActiveTab		= u16(-1)
 };
 
@@ -36,6 +38,9 @@ namespace pda_section{
 		encyclopedia		=(1<<14),
 		skills		=(1<<15),
 		downloads		=(1<<16),
+		games		=(1<<17),
+		mplayer		=(1<<18),
+
 
 		news			=diary|(1<<1),
 		info			=diary|(1<<2),

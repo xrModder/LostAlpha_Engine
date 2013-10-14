@@ -191,7 +191,7 @@ __published:
 	__property TSourceDragEvent OnOleSourceDrag = {read=FOnSourceDrag, write=FOnSourceDrag};
 	__property TSourceDropEvent OnSourceDrop = {read=FOnSourceDrop, write=FOnSourceDrop};
 	__property Graphics::TPicture* Picture = {read=FPicture, write=SetPicture};
-	__property bool AutoSize = {read=FAutoSize, write=SetAutoSize, nodefault};
+	__property bool AutoSize = {read=FAutoSize, write=SetAutoSize, default=0};
 	__property bool IsDropSource = {read=FIsDropSource, write=FIsDropSource, nodefault};
 	__property bool IsDropTarget = {read=FIsDropTarget, write=SetIsDropTarget, nodefault};
 	__property UseXPThemes  = {default=1};

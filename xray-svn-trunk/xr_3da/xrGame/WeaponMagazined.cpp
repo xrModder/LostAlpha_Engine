@@ -15,7 +15,12 @@
 #include "level.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include "ui/UIXmlInit.h"
+#include "ui/UIWindow.h"
 #include "UIGameCustom.h"
+#include "hudmanager.h"
+
+CUIXml*				pWpnScopeXml = NULL;
 
 CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapon(name)
 {
@@ -24,6 +29,8 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_eSoundShot		= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING | eSoundType);
 	m_eSoundEmptyClick	= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
+	m_eSoundReloadJammed		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
+	m_eSoundReloadNotEmpty		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	
 	m_pSndShotCurrent = NULL;
 	m_sSilencerFlameParticles = m_sSilencerSmokeParticles = NULL;
@@ -42,6 +49,8 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndShot);
 	HUD_SOUND::DestroySound(sndEmptyClick);
 	HUD_SOUND::DestroySound(sndReload);
+	HUD_SOUND::DestroySound(sndReloadJammed);
+	HUD_SOUND::DestroySound(sndReloadNotEmpty);
 }
 
 
@@ -52,6 +61,8 @@ void CWeaponMagazined::StopHUDSounds		()
 	
 	HUD_SOUND::StopSound(sndEmptyClick);
 	HUD_SOUND::StopSound(sndReload);
+	HUD_SOUND::StopSound(sndReloadJammed);
+	HUD_SOUND::StopSound(sndReloadNotEmpty);
 
 	HUD_SOUND::StopSound(sndShot);
 //.	if(sndShot.enable && sndShot.snd.feedback)
@@ -76,6 +87,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_shoot"	, sndShot		, m_eSoundShot		);
 	HUD_SOUND::LoadSound(section,"snd_empty"	, sndEmptyClick	, m_eSoundEmptyClick	);
 	HUD_SOUND::LoadSound(section,"snd_reload"	, sndReload		, m_eSoundReload		);
+	if (pSettings->line_exist(section,"snd_reload_misfire"))
+		HUD_SOUND::LoadSound(section,"snd_reload_misfire"	, sndReloadJammed		, m_eSoundReloadJammed		);
+	else
+		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadJammed		, m_eSoundReloadJammed		);
+	if (pSettings->line_exist(section,"snd_reload_not_empty"))
+		HUD_SOUND::LoadSound(section,"snd_reload_not_empty"	, sndReloadNotEmpty		, m_eSoundReloadNotEmpty		);
+	else
+		HUD_SOUND::LoadSound(section,"snd_reload"	, sndReloadNotEmpty		, m_eSoundReloadNotEmpty		);
 	
 	m_pSndShotCurrent = &sndShot;
 		
@@ -87,13 +106,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	animGet				(mhud.mhud_show,		pSettings->r_string(*hud_sect, "anim_draw"));
 	animGet				(mhud.mhud_hide,		pSettings->r_string(*hud_sect, "anim_holster"));
 	animGet				(mhud.mhud_shots,	pSettings->r_string(*hud_sect, "anim_shoot"));
-
 	if(pSettings->line_exist(*hud_sect,"anim_idle_sprint"))
 		animGet				(mhud.mhud_idle_sprint,	pSettings->r_string(*hud_sect, "anim_idle_sprint"));
-
+	if(pSettings->line_exist(*hud_sect,"anim_reload_misfire"))
+		animGet				(mhud.mhud_reload_jammed,	pSettings->r_string(*hud_sect, "anim_reload_misfire"));
 	if(IsZoomEnabled())
 		animGet				(mhud.mhud_idle_aim,		pSettings->r_string(*hud_sect, "anim_idle_aim"));
-	
+	if(pSettings->line_exist(*hud_sect,"anim_reload_not_empty"))
+		animGet				(mhud.mhud_reload_not_empty,	pSettings->r_string(*hud_sect, "anim_reload_not_empty"));	
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if(m_eSilencerStatus == ALife::eAddonAttachable)
@@ -134,27 +154,65 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 void CWeaponMagazined::FireStart		()
 {
-	if(IsValid() && !IsMisfire()) 
+	if(!IsMisfire())
 	{
-		if(!IsWorking() || AllowFireWhileWorking())
+		if(IsValid()) 
 		{
-			if(GetState()==eReload) return;
-			if(GetState()==eShowing) return;
-			if(GetState()==eHiding) return;
-			if(GetState()==eMisfire) return;
+			if(!IsWorking() || AllowFireWhileWorking())
+			{
+				if(GetState()==eReload) return;
+				if(GetState()==eShowing) return;
+				if(GetState()==eHiding) return;
+				if(GetState()==eMisfire) return;
 
-			inherited::FireStart();
-			
-			if (iAmmoElapsed == 0) 
+				inherited::FireStart();
+				
+				if (iAmmoElapsed == 0) 
+					OnMagazineEmpty();
+				else
+					SwitchState(eFire);
+			}
+		}else 
+		{
+			if(eReload!=GetState()) 
 				OnMagazineEmpty();
-			else
-				SwitchState(eFire);
 		}
-	} 
-	else 
-	{
-		if(eReload!=GetState() && eMisfire!=GetState()) OnMagazineEmpty();
+	}else
+	{//misfire
+		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
+		{
+			SDrawStaticStruct* s	= HUD().GetGameUI()->AddCustomStatic("gun_jammed", true);
+			s->m_endTime		= Device.fTimeGlobal+3.0f;// 3sec
+		}
+
+		OnEmptyClick();
 	}
+}
+
+void createWpnScopeXML()
+{
+	if(!pWpnScopeXml)
+	{
+		pWpnScopeXml			= xr_new<CUIXml>();
+		pWpnScopeXml->Load		(CONFIG_PATH, UI_PATH, "wpn_scopes.xml");
+	}
+}
+
+void CWeaponMagazined::ReinitZoomTexture() 
+{
+	if(m_UIScope)
+		xr_delete(m_UIScope);
+
+	shared_str scope_tex_name;
+
+	if(m_eScopeStatus == ALife::eAddonAttachable)
+		scope_tex_name = pSettings->r_string(*m_sScopeName, "scope_texture");
+	else
+		scope_tex_name = pSettings->r_string(cNameSect(), "scope_texture");
+
+	m_UIScope				= xr_new<CUIWindow>();
+	createWpnScopeXML		();
+	CUIXmlInit::InitWindow	(*pWpnScopeXml, scope_tex_name.c_str(), 0, m_UIScope);
 }
 
 void CWeaponMagazined::FireEnd() 
@@ -386,7 +444,10 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		break;
 	case eMisfire:
 		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
-			CurrentGameUI()->AddCustomStatic("gun_jammed", true);
+		{
+			SDrawStaticStruct* s	= CurrentGameUI()->AddCustomStatic("gun_jammed", true);
+			s->m_endTime		= Device.fTimeGlobal+3.0f;// 3sec
+		}
 		break;
 	case eMagEmpty:
 		switch2_Empty	();
@@ -464,6 +525,8 @@ void CWeaponMagazined::UpdateSounds	()
 	if (sndHide.playing			())	sndHide.set_position		(get_LastFP());
 	if (sndShot.playing			()) sndShot.set_position		(get_LastFP());
 	if (sndReload.playing		()) sndReload.set_position		(get_LastFP());
+	if (sndReloadJammed.playing		()) sndReloadJammed.set_position		(get_LastFP());
+	if (sndReloadNotEmpty.playing		()) sndReloadNotEmpty.set_position		(get_LastFP());
 	if (sndEmptyClick.playing	())	sndEmptyClick.set_position	(get_LastFP());
 }
 
@@ -573,9 +636,17 @@ void CWeaponMagazined::OnEmptyClick	()
 
 void CWeaponMagazined::OnAnimationEnd(u32 state) 
 {
+	inherited::OnAnimationEnd(state);
 	switch(state) 
 	{
-		case eReload:	ReloadMagazine();	SwitchState(eIdle);	break;	// End of reload animation
+		case eReload:
+			if (IsMisfire() && mhud.mhud_reload_jammed.size())
+				bMisfire = false;
+			else
+				ReloadMagazine();
+			SwitchState(eIdle);
+			break;	// End of reload animation
+
 		case eHiding:	SwitchState(eHidden);   break;	// End of Hide
 		case eShowing:	SwitchState(eIdle);		break;	// End of Show
 		case eIdle:		switch2_Idle();			break;  // Keep showing idle
@@ -597,7 +668,9 @@ void CWeaponMagazined::switch2_Fire	()
 	CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
 	CInventoryItem* ii		= smart_cast<CInventoryItem*>(this);
 #ifdef DEBUG
-	VERIFY2					(io,make_string("no inventory owner, item %s",*cName()));
+	if (!io)
+		return;
+	//VERIFY2					(io,make_string("no inventory owner, item %s",*cName()));
 
 	if (ii != io->inventory().ActiveItem())
 		Msg					("! not an active item, item %s, owner %s, active item %s",*cName(),*H_Parent()->cName(),io->inventory().ActiveItem() ? *io->inventory().ActiveItem()->object().cName() : "no_active_item");
@@ -654,7 +727,12 @@ void CWeaponMagazined::switch2_Empty()
 }
 void CWeaponMagazined::PlayReloadSound()
 {
-	PlaySound	(sndReload,get_LastFP());
+	if (IsMisfire())
+		PlaySound	(sndReloadJammed,get_LastFP());
+	else if (iAmmoElapsed > 0)
+		PlaySound	(sndReloadNotEmpty,get_LastFP());
+	else
+		PlaySound	(sndReload,get_LastFP());
 }
 
 void CWeaponMagazined::switch2_Reload()
@@ -679,8 +757,6 @@ void CWeaponMagazined::switch2_Hiding()
 void CWeaponMagazined::switch2_HidingClose()
 {
 	CWeapon::FireEnd();
-	
-	PlaySound	(sndHide,get_LastFP());
 
 	m_pHUD->animPlay (random_anim(mhud.mhud_hide),TRUE,this,GetState());
 	m_bPending = true;
@@ -884,33 +960,20 @@ void CWeaponMagazined::InitAddons()
 			m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
 			m_iScopeX	 = pSettings->r_s32(cNameSect(),"scope_x");
 			m_iScopeY	 = pSettings->r_s32(cNameSect(),"scope_y");
-
-			shared_str scope_tex_name;
-			scope_tex_name = pSettings->r_string(*m_sScopeName, "scope_texture");
 			m_fScopeZoomFactor = pSettings->r_float	(*m_sScopeName, "scope_zoom_factor");
-			
-			if(m_UIScope) xr_delete(m_UIScope);
-			m_UIScope = xr_new<CUIStaticItem>();
 
-			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0);
-	
+			ReinitZoomTexture();
 
-		}
-		else if(m_eScopeStatus == ALife::eAddonPermanent)
-		{
+		} else if(m_eScopeStatus == ALife::eAddonPermanent) {
 			m_fScopeZoomFactor = pSettings->r_float	(cNameSect(), "scope_zoom_factor");
-			shared_str scope_tex_name;
-			scope_tex_name = pSettings->r_string(cNameSect(), "scope_texture");
 
-			if(m_UIScope) xr_delete(m_UIScope);
-			m_UIScope = xr_new<CUIStaticItem>();
-			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0);
-
+			ReinitZoomTexture();
 		}
 	}
 	else
 	{
-		if(m_UIScope) xr_delete(m_UIScope);
+		if(m_UIScope)
+			xr_delete(m_UIScope);
 		
 		if(IsZoomEnabled())
 			m_fIronSightZoomFactor = pSettings->r_float	(cNameSect(), "scope_zoom_factor");
@@ -999,7 +1062,13 @@ void CWeaponMagazined::PlayAnimHide()
 void CWeaponMagazined::PlayAnimReload()
 {
 	VERIFY(GetState()==eReload);
-	m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
+	if (IsMisfire() && mhud.mhud_reload_jammed.size())
+		m_pHUD->animPlay(random_anim(mhud.mhud_reload_jammed),TRUE,this,GetState());
+	else if (iAmmoElapsed > 0 && mhud.mhud_reload_not_empty.size())
+		m_pHUD->animPlay(random_anim(mhud.mhud_reload_not_empty),TRUE,this,GetState());
+	else
+		m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
+
 	LPCSTR AnimName = "_reload";
 	inherited::WeaponCamEffector(AnimName);
 }

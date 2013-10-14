@@ -1200,7 +1200,7 @@ void CActor::shedule_Update	(u32 DT)
 
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-		if (m_bDrawLegs && IsGameTypeSingle() && (!m_bActorShadows || (psDeviceFlags.test(rsR2) && m_bActorShadows)))
+		if (m_bDrawLegs && IsGameTypeSingle() && ((!psDeviceFlags.test(rsR2) && !m_bActorShadows) || (psDeviceFlags.test(rsR2) && m_bActorShadows)))
 			setVisible				(TRUE);
 		else
 			setVisible				(!HUDview	());
@@ -1810,22 +1810,16 @@ void CActor::RechargeTorchBattery(void)
 
 CTorch *CActor::GetCurrentTorch(void)
 {
-	CTorch *torch = 0;
-	if (!m_current_torch)
+	if (inventory().ItemFromSlot(TORCH_SLOT))
 	{
-		const xr_vector<CAttachableItem*> &all = CAttachmentOwner::attached_objects();
-		xr_vector<CAttachableItem*>::const_iterator it, last;
-		for (it = all.begin(), last = all.end(); it != last; ++it)
-		{
-			torch = smart_cast<CTorch*>(*it);
-			if (torch)
-			{
-				m_current_torch = torch;
-				break;
-			}
-		}
-	}
-//	R_ASSERT(m_current_torch);
+		CTorch *torch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+		if (torch)
+			m_current_torch = torch;
+		else
+			m_current_torch = 0;
+	} else
+		m_current_torch = 0;
+
 	return m_current_torch;
 }
 
@@ -1843,13 +1837,20 @@ u16 CActor::GetTurretTemp()
 
 void CActor::SetDirectionSlowly(Fvector pos, float time)
 {
-	if(!m_ScriptCameraDirection){
+	if(!m_ScriptCameraDirection)
 		m_ScriptCameraDirection = xr_new<CScriptCameraDirection>();
-		m_ScriptCameraDirection->Start(this, pos, time);
-	}
+
+	m_ScriptCameraDirection->Start(this, pos, time);
 }
 
 void CActor::SetActorState(EActorState state, bool show)
 {
 	m_actor_state.set					(1 << state, show);
+}
+
+float CActor::SetWalkAccel(float new_value)
+{
+	float old_value = m_fWalkAccel;
+	m_fWalkAccel = new_value;
+	return old_value;
 }

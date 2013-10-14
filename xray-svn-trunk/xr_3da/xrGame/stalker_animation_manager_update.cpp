@@ -187,20 +187,40 @@ void CStalkerAnimationManager::update_impl					()
 //	Msg("* %s %6d sync", *object().cName(), Device.dwTimeGlobal);
 	torso().synchronize		(m_skeleton_animated,m_legs);
 }
-
+#ifdef DEBUG
+int anim_manager_exception_filter(CAI_Stalker* stk, u32 code, _EXCEPTION_POINTERS* ep)
+{
+	Msg("! error in stalker [%s]", stk->Name());
+	Msg("anim_manager_exception_filter: code=[0x%x][%s]", code, Debug.exception_name(code));
+	Debug.exception_stacktrace(ep);
+	return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
 void CStalkerAnimationManager::update						()
 {
-	START_PROFILE("stalker/client_update/animations")
-	try {
+#ifndef DEBUG
+/*	try */ {
+		START_PROFILE		("stalker/client_update/animations")
 		update_impl			();
+		STOP_PROFILE
 	}
-	catch(...) {
-		Msg					("! error in stalker %s with visual %s",*object().cName(),*object().cNameVisual());
+/*	catch(...) {
+		Msg					("! error in stalker [%s] with visual [%s]",*object().cName(),*object().cNameVisual());
 		Msg					("! lua stacktrace:");
 		ai().script_engine().last_called();
 		Msg					("! Engine stacktrace:");
 		Debug.log_stack_trace();
 		throw;
+	}*/
+#else
+	
+	__try
+	{
+		update_impl			();
 	}
-	STOP_PROFILE
+	__except(anim_manager_exception_filter(m_object, GetExceptionCode(), GetExceptionInformation()))
+	{
+	}
+	
+#endif
 }

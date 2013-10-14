@@ -17,7 +17,6 @@
 #include <ElXPThemedControl.hpp>	// Pascal unit
 #include <ElList.hpp>	// Pascal unit
 #include <ElTools.hpp>	// Pascal unit
-#include <Types.hpp>	// Pascal unit
 #include <Classes.hpp>	// Pascal unit
 #include <SysUtils.hpp>	// Pascal unit
 #include <ElStrUtils.hpp>	// Pascal unit
@@ -34,6 +33,7 @@
 #include <Graphics.hpp>	// Pascal unit
 #include <Messages.hpp>	// Pascal unit
 #include <Windows.hpp>	// Pascal unit
+#include <Types.hpp>	// Pascal unit
 #include <SysInit.hpp>	// Pascal unit
 #include <System.hpp>	// Pascal unit
 
@@ -208,7 +208,7 @@ protected:
 	virtual void __fastcall SetEditable(bool newValue);
 	virtual void __fastcall SetResizable(bool newValue);
 	void __fastcall SetSaveSize(int newValue);
-	__property int FSaveSize = {read=ASaveSize, write=SetSaveSize, nodefault};
+	__property int FSaveSize = {read=ASaveSize, write=SetSaveSize, default=-1};
 	DYNAMIC Classes::TPersistent* __fastcall GetOwner(void);
 	__property Classes::TNotifyEvent OnResize = {read=FOnResize, write=FOnResize};
 	
@@ -227,38 +227,38 @@ public:
 	
 __published:
 	__property WideString Text = {read=FText, write=SetText};
-	__property TElSectionStyle Style = {read=FStyle, write=SetStyle, nodefault};
+	__property TElSectionStyle Style = {read=FStyle, write=SetStyle, default=0};
 	__property int Width = {read=GetWidth, write=SetWidth, nodefault};
-	__property int MaxWidth = {read=FMaxWidth, write=SetMaxWidth, nodefault};
-	__property int MinWidth = {read=FMinWidth, write=SetMinWidth, nodefault};
+	__property int MaxWidth = {read=FMaxWidth, write=SetMaxWidth, default=10000};
+	__property int MinWidth = {read=FMinWidth, write=SetMinWidth, default=0};
 	__property TElSSortMode SortMode = {read=FSortMode, write=SetSortMode, nodefault};
-	__property bool AllowClick = {read=FAllowClick, write=FAllowClick, nodefault};
-	__property TElSAlignment Alignment = {read=FAlignment, write=SetAlignment, nodefault};
+	__property bool AllowClick = {read=FAllowClick, write=FAllowClick, default=1};
+	__property TElSAlignment Alignment = {read=FAlignment, write=SetAlignment, default=0};
 	__property TElSAlignment PictureAlign = {read=FPicAlign, write=FPicAlign, nodefault};
 	__property bool Visible = {read=GetVisible, write=SetVisible, nodefault};
-	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, nodefault};
+	__property int ImageIndex = {read=FImageIndex, write=SetImageIndex, default=-1};
 	__property AnsiString FieldName = {read=FFieldName, write=SetFieldName};
-	__property TElFieldType FieldType = {read=FFieldType, write=SetFieldType, nodefault};
+	__property TElFieldType FieldType = {read=FFieldType, write=SetFieldType, default=1};
 	__property bool Editable = {read=FEditable, write=SetEditable, nodefault};
 	__property bool Password = {read=FProtected, write=SetProtected, default=0};
-	__property bool Resizable = {read=FResizable, write=SetResizable, nodefault};
-	__property bool ClickSelect = {read=FClickSelect, write=FClickSelect, nodefault};
+	__property bool Resizable = {read=FResizable, write=SetResizable, default=1};
+	__property bool ClickSelect = {read=FClickSelect, write=FClickSelect, default=1};
 	__property bool Expandable = {read=FExpandable, write=SetExpandable, nodefault};
 	__property bool Expanded = {read=FExpanded, write=SetExpanded, nodefault};
 	__property TElHeaderSection* ParentSection = {read=FParentSection, write=SetParentSection};
 	__property Menus::TPopupMenu* PopupMenu = {read=FPopupMenu, write=SetPopupMenu};
 	__property bool LookupEnabled = {read=FLookupEnabled, write=SetLookupEnabled, nodefault};
 	__property Classes::TStringList* LookupHistory = {read=FLookupHist, write=SetLookupList};
-	__property bool ParentColor = {read=FParentColor, write=SetParentColor, nodefault};
+	__property bool ParentColor = {read=FParentColor, write=SetParentColor, default=1};
 	__property Graphics::TColor Color = {read=FColor, write=SetColor, nodefault};
 	__property Graphics::TColor FontColor = {read=FFontColor, write=SetFontColor, nodefault};
 	__property bool UseMainStyle = {read=FUseMainStyle, write=SetUseMainStyle, nodefault};
-	__property Stdctrls::TTextLayout TextLayout = {read=FTextLayout, write=SetTextLayout, nodefault};
+	__property Stdctrls::TTextLayout TextLayout = {read=FTextLayout, write=SetTextLayout, default=1};
 	__property bool FilterEnabled = {read=FFilterEnabled, write=SetFilterEnabled, nodefault};
 	__property bool FilterIsActive = {read=FFilterIsActive, write=SetFilterIsActive, nodefault};
 	__property WideString Hint = {read=FHint, write=FHint};
 	__property bool AutoSize = {read=FAutoSize, write=SetAutoSize, nodefault};
-	__property bool ShowSortMark = {read=FShowSortMark, write=SetShowSortMark, nodefault};
+	__property bool ShowSortMark = {read=FShowSortMark, write=SetShowSortMark, default=1};
 	__property int Tag = {read=FTag, write=FTag, nodefault};
 };
 
@@ -307,6 +307,7 @@ public:
 	void __fastcall SaveToStream(Classes::TStream* Stream);
 	void __fastcall SaveToFile(AnsiString FileName);
 	void __fastcall LoadFromFile(AnsiString FileName);
+	void __fastcall Reindex(void);
 	__property TCustomElHeader* Owner = {read=FOwner};
 	__property int Count = {read=GetCount, nodefault};
 	__property TElHeaderSection* ItemByPos[int Index] = {read=GetSectionByPos};
@@ -515,9 +516,9 @@ protected:
 	void __fastcall SetHint(WideString Value);
 	__property int SectionsWidth = {read=GetColumnsWidth, nodefault};
 	__property TElHeaderSections* Sections = {read=FSections, write=SetSections};
-	__property bool ResizeOnDrag = {read=FResizeOnDrag, write=FResizeOnDrag, nodefault};
-	__property bool Tracking = {read=FTracking, write=SetTracking, nodefault};
-	__property bool AllowDrag = {read=FAllowDrag, write=FAllowDrag, nodefault};
+	__property bool ResizeOnDrag = {read=FResizeOnDrag, write=FResizeOnDrag, default=1};
+	__property bool Tracking = {read=FTracking, write=SetTracking, default=1};
+	__property bool AllowDrag = {read=FAllowDrag, write=FAllowDrag, default=1};
 	__property Controls::TImageList* Images = {read=FImages, write=SetImages};
 	__property bool MoveOnDrag = {read=FMoveOnDrag, write=FMoveOnDrag, nodefault};
 	__property AnsiString StoragePath = {read=FStoragePath, write=FStoragePath};
@@ -526,7 +527,7 @@ protected:
 	__property bool RightAlignedText = {read=FRightAlignedText, write=SetRightAlignedText, nodefault};
 	__property bool RightAlignedOrder = {read=FRightAlignedOrder, write=SetRightAlignedOrder, nodefault};
 	__property bool LockHeight = {read=FLockHeight, write=SetLockHeight, nodefault};
-	__property Graphics::TColor FilterColor = {read=FFilterColor, write=SetFilterColor, nodefault};
+	__property Graphics::TColor FilterColor = {read=FFilterColor, write=SetFilterColor, default=-2147483630};
 	__property Graphics::TColor ActiveFilterColor = {read=FActiveFilterColor, write=SetActiveFilterColor, nodefault};
 	__property Elimgfrm::TElImageForm* ImageForm = {read=FImgForm, write=SetImageForm};
 	__property TSectionChangeEvent OnSectionChange = {read=FOnSectionChange, write=FOnSectionChange};
@@ -591,7 +592,7 @@ class PASCALIMPLEMENTATION TElHeader : public TCustomElHeader
 	
 __published:
 	__property ActiveFilterColor ;
-	__property AllowDrag ;
+	__property AllowDrag  = {default=1};
 	__property Align  = {default=0};
 	__property Color  = {default=-2147483643};
 	__property DefaultWidth  = {default=120};
@@ -607,7 +608,7 @@ __published:
 	__property DragKind  = {default=0};
 	__property MoveOnDrag ;
 	__property Font ;
-	__property FilterColor ;
+	__property FilterColor  = {default=-2147483630};
 	__property Images ;
 	__property ImageForm ;
 	__property InvertSortArrows  = {default=0};
@@ -615,14 +616,14 @@ __published:
 	__property ParentFont  = {default=1};
 	__property ParentShowHint  = {default=1};
 	__property PopupMenu ;
-	__property ResizeOnDrag ;
+	__property ResizeOnDrag  = {default=1};
 	__property RightAlignedText ;
 	__property RightAlignedOrder ;
 	__property SectionsWidth ;
 	__property Sections ;
 	__property ShowHint ;
 	__property StickySections ;
-	__property Tracking ;
+	__property Tracking  = {default=1};
 	__property Storage ;
 	__property StoragePath ;
 	__property Visible  = {default=1};

@@ -39,14 +39,14 @@ void	geom_batch_average	(u32 verts, u32 faces)
 	else if (faces<=5000)		g_batch_5000++;
 }
 
-bool	remap_order		(u32 id0, u32 id1)
+static bool	remap_order		(u32 id0, u32 id1)
 {
 	OGF*	o0			= (OGF*)g_tree[id0];
 	OGF*	o1			= (OGF*)g_tree[id1];
 	return	xr_strcmp(*o0->textures.front().name,*o1->textures.front().name)<0;
 }
 
-void	SaveGEOMs		(LPCSTR fn, VBContainer& vb, IBContainer& ib, SWIContainer& swi)
+static void	SaveGEOMs		(LPCSTR fn, VBContainer& vb, IBContainer& ib, SWIContainer& swi)
 {
 	Status				("Geometry '%s'...",	fn);
 	// geometry
