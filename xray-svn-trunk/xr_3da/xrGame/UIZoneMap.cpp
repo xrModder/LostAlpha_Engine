@@ -40,7 +40,7 @@ void CUIZoneMap::Init()
 	bool xml_result			= uiXml.Load(CONFIG_PATH, UI_PATH, XmlName);
 	R_ASSERT3(xml_result, "xml file not found", XmlName);
 
-	// load map backgroundwwwwwwwwwwwww
+	// load map background
 	CUIXmlInit xml_init;
 	xml_init.InitStatic			(uiXml, "minimap:background", 0, &m_background);
 
@@ -114,7 +114,7 @@ void CUIZoneMap::SetupCurrentMap()
 	if(!pLtx->section_exist(Level().name()))
 		pLtx							= Level().pLevel;
 
-	m_activeMap->Initialize			(Level().name(), "hud\\default");
+	m_activeMap->Init				(Level().name(),*pLtx,"hud\\default");
 
 	Frect r;
 	m_clipFrame.GetAbsoluteRect		(r);

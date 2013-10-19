@@ -145,7 +145,6 @@ bool	CLevel::net_start_client5				()
 		// Textures
 		if	(!g_dedicated_server)
 		{
-			g_hud->Load							();
 			g_pGamePersistent->LoadTitle				("st_loading_textures");
 			Device.m_pRender->DeferredLoad		(FALSE);
 			Device.m_pRender->ResourcesDeferredUpload();
@@ -159,9 +158,11 @@ bool	CLevel::net_start_client6				()
 {
 	if(connected_to_server){
 		// Sync
-		if(g_hud)
+		if (!g_dedicated_server)
+		{
+			g_hud->Load						();
 			g_hud->OnConnected				();
-
+		}
 
 		g_pGamePersistent->LoadTitle		("st_client_synchronising");
 		Device.PreCache						(30, true, true);

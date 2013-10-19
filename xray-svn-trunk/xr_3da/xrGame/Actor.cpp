@@ -795,9 +795,10 @@ void CActor::Die(CObject* who)
 	}
 
 	if(IsGameTypeSingle())
-	{
 		start_tutorial		("game_over");
-	}
+
+	CurrentGameUI()->HideShownDialogs();
+
 	xr_delete				(m_sndShockEffector);
 	xr_delete				(m_ScriptCameraDirection);
 }

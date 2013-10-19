@@ -97,11 +97,10 @@ public:
 			void				SetZoom					(float value);
 
 			void				ShowHint				(CUIWindow* parent, LPCSTR text);
-			void				ShowHintSpot			(CMapSpot* spot);
 			void				HideHint				(CUIWindow* parent);
 			void				Hint					(const shared_str& text);
-	virtual bool				OnMouse					(float x, float y, EUIMessages mouse_action);
-	virtual bool				OnKeyboard				(int dik, EUIMessages keyboard_action);
+	virtual bool				OnMouseAction					(float x, float y, EUIMessages mouse_action);
+	virtual bool				OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 	virtual bool				OnKeyboardHold			(int dik);
 
 	virtual void				SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);

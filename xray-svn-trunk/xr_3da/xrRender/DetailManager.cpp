@@ -189,15 +189,15 @@ void CDetailManager::UpdateVisibleM()
 	Fvector		EYE				= RDEVICE.vCameraPosition_saved;
 	
 	CFrustum	View;
-	View.CreateFromMatrix		(Device.mFullTransform_saved, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
+	View.CreateFromMatrix		(RDEVICE.mFullTransform_saved, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
 
  	CFrustum	View_old;
- 	Fmatrix		Viewm_old = Device.mFullTransform;
+ 	Fmatrix		Viewm_old = RDEVICE.mFullTransform;
  	View_old.CreateFromMatrix		(Viewm_old, FRUSTUM_P_LRTB + FRUSTUM_P_FAR);
 
 	float fade_limit			= dm_fade;	fade_limit=fade_limit*fade_limit;
-// 	float fade_start			= 1.f;		fade_start=fade_start*fade_start;
-	float fade_start			= 0.f;		fade_start=fade_start*fade_start;
+	float fade_start			= 1.f;		fade_start=fade_start*fade_start;
+
 	float fade_range			= fade_limit-fade_start;
 	float		r_ssaCHEAP		= 16*r_ssaDISCARD;
 
@@ -279,12 +279,6 @@ void CDetailManager::UpdateVisibleM()
 
 						SlotItem			**siIT=&(*sp.items.begin()), **siEND=&(*sp.items.end());
 						for (; siIT!=siEND; siIT++){
-							if( (*siIT) == NULL )
-							{
-								//Todo: remove msg before release.
-								Msg("Invalid Slot item passed to Visibility");
-								continue;
-							}
 							SlotItem& Item			= *(*siIT);
 							float   scale			= Item.scale_calculated	= Item.scale*alpha_i;
 							float	ssa				= scale*scale*Rq_drcp;

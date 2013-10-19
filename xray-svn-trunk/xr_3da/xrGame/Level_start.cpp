@@ -295,7 +295,7 @@ bool CLevel::net_start6()
 
 		if	(!g_dedicated_server)
 		{
-			if (g_hud)
+			if (CurrentGameUI())
 				CurrentGameUI()->OnConnected();
 		}
 	}

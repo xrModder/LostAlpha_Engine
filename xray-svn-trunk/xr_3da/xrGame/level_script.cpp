@@ -474,7 +474,7 @@ void set_value_to_hunger_bar(float value)
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetGameUI());
 
 	if(pGameSP)
-		pGameSP->InventoryMenu->SetProgessToHunger(value);
+		pGameSP->m_InventoryMenu->SetProgessToHunger(value);
 }
 
 void set_value_to_thirst_bar(float value)
@@ -482,7 +482,7 @@ void set_value_to_thirst_bar(float value)
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetGameUI());
 
 	if(pGameSP)
-		pGameSP->InventoryMenu->SetProgessToThirst(value);
+		pGameSP->m_InventoryMenu->SetProgessToThirst(value);
 }
 
 Fbox get_bounding_volume()
@@ -680,8 +680,8 @@ void upgrade_pda(bool upgrade)
 
 	Actor()->TransferInfo("pda_upgraded", upgrade);
 
-	xr_delete(pGameSP->PdaMenu);
-	pGameSP->PdaMenu = xr_new<CUIPdaWnd> ();
+	xr_delete(pGameSP->m_PdaMenu);
+	pGameSP->m_PdaMenu = xr_new<CUIPdaWnd> ();
 }
 
 #include "level_sounds.h"

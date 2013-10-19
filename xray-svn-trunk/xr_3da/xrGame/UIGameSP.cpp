@@ -34,16 +34,6 @@ CUIGameSP::~CUIGameSP()
 	delete_data(UIChangeLevelWnd);
 }
 
-void CUIGameSP::shedule_Update(u32 dt)
-{
-	inherited::shedule_Update			(dt);
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if(!pActor)							return;
-	if(pActor->g_Alive())				return;
-
-	HideShownDialogs						();
-}
-
 void CUIGameSP::HideShownDialogs()
 {
 	if (m_InventoryMenu->IsShown())
@@ -204,18 +194,6 @@ void CUIGameSP::EnableSkills(bool val)
 void CUIGameSP::EnableDownloads(bool val)
 {
 	m_PdaMenu->EnableDownloads(val);
-}
-
-void CUIGameSP::ReinitDialogs()
-{
-	delete_data(InventoryMenu);
-	InventoryMenu	= xr_new<CUIInventoryWnd>	();
-	
-	delete_data(TalkMenu);
-	TalkMenu		= xr_new<CUITalkWnd>		();
-
-	delete_data(UICarBodyMenu);
-	UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
 }
 
 CChangeLevelWnd::CChangeLevelWnd		()

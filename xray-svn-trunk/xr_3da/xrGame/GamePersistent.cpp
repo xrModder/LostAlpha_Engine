@@ -541,8 +541,7 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 
 		if(CurrentGameUI())
 		{
-			if (CurrentGameUI())
-				CurrentGameUI()->HideShownDialogs();
+			CurrentGameUI()->HideShownDialogs();
 			CurrentGameUI()->UIMainIngameWnd->reset_ui();
 		}
 

@@ -708,8 +708,6 @@ struct CCC_ChangeLanguage : public IConsole_Command {
 	}
 };
 
-extern CUIXml*			pWpnScopeXml;
-
 class	CCC_UiHud_Mode		: public CCC_Token
 {
 public:
@@ -722,23 +720,9 @@ public:
 		{
 			if (*value >= 1 && *value <= 3)
 			{
-				HUD().GetGameUI()->HideShownDialogs(); //skyloader: скрываем активные диалоги, ибо будем их дестроить
-				HUD().OnScreenResolutionChanged(); //юзанем чужую функу для maingame :)
-				HUD().GetGameUI()->ReinitDialogs(); //а это уже наше, для carbody, trade и talk
-				//HUD().GetUI()->OnConnected(); //перезапускаем карту для zone_map
-				
-				CActor		*actor = Actor(); //перезапускаем текстуры прицелов для оружия в инвентаре
-				if (actor)
-				{
-					TIItemContainer::iterator it = actor->inventory().m_all.begin();
-					TIItemContainer::iterator it_e = actor->inventory().m_all.end();
-					for(;it!=it_e;++it) 
-					{
-						CWeaponMagazined *pWeaponMagazined = smart_cast<CWeaponMagazined*>(*it);
-						if (pWeaponMagazined)
-							pWeaponMagazined->InitAddons();
-					}
-				}
+				//CurrentGameUI()->HideShownDialogs(); //skyloader: скрываем активные диалоги, ибо будем их дестроить //upd: вызов уже есть в OnScreenResolutionChanged
+				HUD().OnScreenResolutionChanged(); //перезагрузка окон :)
+				//CurrentGameUI()->ReinitDialogs(); //это наша функа, для carbody, trade и talk //upd: сейчас не уверен, что она нужна, проверим
 			}
 		}
 	}

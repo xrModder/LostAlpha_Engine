@@ -67,7 +67,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 {
 	if(!g_uiSpotXml){
 		g_uiSpotXml				= xr_new<CUIXml>();
-		g_uiSpotXml->Load		(CONFIG_PATH, UI_PATH, "map_spots.xml");
+		g_uiSpotXml->Load(CONFIG_PATH, UI_PATH, "map_spots.xml");
 	}
 
 	m_type = type;
@@ -184,17 +184,21 @@ Fvector2 CMapLocation::Position()
 
 Fvector2 CMapLocation::Direction()
 {
-	if(Level().CurrentViewEntity()&&Level().CurrentViewEntity()->ID()==m_objectID )
-	{
-		m_cached.m_Direction.set(Device.vCameraDirection.x,Device.vCameraDirection.z);
-	}else
-	{
+	if(m_cached.m_updatedFrame==Device.dwFrame) 
+		return m_cached.m_Direction;
+
+	Fvector2 res;
+	res.set(0.0f,0.0f);
+
+	if(Level().CurrentViewEntity()&&Level().CurrentViewEntity()->ID()==m_objectID ){
+		res.set(Device.vCameraDirection.x,Device.vCameraDirection.z);
+	}else{
 		CObject* pObject =  Level().Objects.net_Find(m_objectID);
 		if(!pObject)
-			m_cached.m_Direction.set(0.0f, 0.0f);
+			res.set(0.0f, 0.0f);
 		else{
 			const Fvector& op = pObject->Direction();
-			m_cached.m_Direction.set(op.x, op.z);
+			res.set(op.x, op.z);
 		}
 	}
 
@@ -204,11 +208,14 @@ Fvector2 CMapLocation::Direction()
 			Fvector2 dcp,obj_pos;
 			dcp.set(Device.vCameraPosition.x, Device.vCameraPosition.z);
 			obj_pos.set(pObject->Position().x, pObject->Position().z);
-			m_cached.m_Direction.sub(obj_pos, dcp);
-			m_cached.m_Direction.normalize_safe();
+			res.sub(obj_pos, dcp);
+			res.normalize_safe();
 		}
+		
 	}
-	return					m_cached.m_Direction;
+	
+	m_cached.m_Direction	= res;
+	return					res;
 }
 
 shared_str CMapLocation::LevelName()
@@ -321,17 +328,15 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 		//update spot position
 		Fvector2 position = Position();
 
-		m_position_on_map	= map->ConvertRealToLocal(position, (map->Heading())?false:true); //for visibility calculating
+		m_position_on_map =	map->ConvertRealToLocal(position);
 
-		sp->SetWndPos		(m_position_on_map);
+		sp->SetWndPos(m_position_on_map);
+		Frect wnd_rect = sp->GetWndRect();
 
-		Frect wnd_rect		= sp->GetWndRect();
+		if( map->IsRectVisible(wnd_rect) ) {
 
-		if ( map->IsRectVisible(wnd_rect) ) 
-		{
 			//update heading if needed
-			if( sp->Heading() && !sp->GetConstHeading() )
-			{
+			if( sp->Heading() ){
 				Fvector2 dir_global = Direction();
 				float h = dir_global.getH();
 				float h_ = map->GetHeading()+h;
@@ -349,21 +354,11 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 				map->AttachChild(s);
 			}
 		}
-
-
-		bool b_pointer =( GetSpotPointer(sp) && map->NeedShowPointer(wnd_rect));
-
-		if(map->Heading())
-		{
-			m_position_on_map	= map->ConvertRealToLocal(position, true); //for drawing
-			sp->SetWndPos		(m_position_on_map);
-		}
-
-		if(b_pointer)
+		if( GetSpotPointer(sp) && map->NeedShowPointer(wnd_rect)){
 			UpdateSpotPointer( map, GetSpotPointer(sp) );
-	}
-	else if ( Level().name() == map->MapName() && GetSpotPointer(sp) )
-	{
+		}
+	}else
+	if(Level().name()==map->MapName() && GetSpotPointer(sp)){
 		GameGraph::_GRAPH_ID		dest_graph_id;
 
 		if(!IsUserDefined()){
@@ -394,31 +389,29 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 			xr_vector<u32>::reverse_iterator it_e = map_point_path.rend();
 
 			xr_vector<CLevelChanger*>::iterator lit = g_lchangers.begin();
-			//xr_vector<CLevelChanger*>::iterator lit_e = g_lchangers.end();
+			xr_vector<CLevelChanger*>::iterator lit_e = g_lchangers.end();
 			bool bDone						= false;
-			//for(; (it!=it_e)&&(!bDone) ;++it){
-			//	for(lit=g_lchangers.begin();lit!=lit_e; ++lit){
+			for(; (it!=it_e)&&(!bDone) ;++it){
+				for(lit=g_lchangers.begin();lit!=lit_e; ++lit){
+					
+					if((*it)==(*lit)->ai_location().game_vertex_id() ){
+						bDone = true;
+						break;
+					}
 
-			//		if((*it)==(*lit)->ai_location().game_vertex_id() )
-			//		{
-			//			bDone = true;
-			//			break;
-			//		}
-
-			//	}
-			//}
+				}
+			}
 			static bool bbb = false;
-			if(!bDone&&bbb)
-			{
-				Msg("! Error. Path from actor to selected map spot does not contain level changer :(");
+			if(!bDone&&bbb){
+				Msg("Error. Path from actor to selected map spot does not contain level changer :(");
 				Msg("Path:");
 				xr_vector<u32>::iterator it			= map_point_path.begin();
 				xr_vector<u32>::iterator it_e		= map_point_path.end();
 				for(; it!=it_e;++it){
-					//					Msg("%d-%s",(*it),ai().game_graph().vertex(*it));
+//					Msg("%d-%s",(*it),ai().game_graph().vertex(*it));
 					Msg("[%d] level[%s]",(*it),*ai().game_graph().header().level(ai().game_graph().vertex(*it)->level_id()).name());
 				}
-				Msg("- Available LevelChangers:");
+				Msg("Available LevelChangers:");
 				xr_vector<CLevelChanger*>::iterator lit,lit_e;
 				lit_e							= g_lchangers.end();
 				for(lit=g_lchangers.begin();lit!=lit_e; ++lit){
@@ -428,35 +421,13 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 					Msg("lch_name=%s pos=%f %f %f",*ai().game_graph().header().level(ai().game_graph().vertex(gid)->level_id()).name(), p.x, p.y, p.z);
 				}
 
-
+			
 			};
-			if(bDone)
-			{
+			if(bDone){
 				Fvector2 position;
 				position.set			((*lit)->Position().x, (*lit)->Position().z);
-				m_position_on_map		= map->ConvertRealToLocal(position, false);
+				m_position_on_map		= map->ConvertRealToLocal(position);
 				UpdateSpotPointer		(map, GetSpotPointer(sp));
-			}
-			else
-			{
-				xr_vector<u32>::reverse_iterator it = map_point_path.rbegin();
-				xr_vector<u32>::reverse_iterator it_e = map_point_path.rend();
-				for(; (it!=it_e)&&(!bDone) ;++it)
-				{
-					if(*ai().game_graph().header().level(ai().game_graph().vertex(*it)->level_id()).name()==Level().name())
-						break;
-				}
-				if(it!=it_e)
-				{
-					Fvector p = ai().game_graph().vertex(*it)->level_point();
-					if(Actor()->Position().distance_to_sqr(p)>45.0f*45.0f)
-					{
-						Fvector2 position;
-						position.set			(p.x, p.z);
-						m_position_on_map		= map->ConvertRealToLocal(position, false);
-						UpdateSpotPointer		(map, GetSpotPointer(sp));
-					}
-				}
 			}
 		}
 	}
@@ -476,7 +447,7 @@ void CMapLocation::UpdateSpotPointer(CUICustomMap* map, CMapSpotPointer* sp )
 
 		map->AttachChild(sp);
 
-		Fvector2 tt = map->ConvertLocalToReal(m_position_on_map, map->BoundRect());
+		Fvector2 tt = map->ConvertLocalToReal(m_position_on_map);
 		Fvector ttt;
 		ttt.set		(tt.x, 0.0f, tt.y);
 		float dist_to_target = Level().CurrentEntity()->Position().distance_to(ttt);

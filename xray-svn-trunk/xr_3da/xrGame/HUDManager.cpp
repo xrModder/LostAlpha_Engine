@@ -146,9 +146,6 @@ CHUDManager::~CHUDManager()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
-	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
-		return;
-
 	if(!b_online)						
 		return;
 
@@ -259,7 +256,7 @@ collide::rq_result&	CHUDManager::GetCurrentRayQuery	()
 
 void CHUDManager::SetCrosshairDisp	(float dispf, float disps)
 {	
-	m_pHUDTarget->HUDCrosshair.SetDispersion(psHUD_Flags.test(HUD_CROSSHAIR_DYNAMIC) ? dispf : disps);
+	m_pHUDTarget->GetHUDCrosshair().SetDispersion(psHUD_Flags.test(HUD_CROSSHAIR_DYNAMIC) ? dispf : disps);
 }
 
 void  CHUDManager::ShowCrosshair	(bool show)
@@ -279,7 +276,7 @@ void CHUDManager::SetHitmarkType		(LPCSTR tex_name)
 }
 
 #include "ui\UIMainInGameWnd.h"
-//extern CUIXml*			pWpnScopeXml; //skyloader: from master branch
+extern CUIXml*			pWpnScopeXml;
 
 void CHUDManager::Load()
 {
@@ -296,14 +293,12 @@ void CHUDManager::OnScreenResolutionChanged()
 {
 	pUIGame->HideShownDialogs			();
 
-//	xr_delete							(pWpnScopeXml);
+	xr_delete							(pWpnScopeXml);
 
 	pUIGame->UnLoad						();
 	pUIGame->Load						();
 
-	pUIGame->OnConnected				();
-	if(b_online)
-		pUIGame->OnConnected();
+	pUIGame->OnConnected();
 }
 
 void CHUDManager::OnDisconnected()

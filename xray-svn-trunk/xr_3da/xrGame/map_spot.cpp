@@ -8,19 +8,11 @@
 #include "../xr_object.h"
 #include "object_broker.h"
 #include "ui/UITextureMaster.h"
-#include "ui/UIHelper.h"
-
-#include "../Include/xrRender/UIShader.h"
-#include "gametaskmanager.h"
-#include "gametask.h"
 
 CMapSpot::CMapSpot(CMapLocation* ml)
 :m_map_location(ml)
 {
 	m_bScale			= false;
-	m_location_level    = 0;
-	m_border_static		= NULL;
-	m_scale_bounds.set	(-1.0f, -1.0f);
 }
 
 CMapSpot::~CMapSpot()
@@ -30,37 +22,10 @@ CMapSpot::~CMapSpot()
 void CMapSpot::Load(CUIXml* xml, LPCSTR path)
 {
 	CUIXmlInit::InitStatic(*xml,path,0,this);
-	if(!Heading())
-	{
-		SetWidth			(GetWidth()*UI().get_current_kx());
-		SetStretchTexture	(true);
-	}
-
-	int i				= xml->ReadAttribInt(path, 0, "scale", 0);
+	int i = xml->ReadAttribInt(path, 0, "scale", 0);
 	m_bScale			= (i==1);
-	m_scale_bounds.x	= xml->ReadAttribFlt(path, 0, "scale_min", -1.0f);
-	if ( m_bScale )
-	{
-		m_scale_bounds.y = xml->ReadAttribFlt(path, 0, "scale_max", -1.0f);
-		R_ASSERT2(m_scale_bounds.x>0 && m_scale_bounds.y>0, path);
-	}
-	m_location_level	= xml->ReadAttribInt(path, 0, "location_level", 0);
 
 	m_originSize		= GetWndSize();
-
-	string512			str;
-	strconcat			(sizeof(str), str, path, ":static_border");
-	if ( xml->NavigateToNode(str) )
-	{
-		m_border_static			= UIHelper::CreateStatic( *xml, str, this );
-		m_border_static->Show	( false );
-		if(!Heading())
-		{
-			m_border_static->SetWidth			(m_border_static->GetWidth()*UI().get_current_kx());
-			m_border_static->SetStretchTexture	(true);
-		}
-	}
-	m_mark_focused = false;
 }
 
 LPCSTR CMapSpot::GetHint() 
@@ -68,63 +33,29 @@ LPCSTR CMapSpot::GetHint()
 	return MapLocation()->GetHint();
 };
 
-void CMapSpot::SetWndPos(const Fvector2& pos)
-{
-	inherited::SetWndPos( pos );
-}
-
 void CMapSpot::Update()
 {
 	inherited::Update();
-	if ( m_bCursorOverWindow )
-	{
-		if ( Device.dwTimeGlobal > ( m_dwFocusReceiveTime + 500 ) )
-		{
+	if(m_bCursorOverWindow){
+		VERIFY(m_dwFocusReceiveTime>=0);
+		if( Device.dwTimeGlobal>(m_dwFocusReceiveTime+500) ){
 			GetMessageTarget()->SendMessage(this, MAP_SHOW_HINT, NULL);
 		}
 	}
 }
-#include "GameTaskManager.h"
-#include "Actor.h"
-bool CMapSpot::OnMouseDown( int mouse_btn )
+
+bool CMapSpot::OnMouseDown		(int mouse_btn)
 {
-	if ( mouse_btn == MOUSE_1 )
-	{
-		CGameTask* t = Actor()->GameTaskManager().HasGameTask(m_map_location, true);
-		if(t)
-		{
-			GetMessageTarget()->SendMessage(this, MAP_SELECT_SPOT);
-			return true;
-		}
 		return false;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 
-void CMapSpot::OnFocusLost()
+void CMapSpot::OnFocusLost		()
 {
-	inherited::OnFocusLost();
+	inherited::OnFocusLost		();
 	GetMessageTarget()->SendMessage(this, MAP_HIDE_HINT, NULL);
 }
 
-void CMapSpot::show_static_border( bool status )
-{
-	if ( m_border_static )
-	{
-		m_border_static->Show( status );
-	}
-}
-
-void CMapSpot::mark_focused()
-{
-	m_mark_focused = true;
-}
-
-// -------------------------------------------------------------------------------------------------
 
 CMapSpotPointer::CMapSpotPointer(CMapLocation* ml)
 :inherited(ml)
@@ -243,132 +174,3 @@ void CMiniMapSpot::Draw()
 
 	inherited::Draw();
 }
-
-/// ---------------------------------------------------------------------------------------------
-/*
-void CUIStaticOrig::InitWndOrigin()
-{
-	m_origin_pos = GetWndPos();
-	m_origin_size = GetWndSize();
-}
-
-void CUIStaticOrig::ScaleOrigin(float k)
-{
-	SetWndPos		(Fvector2().set(m_origin_pos.x  * k, m_origin_pos.y  * k));
-	SetWndSize		(Fvector2().set(m_origin_size.x * k, m_origin_size.y * k));
-}
-
-CComplexMapSpot::CComplexMapSpot(CMapLocation* ml)
-	: inherited(ml)
-{
-	m_infinity_time = false;
-	m_last_delay	= 0;
-	m_timer_finish	= 0;
-	m_left_icon		= NULL;
-	m_right_icon	= NULL;
-	m_top_icon		= NULL;
-	m_timer			= NULL;
-}
-
-CComplexMapSpot::~CComplexMapSpot()
-{
-}
-
-CUIStaticOrig* CComplexMapSpot::CreateStaticOrig(CUIXml& xml, LPCSTR ui_path)
-{
-	CUIStaticOrig* ui		= xr_new<CUIStaticOrig>();
-	AttachChild				(ui);
-	ui->SetAutoDelete		(true);
-	CUIXmlInit::InitStatic	(xml, ui_path, 0, ui);
-	ui->InitWndOrigin		();
-	return					ui;
-}
-
-void CComplexMapSpot::Load( CUIXml* xml, LPCSTR path ) // complex_spot_template
-{
-	inherited::Load			(xml, path);
-
-	XML_NODE* stored_root	= xml->GetLocalRoot();
-	XML_NODE* node			= xml->NavigateToNode( path, 0 );
-	xml->SetLocalRoot		(node);
-
-	m_left_icon				= CreateStaticOrig(*xml, "left_icon");
-	m_right_icon			= CreateStaticOrig(*xml, "right_icon");
-	m_top_icon				= CreateStaticOrig(*xml, "top_icon");
-	m_timer					= CreateStaticOrig(*xml, "timer");
-
-	xml->SetLocalRoot		(stored_root);
-}
-
-void CComplexMapSpot::SetTimerFinish(ALife::_TIME_ID time) // ms
-{
-	if ( time <= 0 )
-	{
-		m_timer_finish		= 0;
-		m_infinity_time		= true;
-		m_timer->Show		(false);
-	}else
-	{
-		m_timer_finish		= time;
-		m_infinity_time		= false;
-		m_timer->Show		(true);
-	}
-}
-
-void CComplexMapSpot::Update()
-{
-	inherited::Update();
-
-	m_last_delay += Device.dwTimeDelta;
-	if ( m_last_delay > 310 )
-	{
-		m_last_delay = 0;
-		if ( Level().GetGameTime() > m_timer_finish )
-		{
-		//	if ( !m_infinity_time )
-		//	{
-		//		MapLocation()->DisableSpot();
-		//	}
-		}
-		else
-		{
-			if ( !m_infinity_time )
-			{
-				ALife::_TIME_ID dt = m_timer_finish - Level().GetGameTime();
-				m_timer->TextItemControl()->SetText( GetTimeAsString( dt, InventoryUtilities::etpTimeToMinutes, ':', false ).c_str() );
-			}
-		}
-	}
-
-	if ( MapLocation()->SpotEnabled() )
-	{
-		m_timer->Show( (m_timer->GetWndSize().x > 5.0f) && (Level().GetGameTime() < m_timer_finish) );
-	}
-}
-
-void CComplexMapSpot::SetWndSize( const Fvector2& size )
-{
-	inherited::SetWndSize( size );
-	
-	if ( m_originSize.x == 0.0f || m_originSize.y == 0.0f )
-	{
-		return;
-	}
-	float k = size.x / m_originSize.x;
-
-	for ( WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it )
-	{
-		CUIStaticOrig* static_orig = smart_cast<CUIStaticOrig*>( *it );
-		if ( static_orig )
-		{
-			static_orig->ScaleOrigin( k );
-		}
-	}
-
-	if ( m_timer )
-	{
-		float xp = 0.5f * ( GetWndSize().x - m_timer->GetWndSize().x );
-		m_timer->SetWndPos( Fvector2().set( xp, m_timer->GetWndPos().y ) );
-	}
-}
-*/

@@ -187,12 +187,12 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 	m_GlobalMap								= xr_new<CUIGlobalMap>(this);
 	m_GlobalMap->SetAutoDelete				(true);
-	m_GlobalMap->Initialize					();
+	m_GlobalMap->Init						("global_map",gameLtx,"hud\\default");
 
 	m_UILevelFrame->AttachChild				(m_GlobalMap);
 	m_GlobalMap->OptimalFit					(m_UILevelFrame->GetWndRect());
-	m_GlobalMap->SetMinZoom					(m_GlobalMap->GetCurrentZoom().x);
-	m_currentZoom							= m_GlobalMap->GetCurrentZoom().x;
+	m_GlobalMap->SetMinZoom					(m_GlobalMap->GetCurrentZoom());
+	m_currentZoom							= m_GlobalMap->GetCurrentZoom();
 
 	// initialize local maps
 	xr_string sect_name;
@@ -213,7 +213,7 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 			l = xr_new<CUILevelMap>(this);
 			
-			l->Initialize(map_name, "hud\\default");
+			l->Init(map_name, gameLtx, "hud\\default");
 
 			l->OptimalFit( m_UILevelFrame->GetWndRect() );
 		}
@@ -335,7 +335,7 @@ void CUIMapWnd::SetTargetMap			(CUICustomMap* m, const Fvector2& pos, bool bZoom
 		if(bZoomIn/* && fsimilar(GlobalMap()->GetCurrentZoom(), GlobalMap()->GetMinZoom(),EPS_L )*/)
 			SetZoom(GlobalMap()->GetMaxZoom());
 
-		m_tgtCenter						= m->ConvertRealToLocalNoTransform(pos, m->BoundRect());
+		m_tgtCenter						= m->ConvertRealToLocalNoTransform(pos);
 		m_tgtCenter.add					(m->GetWndPos()).div(GlobalMap()->GetCurrentZoom());
 	}
 	ResetActionPlanner				();
@@ -372,7 +372,7 @@ bool CUIMapWnd::OnKeyboardHold(int dik)
 	return false;
 }
 
-bool CUIMapWnd::OnKeyboard				(int dik, EUIMessages keyboard_action)
+bool CUIMapWnd::OnKeyboardAction				(int dik, EUIMessages keyboard_action)
 {
 	switch(dik){
 		case DIK_NUMPADMINUS:
@@ -392,7 +392,7 @@ bool CUIMapWnd::OnKeyboard				(int dik, EUIMessages keyboard_action)
 	return inherited::OnKeyboardAction	(dik, keyboard_action);
 }
 
-bool CUIMapWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIMapWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
 	Fvector2 cursor_pos = GetUICursor().GetCursorPosition();
@@ -511,14 +511,14 @@ CMapLocation* CUIMapWnd::UnderSpot(Fvector RealPosition)
 	Locations Spots = Level().MapManager().Locations();
 	Locations_it it;
 	Fvector2 m_position_on_map;
-	Fvector2 m_position_mouse = m_tgtMap->ConvertRealToLocal(RealPositionXZ, true);
+	Fvector2 m_position_mouse = m_tgtMap->ConvertRealToLocal(RealPositionXZ);
 	float TargetLocationDistance = 100.0f;
 	CMapLocation* ml = NULL;
 
 	for (it = Spots.begin(); it!=Spots.end(); ++it) {
 		if ( (*it).location->IsUserDefined() ) {
 
-			m_position_on_map = m_tgtMap->ConvertRealToLocal((*it).location->Position(), true);
+			m_position_on_map = m_tgtMap->ConvertRealToLocal((*it).location->Position());
 
 			float distance = m_position_on_map.distance_to(m_position_mouse);
 
@@ -872,26 +872,6 @@ void CUIMapWnd::ShowHint					(CUIWindow* parent, LPCSTR text)
 		r.add				(r.width(), 45.0f);
 
 	m_hint->SetWndPos		(r.lt);
-}
-
-void CUIMapWnd::ShowHintSpot( CMapSpot* spot )
-{
-	CUIWindow* owner = m_hint->GetOwner();
-	if ( !owner )
-	{
-		//m_hint->SetInfoMSpot( spot );
-		m_hint->SetOwner( spot );
-		ShowHint(spot, spot->GetHint());
-		return;
-	}
-
-	CMapSpot* prev_spot = smart_cast<CMapSpot*>( owner );
-	if ( prev_spot && ( prev_spot->get_location_level() < spot->get_location_level() ) )
-	{
-		//m_hint->SetInfoMSpot( spot );
-		m_hint->SetOwner( spot );
-		ShowHint(spot, spot->GetHint());
-	}
 }
 
 void CUIMapWnd::HideHint					(CUIWindow* parent)

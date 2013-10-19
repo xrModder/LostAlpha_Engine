@@ -59,7 +59,7 @@ u32 CConsole::get_mark_color( Console_mark type )
 	case mark1:  color = color_rgba( 255,   0,   0, 255 ); break;
 	case mark2:  color = color_rgba( 100, 100, 255, 255 ); break;
 	case mark3:  color = color_rgba(   0, 222, 205, 155 ); break;
-	case mark4:  color = color_rgba( 255,   0, 255, 255 ); break;
+	case mark4:  color = color_rgba( 138,  43, 226, 255 ); break;
 	case mark5:  color = color_rgba( 155,  55, 170, 155 ); break;
 	case mark6:  color = color_rgba(  25, 200,  50, 255 ); break;
 	case mark7:  color = color_rgba( 255, 255,   0, 255 ); break;

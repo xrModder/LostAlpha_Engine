@@ -6,35 +6,19 @@ class CUIXml;
 
 class CMapSpot :public CUIStatic
 {
-private:
 	typedef CUIStatic inherited;
 	CMapLocation*			m_map_location;
-	int						m_location_level;
-
-	CUIStatic*				m_border_static;
-	
-	bool					m_mark_focused;
-
 public:
-		bool				m_bScale;
-		Fvector2			m_scale_bounds;
-
+	bool					m_bScale;
 	Fvector2				m_originSize;
-
-public:
 							CMapSpot						(CMapLocation*);
 	virtual					~CMapSpot						();
 	virtual		void		Load							(CUIXml* xml, LPCSTR path);
 	CMapLocation*			MapLocation						()							{return m_map_location;}
-				int			get_location_level				()							{return m_location_level;}
 	virtual LPCSTR			GetHint							();
-	virtual		void		SetWndPos						(const Fvector2& pos);
 	virtual		void		Update							();
 	virtual		bool		OnMouseDown						(int mouse_btn);
 	virtual		void		OnFocusLost						();
-
-				void		show_static_border				(bool status);
-				void		mark_focused					();
 };
 
 
