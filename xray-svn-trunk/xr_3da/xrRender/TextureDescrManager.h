@@ -34,7 +34,8 @@ class CTextureDescrMngr
 	map_TD									m_texture_details;
 	map_CS									m_detail_scalers;
 
-	void		LoadTHM		(LPCSTR initial);
+	void		LoadLTX		();
+	void		LoadTHM		();
 
 public:
 				~CTextureDescrMngr();
