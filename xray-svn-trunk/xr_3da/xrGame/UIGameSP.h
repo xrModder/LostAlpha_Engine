@@ -35,10 +35,6 @@ public:
 
 	virtual void		HideShownDialogs		();
 
-#ifdef DEBUG
-	virtual void		Render	();
-#endif
-
 	void				EnableSkills		(bool val);
 	void				EnableDownloads		(bool val);
 

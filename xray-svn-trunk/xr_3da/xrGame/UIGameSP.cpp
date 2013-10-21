@@ -120,12 +120,6 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 
 	return false;
 }
-#ifdef DEBUG
-void CUIGameSP::Render()
-{
-}
-#endif
-
 
 void  CUIGameSP::StartTalk()
 {

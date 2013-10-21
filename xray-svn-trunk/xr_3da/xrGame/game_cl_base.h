@@ -82,14 +82,13 @@ public:
 				void				OnGameMessage			(NET_Packet& P);
 
 	virtual		char*				getTeamSection			(int Team){return NULL;};
-	virtual		void				SetGameUI				(CUIGameCustom*){};
 
 				game_PlayerState*	GetPlayerByGameID		(u32 GameID);
 				game_PlayerState*	GetPlayerByOrderID		(u32 id);
 				ClientID			GetClientIDByOrderID	(u32 id);
 				u32					GetPlayersCount			() const {return players.size();};
 	virtual		CUIGameCustom*		createGameUI			(){return NULL;};
-	//virtual		void				SetGameUI				(CUIGameCustom*){};
+	virtual		void				SetGameUI				(CUIGameCustom*){};
 	virtual		void				GetMapEntities			(xr_vector<SZoneMapEntityData>& dst)	{};
 
 
