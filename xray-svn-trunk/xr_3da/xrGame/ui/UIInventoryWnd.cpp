@@ -337,7 +337,7 @@ void CUIInventoryWnd::Update()
 void CUIInventoryWnd::Show() 
 { 
 	InitInventory			();
-	inherited::Show			(true);
+	inherited::ShowDialog			(true);
 
 	if (!IsGameTypeSingle())
 	{
