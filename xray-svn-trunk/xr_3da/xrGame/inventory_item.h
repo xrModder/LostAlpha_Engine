@@ -137,6 +137,7 @@ public:
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		() {};
 					
+			Irect				GetInvGridRect		() const;
 			int					GetGridWidth		() const ;
 			int					GetGridHeight		() const ;
 			const shared_str&	GetIconName			() const		{return m_icon_name;};

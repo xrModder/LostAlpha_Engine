@@ -1123,6 +1123,18 @@ int  CInventoryItem::GetYPos				() const
 	return pSettings->r_u32(m_object->cNameSect(), "inv_grid_y");
 }
 
+Irect CInventoryItem::GetInvGridRect() const
+{
+	u32 x,y,w,h;
+
+	x = pSettings->r_u32(m_object->cNameSect(),"inv_grid_x");
+	y = pSettings->r_u32(m_object->cNameSect(),"inv_grid_y");
+	w = pSettings->r_u32(m_object->cNameSect(),"inv_grid_width");
+	h = pSettings->r_u32(m_object->cNameSect(),"inv_grid_height");
+
+	return Irect().set(x,y,w,h);
+}
+
 bool CInventoryItem::IsNecessaryItem(CInventoryItem* item)		
 {
 	return IsNecessaryItem(item->object().cNameSect());
