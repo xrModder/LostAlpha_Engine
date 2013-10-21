@@ -22,8 +22,6 @@ CUICellItem::CUICellItem()
 	m_pData				= NULL;
 	m_custom_draw		= NULL;
 	m_text				= NULL;
-//-	m_mark				= NULL;
-	m_upgrade			= NULL;
 	m_pConditionState	= NULL;
 	m_drawn_frame		= 0;
 	SetAccelerator		(0);
@@ -31,7 +29,11 @@ CUICellItem::CUICellItem()
 	m_selected			= false;
 	m_select_armament	= false;
 	m_cur_mark			= false;
-	m_has_upgrade		= false;
+
+	m_text					= xr_new<CUIStatic>();
+	m_text->SetAutoDelete	( true );
+	AttachChild				( m_text );
+	m_text->Show			( false );
 }
 
 CUICellItem::~CUICellItem()
@@ -71,19 +73,6 @@ void CUICellItem::Update()
 		if(clientArea.in(cp))
 			GetMessageTarget()->SendMessage(this, DRAG_DROP_ITEM_FOCUSED_UPDATE, NULL);
 	}
-	
-	PIItem item = (PIItem)m_pData;
-	if ( item )
-	{
-		Fvector2 pos;
-		pos.set( m_upgrade_pos );
-		if ( ChildsCount() )
-		{
-			pos.x += m_text->GetWndSize().x + 2.0f;
-		}
-		m_upgrade->SetWndPos( pos );
-	}
-	m_upgrade->Show( m_has_upgrade );
 }
 
 bool CUICellItem::OnMouseAction(float x, float y, EUIMessages mouse_action)

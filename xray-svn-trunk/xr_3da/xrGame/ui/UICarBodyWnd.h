@@ -63,7 +63,7 @@ protected:
 	CUIStatic*				m_pUIStaticBottom;
 
 	CUIFrameWindow*			m_pUIDescWnd;
-	CUITextWnd*				m_pUIStaticDesc;
+	CUIStatic*				m_pUIStaticDesc;
 	CUIItemInfo*			m_pUIItemInfo;
 
 	CUIStatic*				m_pUIOurBagWnd;

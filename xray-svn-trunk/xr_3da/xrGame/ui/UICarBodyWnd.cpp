@@ -115,9 +115,9 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUIDescWnd);
 	xml_init.InitFrameWindow		(uiXml, "frame_window", 0, m_pUIDescWnd);
 
-	m_pUIStaticDesc					= xr_new<CUITextWnd>(); m_pUIStaticDesc->SetAutoDelete(true);
+	m_pUIStaticDesc					= xr_new<CUIStatic>(); m_pUIStaticDesc->SetAutoDelete(true);
 	m_pUIDescWnd->AttachChild		(m_pUIStaticDesc);
-	xml_init.InitTextWnd				(uiXml, "descr_static", 0, m_pUIStaticDesc);
+	xml_init.InitStatic				(uiXml, "descr_static", 0, m_pUIStaticDesc);
 
 	m_pUIItemInfo					= xr_new<CUIItemInfo>(); m_pUIItemInfo->SetAutoDelete(true);
 	m_pUIDescWnd->AttachChild		(m_pUIItemInfo);
@@ -132,7 +132,7 @@ void CUICarBodyWnd::Init()
 	m_pUIPropertiesBox->Hide		();
 
 	SetCurrentItem					(NULL);
-	m_pUIStaticDesc->SetText		(NULL);
+	m_pUIStaticDesc->TextItemControl()->SetText		(NULL);
 
 	m_pUITakeAll					= xr_new<CUI3tButton>(); m_pUITakeAll->SetAutoDelete(true);
 	AttachChild						(m_pUITakeAll);

@@ -36,8 +36,6 @@ protected:
 	ICustomDrawCellItem*	m_custom_draw;
 	int						m_accelerator;
 	CUIStatic*				m_text; 
-	CUIStatic*				m_upgrade;
-	Fvector2				m_upgrade_pos;
 
 	virtual void			UpdateItemText			();
 public:
@@ -80,7 +78,6 @@ public:
 				bool		m_selected;
 				bool		m_select_armament;
 				bool		m_cur_mark;
-				bool		m_has_upgrade;
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame

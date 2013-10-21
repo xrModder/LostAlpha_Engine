@@ -226,9 +226,6 @@ bool CUIXmlInit::InitTextWnd(CUIXml& xml_doc, LPCSTR path, int index, CUITextWnd
 	if(bComplexMode)
 		pWnd->SetTextComplexMode(bComplexMode);
 
-	strconcat(sizeof(buf),buf,path,":texture");
-	R_ASSERT3( NULL==xml_doc.NavigateToNode(buf,index), xml_doc.m_xml_file_name, buf );
-
 	R_ASSERT(pWnd->GetChildWndList().size()==0);
 	return true;
 }

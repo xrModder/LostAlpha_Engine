@@ -373,11 +373,11 @@ case DIK_MULTIPLY:
 	if (bindConsoleCmds.execute(key))
 		return;
 
-	if( b_ui_exist && CurrentGameUI()->TopInputReceiver() )return;
-	if (CURRENT_ENTITY())		{
+	if (CURRENT_ENTITY())
+	{
 			IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
 			if (IR)				IR->IR_OnKeyboardPress(get_binded_action(key));
-		}
+	}
 
 
 	#ifdef _DEBUG
