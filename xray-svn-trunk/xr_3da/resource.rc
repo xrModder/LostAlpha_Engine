@@ -35,7 +35,7 @@ IDI_ICON1               ICON                    "stalker.ico"
 // Bitmap
 //
 
-IDB_BITMAP2             BITMAP                  "ui_splash3.bmp"
+IDB_BITMAP1             BITMAP                  "ui_splash3.bmp"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 
