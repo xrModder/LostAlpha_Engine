@@ -11,14 +11,14 @@ void CUIMessageBox::script_register(lua_State *L)
 	[
 		class_<CUIMessageBox,CUIStatic>("CUIMessageBox")
 		.def(					constructor<>())
-		.def("InitMessageBox",	&CUIMessageBox::InitMessageBox)
+		.def("Init",	&CUIMessageBox::InitMessageBox)
 		.def("SetText",		&CUIMessageBox::SetText)
 		.def("GetHost",		&CUIMessageBox::GetHost)
 		.def("GetPassword",	&CUIMessageBox::GetPassword),
 
 		class_<CUIMessageBoxEx, CUIDialogWnd>("CUIMessageBoxEx")
 		.def(constructor<>())
-		.def("InitMessageBox",	&CUIMessageBoxEx::InitMessageBox)
+		.def("Init",	&CUIMessageBoxEx::InitMessageBox)
 		.def("SetText",		&CUIMessageBoxEx::SetText)
 		.def("GetHost",		&CUIMessageBoxEx::GetHost)
 		.def("GetPassword",	&CUIMessageBoxEx::GetPassword)
