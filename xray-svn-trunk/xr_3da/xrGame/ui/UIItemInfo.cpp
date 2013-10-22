@@ -176,12 +176,12 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		TryAddArtefactInfo					(pInvItem->object().cNameSect());
 		if(m_desc_info.bShowDescrText)
 		{
-			CUIStatic* pItem					= xr_new<CUIStatic>();
-			pItem->TextItemControl()->SetTextColor					(m_desc_info.uDescClr);
-			pItem->TextItemControl()->SetFont						(m_desc_info.pDescFont);
+			CUITextWnd* pItem					= xr_new<CUITextWnd>();
+			pItem->SetTextColor					(m_desc_info.uDescClr);
+			pItem->SetFont						(m_desc_info.pDescFont);
 			pItem->SetWidth						(UIDesc->GetDesiredChildWidth());
-			pItem->TextItemControl()->SetTextComplexMode			(true);
-			pItem->TextItemControl()->SetText						(*pInvItem->ItemDescription());
+			pItem->SetTextComplexMode			(true);
+			pItem->SetText						(*pInvItem->ItemDescription());
 			pItem->AdjustHeightToText			();
 			UIDesc->AddWindow					(pItem, true);
 		}
@@ -192,27 +192,24 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		// Загружаем картинку
 		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
 
-		int iGridWidth						= pInvItem->GetGridWidth();
-		int iGridHeight						= pInvItem->GetGridHeight();
-		int iXPos							= pInvItem->GetXPos();
-		int iYPos							= pInvItem->GetYPos();
+		Irect item_grid_rect				= pInvItem->GetInvGridRect();
+		Frect texture_rect;
+		texture_rect.lt.set					(item_grid_rect.x1*INV_GRID_WIDTH,	item_grid_rect.y1*INV_GRID_HEIGHT);
+		texture_rect.rb.set					(item_grid_rect.x2*INV_GRID_WIDTH,	item_grid_rect.y2*INV_GRID_HEIGHT);
+		texture_rect.rb.add					(texture_rect.lt);
+		UIItemImage->GetUIStaticItem().SetTextureRect(texture_rect);
 
-		UIItemImage->GetUIStaticItem().SetTextureRect(	float(iXPos*INV_GRID_WIDTH), float(iYPos*INV_GRID_HEIGHT),
-														float(iGridWidth*INV_GRID_WIDTH),	float(iGridHeight*INV_GRID_HEIGHT));
 		UIItemImage->TextureOn				();
-//		UIItemImage->ClipperOn				();
 		UIItemImage->SetStretchTexture		(true);
 
 
-		Frect v_r							= {	0.f, 
-												0.f, 
-												float(iGridWidth*INV_GRID_WIDTH),	
-												float(iGridHeight*INV_GRID_HEIGHT)};
-	
-		v_r.x2								*= UI().get_current_kx();
+		Fvector2 v_r	= {item_grid_rect.x2*INV_GRID_WIDTH, item_grid_rect.y2*INV_GRID_HEIGHT};
 
-		float width = v_r.width();
-		float height = v_r.height();
+	
+		v_r.x		*= UI().get_current_kx();
+
+		float width = v_r.x;
+		float height = v_r.y;
 		if (width > UIItemImageRect.width())
 		{
 			float coeff = UIItemImageRect.width()/width;
@@ -227,7 +224,6 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 			height *= coeff;
 		}
 
-		UIItemImage->GetUIStaticItem().SetTextureRect	(v_r);
 		float x = UIItemImageRect.x1;
 		float y = UIItemImageRect.y1;
 
