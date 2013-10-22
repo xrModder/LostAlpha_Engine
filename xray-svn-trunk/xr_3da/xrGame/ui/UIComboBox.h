@@ -31,13 +31,18 @@ public:
 			LPCSTR		GetText					();
 			LPCSTR		GetTextOf				(int index);
 			void		SetText					(LPCSTR text);
+			void		SetCurrentValueScript	(int value);
 
 			void		SetListLength			(int length);
 			void		SetVertScroll			(bool bVScroll = true){m_list_box.SetFixedScrollBar(bVScroll);};
 	CUIListBoxItem*		AddItem_				(LPCSTR str, int _data);
+			void		InitComboBox			(float x, float y, float width) {Fvector2 pos; pos.set(x,y); this->InitComboBox(pos, width);};
+			void		InitComboBox			(float x, float y, float width, float height) {this->InitComboBox(x, y, width);};
 			void		InitComboBox			(Fvector2 pos, float width);
 			void		SetItemIDX				(int idx);
 			void		SetItemToken			(int tok);
+
+	void				AddItem_script			(LPCSTR str, int _data);
 
 	virtual void		SendMessage				(CUIWindow *pWnd, s16 msg, void* pData = 0);
 	virtual void		OnFocusLost				();

@@ -20,9 +20,14 @@ void CUIComboBox::script_register(lua_State *L)
 	[
 		class_<CUIComboBox, CUIWindow>("CUIComboBox")
 		.def(						constructor<>())
+		.def("Init",				(void (CUIComboBox::*)(float, float, float))   &CUIComboBox::InitComboBox)
+		.def("Init",				(void (CUIComboBox::*)(Fvector2, float))   &CUIComboBox::InitComboBox)
+		.def("Init",				(void (CUIComboBox::*)(float, float, float, float))   &CUIComboBox::InitComboBox)	
 		.def("SetVertScroll",		&CUIComboBox::SetVertScroll)
 		.def("SetListLength",		&CUIComboBox::SetListLength)
 		.def("CurrentID",			&CUIComboBox::CurrentID)
+		.def("SetCurrentID",		&CUIComboBox::SetItemIDX)
+		.def("AddItemToBox",		&CUIComboBox::AddItem_script)
 		.def("disable_id",			&CUIComboBox::disable_id)
 		.def("enable_id",			&CUIComboBox::enable_id)
 		.def("AddItem",				&CUIComboBox::AddItem_)
@@ -31,6 +36,6 @@ void CUIComboBox::script_register(lua_State *L)
 		.def("SetText",				&CUIComboBox::SetText)
 		.def("ClearList",			&CUIComboBox::ClearList)
 		.def("SetCurrentOptValue",	&CUIComboBox::SetCurrentOptValue)
-
+		.def("SetCurrentValueScript",&CUIComboBox::SetCurrentValueScript)
 	];
 }

@@ -85,6 +85,21 @@ void CUIOptionsManager::SaveValues(const shared_str& group)
 	}
 }
 
+bool CUIOptionsManager::IsGroupChanged(const shared_str& group)
+{
+	groups_it it = m_groups.find(group);
+
+	R_ASSERT3(m_groups.end() != it, "invalid group name",group.c_str());
+
+	for (u32 i = 0; i < (*it).second.size(); i++)
+	{
+		CUIOptionsItem* oi = (*it).second[i];
+		if(oi->IsChangedOptValue())
+			return true;
+	}
+	return false;
+}
+
 void CUIOptionsManager::UndoGroup(const shared_str& group)
 {
 	groups_it it = m_groups.find(group);	

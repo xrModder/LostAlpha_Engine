@@ -22,6 +22,8 @@ public:
 	virtual void			UndoOptValue		()			= 0;	// backup->current
 	virtual bool			IsChangedOptValue	() const 	= 0 {};	// backup!=current
 			void			OnChangedOptValue	();
+
+			bool			IsLanguangeItem		() { return (0==xr_strcmp(m_entry.c_str(), "language"));} //skyloader: for language in menu
 			
 protected:
 			void			SendMessage2Group	(LPCSTR group, LPCSTR message);

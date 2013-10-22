@@ -11,6 +11,7 @@ public:
 	void SaveBackupValues					(const shared_str& group);
 	void SetCurrentValues					(const shared_str& group);
 	void SaveValues							(const shared_str& group);
+	bool IsGroupChanged							(const shared_str& group);
 	void UndoGroup							(const shared_str& group);
 
 	void OptionsPostAccept					();
