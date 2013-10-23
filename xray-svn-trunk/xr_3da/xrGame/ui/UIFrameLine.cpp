@@ -1,9 +1,8 @@
 #include "stdafx.h"
-
-#if 0
 #include "UIFrameLine.h"
 #include "../hudmanager.h"
 #include "UITextureMaster.h"
+#include "../ui_base.h"
 
 CUIFrameLine::CUIFrameLine()
 	:	uFlags					(0),
@@ -32,25 +31,25 @@ void CUIFrameLine::InitTexture(LPCSTR texture, LPCSTR sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_e"), &elements[flSecond]);
 }
 
-void CUIFrameLine::SetColor(u32 cl)
+void CUIFrameLine::SetTextureColor(u32 cl)
 {
 	for (int i = 0; i < flMax; ++i)
-		elements[i].SetColor(cl);
+		elements[i].SetTextureColor(cl);
 }
 
 void CUIFrameLine::UpdateSize()
 {
 	VERIFY(g_bRendering);
 
-	float f_width		= elements[flFirst].GetOriginalRect().width();
-	float f_height		= elements[flFirst].GetOriginalRect().height();
+	float f_width		= elements[flFirst].GetTextureRect().width();
+	float f_height		= elements[flFirst].GetTextureRect().height();
 	elements[flFirst].SetPos(iPos.x, iPos.y);
 
 	// Right or bottom texture
-	float s_width		= elements[flSecond].GetOriginalRect().width();
-	float s_height		= elements[flSecond].GetOriginalRect().height();
+	float s_width		= elements[flSecond].GetTextureRect().width();
+	float s_height		= elements[flSecond].GetTextureRect().height();
 	
-	if(bHorizontalOrientation && UI()->is_16_9_mode())
+	if(bHorizontalOrientation && UI().is_widescreen())
 		s_width			/= 1.2f;
 
 	if(bHorizontalOrientation)
@@ -86,25 +85,16 @@ void CUIFrameLine::UpdateSize()
 	}
 
 	// Now resize back texture
-	float rem;
-	int tile;
-
-	float b_width		= elements[flBack].GetOriginalRect().width();
-	float b_height		= elements[flBack].GetOriginalRect().height();
+	float b_width		= elements[flBack].GetTextureRect().width();
+	float b_height		= elements[flBack].GetTextureRect().height();
 
 	if (bHorizontalOrientation)
 	{
-		rem			= fmod( back_width, b_width);
-		tile		= iFloor(back_width / b_width);	
 		elements[flBack].SetPos(iPos.x + f_width, iPos.y);
-		elements[flBack].SetTile(tile, 1, rem, 0);
-	}
-	else
-	{
-		rem			= fmod(back_height, b_height);
-		tile		= iFloor(back_height/b_height);
+		elements[flBack].SetSize(Fvector2().set(back_width, b_height)); 
+	} else {
 		elements[flBack].SetPos(iPos.x, iPos.y + f_height);
-		elements[flBack].SetTile(1, tile, 0, rem);
+		elements[flBack].SetSize(Fvector2().set(b_width, back_height)); 
 	}
 
 	uFlags |= flValidSize;
@@ -112,8 +102,8 @@ void CUIFrameLine::UpdateSize()
 
 void CUIFrameLine::SetElementsRect( CUIStaticItem& item, int idx )
 {
-	float srtch_width  = item.GetOriginalRect().width();
-	float srtch_height = item.GetOriginalRect().height();
+	float srtch_width  = item.GetTextureRect().width();
+	float srtch_height = item.GetTextureRect().height();
 
 	if ( bStretchTexture )
 	{
@@ -128,10 +118,10 @@ void CUIFrameLine::SetElementsRect( CUIStaticItem& item, int idx )
 		}
 	}
 
-	if( bHorizontalOrientation && (idx==flSecond) && UI()->is_16_9_mode() )
+	if( bHorizontalOrientation && (idx==flSecond) && UI().is_widescreen() )
 		srtch_width			/= 1.2f;
 
-	item.SetRect( Frect().set( 0.0f, 0.0f, srtch_width, srtch_height ) );
+	item.SetTextureRect( Frect().set( 0.0f, 0.0f, srtch_width, srtch_height ) );
 }
 
 void CUIFrameLine::Render()
@@ -148,4 +138,3 @@ void CUIFrameLine::Render()
 		elements[i].Render();
 	}
 }
-#endif

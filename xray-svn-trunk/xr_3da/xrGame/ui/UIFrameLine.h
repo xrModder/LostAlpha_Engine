@@ -1,6 +1,7 @@
 #pragma once
-#if 0
+
 #include "../UIStaticItem.h"
+#include "../uicustomitem.h"
 
 class CUIFrameLine: public CUICustomItem
 {
@@ -39,11 +40,10 @@ public:
 
 	void		InitFrameLine	(Fvector2 pos, float size, bool horizontal, EUIItemAlign align);
 	void		InitTexture		(LPCSTR texture, LPCSTR sh_name);
-
-	void		SetColor		(u32 cl);
+	void		SetTextureColor		(u32 cl);
 	IC void		SetPos			(Fvector2 pos)				{ iPos.set(pos);	uFlags &=~ flValidSize; }
 	IC void		SetSize			(float size)				{ iSize = size;			uFlags &=~ flValidSize; }
 	IC void		SetOrientation	(bool bIsHorizontal)		{ bHorizontalOrientation = bIsHorizontal; uFlags &=~ flValidSize; }
-	//void		SetElementsRect	(CUIStaticItem& item,int idx);
+	void		SetElementsRect	(CUIStaticItem& item,int idx);
 	void		Render			();
 };

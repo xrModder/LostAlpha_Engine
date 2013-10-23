@@ -23,10 +23,11 @@ u32 CUIListBoxItem::GetTAG()
 
 void CUIListBoxItem::Draw()
 {
-	if(m_bSelected)
-		DrawElements();
+	u32 CurColor = GetTextColor();
+	u32 ResColor = (IsEnabled() ? 0xff000000 : 0x80000000) | (CurColor & 0x00ffffff);
+	SetTextColor(ResColor);
 
-	CUIWindow::Draw	();
+	inherited::Draw	();
 }
 
 void CUIListBoxItem::OnFocusReceive()

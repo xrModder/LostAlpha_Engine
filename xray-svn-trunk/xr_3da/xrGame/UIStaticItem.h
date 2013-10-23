@@ -33,6 +33,7 @@ public:
 	void			Render					(float angle);
 
 	IC void			SetPos					(float left, float top)			{vPos.set(left,top);}
+	IC void			SetPos					(const Fvector2& pos)			{vPos.set(pos);}
 	IC float		GetPosX					()								{return vPos.x;}
 	IC float		GetPosY					()								{return vPos.y;}
 

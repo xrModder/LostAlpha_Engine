@@ -1,46 +1,47 @@
 #include "stdafx.h"
 #include "uiscrollbox.h"
-#include "../uicursor.h"
+#include "..\uicursor.h"
 
 CUIScrollBox::CUIScrollBox()
 {
+	m_bIsHorizontal			= true;
 }
 
+void CUIScrollBox::SetHorizontal()
+{
+	m_bIsHorizontal = true;
+}
+
+void CUIScrollBox::SetVertical()
+{
+	m_bIsHorizontal = false;
+}
 
 bool CUIScrollBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	Fvector2	border;
-	border.x	= 512.0f; // :)
-	border.y	= 512.0f;
+	bool cursor_over;
 
-	bool over_x = ( x >= -border.x && x < (GetWidth()  + border.x) );
-	bool over_y = ( y >= -border.y && y < (GetHeight() + border.y) );
-		
-	bool cursor_over = false;
-	if(over_x && over_y)
-	{
+	if(x>=-10.0f && x<GetWidth()+10.0f && y>=-10.0f && y<GetHeight()+10.0f)
 		cursor_over = true;
-	}
+	else
+		cursor_over = false;
 
-	bool im_capturer = (GetParent()->GetMouseCapturer() == this);
+	bool im_capturer = (GetParent()->GetMouseCapturer()==this);
 
-	if(mouse_action == WINDOW_LBUTTON_DOWN || mouse_action == WINDOW_LBUTTON_DB_CLICK)
+	if(mouse_action == WINDOW_LBUTTON_DOWN)
 	{
 		GetParent()->SetCapture(this, true);
-		return true;
 	}
-	if(mouse_action == WINDOW_LBUTTON_UP)
+	else if(mouse_action == WINDOW_LBUTTON_UP)
 	{		
 		GetParent()->SetCapture(this, false);
-		return true;
 	}
-	
-	if(im_capturer && mouse_action == WINDOW_MOUSE_MOVE && cursor_over)
+	else if(im_capturer && mouse_action == WINDOW_MOUSE_MOVE && cursor_over)
 	{
 		Fvector2	pos		= GetWndPos();
 		Fvector2	delta	= GetUICursor().GetCursorPositionDelta();
 
-		if(IsHorizontal())
+		if(m_bIsHorizontal)
 			pos.x				+= delta.x;
 		else
 			pos.y				+= delta.y;
@@ -49,10 +50,12 @@ bool CUIScrollBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 		GetMessageTarget()->SendMessage(this, SCROLLBOX_MOVE);
 	}
+	return				true;
+}
 
-	if( !cursor_over )
-	{
-		GetParent()->SetCapture(this, false);
-	}
-	return true;
+void CUIScrollBox::Draw()
+{
+	m_UIStaticItem.SetSize		(Fvector2().set(GetWidth(), GetHeight()) );
+
+	inherited::Draw();
 }
