@@ -16,6 +16,7 @@ class CUIProgressBar;
 class CUIProgressShape;
 class CUITabControl;
 class CUIFrameLineWnd;
+class CUILabel;
 class CUIEditBoxEx;
 class CUIEditBox;
 class CUICustomEdit;
@@ -42,6 +43,7 @@ public:
 	static bool 	InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd);
 	static bool 	InitFrameWindow			(CUIXml& xml_doc, LPCSTR path,	int index, CUIFrameWindow* pWnd);
 	static bool 	InitFrameLine			(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd);
+	static bool 	InitLabel				(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd);
 	static bool 	InitCustomEdit			(CUIXml& xml_doc, LPCSTR paht, int index, CUICustomEdit* pWnd);
 	static bool 	InitEditBox				(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBox* pWnd);
 	static bool 	InitStatic				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
@@ -51,6 +53,7 @@ public:
 	static bool 	InitText				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
 	static bool 	InitText				(CUIXml& xml_doc, LPCSTR path, int index, CUILines* pLines);
 	static bool 	Init3tButton			(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd);
+	static bool 	InitButton			(CUIXml& xml_doc, LPCSTR path, int index, CUIButton* pWnd);
 	static bool 	InitDragDropListEx		(CUIXml& xml_doc, LPCSTR path, int index, CUIDragDropListEx* pWnd);
 	static bool 	InitProgressBar			(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressBar* pWnd);
 	static bool 	InitProgressShape		(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd);

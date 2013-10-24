@@ -57,6 +57,9 @@ public:
 	virtual void	ClearTarget() = 0;
 	virtual void	SetCacheXform(Fmatrix &mView, Fmatrix &mProject) = 0;
 	virtual void	OnAssetsChanged() = 0;
+
+
+	virtual BOOL	Render_test_hw() = 0;
 };
 
 #endif	//	RenderDeviceRender_included

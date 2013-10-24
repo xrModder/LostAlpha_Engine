@@ -103,7 +103,10 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)
 		.def("GetWidth",				&CUIWindow::GetWidth)
+		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
+		.def("SetHeight",				(void (CUIWindow::*)(float)) &CUIWindow::SetHeight)
+
 
 		.def("Enable",					&CUIWindow::Enable)
 		.def("IsEnabled",				&CUIWindow::IsEnabled)
@@ -118,6 +121,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("ResetPPMode",				&CUIWindow::ResetPPMode),
 
 		class_<CDialogHolder>("CDialogHolder")
+		.def("MainInputReceiver",		&CDialogHolder::TopInputReceiver)
 		.def("start_stop_menu",			&CDialogHolder::StartStopMenu)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
@@ -140,6 +144,11 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWidth",				&CUIFrameLineWnd::SetWidth)
 		.def("SetHeight",				&CUIFrameLineWnd::SetHeight)
 		.def("SetColor",				&CUIFrameLineWnd::SetTextureColor),
+
+		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
+		.def(					constructor<>())
+		.def("SetText",						&CUILabel::SetText)
+		.def("GetText",						&CUILabel::GetText),
 
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
 		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),

@@ -331,3 +331,14 @@ void CUIStatic::SetMask(CUIFrameWindow* mask)
 		m_mask->SetHeight	(r.bottom - r.top);
 	}
 }
+
+void CUIStatic::SetTextAlign_script(u32 align)
+{
+	TextItemControl()->SetTextAlignment((CGameFont::EAligment)align);
+	TextItemControl()->GetFont()->SetAligment((CGameFont::EAligment)align);
+}
+
+u32 CUIStatic::GetTextAlign_script()
+{
+	return static_cast<u32>(TextItemControl()->GetTextAlignment());
+}

@@ -9,6 +9,7 @@
 #include "UISpinText.h"
 #include "UIMapInfo.h"
 #include "UIComboBox.h"
+#include "../../device.h"
 
 using namespace luabind;
 
@@ -23,6 +24,10 @@ struct CUIListBoxItemMsgChainWrapper : public CUIListBoxItemMsgChain, public lua
 	CUIListBoxItemMsgChainWrapper(float h) : CUIListBoxItemMsgChain(h) {}
 };
 
+bool xrRender_test_hw_script()
+{
+	return !!Device.m_pRender->Render_test_hw();
+}
 
 #pragma optimize("s",on)
 void CUIListBox::script_register(lua_State *L)
@@ -65,6 +70,16 @@ void CUIListBox::script_register(lua_State *L)
 		.def("StartDedicatedServer",	&CUIMapList::StartDedicatedServer)
 		.def("SetMapPic",				&CUIMapList::SetMapPic)
 		.def("SetMapInfo",				&CUIMapList::SetMapInfo)
-		.def("IsEmpty",					&CUIMapList::IsEmpty)
+		.def("IsEmpty",					&CUIMapList::IsEmpty),
+
+		class_<enum_exporter<EGameTypes> >("GAME_TYPE")
+		.enum_("gametype")
+		[
+			value("GAME_UNKNOWN",			int(GAME_ANY)),
+			value("GAME_DEATHMATCH",		int(GAME_DEATHMATCH)),
+			value("GAME_TEAMDEATHMATCH",	int(GAME_TEAMDEATHMATCH)),
+			value("GAME_ARTEFACTHUNT",		int(GAME_ARTEFACTHUNT))
+		],
+		def("xrRender_test_r2_hw",			&xrRender_test_hw_script)
 	];
 }

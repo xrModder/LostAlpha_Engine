@@ -17,6 +17,7 @@ class CUI3tButton;
 class CUICheckButton;
 class CUITabControl;
 class CUIFrameLineWnd;
+class CUILabel;
 class CUIEditBox;
 class CUIMultiTextStatic;
 class CUIAnimatedStatic;
@@ -33,10 +34,13 @@ class CUIProgressBar;
 class CScriptXmlInit 
 {
 public:
-	void ParseFile		(LPCSTR xml_file);
+	void 				ParseFile		(LPCSTR xml_file);
+	void 				ParseShTexInfo	(LPCSTR xml_file);
+	void 				ParseFile		(LPCSTR xml_path, LPCSTR xml_file);
 	void				InitWindow(LPCSTR path, int index, CUIWindow* pWnd);
 	CUIFrameWindow*		InitFrame(LPCSTR path, CUIWindow* parent);
 	CUIFrameLineWnd*	InitFrameLine(LPCSTR path, CUIWindow* parent);
+	CUILabel*			InitLabel(LPCSTR path, CUIWindow* parent);
 	CUIEditBox*			InitEditBox(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitStatic(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitAnimStatic(LPCSTR path, CUIWindow* parent);
@@ -46,6 +50,7 @@ public:
 	CUISpinFlt*			InitSpinFlt(LPCSTR path, CUIWindow* parent);
 	CUISpinText*		InitSpinText(LPCSTR path, CUIWindow* parent);
 	CUIComboBox*		InitComboBox(LPCSTR path, CUIWindow* parent);
+	CUIButton*			InitButton(LPCSTR path, CUIWindow* parent);
 	CUI3tButton*		Init3tButton(LPCSTR path, CUIWindow* parent);
 
 	CUITabControl*		InitTab(LPCSTR path, CUIWindow* parent);

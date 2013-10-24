@@ -414,6 +414,34 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 	return true;
 }
 
+bool CUIXmlInit::InitButton(CUIXml& xml_doc, LPCSTR path, 
+						int index, CUIButton* pWnd)
+{
+	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
+
+	InitStatic(xml_doc, path, index, pWnd);
+
+	LPCSTR accel		= xml_doc.ReadAttrib(path, index, "accel", NULL);
+	if(accel)
+	{
+		int acc				= keyname_to_dik(accel);
+		pWnd->SetAccelerator(acc, 0);
+	}
+	accel				= xml_doc.ReadAttrib(path, index, "accel_ext", NULL);
+	if(accel)
+	{
+		int acc				= keyname_to_dik(accel);
+		pWnd->SetAccelerator(acc, 1);
+	}
+
+	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
+	if(text_hint)
+		pWnd->m_hint_text	= CStringTable().translate(text_hint);
+
+	return true;
+}
+
+
 bool CUIXmlInit::InitTabButtonMP(CUIXml& xml_doc, LPCSTR path,	int index, CUITabButtonMP *pWnd)
 {
 	Init3tButton(xml_doc, path,	index, pWnd);
@@ -846,11 +874,22 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	pWnd->InitFrameLineWnd(*base_name, pos, size, !vertical);
 
 	strconcat(sizeof(buf),buf,path,":title");
-	//TODO: FOR SKYLOADER!!!
-	//if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
+	if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
 
 	return true;
 }
+
+bool CUIXmlInit::InitLabel(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd)
+{
+	InitFrameLine(xml_doc, path, index, pWnd);
+
+	string256 buf;
+	strconcat(sizeof(buf),buf,path,":text");
+	InitText(xml_doc, buf, index, &pWnd->m_text);
+
+	return true;
+}
+
 
 bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICustomEdit* pWnd)
 {

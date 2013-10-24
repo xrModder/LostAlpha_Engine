@@ -408,6 +408,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\r2_test_hw.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\xrRender\PSLibrary.cpp"
 				>
 			</File>

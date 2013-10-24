@@ -68,6 +68,8 @@ public:
 	virtual void	SetCacheXform(Fmatrix &mView, Fmatrix &mProject);
 	virtual void	OnAssetsChanged();
 
+	virtual BOOL	Render_test_hw()	{return xrRender_test_hw();}
+
 public:
 	CResourceManager*	Resources;
 	ref_shader			m_WireShader;

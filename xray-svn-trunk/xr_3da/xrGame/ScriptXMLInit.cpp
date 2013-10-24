@@ -40,6 +40,13 @@ void CScriptXmlInit::ParseFile(LPCSTR xml_file)
 	m_xml.Load(CONFIG_PATH, UI_PATH, xml_file);
 }
 
+// lost alpha start
+void CScriptXmlInit::ParseFile(LPCSTR xml_path, LPCSTR xml_file)
+{
+	m_xml.Load(CONFIG_PATH, xml_path, xml_file);
+}
+
+
 void CScriptXmlInit::InitWindow(LPCSTR path, int index, CUIWindow* pWnd)
 {
 	CUIXmlInit::InitWindow(m_xml, path, index, pWnd);
@@ -63,6 +70,13 @@ CUIFrameLineWnd* CScriptXmlInit::InitFrameLine(LPCSTR path, CUIWindow* parent)
 	return pWnd;
 }
 
+CUILabel* CScriptXmlInit::InitLabel(LPCSTR path, CUIWindow* parent)
+{
+	CUILabel* pWnd = xr_new<CUILabel>();
+	CUIXmlInit::InitLabel(m_xml, path, 0, pWnd);
+	_attach_child(pWnd, parent);
+	return pWnd;
+}
 
 CUIEditBox* CScriptXmlInit::InitEditBox(LPCSTR path, CUIWindow* parent)
 {
@@ -152,6 +166,15 @@ CUIComboBox* CScriptXmlInit::InitComboBox(LPCSTR path, CUIWindow* parent)
 	return pWnd;
 }
 
+CUIButton* CScriptXmlInit::InitButton(LPCSTR path, CUIWindow* parent)
+{
+	CUIButton* pWnd = xr_new<CUIButton>();
+	CUIXmlInit::InitButton(m_xml, path, 0, pWnd);
+	_attach_child(pWnd, parent);
+	return pWnd;
+}
+
+
 CUI3tButton* CScriptXmlInit::Init3tButton(LPCSTR path, CUIWindow* parent)
 {
 	CUI3tButton* pWnd = xr_new<CUI3tButton>();
@@ -168,6 +191,10 @@ CUITabControl* CScriptXmlInit::InitTab(LPCSTR path, CUIWindow* parent)
 	return pWnd;	
 }
 
+void CScriptXmlInit::ParseShTexInfo(LPCSTR xml_file)
+{
+	CUITextureMaster::ParseShTexInfo(xml_file);
+}
 
 CServerList* CScriptXmlInit::InitServerList(LPCSTR path, CUIWindow* parent)
 {
@@ -239,10 +266,13 @@ void CScriptXmlInit::script_register(lua_State *L){
 	[
 		class_<CScriptXmlInit>			("CScriptXmlInit")
 		.def(							constructor<>())
-		.def("ParseFile",				&CScriptXmlInit::ParseFile)
+		.def("ParseFile",				(void(CScriptXmlInit::*)(LPCSTR))(&CScriptXmlInit::ParseFile))
+		.def("ParseFile",				(void(CScriptXmlInit::*)(LPCSTR, LPCSTR))(&CScriptXmlInit::ParseFile))
+		.def("ParseShTexInfo",			&CScriptXmlInit::ParseShTexInfo)
 		.def("InitWindow",				&CScriptXmlInit::InitWindow)
 		.def("InitFrame",				&CScriptXmlInit::InitFrame)
 		.def("InitFrameLine",			&CScriptXmlInit::InitFrameLine)
+		.def("InitLabel",			&CScriptXmlInit::InitLabel)
 		.def("InitEditBox",				&CScriptXmlInit::InitEditBox)		
 		.def("InitStatic",				&CScriptXmlInit::InitStatic)
 		.def("InitTextWnd",				&CScriptXmlInit::InitTextWnd)
@@ -252,7 +282,9 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitSpinNum",				&CScriptXmlInit::InitSpinNum)
 		.def("InitSpinFlt",				&CScriptXmlInit::InitSpinFlt)
 		.def("InitSpinText",			&CScriptXmlInit::InitSpinText)
-		.def("InitComboBox",			&CScriptXmlInit::InitComboBox)		
+		.def("InitComboBox",			&CScriptXmlInit::InitComboBox)	
+		.def("InitButton",				&CScriptXmlInit::InitButton)
+		.def("Init3tButton",			&CScriptXmlInit::Init3tButton)	
 		.def("InitTab",					&CScriptXmlInit::InitTab)
 		.def("InitServerList",			&CScriptXmlInit::InitServerList)
 		.def("InitMapList",				&CScriptXmlInit::InitMapList)

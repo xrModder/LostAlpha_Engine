@@ -1,12 +1,13 @@
 #include "StdAfx.h"
-/*
+
 #include "UILabel.h"
-#include "../../xrEngine/LightAnimLibrary.h"
 
 CUILabel::CUILabel()
 {
+	AttachChild				(&m_text);
+
 	m_textPos.set				(0,0);
-	m_lines.SetVTextAlignment	(valCenter);
+	m_text.TextItemControl()->SetVTextAlignment	(valCenter);
 	m_lainm_start_time			= -1.0f;
 	m_lanim						= NULL;	
 }
@@ -15,28 +16,27 @@ void CUILabel::InitLabel(Fvector2 pos, Fvector2 size)
 {
 	CUIFrameLineWnd::SetWndPos	(pos);
 	CUIFrameLineWnd::SetWndSize	(size);
-	m_lines.SetWndPos			(pos);
-	m_lines.SetWndSize			(size);
+	m_text.TextItemControl()->SetWndPos			(pos);
+	m_text.TextItemControl()->SetWndSize			(size);
 }
 
-void CUILabel::SetFont(CGameFont* pFont){
-	CUILinesOwner::SetFont(pFont);
-}
-
-void CUILabel::Draw(){
+void CUILabel::Draw()
+{
 	CUIFrameLineWnd::Draw();
 	Fvector2 p;
-	GetAbsolutePos(p);
-	m_lines.Draw(p.x + m_textPos.x, p.y + m_textPos.y);
+	CUIFrameLineWnd::GetAbsolutePos(p);
+	m_text.TextItemControl()->Draw(p.x + m_textPos.x, p.y + m_textPos.y);
 }
 
-void CUILabel::SetWidth(float width){
-	m_lines.SetWidth(width);
+void CUILabel::SetWidth(float width)
+{
+	m_text.TextItemControl()->SetWidth(width);
 	CUIFrameLineWnd::SetWidth(width);
 }
 
-void CUILabel::SetHeight(float height){
-	m_lines.SetHeight(height);
+void CUILabel::SetHeight(float height)
+{
+	m_text.TextItemControl()->SetHeight(height);
 	CUIFrameLineWnd::SetHeight(height);
 }
 
@@ -56,8 +56,7 @@ void CUILabel::Update()
 		if(m_lainm_start_time<0.0f) m_lainm_start_time = Device.fTimeGlobal; 
 		int frame;
 		u32 clr					= m_lanim->CalculateRGB(Device.fTimeGlobal-m_lainm_start_time,frame);
-		SetColor				(clr);
-		SetTextColor			(clr);
+		SetTextureColor				(clr);
+		m_text.TextItemControl()->SetTextColor			(clr);
 	}
 }
-*/

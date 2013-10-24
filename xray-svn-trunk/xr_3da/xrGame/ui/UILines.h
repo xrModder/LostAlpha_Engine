@@ -25,6 +25,7 @@ public:
 			EVTextAlignment GetVTextAlignment()							{return m_eVTextAlign;}
 
 			void			SetTextComplexMode							(bool mode = true);
+			bool			IsTextComplexMode								() {return !!uFlags.test(flComplexMode);};
 			void			SetPasswordMode								(bool mode = true);
 			bool			IsPasswordMode								() {return !!uFlags.test(flPasswordMode);};
 
@@ -32,6 +33,11 @@ public:
 			void			SetCutWordsMode								(bool mode);
 			void			SetUseNewLineMode							(bool mode);
 			void			SetEllipsis									(bool mode);
+
+			void			SetWndPos			(const Fvector2& pos)						{m_wndPos.set(pos.x,pos.y);}
+			void			SetWndSize			(const Fvector2& size)						{m_wndSize = size;}
+			void			SetHeight			(float height)								{m_wndSize.y = height;}
+			void			SetWidth			(float width)								{m_wndSize.x = width;}
 
 			void			Draw										(float x, float y);
 

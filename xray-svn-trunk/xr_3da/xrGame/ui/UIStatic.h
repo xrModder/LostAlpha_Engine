@@ -55,11 +55,16 @@ public:
 
 			void			SetHeadingPivot			(const Fvector2& p, const Fvector2& offset, bool fixedLT)				{m_UIStaticItem.SetHeadingPivot(p,offset,fixedLT);}
 			void			ResetHeadingPivot		()							{m_UIStaticItem.ResetHeadingPivot();}
+	virtual void		SetColor					(u32 color)					{ m_UIStaticItem.SetTextureColor(color);		}
+	u32					GetColor					() const					{ return m_UIStaticItem.GetTextureColor();		}
 	virtual void			SetTextureOffset		(float x, float y)			{ m_TextureOffset.set(x, y); }
 			Fvector2		GetTextureOffeset		() const					{ return m_TextureOffset; }
 			void			TextureOn				()							{ m_bTextureEnable = true; }
 			bool			IsTextureOn				() const					{ return m_bTextureEnable; }
 			void			TextureOff				()							{ m_bTextureEnable = false; }
+
+			void	SetTextAlign_script			(u32 align);
+			u32		GetTextAlign_script			();
 
 
 	// own
@@ -96,6 +101,7 @@ public:
 			void			SetTextColor			(u32 r, u32 g, u32 b, u32 a)					{TextItemControl()->SetTextColor(color_rgba(r,g,b,a));}
 			u32			GetTextColor			()							{return TextItemControl()->GetTextColor();}
 			void			SetTextComplexMode		(bool mode = true)			{TextItemControl()->SetTextComplexMode(mode);}
+			bool			IsTextComplexMode			()						{return TextItemControl()->IsTextComplexMode();}
 			void			SetTextAlignment		(ETextAlignment al)			{TextItemControl()->SetTextAlignment(al);}
 			void			SetVTextAlignment		(EVTextAlignment al)		{TextItemControl()->SetVTextAlignment(al);}
 			void			SetEllipsis				(bool mode)					{TextItemControl()->SetEllipsis(mode);}
