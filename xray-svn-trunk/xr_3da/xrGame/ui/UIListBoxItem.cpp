@@ -9,6 +9,9 @@ CUIListBoxItem::CUIListBoxItem(float height)
 {
 	SetHeight		(height);
 	m_text			= AddTextField("---", 10.0f);
+
+	m_dwLastClickTime		= 0;
+	m_dwLastClickFrame		= 0;
 }
 
 void CUIListBoxItem::SetTAG(u32 value)
@@ -51,13 +54,25 @@ CGameFont* CUIListBoxItem::GetFont()
 	return (m_text)?m_text->GetFont():NULL;
 }
 
+#define DOUBLE_CLICK_TIME 250
+
 bool CUIListBoxItem::OnMouseDown(int mouse_btn)
 {
 	if (mouse_btn==MOUSE_1)
 	{
 		smart_cast<CUIScrollView*>(GetParent()->GetParent())->SetSelected(this);
 		GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, &tag);
+
+		//skyloader: db click for list item
+		u32 dwCurTime		= Device.dwTimeContinual;
+
+		if((m_dwLastClickFrame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME) )
+			GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, &tag);
+
 		GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, &tag);
+
+		m_dwLastClickTime	= dwCurTime;
+		m_dwLastClickFrame	= Device.dwFrame;
 		return true;
 	}else
 		return false;

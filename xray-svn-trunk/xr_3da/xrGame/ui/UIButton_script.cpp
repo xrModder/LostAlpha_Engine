@@ -20,6 +20,8 @@ void CUIButton::script_register(lua_State *L)
 
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())
+		.def("Init",					(void(CUIButton::*)(float,float,float,float))&CUIButton::Init )
+		.def("Init",					(void(CUIButton::*)(LPCSTR,float,float,float,float))&CUIButton::Init )
 		,
 
 

@@ -72,7 +72,8 @@ public:
 
 	virtual void 			Draw				();
 	virtual void 			Update				();
-	virtual void 			ShowDialog				(bool status);
+	virtual void 			ShowDialog				(bool bDoHideIndicators);
+	virtual void 			HideDialog				();
 	
 	virtual void 			EnableSkills				(bool val);
 	virtual void 			EnableDownloads				(bool val);

@@ -255,26 +255,28 @@ void CUITalkWnd::Draw()
 	inherited::Draw				();
 }
 
-void CUITalkWnd::Show(bool status)
+void CUITalkWnd::ShowDialog(bool bDoHideIndicators)
 {
-	inherited::Show					(status);
-	if(status)
+	inherited::ShowDialog				(bDoHideIndicators);
+
+	InitTalkDialog				();
+}
+
+void CUITalkWnd::HideDialog()
+{
+	inherited::HideDialog					();
+
+	StopSnd						();
+	UITalkDialogWnd->Hide		();
+
+	if(m_pActor)
 	{
-		InitTalkDialog				();
-	}else
-	{
-		StopSnd						();
-		UITalkDialogWnd->Hide		();
+		ToTopicMode					();
 
-		if(m_pActor)
-		{
-			ToTopicMode					();
+		if (m_pActor->IsTalking()) 
+			m_pActor->StopTalk();
 
-			if (m_pActor->IsTalking()) 
-				m_pActor->StopTalk();
-
-			m_pActor = NULL;
-		}
+		m_pActor = NULL;
 	}
 }
 

@@ -229,7 +229,7 @@ void CUICarBodyWnd::UpdateLists_delayed()
 
 #include "UIInventoryUtilities.h"
 
-void CUICarBodyWnd::Hide()
+void CUICarBodyWnd::HideDialog()
 {
 	InventoryUtilities::SendInfoToActor			("ui_car_body_hide");
 	m_pUIOurBagList->ClearAll					(true);
@@ -350,10 +350,10 @@ void CUICarBodyWnd::Update()
 }
 
 
-void CUICarBodyWnd::Show() 
+void CUICarBodyWnd::ShowDialog(bool bDoHideIndicators) 
 {
 	InventoryUtilities::SendInfoToActor		("ui_car_body");
-	inherited::ShowDialog(true);
+	inherited::ShowDialog(bDoHideIndicators);
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
 }

@@ -61,6 +61,18 @@ void CUIStatic::InitTexture(LPCSTR texture)
 	InitTextureEx(texture);
 }
 
+void CUIStatic::Init(LPCSTR tex_name, float x, float y, float width, float height)
+{
+	inherited::SetWndRect_script(x, y, width, height);
+	InitTexture(tex_name);
+}
+
+void CUIStatic::InitEx(LPCSTR tex_name, LPCSTR sh_name, float x, float y, float width, float height)
+{
+	inherited::SetWndRect_script(x, y, width, height);
+	InitTextureEx(tex_name, sh_name);	
+}
+
 void CUIStatic::CreateShader(const char* tex, const char* sh)
 {
 	m_UIStaticItem.CreateShader(tex,sh);	

@@ -70,6 +70,10 @@ public:
 	// own
 			void			SetXformLightAnim		(LPCSTR lanim, bool bCyclic);
 			void			ResetXformAnimation		();
+
+	virtual void		Init						(LPCSTR tex_name, float x, float y, float width, float height);	
+		void		InitEx						(LPCSTR tex_name, LPCSTR sh_name, float x, float y, float width, float height);
+
 			
 	virtual void			DrawTexture				();
 	virtual void			DrawText				();

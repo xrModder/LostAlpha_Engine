@@ -99,6 +99,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("Init",					(void (CUIWindow::*)(Frect))			 &CUIWindow::SetWndRect_script)
 
 		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
+		.def("SetWndRect",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)
@@ -203,7 +204,10 @@ void CUIWindow::script_register(lua_State *L)
 
 	// CUIListWnd
 				value("LIST_ITEM_CLICKED",				int(LIST_ITEM_CLICKED)),
+				value("LIST_ITEM_DB_CLICKED",				int(LIST_ITEM_DB_CLICKED)),
 				value("LIST_ITEM_SELECT",				int(LIST_ITEM_SELECT)),
+				value("LIST_ITEM_UNSELECT",				int(LIST_ITEM_UNSELECT)),
+				value("LIST_ITEM_FOCUS_RECEIVED",				int(LIST_ITEM_FOCUS_RECEIVED)),
 	
 	// UIPropertiesBox
 				value("PROPERTY_CLICKED",				int(PROPERTY_CLICKED)),

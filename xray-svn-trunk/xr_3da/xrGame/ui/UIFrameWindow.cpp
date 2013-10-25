@@ -54,7 +54,7 @@ void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR  sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_rt"),	sh_name, m_shader, m_tex_rect[fmRT]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_lb"),	sh_name, m_shader, m_tex_rect[fmLB]);
 
-	R_ASSERT2(fsimilar(m_tex_rect[fmLT].height(), m_tex_rect[fmT].height()),texture );
+/*	R_ASSERT2(fsimilar(m_tex_rect[fmLT].height(), m_tex_rect[fmT].height()),texture );
 	R_ASSERT2(fsimilar(m_tex_rect[fmLT].height(), m_tex_rect[fmRT].height()),texture );
 //	R_ASSERT2(fsimilar(m_tex_rect[fmL].height(), m_tex_rect[fmBK].height()),texture );
 	R_ASSERT2(fsimilar(m_tex_rect[fmL].height(), m_tex_rect[fmR].height()),texture );
@@ -69,6 +69,7 @@ void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR  sh_name)
 
 	R_ASSERT2(fsimilar(m_tex_rect[fmRT].width(), m_tex_rect[fmR].width()),texture );
 	R_ASSERT2(fsimilar(m_tex_rect[fmRT].width(), m_tex_rect[fmRB].width()),texture );
+*/
 }
 
 void CUIFrameWindow::InitTexture(LPCSTR texture)

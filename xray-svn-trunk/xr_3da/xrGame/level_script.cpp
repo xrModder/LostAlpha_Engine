@@ -318,10 +318,10 @@ CClientSpawnManager	&get_client_spawn_manager()
 
 void start_stop_menu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-	if (bDoHideIndicators)
-		pDialog->ShowDialog(true);
+	if (!pDialog->IsShown())
+		pDialog->ShowDialog		(bDoHideIndicators);
 	else
-		pDialog->HideDialog();
+		pDialog->HideDialog		();
 }
 
 void lua_debug_print(LPCSTR str)

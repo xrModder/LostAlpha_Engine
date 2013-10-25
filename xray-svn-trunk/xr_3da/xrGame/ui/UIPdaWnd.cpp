@@ -200,25 +200,19 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	}
 }
 
-void CUIPdaWnd::ShowDialog(bool status)
+void CUIPdaWnd::ShowDialog(bool bDoHideIndicators)
 {
-	
-	if (status)
-	{
-		InventoryUtilities::SendInfoToActor("ui_pda");
-	inherited::ShowDialog(true);
-	
-	}
-	else
-	{
-		inherited::HideDialog();
+	InventoryUtilities::SendInfoToActor("ui_pda");
+	inherited::ShowDialog(bDoHideIndicators);
+}
 
-		InventoryUtilities::SendInfoToActor("ui_pda_hide");
-		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
-		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, false);
+void CUIPdaWnd::HideDialog()
+{
+	inherited::HideDialog();
 
-	}
-	
+	InventoryUtilities::SendInfoToActor("ui_pda_hide");
+	CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+	CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, false);	
 }
 
 void CUIPdaWnd::UpdateDateTime()

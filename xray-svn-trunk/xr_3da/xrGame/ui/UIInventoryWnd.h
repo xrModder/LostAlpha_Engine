@@ -44,8 +44,8 @@ public:
 	virtual void			Update						();
 	virtual void			Draw						();
 
-	virtual void			Show						();
-	virtual void			Hide						();
+	virtual void			ShowDialog						(bool bDoHideIndicators);
+	virtual void			HideDialog						();
 
 	void					AddItemToBag				(PIItem pItem);
 	void					DeleteFromInventory			(PIItem PIItem);

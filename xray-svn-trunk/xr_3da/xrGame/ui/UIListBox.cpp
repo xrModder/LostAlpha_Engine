@@ -101,7 +101,8 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	if (m_pad->IsChild(pWnd))
 	{
-		switch (msg){
+		switch (msg)
+		{
 			case LIST_ITEM_SELECT:	
 				GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, pData);
 				break;
@@ -110,7 +111,10 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 				break;
 			case LIST_ITEM_FOCUS_RECEIVED:
 				if (m_bImmediateSelection)
-                    SetSelected(pWnd);
+					SetSelected(pWnd);
+				break;
+			case LIST_ITEM_DB_CLICKED:
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, pData);
 				break;
 		}		
 	}

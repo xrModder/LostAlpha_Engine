@@ -334,10 +334,10 @@ void CUIInventoryWnd::Update()
 	CUIWindow::Update					();
 }
 
-void CUIInventoryWnd::Show() 
+void CUIInventoryWnd::ShowDialog(bool bDoHideIndicators) 
 { 
 	InitInventory			();
-	inherited::ShowDialog			(true);
+	inherited::ShowDialog			(bDoHideIndicators);
 
 	if (!IsGameTypeSingle())
 	{
@@ -369,7 +369,7 @@ void CUIInventoryWnd::Show()
 	PlaySnd								(eInvSndOpen);
 }
 
-void CUIInventoryWnd::Hide()
+void CUIInventoryWnd::HideDialog()
 {
 	PlaySnd								(eInvSndClose);
 	inherited::HideDialog						();

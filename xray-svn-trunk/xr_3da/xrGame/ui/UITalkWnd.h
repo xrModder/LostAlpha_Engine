@@ -40,7 +40,8 @@ public:
 	virtual void		Draw					();
 	virtual void		Update					();
 		
-	virtual void		Show					(bool status);
+	virtual void		ShowDialog					(bool bDoHideIndicators);
+	virtual void		HideDialog					();
 	
 	void				Stop					();					//deffered
 	void				StopTalk				();

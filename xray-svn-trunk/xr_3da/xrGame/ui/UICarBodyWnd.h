@@ -38,8 +38,8 @@ public:
 	virtual void			Draw						();
 	virtual void			Update						();
 		
-	virtual void			Show						();
-	virtual void			Hide						();
+	virtual void			ShowDialog						(bool bDoHideIndicators);
+	virtual void			HideDialog						();
 
 	void					DisableAll					();
 	void					EnableAll					();

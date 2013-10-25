@@ -37,6 +37,12 @@ public:
 protected:
 		CUITextWnd*		m_text;
 		u32				tag;
+
+
+		//skyloader: время и фрейм для отсчета даблклика
+		u32			m_dwLastClickTime;
+		u32			m_dwLastClickFrame;
+
 		void*			pData;
 		float			FieldsLength			() const;
 };
