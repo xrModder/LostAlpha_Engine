@@ -1242,18 +1242,18 @@ void CApplication::load_draw_internal()
 			back_offset.set			(0.0f, 0.0f);
 		
 //progress bar
-		
-		back_tex_size.set			(506,4);
-		back_size.set				(506,4);
+
+		back_size.set				(268,37);
 		if(b_ws)
 			back_size.x				*= ws_k; //ws
-		
-		back_tex_coords.lt.set		(0,768);
-		back_tex_coords.rb.add		(back_tex_coords.lt, back_tex_size);
 
-		back_coords.lt.set			(379,726);
+		back_tex_coords.lt.set		(0,768);
+		back_tex_coords.rb.add(back_tex_coords.lt,back_size);
+		back_coords.lt.set			(379 ,726);
+
 		if(b_ws)
-			back_coords.lt.x		*= ws_k;	
+			back_coords.lt.x		*= ws_k;
+
 		back_coords.lt.add			(back_offset);
 
 		back_coords.rb.add(back_coords.lt,back_size);
@@ -1264,6 +1264,7 @@ void CApplication::load_draw_internal()
 		back_tex_coords.lt.y		/= tsz.y; 
 		back_tex_coords.rb.x		/= tsz.x; 
 		back_tex_coords.rb.y		/= tsz.y;
+
 		
 		u32 v_cnt					= 40;
 		pv							= (FVF::TL*)RCache.Vertex.Lock	(2*(v_cnt+1),ll_hGeom2.stride(),Offset);
@@ -1281,7 +1282,7 @@ void CApplication::load_draw_internal()
 		VERIFY						(u32(pv-_pv)==2*(v_cnt+1));
 		RCache.Vertex.Unlock		(2*(v_cnt+1),ll_hGeom2.stride());
 
-		RCache.set_Shader			(sh_progress);
+		//RCache.set_Shader			(sh_progress); //sky: we need it?
 		RCache.set_Geometry			(ll_hGeom2);
 		RCache.Render				(D3DPT_TRIANGLESTRIP, Offset, 2*v_cnt);
 
