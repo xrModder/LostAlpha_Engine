@@ -175,6 +175,38 @@ public:
 	}
 };
 
+class CCC_Spawn : public IConsole_Command {
+public:
+	CCC_Spawn(LPCSTR N) : IConsole_Command(N)  { };
+	virtual void Execute(LPCSTR args) {
+		if (!g_pGameLevel) return;
+
+#ifndef	DEBUG
+		if (GameID() != GAME_SINGLE)
+		{
+			Msg("For this game type entity-spawning is disabled.");
+			return;
+		};
+#endif
+
+		if (!pSettings->section_exist(args))
+		{
+			Msg("! Section [%s] isn`t exist...", args);
+			return;
+		}
+
+		char	Name[128];	Name[0]=0;
+		sscanf	(args,"%s", Name);
+		Fvector pos = Actor()->Position();
+		pos.y		+= 3.0f;
+		Level().g_cl_Spawn	(Name,0xff,M_SPAWN_OBJECT_LOCAL, pos);
+	}
+	virtual void	Info	(TInfo& I)	
+	{
+		strcpy(I,"name,team,squad,group"); 
+	}
+};
+
 // console commands
 class CCC_GameDifficulty : public CCC_Token {
 public:
@@ -1567,6 +1599,9 @@ void CCC_RegisterCommands()
 	
 	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
+#ifdef DEBUG
+	CMD1(CCC_Spawn,				"g_spawn"				);
+#endif // DEBUG
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_FlushLog,			"flush"					);		// flush log
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);
