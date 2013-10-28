@@ -192,9 +192,6 @@ cdb_bDebug		= &bDebug;
 		dwHeight,
 		fWidth_2,
 		fHeight_2,
-#ifdef INGAME_EDITOR
-		editor() ? false :
-#endif // #ifdef INGAME_EDITOR
 		true
 	);
 

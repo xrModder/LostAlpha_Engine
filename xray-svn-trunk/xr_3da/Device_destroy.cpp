@@ -97,7 +97,7 @@ void CRenderDevice::Reset		(bool precache)
 		{
 			u32	type	= g_hud->GetUIHudType();
 			string512		command;
-			sprintf_s		(command, "ui_hud_type hud_%d", type);
+			xr_sprintf		(command, "ui_hud_type hud_%d", type);
 			Console->Execute	(command);
 		}
 	}

@@ -20,11 +20,6 @@
 #define INCLUDE_FROM_ENGINE
 #include "../xrCore/FS_impl.h"
 
-#ifdef INGAME_EDITOR
-#	include "../include/editor/ide.hpp"
-#	include "engine_impl.hpp"
-#endif // #ifdef INGAME_EDITOR
-
 #include "igame_persistent.h"
 
 #pragma comment( lib, "d3dx9.lib"		)
@@ -114,9 +109,6 @@ void CRenderDevice::End		(void)
 #ifndef DEDICATED_SERVER
 
 
-#ifdef INGAME_EDITOR
-	bool							load_finished = false;
-#endif // #ifdef INGAME_EDITOR
 	if (dwPrecacheFrame)
 	{
 		::Sound->set_master_volume	(0.f);
@@ -124,10 +116,6 @@ void CRenderDevice::End		(void)
 //.		pApp->load_draw_internal	();
 		if (0==dwPrecacheFrame)
 		{
-
-#ifdef INGAME_EDITOR
-			load_finished			= true;
-#endif // #ifdef INGAME_EDITOR
 			//Gamma.Update		();
 			m_pRender->updateGamma();
 
@@ -170,10 +158,6 @@ void CRenderDevice::End		(void)
 	//HRESULT _hr		= HW.pDevice->Present( NULL, NULL, NULL, NULL );
 	//if				(D3DERR_DEVICELOST==_hr)	return;			// we will handle this later
 	//R_ASSERT2		(SUCCEEDED(_hr),	"Presentation failed. Driver upgrade needed?");
-#	ifdef INGAME_EDITOR
-		if (load_finished && m_editor)
-			m_editor->on_load_finished	();
-#	endif // #ifdef INGAME_EDITOR
 #endif
 }
 
@@ -361,24 +345,8 @@ void CRenderDevice::on_idle		()
 		Sleep		(1);
 }
 
-#ifdef INGAME_EDITOR
-void CRenderDevice::message_loop_editor	()
-{
-	m_editor->run			();
-	m_editor_finalize		(m_editor);
-	xr_delete				(m_engine);
-}
-#endif // #ifdef INGAME_EDITOR
-
 void CRenderDevice::message_loop()
 {
-#ifdef INGAME_EDITOR
-	if (editor()) {
-		message_loop_editor	();
-		return;
-	}
-#endif // #ifdef INGAME_EDITOR
-
 	MSG						msg;
     PeekMessage				(&msg, NULL, 0U, 0U, PM_NOREMOVE );
 	while (msg.message != WM_QUIT) {
@@ -514,9 +482,6 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 	{
 		if(!Paused())						
 			bShowPauseString				= 
-#ifdef INGAME_EDITOR
-				editor() ? FALSE : 
-#endif // #ifdef INGAME_EDITOR
 #ifdef DEBUG
 				!xr_strcmp(reason, "li_pause_key_no_clip")?	FALSE:
 #endif // DEBUG
@@ -586,9 +551,6 @@ void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 			app_inactive_time		+= TimerMM.GetElapsed_ms() - app_inactive_time_start;
 
 #ifndef DEDICATED_SERVER
-#	ifdef INGAME_EDITOR
-			if (!editor())
-#	endif // #ifdef INGAME_EDITOR
 				ShowCursor			(FALSE);
 #endif // #ifndef DEDICATED_SERVER
 		}else	
