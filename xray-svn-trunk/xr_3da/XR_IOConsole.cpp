@@ -541,13 +541,9 @@ void CConsole::ExecuteCommand( LPCSTR cmd_str, bool record_cmd )
 	}
 	if ( record_cmd )
 	{
-		char c[2];
-		c[0] = mark2;
-		c[1] = 0;
-
 		if ( m_last_cmd.c_str() == 0 || xr_strcmp( m_last_cmd, edt ) != 0 )
 		{
-			Log( c, edt );
+			Log( edt );
 			add_cmd_history( edt );
 			m_last_cmd = edt;
 		}
@@ -887,10 +883,10 @@ void CConsole::update_tips()
 				m_cur_cmd._set( first );
 				select_for_filter( last, m_temp_tips, m_tips );
 
-				if ( m_tips.size() == 0 )
-				{
-					m_tips.push_back( TipString( "(empty)" ) );
-				}
+				//if ( m_tips.size() == 0 )
+				//{
+				//	m_tips.push_back( TipString( "(empty)" ) );
+				//}
 				if ( (int)m_tips.size() <= m_select_tip )
 				{
 					reset_selected_tip();

@@ -67,15 +67,15 @@ ref_shader CLensFlareDescriptor::CreateShader(LPCSTR tex_name, LPCSTR sh_name)
 }
 */
 
-void CLensFlareDescriptor::load(CInifile* pIni, LPCSTR sect)
+void CLensFlareDescriptor::load(const CInifile* pIni, LPCSTR sect)
 {
 	section		= sect;
-	m_Flags.set	(flSource,pIni->r_bool(sect,"sun" ));
+	m_Flags.set	(flSource,pIni->r_bool(sect,"source" ));
 	if (m_Flags.is(flSource)){
-		LPCSTR S= pIni->r_string 	( sect,"sun_shader" );
-		LPCSTR T= pIni->r_string 	( sect,"sun_texture" );
-		float r = pIni->r_float		( sect,"sun_radius" );
-		BOOL i 	= pIni->r_bool		( sect,"sun_ignore_color" );
+		LPCSTR S= pIni->r_string 	( sect,"source_shader" );
+		LPCSTR T= pIni->r_string 	( sect,"source_texture" );
+		float r = pIni->r_float		( sect,"source_radius" );
+		BOOL i 	= pIni->r_bool		( sect,"source_ignore_color" );
 		SetSource(r,i,T,S);
 	}
 	m_Flags.set	(flFlare,pIni->r_bool ( sect,"flares" ));
@@ -554,7 +554,7 @@ void CLensFlare::Render(BOOL bSun, BOOL bFlares, BOOL bGradient)
 	*/
 }
 
-shared_str CLensFlare::AppendDef(CEnvironment& environment, CInifile* pIni, LPCSTR sect)
+shared_str CLensFlare::AppendDef(CEnvironment& environment, LPCSTR sect)
 {
 	if (!sect||(0==sect[0])) return "";
     for (LensFlareDescIt it=m_Palette.begin(); it!=m_Palette.end(); it++)

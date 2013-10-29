@@ -15,11 +15,8 @@ class ENGINE_API CLAItem;
 #include "../Include/xrRender/ThunderboltDescRender.h"
 #include "../Include/xrRender/ThunderboltRender.h"
 
-#ifdef INGAME_EDITOR
-#	define	INGAME_EDITOR_VIRTUAL	virtual
-#else // #ifdef INGAME_EDITOR
-#	define	INGAME_EDITOR_VIRTUAL
-#endif // #ifdef INGAME_EDITOR
+
+#define	INGAME_EDITOR_VIRTUAL
 
 class CEnvironment;
 
@@ -48,9 +45,9 @@ struct SThunderboltDesc
 public:
 								SThunderboltDesc		();
 	INGAME_EDITOR_VIRTUAL	    ~SThunderboltDesc		();
-						  void	load					(CInifile& pIni, shared_str const& sect);
-	INGAME_EDITOR_VIRTUAL void	create_top_gradient		(CInifile& pIni, shared_str const& sect);
-	INGAME_EDITOR_VIRTUAL void	create_center_gradient	(CInifile& pIni, shared_str const& sect);
+						  void	load					(const CInifile* pIni, shared_str const& sect);
+	INGAME_EDITOR_VIRTUAL void	create_top_gradient		(const CInifile* pIni, shared_str const& sect);
+	INGAME_EDITOR_VIRTUAL void	create_center_gradient	(const CInifile* pIni, shared_str const& sect);
 };
 
 #undef INGAME_EDITOR_VIRTUAL
@@ -63,7 +60,7 @@ struct SThunderboltCollection
 public:
 								SThunderboltCollection	();
 								~SThunderboltCollection	();
-						void	load					(CInifile* pIni, CInifile* thunderbolts, LPCSTR sect);
+						void	load					(const CInifile* pIni, LPCSTR sect);
 	SThunderboltDesc*			GetRandomDesc			(){VERIFY(palette.size()>0); return palette[Random.randI(palette.size())];}
 };
 
@@ -120,7 +117,7 @@ public:
 	void						OnFrame				(shared_str id,float period, float duration);
 	void						Render				();
 
-	shared_str 					AppendDef			(CEnvironment& environment, CInifile* pIni, CInifile* thunderbolts, LPCSTR sect);
+	shared_str 					AppendDef			(CEnvironment& environment, const CInifile* pIni, LPCSTR sect);
 };
 
 #endif //ThunderboltH
