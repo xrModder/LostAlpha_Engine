@@ -2,6 +2,7 @@
 #include "battery.h"
 #include "PhysicsShell.h"
 #include "Actor.h"
+#include "torch.h"
 
 CBattery::CBattery()
 {
@@ -55,7 +56,6 @@ void CBattery::renderable_Render()
 
 void CBattery::UseBy (CEntityAlive* entity_alive)
 {
-	inherited::UseBy(entity_alive);
 	CInventoryOwner *IO				= smart_cast<CInventoryOwner*>(entity_alive);
 	CActor			*actor			= NULL;
 	
@@ -63,5 +63,20 @@ void CBattery::UseBy (CEntityAlive* entity_alive)
 
 	actor							= smart_cast<CActor*>(IO);
 	R_ASSERT						(actor);
+
+	CTorch *flashlight = actor->GetCurrentTorch();
+	if (!flashlight) return;
+
+	inherited::UseBy(entity_alive);
+
 	actor->RechargeTorchBattery		();
+}
+
+bool CBattery::Empty() const
+{
+	CTorch *flashlight = Actor()->GetCurrentTorch();
+	if (!flashlight)
+		return false;
+
+	return inherited::Empty();
 }

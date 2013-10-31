@@ -176,19 +176,21 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	pIItem->m_pCurrentInventory			= this;
 	pIItem->SetDropManual				(FALSE);
 
-
-	u16 actor_id = Level().CurrentEntity()->ID();
-
-	if (GetOwner()->object_id()==actor_id && this->m_pOwner->object_id()==actor_id)		//actors inventory
+	if (Level().CurrentEntity())
 	{
-
-		CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
-		if (pWeapon && pWeapon->strapped_mode())
+		u16 actor_id = Level().CurrentEntity()->ID();
+	
+		if (GetOwner()->object_id()==actor_id && this->m_pOwner->object_id()==actor_id)		//actors inventory
 		{
-			pWeapon->strapped_mode(false);
-			Ruck(pWeapon);
+	
+			CWeaponMagazined*	pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
+			if (pWeapon && pWeapon->strapped_mode())
+			{
+				pWeapon->strapped_mode(false);
+				Ruck(pWeapon);
+			}
+	
 		}
-
 	}
 
 	m_all.push_back						(pIItem);
