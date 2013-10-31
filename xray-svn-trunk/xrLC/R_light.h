@@ -4,7 +4,7 @@
 #define LT_POINT		1
 #define LT_SECONDARY	2
 
-#define USE_PORTED_XRLC
+//#define USE_PORTED_XRLC
 
 struct R_Light
 {
@@ -16,7 +16,7 @@ struct R_Light
 	float		    range;				// Cutoff range
 	float			range2;				// ^2
 #ifdef USE_PORTED_XRLC
-//	float			falloff;			// precalc to make light aqal to zero at light range
+	float			falloff;			// precalc to make light aqal to zero at light range
 #endif
 	float	        attenuation0;		// Constant attenuation		
 	float	        attenuation1;		// Linear attenuation		
