@@ -37,6 +37,7 @@ public:
 	shared_str		MapName							() {return m_name;}
 	virtual CUIGlobalMapSpot*	GlobalMapSpot		() {return NULL;}
 
+	virtual void	Draw							();
 	virtual void	Update							();
 	virtual void	SendMessage						(CUIWindow* pWnd, s16 msg, void* pData);
 			bool	IsRectVisible					(Frect r);

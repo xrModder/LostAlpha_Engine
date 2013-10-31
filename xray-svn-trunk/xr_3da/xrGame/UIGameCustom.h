@@ -127,6 +127,8 @@ public:
 
 	void				CommonMessageOut		(LPCSTR text);
 
+	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }
+
 	virtual void		ChangeTotalMoneyIndicator(LPCSTR newMoneyString)		{};
 	virtual void		DisplayMoneyChange		(LPCSTR deltaMoney)			{};
 	virtual void		DisplayMoneyBonus		(KillMessageStruct* bonus)	{};

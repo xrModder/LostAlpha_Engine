@@ -553,7 +553,7 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 			// desktop.
 
 			RECT			m_rcWindowBounds;
-			BOOL			bCenter = FALSE;
+			BOOL			bCenter = TRUE;
 		    if (strstr(Core.Params, "-no_center_screen"))	bCenter = FALSE;
 
 #ifndef _EDITOR
