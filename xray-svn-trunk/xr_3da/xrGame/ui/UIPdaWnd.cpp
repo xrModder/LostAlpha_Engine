@@ -493,14 +493,14 @@ void CUIPdaWnd::DrawUpdatedSections				()
 
 void CUIPdaWnd::Reset()
 {
-	inherited::Reset		();
-	if (UIMapWnd)			UIMapWnd->Reset			();
-	if (UIPdaContactsWnd)	UIPdaContactsWnd->Reset	();
-	if (UIEncyclopediaWnd)	UIEncyclopediaWnd->Reset();
-	if (UIDiaryWnd)			UIDiaryWnd->Reset		();
-	if (UIActorInfo)		UIActorInfo->Reset		();
-	if (UIStalkersRanking)	UIStalkersRanking->Reset();
-	if (UIEventsWnd)		UIEventsWnd->Reset		();
+	inherited::ResetAll();
+	if (UIMapWnd)			UIMapWnd->ResetAll();
+	if (UIPdaContactsWnd)	UIPdaContactsWnd->ResetAll();
+	if (UIEncyclopediaWnd)	UIEncyclopediaWnd->ResetAll();
+	if (UIDiaryWnd)			UIDiaryWnd->ResetAll();
+	if (UIActorInfo)		UIActorInfo->ResetAll();
+	if (UIStalkersRanking)	UIStalkersRanking->ResetAll();
+	if (UIEventsWnd)		UIEventsWnd->ResetAll();
 }
 
 void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places, bool bUpgraded)

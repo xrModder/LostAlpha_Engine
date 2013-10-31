@@ -15,6 +15,7 @@
 #include "seniority_hierarchy_holder.h"
 #include "UIGameCustom.h"
 #include "UI/UIGameTutorial.h"
+#include "ui/UIPdaWnd.h"
 
 ENGINE_API bool g_dedicated_server;
 
@@ -119,7 +120,7 @@ void CLevel::net_Stop		()
 	if(CurrentGameUI())
 	{
 		CurrentGameUI()->HideShownDialogs();
-		//CurrentGameUI()->PdaMenu().Reset();
+		CurrentGameUI()->PdaMenu().Reset();
 	}
 
 	if(g_tutorial && !g_tutorial->Persistent())
