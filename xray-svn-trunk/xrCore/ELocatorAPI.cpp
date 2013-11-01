@@ -162,8 +162,8 @@ void Recurse	(LPCSTR, bool, TOnFind, void*);
 void ProcessOne	(LPCSTR path, _finddata_t& F, bool root_only, TOnFind on_find_cb, void* data)
 {
 	string_path	N;
-	strcpy		(N,path);
-	strcat		(N,F.name);
+	xr_strcpy		(N,path);
+	xr_strcat		(N,F.name);
 	xr_strlwr	(N);
 
 	if (ignore_name(N))					return;
@@ -174,12 +174,12 @@ void ProcessOne	(LPCSTR path, _finddata_t& F, bool root_only, TOnFind on_find_cb
     	if (root_only)					return;
 		if (0==xr_strcmp(F.name,"."))	return;
 		if (0==xr_strcmp(F.name,"..")) 	return;
-		strcat		(N,"\\");
-	    strcpy		(F.name,N);
+		xr_strcat		(N,"\\");
+	    xr_strcpy		(F.name,N);
         on_find_cb	(F,data);
 		Recurse		(F.name,root_only,on_find_cb,data);
 	} else {
-	    strcpy		(F.name,N);
+	    xr_strcpy		(F.name,N);
         on_find_cb	(F,data);
 	}
 }
@@ -248,7 +248,7 @@ int CLocatorAPI::file_list(FS_FileSet& dest, LPCSTR path, u32 flags, LPCSTR mask
 	if (path_exist(path))
     	update_path	(fpath,path,"");
     else
-    	strcpy(fpath,path);
+    	xr_strcpy(fpath,path);
 
     // build mask
 	SStringVec 		masks;
@@ -270,7 +270,7 @@ IReader* CLocatorAPI::r_open	(LPCSTR path, LPCSTR _fname)
 
 	// correct path
 	string_path		fname;
-	strcpy			(fname,_fname);
+	xr_strcpy			(fname,_fname);
 	xr_strlwr		(fname);
 	if (path&&path[0]) update_path(fname,path,fname);
 
@@ -308,28 +308,28 @@ IReader* CLocatorAPI::r_open	(LPCSTR path, LPCSTR _fname)
                             update_path	(e_cpy_name,"$textures$",source_name+xr_strlen(P->m_Path));
                             // tga
                             *strext		(e_cpy_name) = 0;
-                            strcat		(e_cpy_name,".tga");
+                            xr_strcat		(e_cpy_name,".tga");
                             r_close		(R=r_open(e_cpy_name));
                             // thm
                             *strext		(e_cpy_name) = 0;
-                            strcat		(e_cpy_name,".thm");
+                            xr_strcat		(e_cpy_name,".thm");
                             r_close		(R=r_open(e_cpy_name));
                         }else if (0==xr_strcmp(ext,".ogg")){
                             P			= get_path("$game_sounds$");                               
                             update_path	(e_cpy_name,"$sounds$",source_name+xr_strlen(P->m_Path));
                             // wav
                             *strext		(e_cpy_name) = 0;
-                            strcat		(e_cpy_name,".wav");
+                            xr_strcat		(e_cpy_name,".wav");
                             r_close		(R=r_open(e_cpy_name));
                             // thm
                             *strext		(e_cpy_name) = 0;
-                            strcat		(e_cpy_name,".thm");
+                            xr_strcat		(e_cpy_name,".thm");
                             r_close		(R=r_open(e_cpy_name));
                         }else if (0==xr_strcmp(ext,".object")){
-                            strcpy		(e_cpy_name,source_name);
+                            xr_strcpy		(e_cpy_name,source_name);
                             // object thm
                             *strext		(e_cpy_name) = 0;
-                            strcat		(e_cpy_name,".thm");
+                            xr_strcat		(e_cpy_name,".thm");
                             R			= r_open(e_cpy_name);
                             if (R)		r_close	(R);
                         }
@@ -352,7 +352,7 @@ void	CLocatorAPI::r_close	(IReader* &fs)
 IWriter* CLocatorAPI::w_open	(LPCSTR path, LPCSTR _fname)
 {
 	string_path	fname;
-	xr_strlwr(strcpy(fname,_fname));//,".$");
+	xr_strlwr(xr_strcpy(fname,_fname));//,".$");
 	if (path&&path[0]) update_path(fname,path,fname);
     CFileWriter* W 	= xr_new<CFileWriter>(fname,false); 
 #ifdef _EDITOR
@@ -364,7 +364,7 @@ IWriter* CLocatorAPI::w_open	(LPCSTR path, LPCSTR _fname)
 IWriter* CLocatorAPI::w_open_ex	(LPCSTR path, LPCSTR _fname)
 {
 	string_path	fname;
-	xr_strlwr(strcpy(fname,_fname));//,".$");
+	xr_strlwr(xr_strcpy(fname,_fname));//,".$");
 	if (path&&path[0]) update_path(fname,path,fname);
     CFileWriter* W 	= xr_new<CFileWriter>(fname,true); 
 #ifdef _EDITOR
@@ -401,7 +401,7 @@ BOOL CLocatorAPI::dir_delete(LPCSTR initial, LPCSTR nm, BOOL remove_files)
 	if (initial&&initial[0])
     	update_path	(fpath,initial,nm);
     else
-    	strcpy		(fpath,nm);
+    	xr_strcpy		(fpath,nm);
 
     FS_FileSet 			folders;
     folders.insert		(FS_File(fpath));
@@ -425,7 +425,7 @@ void CLocatorAPI::file_delete(LPCSTR path, LPCSTR nm)
 	if (path&&path[0])
     	update_path	(fname,path,nm);
     else
-    	strcpy		(fname,nm);
+    	xr_strcpy		(fname,nm);
     unlink			(fname);
 }
 
