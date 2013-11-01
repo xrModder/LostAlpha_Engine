@@ -189,9 +189,12 @@ void CUICharacterInfo::InitCharacter(u16 id)
 		m_icons[eUICommunity]->TextItemControl()->SetText(str);
 	}
 
-	m_texture_name										= chInfo.IconName().c_str();
-	m_icons[eUIIcon]->InitTexture						( m_texture_name.c_str() );
-	m_icons[eUIIcon]->SetStretchTexture					(true);
+	if(m_icons[eUIIcon])
+	{
+		m_texture_name										= chInfo.IconName().c_str();
+		m_icons[eUIIcon]->InitTexture						( m_texture_name.c_str() );
+		m_icons[eUIIcon]->SetStretchTexture					(true);
+	}
 
 	// Bio
 	if (pUIBio && pUIBio->IsEnabled())

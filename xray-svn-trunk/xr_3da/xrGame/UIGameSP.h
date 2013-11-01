@@ -25,6 +25,7 @@ public:
 
 	virtual void		SetClGame				(game_cl_GameState* g);
 	virtual bool		IR_UIOnKeyboardPress	(int dik);
+	virtual bool		IR_UIOnKeyboardRelease	(int dik);
 
 	void				StartTalk				();
 	void				StartTalk				(bool disable_break);

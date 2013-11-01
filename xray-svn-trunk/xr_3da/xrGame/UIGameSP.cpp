@@ -122,6 +122,17 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	return false;
 }
 
+
+bool CUIGameSP::IR_UIOnKeyboardRelease(int dik) 
+{
+	if(inherited::IR_UIOnKeyboardRelease(dik)) return true;
+
+	if( is_binded(kSCORES, dik))
+			RemoveCustomStatic		("main_task");
+
+	return false;
+}
+
 void  CUIGameSP::StartTalk()
 {
 	TalkMenu->ShowDialog		(true);
