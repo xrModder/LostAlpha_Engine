@@ -311,13 +311,16 @@ void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				//skyloader: db click for list item
 				u32 dwCurTime		= Device.dwTimeContinual;
 
-				if((m_dwLastClickFrame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME) )
+				if((m_dwLastClickFrame!=Device.dwFrame) && (dwCurTime-m_dwLastClickTime < DOUBLE_CLICK_TIME))
+				{
 					GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, pListItem);
+					m_dwLastClickFrame = Device.dwFrame;
+				}
 				else
+				{
 					GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pListItem);
-
-				m_dwLastClickTime = dwCurTime;
-				m_dwLastClickFrame	= Device.dwFrame;
+				}
+				m_dwLastClickTime = dwCurTime;	
 			}
 			
 			else if(STATIC_FOCUS_RECEIVED == msg)

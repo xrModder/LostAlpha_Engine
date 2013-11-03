@@ -552,8 +552,9 @@ void CUIWindow::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 		{
 			if ((*it)->IsEnabled())
 				(*it)->SendMessage(pWnd,msg,pData);
-		} else
+		} else {
 			Msg("! '%s' has a null child registered!", *m_windowName);
+		}
 	}
 }
 
