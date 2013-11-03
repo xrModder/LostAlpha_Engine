@@ -122,6 +122,12 @@ public:
 	float				m_fSunShaftsIntensity;
 	float				m_fWaterIntensity;
 
+	//SkyLoader: trees wave
+	float				m_fTreeAmplitude;
+	float				m_fTreeSpeed;
+	float				m_fTreeRotation;
+	Fvector3				m_fTreeWave;
+
     int					lens_flare_id;
 	int					tb_id;
     
