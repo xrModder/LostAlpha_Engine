@@ -316,10 +316,9 @@ void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 					GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, pListItem);
 					m_dwLastClickFrame = Device.dwFrame;
 				}
-				else
-				{
-					GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pListItem);
-				}
+
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pListItem); //sky: if LIST_ITEM_DB_CLICKED is called then LIST_ITEM_CLICKED should be called too
+
 				m_dwLastClickTime = dwCurTime;	
 			}
 			
