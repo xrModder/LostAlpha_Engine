@@ -118,14 +118,18 @@ public:
 	float				m_fSunShaftsIntensity;
 	float				m_fWaterIntensity;
 
-
 //	int					lens_flare_id;
 //	int					tb_id;
 	shared_str			lens_flare_id;
 	shared_str			tb_id;
+
+	//SkyLoader: trees wave
+	float				m_fTreeAmplitude;
+	float				m_fTreeSpeed;
+	float				m_fTreeRotation;
+	Fvector3			m_fTreeWave;
     
 	CEnvAmbient*		env_ambient;
-
 
 						CEnvDescriptor	();
 

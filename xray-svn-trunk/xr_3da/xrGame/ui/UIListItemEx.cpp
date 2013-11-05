@@ -35,6 +35,7 @@ void CUIListItemEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData){
 		this->SetColor(color_argb(0, 0, 0, 0));
 //		this->Draw();
 		break;
+	default: /*inherited::SendMessage(pWnd, msg, pData);*/ break;
 	}
 }
 
