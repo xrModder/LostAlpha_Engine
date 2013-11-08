@@ -3,6 +3,7 @@
 #include "pch_script.h"
 #include "Actor.h"
 #include "Torch.h"
+#include "customoutfit.h"
 #include "trade.h"
 #include "../CameraBase.h"
 #ifdef DEBUG
@@ -124,12 +125,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
 	case kNIGHT_VISION:
 		{
-			if (inventory().ItemFromSlot(TORCH_SLOT))
-			{
-				CTorch *torch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
-				if (torch)		
-					torch->SwitchNightVision();
-			}
+			CCustomOutfit* outfit	= GetOutfit();
+			if (outfit)
+				outfit->SwitchNightVision();
 		} break;
 	case kTORCH:{ 
 		if (!m_current_torch)

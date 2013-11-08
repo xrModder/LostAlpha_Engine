@@ -299,7 +299,6 @@ void CSE_ALifeItem::OnEvent					(NET_Packet &tNetPacket, u16 type, u32 time, Cli
 CSE_ALifeItemTorch::CSE_ALifeItemTorch		(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
 	m_active					= false;
-	m_nightvision_active		= false;
 	m_attached					= false;
 	m_battery_state				= pSettings->r_u16(caSection, "battery_duration");
 }
@@ -333,9 +332,9 @@ void CSE_ALifeItemTorch::UPDATE_Read		(NET_Packet	&tNetPacket)
 	
 	BYTE F = tNetPacket.r_u8();
 	m_active					= !!(F & eTorchActive);
-	m_nightvision_active		= !!(F & eNightVisionActive);
 	m_attached					= !!(F & eAttached);
 	m_battery_state				= tNetPacket.r_u16();
+	tNetPacket.r_float_q8		(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
@@ -344,10 +343,10 @@ void CSE_ALifeItemTorch::UPDATE_Write		(NET_Packet	&tNetPacket)
 
 	BYTE F = 0;
 	F |= (m_active ? eTorchActive : 0);
-	F |= (m_nightvision_active ? eNightVisionActive : 0);
 	F |= (m_attached ? eAttached : 0);
 	tNetPacket.w_u8(F);
 	tNetPacket.w_u16(m_battery_state);
+	tNetPacket.w_float_q8		(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemTorch::FillProps			(LPCSTR pref, PropItemVec& values)
@@ -1053,6 +1052,7 @@ void CSE_ALifeItemBolt::FillProps			(LPCSTR pref, PropItemVec& values)
 CSE_ALifeItemCustomOutfit::CSE_ALifeItemCustomOutfit	(LPCSTR caSection): CSE_ALifeItem(caSection)
 {
 	m_ef_equipment_type		= pSettings->r_u32(caSection,"ef_equipment_type");
+	m_nightvision_active		= false;
 }
 
 CSE_ALifeItemCustomOutfit::~CSE_ALifeItemCustomOutfit	()
@@ -1078,12 +1078,14 @@ void CSE_ALifeItemCustomOutfit::UPDATE_Read		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Read			(tNetPacket);
 	tNetPacket.r_float_q8			(m_fCondition,0.0f,1.0f);
+	m_nightvision_active = !!tNetPacket.r_u8();
 }
 
 void CSE_ALifeItemCustomOutfit::UPDATE_Write		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Write			(tNetPacket);
 	tNetPacket.w_float_q8			(m_fCondition,0.0f,1.0f);
+	tNetPacket.w_u8(m_nightvision_active ? 1 : 0);	
 }
 
 void CSE_ALifeItemCustomOutfit::FillProps			(LPCSTR pref, PropItemVec& items)

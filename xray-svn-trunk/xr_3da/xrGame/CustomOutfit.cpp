@@ -8,7 +8,8 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "BoneProtections.h"
-
+#include "ai_sounds.h"
+#include "actorEffector.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -26,18 +27,28 @@ CCustomOutfit::CCustomOutfit()
 CCustomOutfit::~CCustomOutfit() 
 {
 	xr_delete(m_boneProtection);
+
+	HUD_SOUND::DestroySound	(m_NightVisionOnSnd);
+	HUD_SOUND::DestroySound	(m_NightVisionOffSnd);
+	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
+	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
 }
 
 void CCustomOutfit::net_Export(NET_Packet& P)
 {
 	inherited::net_Export	(P);
 	P.w_float_q8			(m_fCondition,0.0f,1.0f);
+	P.w_u8(m_bNightVisionOn ? 1 : 0);
 }
 
 void CCustomOutfit::net_Import(NET_Packet& P)
 {
 	inherited::net_Import	(P);
 	P.r_float_q8			(m_fCondition,0.0f,1.0f);
+	bool new_bNightVisionOn = !!P.r_u8();
+
+	if (new_bNightVisionOn != m_bNightVisionOn)	
+		SwitchNightVision(new_bNightVisionOn);
 }
 
 void CCustomOutfit::Load(LPCSTR section) 
@@ -79,7 +90,104 @@ void CCustomOutfit::Load(LPCSTR section)
 	else
 		m_NightVisionSect = NULL;
 
+	m_bNightVisionEnabled	= !!pSettings->r_bool(section,"night_vision");
+	if(m_bNightVisionEnabled)
+	{
+		HUD_SOUND::LoadSound(section,"snd_night_vision_on"	, m_NightVisionOnSnd	, SOUND_TYPE_ITEM_USING);
+		HUD_SOUND::LoadSound(section,"snd_night_vision_off"	, m_NightVisionOffSnd	, SOUND_TYPE_ITEM_USING);
+		HUD_SOUND::LoadSound(section,"snd_night_vision_idle", m_NightVisionIdleSnd	, SOUND_TYPE_ITEM_USING);
+		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
+	}
+
 	m_full_icon_name								= pSettings->r_string(section,"full_icon_name");
+}
+
+void CCustomOutfit::SwitchNightVision()
+{
+	if (OnClient()) return;
+	SwitchNightVision(!m_bNightVisionOn);	
+}
+
+void CCustomOutfit::SwitchNightVision(bool vision_on)
+{
+	if(!m_bNightVisionEnabled) return;
+	
+	m_bNightVisionOn = vision_on;
+
+	CActor *pA = smart_cast<CActor*>(H_Parent());
+
+	if(!pA)					return;
+	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
+
+	LPCSTR disabled_names	= pSettings->r_string(cNameSect(),"disabled_maps");
+	LPCSTR curr_map			= *Level().name();
+	u32 cnt					= _GetItemCount(disabled_names);
+	bool b_allow			= true;
+	string512				tmp;
+	for(u32 i=0; i<cnt;++i)
+	{
+		_GetItem(disabled_names, i, tmp);
+		if(0==stricmp(tmp, curr_map))
+		{
+			b_allow = false;
+			break;
+		}
+	}
+
+	if(m_NightVisionSect.size()&&!b_allow)
+	{
+		HUD_SOUND::PlaySound(m_NightVisionBrokenSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+		return;
+	}
+
+	if(m_bNightVisionOn)
+	{
+		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
+		if(!pp)
+		{
+			if (m_NightVisionSect.size())
+			{
+				AddEffector(pA,effNightvision, m_NightVisionSect);
+				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+				HUD_SOUND::PlaySound(m_NightVisionIdleSnd, pA->Position(), pA, bPlaySoundFirstPerson, true);
+			}
+		}
+	} else {
+ 		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
+		if(pp)
+		{
+			pp->Stop			(1.0f);
+			HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
+		}
+	}
+}
+
+void CCustomOutfit::net_Destroy() 
+{
+	SwitchNightVision		(false);
+
+	inherited::net_Destroy	();
+}
+
+BOOL CCustomOutfit::net_Spawn(CSE_Abstract* DC)
+{
+	BOOL R		= inherited::net_Spawn	(DC);
+
+	SwitchNightVision		(false);
+
+	return R;
+}
+
+void CCustomOutfit::OnH_B_Independent	(bool just_before_destroy) 
+{
+	inherited::OnH_B_Independent	(just_before_destroy);
+
+	SwitchNightVision			(false);
+
+	HUD_SOUND::StopSound		(m_NightVisionOnSnd);
+	HUD_SOUND::StopSound		(m_NightVisionOffSnd);
+	HUD_SOUND::StopSound		(m_NightVisionIdleSnd);
 }
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
@@ -113,7 +221,6 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 	return m_boneProtection->getBonePassBullet(s16(boneID));
 };
 
-#include "torch.h"
 void	CCustomOutfit::OnMoveToSlot		()
 {
 	if (m_pCurrentInventory)
@@ -121,11 +228,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
-			if(pTorch)
-			{
-				pTorch->SwitchNightVision(false);
-			}
+			SwitchNightVision(false);
 
 			if (pActor->IsFirstEye() && IsGameTypeSingle() && !pActor->IsActorShadowsOn())
 			{
@@ -184,11 +287,8 @@ void	CCustomOutfit::OnMoveToRuck		()
 			CCustomOutfit* outfit	= pActor->GetOutfit();
 			if (!outfit)
 			{
-				CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
-				if(pTorch)
-				{
-					pTorch->SwitchNightVision(false);
-				}
+				SwitchNightVision(false);
+
 				if (pActor->IsFirstEye() && IsGameTypeSingle())
 				{
 					shared_str DefVisual = pActor->GetDefaultVisualOutfit_legs();
