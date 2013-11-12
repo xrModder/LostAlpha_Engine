@@ -178,7 +178,12 @@ void CUIWindow::script_register(lua_State *L)
 				value("WINDOW_LBUTTON_DB_CLICK",		int(WINDOW_LBUTTON_DB_CLICK)),
 				value("WINDOW_KEY_PRESSED",				int(WINDOW_KEY_PRESSED)),
 				value("WINDOW_KEY_RELEASED",			int(WINDOW_KEY_RELEASED)),
+				value("WINDOW_MOUSE_CAPTURE_LOST ",		int(WINDOW_MOUSE_CAPTURE_LOST )),
 				value("WINDOW_KEYBOARD_CAPTURE_LOST",	int(WINDOW_KEYBOARD_CAPTURE_LOST)),
+
+	// CUIStatic
+				value("STATIC_FOCUS_RECEIVED",			int(STATIC_FOCUS_RECEIVED)),
+				value("STATIC_FOCUS_LOST",				int(STATIC_FOCUS_LOST)),
 
 
 	// CUIButton
@@ -187,6 +192,7 @@ void CUIWindow::script_register(lua_State *L)
 				
 	// CUITabControl
 				value("TAB_CHANGED",					int(TAB_CHANGED)),
+				value("EDIT_TEXT_COMMIT",				int(EDIT_TEXT_COMMIT)),
 
 	// CUICheckButton
 				value("CHECK_BUTTON_SET",				int(CHECK_BUTTON_SET)),
@@ -194,6 +200,12 @@ void CUIWindow::script_register(lua_State *L)
 				
 	// CUIRadioButton
 				value("RADIOBUTTON_SET",				int(RADIOBUTTON_SET)),
+
+	// CUIdragDropItem
+				value("DRAG_DROP_ITEM_DRAG",			int(DRAG_DROP_ITEM_DRAG)),
+				value("DRAG_DROP_ITEM_DROP ",			int(DRAG_DROP_ITEM_DROP )),
+				value("DRAG_DROP_ITEM_DB_CLICK",		int(DRAG_DROP_ITEM_DB_CLICK)),
+				value("DRAG_DROP_ITEM_RBUTTON_CLICK",	int(DRAG_DROP_ITEM_RBUTTON_CLICK)),
 
 	// CUIScrollBox
 				value("SCROLLBOX_MOVE",					int(SCROLLBOX_MOVE)),
@@ -208,6 +220,9 @@ void CUIWindow::script_register(lua_State *L)
 				value("LIST_ITEM_SELECT",				int(LIST_ITEM_SELECT)),
 				value("LIST_ITEM_UNSELECT",				int(LIST_ITEM_UNSELECT)),
 				value("LIST_ITEM_FOCUS_RECEIVED",				int(LIST_ITEM_FOCUS_RECEIVED)),
+
+	// CUIInteractiveItem
+				value("INTERACTIVE_ITEM_CLICK",			int(INTERACTIVE_ITEM_CLICK)),
 	
 	// UIPropertiesBox
 				value("PROPERTY_CLICKED",				int(PROPERTY_CLICKED)),
@@ -221,7 +236,39 @@ void CUIWindow::script_register(lua_State *L)
 				value("MESSAGE_BOX_QUIT_GAME_CLICKED",	int(MESSAGE_BOX_QUIT_GAME_CLICKED)),
 				value("MESSAGE_BOX_QUIT_WIN_CLICKED",	int(MESSAGE_BOX_QUIT_WIN_CLICKED)),
 
+				value("EDIT_TEXT_CHANGED",				int(EDIT_TEXT_CHANGED)),
 				value("EDIT_TEXT_COMMIT",				int(EDIT_TEXT_COMMIT)),
+
+	// CUITalkDialogWnd
+				value("TALK_DIALOG_TRADE_BUTTON_CLICKED",	int(TALK_DIALOG_TRADE_BUTTON_CLICKED)),
+				value("TALK_DIALOG_QUESTION_CLICKED",		int(TALK_DIALOG_QUESTION_CLICKED)),
+
+
+
+	// CUIPdaDialogWnd
+				value("PDA_DIALOG_WND_BACK_BUTTON_CLICKED",			int(PDA_DIALOG_WND_BACK_BUTTON_CLICKED)),
+				value("PDA_DIALOG_WND_MESSAGE_BUTTON_CLICKED",		int(PDA_DIALOG_WND_MESSAGE_BUTTON_CLICKED)),
+
+	// CUIPdaContactsWnd
+				value("PDA_CONTACTS_WND_CONTACT_SELECTED",			int(PDA_CONTACTS_WND_CONTACT_SELECTED)),
+
+	// CUITradeWnd
+				value("TRADE_WND_CLOSED",							int(TRADE_WND_CLOSED)),
+
+	// CUIOutfitSlot
+				value("UNDRESS_OUTFIT",								int(UNDRESS_OUTFIT)),
+				value("OUTFIT_RETURNED_BACK",						int(OUTFIT_RETURNED_BACK)),
+
+	// CUIInventroyWnd
+				value("INVENTORY_DROP_ACTION",						int(INVENTORY_DROP_ACTION)),
+				value("INVENTORY_EAT_ACTION",						int(INVENTORY_EAT_ACTION)),
+				value("INVENTORY_TO_BELT_ACTION ",					int(INVENTORY_TO_BELT_ACTION )),
+				value("INVENTORY_TO_SLOT_ACTION",					int(INVENTORY_TO_SLOT_ACTION)),
+				value("INVENTORY_TO_BAG_ACTION",					int(INVENTORY_TO_BAG_ACTION)),
+				value("INVENTORY_ATTACH_ADDON ",					int(INVENTORY_ATTACH_ADDON )),
+				value("INVENTORY_DETACH_SCOPE_ADDON",				int(INVENTORY_DETACH_SCOPE_ADDON)),
+				value("INVENTORY_DETACH_SILENCER_ADDON",			int(INVENTORY_DETACH_SILENCER_ADDON)),
+				value("INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON",	int(INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON)),
 	// CMainMenu
 				value("MAIN_MENU_RELOADED",				int(MAIN_MENU_RELOADED))
 			]

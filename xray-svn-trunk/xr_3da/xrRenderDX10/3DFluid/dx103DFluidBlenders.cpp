@@ -195,7 +195,7 @@ void SetupTextures(CBlender_Compile& C)
 
 	C.r_dx10Texture("HHGGTex", "$user$NVHHGGTex");
 
-	C.r_dx10Texture("fireTransferFunction", "internal\\internal_fireTransferFunction");
+	C.r_dx10Texture("fireTransferFunction", "internal\\dx10_internal_fluid_transfer");
 
 	TNames = dx103DFluidRenderer::GetRTNames();
 	RNames = dx103DFluidRenderer::GetResourceRTNames();

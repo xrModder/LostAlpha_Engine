@@ -62,9 +62,9 @@ void CBlender_rain::Compile(CBlender_Compile& C)
 		//C.r_dx10Texture		("s_water",	"water\\water_studen");
 		//C.r_dx10Texture		("s_water",	"water\\water_normal");
 
-		C.r_dx10Texture		("s_water",	"water\\water_SBumpVolume");
+		C.r_dx10Texture		("s_water",	"water\\dx10_water_sbump");
 		//C.r_dx10Texture		("s_waterFall",	"water\\water_normal");
-		C.r_dx10Texture		("s_waterFall",	"water\\water_flowing_nmap");
+		C.r_dx10Texture		("s_waterFall",	"water\\dx10_water_nmap");
 
 		C.r_End				();
 

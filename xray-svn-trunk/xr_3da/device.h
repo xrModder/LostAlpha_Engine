@@ -207,6 +207,7 @@ public:
 	Fmatrix									mFullTransform_saved;
 
 	bool IsR2Active(void);
+	bool IsR3Active(void);
 
 	//float									fFOV;
 	//float									fASPECT;
