@@ -104,7 +104,7 @@ void CTorch::SetBatteryStatus(u16 val)
 	condition	/= -m_battery_duration;
 	//Msg("SetBatteryStatus=[%f], [%d], [%d], [%d], [%d], [%d], [%f]", condition, m_current_battery_state, val, m_battery_duration, m_current_battery_state - val, (m_current_battery_state - val)/m_battery_duration*100, (m_current_battery_state - val)/m_battery_duration);
 	m_current_battery_state = val;
-	ChangeCondition(condition); 
+	//ChangeCondition(condition); 
 }
 
 void CTorch::Switch	(bool light_on)
@@ -218,7 +218,7 @@ void CTorch::Recharge(void)
 	float condition = m_battery_duration - m_current_battery_state;
 	condition /= m_battery_duration;
 	m_current_battery_state = m_battery_duration;
-	ChangeCondition(condition);
+	//ChangeCondition(condition);
 }
 
 void CTorch::UpdateBattery(void)
@@ -228,7 +228,7 @@ void CTorch::UpdateBattery(void)
 		m_current_battery_state--;
 
 		float condition = -1.f/m_battery_duration;
-		ChangeCondition(condition);
+		//ChangeCondition(condition);
 
  		float range = m_current_battery_state;
 		range /= m_battery_duration;

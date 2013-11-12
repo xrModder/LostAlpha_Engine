@@ -451,7 +451,6 @@ void CUIMainIngameWnd::Update()
 
 			switch (i)
 			{
-				//radiation
 			case ewiRadiation:
 				value = m_pActor->conditions().GetRadiation();
 				state = eRadiationInactive;
@@ -502,21 +501,27 @@ void CUIMainIngameWnd::Update()
 				else			//yellow (i hope)
 					active_state = 2;
 
-				//if (i == ewiPsyHealth)
-				//	Msg("min=[%f] max=[%f] v=[%f] value=[%f]", min, max, v, value);
+				//if (i == ewiWound)
+				//	Msg("min=[%f] max=[%f] v=[%f] value=[%f] active_state=[%d]", min, max, v, value, active_state);
 
-				for (u8 j=0; j<=3; j++)
+				if (i != ewiStarvation)
 				{
-
-					if (j == active_state)
-						m_pActor->SetActorState(EActorState(state - j), true);
-					else
-						m_pActor->SetActorState(EActorState(state - j), false);
+					for (u8 j=0; j<=3; j++)
+					{
+	
+						if (j == active_state)
+							m_pActor->SetActorState(EActorState(state - j), true);
+						else
+							m_pActor->SetActorState(EActorState(state - j), false);
+					}
 				}
 			} else {
-				for (u8 j=0; j<=3; j++)
-					m_pActor->SetActorState(EActorState(state - j), false);
-				m_pActor->SetActorState(state, true);
+				if (i != ewiStarvation)
+				{
+					for (u8 j=1; j<=3; j++)
+						m_pActor->SetActorState(EActorState(state - j), false);
+					m_pActor->SetActorState(state, true);
+				}
 			}
 
 			i = (EWarningIcons)(i + 1);
