@@ -116,22 +116,16 @@ void CPda::feel_touch_delete(CObject* O)
 
 BOOL CPda::feel_touch_contact(CObject* O) 
 {
-	CEntityAlive* entity_alive = smart_cast<CEntityAlive*>(O);
-
-	if ( entity_alive && entity_alive->cast_base_monster() )
-	{
-		return TRUE;
-	}
-
-	else if ( CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(O) )
+	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(O);
+	if(pInvOwner)
 	{
 		if( this!=pInvOwner->GetPDA() )
 		{
 			CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(O);
-			if(pEntityAlive)
+			if( pEntityAlive && !pEntityAlive->cast_base_monster() )
 				return TRUE;
-		}else
-		return FALSE;
+		} else
+			return FALSE;
 	}
 
 	return FALSE;
