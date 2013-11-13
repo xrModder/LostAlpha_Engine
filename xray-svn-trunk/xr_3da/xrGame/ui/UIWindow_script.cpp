@@ -59,7 +59,7 @@ LPCSTR	get_texture_name(LPCSTR icon_name)
 
 TEX_INFO	get_texture_info(LPCSTR name, LPCSTR def_name)
 {
-	return CUITextureMaster::FindItem(name);
+	return CUITextureMaster::FindItem(name, def_name);
 }
 
 using namespace luabind;

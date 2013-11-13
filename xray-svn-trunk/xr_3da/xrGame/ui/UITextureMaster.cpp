@@ -148,6 +148,17 @@ TEX_INFO CUITextureMaster::FindItem(const shared_str&  texture_name)
 	}
 }
 
+TEX_INFO CUITextureMaster::FindItem(const shared_str& texture_name, const shared_str& def_texture_name)
+{
+	xr_map<shared_str, TEX_INFO>::iterator	it;
+	it = m_textures.find(texture_name);
+
+	if (it != m_textures.end())
+		return (it->second);
+	else
+		return FindItem(def_texture_name);
+}
+
 void CUITextureMaster::GetTextureShader(const shared_str&  texture_name, ui_shader& sh){
 	xr_map<shared_str, TEX_INFO>::iterator	it;
 	it = m_textures.find(texture_name);
