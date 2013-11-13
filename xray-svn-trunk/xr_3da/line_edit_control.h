@@ -55,8 +55,8 @@ private:
 	typedef  fastdelegate::FastDelegate0<void>	Callback;
 
 public:
-					line_edit_control	( u32 str_buffer_size );
-			void	init				( u32 str_buffer_size, init_mode mode = im_standart );
+					line_edit_control	( u32 str_buffer_size, bool translate = true);
+			void	init				( u32 str_buffer_size, init_mode mode = im_standart, bool translate = true );
 					~line_edit_control	();
 
 			void	clear_states		();
@@ -113,7 +113,7 @@ private:
 	void xr_stdcall	delete_word_forward	();
 	void xr_stdcall SwitchKL			();
 			
-			void	assign_char_pairs	( init_mode mode );
+			void	assign_char_pairs	( init_mode mode, bool translate = true );
 			void	create_key_state	( u32 const dik, key_state state );
 			void	create_char_pair	( u32 const dik, char c, char c_shift, bool translate = false );
 

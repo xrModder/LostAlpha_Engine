@@ -104,16 +104,16 @@ void CStringTable::ReloadLanguage()
 {
 	if (0==xr_strcmp(g_language.c_str(), *(pData->m_sLanguage)))	return;
 
-	//destroy
-	xr_delete(pData);
-
-	//init
-	Init();
-
-	//reload language in menu
 	if (MainMenu()->IsActive())
 	{
 		MainMenu()->Activate(FALSE);
+
+		//destroy
+		xr_delete(pData);
+	
+		//init
+		Init();
+
 		MainMenu()->Activate(TRUE);
 	}
 }

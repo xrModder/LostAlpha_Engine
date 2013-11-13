@@ -17,7 +17,7 @@ namespace text_editor
 class line_editor :	public IInputReceiver
 {
 public:
-					line_editor		( u32 str_buffer_size );
+					line_editor		( u32 str_buffer_size, bool translate = true );
 	virtual			~line_editor	();
 
 	IC line_edit_control&	control	()				{ return m_control; }

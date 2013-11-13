@@ -44,7 +44,7 @@ static bool terminate_char( char c, bool check_space = false )
 
 // -------------------------------------------------------------------------------------------------
 
-line_edit_control::line_edit_control( u32 str_buffer_size )
+line_edit_control::line_edit_control( u32 str_buffer_size, bool translate )
 {
 	m_edit_str	= NULL;
 	m_inserted	= NULL;
@@ -59,7 +59,7 @@ line_edit_control::line_edit_control( u32 str_buffer_size )
 		m_actions[i] = NULL;
 	}
 
-	init( str_buffer_size );
+	init( str_buffer_size, im_standart, translate);
 
 	update_key_states	();
 }
@@ -156,7 +156,7 @@ void line_edit_control::clear_states()
 	update_key_states	( );
 }
 
-void line_edit_control::init( u32 str_buffer_size, init_mode mode )
+void line_edit_control::init( u32 str_buffer_size, init_mode mode, bool translate )
 {
 	m_buffer_size = str_buffer_size;
 	clamp( m_buffer_size, (int)MIN_BUF_SIZE, (int)MAX_BUF_SIZE );
@@ -193,7 +193,7 @@ void line_edit_control::init( u32 str_buffer_size, init_mode mode )
 	}
 	else
 	{
-		assign_char_pairs( mode );
+		assign_char_pairs( mode, translate );
 
 		assign_callback( DIK_INSERT, ks_free, Callback( this, &line_edit_control::flip_insert_mode     ) );
 		assign_callback( DIK_A     , ks_Ctrl, Callback( this, &line_edit_control::select_all_buf       ) );
@@ -232,7 +232,7 @@ void line_edit_control::init( u32 str_buffer_size, init_mode mode )
 	create_key_state( DIK_RALT    , ks_RAlt   );
 }
 
-void line_edit_control::assign_char_pairs( init_mode mode )
+void line_edit_control::assign_char_pairs( init_mode mode, bool translate)
 {
 	create_char_pair( DIK_NUMPAD0, '0', '0' );
 	create_char_pair( DIK_NUMPAD1, '1', '1' );
@@ -266,26 +266,26 @@ void line_edit_control::assign_char_pairs( init_mode mode )
 
 	if ( mode != im_file_name_mode )
 	{
-		create_char_pair( DIK_0, '0', ')', true );
-		create_char_pair( DIK_1, '1', '!', true );
-		create_char_pair( DIK_2, '2', '@', true );
-		create_char_pair( DIK_3, '3', '#', true );
-		create_char_pair( DIK_4, '4', '$', true );
-		create_char_pair( DIK_5, '5', '%', true );
-		create_char_pair( DIK_6, '6', '^', true );
-		create_char_pair( DIK_7, '7', '&', true );
-		create_char_pair( DIK_8, '8', '*', true );
-		create_char_pair( DIK_9, '9', '(', true );
+		create_char_pair( DIK_0, '0', ')', translate );
+		create_char_pair( DIK_1, '1', '!', translate );
+		create_char_pair( DIK_2, '2', '@', translate );
+		create_char_pair( DIK_3, '3', '#', translate );
+		create_char_pair( DIK_4, '4', '$', translate );
+		create_char_pair( DIK_5, '5', '%', translate );
+		create_char_pair( DIK_6, '6', '^', translate );
+		create_char_pair( DIK_7, '7', '&', translate );
+		create_char_pair( DIK_8, '8', '*', translate );
+		create_char_pair( DIK_9, '9', '(', translate );
 
-		create_char_pair( DIK_BACKSLASH , '\\', '|', true );
-		create_char_pair( DIK_LBRACKET  , '[' , '{', true );
-		create_char_pair( DIK_RBRACKET  , ']' , '}', true );
-		create_char_pair( DIK_APOSTROPHE, '\'', '\"',true );
-		create_char_pair( DIK_COMMA     , ',' , '<', true );
-		create_char_pair( DIK_PERIOD    , '.' , '>', true );
-		create_char_pair( DIK_EQUALS    , '=' , '+', true );
-		create_char_pair( DIK_SEMICOLON , ';' , ':', true );
-		create_char_pair( DIK_SLASH     , '/' , '?', true );
+		create_char_pair( DIK_BACKSLASH , '\\', '|', translate );
+		create_char_pair( DIK_LBRACKET  , '[' , '{', translate );
+		create_char_pair( DIK_RBRACKET  , ']' , '}', translate );
+		create_char_pair( DIK_APOSTROPHE, '\'', '\"',translate );
+		create_char_pair( DIK_COMMA     , ',' , '<', translate );
+		create_char_pair( DIK_PERIOD    , '.' , '>', translate );
+		create_char_pair( DIK_EQUALS    , '=' , '+', translate );
+		create_char_pair( DIK_SEMICOLON , ';' , ':', translate );
+		create_char_pair( DIK_SLASH     , '/' , '?', translate );
 
 		create_char_pair( DIK_NUMPADSTAR , '*', '*' );
 		create_char_pair( DIK_NUMPADSLASH, '/', '/' );
@@ -308,36 +308,36 @@ void line_edit_control::assign_char_pairs( init_mode mode )
 	create_char_pair( DIK_NUMPADPLUS  , '+', '+' );
 	create_char_pair( DIK_NUMPADPERIOD, '.', '.' );
 
-	create_char_pair( DIK_MINUS       , '-', '_', true );
+	create_char_pair( DIK_MINUS       , '-', '_', translate );
 	create_char_pair( DIK_SPACE       , ' ', ' ' );
-	create_char_pair( DIK_GRAVE       , '`', '~', true );
+	create_char_pair( DIK_GRAVE       , '`', '~', translate );
 
-	create_char_pair( DIK_A, 'a', 'A', true );
-	create_char_pair( DIK_B, 'b', 'B', true );
-	create_char_pair( DIK_C, 'c', 'C', true );
-	create_char_pair( DIK_D, 'd', 'D', true );
-	create_char_pair( DIK_E, 'e', 'E', true );
-	create_char_pair( DIK_F, 'f', 'F', true );
-	create_char_pair( DIK_G, 'g', 'G', true );
-	create_char_pair( DIK_H, 'h', 'H', true );
-	create_char_pair( DIK_I, 'i', 'I', true );
-	create_char_pair( DIK_J, 'j', 'J', true );
-	create_char_pair( DIK_K, 'k', 'K', true );
-	create_char_pair( DIK_L, 'l', 'L', true );
-	create_char_pair( DIK_M, 'm', 'M', true );
-	create_char_pair( DIK_N, 'n', 'N', true );
-	create_char_pair( DIK_O, 'o', 'O', true );
-	create_char_pair( DIK_P, 'p', 'P', true );
-	create_char_pair( DIK_Q, 'q', 'Q', true );
-	create_char_pair( DIK_R, 'r', 'R', true );
-	create_char_pair( DIK_S, 's', 'S', true );
-	create_char_pair( DIK_T, 't', 'T', true );
-	create_char_pair( DIK_U, 'u', 'U', true );
-	create_char_pair( DIK_V, 'v', 'V', true );
-	create_char_pair( DIK_W, 'w', 'W', true );
-	create_char_pair( DIK_X, 'x', 'X', true );
-	create_char_pair( DIK_Y, 'y', 'Y', true );
-	create_char_pair( DIK_Z, 'z', 'Z', true );
+	create_char_pair( DIK_A, 'a', 'A', translate );
+	create_char_pair( DIK_B, 'b', 'B', translate );
+	create_char_pair( DIK_C, 'c', 'C', translate );
+	create_char_pair( DIK_D, 'd', 'D', translate );
+	create_char_pair( DIK_E, 'e', 'E', translate );
+	create_char_pair( DIK_F, 'f', 'F', translate );
+	create_char_pair( DIK_G, 'g', 'G', translate );
+	create_char_pair( DIK_H, 'h', 'H', translate );
+	create_char_pair( DIK_I, 'i', 'I', translate );
+	create_char_pair( DIK_J, 'j', 'J', translate );
+	create_char_pair( DIK_K, 'k', 'K', translate );
+	create_char_pair( DIK_L, 'l', 'L', translate );
+	create_char_pair( DIK_M, 'm', 'M', translate );
+	create_char_pair( DIK_N, 'n', 'N', translate );
+	create_char_pair( DIK_O, 'o', 'O', translate );
+	create_char_pair( DIK_P, 'p', 'P', translate );
+	create_char_pair( DIK_Q, 'q', 'Q', translate );
+	create_char_pair( DIK_R, 'r', 'R', translate );
+	create_char_pair( DIK_S, 's', 'S', translate );
+	create_char_pair( DIK_T, 't', 'T', translate );
+	create_char_pair( DIK_U, 'u', 'U', translate );
+	create_char_pair( DIK_V, 'v', 'V', translate );
+	create_char_pair( DIK_W, 'w', 'W', translate );
+	create_char_pair( DIK_X, 'x', 'X', translate );
+	create_char_pair( DIK_Y, 'y', 'Y', translate );
+	create_char_pair( DIK_Z, 'z', 'Z', translate );
 }
 
 void line_edit_control::create_key_state( u32 const dik, key_state state )
