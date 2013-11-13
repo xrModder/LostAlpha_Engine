@@ -159,11 +159,6 @@ void CUITextureMaster::GetTextureShader(const shared_str&  texture_name, ui_shad
 
 LPCSTR CUITextureMaster::GetTextureFileName(const shared_str& texture_name)
 {
-	xr_map<shared_str, TEX_INFO>::iterator	it;
-	it = m_textures.find(texture_name);
-
-	if (it != m_textures.end())
-		return *((*it).second.file);
-	R_ASSERT3(false,"CUITextureMaster::GetTextureFileName Can't find texture", *texture_name);
-	return 0;	
+	TEX_INFO info = FindItem(texture_name);
+	return *info.file;	
 }

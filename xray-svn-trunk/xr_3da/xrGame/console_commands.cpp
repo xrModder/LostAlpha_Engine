@@ -204,7 +204,7 @@ public:
 	}
 	virtual void	Info	(TInfo& I)	
 	{
-		strcpy(I,"name,team,squad,group"); 
+		xr_strcpy(I,"name,team,squad,group"); 
 	}
 };
 

@@ -21,7 +21,7 @@ bool CUIScrollBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	bool cursor_over;
 
-	if(x>=-10.0f && x<GetWidth()+10.0f && y>=-10.0f && y<GetHeight()+10.0f)
+	if(x>=-20.0f && x<GetWidth()+20.0f && y>=-20.0f && y<GetHeight()+20.0f)
 		cursor_over = true;
 	else
 		cursor_over = false;

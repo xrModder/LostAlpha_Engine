@@ -1,10 +1,9 @@
 #pragma once
-#include "UIScrollBar.h"
+
 #include "UIWindow.h"
 #include "UIWndCallback.h"
 
 class CUIScrollBar;
-class CUIFixedScrollBar;
 
 class CUIScrollView :public CUIWindow, public CUIWndCallback
 {
@@ -35,11 +34,9 @@ virtual void		RecalcSize			();
 		void		SetDownIndention	(float val);
 		void		SetVertFlip			(bool val)							{m_flags.set(eVertFlip, val);}
 public:
-			
 					CUIScrollView		();
-					CUIScrollView		(CUIFixedScrollBar* scroll_bar);
 	virtual			~CUIScrollView		();
-			void	InitScrollView		();// need parent to be initialized
+			void	InitScrollView				();// need parent to be initialized
 	virtual void	SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 	virtual bool	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual void	Draw				();
@@ -70,10 +67,11 @@ IC			bool	NeedShowScrollBar	();		// no comment
 			float	GetVertIndent		();		// top + bottom indent
 			void	UpdateChildrenLenght();		// set default width for all children
 			float	Scroll2ViewV		();		// calculate scale for scroll position
-	CUIScrollBar*	ScrollBar		() {return m_VScrollBar;}
-	
+
 	typedef fastdelegate::FastDelegate2<CUIWindow*,CUIWindow*,bool>		cmp_function;
 	cmp_function	m_sort_function;
+
+	CUIScrollBar*	ScrollBar			() {return m_VScrollBar;}
 };
 
 #define ADD_TEXT_TO_VIEW3(txt,st,view)		st = xr_new<CUITextWnd>();						\

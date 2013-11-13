@@ -340,6 +340,9 @@ void CUIScrollBar::Draw()
 		m_StaticBackground->SetSize		(Fvector2().set(GetWidth(), size) );
 		m_StaticBackground->SetPos		(Fvector2().set(0.0f, m_DecButton->GetHeight()) );
 	}
+
+	m_StaticBackground->Render	();
+
 	inherited::Draw					();
 }
 
