@@ -44,7 +44,7 @@ protected:
 	
 	CUIStatic			UIStaticHealth;
 	//CUIStatic			UIStaticArmor;
-	CUIStatic			UIStaticQuickHelp;
+	CUITextWnd			UIStaticQuickHelp;
 	CUIProgressBar		UIHealthBar;
 	CUIProgressBar		UIArmorBar;
 	CUICarPanel			UICarPanel;

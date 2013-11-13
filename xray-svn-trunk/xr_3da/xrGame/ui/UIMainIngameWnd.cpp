@@ -203,7 +203,7 @@ void CUIMainIngameWnd::Init()
 
 	// Подсказки, которые возникают при наведении прицела на объект
 	AttachChild					(&UIStaticQuickHelp);
-	xml_init.InitStatic			(uiXml, "quick_info", 0, &UIStaticQuickHelp);
+	xml_init.InitTextWnd			(uiXml, "quick_info", 0, &UIStaticQuickHelp);
 
 	uiXml.SetLocalRoot			(uiXml.GetRoot());
 
@@ -1093,14 +1093,14 @@ void CUIMainIngameWnd::RenderQuickInfos()
 	UIStaticQuickHelp.Show				(NULL!=actor_action);
 
 	if(NULL!=actor_action){
-		if(stricmp(actor_action,UIStaticQuickHelp.TextItemControl()->GetText()))
-			UIStaticQuickHelp.TextItemControl()->SetTextST				(actor_action);
+		if(stricmp(actor_action,UIStaticQuickHelp.GetText()))
+			UIStaticQuickHelp.SetTextST				(actor_action);
 	}
 
 	if (pObject!=m_pActor->ObjectWeLookingAt())
 	{
-		UIStaticQuickHelp.TextItemControl()->SetTextST				(actor_action);
-		UIStaticQuickHelp.ResetXformAnimation		();
+		UIStaticQuickHelp.SetTextST				(actor_action?actor_action:" ");
+		UIStaticQuickHelp.ResetColorAnimation		();
 		pObject	= m_pActor->ObjectWeLookingAt	();
 	}
 }
