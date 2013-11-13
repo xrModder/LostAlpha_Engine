@@ -30,11 +30,12 @@ CUITextWnd* CUIGameLog::AddLogMessage(LPCSTR msg)
 	return							pItem;
 }
 
-CUIPdaMsgListItem* CUIGameLog::AddPdaMessage()
+CUIPdaMsgListItem* CUIGameLog::AddPdaMessage(LPCSTR msg, float delay)
 {
 	CUIPdaMsgListItem* pItem				= xr_new<CUIPdaMsgListItem>();
 	pItem->InitPdaMsgListItem				(Fvector2().set(GetDesiredChildWidth(),10.0f));
-	pItem->SetColorAnimation				("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR);
+	pItem->UIMsgText.SetTextST				(msg);
+	pItem->SetColorAnimation				("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR, delay);
 	AddWindow								(pItem, true);
 
 	return pItem;

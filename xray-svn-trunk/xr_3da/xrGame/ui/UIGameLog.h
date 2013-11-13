@@ -23,7 +23,7 @@ public:
 							CUIGameLog		();
 	CUITextWnd*				AddLogMessage	(LPCSTR msg);
 	CUIPdaKillMessage*		AddLogMessage	(KillMessageStruct& msg);
-	CUIPdaMsgListItem*		AddPdaMessage	();
+	CUIPdaMsgListItem*		AddPdaMessage	(LPCSTR msg, float delay);
 	void					AddChatMessage	(LPCSTR msg, LPCSTR author);
 	virtual void			Update			();
 
