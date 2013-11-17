@@ -87,6 +87,19 @@ public:
 
 			void			SetStretchTexture		(bool stretch_texture)	{m_bStretchTexture = stretch_texture;}
 			bool			GetStretchTexture		()						{return m_bStretchTexture;}
+
+	// Анализируем текст на помещаемость его по длинне в заданную ширину, и если нет, то всталяем 
+	// "\n" реализуем таким образом wordwrap
+	enum EElipsisPosition
+	{
+		eepNone,
+		eepBegin,
+		eepEnd,
+		eepCenter
+	};
+
+			void			SetElipsis							(EElipsisPosition pos, int indent);
+
 			
 			void			SetHeading				(float f)				{m_fHeading = f;};
 			float			GetHeading				()						{return m_fHeading;}
@@ -132,6 +145,11 @@ protected:
 	Fvector2		m_TextureOffset;
 
 public:
+	// Обрезка надписи
+	EElipsisPosition	m_ElipsisPos;
+
+	int			m_iElipsisIndent;
+
 	CUILines*		TextItemControl						();
 	shared_str		m_stat_hint_text;
 

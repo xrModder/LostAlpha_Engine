@@ -20,6 +20,8 @@ class CUILabel;
 class CUIEditBoxEx;
 class CUIEditBox;
 class CUICustomEdit;
+class CUITextBanner;
+class CUIMultiTextStatic;
 class CUIAnimatedStatic;
 class CUISleepStatic;
 class CUIOptionsItem;
@@ -60,6 +62,8 @@ public:
 	static bool 	InitFont				(CUIXml& xml_doc, LPCSTR path, int index, u32 &color, CGameFont *&pFnt);
 	static bool 	InitTabButtonMP			(CUIXml& xml_doc, LPCSTR path,	int index, CUITabButtonMP *pWnd);
 	static bool 	InitTabControl			(CUIXml& xml_doc, LPCSTR path,	int index, CUITabControl *pWnd);
+	static bool 	InitTextBanner(CUIXml& xml_doc, LPCSTR path, int index, CUITextBanner *pBnr);
+	static bool 	InitMultiTextStatic		(CUIXml& xml_doc, LPCSTR path, int index, CUIMultiTextStatic *pWnd);
 	static bool 	InitAnimatedStatic		(CUIXml& xml_doc, LPCSTR path,	int index, CUIAnimatedStatic *pWnd);
 	static bool 	InitSleepStatic			(CUIXml& xml_doc, LPCSTR path,	int index, CUISleepStatic *pWnd);
 	static bool 	InitTextureOffset		(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);

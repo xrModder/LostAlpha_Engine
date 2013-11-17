@@ -128,7 +128,7 @@ bool CUIGameSP::IR_UIOnKeyboardRelease(int dik)
 	if(inherited::IR_UIOnKeyboardRelease(dik)) return true;
 
 	if( is_binded(kSCORES, dik))
-			RemoveCustomStatic		("main_task");
+		RemoveCustomStatic		("main_task");
 
 	return false;
 }

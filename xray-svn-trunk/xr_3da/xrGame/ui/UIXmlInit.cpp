@@ -11,6 +11,8 @@
 #include "UIProgressShape.h"
 #include "UITabControl.h"
 #include "UILabel.h"
+#include "UITextBanner.h"
+#include "UIMultiTextStatic.h"
 #include "UIAnimatedStatic.h"
 #include "uixmlinit.h"
 #include "UIListBox.h"
@@ -831,8 +833,6 @@ bool CUIXmlInit::InitTabControl(CUIXml &xml_doc, LPCSTR path, int index, CUITabC
 	{
 		newButton = radio ? xr_new<CUIRadioButton>() : xr_new<CUITabButton>();
 		status &= Init3tButton(xml_doc, "button", i, newButton);
-		newButton->m_btn_id = xml_doc.ReadAttribInt("button",i,"id");
-		//R_ASSERT3(newButton->m_btn_id.size(), xml_doc.m_xml_file_name, path);
 		pWnd->AddItem(newButton);
 	}
 	
@@ -845,7 +845,7 @@ bool CUIXmlInit::InitTabControl(CUIXml &xml_doc, LPCSTR path, int index, CUITabC
 
 bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd)
 {
-	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
+	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
 
 	string256 buf;
 
@@ -925,13 +925,93 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 	return true;
 }
 
-bool CUIXmlInit::InitEditBox(CUIXml& xml_doc, LPCSTR path, int index, CUIEditBox* pWnd){
+bool CUIXmlInit::InitEditBox(CUIXml& xml_doc, LPCSTR path, int index, CUIEditBox* pWnd)
+{
 	InitCustomEdit		(xml_doc, path, index, pWnd);
 
 	InitTexture			(xml_doc, path, index, pWnd);
 	InitOptionsItem		(xml_doc, path, index, pWnd);
 
 	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool CUIXmlInit::InitTextBanner(CUIXml& xml_doc, LPCSTR path, int index, CUITextBanner *pBnr)
+{
+	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
+
+	xr_map<shared_str, CUITextBanner::TextBannerStyles> conformityTable;
+	conformityTable["none"]		= CUITextBanner::tbsNone;
+	conformityTable["fade"]		= CUITextBanner::tbsFade;
+	conformityTable["flicker"]	= CUITextBanner::tbsFlicker;
+
+	int animationsCount = xml_doc.GetNodesNum(path, index, "animation");
+
+	XML_NODE *tab_node = xml_doc.NavigateToNode(path, index);
+	XML_NODE *old_node = xml_doc.GetLocalRoot();
+	xml_doc.SetLocalRoot(tab_node);
+
+	shared_str a;
+
+	for (int i = 0; i < animationsCount; ++i)
+	{
+		a						= xml_doc.ReadAttrib("animation", i, "anim", "none");
+		EffectParams * param	= pBnr->SetStyleParams(conformityTable[a]);
+
+		param->bCyclic			= !!xml_doc.ReadAttribInt("animation", i, "cyclic", 1);
+		param->bOn				= !!xml_doc.ReadAttribInt("animation", i, "on", 1);
+		param->fPeriod			= static_cast<float>(atof(xml_doc.ReadAttrib("animation", i, "period", "1")));
+		param->iEffectStage		= xml_doc.ReadAttribInt("animation", i, "stage", 0);
+	}
+
+	xml_doc.SetLocalRoot(old_node);
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool CUIXmlInit::InitMultiTextStatic(CUIXml& xml_doc, LPCSTR path, int index, CUIMultiTextStatic *pWnd)
+{
+	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
+
+	bool status = true;
+	string128	buf;
+
+	status &= InitStatic(xml_doc, path, index, pWnd);
+	int phrasesCount = xml_doc.GetNodesNum(path, index, "phrase");
+
+	strconcat(sizeof(buf),buf, path, ":phrase");
+	XML_NODE* tab_node = xml_doc.NavigateToNode(path,index);
+	xml_doc.SetLocalRoot(tab_node);
+
+	CUIMultiTextStatic::SinglePhrase * p;
+	u32	argb = 0;
+	const char * const ph = "phrase";
+
+	for (int i = 0; i < phrasesCount; ++i)
+	{
+		p = pWnd->AddPhrase();
+
+		status			&= InitTextBanner(xml_doc, ph, i, &p->effect);
+		p->outX			= (xml_doc.ReadAttribFlt(ph, i, "x", 0));
+		p->outY			= (xml_doc.ReadAttribFlt(ph, i, "y", 0));
+		p->maxWidth		= xml_doc.ReadAttribFlt(ph, i, "width", -1);
+
+		CGameFont *pFont;
+		InitFont(xml_doc, ph, i, argb, pFont);
+        p->effect.SetFont(pFont);
+		p->effect.SetTextColor(argb);
+
+		CStringTable st;
+
+		p->str =  st.translate(xml_doc.Read(ph, i, ""));
+	}
+
+	xml_doc.SetLocalRoot(xml_doc.GetRoot());
+
+	return status;
 }
 
 //////////////////////////////////////////////////////////////////////////

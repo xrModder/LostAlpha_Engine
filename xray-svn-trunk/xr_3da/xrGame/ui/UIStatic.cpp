@@ -32,7 +32,10 @@ m_bStretchTexture(false),
 m_bHeading(false),
 m_bConstHeading(false),
 m_fHeading(0.0f),
-m_pTextControl(NULL)
+m_pTextControl(NULL),
+m_ElipsisPos(eepNone),
+m_iElipsisIndent(0)
+
 {
 	m_TextureOffset.set		(0.0f,0.0f);
 	m_lanim_xform.set_defaults	();
@@ -353,4 +356,10 @@ void CUIStatic::SetTextAlign_script(u32 align)
 u32 CUIStatic::GetTextAlign_script()
 {
 	return static_cast<u32>(TextItemControl()->GetTextAlignment());
+}
+
+void CUIStatic::SetElipsis(EElipsisPosition pos, int indent)
+{
+	m_ElipsisPos		= pos;
+	m_iElipsisIndent	= indent;
 }

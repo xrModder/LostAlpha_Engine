@@ -32,16 +32,16 @@ struct CUITradeInternal{
 	CUIStatic			UIStaticBottom;
 
 	CUIStatic			UIOurBagWnd;
-	CUIStatic			UIOurMoneyStatic;
+	CUITextWnd			UIOurMoneyStatic;
 	CUIStatic			UIOthersBagWnd;
-	CUIStatic			UIOtherMoneyStatic;
+	CUITextWnd			UIOtherMoneyStatic;
 	CUIDragDropListEx	UIOurBagList;
 	CUIDragDropListEx	UIOthersBagList;
 
 	CUIStatic			UIOurTradeWnd;
 	CUIStatic			UIOthersTradeWnd;
-	CUITextWnd			UIOurPriceCaption;
-	CUITextWnd			UIOthersPriceCaption;
+	CUIMultiTextStatic	UIOurPriceCaption;
+	CUIMultiTextStatic	UIOthersPriceCaption;
 	CUIDragDropListEx	UIOurTradeList;
 	CUIDragDropListEx	UIOthersTradeList;
 
@@ -128,10 +128,10 @@ void CUITradeWnd::Init()
 	xml_init.InitStatic					(uiXml, "others_bag_static", 0, &m_uidata->UIOthersBagWnd);
 
 	m_uidata->UIOurBagWnd.AttachChild	(&m_uidata->UIOurMoneyStatic);
-	xml_init.InitStatic					(uiXml, "our_money_static", 0, &m_uidata->UIOurMoneyStatic);
+	xml_init.InitTextWnd					(uiXml, "our_money_static", 0, &m_uidata->UIOurMoneyStatic);
 
 	m_uidata->UIOthersBagWnd.AttachChild(&m_uidata->UIOtherMoneyStatic);
-	xml_init.InitStatic					(uiXml, "other_money_static", 0, &m_uidata->UIOtherMoneyStatic);
+	xml_init.InitTextWnd					(uiXml, "other_money_static", 0, &m_uidata->UIOtherMoneyStatic);
 
 	AttachChild							(&m_uidata->UIOurTradeWnd);
 	xml_init.InitStatic					(uiXml, "static", 0, &m_uidata->UIOurTradeWnd);
@@ -139,13 +139,11 @@ void CUITradeWnd::Init()
 	xml_init.InitStatic					(uiXml, "static", 1, &m_uidata->UIOthersTradeWnd);
 
 	m_uidata->UIOurTradeWnd.AttachChild	(&m_uidata->UIOurPriceCaption);
-	//xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
-	xml_init.InitTextWnd				(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
+	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOurPriceCaption);
 	
 
 	m_uidata->UIOthersTradeWnd.AttachChild(&m_uidata->UIOthersPriceCaption);
-//	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
-	xml_init.InitTextWnd				(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
+	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
 	
 
 	//Списки Drag&Drop
@@ -465,14 +463,14 @@ void CUITradeWnd::UpdatePrices()
 	xr_sprintf					(buf, "%s\\n%d RU", *CStringTable().translate("ui_st_opponent_items"), m_iOthersTradePrice);
 	m_uidata->UIOthersPriceCaption.SetText(buf); m_uidata->UIOthersPriceCaption.AdjustWidthToText();
 	xr_sprintf					(buf, "%d RU", m_pInvOwner->get_money());
-	m_uidata->UIOurMoneyStatic.TextItemControl()->SetText(buf);
+	m_uidata->UIOurMoneyStatic.SetText(buf);
 
-	if(!m_pOthersInvOwner->InfinitiveMoney()){
-		xr_sprintf					(buf, "%d RU", m_pOthersInvOwner->get_money());
-		m_uidata->UIOtherMoneyStatic.TextItemControl()->SetText(buf);
-	}else
+	if(!m_pOthersInvOwner->InfinitiveMoney())
 	{
-		m_uidata->UIOtherMoneyStatic.TextItemControl()->SetText("---");
+		xr_sprintf					(buf, "%d RU", m_pOthersInvOwner->get_money());
+		m_uidata->UIOtherMoneyStatic.SetText(buf);
+	} else {
+		m_uidata->UIOtherMoneyStatic.SetText("---");
 	}
 }
 
