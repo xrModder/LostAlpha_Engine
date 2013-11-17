@@ -17,8 +17,8 @@ public:
 	virtual void SetHeight			(float height);
 
 	// Also we can display textual caption on the frame
-	CUIStatic		UITitleText;
-	CUIStatic*		GetTitleStatic(){return &UITitleText;};
+	CUITextWnd		UITitleText;
+	CUITextWnd*		GetTitleStatic(){return &UITitleText;};
 
 	virtual void SetWndPos			(const Fvector2& pos);
 	virtual void SetWndSize			(const Fvector2& size);
