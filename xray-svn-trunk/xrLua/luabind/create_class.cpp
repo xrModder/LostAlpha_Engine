@@ -72,7 +72,11 @@ namespace luabind { namespace detail
 
 		if (!is_class_rep(L, 1))
 		{
-			lua_pushstring(L, "expected class to derive from or a newline");
+			string_class msg("expected class '");
+			msg += crep->name();
+			msg += "' to derive from or a newline";
+
+			lua_pushstring(L, msg.c_str());
 			lua_error(L);
 		}
 
