@@ -70,6 +70,11 @@ CUIFrameLineWnd* CScriptXmlInit::InitFrameLine(LPCSTR path, CUIWindow* parent)
 	return pWnd;
 }
 
+void CScriptXmlInit::InitAutoStaticGroup(LPCSTR path, CUIWindow* pWnd)
+{
+	CUIXmlInit::InitAutoStaticGroup(m_xml, path, 0, pWnd);
+}
+
 CUILabel* CScriptXmlInit::InitLabel(LPCSTR path, CUIWindow* parent)
 {
 	CUILabel* pWnd = xr_new<CUILabel>();
@@ -294,7 +299,8 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitKeyBinding",			&CScriptXmlInit::InitKeyBinding)
 		.def("InitMMShniaga",			&CScriptXmlInit::InitMMShniaga)
 		.def("InitScrollView",			&CScriptXmlInit::InitScrollView)
-		.def("InitListBox",				&CScriptXmlInit::InitListBox)
+		.def("InitList",				&CScriptXmlInit::InitListBox)
+		.def("InitAutoStaticGroup",		&CScriptXmlInit::InitAutoStaticGroup)
 		.def("InitProgressBar",			&CScriptXmlInit::InitProgressBar)
 	];
 

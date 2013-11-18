@@ -112,6 +112,15 @@ bool CUIXmlInit::InitFrameWindow(CUIXml& xml_doc, LPCSTR path,
 
 	InitTexture		(xml_doc, path, index, pWnd);
 	InitWindow		(xml_doc, path, index, pWnd);
+
+   	string512 buf;
+
+	//инициализировать заголовок окна
+	strconcat(sizeof(buf),buf,path,":title");
+	if(xml_doc.NavigateToNode(buf,index)) InitTextWnd(xml_doc, buf, index, pWnd->UITitleText);
+	
+	pWnd->BringToTop	(pWnd->UITitleText);
+
 	return			true;
 }
 

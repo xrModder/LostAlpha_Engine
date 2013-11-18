@@ -103,6 +103,7 @@ m_pMouseCapturer(NULL),
 m_pFont(NULL),
 m_pMessageTarget(NULL),
 m_pKeyboardCapturer(NULL),
+m_pOrignMouseCapturer(NULL),
 m_bAutoDelete(false),
 m_bCursorOverWindow(false),
 m_bPP(false),
@@ -408,7 +409,8 @@ void CUIWindow::SetCapture(CUIWindow *pChildWindow, bool capture_status)
 {
 	if(GetParent())
 	{
-		GetParent()->SetCapture(this, capture_status);
+		if(m_pOrignMouseCapturer == NULL || m_pOrignMouseCapturer == pChildWindow)
+			GetParent()->SetCapture(this, capture_status);
 	}
 
 	if(capture_status)
@@ -541,7 +543,7 @@ CUIWindow* CUIWindow::GetChildMouseHandler(){
 //дл€ перевода окна и потомков в исходное состо€ние
 void CUIWindow::Reset()
 {
-	m_pMouseCapturer = NULL;
+	m_pOrignMouseCapturer = m_pMouseCapturer = NULL;
 }
 
 void CUIWindow::ResetAll()

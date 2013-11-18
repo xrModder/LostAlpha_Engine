@@ -10,6 +10,9 @@ CUIFrameWindow::CUIFrameWindow()
 :m_bTextureVisible(false)
 {
 	m_texture_color	= color_argb(255,255,255,255);
+	UITitleText					= xr_new<CUITextWnd>();
+	UITitleText->SetAutoDelete	(true);
+	AttachChild					(UITitleText);
 }
 
 void CUIFrameWindow::SetWndSize(const Fvector2& sz)
@@ -36,14 +39,39 @@ void CUIFrameWindow::SetWndSize(const Fvector2& sz)
 		}
 	}
 
+	UITitleText->SetWndSize	(Fvector2().set(size.x, 50.f));
+
 	inherited::SetWndSize	(size);
 }
 
-void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR  sh_name)
+void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR sh_name)
 {
 	dbg_tex_name				= texture;
 	m_bTextureVisible			= true;
 	string256		buf;
+
+	string_path		fn;
+	xr_strcpy			(buf,texture);
+	if (strext(buf))
+		*strext(buf)=0;
+
+	if (FS.exist(fn,"$game_textures$",buf,".ini"))
+	{
+		Fvector4	v;
+		CInifile* ini= CInifile::Create(fn,TRUE);
+		sh_name	= ini->r_string("frame","shader");
+		v = ini->r_fvector4("frame","back");	m_tex_rect[fmBK].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","l");		m_tex_rect[fmL].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","r");		m_tex_rect[fmR].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","t");		m_tex_rect[fmT].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","b");		m_tex_rect[fmB].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","lt");		m_tex_rect[fmLT].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","rt");		m_tex_rect[fmRT].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","rb");		m_tex_rect[fmRB].set	(v.x,v.y,v.z,v.w);
+		v = ini->r_fvector4("frame","lb");		m_tex_rect[fmLB].set	(v.x,v.y,v.z,v.w);
+		CInifile::Destroy(ini);
+	}
+
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_back"),	sh_name, m_shader, m_tex_rect[fmBK]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_l"),	sh_name, m_shader, m_tex_rect[fmL]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_r"),	sh_name, m_shader, m_tex_rect[fmR]);
@@ -53,23 +81,6 @@ void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR  sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_rb"),	sh_name, m_shader, m_tex_rect[fmRB]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_rt"),	sh_name, m_shader, m_tex_rect[fmRT]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_lb"),	sh_name, m_shader, m_tex_rect[fmLB]);
-
-/*	R_ASSERT2(fsimilar(m_tex_rect[fmLT].height(), m_tex_rect[fmT].height()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmLT].height(), m_tex_rect[fmRT].height()),texture );
-//	R_ASSERT2(fsimilar(m_tex_rect[fmL].height(), m_tex_rect[fmBK].height()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmL].height(), m_tex_rect[fmR].height()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmLB].height(), m_tex_rect[fmB].height()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmLB].height(), m_tex_rect[fmRB].height()),texture );
-
-	R_ASSERT2(fsimilar(m_tex_rect[fmLT].width(), m_tex_rect[fmL].width()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmLT].width(), m_tex_rect[fmLB].width()),texture );
-
-//	R_ASSERT2(fsimilar(m_tex_rect[fmT].width(), m_tex_rect[fmBK].width()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmT].width(), m_tex_rect[fmB].width()),texture );
-
-	R_ASSERT2(fsimilar(m_tex_rect[fmRT].width(), m_tex_rect[fmR].width()),texture );
-	R_ASSERT2(fsimilar(m_tex_rect[fmRT].width(), m_tex_rect[fmRB].width()),texture );
-*/
 }
 
 void CUIFrameWindow::InitTexture(LPCSTR texture)

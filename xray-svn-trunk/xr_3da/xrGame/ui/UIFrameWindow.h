@@ -1,6 +1,7 @@
 #pragma once
 #include "uiwindow.h"
 
+class CUITextWnd;
 
 class CUIFrameWindow: public CUIWindow,
 					  public ITextureOwner
@@ -23,6 +24,10 @@ public:
 	virtual bool	GetStretchTexture			()				{return false;};	
 
 	virtual void	Draw						();
+
+	//текст заголовка
+	CUITextWnd*		UITitleText;
+	CUITextWnd*		GetTitleStatic				()										{return UITitleText;};
 	
 protected:
 	bool			m_bTextureVisible;

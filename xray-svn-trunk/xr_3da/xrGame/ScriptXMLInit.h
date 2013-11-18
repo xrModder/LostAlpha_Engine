@@ -64,6 +64,8 @@ public:
 	CUIScrollView*		InitScrollView(LPCSTR path, CUIWindow* parent);
 	CUIListBox*			InitListBox(LPCSTR path, CUIWindow* parent);
 	CUIProgressBar*		InitProgressBar(LPCSTR path, CUIWindow* parent);
+	void				InitAutoStaticGroup(LPCSTR path, CUIWindow* parent);
+
 protected:
 	CUIXml	m_xml;
 public:

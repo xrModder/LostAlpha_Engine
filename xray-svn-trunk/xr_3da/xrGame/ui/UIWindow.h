@@ -203,6 +203,11 @@ protected:
 
 	//дочернее окно которое, захватило ввод мыши
 	CUIWindow*				m_pMouseCapturer;
+
+	//кто изначально иницировал
+	//захват фокуса, только он теперь
+	//может весь фокус и освободить
+	CUIWindow*				m_pOrignMouseCapturer;
 	
 	//дочернее окно которое, захватило ввод клавиатуры
 	CUIWindow*				m_pKeyboardCapturer;
