@@ -7,7 +7,7 @@ class CUIListBoxItemMsgChain : public CUIListBoxItem
 {
 	typedef CUIListBoxItem inherited;
 public:
-					CUIListBoxItemMsgChain	(float height) : CUIListBoxItem(height) {};
+					CUIListBoxItemMsgChain	(void) : CUIListBoxItem() {};
 	virtual			~CUIListBoxItemMsgChain	() {};
 
 	virtual bool	OnMouseDown				(int mouse_btn);

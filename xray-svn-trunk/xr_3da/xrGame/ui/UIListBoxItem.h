@@ -9,7 +9,7 @@ class CUIListBoxItem : public CUIFrameLineWnd, public CUISelectable
 	friend	class		CUITreeViewItem;
 	typedef				CUIFrameLineWnd inherited;
 public:
-						CUIListBoxItem			(float height);
+						CUIListBoxItem			(void);
 
 	virtual void		Draw					();
 	virtual bool		OnMouseDown				(int mouse_btn);

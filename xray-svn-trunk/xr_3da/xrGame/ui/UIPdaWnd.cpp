@@ -224,7 +224,7 @@ void CUIPdaWnd::UpdateDateTime()
 
 	if (xr_strcmp(strTime.c_str(), prevStrTime))
 	{
-		//UITimerBackground->UITitleText.TextItemControl()->SetText(strTime.c_str());
+		UITimerBackground->UITitleText.SetText(strTime.c_str());
 		prevStrTime = strTime.c_str();
 	}
 }

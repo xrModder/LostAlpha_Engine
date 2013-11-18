@@ -3,8 +3,8 @@
 #include "UIListItemServer.h"
 #include "UITextureMaster.h"
 
-CUIListItemServer::CUIListItemServer(float height)
-:inherited(height)
+CUIListItemServer::CUIListItemServer(void)
+:inherited()
 {
 	m_iconPass			= AddIconField(5.0f);
 	m_iconDedicated		= AddIconField(5.0f);

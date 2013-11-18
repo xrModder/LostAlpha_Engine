@@ -46,7 +46,7 @@ class CUIListItemServer : public CUIListBoxItem
 {
 	typedef CUIListBoxItem	inherited;
 public:
-							CUIListItemServer		(float height);
+							CUIListItemServer		(void);
 
 			void			InitItemServer			(LIST_SRV_ITEM& params/*, Fvector2 size*/);
 			void			SetParams				(LIST_SRV_ITEM& params);

@@ -4,10 +4,9 @@
 #include "../object_broker.h"
 #include "UIStatic.h"
 
-CUIListBoxItem::CUIListBoxItem(float height)
+CUIListBoxItem::CUIListBoxItem(void)
 :m_text(NULL),tag(u32(-1))
 {
-	SetHeight		(height);
 	m_text			= AddTextField("---", 10.0f);
 
 	m_dwLastClickTime		= 0;

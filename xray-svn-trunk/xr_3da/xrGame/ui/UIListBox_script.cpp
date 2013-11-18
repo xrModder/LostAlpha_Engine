@@ -3,6 +3,7 @@
 
 #include "UIListBox.h"
 #include "UIListBoxItem.h"
+#include "UIListBoxItemEx.h"
 #include "UIListBoxItemMsgChain.h"
 #include "ServerList.h"
 #include "UIMapList.h"
@@ -16,12 +17,17 @@ using namespace luabind;
 
 struct CUIListBoxItemWrapper : public CUIListBoxItem, public luabind::wrap_base 
 {
-	CUIListBoxItemWrapper(float h):CUIListBoxItem(h){}
+	CUIListBoxItemWrapper():CUIListBoxItem(){}
+};
+
+struct CUIListBoxItemExWrapper : public CUIListBoxItemEx, public luabind::wrap_base
+{
+	CUIListBoxItemExWrapper():CUIListBoxItemEx(){}
 };
 
 struct CUIListBoxItemMsgChainWrapper : public CUIListBoxItemMsgChain, public luabind::wrap_base
 {
-	CUIListBoxItemMsgChainWrapper(float h) : CUIListBoxItemMsgChain(h) {}
+	CUIListBoxItemMsgChainWrapper() : CUIListBoxItemMsgChain() {}
 };
 
 bool xrRender_test_hw_script()
@@ -36,7 +42,7 @@ void CUIListBox::script_register(lua_State *L)
 	module(L)
 	[
 
-		class_<CUIListBox, CUIScrollView>("CUIListBox")
+		class_<CUIListBox, CUIScrollView>("CUIListWnd")
 		.def(							constructor<>())
 		.def("ShowSelectedItem",		&CUIListBox::Show)
 		.def("RemoveAll",				&CUIListBox::Clear)
@@ -48,14 +54,18 @@ void CUIListBox::script_register(lua_State *L)
 		.def("GetItem",					&CUIListBox::GetItem)		
 		.def("RemoveItem",				&CUIListBox::RemoveWindow)
 		.def("AddTextItem",				&CUIListBox::AddTextItem)
-		.def("AddExistingItem",         &CUIListBox::AddExistingItem, adopt(_2)),
+		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
 
-		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListBoxItem")
-		.def(							constructor<float>())
+		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListItem")
+		.def(							constructor<>())
 		.def("GetTextItem",             &CUIListBoxItem::GetTextItem)
 		.def("AddTextField",            &CUIListBoxItem::AddTextField)
 		.def("AddIconField",            &CUIListBoxItem::AddIconField)
 		.def("SetTextColor",			&CUIListBoxItem::SetTextColor),
+
+		class_<CUIListBoxItemEx, CUIListBoxItem, CUIListBoxItemExWrapper>("CUIListItemEx")
+		.def(							constructor<>())
+		.def("SetSelectionColor",		&CUIListBoxItemEx::SetSelectionColor),
 
 		class_<CUIMapList, CUIWindow>("CUIMapList")
 		.def(							constructor<>())

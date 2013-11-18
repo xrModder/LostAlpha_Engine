@@ -110,7 +110,8 @@ protected:
 		bool				m_busy;
 		SrvItem(float h)
 		{
-			m_ui_item			= xr_new<CUIListItemServer>(h);
+			m_ui_item			= xr_new<CUIListItemServer>();
+			m_ui_item->SetHeight		(h);
 			m_busy				= true;
 		}
 	};

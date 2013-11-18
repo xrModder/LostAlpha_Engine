@@ -12,11 +12,10 @@
 #pragma once
 
 #include "UIListBox.h"
-#include "UIListItem.h"
 #include "UIListBoxItem.h"
 #include "UIStatic.h"
 
-class CUITreeViewItem: public CUIListBox, public CUIListItem
+class CUITreeViewItem: public CUIListBox
 {
 	typedef CUIListBox inherited;
 	// явл€емс€ ли мы началом подыерархии
@@ -98,6 +97,8 @@ public:
 	{
 		m_bArticleRead ? SetTextColor(m_uReadedColor) :SetTextColor(m_uUnreadedColor);
 	}
+
+	u32	GetValue()		{ return GetSelectedItem()->GetTAG();		}
 
 private:
 	friend class CUITreeViewItem;
