@@ -51,7 +51,7 @@ void CUIBuyWeaponTab::Init(CUIXml* xml, char* path)
 	SetActiveState					();
 }
 
-void CUIBuyWeaponTab::OnTabChange(const int iCur,const  int iPrev)
+void CUIBuyWeaponTab::OnTabChange(int iCur, int iPrev)
 {
 	CUITabControl::OnTabChange		(iCur, iPrev);
 

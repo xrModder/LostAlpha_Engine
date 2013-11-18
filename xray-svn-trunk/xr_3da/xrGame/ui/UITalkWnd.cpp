@@ -48,16 +48,18 @@ void CUITalkWnd::InitTalkWnd()
 {
 	inherited::SetWndRect(Frect().set(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT));
 
-	/////////////////////////
-	//Меню торговли
-	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
-	AttachChild(UITradeWnd);
-
 	UITalkDialogWnd			= xr_new<CUITalkDialogWnd>();
 	UITalkDialogWnd->SetAutoDelete(true);
 	AttachChild				(UITalkDialogWnd);
 	UITalkDialogWnd->m_pParent = this;
 	UITalkDialogWnd->InitTalkDialogWnd();
+
+	/////////////////////////
+	//Меню торговли
+	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
+	AttachChild(UITradeWnd);
+
+	UITradeWnd->Hide();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,8 +79,8 @@ void CUITalkWnd::InitTalkDialog()
 	UITalkDialogWnd->UICharacterInfoLeft.InitCharacter		(m_pOurInvOwner->object_id());
 	UITalkDialogWnd->UICharacterInfoRight.InitCharacter		(m_pOthersInvOwner->object_id());
 
-//.	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
-//.	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
+//	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
+//	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
 	
 	//очистить лог сообщений
 	UITalkDialogWnd->ClearAll();
@@ -251,28 +253,25 @@ void CUITalkWnd::Draw()
 	inherited::Draw				();
 }
 
-void CUITalkWnd::ShowDialog(bool bDoHideIndicators)
+void CUITalkWnd::Show(bool status)
 {
-	inherited::ShowDialog				(bDoHideIndicators);
-
-	InitTalkDialog				();
-}
-
-void CUITalkWnd::HideDialog()
-{
-	inherited::HideDialog					();
-
-	StopSnd						();
-	UITalkDialogWnd->Hide		();
-
-	if(m_pActor)
+	inherited::Show					(status);
+	if (status)
 	{
-		ToTopicMode					();
+		InitTalkDialog				();
+	} else {
+		StopSnd						();
+		UITradeWnd->Hide				();
 
-		if (m_pActor->IsTalking()) 
-			m_pActor->StopTalk();
+		if(m_pActor)
+		{
+			ToTopicMode					();
 
-		m_pActor = NULL;
+			if (m_pActor->IsTalking()) 
+				m_pActor->StopTalk();
+
+			m_pActor = NULL;
+		}
 	}
 }
 
@@ -341,7 +340,8 @@ void CUITalkWnd::SayPhrase(const shared_str& phrase_id)
 
 void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, int number)
 {
-	if(text.size() == 0) return;
+	if (text.size() == 0)
+		return;
 	UITalkDialogWnd->AddQuestion(*CStringTable().translate(text),value.c_str(), number);
 }
 
@@ -390,10 +390,7 @@ bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 		else if(is_binded(kSPRINT_TOGGLE, dik))
 		{
-	//		if(UITalkDialogWnd->mechanic_mode)
-	//			SwitchToUpgrade();
-	//		else
-				SwitchToTrade();
+			SwitchToTrade();
 		}
 	}
 

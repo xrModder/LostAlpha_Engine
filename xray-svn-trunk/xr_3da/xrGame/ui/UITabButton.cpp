@@ -1,3 +1,12 @@
+// File:        UITabButton.cpp
+// Description: 
+// Created:     19.11.2004
+// Last Change: 27.11.2004
+// Author:      Serhiy Vynnychenko
+// Mail:        narrator@gsc-game.kiev.ua
+//
+// Copyright: 2004 GSC Game World
+
 #include "StdAfx.h"
 #include "UITabButton.h"
 
@@ -18,8 +27,13 @@ bool CUITabButton::OnMouseDown(int mouse_btn)
 	{
 		GetMessageTarget()->SendMessage(this, TAB_CHANGED, NULL);
 		return true;
-	}else
+	} else
 		return false;
+}
+
+void CUITabButton::Update()
+{
+	CUI3tButton::Update();
 }
 
 void CUITabButton::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -32,13 +46,10 @@ void CUITabButton::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	case TAB_CHANGED:
 		if (this == pWnd)
 		{
-            SetButtonState	(BUTTON_PUSHED);
+			SetButtonState	(BUTTON_PUSHED);
 			OnClick			();
-		}
-		else		
-		{
+		} else
 			SetButtonState	(BUTTON_NORMAL);
-		}
 		break;
 	default:
 		;

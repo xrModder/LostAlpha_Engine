@@ -125,7 +125,6 @@ void CUIWindow::script_register(lua_State *L)
 		.def("MainInputReceiver",		&CDialogHolder::TopInputReceiver)
 		.def("start_stop_menu",			&CDialogHolder::StartStopMenu)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
-		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("RemoveDialogToRender",	&CDialogHolder::RemoveDialogToRender),
 
 		class_<CUIDialogWnd, CUIWindow>("CUIDialogWnd")
@@ -181,6 +180,9 @@ void CUIWindow::script_register(lua_State *L)
 				value("WINDOW_MOUSE_CAPTURE_LOST ",		int(WINDOW_MOUSE_CAPTURE_LOST )),
 				value("WINDOW_KEYBOARD_CAPTURE_LOST",	int(WINDOW_KEYBOARD_CAPTURE_LOST)),
 
+	// CUIStatic
+				value("STATIC_FOCUS_RECEIVED",			int(WINDOW_FOCUS_RECEIVED)),
+				value("STATIC_FOCUS_LOST",				int(WINDOW_FOCUS_LOST)),
 
 	// CUIButton
 				value("BUTTON_CLICKED",					int(BUTTON_CLICKED)),
