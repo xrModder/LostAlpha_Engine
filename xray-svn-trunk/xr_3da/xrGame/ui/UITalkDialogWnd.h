@@ -14,7 +14,6 @@
 
 class CUIScrollView;
 class CUIXml;
-class CUITalkWnd;
 
 class CUITalkDialogWnd: public CUIWindow, public CUIWndCallback
 {
@@ -22,17 +21,17 @@ private:
 	typedef CUIWindow inherited;
 	CUIXml*			m_uiXml;
 public:
-				CUITalkDialogWnd		();
-	virtual		~CUITalkDialogWnd		();
+	CUITalkDialogWnd();
+	virtual ~CUITalkDialogWnd();
 	
 
-			void InitTalkDialogWnd		();
+	virtual void 				Init(float x, float y, float width, float height);
 	
-	virtual void SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+	virtual void 				SendMessage(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
-	virtual void Show();
-	virtual void Hide();
-	CUITalkWnd*	m_pParent;
+	virtual void 				Show();
+	virtual void 				Hide();
+
 	u32			GetHeaderColor()		{ return m_iNameTextColor; }
 	CGameFont *	GetHeaderFont()			{ return m_pNameTextFont; }
 	u32			GetOurReplicsColor()	{ return m_uOurReplicsColor; }
@@ -41,10 +40,18 @@ public:
 
 	//список вопросов, которые мы можем задавать персонажу
 
-//	Fvector2			m_btn_pos[3];
-	CUI3tButton			UIToTradeButton;
-//	CUI3tButton			UIToExitButton;
+	//элементы интерфейса диалога
+	CUIFrameLineWnd		UIDialogFrame;
+	CUIFrameLineWnd		UIOurPhrasesFrame;
 
+	CUIStatic			UIStaticTop;
+	CUIStatic			UIStaticBottom;
+
+	CUI3tButton			UIToTradeButton;
+
+	//информация о персонажах 
+	CUIStatic			UIOurIcon;
+	CUIStatic			UIOthersIcon;
 	CUICharacterInfo	UICharacterInfoLeft;
 	CUICharacterInfo	UICharacterInfoRight;
 
@@ -55,10 +62,7 @@ public:
 	void				ClearQuestions		();
 
 	void				SetOsoznanieMode	(bool b);
-	void				SetTradeMode		();
-	void				UpdateButtonsLayout	(bool b_disable_break, bool trade_enabled);
 	void				ShowTradeButton	(bool b);
-
 private:
 	CUIScrollView*			UIQuestionsList;
 	CUIScrollView*			UIAnswersList;
@@ -71,7 +75,7 @@ private:
 
 	void __stdcall		OnTradeClicked			(CUIWindow* w, void*);
 	void __stdcall		OnQuestionClicked		(CUIWindow* w, void*);
-	void __stdcall		OnExitClicked			(CUIWindow* w, void*);
+	
 };
 
 
@@ -111,4 +115,5 @@ class CUIAnswerItemIconed :public CUIAnswerItem
 public:
 					CUIAnswerItemIconed		(CUIXml* xml_doc, LPCSTR path);
 	void			Init					(LPCSTR text, LPCSTR texture_name, Frect texture_rect);
+
 };

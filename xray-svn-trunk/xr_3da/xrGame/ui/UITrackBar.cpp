@@ -5,7 +5,7 @@
 #include "UITextureMaster.h"
 #include "../../xr_input.h"
 
-#define DEF_CONTROL_HEIGHT		16.0f
+#define DEF_CONTROL_HEIGHT		21.0f
 
 CUITrackBar::CUITrackBar()
 	: m_f_min(0),
@@ -93,17 +93,18 @@ void CUITrackBar::InitTrackBar(Fvector2 pos, Fvector2 size)
 
 	InitIB				(pos, size);
 
-	InitState			(S_Enabled, "ui_inGame2_opt_slider_bar");
-	InitState			(S_Disabled, "ui_inGame2_opt_slider_bar");
+	InitState			(S_Enabled, "ui_slider_e");
+	InitState			(S_Disabled, "ui_slider_d");
 
-	item_width			= CUITextureMaster::GetTextureWidth("ui_inGame2_opt_slider_box_e");
-    item_height			= CUITextureMaster::GetTextureHeight("ui_inGame2_opt_slider_box_e");
+	item_width			= CUITextureMaster::GetTextureWidth("ui_slider_button_e");
+    item_height			= CUITextureMaster::GetTextureHeight("ui_slider_button_e");
 
 	item_width			*= UI().get_current_kx();
 
+
 	m_pSlider->InitButton(	Fvector2().set(0.0f, 0.0f) /*(size.y - item_height)/2.0f)*/,
 							Fvector2().set(item_width, item_height) );			//size
-	m_pSlider->InitTexture("ui_inGame2_opt_slider_box");
+	m_pSlider->InitTexture("ui_slider_button");
 	
 	SetCurrentState(S_Enabled);
 }	

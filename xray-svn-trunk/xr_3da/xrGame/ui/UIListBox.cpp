@@ -61,8 +61,8 @@ CUIListBoxItem*  CUIListBox::AddItem()
 
 	if(m_selection_texture.size())
 		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
-	else
-        item->InitDefault		();
+	//else
+        //item->InitDefault		();
 
 	item->SetFont				(GetFont());
 	item->SetSelected			(false);
@@ -78,8 +78,8 @@ void CUIListBox::AddExistingItem(CUIListBoxItem* item)
 
 	if(m_selection_texture.size())
 		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
-	else
-        item->InitDefault		();
+	//else
+        //item->InitDefault		();
 
 	item->SetSelected			(false);
 	item->SetMessageTarget		(this);

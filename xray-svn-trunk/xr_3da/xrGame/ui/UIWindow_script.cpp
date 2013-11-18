@@ -137,13 +137,19 @@ void CUIWindow::script_register(lua_State *L)
 		.def(							constructor<>())
 		.def("SetWidth",				&CUIFrameWindow::SetWidth)
 		.def("SetHeight",				&CUIFrameWindow::SetHeight)
-		.def("SetColor",				&CUIFrameWindow::SetTextureColor),
+		.def("SetColor",				&CUIFrameWindow::SetTextureColor)
+		.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic),
+//!!!!!!!!		.def("Init",					(void(CUIFrameWindow::*)(LPCSTR,float,float,float,float))&CUIFrameWindow::Init_script),
 
 		class_<CUIFrameLineWnd, CUIWindow>("CUIFrameLineWnd")
 		.def(							constructor<>())
 		.def("SetWidth",				&CUIFrameLineWnd::SetWidth)
 		.def("SetHeight",				&CUIFrameLineWnd::SetHeight)
-		.def("SetColor",				&CUIFrameLineWnd::SetTextureColor),
+		.def("SetOrientation",					&CUIFrameLineWnd::SetOrientation)
+		.def("SetColor",						&CUIFrameLineWnd::SetTextureColor)
+		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic),
+//!!!!!!!		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init),
+
 
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
 		.def(					constructor<>())

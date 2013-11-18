@@ -51,8 +51,7 @@ void CUITalkWnd::InitTalkWnd()
 	UITalkDialogWnd			= xr_new<CUITalkDialogWnd>();
 	UITalkDialogWnd->SetAutoDelete(true);
 	AttachChild				(UITalkDialogWnd);
-	UITalkDialogWnd->m_pParent = this;
-	UITalkDialogWnd->InitTalkDialogWnd();
+	UITalkDialogWnd->Init(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
 	/////////////////////////
 	//Меню торговли
@@ -79,8 +78,8 @@ void CUITalkWnd::InitTalkDialog()
 	UITalkDialogWnd->UICharacterInfoLeft.InitCharacter		(m_pOurInvOwner->object_id());
 	UITalkDialogWnd->UICharacterInfoRight.InitCharacter		(m_pOthersInvOwner->object_id());
 
-//	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
-//	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
+	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
+	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
 	
 	//очистить лог сообщений
 	UITalkDialogWnd->ClearAll();
@@ -94,7 +93,6 @@ void CUITalkWnd::InitTalkDialog()
 	UITalkDialogWnd->Show					();
 
 	UITradeWnd->Hide							();
-	UITalkDialogWnd->UpdateButtonsLayout(b_disable_break, m_pOthersInvOwner->IsTradeEnabled());
 }
 
 void CUITalkWnd::InitOthersStartDialog()
@@ -236,8 +234,6 @@ void CUITalkWnd::Update()
 	}
 	inherited::Update			();
 	UpdateCameraDirection		(smart_cast<CGameObject*>(m_pOthersInvOwner));
-
-	UITalkDialogWnd->UpdateButtonsLayout(b_disable_break, m_pOthersInvOwner->IsTradeEnabled());
 
 	if(playing_sound())
 	{
