@@ -119,6 +119,7 @@ public:
 	float									fASPECT;
 
 	bool IsR2Active(void);
+	bool IsR3Active(void);
 	
 	CRenderDevice			()
 		#ifdef PROFILE_CRITICAL_SECTIONS

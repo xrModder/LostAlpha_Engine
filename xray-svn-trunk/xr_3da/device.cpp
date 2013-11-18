@@ -61,6 +61,12 @@ bool CRenderDevice::IsR2Active()
 	return (psDeviceFlags.test(rsR2)) ? true : false;
 }
 
+bool CRenderDevice::IsR3Active()
+{
+	Msg("SkyLoader: if you see this message, then i didnt add fucking dx10");
+	return false;(psDeviceFlags.test(rsR3)) ? true : false;
+}
+
 void CRenderDevice::Clear	()
 {
 	CHK_DX(HW.pDevice->Clear(0,0,
