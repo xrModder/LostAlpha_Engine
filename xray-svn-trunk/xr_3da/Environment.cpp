@@ -387,11 +387,6 @@ void CEnvironment::OnFrame()
 	float					current_weight;
 	lerp					(current_weight);
 
-	//	Igor. Dynamic sun position. 
-	/* SkyLoader: disabled because should be shoc calculate
-	if ( !::Render->is_sun_static())
-		calculate_dynamic_sun_dir();*/
-
 #ifndef MASTER_GOLD
 	if(CurrentEnv->sun_dir.y>0)
 	{
@@ -417,74 +412,6 @@ void CEnvironment::OnFrame()
 
 	// ******************** Environment params (setting)
 	m_pRender->OnFrame(*this);
-}
-
-void CEnvironment::calculate_dynamic_sun_dir()
-{
-	float g = (360.0f/365.25f)*(180.0f + fGameTime/DAY_LENGTH);
-
-	g = deg2rad(g);
-
-	//	Declination
-	float D = 0.396372f-22.91327f*_cos(g)+4.02543f*_sin(g)-0.387205f*_cos(2*g)+
-		0.051967f*_sin(2*g)-0.154527f*_cos(3*g) + 0.084798f*_sin(3*g);
-
-	//	Now calculate the time correction for solar angle:
-	float TC = 0.004297f+0.107029f*_cos(g)-1.837877f*_sin(g)-0.837378f*_cos(2*g)-
-		2.340475f*_sin(2*g);
-
-	//	IN degrees
-	float Longitude = -30.4f;
-
-	float SHA = (fGameTime/(DAY_LENGTH/24)-12)*15 + Longitude + TC;
-
-	//	Need this to correctly determine SHA sign
-	if (SHA>180) SHA -= 360;
-	if (SHA<-180) SHA += 360;
-
-	//	IN degrees
-	float const Latitude = 50.27f;
-	float const LatitudeR = deg2rad(Latitude);
-
-	//	Now we can calculate the Sun Zenith Angle (SZA):
-	float cosSZA = _sin(LatitudeR)
-		* _sin(deg2rad(D)) + _cos(LatitudeR)*
-		_cos(deg2rad(D)) * _cos(deg2rad(SHA));
-
-	clamp( cosSZA, -1.0f, 1.0f);
-
-	float SZA = acosf(cosSZA);
-	float SEA = PI/2-SZA;
-
-	//	To finish we will calculate the Azimuth Angle (AZ):
-	float cosAZ = 0.f;
-	float const sin_SZA = _sin(SZA);
-	float const cos_Latitude = _cos(LatitudeR);
-	float const sin_SZA_X_cos_Latitude = sin_SZA*cos_Latitude;
-	if (!fis_zero(sin_SZA_X_cos_Latitude))
-		cosAZ	= (_sin(deg2rad(D))-_sin(LatitudeR)*_cos(SZA))/sin_SZA_X_cos_Latitude;
-
-	clamp( cosAZ, -1.0f, 1.0f);
-	float AZ = acosf(cosAZ);
-
-	const Fvector2 minAngle = Fvector2().set(deg2rad(1.0f), deg2rad(3.0f));
-
-	if (SEA<minAngle.x) SEA = minAngle.x;
-
-	float fSunBlend = (SEA-minAngle.x)/(minAngle.y-minAngle.x);
-	clamp (  fSunBlend, 0.0f, 1.0f);
-
-	SEA = -SEA;
-
-	if (SHA<0)
-		AZ = 2*PI-AZ;
-
-	R_ASSERT					( _valid(AZ) );
-	R_ASSERT					( _valid(SEA) );
-	CurrentEnv->sun_dir.setHP	(AZ,SEA);
-	R_ASSERT					( _valid(CurrentEnv->sun_dir) );
-
-	CurrentEnv->sun_color.mul	(fSunBlend);
 }
 
 void CEnvironment::create_mixer ()
