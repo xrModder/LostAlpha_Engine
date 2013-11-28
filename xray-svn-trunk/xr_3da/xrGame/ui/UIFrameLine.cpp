@@ -100,30 +100,6 @@ void CUIFrameLine::UpdateSize()
 	uFlags |= flValidSize;
 }
 
-void CUIFrameLine::SetElementsRect( CUIStaticItem& item, int idx )
-{
-	float srtch_width  = item.GetTextureRect().width();
-	float srtch_height = item.GetTextureRect().height();
-
-	if ( bStretchTexture )
-	{
-		VERIFY( (m_parent_wnd_size.x > 0.0f) && (m_parent_wnd_size.y > 0.0f) );
-		if ( bHorizontalOrientation )
-		{
-			srtch_height = m_parent_wnd_size.y;
-		}
-		else
-		{
-			srtch_width  = m_parent_wnd_size.x;
-		}
-	}
-
-	if( bHorizontalOrientation && (idx==flSecond) && UI().is_widescreen() )
-		srtch_width			/= 1.2f;
-
-	item.SetTextureRect( Frect().set( 0.0f, 0.0f, srtch_width, srtch_height ) );
-}
-
 void CUIFrameLine::Render()
 {
 	// If size changed - update size
@@ -134,7 +110,6 @@ void CUIFrameLine::Render()
 	// Now render all statics
 	for (int i = 0; i < flMax; ++i)
 	{
-		SetElementsRect( elements[i], i );
 		elements[i].Render();
 	}
 }
