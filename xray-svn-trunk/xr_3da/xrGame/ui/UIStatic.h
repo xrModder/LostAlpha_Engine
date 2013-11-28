@@ -66,6 +66,8 @@ public:
 			void	SetTextAlign_script			(u32 align);
 			u32		GetTextAlign_script			();
 
+	virtual void			InitTexture_script				(LPCSTR tex_name);
+
 
 	// own
 			void			SetXformLightAnim		(LPCSTR lanim, bool bCyclic);

@@ -138,8 +138,13 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWidth",				&CUIFrameWindow::SetWidth)
 		.def("SetHeight",				&CUIFrameWindow::SetHeight)
 		.def("SetColor",				&CUIFrameWindow::SetTextureColor)
-		.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic),
-//!!!!!!!!		.def("Init",					(void(CUIFrameWindow::*)(LPCSTR,float,float,float,float))&CUIFrameWindow::Init_script),
+		.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic)
+		.def("Init",					(void(CUIFrameWindow::*)(LPCSTR,float,float,float,float))&CUIFrameWindow::Init)
+		.def("SetStretchTexture",	&CUIFrameWindow::SetStretchTexture)
+		.def("GetStretchTexture",	&CUIFrameWindow::GetStretchTexture)
+		.def("GetTextureRect",	&CUIFrameWindow::GetTextureRect)
+		.def("SetTextureRect",	&CUIFrameWindow::SetTextureRect)
+		.def("SetWndSize",	&CUIFrameWindow::SetWndSize),
 
 		class_<CUIFrameLineWnd, CUIWindow>("CUIFrameLineWnd")
 		.def(							constructor<>())
@@ -147,8 +152,14 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetHeight",				&CUIFrameLineWnd::SetHeight)
 		.def("SetOrientation",					&CUIFrameLineWnd::SetOrientation)
 		.def("SetColor",						&CUIFrameLineWnd::SetTextureColor)
-		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic),
-//!!!!!!!		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init),
+		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
+		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init_script)
+		.def("SetWndSize",	&CUIFrameLineWnd::SetWndSize)
+		.def("SetWndPos",	&CUIFrameLineWnd::SetWndPos)
+		.def("SetStretchTexture",	&CUIFrameLineWnd::SetStretchTexture)
+		.def("GetStretchTexture",	&CUIFrameLineWnd::GetStretchTexture)
+		.def("IsHorizontal",	&CUIFrameLineWnd::IsHorizontal)
+		.def("SetHorizontal",	&CUIFrameLineWnd::SetHorizontal),
 
 
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")

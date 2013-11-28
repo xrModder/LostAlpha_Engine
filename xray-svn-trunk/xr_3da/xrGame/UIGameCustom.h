@@ -85,6 +85,8 @@ class CUIGameCustom :public DLL_Pure, public CDialogHolder
 {
 protected:
 	CUIWindow*			m_window;
+	CUICaption*			GameCaptions			() {return m_pgameCaptions;}
+	CUICaption*			m_pgameCaptions;
 	CUIXml*				m_msgs_xml;
 
 	typedef xr_vector<SDrawStaticStruct*>	st_vec;
@@ -120,6 +122,11 @@ public:
 	virtual void		HideShownDialogs		(){};
 
 	virtual void		ReinitDialogs			(){};
+
+	virtual void		AddCustomMessage		(LPCSTR id, float x, float y, float font_size, CGameFont *pFont, u16 alignment, u32 color);
+	virtual void		AddCustomMessage		(LPCSTR id, float x, float y, float font_size, CGameFont *pFont, u16 alignment, u32 color, float flicker );
+	virtual void		CustomMessageOut		(LPCSTR id, LPCSTR msg, u32 color);
+	virtual void		RemoveCustomMessage		(LPCSTR id);
 
 	SDrawStaticStruct*	AddCustomStatic			(LPCSTR id, bool bSingleInstance);
 	SDrawStaticStruct*	GetCustomStatic			(LPCSTR id);

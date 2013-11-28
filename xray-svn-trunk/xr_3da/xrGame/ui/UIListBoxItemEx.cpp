@@ -1,9 +1,10 @@
-// File:        UIListWndEx.cpp
+// File:        UIListBoxItemEx.cpp
 // Description: Extended ListItem
 //              Requiered to use feature "Selected Item"
 // Created:     
 // Author:      Serhiy O. Vynnychenko
 // Mail:        narrator@gsc-game.kiev.ua
+// Adapted by SkyLoader
 
 // Copyright:   2004 GSC Game World
 

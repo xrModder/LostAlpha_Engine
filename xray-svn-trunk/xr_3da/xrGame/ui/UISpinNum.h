@@ -17,6 +17,8 @@ public:
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();
 
+	virtual void	Init_script				(float x, float y, float width, float height) { InitSpin(Fvector2().set(x,y), Fvector2().set(width, height));}
+
 			void	SetMax				(int max)	{m_iMax=max;};
 			void	SetMin				(int min)	{m_iMin=min;};
 			int		Value				() const {return m_iVal;}
@@ -49,6 +51,8 @@ public:
 	virtual void	SaveOptValue		();	// current->opt
 	virtual void	UndoOptValue		();	// backup->current
 	virtual bool	IsChangedOptValue	() const;	// backup!=current
+
+	virtual void	Init_script				(float x, float y, float width, float height) { InitSpin(Fvector2().set(x,y), Fvector2().set(width, height));}
 
     virtual void	OnBtnUpClick		();
 	virtual void	OnBtnDownClick		();

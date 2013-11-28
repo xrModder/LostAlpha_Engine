@@ -36,6 +36,9 @@ public:
 			void	SetTextColor		(u32 color);
 			void	SetTextColorD		(u32 color);
 
+	virtual void	Init_script				(float x, float y, float width, float height) { InitSpin(Fvector2().set(x,y), Fvector2().set(width, height));}
+
+
 protected:
 	virtual bool		CanPressUp			()	= 0;
 	virtual bool		CanPressDown		()	= 0;

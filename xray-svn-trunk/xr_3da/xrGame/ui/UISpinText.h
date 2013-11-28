@@ -17,6 +17,12 @@ public:
 
 			void	AddItem_(const char* item, int id);
 			LPCSTR	GetTokenText();
+
+	virtual void	AddItemByScript(const char* item, int id);
+	virtual LPCSTR	GetTokenTextByScript();
+	virtual int		GetCurrentIDByScript();
+	virtual void	SetCurrentIDByScript(int id);
+
 protected:
 	virtual bool	CanPressUp		();
 	virtual bool	CanPressDown	();

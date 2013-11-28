@@ -15,6 +15,14 @@ CUIFrameWindow::CUIFrameWindow()
 	AttachChild					(UITitleText);
 }
 
+void CUIFrameWindow::Init(LPCSTR base_name, float x, float y, float width, float height)
+{
+	UITitleText->SetWndPos	(Fvector2().set(0.f,0.f));
+	UITitleText->SetWndSize	(Fvector2().set(width, 50.f));
+	InitTexture		(base_name);
+	SetWndSize		(Fvector2().set(width, height));
+}
+
 void CUIFrameWindow::SetWndSize(const Fvector2& sz)
 {
 	Fvector2 size			= sz;

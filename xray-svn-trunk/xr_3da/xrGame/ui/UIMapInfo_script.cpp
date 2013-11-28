@@ -10,7 +10,7 @@ void CUIMapInfo::script_register(lua_State *L){
 		class_<CUIMapInfo, CUIWindow>("CUIMapInfo")
 		.def(				constructor<>())
 		.def("InitMap",		&CUIMapInfo::InitMap)
-		.def("InitMapInfo",		&CUIMapInfo::InitMapInfo)
+		.def("Init",		&CUIMapInfo::InitMapInfo)
 	];
 
 }

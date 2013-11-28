@@ -10,6 +10,8 @@ class CUIFrameWindow: public CUIWindow,
 public:
 					CUIFrameWindow				();
 
+	virtual void	Init						(LPCSTR base_name, float x, float y, float width, float height);
+
 	virtual void	SetTextureRect				(const Frect& r)	{};
 	virtual const Frect& GetTextureRect			()										const	{return m_tex_rect[fmBK];}
 	virtual void	SetWndSize					(const Fvector2& size);

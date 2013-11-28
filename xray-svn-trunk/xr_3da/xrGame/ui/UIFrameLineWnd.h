@@ -20,6 +20,9 @@ public:
 	CUITextWnd		UITitleText;
 	CUITextWnd*		GetTitleStatic(){return &UITitleText;};
 
+	virtual void Init_script		(LPCSTR base_name, float x, float y, float width, float height, bool horizontal = true)
+									{ InitFrameLineWnd(base_name, Fvector2().set(x,y), Fvector2().set(width, height), horizontal); }
+
 	virtual void SetWndPos			(const Fvector2& pos);
 	virtual void SetWndSize			(const Fvector2& size);
 
@@ -29,7 +32,7 @@ public:
 			
 			void SetStretchTexture	( bool bStretch )	{ m_bStretchTexture = bStretch; }
 			bool GetStretchTexture	() const			{ return m_bStretchTexture; }
-			bool IsHorizontal		()			{return bHorizontal;}
+			bool IsHorizontal		()			{ return bHorizontal;}
 			void SetHorizontal		(bool horiz)		{bHorizontal = horiz;}
 protected:
 	bool			bHorizontal;

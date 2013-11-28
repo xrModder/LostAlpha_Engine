@@ -1,6 +1,6 @@
 #pragma once
 #include "UIDialogWnd.h"
-#include "UIListItem.h"
+#include "UIListBoxItem.h"
 #include "UIWndCallback.h"
 
 class CGameTask;

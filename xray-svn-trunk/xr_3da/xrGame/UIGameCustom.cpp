@@ -3,6 +3,7 @@
 #include "level.h"
 #include "ui/UIXmlInit.h"
 #include "ui/UIStatic.h"
+#include "ui/UIMultiTextStatic.h"
 #include "object_broker.h"
 #include "string_table.h"
 
@@ -36,7 +37,7 @@ struct predicate_find_stat
 };
 
 CUIGameCustom::CUIGameCustom()
-:m_msgs_xml(NULL),m_window(NULL), m_InventoryMenu(NULL), m_PdaMenu(NULL), m_UICarBodyMenu(NULL), UIMainIngameWnd(NULL),m_pMessagesWnd(NULL)
+:m_pgameCaptions(NULL),m_msgs_xml(NULL),m_window(NULL), m_InventoryMenu(NULL), m_PdaMenu(NULL), m_UICarBodyMenu(NULL), UIMainIngameWnd(NULL),m_pMessagesWnd(NULL)
 {
 	ShowGameIndicators		(true);
 	ShowCrosshair			(true);
@@ -83,6 +84,8 @@ void CUIGameCustom::OnFrame()
 
 void CUIGameCustom::Render()
 {
+	GameCaptions()->Draw();
+
 	st_vec_it it = m_custom_statics.begin();
 	st_vec_it it_e = m_custom_statics.end();
 	for(;it!=it_e;++it)
@@ -115,6 +118,28 @@ void CUIGameCustom::Render()
 
 	DoRenderDialogs();
 }
+
+void CUIGameCustom::AddCustomMessage		(LPCSTR id, float x, float y, float font_size, CGameFont *pFont, u16 alignment, u32 color)
+{
+	GameCaptions()->addCustomMessage(id,x,y,font_size,pFont,(CGameFont::EAligment)alignment,color,"");
+}
+
+void CUIGameCustom::AddCustomMessage		(LPCSTR id, float x, float y, float font_size, CGameFont *pFont, u16 alignment, u32 color, float flicker )
+{
+	AddCustomMessage(id,x,y,font_size, pFont, alignment, color);
+	GameCaptions()->customizeMessage(id, CUITextBanner::tbsFlicker)->fPeriod = flicker;
+}
+
+void CUIGameCustom::CustomMessageOut(LPCSTR id, LPCSTR msg, u32 color)
+{
+	GameCaptions()->setCaption(id,msg,color,true);
+}
+
+void CUIGameCustom::RemoveCustomMessage		(LPCSTR id)
+{
+	GameCaptions()->removeCustomMessage(id);
+}
+
 
 SDrawStaticStruct* CUIGameCustom::AddCustomStatic(LPCSTR id, bool bSingleInstance)
 {
@@ -185,6 +210,7 @@ void CUIGameCustom::SetClGame(game_cl_GameState* g)
 
 void CUIGameCustom::UnLoad()
 {
+	xr_delete					(m_pgameCaptions);
 	xr_delete					(m_msgs_xml);
 	xr_delete					(m_window);
 	xr_delete					(UIMainIngameWnd);
@@ -198,6 +224,9 @@ void CUIGameCustom::Load()
 {
 	if(g_pGameLevel)
 	{
+		R_ASSERT				(NULL==m_pgameCaptions);
+		m_pgameCaptions				= xr_new<CUICaption>();
+
 		R_ASSERT				(NULL==m_msgs_xml);
 		m_msgs_xml				= xr_new<CUIXml>();
 		m_msgs_xml->Load		(CONFIG_PATH, UI_PATH, "ui_custom_msgs.xml");

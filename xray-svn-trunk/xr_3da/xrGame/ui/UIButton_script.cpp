@@ -16,12 +16,13 @@ void CUIButton::script_register(lua_State *L)
 	[
 		class_<CUIButton, CUIStatic>("CUIButton")
 		.def(							constructor<>())
-		,
+		.def("Init",					(void(CUIButton::*)(float,float,float,float))&CUIButton::Init )
+		.def("Init",					(void(CUIButton::*)(LPCSTR,float,float,float,float))&CUIButton::Init )
+		.def("SetAccelerator",				&CUIButton::SetAccelerator)
+		.def("GetAccelerator",				&CUIButton::GetAccelerator),
 
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())
-		.def("Init",					(void(CUIButton::*)(float,float,float,float))&CUIButton::Init )
-		.def("Init",					(void(CUIButton::*)(LPCSTR,float,float,float,float))&CUIButton::Init )
 		,
 
 
@@ -32,16 +33,27 @@ void CUIButton::script_register(lua_State *L)
 		.def("SetDependControl",		&CUICheckButton::SetDependControl),
 
 		class_<CUICustomSpin, CUIWindow>("CUICustomSpin")
+		.def("Init",				&CUICustomSpin::Init_script)
 		.def("GetText",				&CUICustomSpin::GetText),
 
 		class_<CUISpinNum, CUICustomSpin>("CUISpinNum")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinNum::Init_script)
+		,
 
 		class_<CUISpinFlt, CUICustomSpin>("CUISpinFlt")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinFlt::Init_script)
+
+		,
 
 		class_<CUISpinText, CUICustomSpin>("CUISpinText")
-		.def(							constructor<>()),
+		.def(							constructor<>())
+		.def("Init",					&CUISpinText::Init_script)
+		.def("AddItem",					&CUISpinText::AddItemByScript)
+		.def("GetTokenText",			&CUISpinText::GetTokenTextByScript)
+		.def("GetCurrentID",			&CUISpinText::GetCurrentIDByScript)
+		.def("SetCurrentID",			&CUISpinText::SetCurrentIDByScript),
 
 		class_<CUITrackBar, CUIWindow>("CUITrackBar")
 		.def(							constructor<>())

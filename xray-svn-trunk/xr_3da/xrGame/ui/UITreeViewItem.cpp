@@ -76,8 +76,8 @@ void CUITreeViewItem::OnRootChanged()
 			// Add plus sign
 			str.replace(pos, 1, "+");
 
-//		inherited::SetText(str.c_str());
-		GetSelectedItem()->m_text->SetText(str.c_str());
+		if (GetSelectedItem())
+			GetSelectedItem()->m_text->SetText(str.c_str());
 	}
 	else
 	{
@@ -93,8 +93,8 @@ void CUITreeViewItem::OnRootChanged()
 		else
 			str.replace(pos, 1, " ");
 
-//		inherited::SetText(str.c_str());
-		GetSelectedItem()->m_text->SetText(str.c_str());
+		if (GetSelectedItem())
+			GetSelectedItem()->m_text->SetText(str.c_str());
 	}
 }
 
@@ -120,8 +120,8 @@ void CUITreeViewItem::OnOpenClose()
 			str.replace(pos, 1, "+");
 	}
 
-//	inherited::SetText(str.c_str());
-	GetSelectedItem()->m_text->SetText(str.c_str());
+	if (GetSelectedItem())
+		GetSelectedItem()->m_text->SetText(str.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -245,8 +245,8 @@ void CUITreeViewItem::SetText(LPCSTR str)
 		s.erase(0, pos - iTextShift);
 	}
 
-//	inherited::SetText(s.c_str());
-	GetSelectedItem()->m_text->SetText(s.c_str());
+	if (GetSelectedItem())
+		GetSelectedItem()->m_text->SetText(s.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -22,9 +22,18 @@ void CUIGameCustom::script_register(lua_State *L)
 			class_< CUIGameCustom >("CUIGameCustom")
 			.def("AddDialogToRender",		&CUIGameCustom::AddDialogToRender)
 			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender)
+			.def("AddCustomMessage",		(void(CUIGameCustom::*)(LPCSTR, float, float, float, CGameFont*, u16, u32))&CUIGameCustom::AddCustomMessage)
+			.def("AddCustomMessage",		(void(CUIGameCustom::*)(LPCSTR, float, float, float, CGameFont*, u16, u32, float))&CUIGameCustom::AddCustomMessage)
+			.def("CustomMessageOut",		&CUIGameCustom::CustomMessageOut)
+			.def("RemoveCustomMessage",		&CUIGameCustom::RemoveCustomMessage)
+			.def("CommonMessageOut",		&CUIGameCustom::CommonMessageOut)
 			.def("AddCustomStatic",			&CUIGameCustom::AddCustomStatic)
 			.def("RemoveCustomStatic",		&CUIGameCustom::RemoveCustomStatic)
-			.def("GetCustomStatic",			&CUIGameCustom::GetCustomStatic),
+			.def("ShowGameIndicators",		&CUIGameCustom::ShowGameIndicators)
+			.def("GameIndicatorsShown",		&CUIGameCustom::GameIndicatorsShown)
+			.def("GetCustomStatic",			&CUIGameCustom::GetCustomStatic)
+			.def("OnKeyboardAction",			&CUIGameCustom::OnKeyboardAction)
+			.def("OnMouseAction",			&CUIGameCustom::OnMouseAction),
 			def("get_hud",					&get_hud)
 		];
 }

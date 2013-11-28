@@ -64,6 +64,13 @@ void CUIStatic::InitTexture(LPCSTR texture)
 	InitTextureEx(texture);
 }
 
+void CUIStatic::InitTexture_script(LPCSTR texture)
+{
+	Frect rect = m_UIStaticItem.GetTextureRect();
+	InitTexture(texture);
+	m_UIStaticItem.SetTextureRect(rect);
+}
+
 void CUIStatic::Init(LPCSTR tex_name, float x, float y, float width, float height)
 {
 	inherited::SetWndRect_script(x, y, width, height);

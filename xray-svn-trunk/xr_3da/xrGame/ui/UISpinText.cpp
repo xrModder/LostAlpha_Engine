@@ -113,3 +113,27 @@ bool CUISpinText::CanPressDown()
 {
 	return m_curItem > 0;
 }
+
+void CUISpinText::AddItemByScript(const char* item, int id)
+{
+	R_ASSERT(xr_strlen(item));
+	AddItem_(item, id);
+}
+
+LPCSTR CUISpinText::GetTokenTextByScript()
+{
+	return GetTokenText();
+}
+
+int CUISpinText::GetCurrentIDByScript()
+{
+	return m_curItem;
+}
+
+void CUISpinText::SetCurrentIDByScript(int id)
+{
+	u32 listSize = m_list.size();
+	R_ASSERT2(!((listSize>=id) && (id>=1)), "Incorrect id");
+
+	m_curItem = id-1;
+}

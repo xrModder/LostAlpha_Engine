@@ -50,10 +50,24 @@ void CUIListBox::script_register(lua_State *L)
 		.def("GetSelectedItem",			&CUIListBox::GetSelectedItem)
 		.def("GetSelectedIndex",		&CUIListBox::GetSelectedIDX)		
 
-		.def("GetItemByIndex",			&CUIListBox::GetItemByIDX)		
-		.def("GetItem",					&CUIListBox::GetItem)		
-		.def("RemoveItem",				&CUIListBox::RemoveWindow)
+		.def("GetItemByTag",			&CUIListBox::GetItemByTAG)
+		.def("GetItemByText",			&CUIListBox::GetItemByText)			
+		.def("GetItem",					&CUIListBox::GetItemByIDX)		
+		.def("RemoveItem",				&CUIListBox::RemoveItem)
+		.def("Remove",				&CUIListBox::Remove)
 		.def("AddTextItem",				&CUIListBox::AddTextItem)
+
+		.def("SetSelectionTexture",				&CUIListBox::SetSelectionTexture)
+		.def("SetItemHeight",				&CUIListBox::SetItemHeight)
+		.def("GetItemHeight",				&CUIListBox::GetItemHeight)
+		.def("GetLongestLength",				&CUIListBox::GetLongestLength)
+		.def("SetSelected",				&CUIListBox::SetSelectedIDX)
+		.def("SetSelectedTag",				&CUIListBox::SetSelectedTAG)
+		.def("SetSelectedText",				&CUIListBox::SetSelectedText)
+		.def("SetImmediateSelection",				&CUIListBox::SetImmediateSelection)
+		.def("SetTextColor",				&CUIListBox::SetTextColor)
+		.def("GetTextColor",				&CUIListBox::GetTextColor)
+
 		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
 
 		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListItem")

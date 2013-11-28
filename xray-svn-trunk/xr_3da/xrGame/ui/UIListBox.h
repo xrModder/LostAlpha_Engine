@@ -13,6 +13,9 @@ public:
 	void			AddExistingItem					(CUIListBoxItem*);
 
 	void			Remove							(CUIListBoxItem* itm);
+	void 			RemoveItem				(int index) 
+										{ CUIListBoxItem* item = GetItemByIDX(index);
+										  Remove(item); }
 	void			RemoveAll						();
 
 	CUIListBoxItem* GetItemByTAG					(u32 tag_value);
