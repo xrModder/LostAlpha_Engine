@@ -50,7 +50,7 @@ void CUIScrollBar::InitScrollBar(Fvector2 pos, float length, bool bIsHorizontal,
 		m_ScrollBox->SetHorizontal	(true);
 
 		strconcat					(sizeof(_path),_path, profile, ":box");
-		CUIXmlInit::InitStatic		(xml_doc, _path, 0, m_ScrollBox);
+		CUIXmlInit::InitStatic	(xml_doc, _path, 0, m_ScrollBox);
 		m_IncButton->SetWndPos		(0.0f, length/2);
 
 		strconcat					(sizeof(_path),_path, profile, ":back:texture");
@@ -72,7 +72,7 @@ void CUIScrollBar::InitScrollBar(Fvector2 pos, float length, bool bIsHorizontal,
 		m_ScrollBox->SetHorizontal	(false);
 
 		strconcat					(sizeof(_path),_path, profile, ":box_v");
-		CUIXmlInit::InitStatic		(xml_doc, _path, 0, m_ScrollBox);		
+		CUIXmlInit::InitStatic	(xml_doc, _path, 0, m_ScrollBox);
 		strconcat					(sizeof(_path),_path, profile, ":back_v:texture");
 		LPCSTR texture				= xml_doc.Read(_path, 0, "");
 		R_ASSERT					(texture);
@@ -139,8 +139,8 @@ void CUIScrollBar::UpdateScrollBar()
 			m_ScrollBox->SetHeight	(GetHeight());
 			// set pos
 			int pos					= PosViewFromScroll(iFloor(m_ScrollBox->GetWidth()),iFloor(GetHeight()));
-			m_ScrollBox->SetWndPos	(float(pos), m_ScrollBox->GetWndRect().top);
-			m_IncButton->SetWndPos	(GetWidth() - m_IncButton->GetWidth(), 0.0f);
+			m_ScrollBox->SetWndPos	(Fvector2().set(float(pos), m_ScrollBox->GetWndRect().top));
+			m_IncButton->SetWndPos	(Fvector2().set(GetWidth() - m_IncButton->GetWidth(), 0.0f));
 		}else{
 			// set height
 			clamp					(box_sz,_min(GetWidth(),GetHeight()-m_IncButton->GetHeight() - m_DecButton->GetHeight()),GetHeight()-m_IncButton->GetHeight() - m_DecButton->GetHeight());
@@ -148,8 +148,8 @@ void CUIScrollBar::UpdateScrollBar()
 			m_ScrollBox->SetWidth	(GetWidth());
 			// set pos
 			int pos				= PosViewFromScroll(iFloor(m_ScrollBox->GetHeight()),iFloor(GetWidth()));
-			m_ScrollBox->SetWndPos	(m_ScrollBox->GetWndRect().left, float(pos));
-			m_IncButton->SetWndPos	(0.0f, GetHeight() - m_IncButton->GetHeight());
+			m_ScrollBox->SetWndPos	(Fvector2().set(m_ScrollBox->GetWndRect().left, float(pos)));
+			m_IncButton->SetWndPos	(Fvector2().set(0.0f, GetHeight() - m_IncButton->GetHeight()));
 		}
 	}
 
@@ -205,19 +205,19 @@ void CUIScrollBar::ClampByViewRect()
 {
 	if(m_bIsHorizontal){
 		if(m_ScrollBox->GetWndRect().left <= m_DecButton->GetWidth())
-			m_ScrollBox->SetWndPos	(m_DecButton->GetWidth(), m_ScrollBox->GetWndRect().top);
+			m_ScrollBox->SetWndPos	(Fvector2().set(m_DecButton->GetWidth(), m_ScrollBox->GetWndRect().top));
 		else if(m_ScrollBox->GetWndRect().right >= m_IncButton->GetWndPos().x)
-			m_ScrollBox->SetWndPos	(m_IncButton->GetWndRect().left - m_ScrollBox->GetWidth(), 
-									m_ScrollBox->GetWndRect().top);
+			m_ScrollBox->SetWndPos	(Fvector2().set(m_IncButton->GetWndRect().left - m_ScrollBox->GetWidth(), 
+									m_ScrollBox->GetWndRect().top));
 	}else{
 		// limit vertical position (TOP) by position of button	
 		if(m_ScrollBox->GetWndRect().top <= m_DecButton->GetHeight())
-			m_ScrollBox->SetWndPos	(m_ScrollBox->GetWndRect().left, 
-									m_DecButton->GetHeight());
+			m_ScrollBox->SetWndPos	(Fvector2().set(m_ScrollBox->GetWndRect().left, 
+									m_DecButton->GetHeight()));
 		// limit vertical position (BOTTOM) by position of button
 		else if(m_ScrollBox->GetWndRect().bottom >= m_IncButton->GetWndPos().y)
-			m_ScrollBox->SetWndPos	(m_ScrollBox->GetWndRect().left,
-									m_IncButton->GetWndPos().y - m_ScrollBox->GetHeight());
+			m_ScrollBox->SetWndPos	(Fvector2().set(m_ScrollBox->GetWndRect().left,
+									m_IncButton->GetWndPos().y - m_ScrollBox->GetHeight()));
 	}
 }
 
@@ -328,17 +328,21 @@ void CUIScrollBar::Reset()
 
 void CUIScrollBar::Draw()
 {
+	//нарисовать фоновую подложку
+	Frect rect;
+	GetAbsoluteRect(rect);
+
 	if(m_bIsHorizontal)
 	{
 		float size	= GetWidth() - m_DecButton->GetWidth() - m_IncButton->GetWidth();
 		m_StaticBackground->SetSize		(Fvector2().set(size, GetHeight()));
-		m_StaticBackground->SetPos		(Fvector2().set(m_DecButton->GetWidth(), 0.0f) );
-	}else
-	{
+		m_StaticBackground->SetPos		(Fvector2().set(rect.left + m_DecButton->GetWidth(),rect.top));
+
+	} else {
 		float size	= GetHeight()- m_IncButton->GetHeight() - m_DecButton->GetHeight();
 
 		m_StaticBackground->SetSize		(Fvector2().set(GetWidth(), size) );
-		m_StaticBackground->SetPos		(Fvector2().set(0.0f, m_DecButton->GetHeight()) );
+		m_StaticBackground->SetPos		(Fvector2().set(rect.left,rect.top + m_DecButton->GetHeight()));
 	}
 
 	m_StaticBackground->Render	();
