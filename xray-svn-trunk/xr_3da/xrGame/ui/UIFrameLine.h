@@ -44,6 +44,5 @@ public:
 	IC void		SetPos			(Fvector2 pos)				{ iPos.set(pos);	uFlags &=~ flValidSize; }
 	IC void		SetSize			(float size)				{ iSize = size;			uFlags &=~ flValidSize; }
 	IC void		SetOrientation	(bool bIsHorizontal)		{ bHorizontalOrientation = bIsHorizontal; uFlags &=~ flValidSize; }
-	void		SetElementsRect	(CUIStaticItem& item,int idx);
 	void		Render			();
 };
