@@ -102,26 +102,19 @@ void CUIFrameLine::UpdateSize()
 
 void CUIFrameLine::SetElementsSize( CUIStaticItem& item, int idx )
 {
-	float srtch_width  = item.GetTextureRect().width();
-	float srtch_height = item.GetTextureRect().height();
-
 	if ( bStretchTexture )
 	{
+		float srtch_width  = item.GetTextureRect().width();
+		float srtch_height = item.GetTextureRect().height();
+
 		VERIFY( (m_parent_wnd_size.x > 0.0f) && (m_parent_wnd_size.y > 0.0f) );
 		if ( bHorizontalOrientation )
-		{
 			srtch_height = m_parent_wnd_size.y;
-		}
 		else
-		{
 			srtch_width  = m_parent_wnd_size.x;
-		}
+
+		item.SetSize(Fvector2().set(srtch_width, srtch_height));
 	}
-
-	if( bHorizontalOrientation && (idx==flSecond) && UI().is_widescreen() )
-		srtch_width			/= 1.2f;
-
-	item.SetSize(Fvector2().set(srtch_width, srtch_height));
 }
 
 void CUIFrameLine::Render()
