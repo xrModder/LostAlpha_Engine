@@ -92,11 +92,9 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemTorch,CSE_ALifeItem)
 //флаги
 	enum EStats{
 		eTorchActive				= (1<<0),
-		eNightVisionActive			= (1<<1),
-		eAttached					= (1<<2)
+		eAttached					= (1<<1)
 	};
 	bool							m_active;
-	bool							m_nightvision_active;
 	bool							m_attached;
 	u16								m_battery_state;
 									CSE_ALifeItemTorch	(LPCSTR caSection);
@@ -297,7 +295,9 @@ add_to_type_list(CSE_ALifeItemBolt)
 #define script_type_list save_type_list(CSE_ALifeItemBolt)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemCustomOutfit,CSE_ALifeItem)
-	u32								m_ef_equipment_type;
+	u32							m_ef_equipment_type;
+	bool							m_nightvision_active;
+
 									CSE_ALifeItemCustomOutfit	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemCustomOutfit	();
 	virtual u32						ef_equipment_type			() const;

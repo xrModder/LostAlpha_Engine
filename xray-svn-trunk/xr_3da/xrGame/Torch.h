@@ -62,34 +62,17 @@ public:
 
 	virtual bool	can_be_attached		() const;
  
-public:
-			void	SwitchNightVision		  ();
-			void	SwitchNightVision		  (bool light_on);
-			void	UpdateSwitchNightVision   ();
-			float	NightVisionBattery		  ();
 protected:
-	bool					m_bNightVisionEnabled;
-	bool					m_bNightVisionOn;
-
-	HUD_SOUND				m_NightVisionOnSnd;
-	HUD_SOUND				m_NightVisionOffSnd;
-	HUD_SOUND				m_NightVisionIdleSnd;
-	HUD_SOUND				m_NightVisionBrokenSnd;
-	HUD_SOUND				m_FlashlightSwitchSnd;
 	ref_sound				sndBreaking;
 
-	/*float					m_NightVisionRechargeTime;
-	float					m_NightVisionRechargeTimeMin;
-	float					m_NightVisionDischargeTime;
-	float					m_NightVisionChargeTime;*/
+	HUD_SOUND				m_FlashlightSwitchSnd;
 
 	float					m_RangeMax;
 	float					m_RangeMin;
 
 	enum EStats{
 		eTorchActive				= (1<<0),
-		eNightVisionActive			= (1<<1),
-		eAttached					= (1<<2)
+		eAttached					= (1<<1)
 	};
 
 

@@ -51,7 +51,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	HW.pContext->ClearRenderTargetView( RCache.get_RT(), ColorRGBA);
 #else	//	USE_DX10
-	CHK_DX			(HW.pDevice->Clear(0,0,D3DCLEAR_TARGET,D3DCOLOR_ARGB(0,0,0,0),1,0));
+	//  CHK_DX			(HW.pDevice->Clear(0,0,D3DCLEAR_TARGET,D3DCOLOR_ARGB(0,0,0,0),1,0));
 #endif	//	USE_DX10
 
 	if(!sh_progress)
@@ -73,6 +73,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	float	ws_k				= (b_16x9) ? 0.75f : 0.8333f;	//16:9 or 16:10
 	float	ws_w				= b_ws ? (b_16x9?171.0f:102.6f) : 0.0f;
 
+//progress
 	float bw					= 1024.0f;
 	float bh					= 768.0f;
 	Fvector2					k; 
@@ -85,6 +86,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	Fvector2					back_size;
 	Fvector2					back_tex_size;
 
+//progress background
 	static float offs			= -0.5f;
 
 	Fvector2					back_offset;
@@ -92,10 +94,28 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 		back_offset.set			(ws_w*ws_k, 0.0f); //ws_w == 171
 	else
 		back_offset.set			(0.0f, 0.0f);
+		
+	//background picture
+
+	back_tex_size.set			(1024,768);
+	back_size.set				(1024,768);
+	if(b_ws)
+		back_size.x				*= ws_k; //ws
+
+	back_tex_coords.lt.set		(0,0);
+	back_tex_coords.rb.add		(back_tex_coords.lt, back_tex_size);
+
+	back_coords.lt.set			(offs, offs); 
+	back_coords.lt.add			(back_offset); 
+	back_coords.rb.add			(back_coords.lt, back_size);
+
+	back_coords.lt.mul			(k);
+	back_coords.rb.mul			(k);
+	draw_face					(sh_progress, back_coords, back_tex_coords,tsz);
 
 	//progress bar
 	
-	back_tex_size.set			(506,4);
+	back_tex_size.set			(268,37);
 	back_size.set				(268,37);
 	if(b_ws)
 		back_size.x				*= ws_k; //ws
@@ -139,24 +159,6 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	RCache.set_Shader			(sh_progress);
 	RCache.set_Geometry			(ll_hGeom2);
 	RCache.Render				(D3DPT_TRIANGLESTRIP, Offset, 2*v_cnt);
-
-	//background picture
-
-	back_tex_size.set			(1024,768);
-	back_size.set				(1024,768);
-	if(b_ws)
-		back_size.x				*= ws_k; //ws
-
-	back_tex_coords.lt.set		(0,0);
-	back_tex_coords.rb.add		(back_tex_coords.lt, back_tex_size);
-
-	back_coords.lt.set			(offs, offs); 
-	back_coords.lt.add			(back_offset); 
-	back_coords.rb.add			(back_coords.lt, back_size);
-
-	back_coords.lt.mul			(k);
-	back_coords.rb.mul			(k);
-	draw_face					(sh_progress, back_coords, back_tex_coords,tsz);
 
 	if(b_ws) //draw additional frames (left&right)
 	{

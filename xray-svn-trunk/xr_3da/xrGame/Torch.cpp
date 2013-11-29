@@ -14,7 +14,6 @@
 #include "game_base_space.h"
 #include "UIGameCustom.h"
 #include "actorEffector.h"
-#include "CustomOutfit.h"
 #include "../xr_collide_form.h"
 
 static const float		TIME_2_HIDE					= 5.f;
@@ -42,10 +41,6 @@ CTorch::CTorch(void) : m_current_battery_state(0)
 	time2hide					= 0;
 	fBrightness					= 1.f;
 
-	/*m_NightVisionRechargeTime	= 6.f;
-	m_NightVisionRechargeTimeMin= 2.f;
-	m_NightVisionDischargeTime	= 10.f;
-	m_NightVisionChargeTime		= 0.f;*/
 	m_RangeMax			= 13.f;
 	m_RangeMin			= 13.f;
 
@@ -58,11 +53,7 @@ CTorch::~CTorch(void)
 	light_render.destroy	();
 	light_omni.destroy	();
 	glow_render.destroy		();
-	HUD_SOUND::DestroySound	(m_NightVisionOnSnd);
-	HUD_SOUND::DestroySound	(m_NightVisionOffSnd);
-	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
-	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
-	HUD_SOUND::DestroySound (m_FlashlightSwitchSnd);
+	HUD_SOUND::DestroySound	(m_FlashlightSwitchSnd);
 	sndBreaking.destroy();
 }
 
@@ -84,108 +75,10 @@ void CTorch::Load(LPCSTR section)
 	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
 	HUD_SOUND::LoadSound(section, "snd_flashlight_switch_on", m_FlashlightSwitchSnd, SOUND_TYPE_ITEM_USING);
 	m_battery_duration		= pSettings->r_u16(section, "battery_duration");
-	m_bNightVisionEnabled	= !!pSettings->r_bool(section,"night_vision");
-	if(m_bNightVisionEnabled)
-	{
-		HUD_SOUND::LoadSound(section,"snd_night_vision_on"	, m_NightVisionOnSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_off"	, m_NightVisionOffSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_idle", m_NightVisionIdleSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
-		/*m_NightVisionRechargeTime		= pSettings->r_float(section,"night_vision_recharge_time");
-		m_NightVisionRechargeTimeMin	= pSettings->r_float(section,"night_vision_recharge_time_min");
-		m_NightVisionDischargeTime		= pSettings->r_float(section,"night_vision_discharge_time");
-		m_NightVisionChargeTime			= m_NightVisionRechargeTime;*/
-		if(pSettings->line_exist(section, "break_sound"))
-			sndBreaking.create(pSettings->r_string(section, "break_sound"),st_Effect,sg_SourceType);
-	}
+
+	if(pSettings->line_exist(section, "break_sound"))
+		sndBreaking.create(pSettings->r_string(section, "break_sound"),st_Effect,sg_SourceType);
 }
-
-void CTorch::SwitchNightVision()
-{
-	if (OnClient()) return;
-	SwitchNightVision(!m_bNightVisionOn);	
-}
-
-void CTorch::SwitchNightVision(bool vision_on)
-{
-	if(!m_bNightVisionEnabled) return;
-	
-	if(vision_on /*&& (m_NightVisionChargeTime > m_NightVisionRechargeTimeMin || OnClient())*/)
-	{
-		//m_NightVisionChargeTime = m_NightVisionDischargeTime*m_NightVisionChargeTime/m_NightVisionRechargeTime;
-		m_bNightVisionOn = true;
-	}
-	else
-	{
-		m_bNightVisionOn = false;
-	}
-
-	CActor *pA = smart_cast<CActor *>(H_Parent());
-
-	if(!pA)					return;
-	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
-
-	LPCSTR disabled_names	= pSettings->r_string(cNameSect(),"disabled_maps");
-	LPCSTR curr_map			= *Level().name();
-	u32 cnt					= _GetItemCount(disabled_names);
-	bool b_allow			= true;
-	string512				tmp;
-	for(u32 i=0; i<cnt;++i){
-		_GetItem(disabled_names, i, tmp);
-		if(0==stricmp(tmp, curr_map)){
-			b_allow = false;
-			break;
-		}
-	}
-
-	CCustomOutfit* pCO=pA->GetOutfit();
-	if(pCO&&pCO->m_NightVisionSect.size()&&!b_allow){
-		HUD_SOUND::PlaySound(m_NightVisionBrokenSnd, pA->Position(), pA, bPlaySoundFirstPerson);
-		return;
-	}
-
-	if(m_bNightVisionOn){
-		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
-		if(!pp){
-			if (pCO&&pCO->m_NightVisionSect.size())
-			{
-				AddEffector(pA,effNightvision, pCO->m_NightVisionSect);
-				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
-				HUD_SOUND::PlaySound(m_NightVisionIdleSnd, pA->Position(), pA, bPlaySoundFirstPerson, true);
-			}
-		}
-	}else{
- 		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
-		if(pp){
-			pp->Stop			(1.0f);
-			HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
-			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
-		}
-	}
-}
-
-
-void CTorch::UpdateSwitchNightVision   ()
-{
-	if(!m_bNightVisionEnabled) return;
-	if (OnClient()) return;
-
-
-	/*if(m_bNightVisionOn)
-	{
-		m_NightVisionChargeTime			-= Device.fTimeDelta;
-
-		if(m_NightVisionChargeTime<0.f)
-			SwitchNightVision(false);
-	}
-	else
-	{
-		m_NightVisionChargeTime			+= Device.fTimeDelta;
-		clamp(m_NightVisionChargeTime, 0.f, m_NightVisionRechargeTime);
-	}*/
-}
-
 
 void CTorch::Switch()
 {
@@ -210,7 +103,7 @@ void CTorch::SetBatteryStatus(u16 val)
 	condition	/= -m_battery_duration;
 	//Msg("SetBatteryStatus=[%f], [%d], [%d], [%d], [%d], [%d], [%f]", condition, m_current_battery_state, val, m_battery_duration, m_current_battery_state - val, (m_current_battery_state - val)/m_battery_duration*100, (m_current_battery_state - val)/m_battery_duration);
 	m_current_battery_state = val;
-	ChangeCondition(condition); 
+	//ChangeCondition(condition); 
 }
 
 void CTorch::Switch	(bool light_on)
@@ -290,8 +183,6 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	//включить/выключить фонарик
 	Switch					(torch->m_active);
 	VERIFY					(!torch->m_active || (torch->ID_Parent != 0xffff));
-	
-	SwitchNightVision		(false);
 
 	m_delta_h				= PI_DIV_2-atan((m_RangeMax*0.5f)/_abs(TORCH_OFFSET.x));
 
@@ -303,7 +194,6 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 void CTorch::net_Destroy() 
 {
 	Switch					(false);
-	SwitchNightVision		(false);
 
 	inherited::net_Destroy	();
 }
@@ -320,13 +210,6 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 	time2hide						= TIME_2_HIDE;
 
 	Switch						(false);
-	SwitchNightVision			(false);
-
-	HUD_SOUND::StopSound		(m_NightVisionOnSnd);
-	HUD_SOUND::StopSound		(m_NightVisionOffSnd);
-	HUD_SOUND::StopSound		(m_NightVisionIdleSnd);
-
-	//m_NightVisionChargeTime		= m_NightVisionRechargeTime;
 }
 
 void CTorch::Recharge(void)
@@ -334,7 +217,7 @@ void CTorch::Recharge(void)
 	float condition = m_battery_duration - m_current_battery_state;
 	condition /= m_battery_duration;
 	m_current_battery_state = m_battery_duration;
-	ChangeCondition(condition);
+	//ChangeCondition(condition);
 }
 
 void CTorch::UpdateBattery(void)
@@ -344,7 +227,7 @@ void CTorch::UpdateBattery(void)
 		m_current_battery_state--;
 
 		float condition = -1.f/m_battery_duration;
-		ChangeCondition(condition);
+		//ChangeCondition(condition);
 
  		float range = m_current_battery_state;
 		range /= m_battery_duration;
@@ -365,8 +248,6 @@ void CTorch::UpdateBattery(void)
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
-	
-	UpdateSwitchNightVision		();
 
 	if (!m_switched_on)		return;
 
@@ -522,7 +403,6 @@ void CTorch::net_Export			(NET_Packet& P)
 
 	BYTE F = 0;
 	F |= (m_switched_on ? eTorchActive : 0);
-	F |= (m_bNightVisionOn ? eNightVisionActive : 0);
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
 	if (pA)
 	{
@@ -540,13 +420,9 @@ void CTorch::net_Import			(NET_Packet& P)
 	
 	BYTE F = P.r_u8();
 	bool new_m_switched_on		= !!(F & eTorchActive);
-	bool new_m_bNightVisionOn	= !!(F & eNightVisionActive);
 
 	if (new_m_switched_on != m_switched_on)
 		Switch(new_m_switched_on);
-
-	if (new_m_bNightVisionOn != m_bNightVisionOn)	
-		SwitchNightVision(new_m_bNightVisionOn);
 
 	m_current_battery_state = P.r_u16();
 	P.r_float_q8			(m_fCondition,0.0f,1.0f);

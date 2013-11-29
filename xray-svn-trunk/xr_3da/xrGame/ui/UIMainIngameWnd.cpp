@@ -236,8 +236,10 @@ void CUIMainIngameWnd::Init()
 	while (j < ewiInvincible)
 	{
 		// Читаем данные порогов для каждого индикатора
-		shared_str cfgRecord = pSettings->r_string("main_ingame_indicators_thresholds", *warningStrings[static_cast<int>(j) - 1]);
+		shared_str cfgRecord = pSettings->r_string("la_main_ingame_indicators_thresholds", *warningStrings[static_cast<int>(j) - 1]);
 		u32 count = _GetItemCount(*cfgRecord);
+
+		R_ASSERT3(count==3, "Item count in parameter '%s' in [la_main_ingame_indicators_thresholds] should be 3.", *warningStrings[static_cast<int>(j) - 1]);
 
 		char	singleThreshold[8];
 		float	f = 0;
@@ -428,7 +430,6 @@ void CUIMainIngameWnd::Update()
 
 			switch (i)
 			{
-				//radiation
 			case ewiRadiation:
 				value = m_pActor->conditions().GetRadiation();
 				state = eRadiationInactive;
@@ -469,34 +470,37 @@ void CUIMainIngameWnd::Update()
 			if (rit != m_Thresholds[i].rend())
 			{
 				float v = *rit;
-				u32 color = color_argb(0xFF, clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255), 
-					clampr<u32>(static_cast<u32>(255 * (2.0f - (v - min) / (max - min) * 2)), 0, 255),
-					0); //skyloader: я не смог нормально разобрать эту сборку цветов, поэтому сделал немного по-глупому (надо исправить!!!):
 
 				u8 active_state = 0;
 
-				if (color==0xff00fff00) //green
+				if (fsimilar(min, v)) //green 		//skyloader: <-- это я сделал очень криво, но ту сборку цветов я так и не смог разобрать
 					active_state = 1;
-				else if (color==0xff7fff00) //yellow
-					active_state = 2;
-				else if (color==0xffffff00) //orange
-					active_state = 2;
-				else if (color==0xffff7f00) //orange-red
+				else if (fsimilar(max, v)) //red
 					active_state = 3;
-				else if (color==0xffff0000) //red
-					active_state = 3;
+				else			//yellow (i hope)
+					active_state = 2;
 
-				for (u8 i=0; i<3; i++)
+				//if (i == ewiWound)
+				//	Msg("min=[%f] max=[%f] v=[%f] value=[%f] active_state=[%d]", min, max, v, value, active_state);
+
+				if (i != ewiStarvation)
 				{
-					if (i == active_state)
-						m_pActor->SetActorState(EActorState(state - i), true);
-					else
-						m_pActor->SetActorState(EActorState(state - i), false);
+					for (u8 j=0; j<=3; j++)
+					{
+	
+						if (j == active_state)
+							m_pActor->SetActorState(EActorState(state - j), true);
+						else
+							m_pActor->SetActorState(EActorState(state - j), false);
+					}
 				}
 			} else {
-				for (u8 i=0; i<3; i++)
-					m_pActor->SetActorState(EActorState(state - i), false);
-				m_pActor->SetActorState(state, true);
+				if (i != ewiStarvation)
+				{
+					for (u8 j=1; j<=3; j++)
+						m_pActor->SetActorState(EActorState(state - j), false);
+					m_pActor->SetActorState(state, true);
+				}
 			}
 
 			i = (EWarningIcons)(i + 1);

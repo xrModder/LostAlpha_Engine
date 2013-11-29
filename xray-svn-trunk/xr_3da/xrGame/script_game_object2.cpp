@@ -454,11 +454,8 @@ void CScriptGameObject::detach_actor_Vehicle	()
 	}
 
 	CCar* car = smart_cast<CCar*>(actor->Holder());
-	if(!car){
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CGameObject : it is not a car!");
-	}
-
-	car->DoExit();
+	if(car)
+		car->DoExit();
 }
 
 

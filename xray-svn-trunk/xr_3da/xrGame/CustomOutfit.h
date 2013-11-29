@@ -1,6 +1,7 @@
 #pragma once
 
 #include "inventory_item_object.h"
+#include "hudsound.h"
 
 struct SBoneProtections;
 
@@ -31,6 +32,9 @@ public:
 	virtual void					OnMoveToSlot		();
 	virtual void					OnMoveToRuck		();
 
+		void					SwitchNightVision		  ();
+		void					SwitchNightVision		  (bool light_on);
+
 protected:
 	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 	float							m_fPowerLoss;
@@ -42,6 +46,14 @@ protected:
 protected:
 	u32								m_ef_equipment_type;
 
+	bool								m_bNightVisionEnabled;
+	bool								m_bNightVisionOn;
+
+	HUD_SOUND							m_NightVisionOnSnd;
+	HUD_SOUND							m_NightVisionOffSnd;
+	HUD_SOUND							m_NightVisionIdleSnd;
+	HUD_SOUND							m_NightVisionBrokenSnd;
+
 public:
 	float							m_additional_weight;
 	float							m_additional_weight2;
@@ -52,4 +64,8 @@ public:
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);
+	virtual void			net_Destroy			();
+	virtual BOOL			net_Spawn			(CSE_Abstract* DC);
+
+	virtual void			OnH_B_Independent	(bool just_before_destroy);
 };
