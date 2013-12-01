@@ -64,7 +64,7 @@ bool CRenderDevice::IsR2Active()
 bool CRenderDevice::IsR3Active()
 {
 	Msg("SkyLoader: if you see this message, then i didnt add fucking dx10");
-	return false;(psDeviceFlags.test(rsR3)) ? true : false;
+	return false; //(psDeviceFlags.test(rsR3)) ? true : false;
 }
 
 void CRenderDevice::Clear	()
