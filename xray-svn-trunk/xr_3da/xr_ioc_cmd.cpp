@@ -565,7 +565,7 @@ public:
 ENGINE_API BOOL r2_sun_static	= TRUE;
 ENGINE_API BOOL r2_advanced_pp	= FALSE;	//	advanced post process and effects
 
-u32	renderer_value	= 3;
+u32	renderer_value	= 2;
 //void fill_render_mode_list();
 //void free_render_mode_list();
 
@@ -573,7 +573,7 @@ class CCC_r2 : public CCC_Token
 {
 	typedef CCC_Token inherited;
 public:
-	CCC_r2(LPCSTR N) :inherited(N, &renderer_value, NULL){renderer_value=3;};
+	CCC_r2(LPCSTR N) :inherited(N, &renderer_value, NULL){renderer_value=2;};
 	virtual			~CCC_r2	()
 	{
 		//free_render_mode_list();
@@ -586,22 +586,21 @@ public:
 
 		inherited::Execute		(args);
 		//	0 - r1
-		//	1..3 - r2
-		//	4 - r3
-		psDeviceFlags.set		(rsR2, ((renderer_value>0) && renderer_value<4) );
-		psDeviceFlags.set		(rsR3, (renderer_value==4) );
-//		psDeviceFlags.set		(rsR4, (renderer_value>=5) );
+		//	1, 2 - r2
+		//	3 - r3
+		psDeviceFlags.set		(rsR2, ((renderer_value>0) && renderer_value<3) );
+		psDeviceFlags.set		(rsR3, (renderer_value==3) );
 
 		r2_sun_static	= (renderer_value<2);
 
-		r2_advanced_pp  = (renderer_value>=3);
+		r2_advanced_pp  = (renderer_value>=2);
 	}
 
 	virtual void	Save	(IWriter *F)	
 	{
 		//fill_render_mode_list	();
 		tokens					= vid_quality_token;
-		if( !strstr(Core.Params, "-r2") )
+		if( !strstr(Core.Params, "-r2") && !strstr(Core.Params, "-r3")  )
 		{
 			inherited::Save(F);
 		}

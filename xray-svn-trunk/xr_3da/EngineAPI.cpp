@@ -176,9 +176,7 @@ void CEngineAPI::CreateRendererList()
 	//	TODO: ask renderers if they are supported!
 	if(vid_quality_token != NULL)		return;
 	bool bSupports_r2 = false;
-	bool bSupports_r2_5 = false;
 	bool bSupports_r3 = false;
-	bool bSupports_r4 = false;
 
 	LPCSTR			r2_name	= "xrRender_R2.dll";
 	LPCSTR			r3_name	= "xrRender_R3.dll";
@@ -186,9 +184,7 @@ void CEngineAPI::CreateRendererList()
 	if (strstr(Core.Params,"-perfhud_hack"))
 	{
 		bSupports_r2 = true;
-		bSupports_r2_5 = true;
 		bSupports_r3 = true;
-		bSupports_r4 = true;
 	}
 	else
 	{
@@ -197,10 +193,9 @@ void CEngineAPI::CreateRendererList()
 		hRender			= LoadLibrary		(r2_name);
 		if (hRender)	
 		{
-			bSupports_r2 = true;
 			SupportsAdvancedRendering *test_rendering = (SupportsAdvancedRendering*) GetProcAddress(hRender,"SupportsAdvancedRendering");	
 			R_ASSERT(test_rendering);
-			bSupports_r2_5 = test_rendering();
+			bSupports_r2 = test_rendering();
 			FreeLibrary(hRender);
 		}
 
@@ -226,7 +221,7 @@ void CEngineAPI::CreateRendererList()
 	xr_vector<LPCSTR>			_tmp;
 	u32 i						= 0;
 	bool bBreakLoop = false;
-	for(; i<6; ++i)
+	for(; i<4; ++i)
 	{
 		switch (i)
 		{
@@ -234,11 +229,11 @@ void CEngineAPI::CreateRendererList()
 			if (!bSupports_r2)
 				bBreakLoop = true;
 			break;
-		case 3:		//"renderer_r2.5"
-			if (!bSupports_r2_5)
+		case 2:
+			if (!bSupports_r2)
 				bBreakLoop = true;
 			break;
-		case 4:		//"renderer_r_dx10"
+		case 3:		//"renderer_r_dx10"
 			if (!bSupports_r3)
 				bBreakLoop = true;
 			break;
@@ -253,10 +248,8 @@ void CEngineAPI::CreateRendererList()
 		{
 		case 0: val ="renderer_r1";			break;
 		case 1: val ="renderer_r2a";		break;
-		case 2: val ="renderer_r2";			break;
-		case 3: val ="renderer_r2.5";		break;
-		case 4: val ="renderer_r3";			break; //  -)
-		case 5: val ="renderer_r4";			break; //  -)
+		case 2: val ="renderer_r2";		break;
+		case 3: val ="renderer_r3";			break;
 		}
 		if (bBreakLoop) break;
 		_tmp.back()					= xr_strdup(val);
@@ -291,16 +284,16 @@ void CEngineAPI::CreateRendererList()
 
 	xr_vector<LPCSTR>			_tmp;
 	u32 i						= 0;
-	for(; i<5; ++i)
+	for(; i<4; ++i)
 	{
 		bool bBreakLoop = false;
 		switch (i)
 		{
-		case 3:		//"renderer_r2.5"
+		case 2:
 			if (ps_ver_major < 3)
 				bBreakLoop = true;
 			break;
-		case 4:		//"renderer_r_dx10"
+		case 3:		//"renderer_r_dx10"
 			bBreakLoop = true;
 			break;
 		default:	;
@@ -314,9 +307,8 @@ void CEngineAPI::CreateRendererList()
 		{
 		case 0: val ="renderer_r1";			break;
 		case 1: val ="renderer_r2a";		break;
-		case 2: val ="renderer_r2";			break;
-		case 3: val ="renderer_r2.5";		break;
-		case 4: val ="renderer_r_dx10";		break; //  -)
+		case 2: val ="renderer_r2";		break;
+		case 3: val ="renderer_r_dx10";		break;
 		}
 		_tmp.back()					= xr_strdup(val);
 	}

@@ -640,16 +640,16 @@ void	fill_render_mode_list()
 
 	xr_vector<LPCSTR>			_tmp;
 	u32 i						= 0;
-	for(; i<5; ++i)
+	for(; i<4; ++i)
 	{
 		bool bBreakLoop = false;
 		switch (i)
 		{
-		case 3:		//"renderer_r2.5"
+		case 2:
 			if (ps_ver_major < 3)
 				bBreakLoop = true;
 			break;
-		case 4:		//"renderer_r_dx10"
+		case 3:		//"renderer_r_dx10"
 			bBreakLoop = true;
 			break;
 		default:	;
@@ -663,9 +663,8 @@ void	fill_render_mode_list()
 		{
 			case 0: val ="renderer_r1";			break;
 			case 1: val ="renderer_r2a";		break;
-			case 2: val ="renderer_r2";			break;
-			case 3: val ="renderer_r2.5";		break;
-			case 4: val ="renderer_r_dx10";		break; //  -)
+			case 2: val ="renderer_r2";		break;
+			case 3: val ="renderer_r_dx10";		break; //  -)
 		}
 		_tmp.back()					= xr_strdup(val);
 	}

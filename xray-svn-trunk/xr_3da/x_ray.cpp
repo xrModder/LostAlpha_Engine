@@ -842,6 +842,9 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		if(strstr(Core.Params,"-r2"))	
 			Console->Execute			("renderer renderer_r2");
 		else
+		if(strstr(Core.Params,"-r3"))	
+			Console->Execute			("renderer renderer_r3");
+		else
 		{
 			CCC_LoadCFG_custom*	pTmp = xr_new<CCC_LoadCFG_custom>("renderer ");
 			pTmp->Execute				(Console->ConfigFile);
