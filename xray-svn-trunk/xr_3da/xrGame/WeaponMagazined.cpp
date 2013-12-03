@@ -337,7 +337,11 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 			l_pA->m_boxCurr = l_pA->m_boxCurr + (l_free < l_it->second ? l_free : l_it->second);
 			l_it->second = l_it->second - (l_free < l_it->second ? l_free : l_it->second);
 		}
-		if(l_it->second && !unlimited_ammo()) SpawnAmmo(l_it->second, l_it->first);
+		if(l_it->second && !unlimited_ammo())
+		{
+			SpawnAmmo(l_it->second, l_it->first);
+			if(l_pA && m_pCurrentInventory) m_pCurrentInventory->Belt(smart_cast<CInventoryItem*>(l_pA));
+		}
 	}
 }
 
