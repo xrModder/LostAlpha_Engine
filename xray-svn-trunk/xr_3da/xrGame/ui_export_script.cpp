@@ -9,6 +9,7 @@
 #include "UI/UIButton.h"
 #include "UI/UIProgressBar.h"
 #include "UI/UIEditBox.h"
+#include "UI/UIListWnd.h"
 #include "UI/UIMessageBox.h"
 #include "UI/UIPropertiesBox.h"
 #include "UI/UITabControl.h"
@@ -33,6 +34,7 @@ void UIRegistrator::script_register(lua_State *L)
 	CUITabControl::script_register(L);
 	CUIMessageBox::script_register(L);
 	CUIListBox::script_register(L);
+	CUIListWnd::script_register(L);
 	CUIDialogWndEx::script_register(L);
 	CUIPropertiesBox::script_register(L);
 	CUIOptionsManagerScript::script_register(L);

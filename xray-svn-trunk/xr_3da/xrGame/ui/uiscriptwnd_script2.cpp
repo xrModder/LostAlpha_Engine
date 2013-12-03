@@ -10,6 +10,7 @@
 #include "UIStatic.h"
 #include "UIEditBox.h"
 #include "UIListBox.h"
+#include "UIListWnd.h"
 #include "UIFrameWindow.h"
 #include "UIFrameLineWnd.h"
 #include "UIProgressBar.h"
@@ -31,7 +32,8 @@ export_class &script_register_ui_window2(export_class &instance)
 		.def("GetFrameLineWnd",	(CUIFrameLineWnd* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIFrameLineWnd>)
 		.def("GetProgressBar",	(CUIProgressBar* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIProgressBar>)
 		.def("GetTabControl",	(CUITabControl* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUITabControl>)
-		.def("GetListWnd",		(CUIListBox* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIListBox>)
+		.def("GetListBox",		(CUIListBox* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIListBox>)
+		.def("GetListWnd",		(CUIListWnd* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIListWnd>)
 
 		.def("OnKeyboard",		&BaseType::OnKeyboardAction, &WrapType::OnKeyboard_static)
 		.def("Update",			&BaseType::Update, &WrapType::Update_static)

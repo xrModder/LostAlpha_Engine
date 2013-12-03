@@ -20,6 +20,7 @@
 #include "ui\UIMMShniaga.h"
 #include "ui\UIScrollView.h"
 #include "ui\UIProgressBar.h"
+#include "ui\UIListWnd.h"
 
 using namespace luabind;
 
@@ -127,6 +128,14 @@ CUIListBox*	CScriptXmlInit::InitListBox(LPCSTR path, CUIWindow* parent)
 {
 	CUIListBox* pWnd = xr_new<CUIListBox>();
 	CUIXmlInit::InitListBox(m_xml, path, 0, pWnd);
+	_attach_child(pWnd, parent);
+	return pWnd;
+}
+
+CUIListWnd*	CScriptXmlInit::InitListWnd(LPCSTR path, CUIWindow* parent)
+{
+	CUIListWnd* pWnd = xr_new<CUIListWnd>();
+	CUIXmlInit::InitListWnd(m_xml, path, 0, pWnd);
 	_attach_child(pWnd, parent);
 	return pWnd;
 }
@@ -299,7 +308,8 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitKeyBinding",			&CScriptXmlInit::InitKeyBinding)
 		.def("InitMMShniaga",			&CScriptXmlInit::InitMMShniaga)
 		.def("InitScrollView",			&CScriptXmlInit::InitScrollView)
-		.def("InitList",				&CScriptXmlInit::InitListBox)
+		.def("InitListBox",				&CScriptXmlInit::InitListBox)
+		.def("InitList",				&CScriptXmlInit::InitListWnd)
 		.def("InitAutoStaticGroup",		&CScriptXmlInit::InitAutoStaticGroup)
 		.def("InitProgressBar",			&CScriptXmlInit::InitProgressBar)
 	];

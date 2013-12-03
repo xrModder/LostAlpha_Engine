@@ -27,6 +27,7 @@ class CUISleepStatic;
 class CUIOptionsItem;
 class CUIScrollView;
 class CUIListBox;
+class CUIListWnd;
 class CUIStatsPlayerList;
 class CUIDragDropListEx;
 class CUIComboBox;
@@ -57,6 +58,7 @@ public:
 	static bool 	Init3tButton			(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd);
 	static bool 	InitButton			(CUIXml& xml_doc, LPCSTR path, int index, CUIButton* pWnd);
 	static bool 	InitDragDropListEx		(CUIXml& xml_doc, LPCSTR path, int index, CUIDragDropListEx* pWnd);
+	static bool	InitListWnd			(CUIXml& xml_doc, LPCSTR path, int index, CUIListWnd* pWnd);
 	static bool 	InitProgressBar			(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressBar* pWnd);
 	static bool 	InitProgressShape		(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd);
 	static bool 	InitFont				(CUIXml& xml_doc, LPCSTR path, int index, u32 &color, CGameFont *&pFnt);

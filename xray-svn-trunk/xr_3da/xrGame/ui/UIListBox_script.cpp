@@ -42,7 +42,7 @@ void CUIListBox::script_register(lua_State *L)
 	module(L)
 	[
 
-		class_<CUIListBox, CUIScrollView>("CUIListWnd")
+		class_<CUIListBox, CUIScrollView>("CUIListBox")
 		.def(							constructor<>())
 		.def("ShowSelectedItem",		&CUIListBox::Show)
 		.def("RemoveAll",				&CUIListBox::Clear)
@@ -70,14 +70,14 @@ void CUIListBox::script_register(lua_State *L)
 
 		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
 
-		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListItem")
+		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListBoxItem")
 		.def(							constructor<>())
 		.def("GetTextItem",             &CUIListBoxItem::GetTextItem)
 		.def("AddTextField",            &CUIListBoxItem::AddTextField)
 		.def("AddIconField",            &CUIListBoxItem::AddIconField)
 		.def("SetTextColor",			&CUIListBoxItem::SetTextColor),
 
-		class_<CUIListBoxItemEx, CUIListBoxItem, CUIListBoxItemExWrapper>("CUIListItemEx")
+		class_<CUIListBoxItemEx, CUIListBoxItem, CUIListBoxItemExWrapper>("CUIListBoxItemEx")
 		.def(							constructor<>())
 		.def("SetSelectionColor",		&CUIListBoxItemEx::SetSelectionColor),
 
