@@ -460,13 +460,23 @@ IC void CBackend::ApplyVertexLayout()
 	{
 		ID3DInputLayout* pLayout;
 
-		CHK_DX(HW.pDevice->CreateInputLayout(
+		//SkyLoader: disabled crash
+		//CHK_DX(HW.pDevice->CreateInputLayout(
+ 		//	&decl->dx10_dcl_code[0],
+ 		//	decl->dx10_dcl_code.size()-1,
+ 		//	m_pInputSignature->GetBufferPointer(),
+ 		//	m_pInputSignature->GetBufferSize(),
+ 		//	&pLayout
+		//	));
+
+		//SkyLoader: just call
+		HW.pDevice->CreateInputLayout(
 			&decl->dx10_dcl_code[0],
 			decl->dx10_dcl_code.size()-1,
 			m_pInputSignature->GetBufferPointer(),
 			m_pInputSignature->GetBufferSize(),
 			&pLayout
-			));
+			);
 
 		it = decl->vs_to_layout.insert(
 			std::pair<ID3DBlob*, ID3DInputLayout*>(m_pInputSignature, pLayout)).first;

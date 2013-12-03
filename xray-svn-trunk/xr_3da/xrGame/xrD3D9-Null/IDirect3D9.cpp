@@ -63,9 +63,9 @@ UINT xrIDirect3D9::GetAdapterCount()
 HRESULT xrIDirect3D9::GetAdapterIdentifier(UINT Adapter,DWORD Flags,D3DADAPTER_IDENTIFIER9* pIdentifier)
 {
 	APIDEBUG("xrIDirect3D9::GetAdapterIdentifier");
-	sprintf(pIdentifier->Driver, "Default Driver");
-	sprintf(pIdentifier->Description, "Default X-Ray Dedicated Adapter");
-	sprintf(pIdentifier->DeviceName, "Dedicated");
+	sprintf_s(pIdentifier->Driver, "Default Driver");
+	sprintf_s(pIdentifier->Description, "Default X-Ray Dedicated Adapter");
+	sprintf_s(pIdentifier->DeviceName, "Dedicated");
 	return HRESULT_Proc(S_OK);
 };
 UINT xrIDirect3D9::GetAdapterModeCount( UINT Adapter,D3DFORMAT Format)
@@ -113,6 +113,8 @@ HRESULT xrIDirect3D9::CheckDeviceFormatConversion( UINT Adapter,D3DDEVTYPE Devic
 HRESULT xrIDirect3D9::GetDeviceCaps( UINT Adapter,D3DDEVTYPE DeviceType,D3DCAPS9* pCaps)
 {
 	APIDEBUG("xrIDirect3D9::GetDeviceCaps");
+	if (pCaps)
+		ZeroMemory(pCaps,sizeof(D3DCAPS9));
 	return HRESULT_Proc(S_OK);
 };
 HMONITOR xrIDirect3D9::GetAdapterMonitor( UINT Adapter)
