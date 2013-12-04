@@ -166,7 +166,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="X:\STALKER\dx9sdk\include;X:\STALKER\SDK;X:\STALKER\SDK\luabind\luabind;&quot;X:\STALKER\xray-svn-trunk\xrCore&quot;;X:\STALKER\SDK\loki;&quot;X:\STALKER\xray-svn-trunk\xrLua\src&quot;;X:\STALKER\SDK\Xiph\Include"
+				AdditionalIncludeDirectories="..\..\..\dx9sdk\include;..\..\..\SDK;..\..\..\SDK\luabind\luabind;&quot;..\..\..\xray-svn-trunk\xrCore&quot;;..\..\..\SDK\loki;&quot;..\..\..\xray-svn-trunk\xrLua\src&quot;;..\..\..\SDK\Xiph\Include"
 				PreprocessorDefinitions="DEBUG,MIXED,WIN32;_WINDOWS;_USRDLL;XRGAME_EXPORTS;dSINGLE;MSVC;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -205,7 +205,7 @@
 				AdditionalOptions="/MACHINE:I386 "
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="X:\STALKER\dx9sdk\lib;X:\libraries"
+				AdditionalLibraryDirectories="..\..\..\dx9sdk\lib;X:\libraries"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapFileName="$(OutDir)/$(ProjectName).map"
@@ -8157,7 +8157,7 @@
 							Name="states"
 							>
 							<File
-								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_states.cpp"
+								RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_states.cpp"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
@@ -8185,7 +8185,7 @@
 								</FileConfiguration>
 							</File>
 							<File
-								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_states.h"
+								RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_states.h"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
@@ -8216,7 +8216,7 @@
 								Name="base"
 								>
 								<File
-									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base.cpp"
+									RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_base.cpp"
 									>
 									<FileConfiguration
 										Name="Debug|Win32"
@@ -8244,7 +8244,7 @@
 									</FileConfiguration>
 								</File>
 								<File
-									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base.h"
+									RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_base.h"
 									>
 									<FileConfiguration
 										Name="Debug|Win32"
@@ -8272,7 +8272,7 @@
 									</FileConfiguration>
 								</File>
 								<File
-									RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_base_inline.h"
+									RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_base_inline.h"
 									>
 									<FileConfiguration
 										Name="Debug|Win32"
@@ -8305,7 +8305,7 @@
 							Name="state_manager"
 							>
 							<File
-								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.cpp"
+								RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.cpp"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
@@ -8333,7 +8333,7 @@
 								</FileConfiguration>
 							</File>
 							<File
-								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.h"
+								RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_manager.h"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
@@ -8361,7 +8361,7 @@
 								</FileConfiguration>
 							</File>
 							<File
-								RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\rat_state_manager_inline.h"
+								RelativePath="..\..\..\xray-svn-trunk\xr_3da\xrGame\rat_state_manager_inline.h"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"

@@ -339,7 +339,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lw", "lw", "{CAF885DB-D995-
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Server", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Server.vcproj", "{6BA3121A-ACBC-4685-9246-4549CA1EFFFD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Server", "..\..\xray-svn-trunk\plugins\lw\LW_Server.vcproj", "{6BA3121A-ACBC-4685-9246-4549CA1EFFFD}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -348,7 +348,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Server", "X:\STALKER\xra
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_70", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Export70.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE70}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_70", "..\..\xray-svn-trunk\plugins\lw\LW_Export70.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE70}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -357,7 +357,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_70", "X:\STALKER\
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_75", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Export75.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE75}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_75", "..\..\xray-svn-trunk\plugins\lw\LW_Export75.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE75}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -366,7 +366,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_75", "X:\STALKER\
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_80", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Export80.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE80}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_80", "..\..\xray-svn-trunk\plugins\lw\LW_Export80.vcproj", "{F573DE85-0866-4775-955F-6C3241D2AE80}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -376,7 +376,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Export_80", "X:\STALKER\
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_70", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Shader70.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3670}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_70", "..\..\xray-svn-trunk\plugins\lw\LW_Shader70.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3670}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -385,7 +385,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_70", "X:\STALKER\
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_75", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Shader75.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3675}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_75", "..\..\xray-svn-trunk\plugins\lw\LW_Shader75.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3675}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -394,7 +394,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_75", "X:\STALKER\
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_80", "X:\STALKER\xray-svn-trunk\plugins\lw\LW_Shader80.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3680}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_80", "..\..\xray-svn-trunk\plugins\lw\LW_Shader80.vcproj", "{39EE310B-4F1D-4716-A39F-4AB844DB3680}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -404,7 +404,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LW_Shader_80", "X:\STALKER\
 		{6BA3121A-ACBC-4685-9246-4549CA1EFFFD} = {6BA3121A-ACBC-4685-9246-4549CA1EFFFD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_60", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export60.vcproj", "{93AD3B7E-71DE-4FA2-90E7-A79782ED4960}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_60", "..\..\xray-svn-trunk\plugins\Max\MAX_Export60.vcproj", "{93AD3B7E-71DE-4FA2-90E7-A79782ED4960}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -414,7 +414,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_60", "X:\STALKER
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_80", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export80.vcproj", "{6A5E83E6-A80B-4A33-AB09-4B9954D4243C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_80", "..\..\xray-svn-trunk\plugins\Max\MAX_Export80.vcproj", "{6A5E83E6-A80B-4A33-AB09-4B9954D4243C}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -424,7 +424,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_80", "X:\STALKER
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_90", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export90.vcproj", "{E4E22878-D14B-437E-A23C-54207D337865}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_90", "..\..\xray-svn-trunk\plugins\Max\MAX_Export90.vcproj", "{E4E22878-D14B-437E-A23C-54207D337865}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -434,7 +434,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_90", "X:\STALKER
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2008", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export2008.vcproj", "{B78E484A-BAD7-4DB1-839A-A29BA98768F9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2008", "..\..\xray-svn-trunk\plugins\Max\MAX_Export2008.vcproj", "{B78E484A-BAD7-4DB1-839A-A29BA98768F9}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -444,7 +444,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2008", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2009", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export2009.vcproj", "{2ADA9945-A405-47CD-A409-A9A3A877BA66}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2009", "..\..\xray-svn-trunk\plugins\Max\MAX_Export2009.vcproj", "{2ADA9945-A405-47CD-A409-A9A3A877BA66}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -454,7 +454,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2009", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2010", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export2010.vcproj", "{8EF56F71-89BD-4D9C-80C9-318FFC240502}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2010", "..\..\xray-svn-trunk\plugins\Max\MAX_Export2010.vcproj", "{8EF56F71-89BD-4D9C-80C9-318FFC240502}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -464,7 +464,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2010", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2011", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Export2011.vcproj", "{AA44B8A1-CEC9-4F63-AC83-71C06DAFA2EF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2011", "..\..\xray-svn-trunk\plugins\Max\MAX_Export2011.vcproj", "{AA44B8A1-CEC9-4F63-AC83-71C06DAFA2EF}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -474,7 +474,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Export_2011", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_60", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material60.vcproj", "{56AD8F54-F89E-4B5A-93F8-8A617BFD1160}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_60", "..\..\xray-svn-trunk\plugins\Max\MAX_Material60.vcproj", "{56AD8F54-F89E-4B5A-93F8-8A617BFD1160}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -484,7 +484,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_60", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_80", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material80.vcproj", "{A233FB18-4136-4463-8DA2-1FE96FF1D4D5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_80", "..\..\xray-svn-trunk\plugins\Max\MAX_Material80.vcproj", "{A233FB18-4136-4463-8DA2-1FE96FF1D4D5}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -494,7 +494,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_80", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_90", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material90.vcproj", "{E6F9DC4F-E976-4763-B9B4-4C6EA650A75E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_90", "..\..\xray-svn-trunk\plugins\Max\MAX_Material90.vcproj", "{E6F9DC4F-E976-4763-B9B4-4C6EA650A75E}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -504,7 +504,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_90", "X:\STALK
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2008", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material2008.vcproj", "{CF5E811D-A88D-4E73-A692-EAA5CA0F5325}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2008", "..\..\xray-svn-trunk\plugins\Max\MAX_Material2008.vcproj", "{CF5E811D-A88D-4E73-A692-EAA5CA0F5325}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -514,7 +514,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2008", "X:\STA
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2009", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material2009.vcproj", "{1BE6AA0E-7A66-4947-8422-9CC177A92D1C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2009", "..\..\xray-svn-trunk\plugins\Max\MAX_Material2009.vcproj", "{1BE6AA0E-7A66-4947-8422-9CC177A92D1C}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -524,7 +524,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2009", "X:\STA
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2010", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material2010.vcproj", "{E666645C-699E-4D85-8553-8A9DC7A0050D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2010", "..\..\xray-svn-trunk\plugins\Max\MAX_Material2010.vcproj", "{E666645C-699E-4D85-8553-8A9DC7A0050D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -534,7 +534,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2010", "X:\STA
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2011", "X:\STALKER\xray-svn-trunk\plugins\Max\MAX_Material2011.vcproj", "{A5E9BFBD-7379-47BE-B79C-552BCF06C2FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2011", "..\..\xray-svn-trunk\plugins\Max\MAX_Material2011.vcproj", "{A5E9BFBD-7379-47BE-B79C-552BCF06C2FD}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -544,7 +544,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max_Material_2011", "X:\STA
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_45", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export45.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF67268B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_45", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export45.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF67268B}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -554,7 +554,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_45", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_50", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export50.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672650}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_50", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export50.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672650}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -564,7 +564,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_50", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_70", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export70.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672670}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_70", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export70.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672670}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -574,7 +574,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_70", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_60", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export601.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672660}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_60", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export601.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672660}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -584,7 +584,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_60", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_80", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export80.vcproj", "{B0ED3CE2-1417-46EF-AE39-59BCFF672670}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_80", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export80.vcproj", "{B0ED3CE2-1417-46EF-AE39-59BCFF672670}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -594,7 +594,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_80", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_85", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export85.vcproj", "{C2A6CB42-D6EC-4045-9452-B73FE1A4FABB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_85", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export85.vcproj", "{C2A6CB42-D6EC-4045-9452-B73FE1A4FABB}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -604,7 +604,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_85", "X:\STALKE
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2008", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export2008.vcproj", "{AE88E7AC-B10F-43FA-8C70-6FEBF88BE28D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2008", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export2008.vcproj", "{AE88E7AC-B10F-43FA-8C70-6FEBF88BE28D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -614,7 +614,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2008", "X:\STAL
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2009", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export2009.vcproj", "{775F3D25-C2AB-4A3E-897C-EEFD8C390467}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2009", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export2009.vcproj", "{775F3D25-C2AB-4A3E-897C-EEFD8C390467}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -624,7 +624,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2009", "X:\STAL
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2010", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export2010.vcproj", "{7985E78A-DCCF-4893-885D-3CA654C82D86}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2010", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export2010.vcproj", "{7985E78A-DCCF-4893-885D-3CA654C82D86}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -634,7 +634,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2010", "X:\STAL
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2011", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export2011.vcproj", "{93F48115-591A-4C2C-A6BF-595578EB0EE2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2011", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export2011.vcproj", "{93F48115-591A-4C2C-A6BF-595578EB0EE2}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -644,7 +644,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2011", "X:\STAL
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2012", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Export2012.vcproj", "{4113F3DA-D950-4896-BD17-EA981A46CA21}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2012", "..\..\xray-svn-trunk\plugins\Maya\Maya_Export2012.vcproj", "{4113F3DA-D950-4896-BD17-EA981A46CA21}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -654,7 +654,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Export_2012", "X:\STAL
 		{F1066EAC-EE25-4C7A-9023-5957A6F7BA27} = {F1066EAC-EE25-4C7A-9023-5957A6F7BA27}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_45", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material45.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672045}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_45", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material45.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672045}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -664,7 +664,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_45", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_50", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material50.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672050}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_50", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material50.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672050}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -674,7 +674,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_50", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_60", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material601.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672060}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_60", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material601.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672060}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -684,7 +684,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_60", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_70", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material70.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672070}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_70", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material70.vcproj", "{B0ED3CE1-1417-46EF-AE39-59BCFF672070}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -694,7 +694,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_70", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_80", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material80.vcproj", "{B0ED3CE2-1417-46EF-AE39-59BCFF672070}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_80", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material80.vcproj", "{B0ED3CE2-1417-46EF-AE39-59BCFF672070}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -704,7 +704,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_80", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_85", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material85.vcproj", "{F5FE7239-50EB-4AC0-AD32-6374C1A6DD6C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_85", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material85.vcproj", "{F5FE7239-50EB-4AC0-AD32-6374C1A6DD6C}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -714,7 +714,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_85", "X:\STAL
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2008", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material2008.vcproj", "{1113CF71-82EB-4823-8111-AD36BA062D17}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2008", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material2008.vcproj", "{1113CF71-82EB-4823-8111-AD36BA062D17}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -724,7 +724,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2008", "X:\ST
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2009", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material2009.vcproj", "{3B4F7A7F-00E9-4C1F-A18B-3ED3D1D5CED6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2009", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material2009.vcproj", "{3B4F7A7F-00E9-4C1F-A18B-3ED3D1D5CED6}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -734,7 +734,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2009", "X:\ST
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2010", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material2010.vcproj", "{C2D7CE1C-3F76-470E-B52B-602CB8B54C77}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2010", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material2010.vcproj", "{C2D7CE1C-3F76-470E-B52B-602CB8B54C77}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -744,7 +744,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2010", "X:\ST
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2011", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material2011.vcproj", "{4CECCDBC-ABAC-4869-8357-5B4F1FA5EA08}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2011", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material2011.vcproj", "{4CECCDBC-ABAC-4869-8357-5B4F1FA5EA08}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -754,7 +754,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2011", "X:\ST
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C} = {E8CF1ADA-264A-4127-86C2-FD7057D3792C}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2012", "X:\STALKER\xray-svn-trunk\plugins\Maya\Maya_Material2012.vcproj", "{A132A49E-8F74-4A7E-8AE2-75AD18DC7A6C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Maya_Material_2012", "..\..\xray-svn-trunk\plugins\Maya\Maya_Material2012.vcproj", "{A132A49E-8F74-4A7E-8AE2-75AD18DC7A6C}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
