@@ -18,7 +18,7 @@ class CUIAnimatedStatic;
 class CUIStatic;
 class CUIEncyclopediaCore;
 class CUIScrollView;
-class CUIListBox;
+class CUIListWnd;
 class CUITreeViewItem;
 
 class CUIEncyclopediaWnd: public CUIWindow
@@ -62,7 +62,7 @@ protected:
 	CGameFont*				m_pTreeItemFont;
 	u32						m_uTreeItemColor;
 
-	CUIListBox*				UIIdxList;
+	CUIListWnd*				UIIdxList;
 	CUIScrollView*			UIInfoList;
 
 	void				SetCurrentArtice(CUITreeViewItem *pTVItem);

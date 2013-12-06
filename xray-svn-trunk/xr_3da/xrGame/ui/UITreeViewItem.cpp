@@ -8,6 +8,7 @@
 
 #include "stdafx.h"
 #include "UITreeViewItem.h"
+#include "UIListWnd.h"
 #include "../string_table.h"
 
 
@@ -36,7 +37,6 @@ CUITreeViewItem::CUITreeViewItem()
 	UIBkg.InitTexture(treeItemBackgroundTexture);
 	UIBkg.TextureOff();
 	UIBkg.SetTextureOffset(-20, 0);
-//	UIBkg.TextItemControl()->EnableTextHighlighting(false);
 
 	m_bManualSetColor = false;
 }
@@ -56,7 +56,7 @@ void CUITreeViewItem::OnRootChanged()
 	if (isRoot)
 	{
 		// Вставляем после последнего пробела перед текстом знак + или -
-		str = GetText(GetSelectedIDX());
+		str = GetText();
 
 		xr_string::size_type pos = str.find_first_not_of(" ");
 		if (xr_string::npos == pos) pos = 0;
@@ -76,12 +76,11 @@ void CUITreeViewItem::OnRootChanged()
 			// Add plus sign
 			str.replace(pos, 1, "+");
 
-		if (GetSelectedItem())
-			GetSelectedItem()->m_text->SetText(str.c_str());
+		inherited::SetText(str.c_str());
 	}
 	else
 	{
-		str = GetText(GetSelectedIDX());
+		str = GetText();
 		// Remove "+/-" sign
 		xr_string::size_type pos = str.find_first_of("+-");
 
@@ -93,8 +92,7 @@ void CUITreeViewItem::OnRootChanged()
 		else
 			str.replace(pos, 1, " ");
 
-		if (GetSelectedItem())
-			GetSelectedItem()->m_text->SetText(str.c_str());
+		inherited::SetText(str.c_str());
 	}
 }
 
@@ -107,7 +105,7 @@ void CUITreeViewItem::OnOpenClose()
 
 	xr_string str;
 
-	str = GetText(GetSelectedIDX());
+	str = GetText();
 	xr_string::size_type pos = str.find_first_of("+-");
 
 	if (xr_string::npos != pos)
@@ -120,8 +118,7 @@ void CUITreeViewItem::OnOpenClose()
 			str.replace(pos, 1, "+");
 	}
 
-	if (GetSelectedItem())
-		GetSelectedItem()->m_text->SetText(str.c_str());
+	inherited::SetText(str.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,17 +133,16 @@ void CUITreeViewItem::Open()
 	OnOpenClose();
 	
 	// Аттачим все подэлементы к родтельскому листбоксу
-	CUIListBox *pList = smart_cast<CUIListBox*>(GetParent());
+	CUIListWnd *pList = smart_cast<CUIListWnd*>(GetParent());
 	
 	R_ASSERT(pList);
 	if (!pList) return;
 
-//	int pos = pList->GetItemPos(this);
+	int pos = pList->GetItemPos(this);
 
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-//		pList->AddItem(*it, ++pos);
-		pList->AddWindow(*it, true);
+		pList->AddItem(*it, ++pos);
 	}
 }
 
@@ -162,12 +158,12 @@ void CUITreeViewItem::Close()
 	OnOpenClose();
 
 	// Детачим все подэлементы
-	CUIListBox *pList = smart_cast<CUIListBox*>(GetParent());
+	CUIListWnd *pList = smart_cast<CUIListWnd*>(GetParent());
 
 	R_ASSERT(pList);
 	if (!pList) return;
 
-//	int pos;
+	int pos;
 
 	// Сначала все закрыть
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
@@ -178,9 +174,8 @@ void CUITreeViewItem::Close()
 	// Затем все датачим
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-//		pos = pList->GetItemPos(*it);
-//		pList->RemoveItem(pos);
-		pList->RemoveWindow(*it);
+		pos = pList->GetItemPos(*it);
+		pList->RemoveItem(pos);
 	}
 }
 
@@ -197,8 +192,7 @@ void CUITreeViewItem::AddItem(CUITreeViewItem *pItem)
 	pItem->SetAutoDelete(false);
 
 	pItem->SetOwner(this);
-//	pItem->SetText(pItem->GetText());
-	pItem->SetText(pItem->GetSelectedText());
+	pItem->SetText(pItem->GetText());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -245,8 +239,7 @@ void CUITreeViewItem::SetText(LPCSTR str)
 		s.erase(0, pos - iTextShift);
 	}
 
-	if (GetSelectedItem())
-		GetSelectedItem()->m_text->SetText(s.c_str());
+	inherited::SetText(s.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -296,8 +289,7 @@ CUITreeViewItem * CUITreeViewItem::Find(LPCSTR text) const
 
 	for (SubItems::const_iterator it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-//		caption = (*it)->GetText();
-		caption = (*it)->GetSelectedText();
+		caption = (*it)->GetText();
 		xr_string::size_type pos = caption.find_first_not_of(" +-");
 		if (pos != xr_string::npos)
 		{
@@ -324,8 +316,7 @@ CUITreeViewItem * CUITreeViewItem::Find(int value) const
 
 	for (SubItems::const_iterator it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-//		if ((*it)->GetValue() == value) pResult = *it;
-		if ((*it)->GetSelectedItem()->GetTAG() == (u32)value) pResult = *it;
+		if ((*it)->GetValue() == value) pResult = *it;
 
 		if ((*it)->IsRoot() && !pResult)
 			pResult = (*it)->Find(value);
@@ -367,8 +358,7 @@ xr_string CUITreeViewItem::GetHierarchyAsText()
 	}
 
 	xr_string::size_type prevPos = name.size() + 1;
-//	name += static_cast<xr_string>("/") + static_cast<xr_string>(GetText());
-	name += static_cast<xr_string>("/") + static_cast<xr_string>(GetSelectedText());
+	name += static_cast<xr_string>("/") + static_cast<xr_string>(GetText());
 
 	// Удаляем мусор: [ +-]
 	xr_string::size_type pos = name.find_first_not_of("/ +-", prevPos);
@@ -443,7 +433,7 @@ void CUITreeViewItem::CheckParentMark(CUITreeViewItem *pOwner)
 // Standalone function for tree hierarchy creation
 //////////////////////////////////////////////////////////////////////////
 
-void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pListToAdd, int leafProperty,
+void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListWnd *pListToAdd, int leafProperty,
 					  CGameFont *pRootFont, u32 rootColor, CGameFont *pLeafFont, u32 leafColor, bool markRead)
 {
 	// Nested function emulation
@@ -517,16 +507,14 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 	bool status = false;
 
 	// Для всех рутовых элементов
-//	for (int i = 0; i < pListToAdd->GetItemsCount(); ++i)
-	for (u32 i = 0; i < pListToAdd->GetSize(); ++i)
+	for (int i = 0; i < pListToAdd->GetItemsCount(); ++i)
 	{
 		pTVItem = smart_cast<CUITreeViewItem*>(pListToAdd->GetItem(i));
 		R_ASSERT(pTVItem);
 
 		pTVItem->Close();
 
-//		xr_string	caption = pTVItem->GetText();
-		xr_string	caption = pTVItem->GetText(i);
+		xr_string	caption = pTVItem->GetText();
 		// Remove "+" sign
 		caption.erase(0, 1);
 
@@ -560,8 +548,7 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 		pTVItemChilds->SetText(*groupTree.front());
 		pTVItemChilds->SetReadedColor(rootColor);
 		pTVItemChilds->SetRoot(true);
-//		pListToAdd->AddItem<CUITreeViewItem>(pTVItemChilds);
-		pListToAdd->AddWindow(pTVItemChilds, true);
+		pListToAdd->AddItem<CUITreeViewItem>(pTVItemChilds);
 
 		// Если в списке вложенности 1 элемент, то хвоста нет, и соответственно ничего не добавляем
 		if (groupTree.size() > 1)
@@ -578,8 +565,7 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 	pTVItem->SetFont(pLeafFont);
 	pTVItem->SetReadedColor(leafColor);
 	pTVItem->SetText(*CStringTable().translate(*leafName));
-//	pTVItem->SetValue(leafProperty);
-	pTVItem->SetSelectedTAG(leafProperty);
+	pTVItem->SetValue(leafProperty);
 	pTVItemChilds->AddItem(pTVItem);
 	pTVItem->MarkArticleAsRead(markRead);
 	//	}

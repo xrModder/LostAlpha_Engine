@@ -101,8 +101,12 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 	m_taskImage->InitTexture		(*obj->icon_texture_name);
 
 	Frect r							= obj->icon_rect;
-	m_taskImage->SetTextureRect	(r.x1, r.y1, r.x2, r.y2);
-//	m_taskImage->ClipperOn			();
+	Frect texture_rect;
+
+	texture_rect.lt.set					(r.x1, r.y1);
+	texture_rect.rb.set					(r.x2, r.y2);
+	texture_rect.rb.add					(texture_rect.lt);
+	m_taskImage->SetTextureRect	(texture_rect);
 	m_taskImage->SetStretchTexture	(true);
 
 	m_captionStatic->TextItemControl()->SetText		(*stbl.translate(m_GameTask->m_Title));
@@ -374,8 +378,12 @@ void CUIUserTaskItem::SetGameTask				(CGameTask* gt, u16 obj_idx)
 
 	m_image->InitTexture		(*obj->icon_texture_name);
 	Frect r						= obj->icon_rect;
-	m_image->SetTextureRect	(r.x1, r.y1, r.x2, r.y2);
-//	m_image->ClipperOn			();
+	Frect texture_rect;
+
+	texture_rect.lt.set					(r.x1, r.y1);
+	texture_rect.rb.set					(r.x2, r.y2);
+	texture_rect.rb.add					(texture_rect.lt);
+	m_image->SetTextureRect	(texture_rect);
 	m_image->SetStretchTexture	(true);
 
 	m_captionStatic->SetText					(*stbl.translate(gt->m_Title));

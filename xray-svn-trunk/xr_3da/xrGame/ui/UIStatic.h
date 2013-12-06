@@ -117,6 +117,7 @@ public:
 			LPCSTR			GetText					()							{return TextItemControl()->GetText();}
 			void			SetFont					(CGameFont* F)				{TextItemControl()->SetFont(F);}
 			CGameFont*		GetFont					()							{return TextItemControl()->GetFont();}
+			void			SetTextColor			(u32 color)					{TextItemControl()->SetTextColor(color);}
 			void			SetTextColor			(u32 r, u32 g, u32 b, u32 a)					{TextItemControl()->SetTextColor(color_rgba(r,g,b,a));}
 			u32			GetTextColor			()							{return TextItemControl()->GetTextColor();}
 			void			SetTextComplexMode		(bool mode = true)			{TextItemControl()->SetTextComplexMode(mode);}

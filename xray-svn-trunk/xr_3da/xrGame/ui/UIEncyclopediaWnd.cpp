@@ -20,6 +20,7 @@
 #include "../alife_registry_wrappers.h"
 #include "../actor.h"
 #include "../object_broker.h"
+#include "UIListWnd.h"
 
 #define				ENCYCLOPEDIA_DIALOG_XML		"encyclopedia.xml"
 
@@ -76,11 +77,11 @@ void CUIEncyclopediaWnd::Init()
 	UIEncyclopediaInfoBkg->AttachChild(UIArticleHeader);
 	CUIXmlInit::InitStatic(uiXml, "article_header_static", 0, UIArticleHeader);
 
-	UIIdxList					= xr_new<CUIListBox>(); UIIdxList->SetAutoDelete(true);
+	UIIdxList					= xr_new<CUIListWnd>(); UIIdxList->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIIdxList);
-	CUIXmlInit::InitListBox(uiXml, "idx_list", 0, UIIdxList);
+	CUIXmlInit::InitListWnd(uiXml, "idx_list", 0, UIIdxList);
 	UIIdxList->SetMessageTarget(this);
-//	UIIdxList->EnableScrollBar(true);
+	UIIdxList->EnableScrollBar(true);
 
 	UIInfoList					= xr_new<CUIScrollView>(); UIInfoList->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIInfoList);

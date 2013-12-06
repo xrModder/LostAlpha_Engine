@@ -190,10 +190,10 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 
 	m_pInvOwner							= pOur;
 	m_pOthersInvOwner					= pOthers;
-	m_uidata->UIOthersPriceCaption.SetText(*CStringTable().translate("ui_st_buy_items"));
 
 	m_uidata->UICharacterInfoLeft.InitCharacter(m_pInvOwner->object_id());
 	m_uidata->UICharacterInfoRight.InitCharacter(m_pOthersInvOwner->object_id());
+	m_uidata->UIOthersPriceCaption.GetPhraseByIndex(0)->str = *CStringTable().translate("ui_st_buy_items");
 
 	m_pInv								= &m_pInvOwner->inventory();
 	m_pOthersInv						= pOur->GetTrade()->GetPartnerInventory();
@@ -458,10 +458,11 @@ void CUITradeWnd::UpdatePrices()
 
 
 	string256				buf;
-	xr_sprintf					(buf, "%s\\n%d RU", *CStringTable().translate("ui_st_our_items"), m_iOurTradePrice);
-	m_uidata->UIOurPriceCaption.SetText(buf); m_uidata->UIOurPriceCaption.AdjustWidthToText();
-	xr_sprintf					(buf, "%s\\n%d RU", *CStringTable().translate("ui_st_opponent_items"), m_iOthersTradePrice);
-	m_uidata->UIOthersPriceCaption.SetText(buf); m_uidata->UIOthersPriceCaption.AdjustWidthToText();
+	xr_sprintf					(buf, "%d RU", m_iOurTradePrice);
+	m_uidata->UIOurPriceCaption.GetPhraseByIndex(2)->str = buf;
+	xr_sprintf					(buf, "%d RU", m_iOthersTradePrice);
+	m_uidata->UIOthersPriceCaption.GetPhraseByIndex(2)->str = buf;
+
 	xr_sprintf					(buf, "%d RU", m_pInvOwner->get_money());
 	m_uidata->UIOurMoneyStatic.SetText(buf);
 
