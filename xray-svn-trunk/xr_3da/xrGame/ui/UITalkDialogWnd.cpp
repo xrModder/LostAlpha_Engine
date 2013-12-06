@@ -318,7 +318,11 @@ void CUIAnswerItemIconed::Init		(LPCSTR text, LPCSTR texture_name, Frect texture
 {
 	inherited::Init					(text,"");
 	m_icon->CreateShader			(texture_name,"hud\\default");
-	m_icon->GetUIStaticItem().SetTextureRect(texture_rect.x1,texture_rect.y1,texture_rect.x2,texture_rect.y2);
+	Frect icon_rect;
+	icon_rect.lt.set				(texture_rect.x1, texture_rect.y1);
+	icon_rect.rb.set				(texture_rect.x2, texture_rect.y2);
+	icon_rect.rb.add				(icon_rect.lt);
+	m_icon->GetUIStaticItem().SetTextureRect	(icon_rect);
 	m_icon->TextureOn				();
 	m_icon->SetStretchTexture		(true);
 
