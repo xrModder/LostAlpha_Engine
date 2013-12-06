@@ -12,13 +12,14 @@ public:
 	virtual void InitFrameLineWnd	(LPCSTR base_name, Fvector2 pos, Fvector2 size, bool horizontal = true);
 	virtual void InitFrameLineWnd	(Fvector2 pos, Fvector2 size, bool horizontal = true);
 	virtual void InitTexture		(LPCSTR tex_name, bool horizontal = true);
+	virtual void InitTexture		(LPCSTR tex_name, LPCSTR sh_name);
 	virtual void Draw				();
 	virtual void SetWidth			(float width);
 	virtual void SetHeight			(float height);
 
 	// Also we can display textual caption on the frame
-	CUITextWnd		UITitleText;
-	CUITextWnd*		GetTitleStatic(){return &UITitleText;};
+	CUIStatic		UITitleText; //SkyLoader: dont change class to CUITextWnd because it needed for scripts
+	CUIStatic*		GetTitleStatic(){return &UITitleText;};
 
 	virtual void Init_script		(LPCSTR base_name, float x, float y, float width, float height, bool horizontal = true)
 									{ InitFrameLineWnd(base_name, Fvector2().set(x,y), Fvector2().set(width, height), horizontal); }

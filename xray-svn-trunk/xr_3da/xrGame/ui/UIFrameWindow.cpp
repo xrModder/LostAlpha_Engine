@@ -10,7 +10,7 @@ CUIFrameWindow::CUIFrameWindow()
 :m_bTextureVisible(false)
 {
 	m_texture_color	= color_argb(255,255,255,255);
-	UITitleText					= xr_new<CUITextWnd>();
+	UITitleText					= xr_new<CUIStatic>();
 	UITitleText->SetAutoDelete	(true);
 	AttachChild					(UITitleText);
 }

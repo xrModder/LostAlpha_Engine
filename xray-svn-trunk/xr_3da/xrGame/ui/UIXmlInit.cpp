@@ -118,7 +118,7 @@ bool CUIXmlInit::InitFrameWindow(CUIXml& xml_doc, LPCSTR path,
 
 	//инициализировать заголовок окна
 	strconcat(sizeof(buf),buf,path,":title");
-	if(xml_doc.NavigateToNode(buf,index)) InitTextWnd(xml_doc, buf, index, pWnd->UITitleText);
+	if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, pWnd->UITitleText);
 	
 	pWnd->BringToTop	(pWnd->UITitleText);
 
@@ -884,7 +884,7 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	pWnd->InitFrameLineWnd(*base_name, pos, size, !vertical);
 
 	strconcat(sizeof(buf),buf,path,":title");
-	if(xml_doc.NavigateToNode(buf,index)) InitTextWnd(xml_doc, buf, index, &pWnd->UITitleText);
+	if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
 
 	return true;
 }

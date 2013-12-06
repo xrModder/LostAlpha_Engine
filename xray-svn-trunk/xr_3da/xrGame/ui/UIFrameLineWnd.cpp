@@ -59,6 +59,13 @@ void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, bool horizontal)
 	m_bTextureAvailable = true;
 }
 
+void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, LPCSTR sh_name)
+{
+	UIFrameLine.InitTexture(tex_name, sh_name);
+
+	m_bTextureAvailable = true;
+}
+
 void CUIFrameLineWnd::Draw()
 {
 	if (m_bTextureAvailable)

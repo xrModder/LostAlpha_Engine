@@ -28,8 +28,8 @@ public:
 	virtual void	Draw						();
 
 	//текст заголовка
-	CUITextWnd*		UITitleText;
-	CUITextWnd*		GetTitleStatic				()										{return UITitleText;};
+	CUIStatic*		UITitleText; //SkyLoader: dont change class to CUITextWnd because it needed for scripts
+	CUIStatic*		GetTitleStatic				()										{return UITitleText;};
 	
 protected:
 	bool			m_bTextureVisible;
