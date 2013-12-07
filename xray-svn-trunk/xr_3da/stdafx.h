@@ -5,7 +5,9 @@
 #ifdef _EDITOR
 	#include "..\editors\ECore\stdafx.h"
 #else
-
+#ifndef DRENDER
+#define DRENDER
+#endif
 #include "../xrCore/xrCore.h"
 #include "../Include/xrAPI/xrAPI.h"
 
