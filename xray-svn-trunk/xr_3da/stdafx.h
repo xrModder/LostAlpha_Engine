@@ -5,9 +5,11 @@
 #ifdef _EDITOR
 	#include "..\editors\ECore\stdafx.h"
 #else
+// gr1ph to all: please note that DRENDER shouldnt be defined in release!!
 #ifndef DRENDER
 #define DRENDER
 #endif
+
 #include "../xrCore/xrCore.h"
 #include "../Include/xrAPI/xrAPI.h"
 
