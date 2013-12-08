@@ -161,7 +161,7 @@
 //
 // The resource was realized on the wrong render target
 //
-#define D2DERR_WRONG_RENDER_TARGET          MAKE_D2DHR_ERR(0x015)
+#define D2DERR_WRONG_RESOURCE_DOMAIN        MAKE_D2DHR_ERR(0x015)
 
 //
 // The push and pop calls were unbalanced

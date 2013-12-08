@@ -58,18 +58,8 @@ typedef enum DWRITE_MEASURING_MODE
     /// Text is measured using the same glyph display metrics as text measured by GDI using a font
     /// created with CLEARTYPE_NATURAL_QUALITY.
     /// </summary>
-    DWRITE_MEASURING_MODE_GDI_NATURAL,
-
-    // Deprecated: These aliases are only here to ease potential merge conflicts.
-    // They will be removed after January 28. BUG: 394869
-    DWRITE_TEXT_MEASURING_METHOD_USE_IDEAL_METRICS = DWRITE_MEASURING_MODE_NATURAL,
-    DWRITE_TEXT_MEASURING_METHOD_USE_DISPLAY_COMPATIBLE_METRICS = DWRITE_MEASURING_MODE_GDI_CLASSIC,
-    DWRITE_TEXT_MEASURING_METHOD_USE_DISPLAY_NATURAL_METRICS = DWRITE_MEASURING_MODE_GDI_NATURAL
+    DWRITE_MEASURING_MODE_GDI_NATURAL
 
 } DWRITE_MEASURING_MODE;
-
-// Deprecated: This alias is only here to ease potential merge conflicts.
-// It will be removed after January 28. BUG: 394869
-typedef DWRITE_MEASURING_MODE DWRITE_TEXT_MEASURING_METHOD;
 
 #endif /* DCOMMON_H_INCLUDED */

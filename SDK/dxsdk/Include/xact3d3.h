@@ -1,5 +1,5 @@
 /*-========================================================================-_
- |                                - XACT3D -                                |
+ |                               - XACT3D3 -                                |
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |VERSION:  0.1                         MODEL:   Unmanaged User-mode        |
@@ -13,8 +13,9 @@
     1.  See X3DAudio.h for information regarding X3DAudio types.            */
 
 
-#ifndef __XACT3D_H__
-#define __XACT3D_H__
+#ifndef __XACT3D3_H__
+#define __XACT3D3_H__
+
 //--------------<D-E-F-I-N-I-T-I-O-N-S>-------------------------------------//
     #include <x3daudio.h>
     #include <xact3.h>
@@ -269,5 +270,6 @@
 
 
     #pragma warning(pop)
-#endif // __XACT3D_H__
+
+#endif // __XACT3D3_H__
 //---------------------------------<-EOF->----------------------------------//
