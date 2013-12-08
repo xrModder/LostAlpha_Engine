@@ -14,6 +14,10 @@
 #pragma warning( 4 : 4244 )
 #pragma warning(disable:4237)
 
+#ifndef USE_DX10
+#define USE_DX10
+#endif
+
 #include <d3d10_1.h>
 #include <d3d11.h>
 #include <D3Dx10core.h>

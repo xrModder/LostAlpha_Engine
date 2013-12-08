@@ -13,12 +13,14 @@ void CGammaControl::Update()
 		IDXGIOutput *pOutput;
 
 		CHK_DX (HW.m_pSwapChain->GetContainingOutput(&pOutput));
+		pOutput->TakeOwnership(HW.pDevice, TRUE);
 		HRESULT hr = pOutput->GetGammaControlCapabilities(&GC);
 		if (SUCCEEDED(hr))
 		{
 			GenLUT( GC, G );
 			pOutput->SetGammaControl(&G);
 		}
+		pOutput->ReleaseOwnership();
 	}
 }
 
