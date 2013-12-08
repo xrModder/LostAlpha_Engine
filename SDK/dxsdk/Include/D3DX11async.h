@@ -4,7 +4,7 @@
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 //
 //  File:       D3DX11Async.h
-//  Content:    D3DX11 Asynchronous Effect / Shader loaders / compilers
+//  Content:    D3DX11 Asynchronous Shader loaders / compilers
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -99,7 +99,6 @@ HRESULT WINAPI D3DX11CompileFromResourceW(HMODULE hSrcModule, LPCWSTR pSrcResour
 HRESULT WINAPI D3DX11CompileFromMemory(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
     LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2, ID3DX11ThreadPump* pPump, ID3D10Blob** ppShader, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-
 HRESULT WINAPI D3DX11PreprocessShaderFromFileA(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, 
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
@@ -131,11 +130,8 @@ HRESULT WINAPI D3DX11CreateAsyncCompilerProcessor(LPCSTR pFileName, CONST D3D10_
         LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2,
         ID3D10Blob **ppCompiledShader, ID3D10Blob **ppErrorBuffer, ID3DX11DataProcessor **ppProcessor);
 
-
 HRESULT WINAPI D3DX11CreateAsyncShaderPreprocessProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
         ID3D10Blob** ppShaderText, ID3D10Blob **ppErrorBuffer, ID3DX11DataProcessor **ppProcessor);
-
-
 
 //----------------------------------------------------------------------------
 // D3DX11 Asynchronous texture I/O (advanced mode)

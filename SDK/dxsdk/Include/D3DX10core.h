@@ -15,8 +15,8 @@
 // Current name of the DLL shipped in the same SDK as this header.
 
 
-#define D3DX10_DLL_W L"d3dx10_41.dll"
-#define D3DX10_DLL_A "d3dx10_41.dll"
+#define D3DX10_DLL_W L"d3dx10_43.dll"
+#define D3DX10_DLL_A "d3dx10_43.dll"
 
 #ifdef UNICODE
     #define D3DX10_DLL D3DX10_DLL_W 
@@ -39,7 +39,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////
 
 
-#define D3DX10_SDK_VERSION 41
+#define D3DX10_SDK_VERSION 43
 
 
 ///////////////////////////////////////////////////////////////////////////

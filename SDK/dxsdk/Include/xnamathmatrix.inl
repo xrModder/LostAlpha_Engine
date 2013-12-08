@@ -1010,9 +1010,9 @@ XMFINLINE XMMATRIX XMMatrixTranslationFromVector
     M.m[2][2] = 1.0f;
     M.m[2][3] = 0.0f;
 
-    M.m[3][0] = Offset.x;
-    M.m[3][1] = Offset.y;
-    M.m[3][2] = Offset.z;
+    M.m[3][0] = Offset.vector4_f32[0];
+    M.m[3][1] = Offset.vector4_f32[1];
+    M.m[3][2] = Offset.vector4_f32[2];
     M.m[3][3] = 1.0f;
     return M;
 
@@ -1070,19 +1070,19 @@ XMFINLINE XMMATRIX XMMatrixScalingFromVector
 {
 #if defined(_XM_NO_INTRINSICS_)
     XMMATRIX M;
-    M.m[0][0] = Scale.x;
+    M.m[0][0] = Scale.vector4_f32[0];
     M.m[0][1] = 0.0f;
     M.m[0][2] = 0.0f;
     M.m[0][3] = 0.0f;
 
     M.m[1][0] = 0.0f;
-    M.m[1][1] = Scale.y;
+    M.m[1][1] = Scale.vector4_f32[1];
     M.m[1][2] = 0.0f;
     M.m[1][3] = 0.0f;
 
     M.m[2][0] = 0.0f;
     M.m[2][1] = 0.0f;
-    M.m[2][2] = Scale.z;
+    M.m[2][2] = Scale.vector4_f32[2];
     M.m[2][3] = 0.0f;
 
     M.m[3][0] = 0.0f;
@@ -1626,21 +1626,21 @@ XMINLINE XMMATRIX XMMatrixTransformation2D
 
     // M = Inverse(MScalingOrigin) * Transpose(MScalingOrientation) * MScaling * MScalingOrientation *
     //         MScalingOrigin * Inverse(MRotationOrigin) * MRotation * MRotationOrigin * MTranslation;
-    static const XMVECTORU32 g_XMMask2 = {0xFFFFFFFF,0xFFFFFFFF,0,0};
-    static const XMVECTORF32 g_XMZWOne = {0,0,1.0f,1.0f};
+    static const XMVECTORU32 Mask2 = {0xFFFFFFFF,0xFFFFFFFF,0,0};
+    static const XMVECTORF32 ZWOne = {0,0,1.0f,1.0f};
 
-    VScalingOrigin       = _mm_and_ps(ScalingOrigin, g_XMMask2);
+    VScalingOrigin       = _mm_and_ps(ScalingOrigin, Mask2);
     NegScalingOrigin     = XMVectorNegate(VScalingOrigin);
 
     MScalingOriginI      = XMMatrixTranslationFromVector(NegScalingOrigin);
     MScalingOrientation  = XMMatrixRotationZ(ScalingOrientation);
     MScalingOrientationT = XMMatrixTranspose(MScalingOrientation);
-    VScaling             = _mm_and_ps(Scaling, g_XMMask2);
-    VScaling = _mm_or_ps(VScaling,g_XMZWOne);
+    VScaling             = _mm_and_ps(Scaling, Mask2);
+    VScaling = _mm_or_ps(VScaling,ZWOne);
     MScaling             = XMMatrixScalingFromVector(VScaling);
-    VRotationOrigin      = _mm_and_ps(RotationOrigin, g_XMMask2);
+    VRotationOrigin      = _mm_and_ps(RotationOrigin, Mask2);
     MRotation            = XMMatrixRotationZ(Rotation);
-    VTranslation         = _mm_and_ps(Translation,g_XMMask2);
+    VTranslation         = _mm_and_ps(Translation, Mask2);
 
     M      = XMMatrixMultiply(MScalingOriginI, MScalingOrientationT);
     M      = XMMatrixMultiply(M, MScaling);
@@ -1788,17 +1788,17 @@ XMINLINE XMMATRIX XMMatrixAffineTransformation2D
     XMVECTOR VRotationOrigin;
     XMMATRIX MRotation;
     XMVECTOR VTranslation;
-    static const XMVECTORU32 g_XMMask2 = {0xFFFFFFFFU,0xFFFFFFFFU,0,0};
-    static const XMVECTORF32 g_XMZW1 = {0,0,1.0f,1.0f};
+    static const XMVECTORU32 Mask2 = {0xFFFFFFFFU,0xFFFFFFFFU,0,0};
+    static const XMVECTORF32 ZW1 = {0,0,1.0f,1.0f};
 
     // M = MScaling * Inverse(MRotationOrigin) * MRotation * MRotationOrigin * MTranslation;
 
-    VScaling = _mm_and_ps(Scaling, g_XMMask2);
-    VScaling = _mm_or_ps(VScaling,g_XMZW1);
+    VScaling = _mm_and_ps(Scaling, Mask2);
+    VScaling = _mm_or_ps(VScaling, ZW1);
     MScaling = XMMatrixScalingFromVector(VScaling);
-    VRotationOrigin = _mm_and_ps(RotationOrigin, g_XMMask2);
+    VRotationOrigin = _mm_and_ps(RotationOrigin, Mask2);
     MRotation = XMMatrixRotationZ(Rotation);
-    VTranslation = _mm_and_ps(Translation,g_XMMask2);
+    VTranslation = _mm_and_ps(Translation, Mask2);
 
     M      = MScaling;
     M.r[3] = _mm_sub_ps(M.r[3], VRotationOrigin);
@@ -2310,7 +2310,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveRH
 XMFINLINE XMMATRIX XMMatrixPerspectiveFovLH
 (
     FLOAT FovAngleY, 
-    FLOAT AspectHByW, 
+    FLOAT AspectRatio, 
     FLOAT NearZ, 
     FLOAT FarZ
 )
@@ -2324,24 +2324,24 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovLH
     XMMATRIX M;
 
     XMASSERT(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
-    XMASSERT(!XMScalarNearEqual(AspectHByW, 0.0f, 0.00001f));
+    XMASSERT(!XMScalarNearEqual(AspectRatio, 0.0f, 0.00001f));
     XMASSERT(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 
     XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
 
     Height = CosFov / SinFov;
-    Width = Height / AspectHByW;
+    Width = Height / AspectRatio;
 
     M.r[0] = XMVectorSet(Width, 0.0f, 0.0f, 0.0f);
     M.r[1] = XMVectorSet(0.0f, Height, 0.0f, 0.0f);
     M.r[2] = XMVectorSet(0.0f, 0.0f, FarZ / (FarZ - NearZ), 1.0f);
-    M.r[3] = XMVectorSet(0.0f, 0.0f, -M.r[2].v[2] * NearZ, 0.0f);
+    M.r[3] = XMVectorSet(0.0f, 0.0f, -M.r[2].vector4_f32[2] * NearZ, 0.0f);
 
     return M;
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
-    XMASSERT(!XMScalarNearEqual(AspectHByW, 0.0f, 0.00001f));
+    XMASSERT(!XMScalarNearEqual(AspectRatio, 0.0f, 0.00001f));
     XMASSERT(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 	XMMATRIX M;
     FLOAT    SinFov;
@@ -2351,7 +2351,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovLH
     // Note: This is recorded on the stack
     FLOAT Height = CosFov / SinFov;
     XMVECTOR rMem = {
-        Height / AspectHByW,
+        Height / AspectRatio,
         Height,
         fRange,
         -fRange * NearZ
@@ -2363,7 +2363,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovLH
     vTemp = _mm_move_ss(vTemp,vValues);
     // CosFov / SinFov,0,0,0
     M.r[0] = vTemp;
-    // 0,Height / AspectHByW,0,0
+    // 0,Height / AspectRatio,0,0
     vTemp = vValues;
     vTemp = _mm_and_ps(vTemp,g_XMMaskY);
     M.r[1] = vTemp;
@@ -2386,7 +2386,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovLH
 XMFINLINE XMMATRIX XMMatrixPerspectiveFovRH
 (
     FLOAT FovAngleY, 
-    FLOAT AspectHByW, 
+    FLOAT AspectRatio, 
     FLOAT NearZ, 
     FLOAT FarZ
 )
@@ -2400,24 +2400,24 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovRH
     XMMATRIX M;
 
     XMASSERT(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
-    XMASSERT(!XMScalarNearEqual(AspectHByW, 0.0f, 0.00001f));
+    XMASSERT(!XMScalarNearEqual(AspectRatio, 0.0f, 0.00001f));
     XMASSERT(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 
     XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
 
     Height = CosFov / SinFov;
-    Width = Height / AspectHByW;
+    Width = Height / AspectRatio;
 
     M.r[0] = XMVectorSet(Width, 0.0f, 0.0f, 0.0f);
     M.r[1] = XMVectorSet(0.0f, Height, 0.0f, 0.0f);
     M.r[2] = XMVectorSet(0.0f, 0.0f, FarZ / (NearZ - FarZ), -1.0f);
-    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].v[2] * NearZ, 0.0f);
+    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].vector4_f32[2] * NearZ, 0.0f);
 
     return M;
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
-    XMASSERT(!XMScalarNearEqual(AspectHByW, 0.0f, 0.00001f));
+    XMASSERT(!XMScalarNearEqual(AspectRatio, 0.0f, 0.00001f));
     XMASSERT(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 	XMMATRIX M;
     FLOAT    SinFov;
@@ -2427,7 +2427,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovRH
     // Note: This is recorded on the stack
     FLOAT Height = CosFov / SinFov;
     XMVECTOR rMem = {
-        Height / AspectHByW,
+        Height / AspectRatio,
         Height,
         fRange,
         fRange * NearZ
@@ -2439,7 +2439,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveFovRH
     vTemp = _mm_move_ss(vTemp,vValues);
     // CosFov / SinFov,0,0,0
     M.r[0] = vTemp;
-    // 0,Height / AspectHByW,0,0
+    // 0,Height / AspectRatio,0,0
     vTemp = vValues;
     vTemp = _mm_and_ps(vTemp,g_XMMaskY);
     M.r[1] = vTemp;
@@ -2490,7 +2490,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveOffCenterLH
                          -(ViewTop + ViewBottom) * ReciprocalHeight,
                          FarZ / (FarZ - NearZ),
                          1.0f);
-    M.r[3] = XMVectorSet(0.0f, 0.0f, -M.r[2].v[2] * NearZ, 0.0f);
+    M.r[3] = XMVectorSet(0.0f, 0.0f, -M.r[2].vector4_f32[2] * NearZ, 0.0f);
 
     return M;
 
@@ -2567,7 +2567,7 @@ XMFINLINE XMMATRIX XMMatrixPerspectiveOffCenterRH
                          (ViewTop + ViewBottom) * ReciprocalHeight,
                          FarZ / (NearZ - FarZ),
                          -1.0f);
-    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].v[2] * NearZ, 0.0f);
+    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].vector4_f32[2] * NearZ, 0.0f);
 
     return M;
 
@@ -2698,7 +2698,7 @@ XMFINLINE XMMATRIX XMMatrixOrthographicRH
     M.r[0] = XMVectorSet(2.0f / ViewWidth, 0.0f, 0.0f, 0.0f);
     M.r[1] = XMVectorSet(0.0f, 2.0f / ViewHeight, 0.0f, 0.0f);
     M.r[2] = XMVectorSet(0.0f, 0.0f, 1.0f / (NearZ - FarZ), 0.0f);
-    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].v[2] * NearZ, 1.0f);
+    M.r[3] = XMVectorSet(0.0f, 0.0f, M.r[2].vector4_f32[2] * NearZ, 1.0f);
 
     return M;
 
@@ -2770,7 +2770,7 @@ XMFINLINE XMMATRIX XMMatrixOrthographicOffCenterLH
     M.r[2] = XMVectorSet(0.0f, 0.0f, 1.0f / (FarZ - NearZ), 0.0f);
     M.r[3] = XMVectorSet(-(ViewLeft + ViewRight) * ReciprocalWidth, 
                          -(ViewTop + ViewBottom) * ReciprocalHeight,
-                         -M.r[2].v[2] * NearZ,
+                         -M.r[2].vector4_f32[2] * NearZ,
                          1.0f);
 
     return M;
@@ -2848,7 +2848,7 @@ XMFINLINE XMMATRIX XMMatrixOrthographicOffCenterRH
     M.r[2] = XMVectorSet(0.0f, 0.0f, 1.0f / (NearZ - FarZ), 0.0f);
     M.r[3] = XMVectorSet(-(ViewLeft + ViewRight) * ReciprocalWidth, 
                          -(ViewTop + ViewBottom) * ReciprocalHeight,
-                         M.r[2].v[2] * NearZ,
+                         M.r[2].vector4_f32[2] * NearZ,
                          1.0f);
 
     return M;
@@ -2951,28 +2951,6 @@ XMFINLINE _XMMATRIX::_XMMATRIX
 
 //------------------------------------------------------------------------------
 
-XMFINLINE FLOAT _XMMATRIX::operator()
-(
-    UINT Row,
-    UINT Column
-) CONST
-{
-	return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
-XMFINLINE FLOAT& _XMMATRIX::operator()
-(
-    UINT Row,
-    UINT Column
-)
-{
-	return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
 XMFINLINE _XMMATRIX& _XMMATRIX::operator=
 (
     CONST _XMMATRIX& M
@@ -3068,28 +3046,6 @@ XMFINLINE _XMFLOAT3X3::_XMFLOAT3X3
 
 //------------------------------------------------------------------------------
 
-XMFINLINE FLOAT _XMFLOAT3X3::operator()
-(
-    UINT Row,
-    UINT Column
-) CONST
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
-XMFINLINE FLOAT& _XMFLOAT3X3::operator()
-(
-    UINT Row,
-    UINT Column
-)
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
 XMFINLINE _XMFLOAT3X3& _XMFLOAT3X3::operator=
 (
     CONST _XMFLOAT3X3& Float3x3
@@ -3162,28 +3118,6 @@ XMFINLINE _XMFLOAT4X3::_XMFLOAT4X3
 
 //------------------------------------------------------------------------------
 
-XMFINLINE FLOAT _XMFLOAT4X3::operator()
-(
-    UINT Row,
-    UINT Column
-) CONST
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
-XMFINLINE FLOAT& _XMFLOAT4X3::operator()
-(
-    UINT Row,
-    UINT Column
-)
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
 XMFINLINE _XMFLOAT4X3& _XMFLOAT4X3::operator=
 (
     CONST _XMFLOAT4X3& Float4x3
@@ -3196,6 +3130,24 @@ XMFINLINE _XMFLOAT4X3& _XMFLOAT4X3::operator=
     XMStoreFloat4((XMFLOAT4*)&_11, V1);
     XMStoreFloat4((XMFLOAT4*)&_22, V2);
     XMStoreFloat4((XMFLOAT4*)&_33, V3);
+
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+XMFINLINE XMFLOAT4X3A& XMFLOAT4X3A::operator=
+(
+    CONST XMFLOAT4X3A& Float4x3
+)
+{
+    XMVECTOR V1 = XMLoadFloat4A((XMFLOAT4A*)&Float4x3._11);
+    XMVECTOR V2 = XMLoadFloat4A((XMFLOAT4A*)&Float4x3._22);
+    XMVECTOR V3 = XMLoadFloat4A((XMFLOAT4A*)&Float4x3._33);
+
+    XMStoreFloat4A((XMFLOAT4A*)&_11, V1);
+    XMStoreFloat4A((XMFLOAT4A*)&_22, V2);
+    XMStoreFloat4A((XMFLOAT4A*)&_33, V3);
 
     return *this;
 }
@@ -3258,28 +3210,6 @@ XMFINLINE _XMFLOAT4X4::_XMFLOAT4X4
 
 //------------------------------------------------------------------------------
 
-XMFINLINE FLOAT _XMFLOAT4X4::operator()
-(
-    UINT Row,
-    UINT Column
-) CONST
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
-XMFINLINE FLOAT& _XMFLOAT4X4::operator()
-(
-    UINT Row,
-    UINT Column
-)
-{
-    return m[Row][Column];
-}
-
-//------------------------------------------------------------------------------
-
 XMFINLINE _XMFLOAT4X4& _XMFLOAT4X4::operator=
 (
     CONST _XMFLOAT4X4& Float4x4
@@ -3294,6 +3224,26 @@ XMFINLINE _XMFLOAT4X4& _XMFLOAT4X4::operator=
     XMStoreFloat4((XMFLOAT4*)&_21, V2);
     XMStoreFloat4((XMFLOAT4*)&_31, V3);
     XMStoreFloat4((XMFLOAT4*)&_41, V4);
+
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+XMFINLINE XMFLOAT4X4A& XMFLOAT4X4A::operator=
+(
+    CONST XMFLOAT4X4A& Float4x4
+)
+{
+    XMVECTOR V1 = XMLoadFloat4A((XMFLOAT4A*)&Float4x4._11);
+    XMVECTOR V2 = XMLoadFloat4A((XMFLOAT4A*)&Float4x4._21);
+    XMVECTOR V3 = XMLoadFloat4A((XMFLOAT4A*)&Float4x4._31);
+    XMVECTOR V4 = XMLoadFloat4A((XMFLOAT4A*)&Float4x4._41);
+
+    XMStoreFloat4A((XMFLOAT4A*)&_11, V1);
+    XMStoreFloat4A((XMFLOAT4A*)&_21, V2);
+    XMStoreFloat4A((XMFLOAT4A*)&_31, V3);
+    XMStoreFloat4A((XMFLOAT4A*)&_41, V4);
 
     return *this;
 }

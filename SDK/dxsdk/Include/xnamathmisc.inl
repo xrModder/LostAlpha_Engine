@@ -145,9 +145,9 @@ XMFINLINE XMVECTOR XMQuaternionMultiply
     return Result;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    static CONST XMVECTORF32 g_ControlWZYX = { 1.0f,-1.0f, 1.0f,-1.0f};
-    static CONST XMVECTORF32 g_ControlZWXY = { 1.0f, 1.0f,-1.0f,-1.0f};
-    static CONST XMVECTORF32 g_ControlYXWZ = {-1.0f, 1.0f, 1.0f,-1.0f};
+    static CONST XMVECTORF32 ControlWZYX = { 1.0f,-1.0f, 1.0f,-1.0f};
+    static CONST XMVECTORF32 ControlZWXY = { 1.0f, 1.0f,-1.0f,-1.0f};
+    static CONST XMVECTORF32 ControlYXWZ = {-1.0f, 1.0f, 1.0f,-1.0f};
     // Copy to SSE registers and use as few as possible for x86
     XMVECTOR Q2X = Q2;
     XMVECTOR Q2Y = Q2;
@@ -167,17 +167,17 @@ XMFINLINE XMVECTOR XMQuaternionMultiply
     Q2X = _mm_mul_ps(Q2X,Q1Shuffle);
     Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle,_MM_SHUFFLE(2,3,0,1));
     // Flip the signs on y and z
-    Q2X = _mm_mul_ps(Q2X,g_ControlWZYX);
+    Q2X = _mm_mul_ps(Q2X,ControlWZYX);
     // Mul by Q1ZWXY
     Q2Y = _mm_mul_ps(Q2Y,Q1Shuffle);
     Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle,_MM_SHUFFLE(0,1,2,3));
     // Flip the signs on z and w
-    Q2Y = _mm_mul_ps(Q2Y,g_ControlZWXY);
+    Q2Y = _mm_mul_ps(Q2Y,ControlZWXY);
     // Mul by Q1YXWZ
     Q2Z = _mm_mul_ps(Q2Z,Q1Shuffle);
     vResult = _mm_add_ps(vResult,Q2X);
     // Flip the signs on x and w
-    Q2Z = _mm_mul_ps(Q2Z,g_ControlYXWZ);
+    Q2Z = _mm_mul_ps(Q2Z,ControlYXWZ);
     Q2Y = _mm_add_ps(Q2Y,Q2Z);
     vResult = _mm_add_ps(vResult,Q2Y);
     return vResult;
@@ -245,15 +245,15 @@ XMFINLINE XMVECTOR XMQuaternionConjugate
 #if defined(_XM_NO_INTRINSICS_)
 
     XMVECTOR Result = {
-        -Q.x,
-        -Q.y,
-        -Q.z,
-        Q.w
+        -Q.vector4_f32[0],
+        -Q.vector4_f32[1],
+        -Q.vector4_f32[2],
+        Q.vector4_f32[3]
     };
     return Result;
 #elif defined(_XM_SSE_INTRINSICS_)
-    static const XMVECTORF32 g_XMNegativeOne3 = {-1.0f,-1.0f,-1.0f,1.0f};
-    XMVECTOR Result = _mm_mul_ps(Q,g_XMNegativeOne3);
+    static const XMVECTORF32 NegativeOne3 = {-1.0f,-1.0f,-1.0f,1.0f};
+    XMVECTOR Result = _mm_mul_ps(Q,NegativeOne3);
     return Result;
 #else // _XM_VMX128_INTRINSICS_
 #endif // _XM_VMX128_INTRINSICS_
@@ -460,7 +460,7 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
     XMVECTOR Zero;
     CONST XMVECTOR OneMinusEpsilon = {1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f};
 
-    XMASSERT((T.v[1] == T.v[0]) && (T.v[2] == T.v[0]) && (T.v[3] == T.v[0]));
+    XMASSERT((T.vector4_f32[1] == T.vector4_f32[0]) && (T.vector4_f32[2] == T.vector4_f32[0]) && (T.vector4_f32[3] == T.vector4_f32[0]));
 
     CosOmega = XMQuaternionDot(Q0, Q1);
 
@@ -515,8 +515,8 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
     XMVECTOR Result;
     XMVECTOR Zero;
     static const XMVECTORF32 OneMinusEpsilon = {1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f};
-    static const XMVECTORI32 g_XMSignMask2 = {0x80000000,0x00000000,0x00000000,0x00000000};
-    static const XMVECTORI32 g_XMMaskXY = {0xFFFFFFFF,0xFFFFFFFF,0x00000000,0x00000000};
+    static const XMVECTORI32 SignMask2 = {0x80000000,0x00000000,0x00000000,0x00000000};
+    static const XMVECTORI32 MaskXY = {0xFFFFFFFF,0xFFFFFFFF,0x00000000,0x00000000};
 
     XMASSERT((XMVectorGetY(T) == XMVectorGetX(T)) && (XMVectorGetZ(T) == XMVectorGetX(T)) && (XMVectorGetW(T) == XMVectorGetX(T)));
 
@@ -537,8 +537,8 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
     Omega = XMVectorATan2(SinOmega, CosOmega);
 
     V01 = _mm_shuffle_ps(T,T,_MM_SHUFFLE(2,3,0,1));
-    V01 = _mm_and_ps(V01,g_XMMaskXY);
-    V01 = _mm_xor_ps(V01,g_XMSignMask2);
+    V01 = _mm_and_ps(V01,MaskXY);
+    V01 = _mm_xor_ps(V01,SignMask2);
     V01 = _mm_add_ps(g_XMIdentityR0, V01);
 
     S0 = _mm_mul_ps(V01, Omega);
@@ -693,7 +693,7 @@ XMFINLINE XMVECTOR XMQuaternionBaryCentric
 
     s = f + g;
 
-    if (s < 0.00001f && s > -0.00001f)
+    if ((s < 0.00001f) && (s > -0.00001f))
     {
         Result = Q0;
     }
@@ -827,7 +827,7 @@ XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYawFromVector
     static CONST XMVECTORI32 ControlPitch = {XM_PERMUTE_0X, XM_PERMUTE_1X, XM_PERMUTE_1X, XM_PERMUTE_1X};
     static CONST XMVECTORI32 ControlYaw = {XM_PERMUTE_1Y, XM_PERMUTE_0Y, XM_PERMUTE_1Y, XM_PERMUTE_1Y};
     static CONST XMVECTORI32 ControlRoll = {XM_PERMUTE_1Z, XM_PERMUTE_1Z, XM_PERMUTE_0Z, XM_PERMUTE_1Z};
-    static CONST XMVECTORF32 g_XMSign = {1.0f, -1.0f, -1.0f, 1.0f};
+    static CONST XMVECTORF32 Sign = {1.0f, -1.0f, -1.0f, 1.0f};
 
     HalfAngles = _mm_mul_ps(Angles, g_XMOneHalf);
     XMVectorSinCos(&SinAngles, &CosAngles, HalfAngles);
@@ -839,7 +839,7 @@ XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYawFromVector
     Y1 = XMVectorPermute(CosAngles, SinAngles, ControlYaw);
     R1 = XMVectorPermute(CosAngles, SinAngles, ControlRoll);
 
-    Q1 = _mm_mul_ps(P1, g_XMSign);
+    Q1 = _mm_mul_ps(P1, Sign);
     Q0 = _mm_mul_ps(P0, Y0);
     Q1 = _mm_mul_ps(Q1, Y1);
     Q0 = _mm_mul_ps(Q0, R0);
@@ -866,9 +866,9 @@ XMFINLINE XMVECTOR XMQuaternionRotationNormal
 
     N = XMVectorSelect(g_XMOne.v, NormalAxis, g_XMSelect1110.v);
 
-    XMScalarSinCos(&Scale.v[2], &Scale.v[3], 0.5f * Angle);
+    XMScalarSinCos(&Scale.vector4_f32[2], &Scale.vector4_f32[3], 0.5f * Angle);
 
-    Scale.v[0] = Scale.v[1] = Scale.v[2];
+    Scale.vector4_f32[0] = Scale.vector4_f32[1] = Scale.vector4_f32[2];
 
     Q = XMVectorMultiply(N, Scale);
 
@@ -932,28 +932,26 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
     CXMMATRIX M
 )
 {
-#if defined(_XM_NO_INTRINSICS_)
+#if defined(_XM_NO_INTRINSICS_) || defined(_XM_SSE_INTRINSICS_)
 
     XMVECTOR Q0, Q1, Q2;
     XMVECTOR M00, M11, M22;
     XMVECTOR CQ0, CQ1, C;
     XMVECTOR CX, CY, CZ, CW;
     XMVECTOR SQ1, Scale;
-    XMVECTOR Rsq, Sqrt, VEqualsInfinity, VEqualsZero, Select;
+    XMVECTOR Rsq, Sqrt, VEqualsNaN;
     XMVECTOR A, B, P;
     XMVECTOR PermuteSplat, PermuteSplatT;
     XMVECTOR SignB, SignBT;
     XMVECTOR PermuteControl, PermuteControlT;
-    XMVECTOR Zero;
     XMVECTOR Result;
-    static CONST XMVECTOR  OneQuarter = {0.25f, 0.25f, 0.25f, 0.25f};
-    static CONST XMVECTOR  SignPNNP = {1.0f, -1.0f, -1.0f, 1.0f};
-    static CONST XMVECTOR  SignNPNP = {-1.0f, 1.0f, -1.0f, 1.0f};
-    static CONST XMVECTOR  SignNNPP = {-1.0f, -1.0f, 1.0f, 1.0f};
-    static CONST XMVECTOR  SignPNPP = {1.0f, -1.0f, 1.0f, 1.0f};
-    static CONST XMVECTOR  SignPPNP = {1.0f, 1.0f, -1.0f, 1.0f};
-    static CONST XMVECTOR  SignNPPP = {-1.0f, 1.0f, 1.0f, 1.0f};
-    static CONST XMVECTOR  SignNNNX = {-1.0f, -1.0f, -1.0f, 2.0e-126f};
+    static CONST XMVECTORF32 OneQuarter = {0.25f, 0.25f, 0.25f, 0.25f};
+    static CONST XMVECTORF32 SignPNNP = {1.0f, -1.0f, -1.0f, 1.0f};
+    static CONST XMVECTORF32 SignNPNP = {-1.0f, 1.0f, -1.0f, 1.0f};
+    static CONST XMVECTORF32 SignNNPP = {-1.0f, -1.0f, 1.0f, 1.0f};
+    static CONST XMVECTORF32 SignPNPP = {1.0f, -1.0f, 1.0f, 1.0f};
+    static CONST XMVECTORF32 SignPPNP = {1.0f, 1.0f, -1.0f, 1.0f};
+    static CONST XMVECTORF32 SignNPPP = {-1.0f, 1.0f, 1.0f, 1.0f};
     static CONST XMVECTORU32 Permute0X0X0Y0W = {XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0Y, XM_PERMUTE_0W};
     static CONST XMVECTORU32 Permute0Y0Z0Z1W = {XM_PERMUTE_0Y, XM_PERMUTE_0Z, XM_PERMUTE_0Z, XM_PERMUTE_1W};
     static CONST XMVECTORU32 SplatX = {XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0X};
@@ -972,26 +970,23 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
     M11 = XMVectorSplatY(M.r[1]);
     M22 = XMVectorSplatZ(M.r[2]);
 
-    Q0 = XMVectorMultiply(SignPNNP, M00);
-    Q0 = XMVectorMultiplyAdd(SignNPNP, M11, Q0);
-    Q0 = XMVectorMultiplyAdd(SignNNPP, M22, Q0);
+    Q0 = XMVectorMultiply(SignPNNP.v, M00);
+    Q0 = XMVectorMultiplyAdd(SignNPNP.v, M11, Q0);
+    Q0 = XMVectorMultiplyAdd(SignNNPP.v, M22, Q0);
 
     Q1 = XMVectorAdd(Q0, g_XMOne.v);
 
     Rsq = XMVectorReciprocalSqrt(Q1);
-    Zero = XMVectorZero();
-    VEqualsInfinity = XMVectorEqualInt(Q1, g_XMInfinity.v);
-    VEqualsZero = XMVectorEqual(Q1, Zero);
+    VEqualsNaN = XMVectorIsNaN(Rsq);
     Sqrt = XMVectorMultiply(Q1, Rsq);
-    Select = XMVectorEqualInt(VEqualsInfinity, VEqualsZero);
-    Q1 = XMVectorSelect(Q1, Sqrt, Select);
+    Q1 = XMVectorSelect(Sqrt, Q1, VEqualsNaN);
 
     Q1 = XMVectorMultiply(Q1, g_XMOneHalf.v);
 
     SQ1 = XMVectorMultiply(Rsq, g_XMOneHalf.v);
 
     CQ0 = XMVectorPermute(Q0, Q0, Permute0X0X0Y0W.v);
-    CQ1 = XMVectorPermute(Q0, SignNNNX, Permute0Y0Z0Z1W.v);
+    CQ1 = XMVectorPermute(Q0, g_XMEpsilon.v, Permute0Y0Z0Z1W.v);
     C = XMVectorGreaterOrEqual(CQ0, CQ1);
 
     CX = XMVectorSplatX(C);
@@ -1000,15 +995,15 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
     CW = XMVectorSplatW(C);
 
     PermuteSplat = XMVectorSelect(SplatZ.v, SplatY.v, CZ);
-    SignB = XMVectorSelect(SignNPPP, SignPPNP, CZ);
+    SignB = XMVectorSelect(SignNPPP.v, SignPPNP.v, CZ);
     PermuteControl = XMVectorSelect(Permute2.v, Permute1.v, CZ);
 
     PermuteSplat = XMVectorSelect(PermuteSplat, SplatZ.v, CX);
-    SignB = XMVectorSelect(SignB, SignNPPP, CX);
+    SignB = XMVectorSelect(SignB, SignNPPP.v, CX);
     PermuteControl = XMVectorSelect(PermuteControl, Permute2.v, CX);
 
     PermuteSplatT = XMVectorSelect(PermuteSplat,SplatX.v, CY);
-    SignBT = XMVectorSelect(SignB, SignPNPP, CY);
+    SignBT = XMVectorSelect(SignB, SignPNPP.v, CY);
     PermuteControlT = XMVectorSelect(PermuteControl,Permute0.v, CY);
 
     PermuteSplat = XMVectorSelect(PermuteSplat, PermuteSplatT, CX);
@@ -1016,7 +1011,7 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
     PermuteControl = XMVectorSelect(PermuteControl, PermuteControlT, CX);
 
     PermuteSplat = XMVectorSelect(PermuteSplat,SplatW.v, CW);
-    SignB = XMVectorSelect(SignB, SignNNNX, CW);
+    SignB = XMVectorSelect(SignB, g_XMNegativeOne.v, CW);
     PermuteControl = XMVectorSelect(PermuteControl,Permute3.v, CW);
 
     Scale = XMVectorPermute(SQ1, SQ1, PermuteSplat);
@@ -1032,104 +1027,6 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
 
     return Result;
 
-#elif defined(_XM_SSE_INTRINSICS_)
-    XMVECTOR Q0, Q1, Q2;
-    XMVECTOR M00, M11, M22;
-    XMVECTOR CQ0, CQ1, C;
-    XMVECTOR CX, CY, CZ, CW;
-    XMVECTOR SQ1, Scale;
-    XMVECTOR Rsq, Sqrt, VEqualsInfinity, VEqualsZero, Select;
-    XMVECTOR A, B, P;
-    XMVECTOR PermuteSplat, PermuteSplatT;
-    XMVECTOR SignB, SignBT;
-    XMVECTOR PermuteControl, PermuteControlT;
-    XMVECTOR Zero;
-    XMVECTOR Result;
-    static CONST XMVECTORF32  OneQuarter = {0.25f, 0.25f, 0.25f, 0.25f};
-    static CONST XMVECTORF32  SignPNNP = {1.0f, -1.0f, -1.0f, 1.0f};
-    static CONST XMVECTORF32  SignNPNP = {-1.0f, 1.0f, -1.0f, 1.0f};
-    static CONST XMVECTORF32  SignNNPP = {-1.0f, -1.0f, 1.0f, 1.0f};
-    static CONST XMVECTORF32  SignPNPP = {1.0f, -1.0f, 1.0f, 1.0f};
-    static CONST XMVECTORF32  SignPPNP = {1.0f, 1.0f, -1.0f, 1.0f};
-    static CONST XMVECTORF32  SignNPPP = {-1.0f, 1.0f, 1.0f, 1.0f};
-    static CONST XMVECTORF32  SignNNNX = {-1.0f, -1.0f, -1.0f, 2.0e-126f};
-    static CONST XMVECTORI32 Permute0X0X0Y0W = {XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0Y, XM_PERMUTE_0W};
-    static CONST XMVECTORI32 Permute0Y0Z0Z1W = {XM_PERMUTE_0Y, XM_PERMUTE_0Z, XM_PERMUTE_0Z, XM_PERMUTE_1W};
-    static CONST XMVECTORI32 SplatX = {XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0X, XM_PERMUTE_0X};
-    static CONST XMVECTORI32 SplatY = {XM_PERMUTE_0Y, XM_PERMUTE_0Y, XM_PERMUTE_0Y, XM_PERMUTE_0Y};
-    static CONST XMVECTORI32 SplatZ = {XM_PERMUTE_0Z, XM_PERMUTE_0Z, XM_PERMUTE_0Z, XM_PERMUTE_0Z};
-    static CONST XMVECTORI32 SplatW = {XM_PERMUTE_0W, XM_PERMUTE_0W, XM_PERMUTE_0W, XM_PERMUTE_0W};
-    static CONST XMVECTORI32 PermuteC = {XM_PERMUTE_0X, XM_PERMUTE_0Z, XM_PERMUTE_1X, XM_PERMUTE_1Y};
-    static CONST XMVECTORI32 PermuteA = {XM_PERMUTE_0Y, XM_PERMUTE_1Y, XM_PERMUTE_1Z, XM_PERMUTE_0W};
-    static CONST XMVECTORI32 PermuteB = {XM_PERMUTE_1X, XM_PERMUTE_1W, XM_PERMUTE_0Z, XM_PERMUTE_0W};
-    static CONST XMVECTORI32 Permute0 = {XM_PERMUTE_0X, XM_PERMUTE_1X, XM_PERMUTE_1Z, XM_PERMUTE_1Y};
-    static CONST XMVECTORI32 Permute1 = {XM_PERMUTE_1X, XM_PERMUTE_0Y, XM_PERMUTE_1Y, XM_PERMUTE_1Z};
-    static CONST XMVECTORI32 Permute2 = {XM_PERMUTE_1Z, XM_PERMUTE_1Y, XM_PERMUTE_0Z, XM_PERMUTE_1X};
-    static CONST XMVECTORI32 Permute3 = {XM_PERMUTE_1Y, XM_PERMUTE_1Z, XM_PERMUTE_1X, XM_PERMUTE_0W};
-
-    M00 = XMVectorSplatX(M.r[0]);
-    M11 = XMVectorSplatY(M.r[1]);
-    M22 = XMVectorSplatZ(M.r[2]);
-
-    Q0 = XMVectorMultiply(SignPNNP, M00);
-    Q0 = XMVectorMultiplyAdd(SignNPNP, M11, Q0);
-    Q0 = XMVectorMultiplyAdd(SignNNPP, M22, Q0);
-
-    Q1 = XMVectorAdd(Q0, g_XMOne);
-
-    Rsq = XMVectorReciprocalSqrt(Q1);
-    Zero = XMVectorZero();
-    VEqualsInfinity = XMVectorEqualInt(Q1, g_XMInfinity);
-    VEqualsZero = XMVectorEqual(Q1, Zero);
-    Sqrt = XMVectorMultiply(Q1, Rsq);
-    Select = XMVectorEqualInt(VEqualsInfinity, VEqualsZero);
-    Q1 = XMVectorSelect(Q1, Sqrt, Select);
-
-    Q1 = XMVectorMultiply(Q1, g_XMOneHalf);
-
-    SQ1 = XMVectorMultiply(Rsq, g_XMOneHalf);
-
-    CQ0 = XMVectorPermute(Q0, Q0, Permute0X0X0Y0W);
-    CQ1 = XMVectorPermute(Q0, SignNNNX, Permute0Y0Z0Z1W);
-    C = XMVectorGreaterOrEqual(CQ0, CQ1);
-
-    CX = XMVectorSplatX(C);
-    CY = XMVectorSplatY(C);
-    CZ = XMVectorSplatZ(C);
-    CW = XMVectorSplatW(C);
-
-    PermuteSplat = XMVectorSelect(SplatZ, SplatY, CZ);
-    SignB = XMVectorSelect(SignNPPP, SignPPNP, CZ);
-    PermuteControl = XMVectorSelect(Permute2, Permute1, CZ);
-
-    PermuteSplat = XMVectorSelect(PermuteSplat, SplatZ, CX);
-    SignB = XMVectorSelect(SignB, SignNPPP, CX);
-    PermuteControl = XMVectorSelect(PermuteControl, Permute2, CX);
-
-    PermuteSplatT = XMVectorSelect(PermuteSplat,SplatX, CY);
-    SignBT = XMVectorSelect(SignB, SignPNPP, CY);
-    PermuteControlT = XMVectorSelect(PermuteControl,Permute0, CY);
-
-    PermuteSplat = XMVectorSelect(PermuteSplat, PermuteSplatT, CX);
-    SignB = XMVectorSelect(SignB, SignBT, CX);
-    PermuteControl = XMVectorSelect(PermuteControl, PermuteControlT, CX);
-
-    PermuteSplat = XMVectorSelect(PermuteSplat,SplatW, CW);
-    SignB = XMVectorSelect(SignB, SignNNNX, CW);
-    PermuteControl = XMVectorSelect(PermuteControl,Permute3, CW);
-
-    Scale = XMVectorPermute(SQ1, SQ1, PermuteSplat);
-
-    P = XMVectorPermute(M.r[1], M.r[2],PermuteC);  // {M10, M12, M20, M21}
-    A = XMVectorPermute(M.r[0], P, PermuteA);       // {M01, M12, M20, M03}
-    B = XMVectorPermute(M.r[0], P, PermuteB);       // {M10, M21, M02, M03}
-
-    Q2 = XMVectorMultiplyAdd(SignB, B, A);
-    Q2 = XMVectorMultiply(Q2, Scale);
-
-    Result = XMVectorPermute(Q1, Q2, PermuteControl);
-
-    return Result;
 #else // _XM_VMX128_INTRINSICS_
 #endif // _XM_VMX128_INTRINSICS_
 }
@@ -1342,17 +1239,17 @@ XMFINLINE XMVECTOR XMPlaneNormalize
 )
 {
 #if defined(_XM_NO_INTRINSICS_)
-    FLOAT fLengthSq = sqrtf((P.x*P.x)+(P.y*P.y)+(P.z*P.z));
+    FLOAT fLengthSq = sqrtf((P.vector4_f32[0]*P.vector4_f32[0])+(P.vector4_f32[1]*P.vector4_f32[1])+(P.vector4_f32[2]*P.vector4_f32[2]));
     // Prevent divide by zero
     if (fLengthSq) {
         fLengthSq = 1.0f/fLengthSq;
     }
     {
     XMVECTOR vResult = {
-        P.x*fLengthSq,
-        P.y*fLengthSq,
-        P.z*fLengthSq,
-        P.w*fLengthSq
+        P.vector4_f32[0]*fLengthSq,
+        P.vector4_f32[1]*fLengthSq,
+        P.vector4_f32[2]*fLengthSq,
+        P.vector4_f32[3]*fLengthSq
     };
     return vResult;
     }
@@ -1799,10 +1696,10 @@ XMFINLINE XMVECTOR XMColorNegative
 //    XMASSERT(XMVector4GreaterOrEqual(C, XMVectorReplicate(0.0f)));
 //    XMASSERT(XMVector4LessOrEqual(C, XMVectorReplicate(1.0f)));
     XMVECTOR vResult = {
-        1.0f - vColor.x,
-        1.0f - vColor.y,
-        1.0f - vColor.z,
-        vColor.w
+        1.0f - vColor.vector4_f32[0],
+        1.0f - vColor.vector4_f32[1],
+        1.0f - vColor.vector4_f32[2],
+        vColor.vector4_f32[3]
     };
     return vResult;
 
@@ -1840,12 +1737,12 @@ XMFINLINE XMVECTOR XMColorAdjustSaturation
     // Luminance = 0.2125f * C[0] + 0.7154f * C[1] + 0.0721f * C[2];
     // Result = (C - Luminance) * Saturation + Luminance;
 
-    FLOAT fLuminance = (vColor.x*gvLuminance.x)+(vColor.y*gvLuminance.y)+(vColor.z*gvLuminance.z);
+    FLOAT fLuminance = (vColor.vector4_f32[0]*gvLuminance.vector4_f32[0])+(vColor.vector4_f32[1]*gvLuminance.vector4_f32[1])+(vColor.vector4_f32[2]*gvLuminance.vector4_f32[2]);
     XMVECTOR vResult = {
-        ((vColor.x - fLuminance)*fSaturation)+fLuminance,
-        ((vColor.y - fLuminance)*fSaturation)+fLuminance,
-        ((vColor.z - fLuminance)*fSaturation)+fLuminance,
-        vColor.w};
+        ((vColor.vector4_f32[0] - fLuminance)*fSaturation)+fLuminance,
+        ((vColor.vector4_f32[1] - fLuminance)*fSaturation)+fLuminance,
+        ((vColor.vector4_f32[2] - fLuminance)*fSaturation)+fLuminance,
+        vColor.vector4_f32[3]};
     return vResult;
 
 #elif defined(_XM_SSE_INTRINSICS_)
@@ -1889,10 +1786,10 @@ XMFINLINE XMVECTOR XMColorAdjustContrast
 #if defined(_XM_NO_INTRINSICS_)
     // Result = (vColor - 0.5f) * fContrast + 0.5f;
     XMVECTOR vResult = {
-        ((vColor.x-0.5f) * fContrast) + 0.5f,
-        ((vColor.y-0.5f) * fContrast) + 0.5f,
-        ((vColor.z-0.5f) * fContrast) + 0.5f,
-        vColor.w        // Leave W untouched
+        ((vColor.vector4_f32[0]-0.5f) * fContrast) + 0.5f,
+        ((vColor.vector4_f32[1]-0.5f) * fContrast) + 0.5f,
+        ((vColor.vector4_f32[2]-0.5f) * fContrast) + 0.5f,
+        vColor.vector4_f32[3]        // Leave W untouched
     };
     return vResult;
 
@@ -2145,7 +2042,7 @@ XMINLINE FLOAT XMScalarSin
     R1        = XMVector4Dot(V9111315, g_XMSinCoefficients1.v);
     R2        = XMVector4Dot(V17192123, g_XMSinCoefficients2.v);
 
-    return R0.v[0] + R1.v[0] + R2.v[0];
+    return R0.vector4_f32[0] + R1.vector4_f32[0] + R2.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return sinf( Value );
@@ -2189,7 +2086,7 @@ XMINLINE FLOAT XMScalarCos
     R1 = XMVector4Dot(V8101214, g_XMCosCoefficients1.v);
     R2 = XMVector4Dot(V16182022, g_XMCosCoefficients2.v);
 
-    return R0.v[0] + R1.v[0] + R2.v[0];
+    return R0.vector4_f32[0] + R1.vector4_f32[0] + R2.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return cosf(Value);
@@ -2249,8 +2146,8 @@ XMINLINE VOID XMScalarSinCos
     C2 = XMVector4Dot(V16182022, g_XMCosCoefficients2.v);
     S2 = XMVector4Dot(V17192123, g_XMSinCoefficients2.v);
 
-    *pCos = C0.v[0] + C1.v[0] + C2.v[0];
-    *pSin = S0.v[0] + S1.v[0] + S2.v[0];
+    *pCos = C0.vector4_f32[0] + C1.vector4_f32[0] + C2.vector4_f32[0];
+    *pSin = S0.vector4_f32[0] + S1.vector4_f32[0] + S2.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSin);
@@ -2283,10 +2180,10 @@ XMINLINE FLOAT XMScalarASin
 
     AbsV = XMVectorReplicate(AbsValue);
 
-    V3.v[0] = Value3;
-    V3.v[1] = 1.0f;
-    V3.v[2] = Value3;
-    V3.v[3] = 1.0f;
+    V3.vector4_f32[0] = Value3;
+    V3.vector4_f32[1] = 1.0f;
+    V3.vector4_f32[2] = Value3;
+    V3.vector4_f32[3] = 1.0f;
 
     R1 = XMVectorSet(D, D, Value, Value);
     R1 = XMVectorMultiply(R1, V3);
@@ -2296,7 +2193,7 @@ XMINLINE FLOAT XMScalarASin
 
     Result = XMVector4Dot(R0, R1);
 
-    return Result.v[0];
+    return Result.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return asinf(Value);
@@ -2349,7 +2246,7 @@ XMFINLINE FLOAT XMScalarSinEst
 
     Result = XMVector4Dot(V, g_XMSinEstCoefficients.v);
 
-    return Result.v[0];
+    return Result.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(Value >= -XM_PI);
@@ -2393,7 +2290,7 @@ XMFINLINE FLOAT XMScalarCosEst
     V = XMVectorSet(1.0f, Value, ValueSq, ValueSq * Value);
     V = XMVectorMultiply(V, V);
     Result = XMVector4Dot(V, g_XMCosEstCoefficients.v);
-    return Result.v[0];
+    return Result.vector4_f32[0];
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(Value >= -XM_PI);
     XMASSERT(Value < XM_PI);
@@ -2449,8 +2346,8 @@ XMFINLINE VOID XMScalarSinCosEst
     Cos = XMVector4Dot(Cos, g_XMCosEstCoefficients.v);
     Sin = XMVector4Dot(Sin, g_XMSinEstCoefficients.v);
 
-    *pCos = Cos.v[0];
-    *pSin = Sin.v[0];
+    *pCos = Cos.vector4_f32[0];
+    *pSin = Sin.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSin);
@@ -2496,7 +2393,7 @@ XMFINLINE FLOAT XMScalarASinEst
 
     Result = XMVector4Dot(VR, CR);
 
-    return Result.v[0];
+    return Result.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     CONST FLOAT OnePlusEps = 1.00000011921f;
@@ -2543,7 +2440,7 @@ XMFINLINE FLOAT XMScalarACosEst
 
     Result = XMVector4Dot(VR, CR);
 
-    return XM_PIDIV2 - Result.v[0];
+    return XM_PIDIV2 - Result.vector4_f32[0];
 
 #elif defined(_XM_SSE_INTRINSICS_)
     CONST FLOAT OnePlusEps = 1.00000011921f;

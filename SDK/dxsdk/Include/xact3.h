@@ -14,18 +14,18 @@
 
 #pragma once
 
-#ifndef _XACT_H_
-#define _XACT_H_
+#ifndef _XACT3_H_
+#define _XACT3_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 3.4)
+// XACT class and interface IDs (Version 3.7)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         0977d092, 2d95, 4e43, 8d, 42, 9d, dc, c2, 54, 5e, d5);
-    DEFINE_CLSID(XACTAuditionEngine, d6b97e84, 5151, 4567, ac, 6d, 04, 72, 97, 8f, e4, fd);
-    DEFINE_CLSID(XACTDebugEngine,    69956470, 1f58, 487d, bb, df, 73, b0, 22, 38, e8, eb);
-    DEFINE_IID(IXACT3Engine,         e72c1b9a, d717, 41c0, 81, a6, 50, eb, 56, e8, 06, 49);
+    DEFINE_CLSID(XACTEngine,         bcc782bc, 6492, 4c22, 8c, 35, f5, d7, 2f, e7, 3c, 6e);
+    DEFINE_CLSID(XACTAuditionEngine, 9ecdd80d, 0e81, 40d8, 89, 03, 2b, f7, b1, 31, ac, 43);
+    DEFINE_CLSID(XACTDebugEngine,    02860630, bf3b, 42a8, b1, 4e, 91, ed, a2, f5, 1e, a5);
+    DEFINE_IID(IXACT3Engine,         b1ee676a, d9cd, 4d2a, 89, a8, fa, 53, eb, 9e, 48, 0b);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -173,7 +173,7 @@ static const BYTE                   XACTMAXOUTPUTVOICECOUNT         = 3;
 // -----------------------------------------------------------------------------
 // Current Content Tool Version
 // -----------------------------------------------------------------------------
-#define XACT_CONTENT_VERSION        45
+#define XACT_CONTENT_VERSION        46
 
 // -----------------------------------------------------------------------------
 // XACT Stop Flags
@@ -554,7 +554,7 @@ STDAPI_(XACTINDEX) IXACT3SoundBank_GetCueIndex(__in IXACT3SoundBank* pSoundBank,
 STDAPI IXACT3SoundBank_GetNumCues(__in IXACT3SoundBank* pSoundBank, __out XACTINDEX* pnNumCues);
 STDAPI IXACT3SoundBank_GetCueProperties(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, __out LPXACT_CUE_PROPERTIES pProperties);
 STDAPI IXACT3SoundBank_Prepare(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue);
-STDAPI IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue);
+STDAPI IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_opt_out IXACT3Cue** ppCue);
 STDAPI IXACT3SoundBank_Stop(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags);
 STDAPI IXACT3SoundBank_Destroy(__in IXACT3SoundBank* pSoundBank);
 STDAPI IXACT3SoundBank_GetState(__in IXACT3SoundBank* pSoundBank, __out DWORD* pdwState);
@@ -568,7 +568,7 @@ DECLARE_INTERFACE(IXACT3SoundBank)
     STDMETHOD(GetNumCues)(THIS_ __out XACTINDEX* pnNumCues) PURE;
     STDMETHOD(GetCueProperties)(THIS_ XACTINDEX nCueIndex, __out LPXACT_CUE_PROPERTIES pProperties) PURE;
     STDMETHOD(Prepare)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue) PURE;
-    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue) PURE;
+    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_opt_out IXACT3Cue** ppCue) PURE;
     STDMETHOD(Stop)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags) PURE;
     STDMETHOD(Destroy)(THIS) PURE;
     STDMETHOD(GetState)(THIS_ __out DWORD* pdwState) PURE;
@@ -601,7 +601,7 @@ __inline HRESULT __stdcall IXACT3SoundBank_Prepare(__in IXACT3SoundBank* pSoundB
     return pSoundBank->Prepare(nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_opt_out IXACT3Cue** ppCue)
 {
     return pSoundBank->Play(nCueIndex, dwFlags, timeOffset, ppCue);
 }
@@ -643,7 +643,7 @@ __inline HRESULT __stdcall IXACT3SoundBank_Prepare(__in IXACT3SoundBank* pSoundB
     return pSoundBank->lpVtbl->Prepare(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_out IXACT3Cue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Play(__in IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, __deref_opt_out IXACT3Cue** ppCue)
 {
     return pSoundBank->lpVtbl->Play(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
@@ -930,6 +930,8 @@ STDAPI IXACT3Cue_SetVariable(__in IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XAC
 STDAPI IXACT3Cue_GetVariable(__in IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, __out XACTVARIABLEVALUE* nValue);
 STDAPI IXACT3Cue_Pause(__in IXACT3Cue* pCue, BOOL fPause);
 STDAPI IXACT3Cue_GetProperties(__in IXACT3Cue* pCue, __out LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties);
+STDAPI IXACT3Cue_SetOutputVoices(__in IXACT3Cue* pCue, __in_opt const XAUDIO2_VOICE_SENDS* pSendList);
+STDAPI IXACT3Cue_SetOutputVoiceMatrix(__in IXACT3Cue* pCue, __in_opt IXAudio2Voice* pDestinationVoice, UINT32 SourceChannels, UINT32 DestinationChannels, __in_ecount(SourceChannels * DestinationChannels) const float* pLevelMatrix);
 
 #undef INTERFACE
 #define INTERFACE IXACT3Cue
@@ -946,6 +948,8 @@ DECLARE_INTERFACE(IXACT3Cue)
     STDMETHOD(GetVariable)(THIS_ XACTVARIABLEINDEX nIndex, __out XACTVARIABLEVALUE* nValue) PURE;
     STDMETHOD(Pause)(THIS_ BOOL fPause) PURE;
     STDMETHOD(GetProperties)(THIS_ __out LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties) PURE;
+    STDMETHOD(SetOutputVoices)(THIS_ __in_opt const XAUDIO2_VOICE_SENDS* pSendList) PURE;
+    STDMETHOD(SetOutputVoiceMatrix)(THIS_ __in_opt IXAudio2Voice* pDestinationVoice, UINT32 SourceChannels, UINT32 DestinationChannels, __in_ecount(SourceChannels * DestinationChannels) const float* pLevelMatrix) PURE;
 };
 
 #ifdef __cplusplus
@@ -1000,6 +1004,16 @@ __inline HRESULT __stdcall IXACT3Cue_GetProperties(__in IXACT3Cue* pCue, __out L
     return pCue->GetProperties(ppProperties);
 }
 
+__inline HRESULT __stdcall IXACT3Cue_SetOutputVoices(__in IXACT3Cue* pCue, __in_opt const XAUDIO2_VOICE_SENDS* pSendList)
+{
+    return pCue->SetOutputVoices(pSendList);
+}
+
+__inline HRESULT __stdcall IXACT3Cue_SetOutputVoiceMatrix(__in IXACT3Cue* pCue, __in_opt IXAudio2Voice* pDestinationVoice, UINT32 SourceChannels, UINT32 DestinationChannels, __in_ecount(SourceChannels * DestinationChannels) const float* pLevelMatrix)
+{
+    return pCue->SetOutputVoiceMatrix(pDestinationVoice, SourceChannels, DestinationChannels, pLevelMatrix);
+}
+
 #else // __cplusplus
 
 __inline HRESULT __stdcall IXACT3Cue_Play(__in IXACT3Cue* pCue)
@@ -1050,6 +1064,16 @@ __inline HRESULT __stdcall IXACT3Cue_Pause(__in IXACT3Cue* pCue, BOOL fPause)
 __inline HRESULT __stdcall IXACT3Cue_GetProperties(__in IXACT3Cue* pCue, __out LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties)
 {
     return pCue->lpVtbl->GetProperties(pCue, ppProperties);
+}
+
+__inline HRESULT __stdcall IXACT3Cue_SetOutputVoices(__in IXACT3Cue* pCue, __in_opt const XAUDIO2_VOICE_SENDS* pSendList)
+{
+    return pCue->lpVtbl->SetOutputVoices(pSendList);
+}
+
+__inline HRESULT __stdcall IXACT3Cue_SetOutputVoiceMatrix(__in IXACT3Cue* pCue, __in_opt IXAudio2Voice* pDestinationVoice, UINT32 SourceChannels, UINT32 DestinationChannels, __in_ecount(SourceChannels * DestinationChannels) const float* pLevelMatrix)
+{
+    return pCue->lpVtbl->SetOutputVoiceMatrix(pDestinationVoice, SourceChannels, DestinationChannels, pLevelMatrix);
 }
 
 #endif // __cplusplus
@@ -1524,4 +1548,4 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
 
 #endif // #ifndef GUID_DEFS_ONLY
 
-#endif // #ifndef _XACT_H_
+#endif // #ifndef _XACT3_H_

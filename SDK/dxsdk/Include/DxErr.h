@@ -19,12 +19,12 @@ extern "C" {
 //  Desc:  Converts a DirectX HRESULT to a string 
 //
 //  Args:  HRESULT hr   Can be any error code from
-//                      XACT D3D10 D3DX10 D3D9 D3DX9 D3D8 D3DX8 DDRAW DPLAY8 DMUSIC DSOUND DINPUT DSHOW
+//                      XACT XAUDIO2 XAPO XINPUT DXGI D3D10 D3DX10 D3D9 D3DX9 DDRAW DSOUND DINPUT DSHOW
 //
 //  Return: Converted string 
 //
-const char*  WINAPI DXGetErrorStringA(HRESULT hr);
-const WCHAR* WINAPI DXGetErrorStringW(HRESULT hr);
+const char*  WINAPI DXGetErrorStringA(__in HRESULT hr);
+const WCHAR* WINAPI DXGetErrorStringW(__in HRESULT hr);
 
 #ifdef UNICODE
 #define DXGetErrorString DXGetErrorStringW
@@ -39,12 +39,12 @@ const WCHAR* WINAPI DXGetErrorStringW(HRESULT hr);
 //  Desc:  Returns a string description of a DirectX HRESULT
 //
 //  Args:  HRESULT hr   Can be any error code from
-//                      XACT D3D10 D3DX10 D3D9 D3DX9 D3D8 D3DX8 DDRAW DPLAY8 DMUSIC DSOUND DINPUT DSHOW 
+//                      XACT XAUDIO2 XAPO XINPUT DXGI D3D10 D3DX10 D3D9 D3DX9 DDRAW DSOUND DINPUT DSHOW
 //
 //  Return: String description
 //
-const char*  WINAPI DXGetErrorDescriptionA(HRESULT hr);
-const WCHAR* WINAPI DXGetErrorDescriptionW(HRESULT hr);
+const char*  WINAPI DXGetErrorDescriptionA(__in HRESULT hr);
+const WCHAR* WINAPI DXGetErrorDescriptionW(__in HRESULT hr);
 
 #ifdef UNICODE
     #define DXGetErrorDescription DXGetErrorDescriptionW
@@ -68,8 +68,8 @@ const WCHAR* WINAPI DXGetErrorDescriptionW(HRESULT hr);
 //
 //  Return: The hr that was passed in.  
 //
-HRESULT WINAPI DXTraceA( const char* strFile, DWORD dwLine, HRESULT hr, const char* strMsg, BOOL bPopMsgBox );
-HRESULT WINAPI DXTraceW( const char* strFile, DWORD dwLine, HRESULT hr, const WCHAR* strMsg, BOOL bPopMsgBox );
+HRESULT WINAPI DXTraceA( __in_z const char* strFile, __in DWORD dwLine, __in HRESULT hr, __in_z_opt const char* strMsg, __in BOOL bPopMsgBox );
+HRESULT WINAPI DXTraceW( __in_z const char* strFile, __in DWORD dwLine, __in HRESULT hr, __in_z_opt const WCHAR* strMsg, __in BOOL bPopMsgBox );
 
 #ifdef UNICODE
 #define DXTrace DXTraceW

@@ -19,6 +19,10 @@
 #include <limits.h>
 #include <float.h>
 
+#ifdef ALLOW_THROWING_NEW
+#include <new>
+#endif
+
 #define D3DX11_DEFAULT            ((UINT) -1)
 #define D3DX11_FROM_FILE          ((UINT) -3)
 #define DXGI_FORMAT_FROM_FILE     ((DXGI_FORMAT) -3)

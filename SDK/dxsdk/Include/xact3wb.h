@@ -7,8 +7,8 @@
  *
  ****************************************************************************/
 
-#ifndef __XACTWB_H__
-#define __XACTWB_H__
+#ifndef __XACT3WB_H__
+#define __XACT3WB_H__
 
 #ifdef _XBOX
 #   include <xtl.h>
@@ -35,7 +35,7 @@
 #endif
 
 #define WAVEBANK_HEADER_SIGNATURE               'DNBW'      // WaveBank  RIFF chunk signature
-#define WAVEBANK_HEADER_VERSION                 43          // Current wavebank file version
+#define WAVEBANK_HEADER_VERSION                 44          // Current wavebank file version
 
 #define WAVEBANK_BANKNAME_LENGTH                64          // Wave bank friendly name length, in characters
 #define WAVEBANK_ENTRYNAME_LENGTH               64          // Wave bank entry friendly name length, in characters
@@ -255,7 +255,7 @@ typedef const WAVEBANKHEADER *LPCWAVEBANKHEADER;
 // NOTE: There can be a max of 8 values in the table.
 //
 
-#define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 6
+#define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 7
 
 static const DWORD aWMAAvgBytesPerSec[] =
 {
@@ -264,7 +264,8 @@ static const DWORD aWMAAvgBytesPerSec[] =
     4000,
     6000,
     8000,
-    20000
+    20000,
+    2500
 };
 // bitrate = entry * 8
 
@@ -273,7 +274,7 @@ static const DWORD aWMAAvgBytesPerSec[] =
 // NOTE: There can be a max of 32 values in the table.
 //
 
-#define MAX_WMA_BLOCK_ALIGN_ENTRIES 16
+#define MAX_WMA_BLOCK_ALIGN_ENTRIES 17
 
 static const DWORD aWMABlockAlign[] =
 {
@@ -292,7 +293,8 @@ static const DWORD aWMABlockAlign[] =
     2731,
     4096,
     6827,
-    5462
+    5462,
+    1280
 };
 
 struct WAVEBANKENTRY;
@@ -329,7 +331,7 @@ typedef union WAVEBANKMINIWAVEFORMAT
             return 16;
         if (wFormatTag == WAVEBANKMINIFORMAT_TAG_ADPCM)
             return 4; // MSADPCM_BITS_PER_SAMPLE == 4
- 
+
         // wFormatTag must be WAVEBANKMINIFORMAT_TAG_PCM (2 bits can only represent 4 different values)
         return (wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16) ? 16 : 8;
     }
@@ -351,7 +353,7 @@ typedef union WAVEBANKMINIWAVEFORMAT
 
         case WAVEBANKMINIFORMAT_TAG_ADPCM:
             dwReturn = (wBlockAlign + ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET) * nChannels;
-            break;        
+            break;
 
         case WAVEBANKMINIFORMAT_TAG_WMA:
             {
@@ -434,7 +436,7 @@ typedef union WAVEBANKMINIWAVEFORMAT
         static ADPCMCOEFSET aCoef[7] = { { 256, 0}, {512, -256}, {0,0}, {192,64}, {240,0}, {460, -208}, {392,-232} };
         memcpy( &fmt->aCoef, aCoef, sizeof(aCoef) );
     }
-    
+
 #endif // __cplusplus
 
 } WAVEBANKMINIWAVEFORMAT, *LPWAVEBANKMINIWAVEFORMAT;

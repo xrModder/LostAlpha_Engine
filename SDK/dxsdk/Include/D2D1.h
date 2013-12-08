@@ -307,9 +307,9 @@ typedef enum D2D1_DRAW_TEXT_OPTIONS
         D2D1_DRAW_TEXT_OPTIONS_NO_SNAP = 0x00000001,
         
         //
-        // Do not clip the text to the content bounds.
+        // Clip the text to the content bounds.
         //
-        D2D1_DRAW_TEXT_OPTIONS_NO_CLIP = 0x00000002,
+        D2D1_DRAW_TEXT_OPTIONS_CLIP = 0x00000002,
         D2D1_DRAW_TEXT_OPTIONS_NONE = 0x00000000,
         D2D1_DRAW_TEXT_OPTIONS_FORCE_DWORD = 0xffffffff
 
