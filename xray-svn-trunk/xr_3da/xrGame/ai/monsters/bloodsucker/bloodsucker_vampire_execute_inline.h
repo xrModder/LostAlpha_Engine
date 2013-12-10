@@ -167,7 +167,9 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_continue()
 {
 	if (object->Position().distance_to(Actor()->Position()) > 2.f) {
-		object->com_man().ta_deactivate();
+
+	  if (object->com_man().ta_is_active())
+		  object->com_man().ta_deactivate();
 		m_action = eActionCompleted;
 		return;
 	}
