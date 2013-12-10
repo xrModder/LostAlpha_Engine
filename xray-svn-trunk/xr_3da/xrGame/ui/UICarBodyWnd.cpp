@@ -429,7 +429,7 @@ bool CUICarBodyWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 
 	if(keyboard_action==WINDOW_KEY_PRESSED)
 	{
-		if(is_binded(kUSE, dik)) 
+		if(is_binded(kUSE, dik) || is_binded(kQUIT, dik)) 
 		{
 			HideDialog();
 			return true;

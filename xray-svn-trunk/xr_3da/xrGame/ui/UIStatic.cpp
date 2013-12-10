@@ -73,14 +73,16 @@ void CUIStatic::InitTexture_script(LPCSTR texture)
 
 void CUIStatic::Init(LPCSTR tex_name, float x, float y, float width, float height)
 {
-	inherited::SetWndRect_script(x, y, width, height);
 	InitTexture(tex_name);
+	SetWndPos(Fvector2().set(x, y));
+	SetWndSize(Fvector2().set(width, height));
 }
 
 void CUIStatic::InitEx(LPCSTR tex_name, LPCSTR sh_name, float x, float y, float width, float height)
 {
-	inherited::SetWndRect_script(x, y, width, height);
-	InitTextureEx(tex_name, sh_name);	
+	InitTextureEx(tex_name, sh_name);
+	SetWndPos(Fvector2().set(x, y));
+	SetWndSize(Fvector2().set(width, height));
 }
 
 void CUIStatic::CreateShader(const char* tex, const char* sh)
