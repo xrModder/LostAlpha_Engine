@@ -21,6 +21,25 @@ extern BOOL 				no_log_overflow			= FALSE;
 xr_vector<shared_str>*		LogFile			= NULL;
 static LogCallback			LogCB			= 0;
 
+void FlushLog			(LPCSTR file_name)
+{
+	if (no_log)
+		return;
+
+	logCS.Enter			();
+	
+	IWriter				*f = FS.w_open(file_name);
+    if (f) {
+        for (u32 it=0; it<LogFile->size(); it++)	{
+			LPCSTR		s	= *((*LogFile)[it]);
+			f->w_string	(s?s:"");
+		}
+        FS.w_close		(f);
+    }
+
+	logCS.Leave			();
+}
+
 void FlushLog			()
 {
 	if (!no_log){

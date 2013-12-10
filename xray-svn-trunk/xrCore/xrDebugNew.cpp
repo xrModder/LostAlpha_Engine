@@ -540,6 +540,10 @@ void save_mini_dump			(_EXCEPTION_POINTERS *pExceptionInfo)
 				xr_strcat		(szDumpPath,temp);
             }
 
+			string_path	log_file_name;
+			strconcat	(sizeof(log_file_name), log_file_name, szDumpPath, ".log");
+			FlushLog	(log_file_name);
+
 			// create the file
 			HANDLE hFile = ::CreateFile( szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 			if (INVALID_HANDLE_VALUE==hFile)	
