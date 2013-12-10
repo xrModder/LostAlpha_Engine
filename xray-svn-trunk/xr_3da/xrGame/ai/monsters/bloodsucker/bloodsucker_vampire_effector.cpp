@@ -89,8 +89,12 @@ BOOL CVampireCameraEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& 
 	//////////////////////////////////////////////////////////////////////////
 	// using formula: y = k - 2*k*abs(x-1/2)   k - max distance
 	//float	cur_dist = m_dist * (1 - 2*_abs((1-time_left_perc) - 0.5f));
-	float time_passed	= 1-time_left_perc;
-	float cur_dist		= m_dist * (_sqrt(0.5f*0.5f - (time_passed - 0.5f)*(time_passed - 0.5f)) );
+	//float time_passed	= 1-time_left_perc;
+	//float cur_dist		= m_dist * (_sqrt(0.5f*0.5f - (time_passed - 0.5f)*(time_passed - 0.5f)) );
+	
+	// m_dist is a distance to target
+	// make camera being close enough to be held in his hands, but not too close
+	float	cur_dist = .32 * m_dist - _abs(m_dist * (time_left_perc - 0.5f));
 
 	Mdef.c.mad(m_direction, cur_dist);
 	
