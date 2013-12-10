@@ -7,7 +7,8 @@
 //////////////////////////////////////////////////////////////////////////
 // CMonsterEffector
 //////////////////////////////////////////////////////////////////////////
-class CMonsterEffector : public CEffectorPP {
+class CMonsterEffector : public CEffectorPP
+{
 	typedef CEffectorPP inherited;	
 	
 	SPPInfo state;			// current state
@@ -25,7 +26,8 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // CMonsterEffectorHit
 //////////////////////////////////////////////////////////////////////////
-class CMonsterEffectorHit : public CEffectorCam {
+class CMonsterEffectorHit : public CEffectorCam
+{
 
 	float total;
 	float max_amp;
@@ -35,7 +37,7 @@ class CMonsterEffectorHit : public CEffectorCam {
 	Fvector offset;
 public:
 					CMonsterEffectorHit		(float time, float amp, float periods, float power);
-	virtual	BOOL	Process					(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL	ProcessCam				(SCamEffectorInfo& info);
 };
 
 
