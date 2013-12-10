@@ -202,7 +202,8 @@ void CDetailManager::UpdateVisibleM()
 	float		r_ssaCHEAP		= 16*r_ssaDISCARD;
 
 	//clear 'vis'
-	for (int i = 0; i != 3; i++) {
+	for (u8 i = 0; i != 3; i++)
+	{
 		vis_list& list = m_visibles[i];
 		for (u32 j = 0; j != list.size(); j++)
 			list[j].clear_not_free();

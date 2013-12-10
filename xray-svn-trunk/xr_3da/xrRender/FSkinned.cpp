@@ -670,13 +670,16 @@ void CSkeletonX_ext::_FillVerticesHW2W(const Fmatrix& view, CSkeletonWallmark& w
 }
 
 #endif	//	USE_DX10
+
+
 void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
 {
-	R_ASSERT2(0,"CSkeletonX_ext::_FillVertices not implemented");
-}
-/*
-void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
-{
+#if defined(USE_DX10) || defined(USE_DX11)
+
+	//SkyLoader: need to write this function on DX10/11. Now bloodmarks donr work on DX10
+
+#else	//	USE_DX10
+
 	VERIFY				(Parent&&(ChildIDX!=u16(-1)));
 	CBoneData& BD					= Parent->LL_GetData(bone_id);
 	CBoneData::FacesVec*	faces	= &BD.child_faces[ChildIDX];
@@ -693,12 +696,12 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 	case RM_SINGLE:
 	case RM_SKINNING_1B:			_FillVerticesHW1W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
 	case RM_SKINNING_2B:			_FillVerticesHW2W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
-	case RM_SKINNING_3B:			_FillVerticesHW3W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
-	case RM_SKINNING_4B:			_FillVerticesHW4W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
+	//case RM_SKINNING_3B:			_FillVerticesHW3W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
+	//case RM_SKINNING_4B:			_FillVerticesHW4W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
 	}
 	CHK_DX				(V->p_rm_Indices->Unlock());
+#endif	//	USE_DX10
 }
-*/
 
 void CSkeletonX_ST::FillVertices	(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, u16 bone_id)
 {
