@@ -87,7 +87,7 @@ public:
 	// »щет на по€се IItem дл€ указанного слота
 	PIItem					SameSlot			(const u32 slot, PIItem pIItem, bool bSearchRuck) const;
 	// »щет на по€се или в рюкзаке IItem с указанным именем (cName())
-	PIItem					Get					(const char *name, bool bSearchRuck) const;
+	PIItem					Get					(const char *name, bool bSearchRuck, bool forceSearchInRuck = false) const;
 	// »щет на по€се или в рюкзаке IItem с указанным именем (id)
 	PIItem					Get					(const u16  id,	 bool bSearchRuck) const;
 	// »щет на по€се или в рюкзаке IItem с указанным CLS_ID

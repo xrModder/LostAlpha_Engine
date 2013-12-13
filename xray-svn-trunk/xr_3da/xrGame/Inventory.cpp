@@ -413,6 +413,7 @@ void CInventory::RepackBelt( PIItem pIItem )
 
 bool CInventory::Belt(PIItem pIItem)
 {
+	//if (pIItem->object().CLS_ID != CLSID_OBJECT_AMMO)
 	if(!CanPutInBelt(pIItem))	return false;
 
 	//Nova: Here is my belt repacking code.
@@ -941,10 +942,11 @@ PIItem CInventory::SameSlot(const u32 slot, PIItem pIItem, bool bSearchRuck) con
 }
 
 //найти в инвенторе вещь с указанным именем
-PIItem CInventory::Get(const char *name, bool bSearchRuck) const
+PIItem CInventory::Get(const char *name, bool bSearchRuck, bool forceSearchInRuck) const
 {
+	// the original below idea was... a bad way, let's say. Try to overcome this:
 	//для ГГ ищем только на поясе
-	const TIItemContainer &list = (this == &g_actor->inventory()) ? m_belt : (bSearchRuck ? m_ruck : m_belt);
+  const TIItemContainer &list = (forceSearchInRuck) ? m_ruck : (this == &g_actor->inventory()) ? m_belt : (bSearchRuck ? m_ruck : m_belt);
 
 	for(TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it)
 	{
@@ -1141,9 +1143,10 @@ bool CInventory::CanPutInSlot(PIItem pIItem) const
 //при этом реально ничего не меняется
 bool CInventory::CanPutInBelt(PIItem pIItem)
 {
-	if(InBelt(pIItem))					return false;
-	if(!m_bBeltUseful)					return false;
-	if(!pIItem || !pIItem->Belt())		return false;
+  if(!pIItem)					              return false;
+	if(InBelt(pIItem))					      return false;
+	if(!m_bBeltUseful)					      return false;
+	if(!pIItem->Belt())		            return false;
 	if(m_belt.size() == BeltWidth())	return false;
 
 	return FreeRoom_inBelt(m_belt, pIItem, BeltWidth(), 1);
