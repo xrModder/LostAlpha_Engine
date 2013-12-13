@@ -23849,31 +23849,31 @@
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\file_transfer.cpp"
+					RelativePath=".\file_transfer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\file_transfer.h"
+					RelativePath=".\file_transfer.h"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filereceiver_node.cpp"
+					RelativePath=".\filereceiver_node.cpp"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filereceiver_node.h"
+					RelativePath=".\filereceiver_node.h"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_common.h"
+					RelativePath=".\filetransfer_common.h"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_node.cpp"
+					RelativePath=".\filetransfer_node.cpp"
 					>
 				</File>
 				<File
-					RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\filetransfer_node.h"
+					RelativePath=".\filetransfer_node.h"
 					>
 				</File>
 				<File
@@ -29884,11 +29884,11 @@
 						>
 					</File>
 					<File
-						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.cpp"
+						RelativePath=".\ui\UIDragDropReferenceList.cpp"
 						>
 					</File>
 					<File
-						RelativePath="X:\STALKER\xray-svn-trunk\xr_3da\xrGame\ui\UIDragDropReferenceList.h"
+						RelativePath=".\ui\UIDragDropReferenceList.h"
 						>
 					</File>
 				</Filter>
