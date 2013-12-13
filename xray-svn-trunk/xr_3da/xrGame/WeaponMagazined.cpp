@@ -330,18 +330,15 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for(l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it) 
 	{
-		CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(l_it->first));
+	  CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(l_it->first));
 		if(l_pA) 
 		{
 			u16 l_free = l_pA->m_boxSize - l_pA->m_boxCurr;
 			l_pA->m_boxCurr = l_pA->m_boxCurr + (l_free < l_it->second ? l_free : l_it->second);
 			l_it->second = l_it->second - (l_free < l_it->second ? l_free : l_it->second);
 		}
-		if(l_it->second && !unlimited_ammo())
-		{
-			SpawnAmmo(l_it->second, l_it->first);
-			if(l_pA && m_pCurrentInventory) m_pCurrentInventory->Belt(smart_cast<CInventoryItem*>(l_pA));
-		}
+		if (l_it->second && !unlimited_ammo())
+		  SpawnAmmo(l_it->second, l_it->first);
 	}
 }
 
@@ -349,11 +346,10 @@ void CWeaponMagazined::ReloadMagazine()
 {
 	m_dwAmmoCurrentCalcFrame = 0;	
 
-	//устранить осечку при перезарядке
+	// reset misfire flag
 	if(IsMisfire())	bMisfire = false;
 	
-	//переменная блокирует использование
-	//только разных типов патронов
+  // this variable locks the ammo type to be reloaded
 //	static bool l_lockType = false;
 	if (!m_bLockType) {
 		m_ammoName	= NULL;
@@ -369,14 +365,14 @@ void CWeaponMagazined::ReloadMagazine()
 	
 	if(!unlimited_ammo()) 
 	{
-		//попытаться найти в инвентаре патроны текущего типа 
+		// search inventory for the specific ammo type
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
 		
 		if(!m_pAmmo && !m_bLockType) 
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
-				//проверить патроны всех подходящих типов
+				// search inventory for any fitting ammo type
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));
 				if(m_pAmmo) 
 				{ 
@@ -390,10 +386,11 @@ void CWeaponMagazined::ReloadMagazine()
 		m_ammoType = m_ammoType;
 
 
-	//нет патронов для перезарядки
+	// no ammo for reloading
 	if(!m_pAmmo && !unlimited_ammo() ) return;
 
-	//разрядить магазин, если загружаем патронами другого типа
+	// unload the magazine, if we're loading with ammo of a different type
+	shared_str old_ammo_sect = !m_magazine.empty()? *m_magazine.back().m_ammoSect : "";
 	if(!m_bLockType && !m_magazine.empty() && 
 		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), 
 					 *m_magazine.back().m_ammoSect)))
@@ -418,7 +415,8 @@ void CWeaponMagazined::ReloadMagazine()
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 
-	//выкинуть коробку патронов, если она пустая
+	// drop the ammo box, if empty
+	// (what about the nature's tidiness?? Where's Greenpeace??)
 	if(m_pAmmo && !m_pAmmo->m_boxCurr && OnServer()) 
 		m_pAmmo->SetDropManual(TRUE);
 
@@ -430,6 +428,32 @@ void CWeaponMagazined::ReloadMagazine()
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
+	
+	if (old_ammo_sect != "")
+	{
+	  // We're switching the ammo type and we want the old ammo
+	  // be put back on the belt. The main problem is
+	  // it desn't exist yet, it was spawned and we're waiting
+	  // for it to be taken into the inventory.
+	  // In the meantime we will take the same type of ammo 
+	  // from the backpack and put onto the belt.
+	  // The problem is, what if we don't have any ammo 
+	  // of this type in our backpack? 
+	  //
+	  // The whole action should be postponed
+	  // and processed later, when we already have
+	  // this fresh new spawned ammo.
+	  if (xr_strcmp(m_pAmmo->cNameSect(), old_ammo_sect))
+	  {
+	    PIItem item = m_pCurrentInventory->Get(old_ammo_sect.c_str(), true, true);
+	    if (item) 
+	      m_pCurrentInventory->Belt(item);	  
+	    else
+	    {
+	      // it's not in a backpack yet... have to find a way, how to overcome such a case.
+	    }
+	  }
+	}
 }
 
 void CWeaponMagazined::OnStateSwitch	(u32 S)
