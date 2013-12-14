@@ -474,9 +474,12 @@ int CUIListWnd::FindItemWithValue(int iValue)
 
 bool CUIListWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	switch(mouse_action){
+	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
+
+	switch(mouse_action)
+	{
 	case WINDOW_LBUTTON_DB_CLICK:
-		break;
+			break;
 	case WINDOW_MOUSE_WHEEL_DOWN:
 			m_ScrollBar->TryScrollInc	();
 			return						true;
@@ -490,10 +493,6 @@ bool CUIListWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	return inherited::OnMouseAction(x, y, mouse_action);
 }
 
-bool CUIListWnd::OnKeyboardAction	(int dik, EUIMessages keyboard_action)
-{
-	return inherited::OnKeyboardAction(dik, keyboard_action);
-}
 //////////////////////////////////////////////////////////////////////////
 
 void CUIListWnd::UpdateScrollBar()

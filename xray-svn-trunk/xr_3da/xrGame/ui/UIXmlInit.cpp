@@ -322,8 +322,8 @@ bool CUIXmlInit::InitText(CUIXml& xml_doc, LPCSTR path, int index, CUILines* pLi
 	CGameFont *pTmpFont		= NULL;
 	InitFont				(xml_doc, path, index, color, pTmpFont);
 	pLines->SetTextColor	(color);
-	R_ASSERT				(pTmpFont);
-	pLines->SetFont			(pTmpFont);	
+	if (pTmpFont)
+		pLines->SetFont(pTmpFont);	
 
 	// Load font alignment
 	shared_str al = xml_doc.ReadAttrib(path, index, "align");
@@ -643,32 +643,26 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 	return true;
 }
 
-bool CUIXmlInit::InitProgressShape(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd){
+bool CUIXmlInit::InitProgressShape(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd)
+{
 	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
 
-	InitStatic						(xml_doc, path, index, pWnd);
+	InitWindow						(xml_doc, path, index, pWnd);
 
 	if (xml_doc.ReadAttribInt(path, index, "text"))
-		pWnd->SetTextVisible(		true);
+		pWnd->SetTextVisible(true);
 
 	string256 _path;
 
 	if (xml_doc.NavigateToNode(strconcat(sizeof(_path),_path, path, ":back"),index))
-		{R_ASSERT2(0,"unused <back> node in progress shape ");}
+		InitStatic(xml_doc, _path, index, pWnd->m_pBackground);
 
-
-	if (xml_doc.NavigateToNode(strconcat(sizeof(_path),_path, path, ":front"),index))
-		{R_ASSERT2(0,"unused <front> node in progress shape ");}
-//    InitStatic(xml_doc, strconcat(sizeof(_path),_path, path, ":front"), index, pWnd->m_pTexture);
+	InitStatic(xml_doc, strconcat(sizeof(_path),_path, path, ":front"), index, pWnd->m_pTexture);
 
 	pWnd->m_sectorCount	= xml_doc.ReadAttribInt(path, index, "sector_count", 8);
 	pWnd->m_bClockwise	= xml_doc.ReadAttribInt(path, index, "clockwise") ? true : false;
-	
-	pWnd->m_blend		= ( xml_doc.ReadAttribInt(path, index, "blend", 1) == 1 )? true : false;
-	pWnd->m_angle_begin = xml_doc.ReadAttribFlt(path, index, "begin_angle", 0.0f);
-	pWnd->m_angle_end   = xml_doc.ReadAttribFlt(path, index, "end_angle", PI_MUL_2);
-	
-    return true;
+
+	return true;
 }
 
 void CUIXmlInit::InitAutoStaticGroup(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pParentWnd)

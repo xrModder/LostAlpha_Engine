@@ -19,6 +19,7 @@
 #include "ui/UIInventoryWnd.h"
 #include "ui/UIPdaWnd.h"
 #include "ui/UICarBodyWnd.h"
+#include "ui/UIMainIngameWnd.h"
 
 CUIGameSP::CUIGameSP()
 {
@@ -64,6 +65,9 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 
 	if( !pActor->g_Alive() )	
 		return false;
+
+	if(UIMainIngameWnd->OnKeyboardPress(dik))
+		return true;
 
 	switch ( get_binded_action(dik) )
 	{
