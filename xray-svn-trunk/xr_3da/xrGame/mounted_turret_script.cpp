@@ -7,15 +7,21 @@ using namespace luabind;
 
 void CMountedTurret::SetNpcOwner(CScriptGameObject *script_game_object)
 {
-	CGameObject *game_object = &script_game_object->object();
-	R_ASSERT(game_object);
-	SetNpcOwner(game_object);
+	if (script_game_object != NULL)
+	{
+		CGameObject *game_object = smart_cast<CGameObject*>(&script_game_object->object());
+		R_ASSERT(game_object);
+		SetNpcOwner(game_object);
+	} else
+		CHolderCustom::SetNpcOwner(NULL);
 }
 
 void CMountedTurret::SetEnemy(CScriptGameObject *script_game_object)
 {
+	R_ASSERT(script_game_object!=NULL);
+
 	Fvector3 pos;
-	CGameObject *game_object = &script_game_object->object();
+	CGameObject *game_object = smart_cast<CGameObject*>(&script_game_object->object());
 	R_ASSERT(game_object);
 	game_object->Center(pos);
 	SetDesiredEnemyPos(pos);
