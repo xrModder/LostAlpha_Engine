@@ -127,7 +127,7 @@ void CUIFrameLine::Render()
 	// Now render all statics
 	for (int i = 0; i < flMax; ++i)
 	{
-		SetElementsSize( elements[i], i );
+		//SetElementsSize( elements[i], i );
 		elements[i].Render();
 	}
 }

@@ -68,6 +68,13 @@ void CUI3tButton::PlaySoundH()
 	if (m_sound_h._handle())
 		m_sound_h.play(NULL, sm_2D);
 }
+
+void CUI3tButton::Init(LPCSTR tex_name, float x, float y, float width, float height)
+{
+	InitButton(Fvector2().set(x, y), Fvector2().set(width, height));
+	InitTexture(tex_name);
+}
+
 void CUI3tButton::InitButton(Fvector2 pos, Fvector2 size)
 {
 	if ( m_frameline_mode )

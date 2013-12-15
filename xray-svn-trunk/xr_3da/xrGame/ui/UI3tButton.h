@@ -35,6 +35,8 @@ public:
 	virtual void	DrawTexture					();
 	virtual void	Update						();
 	virtual void 	Draw						();
+
+	virtual void	Init						(LPCSTR tex_name, float x, float y, float width, float height);	
 	
 	virtual bool 	OnMouseDown					(int mouse_btn);
 	void			SetStretch			(bool stretch_texture)	{m_background->SetStretchTexture(stretch_texture);}
