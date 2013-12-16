@@ -259,6 +259,7 @@ public:
 
 	bool					SetWeatherFX		(shared_str name);
 	bool					IsWFXPlaying		(){return bWFX;}
+	bool					StartWeatherFXFromTime(shared_str name, float time);
     void					SetWeather			(shared_str name, bool forced=false);
     shared_str				GetWeather			()					{ return CurrentWeatherName;}
 	void					SetGameTime			(float game_time, float time_factor);
