@@ -213,6 +213,18 @@ bool CEnvironment::SetWeatherFX(shared_str name)
 	return true;
 }
 
+bool CEnvironment::StartWeatherFXFromTime(shared_str name, float time)
+{
+	if (!SetWeatherFX(name))				
+		return false;
+
+	for (EnvIt it=CurrentWeather->begin(); it!=CurrentWeather->end(); it++)
+		(*it)->exec_time = NormalizeTime((*it)->exec_time - wfx_time + time);
+
+	wfx_time = time;
+	return true;
+} 
+
 void CEnvironment::StopWFX	()
 {
 	VERIFY					(CurrentCycleName.size());
