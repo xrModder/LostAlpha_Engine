@@ -159,6 +159,11 @@ bool is_wfx_playing	()
 	return			(g_pGamePersistent->Environment().IsWFXPlaying());
 }
 
+float get_wfx_time	()
+{
+	return			(g_pGamePersistent->Environment().wfx_time);
+}
+
 void set_time_factor(float time_factor)
 {
 	if (!OnServer())
@@ -743,16 +748,17 @@ void CLevel::script_register(lua_State *L)
 		def("debug_actor",						tpfGetActor),
 		def("check_object",						check_object),
 #endif
-		
+	 	
 		def("get_weather",						get_weather),
 		def("set_weather",						set_weather),
-		def("start_weather_fx_from_time",						start_weather_fx_from_time),
+		def("start_weather_fx_from_time",		start_weather_fx_from_time),
 		def("set_weather_fx",					set_weather_fx),
-		def("set_game_time",						set_game_time),
+		def("set_game_time",					set_game_time),
 		def("is_wfx_playing",					is_wfx_playing),
 		def("level_sound_enabled",				level_sound_enabled),
 		def("set_level_sound_enabled",			set_level_sound_enabled),
 		def("environment",						environment),
+		def("get_wfx_time",						get_wfx_time),
 		
 		def("set_time_factor",					set_time_factor),
 		def("get_time_factor",					get_time_factor),

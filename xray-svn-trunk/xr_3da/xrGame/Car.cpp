@@ -667,15 +667,24 @@ bool CCar::attach_Actor(CGameObject* actor)
 	IKinematics* K	= smart_cast<IKinematics*>(Visual());
 	CInifile* ini	= K->LL_UserData();
 	int id;
-	if(ini->line_exist("car_definition","driver_place"))
+	Fmatrix	driver_xform;
+	if(ini->line_exist("car_definition","driver_position") && ini->line_exist("car_definition","driver_direction"))
+	{
+		driver_xform.c.set(ini->r_fvector3("car_definition","driver_position"));
+		driver_xform.k.set(ini->r_fvector3("car_definition","driver_direction"));
+	} else if(ini->line_exist("car_definition","driver_place")) {
+
 		id=K->LL_BoneID(ini->r_string("car_definition","driver_place"));
-	else
-	{	
+		CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
+		driver_xform.set(instance.mTransform);
+	} else {	
 		Owner()->setVisible(0);
 		id=K->LL_GetBoneRoot();
+		CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
+		driver_xform.set(instance.mTransform);
 	}
-	CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
-	m_sits_transforms.set(instance.mTransform);
+
+	m_sits_transforms.set(driver_xform);
 	actor->XFORM().mul_43	(XFORM(),m_sits_transforms);
 
 	OnCameraChange(ectFirst);

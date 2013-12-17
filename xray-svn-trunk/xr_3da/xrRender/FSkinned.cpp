@@ -589,9 +589,11 @@ void CSkeletonX_ext::_FillVerticesHW1W(const Fmatrix& view, CSkeletonWallmark& w
 			for (u32 k=0; k<3; k++)
 			{
 				vertBoned1W&  vert			= vertices[indices[idx+k]];
+/*
 #ifdef		DEBUG
 				verify_vertex( vert,  V, Parent, iBase, iCount, indices, indices[idx+k], idx+k );
 #endif
+*/
 				F.bone_id[k][0]			= (u16)vert.matrix;
 				F.bone_id[k][1]			= F.bone_id[k][0];
 				F.weight[k]				= 0.f;
@@ -633,9 +635,11 @@ void CSkeletonX_ext::_FillVerticesHW2W(const Fmatrix& view, CSkeletonWallmark& w
 			{
 				Fvector P0,P1;
 				vertBoned2W&  vert			= vertices[indices[idx+k]];
+/*
 #ifdef		DEBUG
 				verify_vertex( vert,  V, Parent, iBase, iCount, indices, indices[idx+k], idx+k );
 #endif
+*/
 				F.bone_id[k][0]			= (u16)vert.matrix0;
 				F.bone_id[k][1]			= (u16)vert.matrix1;
 				F.weight[k]				= vert.w;
