@@ -150,16 +150,13 @@ void CUIWindow::script_register(lua_State *L)
 		.def(							constructor<>())
 		.def("SetWidth",				&CUIFrameLineWnd::SetWidth)
 		.def("SetHeight",				&CUIFrameLineWnd::SetHeight)
-		.def("SetOrientation",					&CUIFrameLineWnd::SetOrientation)
+		.def("SetOrientation",					&CUIFrameLineWnd::SetHorizontal)
+		.def("IsHorizontal",					&CUIFrameLineWnd::IsHorizontal)
 		.def("SetColor",						&CUIFrameLineWnd::SetTextureColor)
 		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
 		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init_script)
-		.def("SetWndSize",	&CUIFrameLineWnd::SetWndSize)
-		.def("SetWndPos",	&CUIFrameLineWnd::SetWndPos)
-		.def("SetStretchTexture",	&CUIFrameLineWnd::SetStretchTexture)
-		.def("GetStretchTexture",	&CUIFrameLineWnd::GetStretchTexture)
-		.def("IsHorizontal",	&CUIFrameLineWnd::IsHorizontal)
-		.def("SetHorizontal",	&CUIFrameLineWnd::SetHorizontal),
+		.def("GetTextureHeight",					&CUIFrameLineWnd::GetTextureHeight)
+		.def("GetTextureWidth",					&CUIFrameLineWnd::GetTextureWidth),
 
 
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")

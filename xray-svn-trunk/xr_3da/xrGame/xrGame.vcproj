@@ -29675,26 +29675,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Frames"
-					>
-					<File
-						RelativePath=".\ui\UIFrameLine.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ui\UIFrameLine.h"
-						>
-					</File>
-					<File
-						RelativePath="UIFrameRect.cpp"
-						>
-					</File>
-					<File
-						RelativePath="UIFrameRect.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="ScrollView"
 					>
 					<File
