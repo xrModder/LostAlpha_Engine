@@ -253,28 +253,48 @@ bool CUIXmlInit::InitCheck(CUIXml& xml_doc, LPCSTR path, int index, CUICheckButt
 	pWnd->InitCheckButton(pWnd->GetWndPos(),pWnd->GetWndSize(),texture);
 
 	u32 color;
+	bool color_flag = false;
+
 	strconcat(sizeof(buf),buf,path,":text_color:e");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color, S_Enabled);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:d");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Disabled);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:t");
-	if (xml_doc.NavigateToNode(buf, index)){
+	if (xml_doc.NavigateToNode(buf, index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Touched);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:h");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Highlighted);
+		color_flag = true;
+	}
+
+	if (!color_flag)
+	{
+		strconcat(sizeof(buf),buf,path,":text");
+		if (xml_doc.NavigateToNode(buf,index))
+		{
+			color			= GetColor(xml_doc, buf, index, 0x00);
+			pWnd->SetStateTextColor(color,S_Enabled);
+		}
 	}
 
 	InitOptionsItem(xml_doc, path, index, pWnd);
@@ -373,32 +393,51 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 
 	string256			buf;
 	InitText			(xml_doc, strconcat(sizeof(buf),buf,path,":text"), index, pWnd);
-	u32					color;
+
+	u32	color;
+	bool 	color_flag = false;
 
 	strconcat(sizeof(buf),buf,path,":text_color:e");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color, S_Enabled);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:d");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Disabled);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:t");
-	if (xml_doc.NavigateToNode(buf, index)){
+	if (xml_doc.NavigateToNode(buf, index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Touched);
+		color_flag = true;
 	}
 
 	strconcat(sizeof(buf),buf,path,":text_color:h");
-	if (xml_doc.NavigateToNode(buf,index)){
+	if (xml_doc.NavigateToNode(buf,index))
+	{
 		color			= GetColor(xml_doc, buf, index, 0x00);
 		pWnd->SetStateTextColor(color,S_Highlighted);
+		color_flag = true;
 	}
 
+	if (!color_flag)
+	{
+		strconcat(sizeof(buf),buf,path,":text");
+		if (xml_doc.NavigateToNode(buf,index))
+		{
+			color			= GetColor(xml_doc, buf, index, 0x00);
+			pWnd->SetStateTextColor(color,S_Enabled);
+		}
+	}
 
 	InitMultiTexture	(xml_doc, path, index, pWnd);
 	InitTextureOffset	(xml_doc, path, index, pWnd);
@@ -628,11 +667,6 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 	
 		u32 color = GetColor	(xml_doc, buf, index, 0xff);
 		pWnd->m_minColor.set(color);
-
-		strconcat(sizeof(buf),buf,path,":middle_color");
-	
-		color = GetColor	(xml_doc, buf, index, 0xff);
-		pWnd->m_middleColor.set(color);
 
 		strconcat(sizeof(buf),buf,path,":max_color");
 	

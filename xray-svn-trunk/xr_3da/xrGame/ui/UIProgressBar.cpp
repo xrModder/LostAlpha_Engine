@@ -56,7 +56,7 @@ void CUIProgressBar::UpdateProgressBar()
 	if(m_bUseColor)
 	{
 		Fcolor curr;
-		curr.lerp							(m_minColor,m_middleColor,m_maxColor,fCurrentLength);
+		curr.lerp							(m_minColor,m_maxColor,fCurrentLength);
 		m_UIProgressItem.SetTextureColor	(curr.get());
 	}
 }
