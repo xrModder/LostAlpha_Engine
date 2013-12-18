@@ -29,43 +29,51 @@ CUILines::CUILines()
 	uFlags.set(flColoringMode,		TRUE);
 	uFlags.set(flCutWordsMode,		FALSE);
 	uFlags.set(flRecognizeNewLine,	TRUE);
+	m_pFont = UI().Font().pFontLetterica16Russian;
 }
 
-CUILines::~CUILines(){
-
+CUILines::~CUILines()
+{
 }
 
-void CUILines::SetTextComplexMode(bool mode){
+void CUILines::SetTextComplexMode(bool mode)
+{
 	uFlags.set(flComplexMode, mode);
 	if (mode)
 		uFlags.set(flPasswordMode, FALSE);
 }
 
-void CUILines::SetPasswordMode(bool mode){
+void CUILines::SetPasswordMode(bool mode)
+{
 	uFlags.set(flPasswordMode, mode);
 	if (mode)
 		uFlags.set(flComplexMode, false);
 }
 
 
-void CUILines::SetColoringMode(bool mode){
+void CUILines::SetColoringMode(bool mode)
+{
 	uFlags.set(flColoringMode, mode);
 }
 
-void CUILines::SetCutWordsMode(bool mode){
+void CUILines::SetCutWordsMode(bool mode)
+{
 	uFlags.set(flCutWordsMode, mode);
 }
 
-void CUILines::SetEllipsis(bool mode){
+void CUILines::SetEllipsis(bool mode)
+{
 	uFlags.set(flEllipsis, mode);	
 }
 
-void CUILines::SetUseNewLineMode(bool mode){
+void CUILines::SetUseNewLineMode(bool mode)
+{
 	uFlags.set(flRecognizeNewLine, mode);	
 }
 
 
-void CUILines::SetText(const char* text){
+void CUILines::SetText(const char* text)
+{
 	
 	if (!m_pFont)
         m_pFont = UI().Font().pFontLetterica16Russian;
@@ -360,10 +368,10 @@ void CUILines::Draw(float x, float y)
 		text_pos.set(0,0);
 
 		text_pos.x = x + GetIndentByAlign();
-//		text_pos.y = y + GetVIndentByAlign();
-		text_pos.y = y;
+		text_pos.y = y + GetVIndentByAlign();
+//		text_pos.y = y;
 		UI().ClientToScreenScaled(text_pos);
-		text_pos.y	+= GetVIndentByAlign();
+//		text_pos.y	+= GetVIndentByAlign();
 
 		if (uFlags.test(flPasswordMode))
 		{
