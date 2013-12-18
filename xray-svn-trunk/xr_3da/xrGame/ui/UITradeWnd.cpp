@@ -32,9 +32,9 @@ struct CUITradeInternal{
 	CUIStatic			UIStaticBottom;
 
 	CUIStatic			UIOurBagWnd;
-	CUITextWnd			UIOurMoneyStatic;
+	CUIStatic			UIOurMoneyStatic;
 	CUIStatic			UIOthersBagWnd;
-	CUITextWnd			UIOtherMoneyStatic;
+	CUIStatic			UIOtherMoneyStatic;
 	CUIDragDropListEx	UIOurBagList;
 	CUIDragDropListEx	UIOthersBagList;
 
@@ -128,10 +128,10 @@ void CUITradeWnd::Init()
 	xml_init.InitStatic					(uiXml, "others_bag_static", 0, &m_uidata->UIOthersBagWnd);
 
 	m_uidata->UIOurBagWnd.AttachChild	(&m_uidata->UIOurMoneyStatic);
-	xml_init.InitTextWnd					(uiXml, "our_money_static", 0, &m_uidata->UIOurMoneyStatic);
+	xml_init.InitStatic					(uiXml, "our_money_static", 0, &m_uidata->UIOurMoneyStatic);
 
 	m_uidata->UIOthersBagWnd.AttachChild(&m_uidata->UIOtherMoneyStatic);
-	xml_init.InitTextWnd					(uiXml, "other_money_static", 0, &m_uidata->UIOtherMoneyStatic);
+	xml_init.InitStatic					(uiXml, "other_money_static", 0, &m_uidata->UIOtherMoneyStatic);
 
 	AttachChild							(&m_uidata->UIOurTradeWnd);
 	xml_init.InitStatic					(uiXml, "static", 0, &m_uidata->UIOurTradeWnd);

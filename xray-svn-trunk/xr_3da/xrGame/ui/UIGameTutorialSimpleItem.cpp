@@ -229,12 +229,13 @@ void CUISequenceSimpleItem::Start()
 
 	if (g_pGameLevel)
 	{
-			bool bShowPda			= false;
-			CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
-			if(!stricmp(m_pda_section,"pda_contacts")){
-				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptContacts);
-				bShowPda = true;
-			}else{
+		bool bShowPda			= false;
+		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
+		if(!stricmp(m_pda_section,"pda_contacts"))
+		{
+			ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptContacts);
+			bShowPda = true;
+		}else{
 			if(!stricmp(m_pda_section,"pda_map")){
 				ui_game_sp->m_PdaMenu->SetActiveSubdialog(eptMap);
 				bShowPda = true;
@@ -270,8 +271,9 @@ void CUISequenceSimpleItem::Start()
 
 		if(ui_game_sp)
 		{
-			if( (!ui_game_sp->m_PdaMenu->IsShown() && bShowPda) || 
-				(ui_game_sp->m_PdaMenu->IsShown() && !bShowPda))
+			if(!ui_game_sp->m_PdaMenu->IsShown() && bShowPda)
+				ui_game_sp->m_PdaMenu->ShowDialog(true);
+			else if (ui_game_sp->m_PdaMenu->IsShown() && !bShowPda)
 				ui_game_sp->m_PdaMenu->HideDialog();
 		}
 	}

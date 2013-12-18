@@ -144,7 +144,6 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	if(UIName)
 	{
 		UIName->SetText		(pInvItem->Name());
-		UIName->AdjustHeightToText();
 	}
 	if(UIWeight)
 	{
