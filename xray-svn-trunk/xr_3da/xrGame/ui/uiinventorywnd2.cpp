@@ -377,15 +377,18 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 {
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
+
+	if(!old_owner || !new_owner)
+		return false;
 	
 	EListType t_new		= GetType(new_owner);
 	EListType t_old		= GetType(old_owner);
-
-	if(!old_owner || !new_owner)
-					return false;
 	
-	if (old_owner==new_owner) {
-		if (t_new==iwBelt) SumAmmoByDrop((CInventoryItem*)itm->m_pData, old_owner);
+	if (old_owner==new_owner)
+	{
+		if (t_new==iwBelt)
+			SumAmmoByDrop((CInventoryItem*)itm->m_pData, old_owner);
+
 		return false;
 	}
 
