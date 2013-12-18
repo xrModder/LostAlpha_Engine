@@ -15,6 +15,9 @@
 
 #include "dxRenderDeviceRender.h"
 
+#include "..\Stats.h"
+#include "..\ConstantDebug.h"
+
 // matrices
 #define	BIND_DECLARE(xf)	\
 class cl_xform_##xf	: public R_constant_setup {	virtual void setup (R_constant* C) { RCache.xforms.set_c_##xf (C); } }; \
@@ -175,6 +178,9 @@ class cl_fog_params	: public R_constant_setup {
 			result.set		(-n*r, r, r, r);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_fog_params", result);
+#endif
 	}
 };	static cl_fog_params	binder_fog_params;
 
@@ -188,6 +194,9 @@ class cl_fog_color	: public R_constant_setup {
 			result.set				(desc.fog_color.x,	desc.fog_color.y, desc.fog_color.z,	0);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_fog_color", result);
+#endif
 	}
 };	static cl_fog_color		binder_fog_color;
 #endif
@@ -198,6 +207,9 @@ class cl_times		: public R_constant_setup {
 	{
 		float 		t	= RDEVICE.fTimeGlobal;
 		RCache.set_c	(C,t,t*10,t/10,_sin(t))	;
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_times", Fvector4().set(t,t*10,t/10,_sin(t)));
+#endif
 	}
 };
 static cl_times		binder_times;
@@ -208,6 +220,9 @@ class cl_eye_P		: public R_constant_setup {
 	{
 		Fvector&		V	= RDEVICE.vCameraPosition;
 		RCache.set_c	(C,V.x,V.y,V.z,1);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_eye_P", Device.vCameraPosition);
+#endif
 	}
 };
 static cl_eye_P		binder_eye_P;
@@ -218,6 +233,9 @@ class cl_eye_D		: public R_constant_setup {
 	{
 		Fvector&		V	= RDEVICE.vCameraDirection;
 		RCache.set_c	(C,V.x,V.y,V.z,0);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_eye_D", Device.vCameraDirection);
+#endif
 	}
 };
 static cl_eye_D		binder_eye_D;
@@ -228,6 +246,9 @@ class cl_eye_N		: public R_constant_setup {
 	{
 		Fvector&		V	= RDEVICE.vCameraTop;
 		RCache.set_c	(C,V.x,V.y,V.z,0);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_eye_N", Device.vCameraTop);
+#endif
 	}
 };
 static cl_eye_N		binder_eye_N;
@@ -243,6 +264,9 @@ class cl_sun0_color	: public R_constant_setup {
 			result.set				(desc.sun_color.x,	desc.sun_color.y, desc.sun_color.z,	0);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_sun0_color", result);
+#endif	
 	}
 };	static cl_sun0_color		binder_sun0_color;
 class cl_sun0_dir_w	: public R_constant_setup {
@@ -254,6 +278,9 @@ class cl_sun0_dir_w	: public R_constant_setup {
 			result.set				(desc.sun_dir.x,	desc.sun_dir.y, desc.sun_dir.z,	0);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_sun0_dir_w", result);
+#endif		
 	}
 };	static cl_sun0_dir_w		binder_sun0_dir_w;
 class cl_sun0_dir_e	: public R_constant_setup {
@@ -268,6 +295,9 @@ class cl_sun0_dir_e	: public R_constant_setup {
 			result.set					(D.x,D.y,D.z,0);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_sun0_dir_e", result);
+#endif	
 	}
 };	static cl_sun0_dir_e		binder_sun0_dir_e;
 
@@ -281,6 +311,9 @@ class cl_amb_color	: public R_constant_setup {
 			result.set				(desc.ambient.x, desc.ambient.y, desc.ambient.z, desc.weight);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_amb_color", result);
+#endif	
 	}
 };	static cl_amb_color		binder_amb_color;
 class cl_hemi_color	: public R_constant_setup {
@@ -292,6 +325,9 @@ class cl_hemi_color	: public R_constant_setup {
 			result.set				(desc.hemi_color.x, desc.hemi_color.y, desc.hemi_color.z, desc.hemi_color.w);
 		}
 		RCache.set_c	(C,result);
+#ifdef LA_SHADERS_DEBUG
+		g_pConstantsDebug->Add("cl_hemi_color", result);
+#endif	
 	}
 };	static cl_hemi_color		binder_hemi_color;
 #endif

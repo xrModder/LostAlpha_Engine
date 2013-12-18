@@ -332,7 +332,7 @@ void CStats::Show()
 		/////////////////////////////////////////////////////////////////////////
 		// shaders constants debug
 		F.SetHeightI						(f_base_size);
-		F.OutSet							(650,300);
+		F.OutSet							(1500,300);
 		g_pConstantsDebug->OnRender			(pFont);
 		pFont->OnRender						();
 #endif
