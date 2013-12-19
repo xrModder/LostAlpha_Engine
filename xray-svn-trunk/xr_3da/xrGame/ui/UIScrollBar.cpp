@@ -50,7 +50,7 @@ void CUIScrollBar::InitScrollBar(Fvector2 pos, float length, bool bIsHorizontal,
 		m_ScrollBox->SetHorizontal	(true);
 
 		strconcat					(sizeof(_path),_path, profile, ":box");
-		CUIXmlInit::InitStatic	(xml_doc, _path, 0, m_ScrollBox);
+		CUIXmlInit::InitFrameLine	(xml_doc, _path, 0, m_ScrollBox);
 		m_IncButton->SetWndPos		(0.0f, length/2);
 
 		strconcat					(sizeof(_path),_path, profile, ":back:texture");
@@ -72,7 +72,7 @@ void CUIScrollBar::InitScrollBar(Fvector2 pos, float length, bool bIsHorizontal,
 		m_ScrollBox->SetHorizontal	(false);
 
 		strconcat					(sizeof(_path),_path, profile, ":box_v");
-		CUIXmlInit::InitStatic	(xml_doc, _path, 0, m_ScrollBox);
+		CUIXmlInit::InitFrameLine	(xml_doc, _path, 0, m_ScrollBox);
 		strconcat					(sizeof(_path),_path, profile, ":back_v:texture");
 		LPCSTR texture				= xml_doc.Read(_path, 0, "");
 		R_ASSERT					(texture);
