@@ -16,6 +16,8 @@ public:
 	virtual void 	InitTexture					(LPCSTR tex_name);
 	virtual void 	InitTexture					(LPCSTR tex_enabled, LPCSTR tex_disabled, LPCSTR tex_touched, LPCSTR tex_highlighted);
 
+	virtual void	Init_script				(float x, float y, float width, float height) { InitButton(Fvector2().set(x,y), Fvector2().set(width, height));} //SkyLoader: for scripts
+
 //.			void 	SetTextColor				(u32 color);
 	virtual void 	SetTextureOffset			(float x, float y);	
 	virtual void 	SetWidth					(float width);

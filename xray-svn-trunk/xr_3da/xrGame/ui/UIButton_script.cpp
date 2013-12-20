@@ -24,15 +24,18 @@ void CUIButton::script_register(lua_State *L)
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())
 		.def("Init",					(void(CUI3tButton::*)(LPCSTR,float,float,float,float))&CUI3tButton::Init )
+		.def("Init",						&CUI3tButton::Init_script)
 		.def("SetStateTextColor",				&CUI3tButton::SetStateTextColor)
 		.def("SetStretchTexture",				&CUI3tButton::SetStretch),
 
 
 		class_<CUICheckButton, CUI3tButton>("CUICheckButton")
 		.def(							constructor<>())
+		.def("Init",					&CUICheckButton::Init_script)
 		.def("GetCheck",				&CUICheckButton::GetCheck)
 		.def("SetCheck",				&CUICheckButton::SetCheck)
-		.def("SetDependControl",		&CUICheckButton::SetDependControl),
+		.def("SetDependControl",		&CUICheckButton::SetDependControl)
+		.def("InitTexture",					&CUICheckButton::InitTexture2),
 
 		class_<CUICustomSpin, CUIWindow>("CUICustomSpin")
 		.def("Init",				&CUICustomSpin::Init_script)

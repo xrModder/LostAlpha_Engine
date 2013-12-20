@@ -474,8 +474,6 @@ int CUIListWnd::FindItemWithValue(int iValue)
 
 bool CUIListWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
-
 	switch(mouse_action)
 	{
 	case WINDOW_LBUTTON_DB_CLICK:

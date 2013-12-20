@@ -9,9 +9,6 @@
 CUIListItem::CUIListItem(void)
 {
 	m_eButtonState = BUTTON_NORMAL;
-	SetButtonAsSwitch	(true);
-
-	m_bIsSwitch		= false;
 
 	m_pData = NULL;
 

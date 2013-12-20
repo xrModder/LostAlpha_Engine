@@ -30,6 +30,11 @@ public:
 
 			void InitCheckButton		(Fvector2 pos, Fvector2 size, LPCSTR texture_name);
 
+	virtual void	Init_script				(float x, float y, float width, float height)
+								{ InitCheckButton(Fvector2().set(x,y), Fvector2().set(width, height), "ui_checker");} //SkyLoader: for scripts
+
+	void		InitTexture2				(LPCSTR texture_name);
+
 	//состояние кнопки
 	IC	bool	GetCheck					() const {return GetButtonState() == BUTTON_PUSHED;}
 	IC	void	SetCheck(bool ch)
@@ -41,7 +46,6 @@ public:
 
 private:
 	bool							m_opt_backup_value;
-	void InitTexture2				(LPCSTR texture_name);
 	CUIWindow* m_pDependControl;
 
 };
