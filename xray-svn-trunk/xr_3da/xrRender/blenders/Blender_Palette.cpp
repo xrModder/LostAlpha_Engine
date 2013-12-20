@@ -62,7 +62,7 @@ void		IBlender::CreatePalette(xr_vector<IBlender*> &palette)
 
 #ifndef _EDITOR
 // Engine
-#include "../../../xr_3da/render.h"
+#include "../../render.h"
 IBlender*	IBlender::Create	(CLASS_ID cls)
 {
 	return ::RImplementation.blender_create	(cls);
@@ -74,23 +74,23 @@ void		IBlender::Destroy	(IBlender*& B)
 #else
 
 // Editor
-#include "../Layers/xrRender_R1/blenderdefault.h"
-#include "../Layers/xrRender_R1/blender_default_aref.h"
-#include "../Layers/xrRender_R1/blender_vertex.h"
-#include "../Layers/xrRender_R1/blender_vertex_aref.h"
+#include "../../xrRender_R1/blenderdefault.h"
+#include "../../xrRender_R1/blender_default_aref.h"
+#include "../../xrRender_R1/blender_vertex.h"
+#include "../../xrRender_R1/blender_vertex_aref.h"
 #include "blender_screen_set.h"
-#include "../Layers/xrRender_R1/blender_screen_gray.h"
+#include "../../xrRender_R1/blender_screen_gray.h"
 #include "blender_editor_wire.h"
 #include "blender_editor_selection.h"
 #include "blender_light.h"
-#include "../Layers/xrRender_R1/blender_LaEmB.h"
+#include "../../xrRender_R1/blender_LaEmB.h"
 #include "blender_Lm(EbB).h"
 #include "blender_BmmD.h"
 #include "blender_B.h"
 #include "blender_shadow_texture.h"
-#include "../Layers/xrRender_R1/blender_shadow_world.h"
-#include "../Layers/xrRender_R1/blender_blur.h"
-#include "../Layers/xrRender_R1/blender_model.h"
+#include "../../xrRender_R1/blender_shadow_world.h"
+#include "../../xrRender_R1/blender_blur.h"
+#include "../../xrRender_R1/blender_model.h"
 #include "blender_model_ebb.h"
 #include "blender_detail_still.h"
 #include "blender_tree.h"

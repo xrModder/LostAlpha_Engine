@@ -156,7 +156,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	VERIFY						(u32(pv-_pv)==2*(v_cnt+1));
 	RCache.Vertex.Unlock		(2*(v_cnt+1),ll_hGeom2.stride());
 
-	RCache.set_Shader			(sh_progress);
+	//RCache.set_Shader			(sh_progress);
 	RCache.set_Geometry			(ll_hGeom2);
 	RCache.Render				(D3DPT_TRIANGLESTRIP, Offset, 2*v_cnt);
 
@@ -206,19 +206,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	owner.pFontSystem->Clear		();
 	owner.pFontSystem->SetColor		(color_rgba(157,140,120,255));
 	owner.pFontSystem->SetAligment	(CGameFont::alCenter);
-
-#if 0
-	//skyloader: cop
-	back_size.set					(_w/2,670.0f*k.y);
-
-	owner.pFontSystem->OutSet		(back_size.x, back_size.y);
-	owner.pFontSystem->OutNext		(owner.ls_header);
-	owner.pFontSystem->OutNext		("");
-	owner.pFontSystem->OutNext		(owner.ls_tip_number);
-#else
-	//skyloader: as in shoc
 	owner.pFontSystem->OutI			(0.f,0.815f,owner.ls_header);
-#endif
 
 	float fTargetWidth				= 600.0f*k.x*(b_ws?0.8f:1.0f);
 	draw_multiline_text				(owner.pFontSystem, fTargetWidth, owner.ls_tip);
@@ -278,7 +266,10 @@ void dxApplicationRender::draw_face(ref_shader& sh, Frect& coords, Frect& tex_co
 
 u32 calc_progress_color(u32 idx, u32 total, int stage, int max_stage)
 {
-	float kk			= (float(stage+1)/float(max_stage))*(total);
+	if(idx>(total/2)) 
+		idx	= total-idx;
+
+	float kk			= (float(stage+1)/float(max_stage))*(total/2.0f);
 	float f				= 1/(exp((float(idx)-kk)*0.5f)+1.0f);
 
 	return color_argb_f		(f,1.0f,1.0f,1.0f);
