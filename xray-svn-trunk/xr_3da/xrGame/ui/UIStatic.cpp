@@ -358,8 +358,8 @@ void CUIStatic::SetMask(CUIFrameWindow* mask)
 
 void CUIStatic::SetTextAlign_script(u32 align)
 {
-	TextItemControl()->SetTextAlignment((ETextAlignment)align);
-	TextItemControl()->GetFont()->SetAligment((ETextAlignment)align);
+	TextItemControl()->SetTextAlignment((CGameFont::EAligment)align);
+	TextItemControl()->GetFont()->SetAligment((CGameFont::EAligment)align);
 }
 
 u32 CUIStatic::GetTextAlign_script()

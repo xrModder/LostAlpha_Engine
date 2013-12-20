@@ -162,7 +162,10 @@ void CUIWindow::script_register(lua_State *L)
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
 		.def(					constructor<>())
 		.def("SetText",						&CUILabel::SetText)
-		.def("GetText",						&CUILabel::GetText),
+		.def("GetText",						&CUILabel::GetText)
+		.def("SetTextColor",						&CUILabel::SetTextColor)
+		.def("GetTextColor",						&CUILabel::GetTextColor)
+		.def("SetLightAnim",						&CUILabel::SetLightAnim),
 
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
 		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),

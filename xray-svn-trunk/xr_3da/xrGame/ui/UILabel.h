@@ -18,11 +18,14 @@ public:
 
     // CUIFrameLineWnd
 			void			InitLabel		(Fvector2 pos, Fvector2 size);
-	virtual void			Draw();
+	virtual void			Draw			();
 	virtual void			Update			();
 
 	virtual void			SetText					(LPCSTR txt)				{m_text.TextItemControl()->SetText(txt);}
 	virtual LPCSTR			GetText					()							{return m_text.TextItemControl()->GetText();}
+
+	virtual void			SetTextColor					(u32 color)				{m_text.TextItemControl()->SetTextColor(color);}
+	virtual u32			GetTextColor				()							{return m_text.TextItemControl()->GetTextColor();}
 
 	// own
 	CUILabel();

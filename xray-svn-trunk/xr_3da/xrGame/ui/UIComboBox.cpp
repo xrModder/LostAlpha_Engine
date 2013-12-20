@@ -55,14 +55,14 @@ void CUIComboBox::InitComboBox(Fvector2 pos, float width)
 	m_text.Enable						(false);
 
 	// height of list equal to height of ONE element
-	float item_height					= CUITextureMaster::GetTextureHeight("ui_cb_linetext_b");
+	float item_height					= CUITextureMaster::GetTextureHeight("ui_cb_listline_b");
 
 	m_list_box.SetWndPos				(Fvector2().set(lb_text_offset,0.0f));
 	m_list_box.SetWndSize				(Fvector2().set(width-lb_text_offset, item_height*m_iListHeight));
 	m_list_box.InitScrollView			();
 	m_list_box.SetTextColor				(m_textColor[0]);
 	m_list_box.SetSelectionTexture		("ui_cb_listline");
-	m_list_box.SetItemHeight			(CUITextureMaster::GetTextureHeight("ui_cb_linetext_b"));
+	m_list_box.SetItemHeight			(CUITextureMaster::GetTextureHeight("ui_cb_listline_b"));
 	// frame(texture) for list
 	m_list_frame.InitTexture			("ui_cb_listbox");
 	m_list_frame.SetWndSize				(Fvector2().set(width, m_list_box.GetItemHeight()*m_iListHeight) );
