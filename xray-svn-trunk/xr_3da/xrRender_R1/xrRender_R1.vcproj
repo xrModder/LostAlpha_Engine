@@ -265,7 +265,6 @@
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -408,15 +407,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\r2_test_hw.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\xrRender\PSLibrary.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\xrRender\PSLibrary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_test_hw.cpp"
 				>
 			</File>
 			<File

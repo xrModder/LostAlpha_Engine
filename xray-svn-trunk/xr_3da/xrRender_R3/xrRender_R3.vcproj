@@ -597,11 +597,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\light_GI.cpp"
+				RelativePath="..\xrRender\light_GI.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\light_gi.h"
+				RelativePath="..\xrRender\light_gi.h"
 				>
 			</File>
 			<File
@@ -625,11 +625,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\light_smapvis.cpp"
+				RelativePath="..\xrRender\light_smapvis.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\light_smapvis.h"
+				RelativePath="..\xrRender\light_smapvis.h"
 				>
 			</File>
 			<File

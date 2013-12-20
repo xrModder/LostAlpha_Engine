@@ -15,7 +15,7 @@ void	CBlender_luminance::Compile(CBlender_Compile& C)
 	case 0:				// 256x256	=> 64x64
 		C.r_Pass		("stub_notransform_build","bloom_luminance_1",false,FALSE,FALSE,	FALSE);
 		//C.r_Sampler_clf	("s_image",	r2_RT_bloom1);
-		C.r_dx10Texture	("s_image",	r2_RT_bloom1);
+		C.r_dx10Texture	("s_image",	r2_RT_generic1);
 		C.r_dx10Sampler	("smp_rtlinear");
 		C.r_End			();
 		break;

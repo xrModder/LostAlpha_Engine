@@ -12,7 +12,7 @@
 
 #include "../xrRender/xrD3DDefs.h"
 
-#include "../HW.h"
-#include "../Shader.h"
-#include "../R_Backend.h"
-#include "../R_Backend_Runtime.h"
+#include "HW.h"
+#include "Shader.h"
+#include "R_Backend.h"
+#include "R_Backend_Runtime.h"
