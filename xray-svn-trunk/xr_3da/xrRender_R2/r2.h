@@ -160,6 +160,7 @@ public:
 	void							render_lights				(light_Package& LP	);
 	void							render_sun					();
 	void							render_sun_near				();
+	void							render_grass				();
 	void							render_sun_filtered			();
 	void							render_menu					();
 	void							render_sun_cascade			(u32 cascade_ind);

@@ -413,6 +413,7 @@ void CRender::Render		()
 		{
 			render_sun_near						();
 			render_sun							();
+			render_grass						();
 			render_sun_filtered					();
 		}
 
