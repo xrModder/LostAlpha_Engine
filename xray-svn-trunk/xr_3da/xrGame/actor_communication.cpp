@@ -29,6 +29,7 @@
 #include "infoportion.h"
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai/trader/ai_trader.h"
+#include "ai/stalker/ai_stalker.h"
 
 void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
 {
@@ -260,6 +261,9 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 	if(!IsGameTypeSingle()) return;
 
 	bool b_alive = !!(smart_cast<CEntityAlive*>(pInvOwner))->g_Alive();
+
+	CAI_Stalker*	pStalker		= smart_cast<CAI_Stalker*>(pInvOwner);
+	if (pStalker && pStalker->IsGhost()) return;
 
 	CurrentGameUI()->UIMainIngameWnd->AnimateContacts(b_alive);
 
