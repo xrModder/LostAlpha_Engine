@@ -1399,10 +1399,9 @@ void CRender::render_sun_near	()
 }
 
 
-void CRender::render_grass () 
+void CRender::render_details () 
 {
-			if (ps_r2_ls_flags.test(R2FLAG_SUN_DETAILS))	
-				Details->Render					()	;
+	Details->Render					()	;
 }
 void CRender::render_sun_filtered	()
 {

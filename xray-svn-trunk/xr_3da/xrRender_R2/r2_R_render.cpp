@@ -413,7 +413,10 @@ void CRender::Render		()
 		{
 			render_sun_near						();
 			render_sun							();
-			render_grass						();
+
+			if (ps_r2_ls_flags.test(R2FLAG_SUN_DETAILS))	
+				render_details						();
+
 			render_sun_filtered					();
 		}
 

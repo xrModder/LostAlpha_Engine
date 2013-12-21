@@ -192,6 +192,7 @@ public:
 	void							render_sun					();
 	void							render_sun_near				();
 	void							render_sun_filtered			();
+	void							render_details				();
 	void							render_menu					();
 	void							render_rain					();
 
