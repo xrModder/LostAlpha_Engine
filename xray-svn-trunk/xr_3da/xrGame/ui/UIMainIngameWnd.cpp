@@ -1230,9 +1230,11 @@ void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 {
 	UIPdaOnline.ResetXformAnimation	();
 
-	if(b_snd)
-		HUD_SOUND::PlaySound	(m_contactSnd, Fvector().set(0,0,0), 0, true );
-
+	if (CurrentGameUI()->GameIndicatorsShown())
+	{
+		if(b_snd)
+			HUD_SOUND::PlaySound	(m_contactSnd, Fvector().set(0,0,0), 0, true );
+	}
 }
 
 

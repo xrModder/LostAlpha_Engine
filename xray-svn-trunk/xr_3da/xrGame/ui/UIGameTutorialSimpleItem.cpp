@@ -273,8 +273,8 @@ void CUISequenceSimpleItem::Start()
 		{
 			if(!ui_game_sp->m_PdaMenu->IsShown() && bShowPda)
 				ui_game_sp->m_PdaMenu->ShowDialog(true);
-			else if (ui_game_sp->m_PdaMenu->IsShown() && !bShowPda)
-				ui_game_sp->m_PdaMenu->HideDialog();
+			//else if (ui_game_sp->m_PdaMenu->IsShown() && !bShowPda)
+			//	ui_game_sp->m_PdaMenu->HideDialog(); //SkyLoader: i think we dont need it
 		}
 	}
 
@@ -299,7 +299,7 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 	if(m_flags.test(etiNeedPauseSound))
 		Device.Pause			(FALSE, FALSE, TRUE, "simpleitem_stop");
 
-	if ( g_pGameLevel )
+	if ( g_pGameLevel && m_pda_section && 0 != xr_strlen(m_pda_section) )
 	{
 		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>(CurrentGameUI());
 		if( ui_game_sp && ui_game_sp->m_PdaMenu->IsShown() ) 
