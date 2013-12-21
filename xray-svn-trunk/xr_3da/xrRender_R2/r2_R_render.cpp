@@ -39,7 +39,6 @@ void CRender::render_main	(Fmatrix&	m_ViewProjection, bool _fportals)
 			u32 uID_LTRACK						= 0xffffffff;
 			if (phase==PHASE_NORMAL)			{
 				g_hud->Render_First	( );	// shadows
-				g_hud->Render_Last		( );
 
 				uLastLTRACK	++;
 				if (lstRenderables.size())		uID_LTRACK	= uLastLTRACK%lstRenderables.size();

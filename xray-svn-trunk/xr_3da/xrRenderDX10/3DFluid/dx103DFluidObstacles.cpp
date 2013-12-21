@@ -205,8 +205,9 @@ void dx103DFluidObstacles::ProcessDynamicObstacles( const dx103DFluidData &Fluid
 		//if	(PortalTraverser.i_marker != sector->r_marker)	continue;	// inactive (untouched) sector
 
 		// renderable
-		//IRenderable*	renderable		= spatial->dcast_Renderable	();
-		//if (0==renderable)				continue;					// unknown, but renderable object (r1_glow???)
+		IRenderable*	renderable		= spatial->dcast_Renderable	();
+		if (0==renderable)				continue;
+
 		CObject*		pObject = spatial->dcast_CObject();
 		if (!pObject) continue;
 #pragma todo("gr1ph to gr1ph: check physics here!")
