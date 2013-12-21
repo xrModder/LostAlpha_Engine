@@ -454,6 +454,9 @@ void CRender::Render		()
 		render_rain();
 	}
 
+	if(L_Glows)
+		L_Glows->Render					();						// glows
+
 	// Directional light - fucking sun
 	if (bSUN)	
 	{
