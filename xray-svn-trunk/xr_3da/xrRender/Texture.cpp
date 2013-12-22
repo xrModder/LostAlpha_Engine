@@ -329,9 +329,11 @@ _DDS:
 		// Load and get header
 		D3DXIMAGE_INFO			IMG;
 		S						= FS.r_open	(fn);
+/*
 #ifdef DEBUG
-//	Msg						("* Loaded: %s[%d]b",fn,S->length());
+	Msg						("* Loaded: %s[%d]b",fn,S->length());
 #endif // DEBUG
+*/
 		img_size				= S->length	();
 		R_ASSERT				(S);
 		HRESULT const result	= D3DXGetImageInfoFromFileInMemory	(S->pointer(),S->length(),&IMG);

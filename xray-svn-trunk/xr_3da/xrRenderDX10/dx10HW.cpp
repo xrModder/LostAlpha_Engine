@@ -414,7 +414,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	*/
 
 	// Capture misc data
-//	DX10: Don't neeed this?
+//	DX10: Don't need this?
 //#ifdef DEBUG
 //	R_CHK	(pDevice->CreateStateBlock			(D3DSBT_ALL,&dwDebugSB));
 //#endif
