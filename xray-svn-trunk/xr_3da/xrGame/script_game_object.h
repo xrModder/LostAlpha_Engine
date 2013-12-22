@@ -343,6 +343,7 @@ public:
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();
 			LPCSTR				CharacterCommunity	();
+			LPCSTR				CharacterBio		();
 			int					CharacterRank		();
 			int					CharacterReputation	();
 
