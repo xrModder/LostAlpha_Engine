@@ -515,6 +515,21 @@ int CScriptGameObject::CharacterRank			()
 	} 	
 	return monster->Rank();
 }
+
+LPCSTR CScriptGameObject::CharacterBio			()
+{
+	CAI_Stalker	*stalker = smart_cast<CAI_Stalker*>(&object());
+	CActor		*actor = smart_cast<CActor*>(&object());
+	if (stalker || actor) {
+		CCharacterInfo				chInfo;
+		CSE_ALifeTraderAbstract*	T = ch_info_get_from_id(object().ID());
+
+		chInfo.Init					(T);
+		return chInfo.Bio().c_str();
+	}
+	return "";
+}
+
 void CScriptGameObject::SetCharacterRank			(int char_rank)
 {
 	CInventoryOwner* pInventoryOwner = smart_cast<CInventoryOwner*>(&object());
