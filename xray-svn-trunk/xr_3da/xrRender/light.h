@@ -1,5 +1,5 @@
-#ifndef LAYERS_XRRENDER_LIGHT_H_INCLUDED
-#define LAYERS_XRRENDER_LIGHT_H_INCLUDED
+#ifndef XRRENDER_LIGHT_H_INCLUDED
+#define XRRENDER_LIGHT_H_INCLUDED
 
 #include "../../xrcdb/ispatial.h"
 

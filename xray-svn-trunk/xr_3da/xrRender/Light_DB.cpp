@@ -159,7 +159,7 @@ void	CLight_DB::LoadHemi	()
 		}
 
 		FS.r_close(F);
-		Msg("* Hemisphere loaded...");
+		//Msg("* Hemisphere loaded...");
 	}
 }
 #endif
