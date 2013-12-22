@@ -336,7 +336,7 @@ void lua_debug_print(LPCSTR str)
 	if (!xr_strlen(str))
 		return;
 	Msg("$ LA_DBG:[%lu] %s", Device.dwTimeGlobal, str);
-//	FlushLog();
+	FlushLog();
 }
 
 void add_dialog_to_render(CUIDialogWnd* pDialog)
