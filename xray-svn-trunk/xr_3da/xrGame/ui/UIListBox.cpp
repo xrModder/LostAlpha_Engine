@@ -12,6 +12,7 @@ CUIListBox::CUIListBox()
 	m_def_item_height		 = 20;
 	m_text_color			= 0xff000000;
 	m_text_color_s			= 0xff000000;
+	m_text_al				= CGameFont::alLeft;
 
 	m_bImmediateSelection	= false;
 
@@ -46,9 +47,9 @@ CUIListBoxItem* CUIListBox::AddTextItem(LPCSTR text)
 	CUIListBoxItem* pItem			= AddItem();
 
 	pItem->SetWndSize				(Fvector2().set(GetDesiredChildWidth(), m_def_item_height));
-	pItem->SetTextColor			(m_text_color, m_text_color_s);
 	pItem->SetText					(CStringTable().translate(text).c_str());
 	pItem->GetTextItem()->SetWidth	(GetDesiredChildWidth());
+	pItem->GetTextItem()->SetTextAlignment	(m_text_al);
 	return							pItem;
 }
 
@@ -67,6 +68,7 @@ CUIListBoxItem*  CUIListBox::AddItem()
 
 	item->SetFont				(GetFont());
 	item->SetSelected			(false);
+	item->SetTextColor			(m_text_color, m_text_color_s);
 	item->SetMessageTarget		(this);
 	AddWindow					(item, true);
 	return						item;
@@ -335,6 +337,15 @@ CGameFont* CUIListBox::GetFont()
 	return m_pFont;
 }
 
+void CUIListBox::SetTextAlignment(ETextAlignment alignment)
+{
+	m_text_al = alignment;
+}
+
+ETextAlignment CUIListBox::GetTextAlignment()
+{
+	return m_text_al;
+}
 
 float CUIListBox::GetLongestLength()
 {

@@ -68,6 +68,8 @@ void CUIListBox::script_register(lua_State *L)
 		.def("SetTextColor",				&CUIListBox::SetTextColor)
 		.def("SetTextColorS",				&CUIListBox::SetTextColorS)
 		.def("GetTextColor",				&CUIListBox::GetTextColor)
+		.def("SetTextAlignment",			&CUIListBox::SetTextAlignment)
+		.def("GetTextAlignment",			&CUIListBox::GetTextAlignment)
 
 		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
 
@@ -77,7 +79,9 @@ void CUIListBox::script_register(lua_State *L)
 		.def("AddTextField",            &CUIListBoxItem::AddTextField)
 		.def("AddIconField",            &CUIListBoxItem::AddIconField)
 		.def("SetTextColors",			(void(CUIListBoxItem::*)(u32,u32))&CUIListBoxItem::SetTextColor)
-		.def("SetTextColor",			(void(CUIListBoxItem::*)(u32))&CUIListBoxItem::SetTextColor),
+		.def("SetTextColor",			(void(CUIListBoxItem::*)(u32))&CUIListBoxItem::SetTextColor)
+		.def("SetTextAlignment",	&CUIListBoxItem::SetTextAlignment)
+		.def("GetTextAlignment",	&CUIListBoxItem::GetTextAlignment),
 
 		class_<CUIListBoxItemEx, CUIListBoxItem, CUIListBoxItemExWrapper>("CUIListBoxItemEx")
 		.def(							constructor<>())

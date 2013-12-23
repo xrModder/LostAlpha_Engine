@@ -36,6 +36,8 @@ public:
 		u32				GetTextColor			();
 		void			SetFont					(CGameFont* F);
 		CGameFont*		GetFont					();
+		void			SetTextAlignment			(ETextAlignment alignment);
+		ETextAlignment		GetTextAlignment			();
 
 protected:
 		CUITextWnd*		m_text;

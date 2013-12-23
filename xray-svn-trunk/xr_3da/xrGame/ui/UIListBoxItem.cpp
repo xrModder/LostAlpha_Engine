@@ -147,7 +147,7 @@ CUITextWnd* CUIListBoxItem::AddTextField(LPCSTR txt, float width)
 	st->SetFont				(GetFont());
 	st->SetTextColor		(GetTextColor());
 	st->SetText				(txt);	
-	//st->SetVTextAlignment	(valCenter);	//skyloader: incorrect position
+	//st->SetVTextAlignment	(m_text->TextItemControl().GetVTextAlignment());	//skyloader: incorrect position
 
 	return							st;
 }
@@ -170,4 +170,14 @@ void CUIListBoxItem::SetText(LPCSTR txt)
 LPCSTR CUIListBoxItem::GetText()							
 {
 	return m_text->GetText();
+}
+
+void CUIListBoxItem::SetTextAlignment(ETextAlignment alignment)
+{
+	m_text->TextItemControl().SetTextAlignment(alignment);
+}
+
+ETextAlignment CUIListBoxItem::GetTextAlignment()
+{
+	return m_text->TextItemControl().GetTextAlignment();
 }

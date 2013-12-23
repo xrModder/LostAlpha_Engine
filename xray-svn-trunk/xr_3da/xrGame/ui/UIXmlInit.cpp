@@ -1371,15 +1371,26 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 	strconcat		(sizeof(_path),_path, path, ":font");
 	InitFont		(xml_doc, _path, index, t_color, pFnt);
 	pWnd->SetTextColor	(t_color);
+	pWnd->SetFont		(pFnt);
 
 	strconcat		(sizeof(_path),_path, path, ":font_s");	
 	t_color = GetColor	(xml_doc, _path, index, 0x00);
 	pWnd->SetTextColorS	(t_color);
 
-	pWnd->SetFont		(pFnt);
-
 	float h					= xml_doc.ReadAttribFlt(path, index, "item_height", 20.0f);
 	pWnd->SetItemHeight		(h);
+
+	// Load font alignment
+	shared_str al = xml_doc.ReadAttrib(_path, index, "align");
+	if (0 == xr_strcmp(al, "c"))
+		pWnd->SetTextAlignment(CGameFont::alCenter);
+
+	else if (0 == xr_strcmp(al, "r"))
+		pWnd->SetTextAlignment(CGameFont::alRight);
+
+	else if (0 == xr_strcmp(al, "l"))
+		pWnd->SetTextAlignment(CGameFont::alLeft);
+
 	return true;
 }
 
@@ -1469,9 +1480,12 @@ bool CUIXmlInit::InitComboBox(CUIXml& xml_doc, LPCSTR path, int index, CUIComboB
 	string512					_path;
 	strconcat					(sizeof(_path),_path, path, ":list_font");
 	InitFont					(xml_doc, _path, index, color, pFont);
-//.	pWnd->SetFont				(pFont);
+	pWnd->SetFont				(pFont);
 	pWnd->m_list_box.SetFont		(pFont);
 	pWnd->m_list_box.SetTextColor	(color);
+	strconcat					(sizeof(_path),_path, path, ":list_font_s");	
+	InitFont					(xml_doc, _path, index, color, pFont);
+	pWnd->m_list_box.SetTextColorS	(color);
 	
 	strconcat					(sizeof(_path),_path, path, ":text_color:e");
 	if (xml_doc.NavigateToNode(_path, index)){
