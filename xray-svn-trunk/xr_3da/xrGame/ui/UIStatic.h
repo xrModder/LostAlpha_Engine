@@ -118,7 +118,7 @@ public:
 			void			SetFont					(CGameFont* F)				{TextItemControl()->SetFont(F);}
 			CGameFont*		GetFont					()							{return TextItemControl()->GetFont();}
 			void			SetTextColor			(u32 color)					{TextItemControl()->SetTextColor(color);}
-			void			SetTextColor			(u32 r, u32 g, u32 b, u32 a)					{TextItemControl()->SetTextColor(color_rgba(r,g,b,a));}
+			void			SetTextColor			(u32 a, u32 r, u32 g, u32 b)					{TextItemControl()->SetTextColor(color_argb(a,r,g,b));}
 			u32			GetTextColor			()							{return TextItemControl()->GetTextColor();}
 			void			SetTextComplexMode		(bool mode = true)			{TextItemControl()->SetTextComplexMode(mode);}
 			bool			IsTextComplexMode			()						{return TextItemControl()->IsTextComplexMode();}
