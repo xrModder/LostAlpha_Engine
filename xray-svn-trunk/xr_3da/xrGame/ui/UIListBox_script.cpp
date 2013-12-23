@@ -66,6 +66,7 @@ void CUIListBox::script_register(lua_State *L)
 		.def("SetSelectedText",				&CUIListBox::SetSelectedText)
 		.def("SetImmediateSelection",				&CUIListBox::SetImmediateSelection)
 		.def("SetTextColor",				&CUIListBox::SetTextColor)
+		.def("SetTextColorS",				&CUIListBox::SetTextColorS)
 		.def("GetTextColor",				&CUIListBox::GetTextColor)
 
 		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
@@ -75,7 +76,8 @@ void CUIListBox::script_register(lua_State *L)
 		.def("GetTextItem",             &CUIListBoxItem::GetTextItem)
 		.def("AddTextField",            &CUIListBoxItem::AddTextField)
 		.def("AddIconField",            &CUIListBoxItem::AddIconField)
-		.def("SetTextColor",			&CUIListBoxItem::SetTextColor),
+		.def("SetTextColors",			(void(CUIListBoxItem::*)(u32,u32))&CUIListBoxItem::SetTextColor)
+		.def("SetTextColor",			(void(CUIListBoxItem::*)(u32))&CUIListBoxItem::SetTextColor),
 
 		class_<CUIListBoxItemEx, CUIListBoxItem, CUIListBoxItemExWrapper>("CUIListBoxItemEx")
 		.def(							constructor<>())

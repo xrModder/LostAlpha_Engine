@@ -14,6 +14,8 @@ public:
 	virtual void		Draw					();
 	virtual bool		OnMouseDown				(int mouse_btn);
 	virtual void		OnFocusReceive			();
+	virtual void		SetSelected			(bool b);
+
 			void		InitDefault				();
 			void		SetTAG					(u32 value);
 			u32			GetTAG					();
@@ -29,6 +31,7 @@ public:
 		//TextControl
 		void			SetText					(LPCSTR txt);
 		LPCSTR			GetText					();
+		void			SetTextColor(u32 color, u32 color_s);
 		void			SetTextColor			(u32 color);
 		u32				GetTextColor			();
 		void			SetFont					(CGameFont* F);
@@ -36,6 +39,9 @@ public:
 
 protected:
 		CUITextWnd*		m_text;
+		u32				txt_color;
+		u32				txt_color_s;
+
 		u32				tag;
 
 

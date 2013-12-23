@@ -138,11 +138,12 @@ bool CUIPropertiesBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 void CUIPropertiesBox::AutoUpdateSize()
 {
-	SetHeight(m_UIListWnd.GetItemHeight()*m_UIListWnd.GetSize()+ m_UIListWnd.GetVertIndent());
-	m_UIListWnd.SetHeight(GetHeight());
-	float f = float(m_UIListWnd.GetLongestLength()+m_UIListWnd.GetHorizIndent()) + 2; 
-	SetWidth(_max(20.0f,f));
-	m_UIListWnd.SetWidth(_max(20.0f,f));
+	Fvector2 sz				= GetWndSize();
+	sz.y					= m_UIListWnd.GetItemHeight()*m_UIListWnd.GetSize()+ m_UIListWnd.GetVertIndent();
+	sz.x					= _max(20.0f,float((m_UIListWnd.GetLongestLength()+m_UIListWnd.GetHorizIndent()) + 2));
+	SetWndSize				(sz);
+
+	m_UIListWnd.SetWndSize	(GetWndSize());
 	m_UIListWnd.UpdateChildrenLenght();
 }
 
@@ -161,6 +162,11 @@ void CUIPropertiesBox::Draw()
 
 bool CUIPropertiesBox::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
+	if(keyboard_action==WINDOW_KEY_PRESSED)
+	{
+		if (is_binded(kQUIT, dik))
+			Hide();
+	}
 	return true;
 }
 

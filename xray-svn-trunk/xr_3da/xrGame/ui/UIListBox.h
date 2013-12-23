@@ -44,6 +44,7 @@ virtual bool		OnMouseAction							(float x, float y, EUIMessages mouse_action);
 virtual void		SendMessage						(CUIWindow* pWnd, s16 msg, void* pData = 0);
 
 			void			SetTextColor			(u32 color);
+			void			SetTextColorS			(u32 color);
 			u32				GetTextColor			();
 			void			SetFont					(CGameFont* pFont);
 			CGameFont*		GetFont					();
@@ -52,6 +53,7 @@ protected:
 	CGameFont*		m_pFont;
 	float			m_def_item_height;
 	u32				m_text_color;
+	u32				m_text_color_s;
 	shared_str		m_selection_texture;
 
 	bool			m_bImmediateSelection;

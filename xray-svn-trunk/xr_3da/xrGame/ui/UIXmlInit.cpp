@@ -1370,9 +1370,13 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 	CGameFont*		pFnt;
 	strconcat		(sizeof(_path),_path, path, ":font");
 	InitFont		(xml_doc, _path, index, t_color, pFnt);
+	pWnd->SetTextColor	(t_color);
 
-	pWnd->SetTextColor(t_color);
-	pWnd->SetFont(pFnt);
+	strconcat		(sizeof(_path),_path, path, ":font_s");	
+	t_color = GetColor	(xml_doc, _path, index, 0x00);
+	pWnd->SetTextColorS	(t_color);
+
+	pWnd->SetFont		(pFnt);
 
 	float h					= xml_doc.ReadAttribFlt(path, index, "item_height", 20.0f);
 	pWnd->SetItemHeight		(h);

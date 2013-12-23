@@ -7,6 +7,9 @@
 CUIListBoxItem::CUIListBoxItem(void)
 :m_text(NULL),tag(u32(-1))
 {
+	txt_color			= 0xffffffff;
+	txt_color_s			= 0xffffffff;
+
 	m_text			= AddTextField("---", 10.0f);
 
 	m_dwLastClickTime		= 0;
@@ -29,7 +32,10 @@ void CUIListBoxItem::Draw()
 	u32 ResColor = (IsEnabled() ? 0xff000000 : 0x80000000) | (CurColor & 0x00ffffff);
 	SetTextColor(ResColor);
 
-	inherited::Draw	();
+	if(m_bSelected)
+		DrawElements();
+
+	CUIWindow::Draw	();
 }
 
 void CUIListBoxItem::OnFocusReceive()
@@ -77,6 +83,25 @@ bool CUIListBoxItem::OnMouseDown(int mouse_btn)
 		return false;
 }
 
+void CUIListBoxItem::SetSelected(bool b)
+{
+	CUISelectable::SetSelected(b);
+	u32 col;
+	if (b)
+		col = txt_color_s;	
+	else
+		col = txt_color;
+
+	SetTextColor(col);
+}
+
+void CUIListBoxItem::SetTextColor(u32 color, u32 color_s)
+{
+	txt_color = color;
+	txt_color_s = color_s;
+	SetTextColor(color);
+}
+
 void CUIListBoxItem::SetTextColor(u32 color)
 {
 	m_text->SetTextColor(color);
@@ -93,18 +118,10 @@ float CUIListBoxItem::FieldsLength() const
 		return 0.0f;
 
 	float len = 0.0f;
-/*
-	WINDOW_LIST::const_iterator it		= m_ChildWndList.begin();
-	WINDOW_LIST::const_iterator it_e	= m_ChildWndList.end();
 
-	for(;it!=it_e;++it)
-	{
-		CUIWindow* w	= *it;
-		len				+= w->GetWndPos().x + w->GetWidth();
-	}
-*/
 	CUIWindow* w	= m_ChildWndList.back();
 	len				+= w->GetWndPos().x + w->GetWidth();
+
 	return len;
 }
 
@@ -130,7 +147,8 @@ CUITextWnd* CUIListBoxItem::AddTextField(LPCSTR txt, float width)
 	st->SetFont				(GetFont());
 	st->SetTextColor		(GetTextColor());
 	st->SetText				(txt);	
-	st->SetVTextAlignment	(valCenter);	
+	//st->SetVTextAlignment	(valCenter);	//skyloader: incorrect position
+
 	return							st;
 }
 

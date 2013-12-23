@@ -11,6 +11,7 @@ CUIListBox::CUIListBox()
 
 	m_def_item_height		 = 20;
 	m_text_color			= 0xff000000;
+	m_text_color_s			= 0xff000000;
 
 	m_bImmediateSelection	= false;
 
@@ -45,7 +46,7 @@ CUIListBoxItem* CUIListBox::AddTextItem(LPCSTR text)
 	CUIListBoxItem* pItem			= AddItem();
 
 	pItem->SetWndSize				(Fvector2().set(GetDesiredChildWidth(), m_def_item_height));
-	pItem->SetTextColor				(m_text_color);
+	pItem->SetTextColor			(m_text_color, m_text_color_s);
 	pItem->SetText					(CStringTable().translate(text).c_str());
 	pItem->GetTextItem()->SetWidth	(GetDesiredChildWidth());
 	return							pItem;
@@ -55,14 +56,14 @@ CUIListBoxItem*  CUIListBox::AddItem()
 {
 	CUIListBoxItem* item		= xr_new<CUIListBoxItem>();
 	item->SetHeight			(m_def_item_height);
-	item->InitFrameLineWnd		(Fvector2().set(0,0), Fvector2().set(GetDesiredChildWidth()-5, m_def_item_height));
+	item->InitFrameLineWnd		(Fvector2().set(0.0f,0.0f), Fvector2().set(GetDesiredChildWidth()-5.0f, m_def_item_height));
 	item->GetTextItem()->SetWidth	(GetDesiredChildWidth());
 	item->SetWidth					(GetDesiredChildWidth());
 
 	if(m_selection_texture.size())
 		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
-	//else
-        //item->InitDefault		();
+	else
+        	item->InitDefault		();
 
 	item->SetFont				(GetFont());
 	item->SetSelected			(false);
@@ -78,8 +79,8 @@ void CUIListBox::AddExistingItem(CUIListBoxItem* item)
 
 	if(m_selection_texture.size())
 		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
-	//else
-        //item->InitDefault		();
+	else
+        	item->InitDefault		();
 
 	item->SetSelected			(false);
 	item->SetMessageTarget		(this);
@@ -105,17 +106,13 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 		switch (msg)
 		{
 			case LIST_ITEM_SELECT:	
-				GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, pData);
-				break;
 			case LIST_ITEM_CLICKED:
-				GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pData);
+			case LIST_ITEM_DB_CLICKED:
+				GetMessageTarget()->SendMessage(this, msg, pData);
 				break;
 			case LIST_ITEM_FOCUS_RECEIVED:
 				if (m_bImmediateSelection)
 					SetSelected(pWnd);
-				break;
-			case LIST_ITEM_DB_CLICKED:
-				GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, pData);
 				break;
 		}		
 	}
@@ -316,6 +313,11 @@ float CUIListBox::GetItemHeight()
 void CUIListBox::SetTextColor(u32 color)
 {
 	m_text_color = color;
+}
+
+void CUIListBox::SetTextColorS(u32 color)
+{
+	m_text_color_s = color;
 }
 
 u32 CUIListBox::GetTextColor()
