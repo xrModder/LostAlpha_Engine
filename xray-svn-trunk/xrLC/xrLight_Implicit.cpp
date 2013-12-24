@@ -157,6 +157,7 @@ public:
 void CBuild::ImplicitLighting()
 {
 	if (g_params.m_quality==ebqDraft) return;
+	if (strstr(Core.Params,"-r")) return;
 
 	Implicit		calculator;
 	ImplicitHash	= xr_new<IHASH>	();

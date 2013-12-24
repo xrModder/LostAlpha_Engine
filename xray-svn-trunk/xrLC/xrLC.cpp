@@ -40,6 +40,7 @@ static const char* h_str =
 	"-noinvalidfaces	== invalid faces detection\n"
 	"-t<NUM>			== numbers of threads \n"
 	"-p					== high priority \n"
+	"-r					== restore LMaps compilation \n"
 	"\n"
 	"NOTE: The last key is required for any functionality\n";
 

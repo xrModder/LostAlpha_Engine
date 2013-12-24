@@ -18,6 +18,7 @@ CThreadManager			mu_base;
 CThreadManager			mu_secondary;
 
 BOOL					gl_linear	= FALSE;
+BOOL					b_restore	= FALSE;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -112,6 +113,7 @@ void CBuild::Light_prepare()
 void CBuild::Run	(LPCSTR P)
 {
 	if (strstr(Core.Params,"-att"))	gl_linear	= TRUE;
+	if (strstr(Core.Params,"-r")) b_restore = TRUE;
 
 	//****************************************** Open Level
 	strconcat					(sizeof(path),path,P,"\\")	;
@@ -152,6 +154,8 @@ void CBuild::Run	(LPCSTR P)
 	xrPhase_AdaptiveHT			();
 #endif
 
+	if(!b_restore) 
+	{
 	//****************************************** Building normals
 	FPU::m64r					();
 	Phase						("Building normals...");
@@ -169,7 +173,6 @@ void CBuild::Run	(LPCSTR P)
 #ifdef CFORM_ONLY
 	return;
 #endif
-
 	BuildPortals				(*fs);
 
 	//****************************************** T-Basis
@@ -180,12 +183,16 @@ void CBuild::Run	(LPCSTR P)
 		mem_Compact					();
 	}
 
+	} //b_restore
+
 	//****************************************** GLOBAL-RayCast model
+
 	FPU::m64r					();
 	Phase						("Building rcast-CFORM model...");
 	mem_Compact					();
 	Light_prepare				();
-	BuildRapid					(TRUE);
+	if(!b_restore) 
+		BuildRapid					(TRUE);
 
 	//****************************************** GLOBAL-ILLUMINATION
 	if (b_radiosity)			
