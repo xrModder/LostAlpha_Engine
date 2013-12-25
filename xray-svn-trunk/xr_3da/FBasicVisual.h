@@ -46,6 +46,9 @@ public:
 #ifdef DEBUG
 	shared_str					dbg_name	;
 	virtual shared_str	__stdcall	getDebugName() { return dbg_name; }
+#else
+	shared_str					dbg_name	;
+	virtual shared_str	__stdcall	getDebugName() { return dbg_name; }
 #endif
 public:
 	// Common data for rendering

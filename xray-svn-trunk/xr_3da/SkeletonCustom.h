@@ -228,6 +228,8 @@ public:
 protected:
 	virtual shared_str		__stdcall	getDebugName()	{ return dbg_name; }
 public:
+#else
+	virtual shared_str		__stdcall	getDebugName()	{ return dbg_name; }
 #endif
 
 	// General "Visual" stuff
