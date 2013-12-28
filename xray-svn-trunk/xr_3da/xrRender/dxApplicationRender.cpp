@@ -149,7 +149,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	VERIFY						(u32(pv-_pv)==2*(v_cnt+1));
 	RCache.Vertex.Unlock		(2*(v_cnt+1),ll_hGeom2.stride());
 
-	//RCache.set_Shader			(sh_progress);
+	RCache.set_Shader			(sh_progress);
 	RCache.set_Geometry			(ll_hGeom2);
 	RCache.Render				(D3DPT_TRIANGLESTRIP, Offset, 2*v_cnt);
 
