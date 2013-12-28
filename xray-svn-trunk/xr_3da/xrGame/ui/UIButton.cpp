@@ -15,6 +15,7 @@ CUIButton:: CUIButton()
 {
 	m_eButtonState				= BUTTON_NORMAL;
 	m_bIsSwitch					= false;
+	m_bTextureEnable 				= false;
 
 	m_uAccelerator[0]			= 0;
 	m_uAccelerator[1]			= 0;

@@ -175,9 +175,7 @@ void CUIGameSP::ChangeLevel(	GameGraph::_GRAPH_ID game_vert_id,
 								Fvector ang, 
 								Fvector pos2, 
 								Fvector ang2, 
-								bool b_use_position_cancel,
-								const shared_str& message_str,
-								bool b_allow_change_level)
+								bool b_use_position_cancel)
 {
 	if(TopInputReceiver()!=UIChangeLevelWnd)
 	{
@@ -188,8 +186,6 @@ void CUIGameSP::ChangeLevel(	GameGraph::_GRAPH_ID game_vert_id,
 		UIChangeLevelWnd->m_position_cancel		= pos2;
 		UIChangeLevelWnd->m_angles_cancel		= ang2;
 		UIChangeLevelWnd->m_b_position_cancel	= b_use_position_cancel;
-		UIChangeLevelWnd->m_b_allow_change_level=b_allow_change_level;
-		UIChangeLevelWnd->m_message_str			= message_str;
 
 		UIChangeLevelWnd->ShowDialog		(true);
 	}
@@ -210,6 +206,11 @@ CChangeLevelWnd::CChangeLevelWnd		()
 	m_messageBox			= xr_new<CUIMessageBox>();	
 	m_messageBox->SetAutoDelete(true);
 	AttachChild				(m_messageBox);
+
+	m_messageBox->InitMessageBox		("message_box_change_level");
+	SetWndPos				(m_messageBox->GetWndPos());
+	m_messageBox->SetWndPos	(0.0f,0.0f);
+	SetWndSize				(m_messageBox->GetWndSize());
 }
 
 void CChangeLevelWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
@@ -260,14 +261,6 @@ bool CChangeLevelWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 bool g_block_pause	= false;
 void CChangeLevelWnd::ShowDialog(bool bDoHideIndicators)
 {
-	m_messageBox->InitMessageBox(m_b_allow_change_level?"message_box_change_level":"message_box_change_level_disabled");
-	SetWndPos				(m_messageBox->GetWndPos());
-	m_messageBox->SetWndPos	(Fvector2().set(0.0f,0.0f));
-	SetWndSize				(m_messageBox->GetWndSize());
-
-	m_messageBox->SetText	(m_message_str.c_str());
-	
-
 	g_block_pause							= true;
 	Device.Pause							(TRUE, TRUE, TRUE, "CChangeLevelWnd_show");
 	bShowPauseString						= FALSE;

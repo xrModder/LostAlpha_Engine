@@ -23,6 +23,10 @@ CUICustomEdit::CUICustomEdit()
 	m_force_update = true;
 	m_last_key_state_time = 0;
 	m_next_focus_capturer = NULL;
+	m_bFocusByDbClick = false;
+
+	m_textColor[0]=color_argb(255,235,219,185);
+	m_textColor[1]=color_argb(255,100,100,100);
 }	
 
 
@@ -112,7 +116,7 @@ void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 bool CUICustomEdit::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-//	if (m_bFocusByDbClick)
+	if (m_bFocusByDbClick)
 	{
 		if(mouse_action == WINDOW_LBUTTON_DB_CLICK && !m_bInputFocus)
 		{
@@ -170,6 +174,8 @@ void CUICustomEdit::Update()
 	{
 		m_last_key_state_time = Device.dwTimeGlobal;
 	}
+
+	TextItemControl()->SetTextColor(m_textColor[IsEnabled()?0:1]);
 
 	inherited::Update();
 }
@@ -327,4 +333,14 @@ void CUICustomEdit::CaptureFocus(bool bCapture)
 		GetParent()->SetKeyboardCapture(this, true);
 
 	m_bInputFocus = bCapture; 
+}
+
+void CUICustomEdit::SetTextColor(u32 color)
+{
+	m_textColor[0] = color;
+}
+
+void CUICustomEdit::SetTextColorD(u32 color)
+{
+	m_textColor[1] = color;
 }

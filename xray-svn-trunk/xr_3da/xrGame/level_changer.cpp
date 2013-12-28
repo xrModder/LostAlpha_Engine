@@ -43,13 +43,10 @@ void CLevelChanger::net_Destroy	()
 	if(it != g_lchangers.end())
 		g_lchangers.erase(it);
 }
-#define DEF_INVITATION "level_changer_invitation"
 
 BOOL CLevelChanger::net_Spawn	(CSE_Abstract* DC) 
 {
 	m_entrance_time				= 0;
-	m_b_enabled					= true;
-	m_invite_str				= DEF_INVITATION;
 	CCF_Shape *l_pShape			= xr_new<CCF_Shape>(this);
 	collidable.model			= l_pShape;
 	
@@ -130,7 +127,7 @@ void CLevelChanger::feel_touch_new	(CObject *tpObject)
 	bool			b = get_reject_pos(p,r);
 	CUIGameSP		*pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if (pGameSP)
-        pGameSP->ChangeLevel	(m_game_vertex_id, m_level_vertex_id, m_position, m_angles, p, r, b, m_invite_str, m_b_enabled);
+        pGameSP->ChangeLevel	(m_game_vertex_id, m_level_vertex_id, m_position, m_angles, p, r, b);
 
 	m_entrance_time	= Device.fTimeGlobal;
 }
@@ -188,31 +185,9 @@ void CLevelChanger::update_actor_invitation()
 			bool b = get_reject_pos(p,r);
 			
 			if(pGameSP)
-				pGameSP->ChangeLevel(m_game_vertex_id,m_level_vertex_id,m_position,m_angles,p,r,b, m_invite_str, m_b_enabled);
+				pGameSP->ChangeLevel(m_game_vertex_id,m_level_vertex_id,m_position,m_angles,p,r,b);
 
 			m_entrance_time		= Device.fTimeGlobal;
 		}
 	}
-}
-
-void CLevelChanger::save(NET_Packet &output_packet)
-{
-	inherited::save			(output_packet);
-	output_packet.w_stringZ	(m_invite_str);
-	output_packet.w_u8		(m_b_enabled?1:0);
-}
-
-void CLevelChanger::load(IReader &input_packet)
-{
-	inherited::load			(input_packet);
-	input_packet.r_stringZ	(m_invite_str);
-	m_b_enabled				= !!input_packet.r_u8();
-}
-
-BOOL CLevelChanger::net_SaveRelevant()
-{
-	if(!m_b_enabled || m_invite_str!=DEF_INVITATION )
-		return TRUE;
-	else
-		return inherited::net_SaveRelevant();
 }

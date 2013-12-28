@@ -16,15 +16,12 @@ void CUIButton::script_register(lua_State *L)
 	[
 		class_<CUIButton, CUIStatic>("CUIButton")
 		.def(							constructor<>())
-		.def("Init",					(void(CUIButton::*)(float,float,float,float))&CUIButton::Init )
-		.def("Init",					(void(CUIButton::*)(LPCSTR,float,float,float,float))&CUIButton::Init )
 		.def("SetAccelerator",				&CUIButton::SetAccelerator)
 		.def("GetAccelerator",				&CUIButton::GetAccelerator),
 
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())
-		.def("Init",					(void(CUI3tButton::*)(LPCSTR,float,float,float,float))&CUI3tButton::Init )
-		.def("Init",						&CUI3tButton::Init_script)
+		.def("Init",						(void (CUI3tButton::*)(float,float,float,float))  &CUI3tButton::Init_script)
 		.def("SetStateTextColor",				&CUI3tButton::SetStateTextColor)
 		.def("SetStretchTexture",				&CUI3tButton::SetStretch),
 
