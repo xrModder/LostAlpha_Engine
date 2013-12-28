@@ -59,13 +59,6 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 		return;
 	}
 
-#if defined(USE_DX10) || defined(USE_DX11)
-	//	TODO: DX10: remove this
-//	FLOAT ColorRGBA[4] = {0.0f, 0.0f, 1.0f, 0.0f};
-//	HW.pContext->ClearRenderTargetView( RCache.get_RT(), ColorRGBA);
-//	HW.pContext->ClearDepthStencilView( RCache.get_ZB(), D3D_CLEAR_DEPTH|D3D_CLEAR_STENCIL, 1.0f, 0);
-#endif	//	USE_DX10
-
 	float	_w					= (float)Device.dwWidth;
 	float	_h					= (float)Device.dwHeight;
 	bool	b_ws				= (_w/_h) > 1.34f;
@@ -217,7 +210,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	if(hLevelLogo)
 	{
 		Frect						r;
-		r.lt.set					(257,369);
+		r.lt.set					(254,369);
 
 		if(b_ws)
 			r.lt.x					*= ws_k;
