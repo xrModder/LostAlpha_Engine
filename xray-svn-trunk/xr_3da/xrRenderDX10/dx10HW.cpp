@@ -217,6 +217,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	R_CHK(pD3D->GetAdapterDisplayMode(DevAdapter, &mWindowed));
 
 	*/
+	/*
 	// Select back-buffer & depth-stencil format
 	D3DFORMAT&	fTarget	= Caps.fTarget;
 	D3DFORMAT&	fDepth	= Caps.fDepth;
@@ -224,6 +225,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	//	HACK: DX10: Embed hard target format.
 	fTarget = D3DFMT_X8R8G8B8;	//	No match in DX10. D3DFMT_A8B8G8R8->DXGI_FORMAT_R8G8B8A8_UNORM
 	fDepth = selectDepthStencil(fTarget);
+	*/
 	/*
 	if (bWindowed)
 	{
@@ -352,13 +354,16 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 #if 0
    createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
+   
+   // this creates the best available device - either 10.0 or 10.1
    R =  D3DX10CreateDeviceAndSwapChain(   m_pAdapter,
                                           m_DriverType,
                                           NULL,
                                           createDeviceFlags,
                                           &sd,
                                           &m_pSwapChain,
-		                                    &pDevice );
+		                                  &pDevice
+										  );
 
    pContext = pDevice;
    FeatureLevel = D3D_FEATURE_LEVEL_10_0;
@@ -367,7 +372,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
       D3DX10GetFeatureLevel1( pDevice, &pDevice1 );
 	  FeatureLevel = D3D_FEATURE_LEVEL_10_1;
    }
-   pContext1 = pDevice1;
+   //pContext1 = pDevice1;
 #endif
 
 	/*
@@ -589,6 +594,7 @@ D3DFORMAT CHW::selectDepthStencil	(D3DFORMAT fTarget)
 	// R3 hack
 #pragma todo("R3 need to specify depth format")
 	return D3DFMT_D24S8;
+	//return DXGI_FORMAT_D24_UNORM_S8_UINT;
 }
 
 void CHW::selectResolution( u32 &dwWidth, u32 &dwHeight, BOOL bWindowed )
@@ -674,7 +680,7 @@ DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 
 		UINT num = 0;
 		DXGI_FORMAT format = fmt;
-		UINT flags         = 0;
+		UINT flags         = DXGI_ENUM_MODES_INTERLACED;
 
 		// Get the number of display modes available
 		pOutput->GetDisplayModeList( format, flags, &num, 0);
@@ -1015,7 +1021,7 @@ void CHW::UpdateViews()
 	R_CHK(R);
 
 	R = pDevice->CreateRenderTargetView( pBuffer, NULL, &pBaseRT);
-	pBuffer->Release();
+	_RELEASE(pBuffer);
 	R_CHK(R);
 
 	//	Create Depth/stencil buffer
@@ -1023,6 +1029,7 @@ void CHW::UpdateViews()
 	//R_CHK	(pDevice->GetDepthStencilSurface	(&pBaseZB));
 	ID3DTexture2D* pDepthStencil = NULL;
 	D3D_TEXTURE2D_DESC descDepth;
+	ZeroMemory(&descDepth, sizeof(descDepth));
 	descDepth.Width = sd.BufferDesc.Width;
 	descDepth.Height = sd.BufferDesc.Height;
 	descDepth.MipLevels = 1;
@@ -1039,8 +1046,15 @@ void CHW::UpdateViews()
 		&pDepthStencil ); // [out] Texture
 	R_CHK(R);
 
+	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
+	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+
 	//	Create Depth/stencil view
-	R = pDevice->CreateDepthStencilView( pDepthStencil, NULL, &pBaseZB );
+	R = pDevice->CreateDepthStencilView( pDepthStencil, &depthStencilViewDesc, &pBaseZB );
 	R_CHK(R);
 
 	pDepthStencil->Release();
