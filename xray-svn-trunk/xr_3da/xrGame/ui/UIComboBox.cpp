@@ -45,6 +45,7 @@ void CUIComboBox::InitComboBox(Fvector2 pos, float width)
 
 	m_frameLine.InitState				(S_Enabled, "ui_cb_linetext_e"); // horizontal by default
 	m_frameLine.InitState				(S_Highlighted, "ui_cb_linetext_h");
+	m_frameLine.SetCurrentState			(S_Enabled);
 
 	// Edit Box on left side of frame line
 	m_text.SetWndPos					(Fvector2().set(lb_text_offset,0.0f));
