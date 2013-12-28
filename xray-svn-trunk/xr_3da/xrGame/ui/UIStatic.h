@@ -128,6 +128,11 @@ public:
 			void			SetCutWordsMode			(bool mode)					{TextItemControl()->SetCutWordsMode(mode);}
 			void			SetTextOffset			(float x, float y)			{TextItemControl()->m_TextOffset.x = x; TextItemControl()->m_TextOffset.y = y;}
 
+			void			SetTextPosX			(float x)					{TextItemControl()->m_TextOffset.x = x;}
+			float			GetTextPosX			()							{return TextItemControl()->m_TextOffset.x;}
+			void			SetTextPosY			(float y)					{TextItemControl()->m_TextOffset.y = y;}
+			float			GetTextPosY			()							{return TextItemControl()->m_TextOffset.y;}
+
 
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
