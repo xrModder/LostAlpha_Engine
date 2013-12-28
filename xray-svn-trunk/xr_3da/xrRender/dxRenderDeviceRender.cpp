@@ -340,7 +340,8 @@ void dxRenderDeviceRender::End()
 	DoAsyncScreenshot();
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.m_pSwapChain->Present( 0, 0 );
+	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
+	HW.m_pSwapChain->Present( VSync, 0 );
 #else	//	USE_DX10
 	CHK_DX				(HW.pDevice->EndScene());
 
