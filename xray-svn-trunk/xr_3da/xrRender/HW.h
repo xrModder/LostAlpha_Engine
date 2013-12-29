@@ -32,7 +32,11 @@ public:
 	void					Reset					(HWND hw);
 
 	void					selectResolution		(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed);
+#if defined(USE_DX10)
+	DXGI_FORMAT				selectDepthStencil		(DXGI_FORMAT);
+#else
 	D3DFORMAT				selectDepthStencil		(D3DFORMAT);
+#endif // USE_DX10
 	u32						selectPresentInterval	();
 	u32						selectGPU				();
 	u32						selectRefresh			(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt);

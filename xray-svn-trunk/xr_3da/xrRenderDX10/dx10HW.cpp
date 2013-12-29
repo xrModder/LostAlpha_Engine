@@ -59,26 +59,6 @@ CHW::~CHW()
 //////////////////////////////////////////////////////////////////////
 void CHW::CreateD3D()
 {
-	/*	Partially implemented dynamic load
-	LPCSTR		_name			= "d3d10.dll";
-
-	hD3D            			= LoadLibrary(_name);
-
-	//	If library can't be loaded computer don't support DirectX 10 at all
-	if (!hD3D)					return;
-	//	check if adapter support Direc3D 10 interface
-
-	typedef HRESULT _CreateDXGIFactory( REFIID riid,	void **ppFactory);
-
-	_CreateDXGIFactory  *CreateFactory = (_CreateDXGIFactory*)GetProcAddress(hD3D,"CreateDXGIFactory");
-	R_ASSERT(CreateFactory);
-
-	IDXGIFactory * pFactory;
-	R_CHK( CreateFactory(__uuidof(IDXGIFactory), (void**)(&pFactory)) );
-	pFactory->EnumAdapters(0, &m_pAdapter);
-	pFactory->Release();
-	*/
-
 	IDXGIFactory * pFactory;
 	R_CHK( CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory)) );
 
@@ -89,7 +69,7 @@ void CHW::CreateD3D()
 	// Look for 'NVIDIA NVPerfHUD' adapter
 	// If it is present, override default settings
 	UINT i = 0;
-	while(pFactory->EnumAdapters(i, &m_pAdapter) != DXGI_ERROR_NOT_FOUND)
+	while(pFactory->EnumAdapters(i++, &m_pAdapter) != DXGI_ERROR_NOT_FOUND)
 	{
 		DXGI_ADAPTER_DESC desc;
 		m_pAdapter->GetDesc(&desc);
@@ -100,35 +80,34 @@ void CHW::CreateD3D()
 		}
 		else
 		{
-			m_pAdapter->Release();
-			m_pAdapter = 0;
+			_RELEASE(m_pAdapter);
 		}
-		++i;
 	}
 #endif	//	MASTER_GOLD
 
 	if (!m_pAdapter)
-		pFactory->EnumAdapters(0, &m_pAdapter);
+	{
+		HRESULT R = pFactory->EnumAdapters(0, &m_pAdapter);
+		if (FAILED(R))
+		{
+			// Fatal error! Cannot get the primary graphics adapter AT STARTUP !!!
+			Msg					("Failed to initialize graphics hardware.\n"
+								 "Please try to restart the game.\n"
+								 "EnumAdapters returned 0x%08x", R
+								 );
+			FlushLog			();
+			MessageBox			(NULL,"Failed to initialize graphics hardware.\nPlease try to restart the game.","Error!",MB_OK|MB_ICONERROR);
+			TerminateProcess	(GetCurrentProcess(),0);
+		}
+	}
 
-	pFactory->Release();
-
-	/*
-	R_ASSERT2	           	 	(hD3D,"Can't find 'd3d10.dll'\nPlease install latest version of DirectX before running this program");
-	typedef IDirect3D9 * WINAPI _Direct3DCreate9(UINT SDKVersion);
-	_Direct3DCreate9* createD3D	= (_Direct3DCreate9*)GetProcAddress(hD3D,"Direct3DCreate9");	R_ASSERT(createD3D);
-	this->pD3D 					= createD3D( D3D_SDK_VERSION );
-	R_ASSERT2					(this->pD3D,"Please install DirectX 9.0c");
-	*/
+	_RELEASE(pFactory);
 }
 
 void CHW::DestroyD3D()
 {
-	//_RELEASE					(this->pD3D);
-
 	_SHOW_REF				("refCount:m_pAdapter",m_pAdapter);
 	_RELEASE				(m_pAdapter);
-
-//	FreeLibrary(hD3D);
 }
 
 void CHW::CreateDevice( HWND m_hWnd, bool move_window )
@@ -136,96 +115,28 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	m_move_window			= move_window;
 	CreateD3D();
 
-	/* Partially implemented dynamic load
-	typedef HRESULT _D3DxxCreateDeviceAndSwapChain(
-		IDXGIAdapter *pAdapter,
-		D3Dxx_DRIVER_TYPE DriverType,
-		HMODULE Software,
-		UINT Flags,
-		UINT SDKVersion,
-		DXGI_SWAP_CHAIN_DESC *pSwapChainDesc,
-		IDXGISwapChain **ppSwapChain,
-		ID3DxxDevice **ppDevice
-		);
-
-
-
-	_D3DxxCreateDeviceAndSwapChain *CreateDeviceAndSwapChain = 
-		(_D3DxxCreateDeviceAndSwapChain*)
-		GetProcAddress(hD3D,"D3DxxCreateDeviceAndSwapChain");
-	R_ASSERT(CreateDeviceAndSwapChain);
-	*/
-
 	// TODO: DX10: Create appropriate initialization
 
 	// General - select adapter and device
 	BOOL  bWindowed			= !psDeviceFlags.is(rsFullscreen);
 
-	m_DriverType = Caps.bForceGPU_REF ? 
-		D3D_DRIVER_TYPE_REFERENCE : D3D_DRIVER_TYPE_HARDWARE;
-
-	if (m_bUsePerfhud)
-		m_DriverType = D3D_DRIVER_TYPE_REFERENCE;
-
-	//	For DirectX 10 adapter is already created in create D3D.
-	/*
-	//. #ifdef DEBUG
-	// Look for 'NVIDIA NVPerfHUD' adapter
-	// If it is present, override default settings
-	for (UINT Adapter=0;Adapter<pD3D->GetAdapterCount();Adapter++)	{
-		D3DADAPTER_IDENTIFIER9 Identifier;
-		HRESULT Res=pD3D->GetAdapterIdentifier(Adapter,0,&Identifier);
-		if (SUCCEEDED(Res) && (xr_strcmp(Identifier.Description,"NVIDIA PerfHUD")==0))
-		{
-			DevAdapter	=Adapter;
-			DevT		=D3DDEVTYPE_REF;
-			break;
-		}
-	}
-	//. #endif
-	*/
+	m_DriverType = (Caps.bForceGPU_REF || m_bUsePerfhud) ? 
+		D3D10_DRIVER_TYPE_REFERENCE : D3D10_DRIVER_TYPE_HARDWARE;
 
 	// Display the name of video board
 	DXGI_ADAPTER_DESC Desc;
 	R_CHK( m_pAdapter->GetDesc(&Desc) );
 	//	Warning: Desc.Description is wide string
 	Msg		("* GPU [vendor:%X]-[device:%X]: %S", Desc.VendorId, Desc.DeviceId, Desc.Description);
-	/*
-	// Display the name of video board
-	D3DADAPTER_IDENTIFIER9	adapterID;
-	R_CHK	(pD3D->GetAdapterIdentifier(DevAdapter,0,&adapterID));
-	Msg		("* GPU [vendor:%X]-[device:%X]: %s",adapterID.VendorId,adapterID.DeviceId,adapterID.Description);
-
-	u16	drv_Product		= HIWORD(adapterID.DriverVersion.HighPart);
-	u16	drv_Version		= LOWORD(adapterID.DriverVersion.HighPart);
-	u16	drv_SubVersion	= HIWORD(adapterID.DriverVersion.LowPart);
-	u16	drv_Build		= LOWORD(adapterID.DriverVersion.LowPart);
-	Msg		("* GPU driver: %d.%d.%d.%d",u32(drv_Product),u32(drv_Version),u32(drv_SubVersion), u32(drv_Build));
-	*/
-
-	/*
-	Caps.id_vendor	= adapterID.VendorId;
-	Caps.id_device	= adapterID.DeviceId;
-	*/
+	Msg		("* GPU driver type: %s", (D3D10_DRIVER_TYPE_HARDWARE == m_DriverType) ? "hardware" : "software reference");
 
 	Caps.id_vendor	= Desc.VendorId;
 	Caps.id_device	= Desc.DeviceId;
 
-	/*
-	// Retreive windowed mode
-	D3DDISPLAYMODE mWindowed;
-	R_CHK(pD3D->GetAdapterDisplayMode(DevAdapter, &mWindowed));
-
-	*/
-	/*
 	// Select back-buffer & depth-stencil format
-	D3DFORMAT&	fTarget	= Caps.fTarget;
-	D3DFORMAT&	fDepth	= Caps.fDepth;
+	DXGI_FORMAT&	fTarget	= Caps.fTarget;
+	DXGI_FORMAT&	fDepth	= Caps.fDepth;
 
-	//	HACK: DX10: Embed hard target format.
-	fTarget = D3DFMT_X8R8G8B8;	//	No match in DX10. D3DFMT_A8B8G8R8->DXGI_FORMAT_R8G8B8A8_UNORM
-	fDepth = selectDepthStencil(fTarget);
-	*/
 	/*
 	if (bWindowed)
 	{
@@ -280,11 +191,11 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	selectResolution	(sd.BufferDesc.Width, sd.BufferDesc.Height, bWindowed);
 
 	// Back buffer
-	//.	P.BackBufferWidth		= dwWidth;
-	//. P.BackBufferHeight		= dwHeight;
 	//	TODO: DX10: implement dynamic format selection
-	//sd.BufferDesc.Format		= fTarget;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	fTarget = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	sd.BufferDesc.Format = fTarget;
 	sd.BufferCount = 1;
 
 	// Multisample
@@ -299,16 +210,6 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	sd.OutputWindow = m_hWnd;
 	sd.Windowed = bWindowed;
 
-	// Depth/stencil
-	// DX10 don't need this?
-	//P.EnableAutoDepthStencil= TRUE;
-	//P.AutoDepthStencilFormat= fDepth;
-	//P.Flags					= 0;	//. D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
-
-	// Refresh rate
-	//P.PresentationInterval	= D3DPRESENT_INTERVAL_IMMEDIATE;
-	//if( !bWindowed )		P.FullScreen_RefreshRateInHz	= selectRefresh	(P.BackBufferWidth, P.BackBufferHeight,fTarget);
-	//else					P.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
 	if (bWindowed)
 	{
 		sd.BufferDesc.RefreshRate.Numerator = 60;
@@ -366,26 +267,17 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 										  );
 
    pContext = pDevice;
+   /*
    FeatureLevel = D3D_FEATURE_LEVEL_10_0;
    if(!FAILED(R))
    {
       D3DX10GetFeatureLevel1( pDevice, &pDevice1 );
 	  FeatureLevel = D3D_FEATURE_LEVEL_10_1;
    }
-   //pContext1 = pDevice1;
+   pContext1 = pDevice1;
+   */
 #endif
 
-	/*
-	if (FAILED(R))	{
-		R	= HW.pD3D->CreateDevice(	DevAdapter,
-			DevT,
-			m_hWnd,
-			GPU | D3DCREATE_MULTITHREADED,	//. ? locks at present
-			&P,
-			&pDevice );
-	}
-	*/
-	//if (D3DERR_DEVICELOST==R)	{
 	if (FAILED(R))
 	{
 		// Fatal error! Cannot create rendering device AT STARTUP !!!
@@ -522,6 +414,7 @@ void CHW::Reset (HWND hwnd)
 		desc.Format,
 		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
 
+
 	UpdateViews();
 
 /*
@@ -589,12 +482,12 @@ void CHW::Reset (HWND hwnd)
 	*/
 }
 
-D3DFORMAT CHW::selectDepthStencil	(D3DFORMAT fTarget)
+DXGI_FORMAT CHW::selectDepthStencil	(DXGI_FORMAT fTarget)
 {
 	// R3 hack
 #pragma todo("R3 need to specify depth format")
-	return D3DFMT_D24S8;
-	//return DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//return D3DFMT_D24S8;
+	return DXGI_FORMAT_D24_UNORM_S8_UINT;
 }
 
 void CHW::selectResolution( u32 &dwWidth, u32 &dwHeight, BOOL bWindowed )
@@ -746,6 +639,11 @@ BOOL CHW::support( D3DFORMAT fmt, DWORD type, DWORD usage)
 
 void CHW::updateWindowProps(HWND m_hWnd)
 {
+	// utak3r: with DX10 we no longer want to play with window's styles and flags,
+	// DXGI will do this for its own for us.
+	return;
+
+	/*
 	//	BOOL	bWindowed				= strstr(Core.Params,"-dedicated") ? TRUE : !psDeviceFlags.is	(rsFullscreen);
 	BOOL	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
 
@@ -806,6 +704,7 @@ void CHW::updateWindowProps(HWND m_hWnd)
 
 	ShowCursor	(FALSE);
 	SetForegroundWindow( m_hWnd );
+	*/
 }
 
 
@@ -818,78 +717,6 @@ struct _uniq_mode
 
 #ifndef _EDITOR
 
-/*
-void free_render_mode_list()
-{
-for( int i=0; vid_quality_token[i].name; i++ )
-{
-xr_free					(vid_quality_token[i].name);
-}
-xr_free						(vid_quality_token);
-vid_quality_token			= NULL;
-}
-*/
-/*
-void	fill_render_mode_list()
-{
-if(vid_quality_token != NULL)		return;
-
-D3DCAPS9					caps;
-CHW							_HW;
-_HW.CreateD3D				();
-_HW.pD3D->GetDeviceCaps		(D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,&caps);
-_HW.DestroyD3D				();
-u16		ps_ver_major		= u16 ( u32(u32(caps.PixelShaderVersion)&u32(0xf << 8ul))>>8 );
-
-xr_vector<LPCSTR>			_tmp;
-u32 i						= 0;
-for(; i<4; ++i)
-{
-bool bBreakLoop = false;
-switch (i)
-{
-case 2:
-if (ps_ver_major < 3)
-bBreakLoop = true;
-break;
-case 3:		//"renderer_r_dx10"
-bBreakLoop = true;
-break;
-default:	;
-}
-
-if (bBreakLoop) break;
-
-_tmp.push_back				(NULL);
-LPCSTR val					= NULL;
-switch (i)
-{
-case 0: val ="renderer_r1";			break;
-case 1: val ="renderer_r2a";		break;
-case 2: val ="renderer_r2";		break;
-case 3: val ="renderer_r_dx10";		break; //  -)
-}
-_tmp.back()					= xr_strdup(val);
-}
-u32 _cnt								= _tmp.size()+1;
-vid_quality_token						= xr_alloc<xr_token>(_cnt);
-
-vid_quality_token[_cnt-1].id			= -1;
-vid_quality_token[_cnt-1].name			= NULL;
-
-#ifdef DEBUG
-Msg("Available render modes[%d]:",_tmp.size());
-#endif // DEBUG
-for(u32 i=0; i<_tmp.size();++i)
-{
-vid_quality_token[i].id				= i;
-vid_quality_token[i].name			= _tmp[i];
-#ifdef DEBUG
-Msg							("[%s]",_tmp[i]);
-#endif // DEBUG
-}
-}
-*/
 void free_vid_mode_list()
 {
 	for( int i=0; vid_mode_token[i].name; i++ )
@@ -964,49 +791,6 @@ void fill_vid_mode_list(CHW* _hw)
 		Msg							("[%s]",_tmp[i]);
 #endif // DEBUG
 	}
-
-	/*	Old code
-	if(vid_mode_token != NULL)		return;
-	xr_vector<LPCSTR>	_tmp;
-	u32 cnt = _hw->pD3D->GetAdapterModeCount	(_hw->DevAdapter, _hw->Caps.fTarget);
-
-	u32 i;
-	for(i=0; i<cnt;++i)
-	{
-		D3DDISPLAYMODE	Mode;
-		string32		str;
-
-		_hw->pD3D->EnumAdapterModes(_hw->DevAdapter, _hw->Caps.fTarget, i, &Mode);
-		if(Mode.Width < 800)		continue;
-
-		xr_sprintf						(str,sizeof(str),"%dx%d", Mode.Width, Mode.Height);
-
-		if(_tmp.end() != std::find_if(_tmp.begin(), _tmp.end(), _uniq_mode(str)))
-			continue;
-
-		_tmp.push_back				(NULL);
-		_tmp.back()					= xr_strdup(str);
-	}
-
-	u32 _cnt						= _tmp.size()+1;
-
-	vid_mode_token					= xr_alloc<xr_token>(_cnt);
-
-	vid_mode_token[_cnt-1].id			= -1;
-	vid_mode_token[_cnt-1].name		= NULL;
-
-#ifdef DEBUG
-	Msg("Available video modes[%d]:",_tmp.size());
-#endif // DEBUG
-	for(i=0; i<_tmp.size();++i)
-	{
-		vid_mode_token[i].id		= i;
-		vid_mode_token[i].name		= _tmp[i];
-#ifdef DEBUG
-		Msg							("[%s]",_tmp[i]);
-#endif // DEBUG
-	}
-	*/
 }
 
 void CHW::UpdateViews()
@@ -1046,17 +830,17 @@ void CHW::UpdateViews()
 		&pDepthStencil ); // [out] Texture
 	R_CHK(R);
 
+	// set format etc.
 	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-
 	//	Create Depth/stencil view
 	R = pDevice->CreateDepthStencilView( pDepthStencil, &depthStencilViewDesc, &pBaseZB );
 	R_CHK(R);
 
-	pDepthStencil->Release();
+	_RELEASE(pDepthStencil);
 }
 #endif

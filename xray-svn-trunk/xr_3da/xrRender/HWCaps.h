@@ -44,8 +44,13 @@ public:
 	u32				iGPUNum;
 
 	// device format
+#if defined(USE_DX10)
+	DXGI_FORMAT		fTarget;
+	DXGI_FORMAT		fDepth;
+#else
 	D3DFORMAT		fTarget;
 	D3DFORMAT		fDepth;
+#endif
 	u32				dwRefreshRate;
 
 	// caps itself
