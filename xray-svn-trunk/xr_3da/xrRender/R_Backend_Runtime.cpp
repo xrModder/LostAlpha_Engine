@@ -76,12 +76,14 @@ void CBackend::Invalidate	()
 	state						= NULL;
 	ps							= NULL;
 	vs							= NULL;
-DX10_ONLY(gs					= NULL);
-#ifdef USE_DX11
+#if defined(USE_DX10) || defined(USE_DX11)
+	gs							= NULL;
+#if defined(USE_DX11)
 	hs = 0;
 	ds = 0;
 	cs = 0;
-#endif
+#endif // USE_DX11
+#endif // USE_DX10
 	ctable						= NULL;
 
 	T							= NULL;
