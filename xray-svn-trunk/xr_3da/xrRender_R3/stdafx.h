@@ -19,7 +19,9 @@
 #endif
 
 #include <d3d10_1.h>
+#if defined(USE_DX11)
 #include <d3d11.h>
+#endif
 #include <D3Dx10core.h>
 #include <D3DCompiler.h>
 
