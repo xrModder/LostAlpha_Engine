@@ -21,8 +21,10 @@ void CBackend::OnFrameEnd	()
 #endif    
 	{
 #if defined(USE_DX10) || defined(USE_DX11)
-		HW.pContext->ClearState();
-		Invalidate			();
+		//HW.pContext->ClearState();
+		//Invalidate			();
+		// it's not needed here, it's causing only a performance hit
+		return;
 #else	//	USE_DX10
 
 		for (u32 stage=0; stage<HW.Caps.raster.dwStages; stage++)
