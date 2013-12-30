@@ -210,15 +210,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	sd.OutputWindow = m_hWnd;
 	sd.Windowed = bWindowed;
 
-	if (bWindowed)
-	{
-		sd.BufferDesc.RefreshRate.Numerator = 60;
-		sd.BufferDesc.RefreshRate.Denominator = 1;
-	}
-	else
-	{
-		sd.BufferDesc.RefreshRate = selectRefresh( sd.BufferDesc.Width, sd.BufferDesc.Height, sd.BufferDesc.Format);
-	}
+	sd.BufferDesc.RefreshRate = selectRefresh(sd.BufferDesc.Width, sd.BufferDesc.Height, sd.BufferDesc.Format);
 
 	//	Additional set up
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -387,13 +379,7 @@ void CHW::Reset (HWND hwnd)
 
 	selectResolution(desc.Width, desc.Height, bWindowed);
 
-	if (bWindowed)
-	{
-		desc.RefreshRate.Numerator = 60;
-		desc.RefreshRate.Denominator = 1;
-	}
-	else
-		desc.RefreshRate = selectRefresh( desc.Width, desc.Height, desc.Format);
+	desc.RefreshRate = selectRefresh(desc.Width, desc.Height, desc.Format);
 
 	CHK_DX(m_pSwapChain->ResizeTarget(&desc));
 
@@ -552,6 +538,14 @@ u32 CHW::selectGPU ()
 */
 DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 {
+	// utak3r: when resizing target, let DXGI calculate the refresh rate for itself.
+	// This is very important for performance, this value is correct.
+	DXGI_RATIONAL refresh;
+	refresh.Numerator = 0;
+	refresh.Denominator = 1;
+	return refresh;
+
+	/*
 	DXGI_RATIONAL	res;
 
 	res.Numerator = 60;
@@ -604,6 +598,7 @@ DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 
 		return res;
 	}
+	*/
 }
 
 void CHW::OnAppActivate()
