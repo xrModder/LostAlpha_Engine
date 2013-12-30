@@ -97,7 +97,7 @@ ICF void CBackend::set_GS(ID3DGeometryShader* _gs, LPCSTR _n)
 	}
 }
 
-#	ifdef USE_DX11
+#if defined(USE_DX11)
 ICF void CBackend::set_HS(ID3D11HullShader* _hs, LPCSTR _n)
 {
 	if (hs!=_hs)
@@ -151,7 +151,7 @@ ICF	bool CBackend::is_TessEnabled()
 	return HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && (ds!=0 || hs!=0);
 }
 
-#	endif
+#endif
 
 
 ICF void CBackend::set_VS(ID3DVertexShader* _vs, LPCSTR _n)
