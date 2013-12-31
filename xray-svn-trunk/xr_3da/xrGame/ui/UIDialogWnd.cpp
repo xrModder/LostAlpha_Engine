@@ -37,7 +37,9 @@ bool CUIDialogWnd::IR_process()
 {
 	if(!IsEnabled())					return false;
 
-	if(GetHolder()->IgnorePause())		return true;
+	CDialogHolder *holder = GetHolder();
+	if (holder) 
+	if (holder->IgnorePause())		return true;
 
 	if(Device.Paused()&&!WorkInPause())	return false;
 	
