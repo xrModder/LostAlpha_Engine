@@ -59,13 +59,6 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 		return;
 	}
 
-#if defined(USE_DX10) || defined(USE_DX11)
-	//	TODO: DX10: remove this
-//	FLOAT ColorRGBA[4] = {0.0f, 0.0f, 1.0f, 0.0f};
-//	HW.pContext->ClearRenderTargetView( RCache.get_RT(), ColorRGBA);
-//	HW.pContext->ClearDepthStencilView( RCache.get_ZB(), D3D_CLEAR_DEPTH|D3D_CLEAR_STENCIL, 1.0f, 0);
-#endif	//	USE_DX10
-
 	float	_w					= (float)Device.dwWidth;
 	float	_h					= (float)Device.dwHeight;
 	bool	b_ws				= (_w/_h) > 1.34f;
@@ -156,7 +149,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	VERIFY						(u32(pv-_pv)==2*(v_cnt+1));
 	RCache.Vertex.Unlock		(2*(v_cnt+1),ll_hGeom2.stride());
 
-	//RCache.set_Shader			(sh_progress);
+	RCache.set_Shader			(sh_progress);
 	RCache.set_Geometry			(ll_hGeom2);
 	RCache.Render				(D3DPT_TRIANGLESTRIP, Offset, 2*v_cnt);
 
@@ -217,7 +210,7 @@ void dxApplicationRender::load_draw_internal(CApplication &owner)
 	if(hLevelLogo)
 	{
 		Frect						r;
-		r.lt.set					(257,369);
+		r.lt.set					(254,369);
 
 		if(b_ws)
 			r.lt.x					*= ws_k;
