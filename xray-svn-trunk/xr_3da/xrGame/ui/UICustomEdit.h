@@ -38,10 +38,15 @@ public:
 			void	ClearText		();
 	virtual	void	SetText			(LPCSTR str);
 	virtual LPCSTR	GetText			()	const;
+	virtual void	SetTextColor		(u32 color);
+	virtual void	SetTextColorD		(u32 color);
 
 	virtual void	Enable			(bool status);
 			
 			void	SetPasswordMode	(bool mode = true);
+			void	SetDbClickMode	(bool mode = true)	{m_bFocusByDbClick = mode;}
+
+	virtual void	Init_script				(float x, float y, float width, float height) { InitCustomEdit(Fvector2().set(x,y), Fvector2().set(width, height));} //SkyLoader: for scripts
 
 protected:
 			void				Register_callbacks();
@@ -66,6 +71,9 @@ protected:
 	bool	m_bInputFocus;
 	bool	m_force_update;
 	bool	m_read_mode;
+	bool	m_bFocusByDbClick;
+
+	u32	m_textColor[2];
 
 	CUICustomEdit*	m_next_focus_capturer;
 };

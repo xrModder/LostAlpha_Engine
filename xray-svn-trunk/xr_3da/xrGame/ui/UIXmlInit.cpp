@@ -934,13 +934,23 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 	string256				foo;	
 	u32						color;
 	strconcat				(sizeof(foo),foo,path,":text_color:e");
-	if (xml_doc.NavigateToNode(foo,index)){
+	if (xml_doc.NavigateToNode(foo,index))
+	{
 		color				= GetColor	(xml_doc, foo, index, 0x00);
-		pWnd->TextItemControl()->SetTextColor	(color);	
+		pWnd->SetTextColor	(color);
+	}
+	strconcat				(sizeof(foo),foo,path,":text_color:d");
+	if (xml_doc.NavigateToNode(foo,index))
+	{
+		color				= GetColor	(xml_doc, foo, index, 0x00);
+		pWnd->SetTextColorD	(color);
 	}
 
+	if (xml_doc.ReadAttribInt(path,index,"db_click",0))
+		pWnd->SetDbClickMode();
+
 	int max_count		= xml_doc.ReadAttribInt(path, index, "max_symb_count", 0);
-	bool num_only       = (xml_doc.ReadAttribInt(path, index, "num_only", 0) == 1);
+	bool num_only       = (xml_doc.ReadAttribInt(path, index, "numonly", 0) == 1);
 	bool read_only      = (xml_doc.ReadAttribInt(path, index, "read_only", 0) == 1);
 	bool file_name_mode = (xml_doc.ReadAttribInt(path, index, "file_name_mode", 0) == 1);
 
