@@ -87,7 +87,7 @@ void dxRenderDeviceRender::SetupStates()
 
 #if defined(USE_DX10) || defined(USE_DX11)
 	//	TODO: DX10: Implement Resetting of render states into default mode
-	//VERIFY(!"dxRenderDeviceRender::SetupStates not implemented.");
+	HW.pContext->ClearState();
 #else	//	USE_DX10
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)				{
 		float fBias = -.5f	;
@@ -330,6 +330,11 @@ void DoAsyncScreenshot();
 
 void dxRenderDeviceRender::End()
 {
+	if (!HW.pDevice)
+	{
+		Msg("FATAL ERROR: dxRenderDeviceRender::End(): HW.pDevice is lost!");
+		FlushLog();
+	}
 	VERIFY	(HW.pDevice);
 
 	if (HW.Caps.SceneMode)	overdrawEnd();

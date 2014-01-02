@@ -259,15 +259,16 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 										  );
 
    pContext = pDevice;
-   /*
+   
    FeatureLevel = D3D_FEATURE_LEVEL_10_0;
    if(!FAILED(R))
    {
       D3DX10GetFeatureLevel1( pDevice, &pDevice1 );
 	  FeatureLevel = D3D_FEATURE_LEVEL_10_1;
+	  //pContext1 = pDevice1;
+	  pContext = pDevice1;
    }
-   pContext1 = pDevice1;
-   */
+   
 #endif
 
 	if (FAILED(R))
@@ -368,20 +369,12 @@ void CHW::DestroyDevice()
 void CHW::Reset (HWND hwnd)
 {
 	DXGI_SWAP_CHAIN_DESC &cd = m_ChainDesc;
-
 	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
-
 	cd.Windowed = bWindowed;
 
-	m_pSwapChain->SetFullscreenState(!bWindowed, NULL);
-
 	DXGI_MODE_DESC	&desc = m_ChainDesc.BufferDesc;
-
 	selectResolution(desc.Width, desc.Height, bWindowed);
-
 	desc.RefreshRate = selectRefresh(desc.Width, desc.Height, desc.Format);
-
-	CHK_DX(m_pSwapChain->ResizeTarget(&desc));
 
 
 #ifdef DEBUG
@@ -393,6 +386,8 @@ void CHW::Reset (HWND hwnd)
 	_RELEASE(pBaseZB);
 	_RELEASE(pBaseRT);
 
+	m_pSwapChain->SetFullscreenState(!bWindowed, NULL);
+	CHK_DX(m_pSwapChain->ResizeTarget(&desc));
 	CHK_DX(m_pSwapChain->ResizeBuffers(
 		cd.BufferCount,
 		desc.Width,
@@ -400,72 +395,10 @@ void CHW::Reset (HWND hwnd)
 		desc.Format,
 		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
 
-
 	UpdateViews();
 
-/*
-	// Windoze
-	DevPP.SwapEffect			= bWindowed?D3DSWAPEFFECT_COPY:D3DSWAPEFFECT_DISCARD;
-	DevPP.Windowed				= bWindowed;
-	DevPP.PresentationInterval	= D3DPRESENT_INTERVAL_IMMEDIATE;
-	if( !bWindowed )		DevPP.FullScreen_RefreshRateInHz	= selectRefresh	(DevPP.BackBufferWidth,DevPP.BackBufferHeight,Caps.fTarget);
-	else					DevPP.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-#endif
-
-	while	(TRUE)	{
-		HRESULT _hr							= HW.pDevice->Reset	(&DevPP);
-		if (SUCCEEDED(_hr))					break;
-		Msg		("! ERROR: [%dx%d]: %s",DevPP.BackBufferWidth,DevPP.BackBufferHeight,Debug.error2string(_hr));
-		Sleep	(100);
-	}
-	R_CHK				(pDevice->GetRenderTarget			(0,&pBaseRT));
-	R_CHK				(pDevice->GetDepthStencilSurface	(&pBaseZB));
-*/
-
-
-//#ifdef DEBUG
-//	R_CHK				(pDevice->CreateStateBlock			(D3DSBT_ALL,&dwDebugSB));
-//#endif
-
 	updateWindowProps	(hwnd);
 
-
-		/*
-#ifdef DEBUG
-	_RELEASE			(dwDebugSB);
-#endif
-	_RELEASE			(pBaseZB);
-	_RELEASE			(pBaseRT);
-
-	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
-#else
-	BOOL	bWindowed		= TRUE;
-#endif
-
-	selectResolution		(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
-	// Windoze
-	DevPP.SwapEffect			= bWindowed?D3DSWAPEFFECT_COPY:D3DSWAPEFFECT_DISCARD;
-	DevPP.Windowed				= bWindowed;
-	DevPP.PresentationInterval	= D3DPRESENT_INTERVAL_IMMEDIATE;
-	if( !bWindowed )		DevPP.FullScreen_RefreshRateInHz	= selectRefresh	(DevPP.BackBufferWidth,DevPP.BackBufferHeight,Caps.fTarget);
-	else					DevPP.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-#endif
-
-	while	(TRUE)	{
-		HRESULT _hr							= HW.pDevice->Reset	(&DevPP);
-		if (SUCCEEDED(_hr))					break;
-		Msg		("! ERROR: [%dx%d]: %s",DevPP.BackBufferWidth,DevPP.BackBufferHeight,Debug.error2string(_hr));
-		Sleep	(100);
-	}
-	R_CHK				(pDevice->GetRenderTarget			(0,&pBaseRT));
-	R_CHK				(pDevice->GetDepthStencilSurface	(&pBaseZB));
-#ifdef DEBUG
-	R_CHK				(pDevice->CreateStateBlock			(D3DSBT_ALL,&dwDebugSB));
-#endif
-#ifndef _EDITOR
-	updateWindowProps	(hwnd);
-#endif
-	*/
 }
 
 DXGI_FORMAT CHW::selectDepthStencil	(DXGI_FORMAT fTarget)
