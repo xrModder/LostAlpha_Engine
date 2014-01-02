@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+#ifndef __AI_SCRIPT_SPACE_H__
+#define __AI_SCRIPT_SPACE_H__
 // Lua
 #pragma warning(disable:4244)
 #pragma warning(disable:4995)
@@ -42,3 +43,4 @@ struct SMemberCallback {
 };
 
 #include "ai_script_lua_space.h"
+#endif

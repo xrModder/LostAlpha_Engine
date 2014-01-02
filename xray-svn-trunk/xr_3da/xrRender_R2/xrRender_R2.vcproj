@@ -321,7 +321,7 @@
 			Name="Kernel"
 			>
 			<File
-				RelativePath="cl_intersect.h"
+				RelativePath="../../xr_3da/cl_intersect.h"
 				>
 			</File>
 			<File
