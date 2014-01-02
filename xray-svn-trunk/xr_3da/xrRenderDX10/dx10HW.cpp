@@ -248,43 +248,72 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
    createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
    
-   // this creates the best available device - either 10.0 or 10.1
-   R =  D3DX10CreateDeviceAndSwapChain(   m_pAdapter,
-                                          m_DriverType,
-                                          NULL,
-                                          createDeviceFlags,
-                                          &sd,
-                                          &m_pSwapChain,
-		                                  &pDevice
-										  );
+   bool bTryCreate101 = ps_r2_ls_flags.test((u32)R3FLAG_USE_DX10_1) > 0 ? true : false;
 
-   pContext = pDevice;
-   
-   FeatureLevel = D3D_FEATURE_LEVEL_10_0;
-   if(!FAILED(R))
+   pDevice = NULL;
+   pDevice1 = NULL;
+   pContext = NULL;
+
+   if (bTryCreate101)
    {
-      D3DX10GetFeatureLevel1( pDevice, &pDevice1 );
-	  FeatureLevel = D3D_FEATURE_LEVEL_10_1;
-	  //pContext1 = pDevice1;
-	  pContext = pDevice1;
+	   // try to create DX10.1 device
+	   R = D3D10CreateDeviceAndSwapChain1(	m_pAdapter,
+											m_DriverType,
+											NULL,
+											createDeviceFlags,
+											D3D10_FEATURE_LEVEL_10_1,
+											D3D10_1_SDK_VERSION,
+											&sd,
+											&m_pSwapChain,
+											&pDevice1
+											);
+	   if (FAILED(R))
+	   {
+		   pDevice1 = NULL;
+		   ps_r2_ls_flags.set((u32)R3FLAG_USE_DX10_1, 0);
+	   }
+	   else
+	   {
+		   pContext = pDevice1;
+		   pDevice = pDevice1;
+	   }
+   }
+
+   if (!pDevice1)
+   {
+	   // try to create a DX10.0 device
+	   R = D3D10CreateDeviceAndSwapChain(	m_pAdapter,
+											m_DriverType,
+											NULL,
+											createDeviceFlags,
+											D3D10_SDK_VERSION,
+											&sd,
+											&m_pSwapChain,
+											&pDevice
+											);
+	   if (FAILED(R))
+	   {
+			Msg("Failed to initialize graphics hardware.\n"
+				"Please try to restart the game.\n"
+				"CreateDevice returned 0x%08x", R
+				);
+			FlushLog();
+			MessageBox(NULL, "Failed to initialize graphics hardware.\nPlease try to restart the game.",
+				"Error!",
+				MB_OK | MB_ICONERROR);
+			TerminateProcess(GetCurrentProcess(), 0);
+	   }
+	   else
+	   {
+		   pContext = pDevice;
+	   }
    }
    
 #endif
 
-	if (FAILED(R))
-	{
-		// Fatal error! Cannot create rendering device AT STARTUP !!!
-		Msg					("Failed to initialize graphics hardware.\n"
-							 "Please try to restart the game.\n"
-							 "CreateDevice returned 0x%08x", R
-							 );
-		FlushLog			();
-		MessageBox			(NULL,"Failed to initialize graphics hardware.\nPlease try to restart the game.","Error!",MB_OK|MB_ICONERROR);
-		TerminateProcess	(GetCurrentProcess(),0);
-	};
 	R_CHK(R);
 
-	_SHOW_REF	("* CREATE: DeviceREF:",HW.pDevice);
+	_SHOW_REF	("* CREATE: DeviceREF:", HW.pDevice);
 	/*
 	switch (GPU)
 	{
@@ -369,11 +398,11 @@ void CHW::DestroyDevice()
 void CHW::Reset (HWND hwnd)
 {
 	DXGI_SWAP_CHAIN_DESC &cd = m_ChainDesc;
-	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
-	cd.Windowed = bWindowed;
+	BOOL bWindowed = psDeviceFlags.is(rsFullscreen);
+	cd.Windowed = !bWindowed;
 
 	DXGI_MODE_DESC	&desc = m_ChainDesc.BufferDesc;
-	selectResolution(desc.Width, desc.Height, bWindowed);
+	selectResolution(desc.Width, desc.Height, cd.Windowed);
 	desc.RefreshRate = selectRefresh(desc.Width, desc.Height, desc.Format);
 
 
@@ -386,7 +415,7 @@ void CHW::Reset (HWND hwnd)
 	_RELEASE(pBaseZB);
 	_RELEASE(pBaseRT);
 
-	m_pSwapChain->SetFullscreenState(!bWindowed, NULL);
+	m_pSwapChain->SetFullscreenState(bWindowed, NULL);
 	CHK_DX(m_pSwapChain->ResizeTarget(&desc));
 	CHK_DX(m_pSwapChain->ResizeBuffers(
 		cd.BufferCount,
@@ -403,9 +432,7 @@ void CHW::Reset (HWND hwnd)
 
 DXGI_FORMAT CHW::selectDepthStencil	(DXGI_FORMAT fTarget)
 {
-	// R3 hack
 #pragma todo("R3 need to specify depth format")
-	//return D3DFMT_D24S8;
 	return DXGI_FORMAT_D24_UNORM_S8_UINT;
 }
 
