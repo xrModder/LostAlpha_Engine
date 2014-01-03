@@ -19,6 +19,7 @@ class CUIStalkersRankingWnd;
 class CUIEventsWnd;
 class CUIPdaContactsWnd;
 class CUI3tButton;
+class CUIDialogWndEx;
 
  
 
@@ -47,7 +48,9 @@ protected:
 	CUIWindow*				m_pActiveDialog;
 	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
-	bool				bUpgraded;
+	bool					bUpgraded;
+private:
+	bool					m_initialized;
 
 public:
 	// Поддиалоги PDA
@@ -58,6 +61,9 @@ public:
 	CUIActorInfoWnd*		UIActorInfo;
 	CUIStalkersRankingWnd*	UIStalkersRanking;
 	CUIEventsWnd*			UIEventsWnd;
+	CUIDialogWndEx*				UIChatWnd;
+	CUIDialogWndEx*				UISkillsWnd;
+	CUIDialogWndEx*				UIDownloadsWnd;
 	CUI3tButton*			m_pUIClose;
 
 	virtual void			Reset				();
