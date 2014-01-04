@@ -215,6 +215,8 @@ public:
 			void				SetActorPosition	(Fvector pos);
 			void				SetActorDirection	(float dir);
 			void				SetActorDirectionVector	(Fvector dir);
+			void				SetNpcPosition		(Fvector pos);
+			void				SetActorCamActive	(Fvector pos, Fvector dir, Fvector norm);
 			void				SetActorDirectionSlowly	(Fvector pos, float time);
 			void				SetActorLegsVisible	(bool val);
 			void				SetActorCam		(u32 val);
