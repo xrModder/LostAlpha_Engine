@@ -124,7 +124,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 				if(psAI_Flags.test(aiDialogs)){
 					LPCSTR phrase_text = next_phrase_vertex->data()->GetText();
 					shared_str id = next_phrase_vertex->data()->GetID();
-					Msg("----added phrase text [%s]phrase_id=[%s] id=[%s] to dialog [%s]",phrase_text, phrase_id, id, *phrase_dialog->m_DialogId);
+					Msg("----added phrase text [%s]phrase_id=[%s] id=[%s] to dialog [%s]",phrase_text, phrase_id.c_str(), id, *phrase_dialog->m_DialogId);
 				}
 #endif
 			}
@@ -133,7 +133,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 
 		if (phrase_dialog->m_PhraseVector.empty()) {
 			Msg("!! Error: No available phrase to say");
-			Msg("!! [%s]:phrase stack:",phrase_id);
+			Msg("!! [%s]:phrase stack:",phrase_id.c_str());
 			for(xr_vector<CPhraseGraph::CEdge>::const_iterator it = phrase_vertex->edges().begin();
 					it != phrase_vertex->edges().end();
 					it++) {
@@ -141,7 +141,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 					CPhraseGraph::CVertex* next_phrase_vertex = phrase_dialog->data()->m_PhraseGraph.vertex(edge.vertex_id());
 					THROW						(next_phrase_vertex);
 					shared_str next_phrase_id	= next_phrase_vertex->vertex_id();
-					Msg("	- %s:%d",next_phrase_id.c_str(),next_phrase_vertex->data()->GetID());
+					Msg("	- %s:%d",next_phrase_id.c_str(),next_phrase_vertex->data()->GetText());
 			}
 			R_ASSERT2	(
 				0,
