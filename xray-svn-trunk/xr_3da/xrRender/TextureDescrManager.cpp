@@ -31,7 +31,7 @@ void fix_texture_thm_name(LPSTR fn)
 void CTextureDescrMngr::LoadLTX()
 {
 	string_path				fname;		
-	FS.update_path			(fname,"$game_textures$","textures.ltx");
+	FS.update_path			(fname,"$game_textures$","textures_associations.ltx");
 
 	if (FS.exist(fname))
 	{
@@ -73,7 +73,12 @@ void CTextureDescrMngr::LoadLTX()
 					desc.m_assoc->usage	= (1<<0);
 			}
 		}//"association"
+	}//file-exist
 
+	FS.update_path			(fname,"$game_textures$","textures_specifications.ltx");
+	if (FS.exist(fname))
+	{
+		CInifile			ini(fname);
 		if (ini.section_exist("specification"))
 		{
 			CInifile::Sect& 	sect = ini.r_section("specification");
@@ -94,7 +99,14 @@ void CTextureDescrMngr::LoadLTX()
 				}
 			}
 		}//"specification"
+	}//file-exist
+
 #ifdef _EDITOR
+	FS.update_path			(fname,"$game_textures$","textures_types.ltx");
+
+	if (FS.exist(fname))
+	{
+		CInifile			ini(fname);
 		if (ini.section_exist("types"))
 		{
 			CInifile::Sect& 	data = ini.r_section("types");
@@ -106,8 +118,8 @@ void CTextureDescrMngr::LoadLTX()
 				desc.m_type				= (u16)atoi(item.second.c_str());
 			}
 		}//"types"
-#endif
 	}//file-exist
+#endif
 }
 
 void CTextureDescrMngr::LoadTHM()

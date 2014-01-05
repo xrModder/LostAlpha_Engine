@@ -304,10 +304,16 @@ void CImageManager::SynchronizeTextures(bool sync_thm, bool sync_game, bool bFor
     // lock rescanning
     int m_age		= time(NULL);
 
-    // sync assoc
+ 	// sync assoc
 	string_path 	ltx_nm;
-    FS.update_path	(ltx_nm,_game_textures_,"textures.ltx");
-	CInifile* ltx_ini = xr_new<CInifile>(ltx_nm,FALSE,TRUE,FALSE);
+	FS.update_path	(ltx_nm,_game_textures_,"textures_types.ltx");
+	CInifile* ltx_types = xr_new<CInifile>(ltx_nm,FALSE,TRUE,FALSE);
+
+	FS.update_path	(ltx_nm,_game_textures_,"textures_associations.ltx");
+	CInifile* ltx_ass = xr_new<CInifile>(ltx_nm,FALSE,TRUE,FALSE);
+
+	FS.update_path	(ltx_nm,_game_textures_,"textures_specifications.ltx");
+	CInifile* ltx_spe = xr_new<CInifile>(ltx_nm,FALSE,TRUE,FALSE);
     
 	SPBItem* pb=0;
     if (bProgress) pb = UI->ProgressStart(M_BASE.size(),"Synchronize textures...");
@@ -354,7 +360,9 @@ void CImageManager::SynchronizeTextures(bool sync_thm, bool sync_game, bool bFor
                     if (sync_list) 		sync_list->push_back(base_name.c_str());
                     if (modif_map) 		modif_map->insert(*it);
                     // save to assoc ltx
-                    WriteAssociation	(ltx_ini,base_name.c_str(),FMT);
+                    WriteTypes	(ltx_types,base_name.c_str(),FMT);
+                    WriteAssociation	(ltx_ass,base_name.c_str(),FMT);
+                    WriteSpecification	(ltx_spe,base_name.c_str(),FMT);
                 }else{
 					bFailed				= TRUE;
                 }
@@ -387,78 +395,91 @@ void CImageManager::SynchronizeTextures(bool sync_thm, bool sync_game, bool bFor
         }
     }
 
-    bool res			= false;
-    int cnt			= 0;
-    while ((false==(res=ltx_ini->save_as()))&&(cnt++<10)){Sleep(1000);}
-    if (false==res)		Log("!Can't save ini file:",ltx_nm);
-    xr_delete			(ltx_ini);
+	//types
+	bool res			= false;
+	int cnt			= 0;
+	while ((false==(res=ltx_types->save_as()))&&(cnt++<10))
+	{
+		Sleep(1000);
+	}
+ 	if (false==res)
+		Log("!Can't save ini file: textures_types.ltx");
+
+	//associations
+	res			= false;
+	cnt			= 0;
+	while ((false==(res=ltx_ass->save_as()))&&(cnt++<10))
+	{
+		Sleep(1000);
+	}
+ 	if (false==res)
+		Log("!Can't save ini file: textures_associations.ltx");
+
+	//specifications
+	res			= false;
+	cnt			= 0;
+	while ((false==(res=ltx_spe->save_as()))&&(cnt++<10))
+	{
+		Sleep(1000);
+	}
+ 	if (false==res)
+		Log("!Can't save ini file: textures_specifications.ltx");
+
+	xr_delete			(ltx_types);
+	xr_delete			(ltx_ass);
+	xr_delete			(ltx_spe);
     
-    if (bProgress) 	UI->ProgressEnd(pb);
+	if (bProgress) 	UI->ProgressEnd(pb);
 }
-/*
-void CImageManager::ChangeFileAgeTo(FS_FileSet* tgt_map, int age)
+
+void CImageManager::WriteTypes(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt)
 {
-	VERIFY(tgt_map);
-	FS_FileSet* 	M_BASE 		= tgt_map;
-    
-    // lock rescanning
-    FS.lock_rescan	();
-    // change
-	SPBItem* pb=0;
-    if (M_BASE->size()>1) pb	= UI->ProgressStart(M_BASE->size(),"Change textures age...");
-    FS_FileSetIt it			= M_BASE->begin();
-	FS_FileSetIt _E 			= M_BASE->end();
-	for (; it!=_E; it++){
-        xr_string base_name	= EFS.ChangeFileExt(it->name,""); xr_strlwr(base_name);
-        xr_string	tga_fn,thm_fn,dds_fn;
-        FS.update_path			(tga_fn,_textures_,		EFS.ChangeFileExt(base_name,".tga").c_str());
-        FS.update_path			(thm_fn,_textures_,		EFS.ChangeFileExt(base_name,".thm").c_str());
-        FS.update_path			(dds_fn,_game_textures_,EFS.ChangeFileExt(base_name,".dds").c_str());
-        FS.set_file_age			(tga_fn.c_str(),age);
-        FS.set_file_age			(thm_fn.c_str(),age);
-        FS.set_file_age			(dds_fn.c_str(),age);
-        if (pb) 			    pb->Inc();
-    }
-    if (pb) 					UI->ProgressEnd(pb);
-    // lock rescanning
-    FS.unlock_rescan			();
+	//types
+	ltx_ini->w_u32				("types", base_name,fmt.type);
 }
-*/
+
 void CImageManager::WriteAssociation(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt)
 {
-    ltx_ini->w_u32				("types", base_name,fmt.type);
+	//associations
 	if (STextureParams::ttImage==fmt.type || STextureParams::ttTerrain==fmt.type || STextureParams::ttNormalMap==fmt.type)
 	{
-        // save to assoc ltx
-        // details
-        if (fmt.detail_name.size()&&fmt.flags.is_any(STextureParams::flDiffuseDetail|STextureParams::flBumpDetail))
+		// save to assoc ltx
+		// details
+		if (fmt.detail_name.size()&&fmt.flags.is_any(STextureParams::flDiffuseDetail|STextureParams::flBumpDetail))
 		{
-            AnsiString usage;
-            if (fmt.flags.is(STextureParams::flDiffuseDetail)) 	usage="diffuse";
-            if (fmt.flags.is(STextureParams::flBumpDetail))		usage=usage.Length()?usage+"_or_bump":AnsiString("bump");
-            ltx_ini->w_string	("association", base_name, 
+			AnsiString usage;
+			if (fmt.flags.is(STextureParams::flDiffuseDetail)) 	usage="diffuse";
+			if (fmt.flags.is(STextureParams::flBumpDetail))		usage=usage.Length()?usage+"_or_bump":AnsiString("bump");
+
+			ltx_ini->w_string	("association", base_name, 
                                 AnsiString().sprintf("%s, %f, usage[%s]", 
                                                     *fmt.detail_name?*fmt.detail_name:"", 
                                                     fmt.detail_scale, usage.c_str()).c_str());
-        }else{
-            ltx_ini->remove_line("association", base_name);
-        }    
-        // specification                                              
-        AnsiString 			bm;
-        AnsiString 			det;
-        switch(fmt.bump_mode)
+		} else
+			ltx_ini->remove_line("association", base_name);
+	} else
+		ltx_ini->remove_line("association", 	base_name);
+}
+
+void CImageManager::WriteSpecification(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt)
+{
+	// specifications
+	if (STextureParams::ttImage==fmt.type || STextureParams::ttTerrain==fmt.type || STextureParams::ttNormalMap==fmt.type)
+	{
+		AnsiString 			bm;
+		AnsiString 			det;
+		switch(fmt.bump_mode)
 		{
-        case STextureParams::tbmNone: 		bm="none"; 		det=""; 											break;
-        case STextureParams::tbmUse: 		bm="use"; 		det.sprintf(":%s",*fmt.bump_name?*fmt.bump_name:"");break;
-        default: NODEFAULT;
-        }
-        ltx_ini->w_string		("specification", base_name, 	
-                                AnsiString().sprintf("bump_mode[%s%s], material[%3.2f]",
-                                					bm.c_str(),det.c_str(),fmt.material+fmt.material_weight).c_str());
-    }else{
-        ltx_ini->remove_line("association", 	base_name);
-        ltx_ini->remove_line("specification", 	base_name);
-    }
+			case STextureParams::tbmNone: 		bm="none"; 		det="";							break;
+			case STextureParams::tbmUse: 		bm="use"; 		det.sprintf(":%s",*fmt.bump_name?*fmt.bump_name:"");	break;
+			default: NODEFAULT;
+		}
+
+		ltx_ini->w_string		("specification", base_name, 	
+				AnsiString().sprintf("bump_mode[%s%s], material[%3.2f]",
+						bm.c_str(),det.c_str(),fmt.material+fmt.material_weight).c_str());
+	}else
+		ltx_ini->remove_line("specification", 	base_name);
 }
 
 void CImageManager::SynchronizeTexture(LPCSTR tex_name, int age)
