@@ -42,8 +42,6 @@ void IRender_Visual::Load		(const char* N, IReader *data, u32 )
 {
 #ifdef DEBUG
 	dbg_name	= N;
-#else
-	dbg_name	= N;
 #endif
 
 	// header
@@ -86,8 +84,6 @@ void	IRender_Visual::Copy(IRender_Visual *pFrom)
 	PCOPY(desc);
 #endif
 #ifdef DEBUG
-	PCOPY(dbg_name);
-#else
 	PCOPY(dbg_name);
 #endif
 }
