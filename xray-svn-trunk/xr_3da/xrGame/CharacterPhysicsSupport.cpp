@@ -1006,3 +1006,16 @@ void CCharacterPhysicsSupport::on_destroy_anim_mov_ctrl	()
 						CreateCharacter();
 	anim_mov_state.active = false;
 }
+
+void CCharacterPhysicsSupport::ForceTransform( const Fmatrix &m )
+{
+	if( !m_EntityAlife.g_Alive() )
+				return;
+	VERIFY(_valid(m));
+	m_EntityAlife.XFORM().set( m );
+	if( movement()->CharacterExist() )
+			movement()->EnableCharacter();
+	set_movement_position( m.c );
+	movement()->SetVelocity( 0, 0, 0 );
+
+}
