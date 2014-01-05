@@ -50,8 +50,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editor.lib elpackB6.lib vclx.lib bcbsmp.lib vcl.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editor.lib"/>
+    <LIBRARIES value="editorB.lib elpackB6.lib vclx.lib bcbsmp.lib vcl.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;blackbox"/>
     <PATHPAS value=".;"/>

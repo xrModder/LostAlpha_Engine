@@ -360,7 +360,12 @@ void __fastcall TfrmImageLib::ebRebuildAssociationClick(TObject *)
 
 	UnlockForm();
 
-	if (!bRes)	ini->bSaveAtEnd = false;
+	if (!bRes)
+	{
+		ini_types->bSaveAtEnd = false;
+		ini_ass->bSaveAtEnd = false;
+		ini_spe->bSaveAtEnd = false;
+	}
 
 	xr_delete(ini_types);
 	xr_delete(ini_ass);
