@@ -210,7 +210,7 @@ void CGlowManager::render_sw		()
 
 	// 1. Test some number of glows
 	Fvector start	= Device.vCameraPosition;
-	for (int i=0; i<ps_r1_GlowsPerFrame; i++,dwTestID++)
+	for (int i=0; i<ps_GlowsPerFrame; i++,dwTestID++)
 	{
 		u32	ID		= dwTestID%Selected.size();
 		CGlow&	G	= *( (CGlow*)Selected[ID]._get() );
@@ -237,7 +237,7 @@ void CGlowManager::render_hw		()
 
 	// 1. Sort into two parts - 1(selected-to-test)[to-test], 2(selected)[just-draw]
 	// Fvector &start	= Device.vCameraPosition;
-	for (int i=0; (i<ps_r1_GlowsPerFrame) && Selected.size(); i++,dwTestID++)
+	for (int i=0; (i<ps_GlowsPerFrame) && Selected.size(); i++,dwTestID++)
 	{
 		u32	ID		= dwTestID%Selected.size();
 		SelectedToTest_0.push_back	(Selected[ID]);
