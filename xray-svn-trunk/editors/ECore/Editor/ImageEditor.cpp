@@ -186,11 +186,6 @@ void TfrmImageLib::InitItemsList()
        ImageLib.GetTexturesRaw(texture_map);
     
 	ListItemsVec 		items;
-/*
-	xr_string 		ltx_nm;
-        FS.update_path		(ltx_nm,_game_textures_,"textures.ltx");
-	CInifile* ltx_ini 	= xr_new<CInifile>		(ltx_nm.c_str(),FALSE,TRUE,FALSE);
-*/
 	SPBItem* pb		= UI->ProgressStart		(texture_map.size(),"Fill list...");
     // fill
 	FS_FileSetIt it         = texture_map.begin();
@@ -282,7 +277,7 @@ void __fastcall TfrmImageLib::ebSyncTypesClick(TObject *Sender)
     }
 
 	string_path nm;
-    FS.update_path	 	(nm,_game_textures_,"textures.ltx");
+    FS.update_path	 	(nm,_game_textures_,"textures_types.ltx");
 	CInifile* ini 	 	= xr_new<CInifile>(nm, FALSE, FALSE, TRUE);
 
 	LockForm				();
@@ -312,39 +307,64 @@ void __fastcall TfrmImageLib::ebRebuildAssociationClick(TObject *)
 {
 	if (ELog.DlgMsg(mtConfirmation,TMsgDlgButtons()<<mbYes<<mbNo,"Are you sure to export association?")==mrNo) return;
 
-    if (!modif_map.empty()){
-        int res = ELog.DlgMsg(mtConfirmation,TMsgDlgButtons()<<mbYes<<mbNo<<mbCancel,"Save modified properties?");
-        switch (res){
-        case mrYes: 	UpdateLib();	break;
-        case mrNo: 			  			break;
-        case mrCancel: 		  			return;
-        }
-    }
+	if (!modif_map.empty())
+	{
+		int res = ELog.DlgMsg(mtConfirmation,TMsgDlgButtons()<<mbYes<<mbNo<<mbCancel,"Save modified properties?");
+		switch (res)
+		{
+			case mrYes: 	UpdateLib();	break;
+			case mrNo: 			  			break;
+			case mrCancel: 		  			return;
+		}
+	}
 
+	//skyloader: now not needed textures.ltx
 	string_path nm;
-    FS.update_path			(nm,_game_textures_,"textures.ltx");
-	CInifile* ini 			= xr_new<CInifile>(nm, FALSE, FALSE, TRUE);
+	FS.update_path			(nm,_game_textures_,"textures_types.ltx");
+	CInifile* ini_types 			= xr_new<CInifile>(nm, FALSE, FALSE, TRUE);
+
+	FS.update_path			(nm,_game_textures_,"textures_associations.ltx");
+	CInifile* ini_ass 			= xr_new<CInifile>(nm, FALSE, FALSE, TRUE);
+
+	FS.update_path			(nm,_game_textures_,"textures_specifications.ltx");
+	CInifile* ini_spe 			= xr_new<CInifile>(nm, FALSE, FALSE, TRUE);
 
 	LockForm				();
 
-    FS_FileSetIt it		= texture_map.begin();
-    FS_FileSetIt _E		= texture_map.end();
+	FS_FileSetIt it		= texture_map.begin();
+	FS_FileSetIt _E		= texture_map.end();
 	SPBItem* pb = UI->ProgressStart(texture_map.size(),"Export association");
-    bool bRes=true;
-    for (;it!=_E; it++){
-        ETextureThumbnail* m_Thm = xr_new<ETextureThumbnail>(it->name.c_str());
-	    pb->Inc				(it->name.c_str());
-        AnsiString base_name= ChangeFileExt(it->name.c_str(),"");
-        ImageLib.WriteAssociation	(ini,base_name.c_str(),m_Thm->_Format());
-        xr_delete			(m_Thm);
-		if (UI->NeedAbort()){ bRes=false; break; }
-    }
+	bool bRes		= true;
+
+	for (;it!=_E; it++)
+	{
+		ETextureThumbnail* m_Thm = xr_new<ETextureThumbnail>(it->name.c_str());
+		pb->Inc				(it->name.c_str());
+		AnsiString base_name= ChangeFileExt(it->name.c_str(),"");
+
+		//skyloader: saving types
+		ImageLib.WriteTypes	(ini_types,base_name.c_str(),m_Thm->_Format());
+		//assotiations
+		ImageLib.WriteAssociation	(ini_ass,base_name.c_str(),m_Thm->_Format());
+		//specitifications
+		ImageLib.WriteSpecification	(ini_spe,base_name.c_str(),m_Thm->_Format());
+
+		xr_delete			(m_Thm);
+		if (UI->NeedAbort())
+		{
+			bRes = false;
+			break;
+		}
+	}
 	UI->ProgressEnd(pb);
 
 	UnlockForm();
 
-    if (!bRes) ini->bSaveAtEnd = false;
-	xr_delete(ini);
+	if (!bRes)	ini->bSaveAtEnd = false;
+
+	xr_delete(ini_types);
+	xr_delete(ini_ass);
+	xr_delete(ini_spe);
 }
 //---------------------------------------------------------------------------
 
