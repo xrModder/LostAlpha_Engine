@@ -25,8 +25,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) BottomBar.dfm LeftBar.dfm main.dfm Splash.dfm TopBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editorB.lib editor.lib vclx.lib bcbsmp.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
+    <LIBRARIES value="editorB.lib vclx.lib bcbsmp.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi dceldbB6.bpi elpackB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
