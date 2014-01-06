@@ -360,6 +360,9 @@ void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 	bool bTask = true;
 	bool bEncyclopedia = false;
 
+	if (!m_initialized)		
+		Init();
+
 	if (type==pda_section::encyclopedia)
 	{
 		UIEncyclopediaWnd->ReloadArticles();

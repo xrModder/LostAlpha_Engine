@@ -67,6 +67,7 @@ void CSE_ALifeMonsterAbstract::script_register(lua_State *L)
 		.def("rank",							&CSE_ALifeMonsterAbstract::Rank)
 		.def("smart_terrain_task_activate",		&smart_terrain_task_activate)
 		.def("smart_terrain_task_deactivate",	&smart_terrain_task_deactivate)
+		.def("can_use_smart_terrain",			&CSE_ALifeMonsterAbstract::can_use_smart_terrain)
 	];
 }
 
