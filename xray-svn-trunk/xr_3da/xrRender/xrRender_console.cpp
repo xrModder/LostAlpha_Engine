@@ -131,8 +131,9 @@ float		ps_r1_dlights_clip			= 40.f	;
 float		ps_r1_pps_u					= 0.f	;
 float		ps_r1_pps_v					= 0.f	;
 
-// R1-specific
-int			ps_r1_GlowsPerFrame			= 16	;					// r1-only
+int		ps_GlowsPerFrame			= 16	;
+
+// R1
 float		ps_r1_fog_luminance			= 1.1f	;					// r1-only
 int			ps_r1_SoftwareSkinning		= 0		;					// r1-only
 
@@ -734,6 +735,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r__detail_l_aniso",	&ps_r__Detail_l_aniso,		.1f,	.5f		);
 
 	CMD2(CCC_tf_Aniso,	"r__tf_aniso",			&ps_r__tf_Anisotropic		); //	{1..16}
+	CMD4(CCC_Integer,	"r__glows_per_frame",	&ps_GlowsPerFrame,		2,		32		);
 
 	// R1
 	CMD4(CCC_Float,		"r1_ssa_lod_a",			&ps_r1_ssaLOD_A,			16,		96		);
@@ -747,9 +749,7 @@ void		xrRender_initconsole	()
 
 
 	// R1-specific
-	CMD4(CCC_Integer,	"r1_glows_per_frame",	&ps_r1_GlowsPerFrame,		2,		32		);
 	CMD3(CCC_Mask,		"r1_detail_textures",	&ps_r2_ls_flags,			R1FLAG_DETAIL_TEXTURES);
-
 	CMD4(CCC_Float,		"r1_fog_luminance",		&ps_r1_fog_luminance,		0.2f,	5.f	);
 
 	// Software Skinning
