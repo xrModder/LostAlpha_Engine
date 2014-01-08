@@ -18,33 +18,12 @@ CUIMessageBoxEx::~CUIMessageBoxEx(){
 
 void CUIMessageBoxEx::InitMessageBox(LPCSTR xml_template)
 {
-	//CUIDialogWnd::SetWndRect(Frect().set(0.0f,0.0f,1024.0f,768.0f));
+	CUIDialogWnd::SetWndRect(Frect().set(0.0f,0.0f,1024.0f,768.0f));
 	m_pMessageBox->InitMessageBox(xml_template);
 	
 	SetWndPos( m_pMessageBox->GetWndPos() );
 	SetWndSize( m_pMessageBox->GetWndSize() );
 	m_pMessageBox->SetWndPos( Fvector2().set(0,0) );
-
-	AddCallback( m_pMessageBox, MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function( this, &CUIMessageBoxEx::OnOKClicked ) );
-	CUIMessageBox::E_MESSAGEBOX_STYLE style = m_pMessageBox->GetBoxStyle();
-	if(style==CUIMessageBox::MESSAGEBOX_YES_NO || style==CUIMessageBox::MESSAGEBOX_QUIT_WINDOWS || style==CUIMessageBox::MESSAGEBOX_QUIT_GAME)
-		AddCallback( m_pMessageBox, MESSAGE_BOX_NO_CLICKED, CUIWndCallback::void_function( this, &CUIMessageBoxEx::OnNOClicked ) );
-}
-
-void CUIMessageBoxEx::OnOKClicked( CUIWindow* w, void* d )
-{
-	if ( !func_on_ok.empty() )
-	{
-		func_on_ok( w, d );
-	}
-}
-
-void CUIMessageBoxEx::OnNOClicked( CUIWindow* w, void* d )
-{
-	if ( !func_on_no.empty() )
-	{
-		func_on_no( w, d );
-	}
 }
 
 void CUIMessageBoxEx::SetText(LPCSTR text){
@@ -98,27 +77,8 @@ bool CUIMessageBoxEx::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		{
 			m_pMessageBox->OnYesOk();
 			return true;
-/*
-		}else
-			if ( dik == DIK_ESCAPE )
-		{
-			CUIMessageBox::E_MESSAGEBOX_STYLE style = m_pMessageBox->GetBoxStyle();
-			if(style != CUIMessageBox::MESSAGEBOX_INFO)
-				HideDialog();
-			return true;
-*/
-		}else
+		} else
 			return CUIDialogWnd::OnKeyboardAction(dik, keyboard_action);
 	}
 	return CUIDialogWnd::OnKeyboardAction(dik, keyboard_action);
-}
-
-void  CUIMessageBoxEx::SetTextEditURL( LPCSTR text )
-{
-	m_pMessageBox->SetTextEditURL( text );
-}
-
-LPCSTR  CUIMessageBoxEx::GetTextEditURL()
-{
-	return m_pMessageBox->GetTextEditURL();
 }

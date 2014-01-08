@@ -17,15 +17,8 @@ public:
 	LPCSTR			GetHost				();
 	LPCSTR			GetPassword			();
 
-	void			SetTextEditURL		(LPCSTR text);
-	LPCSTR			GetTextEditURL		();
-
-	CUIWndCallback::void_function		func_on_ok;
-	CUIWndCallback::void_function		func_on_no;
-	void xr_stdcall	OnOKClicked			(CUIWindow*, void*);
-	void xr_stdcall	OnNOClicked			(CUIWindow*, void*);
-
 	virtual bool	OnKeyboardAction			(int dik, EUIMessages keyboard_action);
+
 	virtual bool	NeedCenterCursor	()const	 {return false;}
 
     CUIMessageBox*						m_pMessageBox;

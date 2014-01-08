@@ -144,9 +144,8 @@ public:
 
 
 			void			SetWndRect_script	(float x, float y, float w, float h)							{CUISimpleWindow::SetWndRect(Frect().set(x, y, w, h));}
-			void			SetWndRect_script	(Frect rect)										{CUISimpleWindow::SetWndRect(rect);}
-			void			SetWndPos_script	(Fvector2 pos)										{CUISimpleWindow::SetWndPos(pos);}
-			void			SetWndSize_script	(Fvector2 size)										{CUISimpleWindow::SetWndSize(size);}
+			void			SetWndPos_script	(float x, float y)								{CUISimpleWindow::SetWndPos(Fvector2().set(x, y));}
+			void			SetWndSize_script	(float w, float h)								{CUISimpleWindow::SetWndSize(Fvector2().set(w, h));}
 
 	//прорисовка окна
 	virtual void			Draw				();
