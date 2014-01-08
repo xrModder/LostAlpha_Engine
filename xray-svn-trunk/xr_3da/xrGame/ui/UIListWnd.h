@@ -24,8 +24,8 @@ public:
 					CUIListWnd				();
 	virtual			~CUIListWnd				();
 
-	virtual void	 Init					(float x, float y, float width, float height);
-	virtual void	 Init					(float x, float y, float width, float height, float item_height);
+	virtual void	 InitListWnd					(float x, float y, float width, float height);
+	virtual void	 InitListWnd					(float x, float y, float width, float height, float item_height);
 
 	virtual bool	 OnMouseAction				(float x, float y, EUIMessages mouse_action);
 
@@ -81,7 +81,6 @@ public:
 	IC bool			IsActiveBackgroundEnabled()								{return m_bActiveBackground;}
 	void			EnableActiveBackground	(bool enable);
 
-	virtual void	SetWidth				(float width);
 
 	void			SetTextColor			(u32 color)						{m_dwFontColor = color;} 
 	u32				GetTextColor			()								{return m_dwFontColor;}

@@ -35,7 +35,7 @@ void CUIListItem::Init(float x, float y, float width, float height)
 void CUIListItem::InitTexture(LPCSTR tex_name)
 {
 	CUIButton::InitTexture(tex_name);
-	TextItemControl()->m_TextOffset.x = (m_UIStaticItem.GetTextureRect().width());
+	TextItemControl()->m_TextOffset.x = (m_UIStaticItem.GetSize().x);
 }
 
 
@@ -43,4 +43,9 @@ void CUIListItem::Init(const char* str, float x, float y, float width, float hei
 {
 	Init(x,y,width, height);
 	SetTextST(str);	
+}
+
+bool CUIListItem::IsHighlightText()
+{
+	return m_bHighlightText;
 }

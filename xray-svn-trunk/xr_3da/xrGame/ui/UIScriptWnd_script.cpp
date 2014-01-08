@@ -3,6 +3,7 @@
 //UI-controls
 #include "UIScriptWnd.h"
 #include "UIButton.h"
+#include "UI3tButton.h"
 #include "UIMessageBox.h"
 #include "UIPropertiesBox.h"
 #include "UICheckButton.h"
@@ -50,6 +51,7 @@ export_class &script_register_ui_window1(export_class &instance)
 		.def("Register",		(void (BaseType::*)(CUIWindow*,LPCSTR))&BaseType::Register)
 
 		.def("GetButton",		(CUIButton* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIButton>)
+		.def("Get3tButton",		(CUI3tButton* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUI3tButton>)
 		.def("GetMessageBox",	(CUIMessageBox* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIMessageBox>)
 		.def("GetPropertiesBox",(CUIPropertiesBox* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIPropertiesBox>)
 		.def("GetCheckButton",	(CUICheckButton* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUICheckButton>)
