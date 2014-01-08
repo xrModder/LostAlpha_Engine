@@ -98,6 +98,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script) //skyloader: for current la scripts
 
 		.def("SetWndRect",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
+		.def("SetWndRect",					(void (CUIWindow::*)(Frect))   &CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)

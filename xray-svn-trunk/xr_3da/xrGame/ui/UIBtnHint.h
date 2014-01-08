@@ -2,7 +2,7 @@
 #include "UIFrameWindow.h"
 #include "UIWindow.h"
 
-class CUITextWnd;
+class CUIStatic;
 
 class CUIButtonHint :public CUIFrameWindow
 {
@@ -17,7 +17,7 @@ public:
 
 	CUIWindow*			m_ownerWnd;
 
-	CUITextWnd*			m_text;
+	CUIStatic*			m_text;
 	bool				m_enabledOnFrame;
 };
 

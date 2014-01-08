@@ -204,7 +204,19 @@ bool CUIXmlInit::InitStatic(CUIXml& xml_doc, LPCSTR path,
 	str_flag					= xml_doc.ReadAttrib(path, index, "xform_anim",				"");
 	flag_cyclic					= xml_doc.ReadAttribInt(path, index, "xform_anim_cyclic",	1);
 		
-	pWnd->SetXformLightAnim		(str_flag, (flag_cyclic)?true:false );
+	pWnd->SetXformLightAnim		(str_flag, (flag_cyclic)?true:false);
+
+	int flag_highlight_txt		= xml_doc.ReadAttribInt(path, index, "highlight_text", 0);
+	if (flag_highlight_txt)
+	{
+		pWnd->HighlightText(true);
+
+		u32 hA = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hA", 255));
+		u32 hR = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hR", 255));
+		u32 hG = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hG", 255));
+		u32 hB = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hB", 255));
+		pWnd->SetHighlightColor		(color_argb(hA, hR, hG, hB));
+	}
 
 	bool bComplexMode = xml_doc.ReadAttribInt(path, index, "complex_mode",0)?true:false;
 	if(bComplexMode)
@@ -458,9 +470,13 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 
 	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
 	pWnd->SetStretch(stretch_flag);
-	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
-	if(text_hint)
-		pWnd->m_hint_text	= CStringTable().translate(text_hint);
+
+	// init hint static
+	string256 hint;
+	strconcat(sizeof(hint),hint, path, ":hint");
+
+	if (xml_doc.NavigateToNode(hint, index))
+        InitStatic(xml_doc, hint, index, &pWnd->m_hint);
 
 	return true;
 }
@@ -488,6 +504,16 @@ bool CUIXmlInit::InitButton(CUIXml& xml_doc, LPCSTR path,
 	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
 	if(text_hint)
 		pWnd->m_hint_text	= CStringTable().translate(text_hint);
+
+	float shadowOffsetX	= xml_doc.ReadAttribFlt(path, index, "shadow_offset_x", 0);
+	float shadowOffsetY	= xml_doc.ReadAttribFlt(path, index, "shadow_offset_y", 0);
+
+	pWnd->SetShadowOffset(Fvector2().set(shadowOffsetX, shadowOffsetY));
+
+	float pushOffsetX		= xml_doc.ReadAttribFlt	(path, index, "push_off_x", 2);
+	float pushOffsetY		= xml_doc.ReadAttribFlt	(path, index, "push_off_y", 3);
+
+	pWnd->SetPushOffset		(Fvector2().set(pushOffsetX,pushOffsetY) );
 
 	return true;
 }

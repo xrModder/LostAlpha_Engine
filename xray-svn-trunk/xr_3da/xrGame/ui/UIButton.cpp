@@ -22,6 +22,12 @@ CUIButton:: CUIButton()
 	m_uAccelerator[2]			= -1;
 	m_uAccelerator[3]			= -1;
 
+	m_PushOffset.set			(PUSH_OFFSET_RIGHT, PUSH_OFFSET_DOWN);
+	m_ShadowOffset.set			(0.0f,0.0f);
+
+	m_HighlightColor			= 0xFFFFFFFF;
+	m_bEnableTextHighlighting		= true;
+
 	TextItemControl()->SetTextComplexMode			(false);
 	TextItemControl()->SetTextAlignment			(CGameFont::alCenter); // this will create class instance for m_pLines
 	TextItemControl()->SetVTextAlignment			(valCenter);
@@ -104,7 +110,7 @@ void CUIButton::DrawTexture()
 		if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
 			m_UIStaticItem.SetPos(rect.left + m_TextureOffset.x, rect.top + m_TextureOffset.y);
 		else
-			m_UIStaticItem.SetPos(rect.left + PUSH_OFFSET_RIGHT + m_TextureOffset.x, rect.top + PUSH_OFFSET_DOWN + m_TextureOffset.y);
+			m_UIStaticItem.SetPos(rect.left + m_PushOffset.x + m_TextureOffset.x, rect.top + m_PushOffset.y + m_TextureOffset.y);
 
 		if(m_bStretchTexture)
 			m_UIStaticItem.SetSize(Fvector2().set(rect.width(), rect.height()));
@@ -116,6 +122,34 @@ void CUIButton::DrawTexture()
 		else
 			m_UIStaticItem.Render();		
 	}
+}
+
+void CUIButton::DrawHighlightedText()
+{
+
+	float right_offset;
+	float down_offset;
+
+	if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
+	{
+		right_offset = 0.0f;
+		down_offset = 0.0f;
+	} else {
+		right_offset	= m_PushOffset.x;
+		down_offset		= m_PushOffset.y;
+	}
+
+	Frect					rect;
+
+	GetAbsoluteRect			(rect);
+	u32 def_col = m_pTextControl->GetTextColor();
+	m_pTextControl->SetTextColor(m_HighlightColor);
+
+	m_pTextControl->Draw(	rect.left + right_offset + 0 + m_pTextControl->m_TextOffset.x + m_ShadowOffset.x, 
+					rect.top + down_offset - 0 + m_pTextControl->m_TextOffset.y + m_ShadowOffset.y);
+
+	m_pTextControl->SetTextColor(def_col);
+
 }
 
 void CUIButton::DrawText()
@@ -130,8 +164,8 @@ void CUIButton::DrawText()
 	}
 	else
 	{
-		right_offset	= PUSH_OFFSET_RIGHT;
-		down_offset		= PUSH_OFFSET_DOWN;
+		right_offset		= m_PushOffset.x;
+		down_offset		= m_PushOffset.y;
 	}
 
 	CUIStatic::DrawText();

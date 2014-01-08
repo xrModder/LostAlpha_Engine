@@ -79,9 +79,12 @@ public:
 			
 	virtual void			DrawTexture				();
 	virtual void			DrawText				();
+	virtual void			DrawHighlightedText			();
 
 			void 			AdjustHeightToText		();
 			void 			AdjustWidthToText		();
+			void			HighlightText			(bool bHighlight)		{m_bEnableTextHighlighting = bHighlight;}
+	virtual bool				IsHighlightText			();
 
 	
 			void			SetShader				(const ui_shader& sh);
@@ -133,13 +136,19 @@ public:
 			void			SetTextPosY			(float y)					{TextItemControl()->m_TextOffset.y = y;}
 			float			GetTextPosY			()							{return TextItemControl()->m_TextOffset.y;}
 
-
+	virtual void			SetHighlightColor			(const u32 uColor)	{ m_HighlightColor = uColor; }
+		void			EnableTextHighlighting			(bool value)		{ m_bEnableTextHighlighting = value; }
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
 			void			SetMask							(CUIFrameWindow* mask);
 
 protected:
+	// возможность подсветки
+	bool			m_bEnableTextHighlighting;
+	// ÷вет подсветки
+	u32			m_HighlightColor;
+
 	CUILines*		m_pTextControl;
 
 	bool			m_bStretchTexture;

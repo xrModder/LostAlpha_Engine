@@ -19,10 +19,10 @@ CUIButtonHint::CUIButtonHint	()
 	uiXml.Load					(CONFIG_PATH, UI_PATH, "hint_item.xml");
 	xml_init.InitFrameWindow	(uiXml,"button_hint",0,this);
 	
-	m_text						= xr_new<CUITextWnd>();
+	m_text						= xr_new<CUIStatic>();
 	m_text->SetAutoDelete		(true);
 	AttachChild					(m_text);
-	xml_init.InitTextWnd		(uiXml,"button_hint:description",0,m_text);
+	xml_init.InitStatic		(uiXml,"button_hint:description",0,m_text);
 }
 
 CUIButtonHint::~CUIButtonHint	()

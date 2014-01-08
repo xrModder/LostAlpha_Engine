@@ -16,8 +16,13 @@ void CUIButton::script_register(lua_State *L)
 	[
 		class_<CUIButton, CUIStatic>("CUIButton")
 		.def(							constructor<>())
+		.def("SetHighlightColor",			&CUIButton::SetHighlightColor)
+		.def("EnableTextHighlighting",			&CUIButton::EnableTextHighlighting)
 		.def("SetAccelerator",				&CUIButton::SetAccelerator)
-		.def("GetAccelerator",				&CUIButton::GetAccelerator),
+		.def("GetAccelerator",				&CUIButton::GetAccelerator)
+		.def("SetPushOffset",			&CUIButton::SetPushOffset)
+		.def("GetPushOffset",			&CUIButton::GetPushOffset)
+		.def("SetShadowOffset",			&CUIButton::SetShadowOffset),
 
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())

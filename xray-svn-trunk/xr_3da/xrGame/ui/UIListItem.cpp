@@ -29,7 +29,7 @@ void CUIListItem::Init(float x, float y, float width, float height)
 	inherited::SetWndPos(Fvector2().set(x, y));
 	inherited::SetWndSize(Fvector2().set(width, height));
 	SetButtonState(BUTTON_PUSHED);
-//	SetPushOffset(Fvector2().set(0.0f,0.0f));
+	SetPushOffset(Fvector2().set(0.0f,0.0f));
 }
 
 void CUIListItem::InitTexture(LPCSTR tex_name)
@@ -47,5 +47,5 @@ void CUIListItem::Init(const char* str, float x, float y, float width, float hei
 
 bool CUIListItem::IsHighlightText()
 {
-	return m_bHighlightText;
+	return CUIButton::IsHighlightText();
 }
