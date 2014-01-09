@@ -95,7 +95,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
-		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script) //skyloader: for current la scripts
+		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::Init_script) //skyloader: for current la scripts
 
 		.def("SetWndRect",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
 		.def("SetWndRect",					(void (CUIWindow::*)(Frect))   &CUIWindow::SetWndRect_script)
