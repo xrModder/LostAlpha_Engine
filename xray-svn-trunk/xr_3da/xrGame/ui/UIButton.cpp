@@ -15,7 +15,6 @@ CUIButton:: CUIButton()
 {
 	m_eButtonState				= BUTTON_NORMAL;
 	m_bIsSwitch					= false;
-	m_bTextureEnable 				= false;
 
 	m_uAccelerator[0]			= 0;
 	m_uAccelerator[1]			= 0;
@@ -39,9 +38,8 @@ void CUIButton::Reset()
 	inherited::Reset			();
 }
 
-
-
-void CUIButton::Enable(bool status){
+void CUIButton::Enable(bool status)
+{
 	CUIStatic::Enable			(status);
 
 	if (!status)

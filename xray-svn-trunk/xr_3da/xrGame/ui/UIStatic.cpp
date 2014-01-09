@@ -10,6 +10,7 @@
 
 #include "UIBtnHint.h"
 #include "../UICursor.h"
+#include "UIFrameWindow.h"
 
 bool is_in2(const Frect& b1, const Frect& b2);
 

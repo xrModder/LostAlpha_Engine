@@ -471,12 +471,9 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
 	pWnd->SetStretch(stretch_flag);
 
-	// init hint static
-	string256 hint;
-	strconcat(sizeof(hint),hint, path, ":hint");
-
-	if (xml_doc.NavigateToNode(hint, index))
-        InitStatic(xml_doc, hint, index, &pWnd->m_hint);
+	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
+	if(text_hint)
+		pWnd->m_hint_text	= CStringTable().translate(text_hint);
 
 	return true;
 }
