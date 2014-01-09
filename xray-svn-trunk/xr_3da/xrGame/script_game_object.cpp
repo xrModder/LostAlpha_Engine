@@ -684,3 +684,13 @@ float CScriptGameObject::SetActorWalkAccel (float new_value)
 	}
 	return actor->SetWalkAccel(new_value);
 }
+
+void CScriptGameObject::SetVisual	(LPCSTR visual)
+{
+	object().cNameVisual_set(visual);
+}
+
+LPCSTR CScriptGameObject::GetVisual	() const
+{
+	return object().cNameVisual().c_str();
+}

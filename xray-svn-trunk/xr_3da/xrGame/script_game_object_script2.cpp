@@ -93,6 +93,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("squad",						&CScriptGameObject::Squad)
 		.def("group",						&CScriptGameObject::Group)
 		.def("change_team",					(void (CScriptGameObject::*)(u8,u8,u8))(&CScriptGameObject::ChangeTeam))
+		.def("set_visual",					&CScriptGameObject::SetVisual)
+		.def("get_visual",					&CScriptGameObject::GetVisual)
 		.def("kill",						&CScriptGameObject::Kill)
 		.def("hit",							&CScriptGameObject::Hit)
 		.def("play_cycle",					(void (CScriptGameObject::*)(LPCSTR))(&CScriptGameObject::play_cycle))

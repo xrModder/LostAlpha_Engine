@@ -618,6 +618,8 @@ public:
 			void				SetTorchBatteryStatus				(u16 value);
 			void				SetTorchState						(bool state);
 			bool				GetTorchState						(void);
+			void				SetVisual						(LPCSTR visual);
+			LPCSTR				GetVisual						() const;
 
 			float				SetActorWalkAccel					(float new_value);
 			
