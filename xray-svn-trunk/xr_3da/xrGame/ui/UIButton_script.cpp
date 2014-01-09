@@ -27,6 +27,7 @@ void CUIButton::script_register(lua_State *L)
 		class_<CUI3tButton, CUIButton>("CUI3tButton")
 		.def(							constructor<>())
 		.def("Init",						(void (CUI3tButton::*)(float,float,float,float))  &CUI3tButton::Init_script)
+		.def("Init",						(void (CUI3tButton::*)(LPCSTR,float,float,float,float))  &CUI3tButton::Init)
 		.def("SetStateTextColor",				&CUI3tButton::SetStateTextColor)
 		.def("SetStretchTexture",				&CUI3tButton::SetStretch),
 

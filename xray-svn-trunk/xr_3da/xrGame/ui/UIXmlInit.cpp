@@ -979,6 +979,7 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 	bool num_only       = (xml_doc.ReadAttribInt(path, index, "numonly", 0) == 1);
 	bool read_only      = (xml_doc.ReadAttribInt(path, index, "read_only", 0) == 1);
 	bool file_name_mode = (xml_doc.ReadAttribInt(path, index, "file_name_mode", 0) == 1);
+	bool translate = (xml_doc.ReadAttribInt(path, index, "translate", 0) == 1);
 
 	if ( file_name_mode || read_only || num_only || 0 < max_count )
 	{
@@ -986,7 +987,7 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 		{
 			max_count = 32;
 		}
-		pWnd->Init( max_count, num_only, read_only, file_name_mode );
+		pWnd->Init( max_count, num_only, read_only, file_name_mode, translate );
 	}
 
 	if (xml_doc.ReadAttribInt(path, index, "password",0))
