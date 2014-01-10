@@ -130,24 +130,20 @@ void CUIButton::DrawHighlightedText()
 
 	if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
 	{
-		right_offset = 0.0f;
-		down_offset = 0.0f;
+		right_offset		= 0.0f;
+		down_offset		= 0.0f;
 	} else {
-		right_offset	= m_PushOffset.x;
+		right_offset		= m_PushOffset.x;
 		down_offset		= m_PushOffset.y;
 	}
 
-	Frect					rect;
+	Fvector2			p;
+	GetAbsolutePos		(p);
 
-	GetAbsoluteRect			(rect);
 	u32 def_col = m_pTextControl->GetTextColor();
-	m_pTextControl->SetTextColor(m_HighlightColor);
-
-	m_pTextControl->Draw(	rect.left + right_offset + 0 + m_pTextControl->m_TextOffset.x + m_ShadowOffset.x, 
-					rect.top + down_offset - 0 + m_pTextControl->m_TextOffset.y + m_ShadowOffset.y);
-
-	m_pTextControl->SetTextColor(def_col);
-
+	m_pTextControl->SetTextColor	(m_HighlightColor);
+	m_pTextControl->Draw		(p.x+right_offset+m_ShadowOffset.x, p.y+down_offset+m_ShadowOffset.y);
+	m_pTextControl->SetTextColor	(def_col);
 }
 
 void CUIButton::DrawText()
@@ -157,7 +153,7 @@ void CUIButton::DrawText()
 
 	if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
 	{
-		right_offset	= 0;
+		right_offset		= 0;
 		down_offset		= 0;
 	}
 	else
@@ -166,7 +162,23 @@ void CUIButton::DrawText()
 		down_offset		= m_PushOffset.y;
 	}
 
-	CUIStatic::DrawText();
+	if (m_pTextControl)
+	{
+		if( !fsimilar(m_pTextControl->m_wndSize.x, m_wndSize.x) || !fsimilar(m_pTextControl->m_wndSize.y, m_wndSize.y))
+		{
+			m_pTextControl->m_wndSize		= m_wndSize;
+			m_pTextControl->ParseText		(true);
+		}
+
+		if(IsHighlightText() && xr_strlen(m_pTextControl->GetText())>0 && m_bEnableTextHighlighting)
+			DrawHighlightedText();		
+		else {
+			Fvector2			p;
+			GetAbsolutePos		(p);
+			m_pTextControl->Draw(p.x+right_offset, p.y+down_offset);
+		}
+	}
+
 	if(g_btnHint->Owner()==this)
 		g_btnHint->Draw_();
 }

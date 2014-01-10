@@ -145,7 +145,6 @@ void  CUIGameSP::StartTalk()
 void CUIGameSP::StartTalk(bool disable_break)
 {
 	RemoveCustomStatic		("main_task");
-	RemoveCustomStatic		("secondary_task");
 
 	TalkMenu->b_disable_break = disable_break;
 	TalkMenu->ShowDialog		(true);
@@ -177,7 +176,7 @@ void CUIGameSP::ChangeLevel(	GameGraph::_GRAPH_ID game_vert_id,
 								Fvector ang2, 
 								bool b_use_position_cancel)
 {
-	if(TopInputReceiver()!=UIChangeLevelWnd)
+	if(!TopInputReceiver() || TopInputReceiver()!=UIChangeLevelWnd)
 	{
 		UIChangeLevelWnd->m_game_vertex_id		= game_vert_id;
 		UIChangeLevelWnd->m_level_vertex_id		= level_vert_id;

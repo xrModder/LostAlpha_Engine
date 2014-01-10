@@ -381,11 +381,12 @@ void CUIStatic::SetElipsis(EElipsisPosition pos, int indent)
 
 void CUIStatic::DrawHighlightedText()
 {
-	Frect				rect;
-	GetAbsoluteRect		(rect);
+	Fvector2			p;
+	GetAbsolutePos		(p);
+
 	u32 def_col			= m_pTextControl->GetTextColor();
 	m_pTextControl->SetTextColor(m_HighlightColor);
-	m_pTextControl->Draw(rect.left + 0 + m_pTextControl->m_TextOffset.x, rect.top - 0 + m_pTextControl->m_TextOffset.y);
+	m_pTextControl->Draw(p.x, p.y);
 	m_pTextControl->SetTextColor(def_col);
 }
 
