@@ -204,7 +204,19 @@ bool CUIXmlInit::InitStatic(CUIXml& xml_doc, LPCSTR path,
 	str_flag					= xml_doc.ReadAttrib(path, index, "xform_anim",				"");
 	flag_cyclic					= xml_doc.ReadAttribInt(path, index, "xform_anim_cyclic",	1);
 		
-	pWnd->SetXformLightAnim		(str_flag, (flag_cyclic)?true:false );
+	pWnd->SetXformLightAnim		(str_flag, (flag_cyclic)?true:false);
+
+	int flag_highlight_txt		= xml_doc.ReadAttribInt(path, index, "highlight_text", 0);
+	if (flag_highlight_txt)
+	{
+		pWnd->HighlightText(true);
+
+		u32 hA = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hA", 255));
+		u32 hR = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hR", 255));
+		u32 hG = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hG", 255));
+		u32 hB = static_cast<u32>(xml_doc.ReadAttribInt(path, index, "hB", 255));
+		pWnd->SetHighlightColor		(color_argb(hA, hR, hG, hB));
+	}
 
 	bool bComplexMode = xml_doc.ReadAttribInt(path, index, "complex_mode",0)?true:false;
 	if(bComplexMode)
@@ -458,6 +470,7 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButt
 
 	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
 	pWnd->SetStretch(stretch_flag);
+
 	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
 	if(text_hint)
 		pWnd->m_hint_text	= CStringTable().translate(text_hint);
@@ -488,6 +501,16 @@ bool CUIXmlInit::InitButton(CUIXml& xml_doc, LPCSTR path,
 	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
 	if(text_hint)
 		pWnd->m_hint_text	= CStringTable().translate(text_hint);
+
+	float shadowOffsetX	= xml_doc.ReadAttribFlt(path, index, "shadow_offset_x", 0);
+	float shadowOffsetY	= xml_doc.ReadAttribFlt(path, index, "shadow_offset_y", 0);
+
+	pWnd->SetShadowOffset(Fvector2().set(shadowOffsetX, shadowOffsetY));
+
+	float pushOffsetX		= xml_doc.ReadAttribFlt	(path, index, "push_off_x", 2);
+	float pushOffsetY		= xml_doc.ReadAttribFlt	(path, index, "push_off_y", 3);
+
+	pWnd->SetPushOffset		(Fvector2().set(pushOffsetX,pushOffsetY) );
 
 	return true;
 }
@@ -953,6 +976,7 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 	bool num_only       = (xml_doc.ReadAttribInt(path, index, "numonly", 0) == 1);
 	bool read_only      = (xml_doc.ReadAttribInt(path, index, "read_only", 0) == 1);
 	bool file_name_mode = (xml_doc.ReadAttribInt(path, index, "file_name_mode", 0) == 1);
+	bool translate = (xml_doc.ReadAttribInt(path, index, "translate", 0) == 1);
 
 	if ( file_name_mode || read_only || num_only || 0 < max_count )
 	{
@@ -960,7 +984,7 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICust
 		{
 			max_count = 32;
 		}
-		pWnd->Init( max_count, num_only, read_only, file_name_mode );
+		pWnd->Init( max_count, num_only, read_only, file_name_mode, translate );
 	}
 
 	if (xml_doc.ReadAttribInt(path, index, "password",0))
@@ -1432,7 +1456,7 @@ bool CUIXmlInit::InitListWnd(CUIXml& xml_doc, LPCSTR path, int index, CUIListWnd
 	}
 
 	pWnd->SetScrollBarProfile			(xml_doc.ReadAttrib(path, index, "scroll_profile", "default"));
-	pWnd->Init							(x,y, width,height,item_height);
+	pWnd->InitListWnd							(x,y, width,height,item_height);
 	pWnd->EnableActiveBackground		(!!active_background);
 
 	if (xml_doc.ReadAttribInt(path, index, "always_show_scroll"))

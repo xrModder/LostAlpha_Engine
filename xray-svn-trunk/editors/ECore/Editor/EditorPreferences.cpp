@@ -133,7 +133,10 @@ void CCustomPreferences::FillProp(PropItemVec& props)
     PHelper().CreateFlag32	(props,"Objects\\Loading\\Check version of objects at loading time", &object_flags, epoCheckVerObj);
 
     PHelper().CreateU32		(props,"Scene\\Common\\Recent Count", 		    &scene_recent_count,0, 		25);
-    PHelper().CreateU32		(props,"Scene\\Common\\Undo Level", 		    &scene_undo_level,	0, 		125);
+    if (strstr(Core.Params,"-no_temp"))
+    	PHelper().CreateCaption		(props,"Scene\\Common\\Undo Level",			"--");
+    else
+    	PHelper().CreateU32		(props,"Scene\\Common\\Undo Level", 		    &scene_undo_level,	0, 		125);
     PHelper().CreateFloat	(props,"Scene\\Grid\\Cell Size", 	           	&grid_cell_size,	0.1f,	10.f);
     PHelper().CreateU32		(props,"Scene\\Grid\\Cell Count", 	           	&grid_cell_count,	10, 	1000);
 

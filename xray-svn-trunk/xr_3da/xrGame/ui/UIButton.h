@@ -18,6 +18,7 @@ public:
 	//прорисовка окна
 	virtual void	DrawTexture				();
 	virtual void	DrawText				();
+	virtual void	DrawHighlightedText			();
 
 	virtual void	Update					();
 	virtual void	Enable					(bool status);
@@ -32,7 +33,11 @@ public:
 
 
 	//заново подготовить состояние
-    virtual void	Reset					();
+	virtual void	Reset					();
+
+	//подсвечен ли текст на кнопке
+	// принудительная подсветка
+	virtual void	HighlightItem			(bool bHighlight)			{m_bCursorOverWindow = bHighlight; }
 
 	// Установка состояния кнопки: утоплена, не утоплена
 	void				SetButtonState			(E_BUTTON_STATE eBtnState)	{ m_eButtonState = eBtnState; }
@@ -48,12 +53,18 @@ public:
 	const int			GetAccelerator			(int idx) const;
 	bool				IsAccelerator			(int iAccel) const;
 
+	void				SetPushOffset			(const Fvector2& offset)	{m_PushOffset = offset;}
+	Fvector2			GetPushOffset			()				{return m_PushOffset;}
+	void				SetShadowOffset			(const Fvector2& offset) { m_ShadowOffset = offset; }
+
 	shared_str			m_hint_text;
 protected:
 	
 	E_BUTTON_STATE		m_eButtonState;
 	s16					m_uAccelerator[4];
 	bool				m_bIsSwitch;
+	Fvector2			m_PushOffset;
+	Fvector2			m_ShadowOffset;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

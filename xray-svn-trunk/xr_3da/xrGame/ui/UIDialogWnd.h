@@ -24,7 +24,7 @@ public:
 			void SetHolder						(CDialogHolder* h)				{m_pParentHolder = h;};
 	virtual bool StopAnyMove					()								{return true;}
 	virtual bool NeedCursor						()const							{return true;}
-	virtual bool NeedCenterCursor				()const							{return true;}
+	virtual bool NeedCenterCursor				()const							{return false;}
 	virtual bool WorkInPause					()const							{return m_bWorkInPause;}
 	virtual bool Dispatch						(int cmd, int param)			{return true;}
 			void ShowDialog						(bool bDoHideIndicators);

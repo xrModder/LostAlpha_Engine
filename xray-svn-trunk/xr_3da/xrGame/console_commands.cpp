@@ -847,13 +847,11 @@ public:
 		if (!xr_strlen(S))
 			Log("* Specify script name!");
 		else {
-			// rescan pathes
-			FS_Path* P = FS.get_path("$game_scripts$");
-			P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
-			FS.rescan_pathes();
-			// run script
-			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
-				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(S,false,true);
+			luabind::functor<void>	lua_function;
+			if (ai().script_engine().functor<void>(S,lua_function))
+				lua_function();
+			else
+				Log("* Can't find function: ",S);
 		}
 	}
 };
@@ -1183,11 +1181,7 @@ public:
 	  }
 
 };
-/*
 
-*/
-
-#ifdef DEBUG
 
 extern void print_help(lua_State *L);
 
@@ -1198,6 +1192,8 @@ struct CCC_LuaHelp : public IConsole_Command {
 		print_help(ai().script_engine().lua());
 	}
 };
+
+#ifdef DEBUG
 
 struct CCC_ShowSmartCastStats : public IConsole_Command {
 	CCC_ShowSmartCastStats(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1740,14 +1736,16 @@ void CCC_RegisterCommands()
 
 #ifndef MASTER_GOLD
 	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_Script,		"run_script");
 #endif // MASTER_GOLD
+
+	CMD1(CCC_Script,		"run_script");
 
 	CMD3(CCC_Mask, "g_autopickup", &psActorFlags, AF_AUTOPICKUP);
 	//CMD1(CCC_DynamicWeather,  "r2_dynamic_weather");
 	//
-#ifdef DEBUG
 	CMD1(CCC_LuaHelp, "lua_help");
+
+#ifdef DEBUG
 	CMD1(CCC_ShowSmartCastStats,	"show_smart_cast_stats");
 	CMD1(CCC_ClearSmartCastStats,	"clear_smart_cast_stats");
 

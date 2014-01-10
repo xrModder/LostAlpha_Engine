@@ -95,13 +95,12 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
-		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
-		.def("Init",					(void (CUIWindow::*)(Frect))			 &CUIWindow::SetWndRect_script)
+		.def("Init",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::Init_script) //skyloader: for current la scripts
 
-		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
 		.def("SetWndRect",					(void (CUIWindow::*)(float,float,float,float))   &CUIWindow::SetWndRect_script)
-		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
-		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
+		.def("SetWndRect",					(void (CUIWindow::*)(Frect))   &CUIWindow::SetWndRect_script)
+		.def("SetWndPos",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndPos_script)
+		.def("SetWndSize",				(void (CUIWindow::*)(float,float)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)
 		.def("GetWidth",				&CUIWindow::GetWidth)
 		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)

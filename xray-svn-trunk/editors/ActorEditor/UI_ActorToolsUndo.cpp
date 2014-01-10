@@ -18,7 +18,7 @@ void CActorTools::UndoClear()
 void CActorTools::UndoSave()
 {
     UI->RedrawScene();
-    if (0==EPrefs->scene_undo_level) return;
+    if (0==EPrefs->scene_undo_level || strstr(Core.Params,"-no_temp")) return;
 
 	UndoItem item;
 	GetTempFileName( FS.get_path(_temp_)->m_Path, "undo", 0, item.m_FileName );
@@ -37,7 +37,6 @@ void CActorTools::UndoSave()
 
 bool CActorTools::Undo()
 {
-//	if( !m_UndoStack.empty() ){
 	if( m_UndoStack.size()>1 ){
 		m_RedoStack.push_back( m_UndoStack.back() );
 		m_UndoStack.pop_back();

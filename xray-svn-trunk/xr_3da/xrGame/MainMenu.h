@@ -105,7 +105,7 @@ public:
 	virtual	bool	CanSkipSceneRendering			(); 
 
 	virtual bool	IgnorePause						()	{return true;}
-
+	virtual bool	NeedCenterCursor				() const	{return true;}
 
 	virtual void	IR_OnMousePress					(int btn);
 	virtual void	IR_OnMouseRelease				(int btn);

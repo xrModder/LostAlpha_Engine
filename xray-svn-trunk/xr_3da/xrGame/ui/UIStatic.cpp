@@ -10,6 +10,7 @@
 
 #include "UIBtnHint.h"
 #include "../UICursor.h"
+#include "UIFrameWindow.h"
 
 bool is_in2(const Frect& b1, const Frect& b2);
 
@@ -34,8 +35,8 @@ m_bConstHeading(false),
 m_fHeading(0.0f),
 m_pTextControl(NULL),
 m_ElipsisPos(eepNone),
-m_iElipsisIndent(0)
-
+m_iElipsisIndent(0),
+m_bEnableTextHighlighting(false)
 {
 	m_TextureOffset.set		(0.0f,0.0f);
 	m_lanim_xform.set_defaults	();
@@ -117,9 +118,13 @@ void CUIStatic::DrawText()
 			m_pTextControl->ParseText		(true);
 		}
 
-		Fvector2			p;
-		GetAbsolutePos		(p);
-		m_pTextControl->Draw(p.x, p.y);
+		if(IsHighlightText() && xr_strlen(m_pTextControl->GetText())>0 && m_bEnableTextHighlighting)
+			DrawHighlightedText();		
+		else {
+			Fvector2			p;
+			GetAbsolutePos		(p);
+			m_pTextControl->Draw(p.x, p.y);
+		}
 	}
 	if(g_statHint->Owner()==this)
 		g_statHint->Draw_();
@@ -371,4 +376,20 @@ void CUIStatic::SetElipsis(EElipsisPosition pos, int indent)
 {
 	m_ElipsisPos		= pos;
 	m_iElipsisIndent	= indent;
+}
+
+
+void CUIStatic::DrawHighlightedText()
+{
+	Frect				rect;
+	GetAbsoluteRect		(rect);
+	u32 def_col			= m_pTextControl->GetTextColor();
+	m_pTextControl->SetTextColor(m_HighlightColor);
+	m_pTextControl->Draw(rect.left + 0 + m_pTextControl->m_TextOffset.x, rect.top - 0 + m_pTextControl->m_TextOffset.y);
+	m_pTextControl->SetTextColor(def_col);
+}
+
+bool CUIStatic::IsHighlightText()
+{
+	return m_bCursorOverWindow;
 }

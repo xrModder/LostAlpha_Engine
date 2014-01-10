@@ -37,7 +37,7 @@ void EScene::UndoSave()
     Modified();
     UI->RedrawScene();
 
-    if (0==EPrefs->scene_undo_level) return;
+    if (0==EPrefs->scene_undo_level || strstr(Core.Params,"-no_temp")) return;
 
 	UndoItem item;
 	GetTempFileName( FS.get_path(_temp_)->m_Path, "undo", 0, item.m_FileName );

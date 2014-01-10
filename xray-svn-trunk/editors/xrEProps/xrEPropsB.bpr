@@ -26,8 +26,8 @@
     <RESDEPEN value="$(RESFILES) ItemList.dfm PropertiesList.dfm NumericVector.dfm 
       ShaderFunction.dfm TextForm.dfm ChoseForm.dfm ItemDialog.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editorB.lib editor.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib elpackB6.lib editor.lib bcbsmp.lib vclx.lib editorB.lib"/>
+    <LIBRARIES value="editorB.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib elpackB6.lib bcbsmp.lib vclx.lib editorB.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi vclx.bpi bcbsmp.bpi dceldbB6.bpi elpackB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>

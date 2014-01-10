@@ -343,9 +343,22 @@ void CScriptGameObject::SetActorDirection		(float dir)
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
 		actor->cam_Active()->Set(dir,0,0);
-//		actor->XFORM().setXYZ(0,dir,0);
 	}else
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirection method for non-actor object");
+}
+
+void CScriptGameObject::SetNpcPosition			(Fvector pos)
+{
+	CCustomMonster* obj = smart_cast<CCustomMonster*>(&object());
+	if(obj){
+		Fmatrix F = obj->XFORM();
+		F.c = pos;
+		obj->movement().detail().make_inactual();
+		if (obj->animation_movement_controlled())
+			obj->destroy_anim_mov_ctrl();
+		obj->ForceTransform(F);
+	}else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorPosition method for non-CCustomMonster object");
 }
 
 void CScriptGameObject::SetActorDirectionVector		(Fvector dir)
@@ -357,11 +370,31 @@ void CScriptGameObject::SetActorDirectionVector		(Fvector dir)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirectionVector method for non-actor object");
 }
 
+void CScriptGameObject::SetActorCamActive	(Fvector pos, Fvector dir, Fvector norm)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor)
+		actor->cam_Active()->Set(pos,dir,norm);
+	else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorCameraVectors method for non-actor object");
+}
+
 void CScriptGameObject::SetActorDirectionSlowly		(Fvector pos, float time)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
-		actor->SetDirectionSlowly(pos, time);
+		if (time>0.1f) //skyloader: time can't be <=0.f
+			actor->SetDirectionSlowly(pos, time);
+		else { //skyloader: set direction once
+			// get yaw and pitch to target
+			float cam_target_yaw, cam_target_pitch;
+			Fvector	P,D,N;
+
+			actor->cam_Active()->Get	(P,D,N);
+			Fvector().sub(pos, P).getHP	(cam_target_yaw, cam_target_pitch);
+			D.setHP				(cam_target_yaw, cam_target_pitch);
+			actor->cam_Active()->Set	(P,D,N);
+		}
 	}else
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirectionSlowly method for non-actor object");
 }
