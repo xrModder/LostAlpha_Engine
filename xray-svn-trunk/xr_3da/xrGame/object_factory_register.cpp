@@ -21,6 +21,7 @@
 #	include "hudmanager.h"
 #	include "actor.h"
 #	include "spectator.h"
+#	include "ai/monsters/swampbeast/swampbeast.h"
 #	include "ai/monsters/karlik/karlik.h"
 #	include "ai/monsters/flesh/flesh.h"
 #	include "ai/monsters/chimera/chimera.h"
@@ -202,6 +203,7 @@ void CObjectFactory::register_classes	()
 	// client and server entities
 	ADD(CSpectator				,CSE_Spectator					,CLSID_SPECTATOR				,"spectator");
 
+	ADD(CAI_SwampBeast			,CSE_ALifeMonsterBase			,CLSID_AI_SWAMPBEAST			,"swampbeast");
 	ADD(CAI_Flesh				,CSE_ALifeMonsterBase			,CLSID_AI_FLESH					,"flesh");
 	ADD(CChimera				,CSE_ALifeMonsterBase			,CLSID_AI_CHIMERA				,"chimera");
 	ADD(CKarlik					,CSE_ALifeMonsterBase			,CLSID_AI_KARLIK				,"karlik");

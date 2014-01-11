@@ -8627,6 +8627,61 @@
 							</File>
 						</Filter>
 					</Filter>
+					<Filter
+						Name="SwampBeast"
+						>
+						<File
+							RelativePath=".\ai\monsters\swampbeast\swampbeast.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\swampbeast\swampbeast.h"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\swampbeast\swampbeast_state_manager.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ai\monsters\swampbeast\swampbeast_state_manager.h"
+							>
+						</File>
+						<Filter
+							Name="Script"
+							>
+							<File
+								RelativePath=".\ai\monsters\swampbeast\swampbeast_script.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Mixed|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										PrecompiledHeaderThrough="pch_script.h"
+										PrecompiledHeaderFile="$(IntDir)/$(ProjectName)_script.pch"
+									/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="humans"
@@ -11254,7 +11309,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\script_space.h"
+					RelativePath="..\script_space.h"
 					>
 				</File>
 				<File
@@ -28818,11 +28873,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ui\UIMultiTextStatic.cpp"
+						RelativePath=".\ui\UIHint.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ui\UIMultiTextStatic.h"
+						RelativePath=".\ui\UIHint.h"
 						>
 					</File>
 					<File
@@ -28834,11 +28889,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ui\UIHint.cpp"
+						RelativePath=".\ui\UIMultiTextStatic.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ui\UIHint.h"
+						RelativePath=".\ui\UIMultiTextStatic.h"
 						>
 					</File>
 					<File
@@ -29678,34 +29733,6 @@
 					Name="ScrollView"
 					>
 					<File
-						RelativePath=".\ui\UIScrollView.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ui\UIScrollView.h"
-						>
-					</File>
-					<Filter
-						Name="ListBox"
-						>
-						<File
-							RelativePath=".\ui\UIListBox.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ui\UIListBox.h"
-							>
-						</File>
-						<File
-							RelativePath=".\ui\UIListBoxItem.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ui\UIListBoxItem.h"
-							>
-						</File>
-					</Filter>
-					<File
 						RelativePath=".\ui\UIListItem.cpp"
 						>
 					</File>
@@ -29783,6 +29810,34 @@
 							/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath=".\ui\UIScrollView.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UIScrollView.h"
+						>
+					</File>
+					<Filter
+						Name="ListBox"
+						>
+						<File
+							RelativePath=".\ui\UIListBox.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ui\UIListBox.h"
+							>
+						</File>
+						<File
+							RelativePath=".\ui\UIListBoxItem.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ui\UIListBoxItem.h"
+							>
+						</File>
+					</Filter>
 					<Filter
 						Name="Ex"
 						>

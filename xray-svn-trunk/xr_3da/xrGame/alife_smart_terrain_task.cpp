@@ -20,7 +20,7 @@ void CALifeSmartTerrainTask::setup_patrol_point				(const shared_str &patrol_pat
 {
 	VERIFY					(!m_patrol_point);
 
-	const CPatrolPath		*patrol_path = ai().patrol_paths().path(patrol_path_name);
+	const CPatrolPath		*patrol_path = ai().patrol_paths().path(patrol_path_name, true);
 	VERIFY					(patrol_path);
 
 	m_patrol_point			= &patrol_path->vertex(patrol_point_index)->data();

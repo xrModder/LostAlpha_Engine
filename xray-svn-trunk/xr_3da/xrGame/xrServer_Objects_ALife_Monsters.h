@@ -283,6 +283,8 @@ public:
 	virtual u32						ef_creature_type		() const;
 	virtual u32						ef_weapon_type			() const;
 	virtual u32						ef_detector_type		() const;
+
+	virtual	bool					can_use_smart_terrain	() const;
 	
 	IC		int						Rank					(){return m_rank;}
 
