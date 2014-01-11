@@ -118,7 +118,27 @@ void CUIWindow::script_register(lua_State *L)
 		.def("WindowName",				&CUIWindow::WindowName_script)
 		.def("SetWindowName",			&CUIWindow::SetWindowName)
 		.def("SetPPMode",				&CUIWindow::SetPPMode)
-		.def("ResetPPMode",				&CUIWindow::ResetPPMode),
+		.def("ResetPPMode",				&CUIWindow::ResetPPMode)
+
+		.def("BringAllToTop",				&CUIWindow::BringAllToTop)
+		.def("BringToTop",				&CUIWindow::BringToTop)
+
+		.def("ShowChildren",				&CUIWindow::ShowChildren)
+
+		.def("GetAbsoluteRect",				&CUIWindow::GetAbsoluteRect)
+		.def("GetAbsolutePos",				&CUIWindow::GetAbsolutePos)
+
+		.def("SetKeyboardCapture",				&CUIWindow::SetKeyboardCapture)
+		.def("SetCapture",				&CUIWindow::SetCapture)
+		.def("GetMouseCapturer",				&CUIWindow::GetMouseCapturer)
+
+		.def("GetTop",				&CUIWindow::GetTop)
+		.def("SetParent",				&CUIWindow::SetParent)
+		.def("GetParent",				&CUIWindow::GetParent)
+		.def("GetCustomDraw",				&CUIWindow::GetCustomDraw)
+		.def("SetCustomDraw",				&CUIWindow::SetCustomDraw)
+		.def("SafeRemoveChild",				&CUIWindow::SafeRemoveChild)
+		.def("CursorOverWindow",				&CUIWindow::CursorOverWindow),
 
 		class_<CDialogHolder>("CDialogHolder")
 		.def("MainInputReceiver",		&CDialogHolder::TopInputReceiver)

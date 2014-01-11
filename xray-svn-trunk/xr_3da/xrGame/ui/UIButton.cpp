@@ -30,6 +30,8 @@ CUIButton:: CUIButton()
 	TextItemControl()->SetTextComplexMode			(false);
 	TextItemControl()->SetTextAlignment			(CGameFont::alCenter); // this will create class instance for m_pLines
 	TextItemControl()->SetVTextAlignment			(valCenter);
+
+	m_bClickable				= true;
 }
 
 void CUIButton::Reset()
@@ -49,6 +51,13 @@ void CUIButton::Enable(bool status)
 bool  CUIButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if( inherited::OnMouseAction(x, y, mouse_action) ) return true;
+
+	if ( (	WINDOW_LBUTTON_DOWN==mouse_action	||
+			WINDOW_LBUTTON_UP==mouse_action		||
+			WINDOW_RBUTTON_DOWN==mouse_action	||
+			WINDOW_RBUTTON_UP==mouse_action)	&& 
+			HasChildMouseHandler())
+		return false;
 
 	switch (m_eButtonState)
 	{

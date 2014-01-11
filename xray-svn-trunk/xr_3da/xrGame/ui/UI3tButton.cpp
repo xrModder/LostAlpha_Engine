@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UI3tButton.h"
 #include "UIXmlInit.h"
-//#include "UIHint.h"
+#include "UIBtnHint.h"
 
 CUI3tButton::CUI3tButton()
 {
@@ -18,8 +18,6 @@ CUI3tButton::CUI3tButton()
 	m_background		= NULL;
 	m_back_frameline	= NULL;
 	m_frameline_mode	= false;
-
-	AttachChild			(&m_hint);
 
 	m_bEnableTextHighlighting = false;
 	SetPushOffset		(Fvector2().set(0.0f,0.0f) );

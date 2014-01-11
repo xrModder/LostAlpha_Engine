@@ -106,6 +106,8 @@ public:
 
 	virtual void 			OnFocusReceive		();
 	virtual void 			OnFocusLost			();
+		bool 			HasChildMouseHandler		();
+
 	
 	//захватить/освободить мышь окном
 	//сообщение посылается дочерним окном родительскому
@@ -237,6 +239,7 @@ protected:
 	// Если курсор над окном
 	bool					m_bCursorOverWindow;
 	bool					m_bCustomDraw;
+	bool					m_bClickable;
 
 #ifdef DEBUG
 	int m_dbg_id;

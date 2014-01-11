@@ -50,7 +50,6 @@ public:
 	bool					m_frameline_mode;
 	bool					vertical;
 
-	CUIStatic			m_hint;
 	CUI_IB_Static*			m_background;
 	CUI_IB_FrameLineWnd*		m_back_frameline;
 
