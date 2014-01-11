@@ -108,7 +108,8 @@ m_bAutoDelete(false),
 m_bCursorOverWindow(false),
 m_bPP(false),
 m_dwFocusReceiveTime(0),
-m_bCustomDraw(false)
+m_bCustomDraw(false),
+m_bClickable(false)
 {
 	Show					(true);
 	Enable					(true);
@@ -216,16 +217,14 @@ void CUIWindow::AttachChild(CUIWindow* pChild)
 
 void CUIWindow::DetachChild(CUIWindow* pChild)
 {
-	R_ASSERT(pChild);
 	if(NULL==pChild)
 		return;
 	
 	if(m_pMouseCapturer == pChild)
 		SetCapture(pChild, false);
 
-//.	SafeRemoveChild			(pChild);
 	WINDOW_LIST_it it		= std::find(m_ChildWndList.begin(),m_ChildWndList.end(),pChild); 
-#if 1 //#ifndef DEBUG
+#ifdef DEBUG
 	Fvector2 p;
 	GetAbsolutePos		(p);
 	R_ASSERT2				(it!=m_ChildWndList.end(), make_string("Can't detach child with position [%3.1f][%3.1f] because it not found", p.x, p.y));
@@ -341,20 +340,27 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		CUIWindow* w	= (*it);
 #ifdef DEBUG
 		R_ASSERT2(w, make_string("Incorrect window in childlist - [%s]",*m_windowName));
-#endif
-		Frect wndRect	= w->GetWndRect();
-		if (wndRect.in(cursor_pos) )
+#else
+		if (w==NULL)
 		{
-			if(w->IsEnabled())
+			Msg("! Founded incorrect child window in [%s] childlist",*m_windowName);
+		} else
+#endif
+		{
+			Frect wndRect	= w->GetWndRect();
+			if (wndRect.in(cursor_pos) )
+			{
+				if(w->IsEnabled())
+				{
+					if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
+								   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
+				}
+			}
+			else if (w->IsEnabled() && w->CursorOverWindow())
 			{
 				if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
 							   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 			}
-		}
-		else if (w->IsEnabled() && w->CursorOverWindow())
-		{
-			if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
-						   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 		}
 	}
 
@@ -638,19 +644,31 @@ void CUIWindow::BringAllToTop()
 
 bool CUIWindow::BringToTop(CUIWindow* pChild)
 {
-	//найти окно в списке
-/*	WINDOW_LIST_it it = std::find(m_ChildWndList.begin(), 
-										m_ChildWndList.end(), 
-										pChild);
-*/
 	if( !IsChild(pChild) ) return false;
 
-	//удалить со старого места
-	SafeRemoveChild(pChild);
-//	m_ChildWndList.remove(pChild);
-	//поместить на вершину списка
+	WINDOW_LIST_it it		= std::find(m_ChildWndList.begin(),m_ChildWndList.end(),pChild); 
+
+	if (it==m_ChildWndList.end()) return false;
+
+	m_ChildWndList.erase	(it);
 	m_ChildWndList.push_back(pChild);
 
 	return true;
 }
 
+bool CUIWindow::HasChildMouseHandler()
+{
+	WINDOW_LIST::reverse_iterator it = m_ChildWndList.rbegin();
+
+	for( ; it!=m_ChildWndList.rend(); ++it)
+	{
+		if ((*it)->m_bClickable)
+		{
+			Frect wndRect = (*it)->GetWndRect();
+			if (wndRect.in(cursor_pos) )
+				return true;
+		}
+	}
+
+	return false;
+}

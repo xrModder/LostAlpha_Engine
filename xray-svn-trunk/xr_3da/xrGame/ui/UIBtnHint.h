@@ -1,11 +1,16 @@
 #pragma once
-#include "UIFrameWindow.h"
 #include "UIWindow.h"
+#include "UIFrameLineWnd.h"
 
-class CUITextWnd;
+class CUIStatic;
 
-class CUIButtonHint :public CUIFrameWindow
+class CUIButtonHint :public CUIWindow, public pureRender
 {
+	CUIWindow*			m_ownerWnd;
+
+	CUIStatic*			m_text;
+	CUIFrameLineWnd*	m_border;
+	bool				m_enabledOnFrame;
 public:
 					CUIButtonHint	();
 	virtual			~CUIButtonHint	();
@@ -14,11 +19,6 @@ public:
 	void			OnRender		();
 	void			Draw_			()	{m_enabledOnFrame = true;};
 	void			SetHintText		(CUIWindow* w, LPCSTR text);
-
-	CUIWindow*			m_ownerWnd;
-
-	CUITextWnd*			m_text;
-	bool				m_enabledOnFrame;
 };
 
 extern CUIButtonHint* g_btnHint; 

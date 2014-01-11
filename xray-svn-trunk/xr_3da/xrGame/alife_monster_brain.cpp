@@ -96,19 +96,19 @@ void CALifeMonsterBrain::on_location_change	()
 
 IC	CSE_ALifeSmartZone &CALifeMonsterBrain::smart_terrain	()
 {
-	VERIFY							(object().m_smart_terrain_id != 0xffff);
+	VERIFY2							(object().m_smart_terrain_id != 0xffff, object().name());
 	if (m_smart_terrain && (object().m_smart_terrain_id == m_smart_terrain->ID))
 		return						(*m_smart_terrain);
 
 	m_smart_terrain					= ai().alife().smart_terrains().object(object().m_smart_terrain_id);
-	VERIFY							(m_smart_terrain);
+	VERIFY2							(m_smart_terrain, object().name());
 	return							(*m_smart_terrain);
 }
 
 void CALifeMonsterBrain::process_task			()
 {
 	CALifeSmartTerrainTask			*task = smart_terrain().task(&object());
-	THROW3							(task,"smart terrain returned nil task, while npc is registered in it",smart_terrain().name_replace());
+	VERIFY2							(task,make_string("smart terrain [%s] returned nil task, while npc [%s] is registered in it",smart_terrain().name_replace(), object().name()));
 	movement().path_type			(MovementManager::ePathTypeGamePath);
 	movement().detail().target		(*task);
 }

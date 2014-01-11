@@ -1,11 +1,10 @@
 #include"stdafx.h"
 #include "uilistwnd.h"
-//.#include "uiscrollbar.h"
+
 #include "UIFrameLineWnd.h"
 
-//. #define				ACTIVE_BACKGROUND			"ui\\ui_pop_up_active_back"
-//. #define				ACTIVE_BACKGROUND_WIDTH		16
-//. #define				ACTIVE_BACKGROUND_HEIGHT	16
+//#include "../../Include/xrRender/DebugRender.h"
+//#include "../../Include/xrRender/UIRender.h"
 
 // разделитель для интерактивных строк в листе
 static const char	cSeparatorChar				= '%';
@@ -45,14 +44,14 @@ CUIListWnd::~CUIListWnd()
 
 //////////////////////////////////////////////////////////////////////////
 
-void CUIListWnd::Init(float x, float y, float width, float height)
+void CUIListWnd::InitListWnd(float x, float y, float width, float height)
 {
-	Init(x, y, width, height, m_iItemHeight);
+	InitListWnd(x, y, width, height, m_iItemHeight);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-void CUIListWnd::Init(float x, float y, float width, float height, float item_height)
+void CUIListWnd::InitListWnd(float x, float y, float width, float height, float item_height)
 {
 	CUIWindow::SetWndPos		(Fvector2().set(x, y));
 	CUIWindow::SetWndSize		(Fvector2().set(width, height));
@@ -99,11 +98,6 @@ void CUIListWnd::SetHeight(float height)
 }
 
 //////////////////////////////////////////////////////////////////////////
-
-void CUIListWnd::SetWidth(float width)
-{
-	inherited::SetWidth(width);
-}
 
 void CUIListWnd::RemoveItem(int index)
 {
@@ -212,7 +206,7 @@ void CUIListWnd::UpdateList()
 	{
 		(*it)->Show(false);
 	}
-	   
+
 
 	//показать текущий список
 	for(i=m_iFirstShownIndex; 
@@ -223,7 +217,7 @@ void CUIListWnd::UpdateList()
 							m_iItemWidth, m_iItemHeight);
 		(*it)->Show(true);
 		
-		if(m_bListActivity) 
+		if (m_bListActivity) 
 			(*it)->Enable(true);
 		else
 			(*it)->Enable(false);
@@ -261,7 +255,6 @@ void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	else 
 	{
 		//если сообщение пришло от одного из элементов списка
-
 		if( IsChild(pWnd) )
 		{
 			CUIListItem* pListItem2;
@@ -291,6 +284,7 @@ void CUIListWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 						pListItem2->SendMessage(this, LIST_ITEM_UNSELECT, pData);
 					}
 				}
+
 
 				//skyloader: db click for list item
 				u32 dwCurTime		= Device.dwTimeContinual;
@@ -417,6 +411,24 @@ void CUIListWnd::Draw()
 	}
 
 	CUIWindow::Draw();
+
+/* //skyloader: list wnd is correct, but first item only can be pressed :S
+	u32 color = color_rgba(255,0,0,255);
+	Frect r;
+	GetAbsoluteRect(r);
+
+	DRender->SetDebugShader(IDebugRender::dbgShaderWindow);
+
+	UIRender->StartPrimitive	(5, IUIRender::ptLineStrip, UI().m_currentPointType);
+
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
+
+	UIRender->FlushPrimitive();
+*/
 }
 
 

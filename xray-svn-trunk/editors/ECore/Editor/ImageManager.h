@@ -63,7 +63,9 @@ public:
 
     xr_string	UpdateFileName		(xr_string& fn);
 
+    void		WriteTypes	(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt);
     void		WriteAssociation	(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt);
+    void		WriteSpecification	(CInifile* ltx_ini, LPCSTR base_name, const STextureParams& fmt);
 
     BOOL		CreateSmallerCubeMap(LPCSTR src_name, LPCSTR dst_name);
 };

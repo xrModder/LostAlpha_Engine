@@ -35,8 +35,8 @@ public:
 	IC void		push_back(value_type e)		{ VERIFY(count<dim); array[count++]=e;	}
 	IC void		pop_back()					{ VERIFY(count); count--;				}
 
-	IC reference		operator[] (u32 id)			{ VERIFY(id<count); return array[id];	}
-	IC const_reference	operator[] (u32 id)	const	{ VERIFY(id<count); return array[id];	}
+	IC reference		operator[] (u32 id)			{ VERIFY2(id<count,make_string("id=[%d] count=[%d]", id, count)); return array[id];	}
+	IC const_reference	operator[] (u32 id)	const	{ VERIFY2(id<count,make_string("id=[%d] count=[%d]", id, count)); return array[id];	}
 
 	IC reference		front()				{ return array[0];						}
 	IC reference		back()				{ return array[count-1];				}

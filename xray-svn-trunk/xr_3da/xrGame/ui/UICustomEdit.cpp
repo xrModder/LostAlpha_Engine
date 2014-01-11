@@ -56,11 +56,11 @@ void CUICustomEdit::Register_callbacks()
 	ec().assign_callback( DIK_TAB,		   text_editor::ks_free, Callback( this, &CUICustomEdit::press_tab ) );
 }
 
-void  CUICustomEdit::Init( u32 max_char_count, bool number_only_mode, bool read_mode, bool fn_mode )
+void  CUICustomEdit::Init( u32 max_char_count, bool number_only_mode, bool read_mode, bool fn_mode, bool translate)
 {
 	if ( read_mode )
 	{
-		m_editor_control->init( max_char_count, text_editor::im_read_only );
+		m_editor_control->init( max_char_count, text_editor::im_read_only, translate );
 		m_editor_control->set_selected_mode( true );
 		m_read_mode = true;
 	}
@@ -68,15 +68,15 @@ void  CUICustomEdit::Init( u32 max_char_count, bool number_only_mode, bool read_
 	{
 		if ( number_only_mode )
 		{
-			m_editor_control->init( max_char_count, text_editor::im_number_only );
+			m_editor_control->init( max_char_count, text_editor::im_number_only, translate );
 		}
 		else if ( fn_mode )
 		{
-			m_editor_control->init( max_char_count, text_editor::im_file_name_mode );
+			m_editor_control->init( max_char_count, text_editor::im_file_name_mode, translate );
 		}
 		else
 		{
-			m_editor_control->init( max_char_count );
+			m_editor_control->init( max_char_count, text_editor::im_standart, translate );
 		}
 		m_editor_control->set_selected_mode( false );
 		m_read_mode = false;

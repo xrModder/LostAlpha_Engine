@@ -29,13 +29,43 @@ void CUIListItem::Init(float x, float y, float width, float height)
 	inherited::SetWndPos(Fvector2().set(x, y));
 	inherited::SetWndSize(Fvector2().set(width, height));
 	SetButtonState(BUTTON_PUSHED);
-//	SetPushOffset(Fvector2().set(0.0f,0.0f));
+	SetPushOffset(Fvector2().set(0.0f,0.0f));
 }
 
 void CUIListItem::InitTexture(LPCSTR tex_name)
 {
 	CUIButton::InitTexture(tex_name);
-	TextItemControl()->m_TextOffset.x = (m_UIStaticItem.GetTextureRect().width());
+	TextItemControl()->m_TextOffset.x = (m_UIStaticItem.GetSize().x);
+}
+
+bool CUIListItem::OnMouseAction(float x, float y, EUIMessages mouse_action)
+{
+	if( CUIStatic::OnMouseAction(x, y, mouse_action) ) return true;
+
+	if ( (	WINDOW_LBUTTON_DOWN==mouse_action	||
+			WINDOW_LBUTTON_UP==mouse_action		||
+			WINDOW_RBUTTON_DOWN==mouse_action	||
+			WINDOW_RBUTTON_UP==mouse_action)	&& 
+			HasChildMouseHandler())
+		return false;
+
+	if(mouse_action == WINDOW_MOUSE_MOVE)
+	{
+		if(m_bCursorOverWindow)
+		{
+			SetButtonState(BUTTON_PUSHED);
+		} else {
+			SetButtonState(BUTTON_NORMAL);
+		}
+	}
+	else if(mouse_action == WINDOW_LBUTTON_DOWN || mouse_action == WINDOW_LBUTTON_DB_CLICK)
+	{
+		if(m_bCursorOverWindow)
+		{
+			OnClick();
+			return true;
+		}
+	}
 }
 
 
@@ -43,4 +73,9 @@ void CUIListItem::Init(const char* str, float x, float y, float width, float hei
 {
 	Init(x,y,width, height);
 	SetTextST(str);	
+}
+
+bool CUIListItem::IsHighlightText()
+{
+	return CUIButton::IsHighlightText();
 }

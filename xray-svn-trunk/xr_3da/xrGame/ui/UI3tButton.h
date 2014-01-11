@@ -49,8 +49,10 @@ public:
 
 	bool					m_frameline_mode;
 	bool					vertical;
+
 	CUI_IB_Static*			m_background;
-	CUI_IB_FrameLineWnd*	m_back_frameline;
+	CUI_IB_FrameLineWnd*		m_back_frameline;
+
 private:	
 			void		PlaySoundH					();
 			void		PlaySoundT					();

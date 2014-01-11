@@ -32,6 +32,11 @@ u32 time_global(const CRenderDevice *self)
 	THROW		(self);
 	return		(self->dwTimeGlobal);
 }
+#include "ui_defs.h"
+bool is_widescreen(const CRenderDevice *self)
+{
+	return (self->dwWidth)/float(self->dwHeight) > (UI_BASE_WIDTH / UI_BASE_HEIGHT +0.01f);
+}
 
 #pragma optimize("s",on)
 void CScriptRenderDevice::script_register(lua_State *L)
@@ -47,15 +52,16 @@ void CScriptRenderDevice::script_register(lua_State *L)
 			.def_readonly("cam_dir",				&CRenderDevice::vCameraDirection)
 			.def_readonly("cam_top",				&CRenderDevice::vCameraTop)
 			.def_readonly("cam_right",				&CRenderDevice::vCameraRight)
-//			.def_readonly("view",					&CRenderDevice::mView)
-//			.def_readonly("projection",				&CRenderDevice::mProject)
-//			.def_readonly("full_transform",			&CRenderDevice::mFullTransform)
+			.def_readonly("view",					&CRenderDevice::mView)
+			.def_readonly("projection",				&CRenderDevice::mProject)
+			.def_readonly("full_transform",			&CRenderDevice::mFullTransform)
 			.def_readonly("fov",					&CRenderDevice::fFOV)
 			.def_readonly("aspect_ratio",			&CRenderDevice::fASPECT)
 			.def("time_global",						&time_global)
 			.def_readonly("precache_frame",			&CRenderDevice::dwPrecacheFrame)
 			.def_readonly("frame",					&CRenderDevice::dwFrame)
 			.def("is_paused",						&is_device_paused)
+			.def("is_widescreen",					&is_widescreen)
 			.def("is_r2_active",					&CRenderDevice::IsR2Active)
 			.def("is_r3_active",					&CRenderDevice::IsR3Active)
 			.def("pause",							&set_device_paused),

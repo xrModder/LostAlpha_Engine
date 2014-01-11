@@ -171,8 +171,8 @@
     <RESDEPEN value="$(RESFILES) Editor\ImageEditor.dfm Editor\LogForm.dfm 
       Editor\SoundEditor.dfm Editor\MinimapEditor.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editorB.lib elpackB6.lib editor.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
+    <LIBRARIES value="editorB.lib elpackB6.lib editorB.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editorB.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi"/>
     <PATHCPP value=".;Engine;..\..\xr_3da;..\..\xr_3da\xrRender;..\..\xr_3da\xrCPU_Pipe;..\..\xrCDB;..\..\xr_3da\xrRender\blenders;..\..\xr_3da\xrRender_R1;Engine\blenders;Editor;WildMagic"/>
     <PATHPAS value=".;"/>

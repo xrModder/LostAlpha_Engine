@@ -19,7 +19,9 @@ void CUIEditBox::script_register(lua_State *L)
 		.def("SetPasswordMode",		&CUICustomEdit::SetPasswordMode)
 		.def("ClearText",		&CUICustomEdit::ClearText)
 		.def("SetTextColorE",		&CUICustomEdit::SetTextColor)
-		.def("SetTextColorD",		&CUICustomEdit::SetTextColorD),		
+		.def("SetTextColorD",		&CUICustomEdit::SetTextColorD)
+		.def("SetTextPosX",			&CUICustomEdit::SetTextPosX)
+		.def("SetTextPosY",			&CUICustomEdit::SetTextPosY),
 
 		class_<CUIEditBox, CUICustomEdit>("CUIEditBox")
 		.def(						constructor<>())

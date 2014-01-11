@@ -100,7 +100,7 @@ void Startup(LPSTR     lpCmdLine)
 	string256 inf;
 	IReader*	F			= FS.r_open(prjName);
 	if (NULL==F){
-		xr_sprintf				(inf,"Build failed!\nCan't find level: '%s'",name);
+		xr_sprintf				(inf,"Build failed!\nCan't find level: '%s'",prjName);
 		clMsg				(inf);
 		MessageBox			(logWindow,inf,"Error!",MB_OK|MB_ICONERROR);
 		return;
@@ -167,9 +167,17 @@ int APIENTRY WinMain(HINSTANCE hInst,
 	g_temporary_stuff	= &trivial_encryptor::decode;
 	g_dummy_stuff		= &trivial_encryptor::encode;
 
+	// check custom fsgame.ltx
+	LPCSTR		fsgame_ltx_name		= "-fsltx ";
+	string_path	fsgame				= "";
+	if (strstr(lpCmdLine, fsgame_ltx_name)) 
+	{
+		int		sz					= xr_strlen		(fsgame_ltx_name);
+		sscanf										(strstr(lpCmdLine,fsgame_ltx_name)+sz,"%[^ ] ",fsgame);
+	}
 	// Initialize debugging
 	Debug._initialize	(false);
-	Core._initialize	("xrlc_la");
+	Core._initialize	("xrlc_la", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 	Startup				(lpCmdLine);
 	Core._destroy		();
 	

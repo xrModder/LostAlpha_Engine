@@ -15,16 +15,23 @@ CUIButton:: CUIButton()
 {
 	m_eButtonState				= BUTTON_NORMAL;
 	m_bIsSwitch					= false;
-	m_bTextureEnable 				= false;
 
 	m_uAccelerator[0]			= 0;
 	m_uAccelerator[1]			= 0;
 	m_uAccelerator[2]			= -1;
 	m_uAccelerator[3]			= -1;
 
+	m_PushOffset.set			(PUSH_OFFSET_RIGHT, PUSH_OFFSET_DOWN);
+	m_ShadowOffset.set			(0.0f,0.0f);
+
+	m_HighlightColor			= 0xFFFFFFFF;
+	m_bEnableTextHighlighting		= true;
+
 	TextItemControl()->SetTextComplexMode			(false);
 	TextItemControl()->SetTextAlignment			(CGameFont::alCenter); // this will create class instance for m_pLines
 	TextItemControl()->SetVTextAlignment			(valCenter);
+
+	m_bClickable				= true;
 }
 
 void CUIButton::Reset()
@@ -33,9 +40,8 @@ void CUIButton::Reset()
 	inherited::Reset			();
 }
 
-
-
-void CUIButton::Enable(bool status){
+void CUIButton::Enable(bool status)
+{
 	CUIStatic::Enable			(status);
 
 	if (!status)
@@ -45,6 +51,13 @@ void CUIButton::Enable(bool status){
 bool  CUIButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if( inherited::OnMouseAction(x, y, mouse_action) ) return true;
+
+	if ( (	WINDOW_LBUTTON_DOWN==mouse_action	||
+			WINDOW_LBUTTON_UP==mouse_action		||
+			WINDOW_RBUTTON_DOWN==mouse_action	||
+			WINDOW_RBUTTON_UP==mouse_action)	&& 
+			HasChildMouseHandler())
+		return false;
 
 	switch (m_eButtonState)
 	{
@@ -104,7 +117,7 @@ void CUIButton::DrawTexture()
 		if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
 			m_UIStaticItem.SetPos(rect.left + m_TextureOffset.x, rect.top + m_TextureOffset.y);
 		else
-			m_UIStaticItem.SetPos(rect.left + PUSH_OFFSET_RIGHT + m_TextureOffset.x, rect.top + PUSH_OFFSET_DOWN + m_TextureOffset.y);
+			m_UIStaticItem.SetPos(rect.left + m_PushOffset.x + m_TextureOffset.x, rect.top + m_PushOffset.y + m_TextureOffset.y);
 
 		if(m_bStretchTexture)
 			m_UIStaticItem.SetSize(Fvector2().set(rect.width(), rect.height()));
@@ -118,6 +131,30 @@ void CUIButton::DrawTexture()
 	}
 }
 
+void CUIButton::DrawHighlightedText()
+{
+
+	float right_offset;
+	float down_offset;
+
+	if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
+	{
+		right_offset		= 0.0f;
+		down_offset		= 0.0f;
+	} else {
+		right_offset		= m_PushOffset.x;
+		down_offset		= m_PushOffset.y;
+	}
+
+	Fvector2			p;
+	GetAbsolutePos		(p);
+
+	u32 def_col = m_pTextControl->GetTextColor();
+	m_pTextControl->SetTextColor	(m_HighlightColor);
+	m_pTextControl->Draw		(p.x+right_offset+m_ShadowOffset.x, p.y+down_offset+m_ShadowOffset.y);
+	m_pTextControl->SetTextColor	(def_col);
+}
+
 void CUIButton::DrawText()
 {
 	float right_offset;
@@ -125,16 +162,32 @@ void CUIButton::DrawText()
 
 	if(GetButtonState() == BUTTON_UP || GetButtonState() == BUTTON_NORMAL)
 	{
-		right_offset	= 0;
+		right_offset		= 0;
 		down_offset		= 0;
 	}
 	else
 	{
-		right_offset	= PUSH_OFFSET_RIGHT;
-		down_offset		= PUSH_OFFSET_DOWN;
+		right_offset		= m_PushOffset.x;
+		down_offset		= m_PushOffset.y;
 	}
 
-	CUIStatic::DrawText();
+	if (m_pTextControl)
+	{
+		if( !fsimilar(m_pTextControl->m_wndSize.x, m_wndSize.x) || !fsimilar(m_pTextControl->m_wndSize.y, m_wndSize.y))
+		{
+			m_pTextControl->m_wndSize		= m_wndSize;
+			m_pTextControl->ParseText		(true);
+		}
+
+		if(IsHighlightText() && xr_strlen(m_pTextControl->GetText())>0 && m_bEnableTextHighlighting)
+			DrawHighlightedText();		
+		else {
+			Fvector2			p;
+			GetAbsolutePos		(p);
+			m_pTextControl->Draw(p.x+right_offset, p.y+down_offset);
+		}
+	}
+
 	if(g_btnHint->Owner()==this)
 		g_btnHint->Draw_();
 }

@@ -26,6 +26,8 @@
 #include "../object_broker.h"
 #include "UIMessagesWindow.h"
 #include "UIMainIngameWnd.h"
+#include "uidialogwnd.h"
+#include "uiscriptwnd.h"
 #include "UITabButton.h"
 #include "../script_engine.h"
 #include "../ai_space.h"
@@ -45,8 +47,11 @@ CUIPdaWnd::CUIPdaWnd()
 	UIEventsWnd				= NULL;
 	m_updatedSectionImage	= NULL;
 	m_oldSectionImage		= NULL;
-	bUpgraded			= false;
-	Init					();
+	UIChatWnd				= NULL;
+	UISkillsWnd				= NULL;
+	UIDownloadsWnd			= NULL;
+	bUpgraded				= false;
+	m_initialized			= false;
 }
 
 CUIPdaWnd::~CUIPdaWnd()
@@ -66,6 +71,8 @@ CUIPdaWnd::~CUIPdaWnd()
 
 void CUIPdaWnd::Init()
 {
+	if (m_initialized) return;
+
 	CUIXml uiXml;
 
 	string128			PDA_XML;
@@ -133,6 +140,17 @@ void CUIPdaWnd::Init()
 		UIEventsWnd				= xr_new<CUIEventsWnd>();
 		UIEventsWnd->Init		();
 
+		// gr1ph starts
+
+		luabind::functor<CUIDialogWndEx*>	lua_pda_wnd_factory;
+		string256							fn;
+		xr_strcpy							(fn, pSettings->r_string("lost_alpha_cfg", "get_script_pda_window"));
+		R_ASSERT2							(ai().script_engine().functor<CUIDialogWndEx*>(fn, lua_pda_wnd_factory), 
+																			make_string("Can't find function '%s'", fn));
+		UIChatWnd				= lua_pda_wnd_factory("comm");
+		UISkillsWnd				= lua_pda_wnd_factory("skills");
+		UIDownloadsWnd			= lua_pda_wnd_factory("downs");
+
 	}
 	// Tab control
 	UITabControl				= xr_new<CUITabControl>(); UITabControl->SetAutoDelete(true);
@@ -143,16 +161,11 @@ void CUIPdaWnd::Init()
 	UITabControl->SetMessageTarget(this);
 
 	if(GameID()!=GAME_SINGLE){
-		UITabControl->GetButtonsVector()->at(0)->Enable(false);
-		UITabControl->GetButtonsVector()->at(2)->Enable(false);
-		UITabControl->GetButtonsVector()->at(3)->Enable(false);
-		UITabControl->GetButtonsVector()->at(4)->Enable(false);
-		UITabControl->GetButtonsVector()->at(5)->Enable(false);
-		UITabControl->GetButtonsVector()->at(6)->Enable(false);
-		UITabControl->GetButtonsVector()->at(7)->Enable(false);
-		UITabControl->GetButtonsVector()->at(8)->Enable(false);
+		for (u16 i = 0; i <= 8; i++){
+			UITabControl->GetButtonsVector()->at(i)->Enable(false);
+		}
 	}
-	
+
 	m_updatedSectionImage			= xr_new<CUIStatic>();
 	xml_init.InitStatic				(uiXml, "updated_section_static", 0, m_updatedSectionImage);
 
@@ -170,19 +183,14 @@ void CUIPdaWnd::Init()
 
 	if( IsGameTypeSingle() )
 	{
-		bool val = false;
-		if (InventoryUtilities::HasActorInfo("pda_skills_enabled"))
-			val = true;
-	
-		UITabControl->GetButtonsVector()->at(7)->Enable(val);
-	
-		if (InventoryUtilities::HasActorInfo("pda_downloads_enabled"))
-			val = true;
-		else
-			val = false;
-	
-		UITabControl->GetButtonsVector()->at(8)->Enable(val);
+		bool enable_pda_skills = InventoryUtilities::HasActorInfo("pda_skills_enabled");
+		bool enable_pda_downloads = InventoryUtilities::HasActorInfo("pda_downloads_enabled");
+		
+		UITabControl->GetButtonsVector()->at(eptSkills)->Enable(enable_pda_skills);	
+		UITabControl->GetButtonsVector()->at(eptDownloads)->Enable(enable_pda_downloads);
 	}
+
+	m_initialized = true;
 }
 
 void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -202,6 +210,8 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 void CUIPdaWnd::ShowDialog(bool bDoHideIndicators)
 {
+	if (!m_initialized)		
+		Init();
 	InventoryUtilities::SendInfoToActor("ui_pda");
 	inherited::ShowDialog(bDoHideIndicators);
 }
@@ -235,21 +245,30 @@ void CUIPdaWnd::Update()
 	UpdateDateTime			();
 }
 
+
 void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 {
+	if (!m_initialized)		
+		Init();
 	if(	m_pActiveSection == section) return;
+	
+	CUIDialogWnd* dlg = 0;
 
-	if (m_pActiveDialog){
+	if (m_pActiveDialog)
+	{
+		dlg = smart_cast<CUIDialogWnd*>(m_pActiveDialog);
+		if (dlg)
+			dlg->Dispatch(0x30011991, 0);
 		UIMainPdaFrame->DetachChild(m_pActiveDialog);
 		m_pActiveDialog->Show(false);
 	}
-
+/*
 	luabind::functor<CUIWindow*>	lua_function;
 	string256			fn;
 	xr_strcpy			(fn, pSettings->r_string("lost_alpha_cfg", "get_script_pda_window"));
 	R_ASSERT2 (ai().script_engine().functor<CUIWindow*>(fn,lua_function),make_string("Can't find function %s",fn));
 	CUIWindow* w = NULL;
-
+*/
 	switch (section) 
 	{
 	case eptDiary:
@@ -258,9 +277,7 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		g_pda_info_state		&= ~pda_section::diary;
 		break;
 	case eptContacts:
-		w 				= lua_function("comm");
-		VERIFY(w);
-		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		m_pActiveDialog			= smart_cast<CUIWindow*>(UIChatWnd);
 		InventoryUtilities::SendInfoToActor("ui_pda_contacts");
 		g_pda_info_state		&= ~pda_section::contacts;
 		break;
@@ -290,19 +307,16 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		InventoryUtilities::SendInfoToActor("ui_pda_quests");
 		break;
 	case eptSkills:
-		w				= lua_function("skills");
-		VERIFY(w);
-		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		m_pActiveDialog			= smart_cast<CUIWindow*>(UISkillsWnd);
 		g_pda_info_state		&= ~pda_section::skills;
 		InventoryUtilities::SendInfoToActor("ui_pda_skills");
 		break;
 	case eptDownloads:
-		w				= lua_function("downs");
-		VERIFY(w);
-		m_pActiveDialog			= smart_cast<CUIWindow*>(w);
+		m_pActiveDialog			= smart_cast<CUIWindow*>(UIDownloadsWnd);
 		g_pda_info_state		&= ~pda_section::downloads;
 		InventoryUtilities::SendInfoToActor("ui_pda_downloads");
 		break;
+/*	
 	case eptGames:
 		w				= lua_function("games");
 		VERIFY(w);
@@ -317,6 +331,7 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		g_pda_info_state		&= ~pda_section::mplayer;
 		InventoryUtilities::SendInfoToActor("ui_pda_mplayer");
 		break;
+*/
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
@@ -327,6 +342,10 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		UITabControl->SetNewActiveTab	(section);
 
 	m_pActiveSection = section;
+
+	dlg = smart_cast<CUIDialogWnd*>(m_pActiveDialog);
+	if (dlg)
+		dlg->Dispatch(0x30011991, 1);
 }
 
 
@@ -340,6 +359,9 @@ void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 {
 	bool bTask = true;
 	bool bEncyclopedia = false;
+
+	if (!m_initialized)		
+		Init();
 
 	if (type==pda_section::encyclopedia)
 	{
@@ -494,6 +516,7 @@ void CUIPdaWnd::DrawUpdatedSections				()
 void CUIPdaWnd::Reset()
 {
 	inherited::ResetAll();
+	if (!m_initialized)		return;
 	if (UIMapWnd)			UIMapWnd->ResetAll();
 	if (UIPdaContactsWnd)	UIPdaContactsWnd->ResetAll();
 	if (UIEncyclopediaWnd)	UIEncyclopediaWnd->ResetAll();

@@ -154,34 +154,34 @@ void CBuild::Run	(LPCSTR P)
 	xrPhase_AdaptiveHT			();
 #endif
 
-	if(!b_restore) 
+	if (!b_restore) 
 	{
-	//****************************************** Building normals
-	FPU::m64r					();
-	Phase						("Building normals...");
-	mem_Compact					();
-	CalcNormals					();
-	//SmoothVertColors			(5);
-
-	//****************************************** Collision DB
-	//should be after normals, so that double-sided faces gets separated
-	FPU::m64r					();
-	Phase						("Building collision database...");
-	mem_Compact					();
-	BuildCForm					();
-
-#ifdef CFORM_ONLY
-	return;
-#endif
-	BuildPortals				(*fs);
-
-	//****************************************** T-Basis
-	{
+		//****************************************** Building normals
 		FPU::m64r					();
-		Phase						("Building tangent-basis...");
-		xrPhase_TangentBasis		();
+		Phase						("Building normals...");
 		mem_Compact					();
-	}
+		CalcNormals					();
+		//SmoothVertColors			(5);
+
+		//****************************************** Collision DB
+		//should be after normals, so that double-sided faces gets separated
+		FPU::m64r					();
+		Phase						("Building collision database...");
+		mem_Compact					();
+		BuildCForm					();
+
+	#ifdef CFORM_ONLY
+		return;
+	#endif
+		BuildPortals				(*fs);
+
+		//****************************************** T-Basis
+		{
+			FPU::m64r					();
+			Phase						("Building tangent-basis...");
+			xrPhase_TangentBasis		();
+			mem_Compact					();
+		}
 
 	} //b_restore
 
@@ -191,9 +191,10 @@ void CBuild::Run	(LPCSTR P)
 	Phase						("Building rcast-CFORM model...");
 	mem_Compact					();
 	Light_prepare				();
-	if(!b_restore) 
+	if(!b_restore)
+	{
 		BuildRapid					(TRUE);
-
+	}
 	//****************************************** GLOBAL-ILLUMINATION
 	if (b_radiosity)			
 	{

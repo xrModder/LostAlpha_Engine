@@ -145,12 +145,23 @@ void OGF::Optimize	()
 	// Real optimization
 	//////////////////////////////////////////////////////////////////////////
 	// x-vertices
+	// was in 2nd try
+	// VERIFY	(x_vertices.size()	<= vertices.size()	);
+	// VERIFY	(x_faces.size()		== faces.size()		);
 	try {
-		if (x_vertices.size() && x_faces.size())
+		u32 xv_size = x_vertices.size();
+		u32 v_size = vertices.size();
+		if (xv_size && v_size)
 		{
-			try {
-				VERIFY	(x_vertices.size()	<= vertices.size()	);
-				VERIFY	(x_faces.size()		== faces.size()		);
+			try {	
+				if (xv_size > v_size)
+				{
+					Msg("* There are more xVertices(%d) than Vertices(%d)", xv_size, v_size);
+				}
+				if (xv_size != v_size)
+				{
+					Msg("* xVertices size(%d) != Vertices size(%d)", xv_size, v_size);
+				}
 			} catch(...) {
 				Msg	("* ERROR: optimize: x-geom : verify: failed");
 			}

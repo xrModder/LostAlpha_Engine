@@ -12,6 +12,8 @@ public:
 	virtual void Init(float x, float y, float width, float height);
 	virtual void Init(const char* str, float x, float y, float width, float height);
 	virtual void InitTexture(LPCSTR tex_name);
+
+	virtual bool	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	
 			void* GetData() {return m_pData;}
 			void SetData(void* pData) { m_pData = pData;}
@@ -27,6 +29,7 @@ public:
 
 	virtual void	MarkSelected				(bool b){};
 	// переопределяем критерий подсвечивания текста
+	virtual bool IsHighlightText();
 	virtual void SetHighlightText(bool Highlight)		{ m_bHighlightText = Highlight; }
 
 protected:

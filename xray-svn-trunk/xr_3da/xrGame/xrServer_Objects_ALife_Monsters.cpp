@@ -1221,6 +1221,11 @@ u32	CSE_ALifeMonsterAbstract::ef_detector_type			() const
 	return						(inherited1::ef_detector_type());
 }
 
+bool CSE_ALifeMonsterAbstract::can_use_smart_terrain	() const
+{
+	return						!!(m_flags.test(flUseSmartTerrains));
+}
+
 const CSE_Abstract *CSE_ALifeMonsterAbstract::base	() const
 {
 	return						(inherited1::base());

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UI3tButton.h"
 #include "UIXmlInit.h"
-//#include "UIHint.h"
+#include "UIBtnHint.h"
 
 CUI3tButton::CUI3tButton()
 {
@@ -18,6 +18,9 @@ CUI3tButton::CUI3tButton()
 	m_background		= NULL;
 	m_back_frameline	= NULL;
 	m_frameline_mode	= false;
+
+	m_bEnableTextHighlighting = false;
+	SetPushOffset		(Fvector2().set(0.0f,0.0f) );
 }
 
 
@@ -227,11 +230,11 @@ void CUI3tButton::Update()
 	if (!m_bIsEnabled)
 	{
 		textColor = m_bUseTextColor[S_Disabled] ? m_dwTextColor[S_Disabled] : m_dwTextColor[S_Enabled];
-	}else 
+	} else 
 	if (CUIButton::BUTTON_PUSHED == GetButtonState())
 	{
 		textColor = m_bUseTextColor[S_Touched] ? m_dwTextColor[S_Touched] : m_dwTextColor[S_Enabled];
-	}else 
+	} else 
 	if (m_bCursorOverWindow)
 	{
 		textColor = m_bUseTextColor[S_Highlighted] ? m_dwTextColor[S_Highlighted] : m_dwTextColor[S_Enabled];
