@@ -313,7 +313,7 @@ void destroyEngine	()
 
 void execUserScript				( )
 {
-	Console->Execute			("default_controls");
+	Console->Execute			("unbindall");
 	Console->ExecuteScript		(Console->ConfigFile);
 }
 
