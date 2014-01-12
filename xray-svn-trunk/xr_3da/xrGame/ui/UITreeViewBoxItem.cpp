@@ -46,7 +46,7 @@ CUITreeViewBoxItem::CUITreeViewBoxItem()
 
 CUITreeViewBoxItem::~CUITreeViewBoxItem()
 {
-	//DeleteAllSubItems();
+	DeleteAllSubItems();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -137,12 +137,12 @@ void CUITreeViewBoxItem::Open()
 	CUIListBox *pList = smart_cast<CUIListBox*>(m_real_parent);
 	
 	R_ASSERT(pList);
-	if (!pList) return;
 
 	int pos = GetIndex();
 
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
+		(*it)->SetAutoDelete(false);
 		pList->AddExistingItem(*it, ++pos);
 	}
 }
@@ -162,10 +162,7 @@ void CUITreeViewBoxItem::Close()
 	CUIListBox *pList = smart_cast<CUIListBox*>(m_real_parent);
 
 	R_ASSERT(pList);
-	if (!pList) return;
-
-	int pos;
-
+	
 	// Сначала все закрыть
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
@@ -175,8 +172,8 @@ void CUITreeViewBoxItem::Close()
 	// Затем все датачим
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-		pos = (*it)->GetIndex();
-		pList->RemoveItem(pos);
+		(*it)->SetAutoDelete(false);
+		pList->Remove(*it);
 	}
 }
 
@@ -202,8 +199,8 @@ void CUITreeViewBoxItem::DeleteAllSubItems()
 {
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
+		VERIFY(*it);
 		CUIWindow *pWindow = (*it)->GetParent();
-
 		if (pWindow)
 			pWindow->DetachChild(*it);
 
@@ -555,6 +552,7 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 		pTVItemChilds->SetReadedColor(rootColor);
 		pTVItemChilds->SetRoot(true);
 		pListToAdd->AddExistingItem(pTVItemChilds);
+		pListToAdd->SetAutoDelete(false);
 
 		// Если в списке вложенности 1 элемент, то хвоста нет, и соответственно ничего не добавляем
 		if (groupTree.size() > 1)
@@ -575,5 +573,6 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 	pTVItemChilds->AddSubItem(pTVItem);
 	pTVItem->MarkArticleAsRead(markRead);
 	pTVItem->SetListParent(pListToAdd);
+	pTVItem->SetAutoDelete(false);
 	//	}
 }

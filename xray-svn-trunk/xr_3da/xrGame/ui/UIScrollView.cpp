@@ -98,6 +98,11 @@ void CUIScrollView::RemoveWindow		(CUIWindow* pWnd)
 {
 	m_pad->DetachChild	(pWnd);
 	m_flags.set			(eNeedRecalc,TRUE);
+	u32 i = 0;
+	for (WINDOW_LIST_it it=m_pad->GetChildWndList().begin(), last = m_pad->GetChildWndList().end(); last != it; ++it, i++)
+	{
+		(*it)->SetIndex(i);
+	}
 }
 
 void CUIScrollView::Clear				()
