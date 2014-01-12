@@ -4,6 +4,7 @@
 #include "UIWndCallback.h"
 
 class CUIScrollBar;
+class CUIListBoxItem;
 
 class CUIScrollView :public CUIWindow, public CUIWndCallback
 {
@@ -41,7 +42,7 @@ public:
 	virtual bool	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual void	Draw				();
 	virtual void	Update				();
-			void	AddWindow			(CUIWindow* pWnd, bool auto_delete);
+			void	AddWindow			(CUIWindow* pWnd, bool auto_delete, int pos = -1);
 			void	RemoveWindow		(CUIWindow* pWnd);
 			void	Clear				();
 			void	ScrollToBegin		();

@@ -350,7 +350,9 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 										  &pContext);
 #else
 #if 1
+#ifdef DEBUG
    createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
+#endif
 #endif
    R =  D3DX10CreateDeviceAndSwapChain(   m_pAdapter,
                                           m_DriverType,

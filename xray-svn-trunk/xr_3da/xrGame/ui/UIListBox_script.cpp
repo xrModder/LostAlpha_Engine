@@ -35,6 +35,11 @@ bool xrRender_test_hw_script()
 	return !!Device.m_pRender->Render_test_hw();
 }
 
+void add_existing_item_script(CUIListBox* self, CUIListBoxItem* item)
+{
+	self->AddExistingItem(item);
+}
+
 #pragma optimize("s",on)
 void CUIListBox::script_register(lua_State *L)
 {
@@ -54,7 +59,7 @@ void CUIListBox::script_register(lua_State *L)
 		.def("GetItemByText",			&CUIListBox::GetItemByText)			
 		.def("GetItem",					&CUIListBox::GetItemByIDX)		
 		.def("RemoveItem",				&CUIListBox::RemoveItem)
-		.def("Remove",				&CUIListBox::Remove)
+		.def("Remove",					&CUIListBox::Remove)
 		.def("AddTextItem",				&CUIListBox::AddTextItem)
 
 		.def("SetSelectionTexture",				&CUIListBox::SetSelectionTexture)
@@ -71,7 +76,7 @@ void CUIListBox::script_register(lua_State *L)
 		.def("SetTextAlignment",			&CUIListBox::SetTextAlignment)
 		.def("GetTextAlignment",			&CUIListBox::GetTextAlignment)
 
-		.def("AddItem",         &CUIListBox::AddExistingItem, adopt(_2)),
+		.def("AddItem",         &add_existing_item_script, adopt(_2)),
 
 		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListBoxItem")
 		.def(							constructor<>())

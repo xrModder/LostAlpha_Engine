@@ -92,9 +92,19 @@ protected:
 class CUISelectable
 {
 protected:
-	bool m_bSelected;
+	bool			m_bSelected;
 public:
 							CUISelectable		()							:m_bSelected(false){}
 	bool					GetSelected			() const					{return m_bSelected;}
 	virtual void			SetSelected			(bool b)					{m_bSelected = b;};
+	
+};
+
+class CUIIndexableWindow
+{
+protected:
+		u32				m_index;
+public:
+	virtual	void			SetIndex			(u32 index)					{ m_index = index; }
+	virtual	u32				GetIndex			() const					{ return m_index; }
 };

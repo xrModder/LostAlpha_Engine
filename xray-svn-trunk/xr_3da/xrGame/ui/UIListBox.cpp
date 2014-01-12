@@ -9,7 +9,7 @@ CUIListBox::CUIListBox()
 	m_pFont					= NULL;
 	m_flags.set				(eItemsSelectabe, TRUE);
 
-	m_def_item_height		 = 20;
+	m_def_item_height		 = 18.0f;
 	m_text_color			= 0xff000000;
 	m_text_color_s			= 0xff000000;
 	m_text_al				= CGameFont::alLeft;
@@ -56,15 +56,15 @@ CUIListBoxItem* CUIListBox::AddTextItem(LPCSTR text)
 CUIListBoxItem*  CUIListBox::AddItem()
 {
 	CUIListBoxItem* item		= xr_new<CUIListBoxItem>();
-	item->SetHeight			(m_def_item_height);
-	item->InitFrameLineWnd		(Fvector2().set(0.0f,0.0f), Fvector2().set(GetDesiredChildWidth()-5.0f, m_def_item_height));
+	item->SetHeight					(m_def_item_height);
+	item->InitFrameLineWnd			(Fvector2().set(0.0f,0.0f), Fvector2().set(GetDesiredChildWidth()-5.0f, m_def_item_height));
 	item->GetTextItem()->SetWidth	(GetDesiredChildWidth());
 	item->SetWidth					(GetDesiredChildWidth());
 
 	if(m_selection_texture.size())
-		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
+		item->InitTexture		(*m_selection_texture, "hud\\default");
 	else
-        	item->InitDefault		();
+        item->InitDefault		();
 
 	item->SetFont				(GetFont());
 	item->SetSelected			(false);
@@ -74,19 +74,19 @@ CUIListBoxItem*  CUIListBox::AddItem()
 	return						item;
 }
 
-void CUIListBox::AddExistingItem(CUIListBoxItem* item)
+void CUIListBox::AddExistingItem(CUIListBoxItem* item, int pos)
 {
-	item->InitFrameLineWnd		(Fvector2().set(0,0), Fvector2().set(GetDesiredChildWidth()-5, m_def_item_height));
+	item->InitFrameLineWnd		(Fvector2().set(0,0), Fvector2().set(GetDesiredChildWidth()-5.0f, m_def_item_height));
 	item->SetWidth				(GetDesiredChildWidth());
 
 	if(m_selection_texture.size())
-		item->InitTexture		(m_selection_texture.c_str(), "hud\\default");
+		item->InitTexture		(*m_selection_texture, "hud\\default");
 	else
-        	item->InitDefault		();
+        item->InitDefault		();
 
 	item->SetSelected			(false);
 	item->SetMessageTarget		(this);
-	AddWindow					(item, true);
+	AddWindow					(item, true, pos);
 }
 
 void CUIListBox::Remove(CUIListBoxItem* itm)
@@ -110,7 +110,7 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 			case LIST_ITEM_SELECT:	
 			case LIST_ITEM_CLICKED:
 			case LIST_ITEM_DB_CLICKED:
-				GetMessageTarget()->SendMessage(this, msg, pData);
+				GetMessageTarget()->SendMessage(this, msg, pWnd);
 				break;
 			case LIST_ITEM_FOCUS_RECEIVED:
 				if (m_bImmediateSelection)

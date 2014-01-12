@@ -1370,7 +1370,7 @@ bool CUIXmlInit::InitScrollView	(CUIXml& xml_doc, LPCSTR path, int index, CUIScr
 
 	pWnd->SetFixedScrollBar(b);
 
-	b = (1==xml_doc.ReadAttribInt(path, index, "can_select",0));
+	b = (1==xml_doc.ReadAttribInt(path, index, "can_select",1));
 
 	pWnd->m_flags.set					(CUIScrollView::eItemsSelectabe, b);
 
@@ -1413,6 +1413,9 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 
 	float h					= xml_doc.ReadAttribFlt(path, index, "item_height", 20.0f);
 	pWnd->SetItemHeight		(h);
+
+	shared_str selection_texture = xml_doc.ReadAttrib(_path, index, "selection_texture", "ui_listline");
+	pWnd->SetSelectionTexture(*selection_texture);
 
 	// Load font alignment
 	shared_str al = xml_doc.ReadAttrib(_path, index, "align");

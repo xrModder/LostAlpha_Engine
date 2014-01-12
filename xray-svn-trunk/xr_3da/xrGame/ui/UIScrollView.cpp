@@ -3,6 +3,7 @@
 #include "UIScrollBar.h"
 #include "../ui_base.h"
 #include "../UICursor.h"
+#include "uilistboxitem.h"
 #include "../../xr_input.h"	
 
 CUIScrollView::CUIScrollView()
@@ -67,11 +68,29 @@ void CUIScrollView::SetScrollBarProfile(LPCSTR profile)
 	m_scrollbar_profile = profile;
 }
 
-void CUIScrollView::AddWindow			(CUIWindow* pWnd, bool auto_delete)
-{
-	if(auto_delete)		pWnd->SetAutoDelete	(true);
 
-	m_pad->AttachChild	(pWnd);
+
+void CUIScrollView::AddWindow			(CUIWindow* pWnd, bool auto_delete, int pos)
+{
+	struct SIndexRecalculator
+	{
+		void operator() (CUIWindow* wnd) 
+		{
+			wnd->SetIndex(wnd->GetIndex() + 1);
+		}
+	} recalculator;
+
+	if (auto_delete)		
+		pWnd->SetAutoDelete	(true);
+
+	u32 real_pos =		m_pad->AttachChild	(pWnd, pos);
+	pWnd->SetIndex							(real_pos);
+	if (pos >= 0)
+	{
+		WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); 
+		std::advance(it, real_pos);
+		std::for_each(it, m_pad->GetChildWndList().end(), recalculator);
+	}
 	m_flags.set			(eNeedRecalc,TRUE);
 }
 
