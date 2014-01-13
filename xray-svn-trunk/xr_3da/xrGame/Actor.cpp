@@ -1201,7 +1201,7 @@ void CActor::shedule_Update	(u32 DT)
 
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-		if (m_bDrawLegs && IsGameTypeSingle() && ((!psDeviceFlags.test(rsR2) && !m_bActorShadows) || (psDeviceFlags.test(rsR2) && m_bActorShadows)))
+		if (m_bDrawLegs && IsGameTypeSingle() && ((!psDeviceFlags.test(rsR2) && !psDeviceFlags.test(rsR3) && !psDeviceFlags.test(rsR4) && !m_bActorShadows) || ((psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR3) || psDeviceFlags.test(rsR4)) && m_bActorShadows)))
 			setVisible				(TRUE);
 		else
 			setVisible				(!HUDview	());
