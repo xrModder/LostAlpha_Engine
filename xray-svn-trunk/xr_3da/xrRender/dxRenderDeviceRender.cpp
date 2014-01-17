@@ -7,6 +7,9 @@ dxRenderDeviceRender::dxRenderDeviceRender()
 	:	Resources(0)
 {
 	;
+#if defined(USE_DX10) || defined(USE_DX11)
+	m_LastPresentStatus = S_OK;
+#endif
 }
 
 void dxRenderDeviceRender::Copy(IRenderDeviceRender &_in)
@@ -264,7 +267,26 @@ dxRenderDeviceRender::DeviceState dxRenderDeviceRender::GetDeviceState()
 {
 	HW.Validate		();
 #if defined(USE_DX10) || defined(USE_DX11)
-	//	TODO: DX10: Implement GetDeviceState
+#pragma todo("utak3r: mapping Present results to device state should be carefully checked and corrected if needed.")
+	switch (m_LastPresentStatus)
+	{
+	case S_OK:
+		return dsOK;
+		break;
+	case DXGI_ERROR_NOT_CURRENTLY_AVAILABLE:
+	case DXGI_ERROR_FRAME_STATISTICS_DISJOINT:
+	case DXGI_ERROR_WAS_STILL_DRAWING:
+	case DXGI_ERROR_UNSUPPORTED:
+		return dsLost;
+		break;
+	case DXGI_ERROR_DEVICE_RESET:
+	case DXGI_ERROR_DEVICE_REMOVED:
+	case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+		return dsNeedReset;
+		break;
+	default:
+		return dsOK;
+	}
 	//	TODO: DX10: Implement DXGI_PRESENT_TEST testing
 	//VERIFY(!"dxRenderDeviceRender::overdrawBegin not implemented.");
 #else	//	USE_DX10
@@ -346,7 +368,7 @@ void dxRenderDeviceRender::End()
 
 #if defined(USE_DX10) || defined(USE_DX11)
 	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
-	HW.m_pSwapChain->Present( VSync, 0 );
+	m_LastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
 #else	//	USE_DX10
 	CHK_DX				(HW.pDevice->EndScene());
 

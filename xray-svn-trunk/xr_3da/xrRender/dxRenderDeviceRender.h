@@ -78,6 +78,9 @@ public:
 private:
 
 	CGammaControl		m_Gamma;
+#if defined(USE_DX10) || defined(USE_DX11)
+	HRESULT				m_LastPresentStatus;
+#endif
 };
 
 #endif //ifndef _EDITOR
