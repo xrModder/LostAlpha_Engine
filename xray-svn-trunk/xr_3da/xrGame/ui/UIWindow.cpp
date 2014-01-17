@@ -206,13 +206,26 @@ void CUIWindow::Update()
 	}
 }
 
-void CUIWindow::AttachChild(CUIWindow* pChild)
+u32 CUIWindow::AttachChild(CUIWindow* pChild, int pos)
 {
-	if(!pChild) return;
-	
-	R_ASSERT( !IsChild(pChild) );
+	R_ASSERT2(pChild, make_string("[%s]: attaching null child, are you kiddin' me?! :D", WindowName().c_str()));
+	R_ASSERT2(!IsChild(pChild), make_string("[%s]: attaching already attached child, are you foolin' me?! :@", WindowName().c_str()));
+	u32 ret = 0;
 	pChild->SetParent(this);
-	m_ChildWndList.push_back(pChild);
+	if (pos < 0)
+	{
+		m_ChildWndList.push_back(pChild);
+		ret = m_ChildWndList.size() - 1;
+	}
+	else
+	{
+		R_ASSERT(static_cast<u32>(pos) <= m_ChildWndList.size());
+		WINDOW_LIST_it it = m_ChildWndList.begin(); 
+		std::advance(it, pos);
+		m_ChildWndList.insert(it, pChild);
+		ret = u32(pos);
+	}
+	return ret;
 }
 
 void CUIWindow::DetachChild(CUIWindow* pChild)

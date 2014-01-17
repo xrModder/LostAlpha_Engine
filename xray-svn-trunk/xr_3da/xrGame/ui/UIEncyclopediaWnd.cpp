@@ -13,14 +13,14 @@
 #include "UIFrameLineWnd.h"
 #include "UIAnimatedStatic.h"
 #include "UIScrollView.h"
-#include "UITreeViewItem.h"
+#include "UITreeViewBoxItem.h"
 #include "UIPdaAux.h"
 #include "UIEncyclopediaArticleWnd.h"
 #include "../encyclopedia_article.h"
 #include "../alife_registry_wrappers.h"
 #include "../actor.h"
 #include "../object_broker.h"
-#include "UIListWnd.h"
+#include "UIListBox.h"
 
 #define				ENCYCLOPEDIA_DIALOG_XML		"encyclopedia.xml"
 
@@ -77,11 +77,11 @@ void CUIEncyclopediaWnd::Init()
 	UIEncyclopediaInfoBkg->AttachChild(UIArticleHeader);
 	CUIXmlInit::InitStatic(uiXml, "article_header_static", 0, UIArticleHeader);
 
-	UIIdxList					= xr_new<CUIListWnd>(); UIIdxList->SetAutoDelete(true);
+	UIIdxList					= xr_new<CUIListBox>(); UIIdxList->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIIdxList);
-	CUIXmlInit::InitListWnd(uiXml, "idx_list", 0, UIIdxList);
+	CUIXmlInit::InitListBox(uiXml, "idx_list", 0, UIIdxList);
 	UIIdxList->SetMessageTarget(this);
-	UIIdxList->EnableScrollBar(true);
+	//UIIdxList->EnableScrollBar(true);
 
 	UIInfoList					= xr_new<CUIScrollView>(); UIInfoList->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIInfoList);
@@ -96,12 +96,12 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 {
 	if (UIIdxList == pWnd && LIST_ITEM_CLICKED == msg)
 	{
-		CUITreeViewItem *pTVItem = static_cast<CUITreeViewItem*>(pData);
+		CUITreeViewBoxItem *pTVItem = (CUITreeViewBoxItem*)(pData);
 		R_ASSERT		(pTVItem);
 		
 		if( pTVItem->vSubItems.size() )
 		{
-			CEncyclopediaArticle* A = m_ArticlesDB[pTVItem->vSubItems[0]->GetValue()];
+			CEncyclopediaArticle* A = m_ArticlesDB[pTVItem->vSubItems[0]->GetArticleValue()];
 
 			xr_string caption		= ALL_PDA_HEADER_PREFIX;
 			caption					+= "/";
@@ -112,7 +112,9 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			SetCurrentArtice		(NULL);
 		}else
 		{
-			CEncyclopediaArticle* A = m_ArticlesDB[pTVItem->GetValue()];
+			int idx = pTVItem->GetArticleValue();
+			if (idx==-1) return;
+			CEncyclopediaArticle* A = m_ArticlesDB[idx];
 			xr_string caption		= ALL_PDA_HEADER_PREFIX;
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->group).c_str();
@@ -184,7 +186,7 @@ void CUIEncyclopediaWnd::DeleteArticles()
 	delete_data			(m_ArticlesDB);
 }
 
-void CUIEncyclopediaWnd::SetCurrentArtice(CUITreeViewItem *pTVItem)
+void CUIEncyclopediaWnd::SetCurrentArtice(CUITreeViewBoxItem *pTVItem)
 {
 	UIInfoList->ScrollToBegin();
 	UIInfoList->Clear();
@@ -197,7 +199,7 @@ void CUIEncyclopediaWnd::SetCurrentArtice(CUITreeViewItem *pTVItem)
 
 		CUIEncyclopediaArticleWnd*	article_info = xr_new<CUIEncyclopediaArticleWnd>();
 		article_info->Init			("encyclopedia_item.xml","encyclopedia_wnd:objective_item");
-		article_info->SetArticle	(m_ArticlesDB[pTVItem->GetValue()]);
+		article_info->SetArticle	(m_ArticlesDB[pTVItem->GetArticleValue()]);
 		UIInfoList->AddWindow		(article_info, true);
 
 		// Пометим как прочитанную
@@ -209,7 +211,7 @@ void CUIEncyclopediaWnd::SetCurrentArtice(CUITreeViewItem *pTVItem)
 					it != Actor()->encyclopedia_registry->registry().objects().end(); it++)
 				{
 					if (ARTICLE_DATA::eEncyclopediaArticle == it->article_type &&
-						m_ArticlesDB[pTVItem->GetValue()]->Id() == it->article_id)
+						m_ArticlesDB[pTVItem->GetArticleValue()]->Id() == it->article_id)
 					{
 						it->readed = true;
 						break;
@@ -227,16 +229,19 @@ void CUIEncyclopediaWnd::AddArticle(shared_str article_id, bool bReaded)
 		if(m_ArticlesDB[i]->Id() == article_id) return;
 	}
 
-	// Добавляем элемент
+/*	// Добавляем элемент
 	m_ArticlesDB.resize(m_ArticlesDB.size() + 1);
 	CEncyclopediaArticle*& a = m_ArticlesDB.back();
 	a = xr_new<CEncyclopediaArticle>();
 	a->Load(article_id);
-
+*/
+	CEncyclopediaArticle* article = xr_new<CEncyclopediaArticle>();
+	article->Load(article_id);
+	m_ArticlesDB.push_back(article);
 
 	// Теперь создаем иерархию вещи по заданному пути
 
-	CreateTreeBranch(a->data()->group, a->data()->name, UIIdxList, m_ArticlesDB.size() - 1, 
+	CreateTreeBranch(article->data()->group, article->data()->name, UIIdxList, m_ArticlesDB.size() - 1, 
 		m_pTreeRootFont, m_uTreeRootColor, m_pTreeItemFont, m_uTreeItemColor, bReaded);
 }
 

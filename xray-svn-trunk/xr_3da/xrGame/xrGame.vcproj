@@ -30015,6 +30015,18 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="TreeViewBoxItem"
+					>
+					<File
+						RelativePath=".\ui\UITreeViewBoxItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UITreeViewBoxItem.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="HUD"

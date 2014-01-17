@@ -8,14 +8,14 @@
 #include "../object_broker.h"
 #include "UITabControl.h"
 #include "UIScrollView.h"
-#include "UITreeViewItem.h"
+#include "UITreeViewBoxItem.h"
 #include "UIEncyclopediaArticleWnd.h"
 #include "../level.h"
 #include "../actor.h"
 #include "../alife_registry_wrappers.h"
 #include "../encyclopedia_article.h"
 #include "UIPdaAux.h"
-#include "UIListWnd.h"
+#include "UIListBox.h"
 
 extern u32			g_pda_info_state;
 
@@ -75,8 +75,8 @@ void CUIDiaryWnd::Init()
 	CUIXmlInit::InitWindow				(uiXml, "main_wnd:left_frame:work_area", 0, m_UILeftWnd);
 	m_UILeftFrame->AttachChild		(m_UILeftWnd);
 
-	m_SrcListWnd					= xr_new<CUIListWnd>(); m_SrcListWnd->SetAutoDelete(false);
-	CUIXmlInit::InitListWnd			(uiXml, "main_wnd:left_frame:work_area:src_list", 0, m_SrcListWnd);
+	m_SrcListWnd					= xr_new<CUIListBox>(); m_SrcListWnd->SetAutoDelete(false);
+	CUIXmlInit::InitListBox			(uiXml, "main_wnd:left_frame:work_area:src_list", 0, m_SrcListWnd);
 	m_SrcListWnd->SetWindowName		("src_list");
 	Register						(m_SrcListWnd);
     AddCallbackStr					("src_list",LIST_ITEM_CLICKED,CUIWndCallback::void_function(this,&CUIDiaryWnd::OnSrcListItemClicked));
@@ -239,13 +239,13 @@ void CUIDiaryWnd::LoadNewsTab	()
 
 void CUIDiaryWnd::OnSrcListItemClicked	(CUIWindow* w,void* p)
 {
-	CUITreeViewItem*	pSelItem	= (CUITreeViewItem*)p;
+	CUITreeViewBoxItem*	pSelItem	= static_cast<CUITreeViewBoxItem*>(p);
 	m_DescrView->Clear	();
 	if (!pSelItem->IsRoot())
 	{
 		CUIEncyclopediaArticleWnd*	article_info = xr_new<CUIEncyclopediaArticleWnd>();
 		article_info->Init			("encyclopedia_item.xml","encyclopedia_wnd:objective_item");
-		article_info->SetArticle	(m_ArticlesDB[pSelItem->GetValue()]);
+		article_info->SetArticle	(m_ArticlesDB[pSelItem->GetArticleValue()]);
 		m_DescrView->AddWindow		(article_info, true);
 
 		// Пометим как прочитанную
@@ -257,7 +257,7 @@ void CUIDiaryWnd::OnSrcListItemClicked	(CUIWindow* w,void* p)
 					it != Actor()->encyclopedia_registry->registry().objects().end(); it++)
 				{
 					if (ARTICLE_DATA::eJournalArticle == it->article_type &&
-						m_ArticlesDB[pSelItem->GetValue()]->Id() == it->article_id)
+						m_ArticlesDB[pSelItem->GetArticleValue()]->Id() == it->article_id)
 					{
 						it->readed = true;
 						break;

@@ -130,52 +130,57 @@ void CLightmap::Save()
 	}
 	Progress			(1.f);
 
-	// Saving			(DXT5.dds)
-	Status			("Compression base...");
-	{
-		xr_vector<u32>			packed;
-		lm.Pack					(packed);
-
-		string_path				FN;
-		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
-		xr_sprintf					(FN,"%s%s_1.dds",	pBuild->path,lm_texture.name);
-		BYTE*	raw_data		= LPBYTE(&*packed.begin());
-		u32	w					= lm.width;
-		u32	h					= lm.height;
-		u32	pitch				= w*4;
-
-		STextureParams fmt;
-		fmt.fmt					= STextureParams::tfDXT5;
-		fmt.flags.set			(STextureParams::flDitherColor,		FALSE);
-		fmt.flags.set			(STextureParams::flGenerateMipMaps,	FALSE);
-		fmt.flags.set			(STextureParams::flBinaryAlpha,		FALSE);
-		DXTCompress				(FN,raw_data,0,w,h,pitch,&fmt,4);
-	}
-	Status			("Compression hemi..."); //.
-	{
-		xr_vector<u32>			packed;
-		lm.Pack_hemi			(packed);
-
-		u32 w					= lm.width;
-		u32 h					= lm.height;
-		u32	pitch				= w*4;
-
-		string_path				FN;
-		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
-		xr_sprintf					(FN,"%s%s_2.dds",	pBuild->path,lm_texture.name);
-		BYTE*	raw_data		= LPBYTE(&*packed.begin());
-
-		STextureParams fmt;
-		fmt.fmt					= STextureParams::tfDXT5;
-		fmt.flags.set			(STextureParams::flDitherColor,		FALSE);
-		fmt.flags.set			(STextureParams::flGenerateMipMaps,	FALSE);
-		fmt.flags.set			(STextureParams::flBinaryAlpha,		FALSE);
-		DXTCompress				(FN,raw_data,0,w,h,pitch,&fmt,4);
-	}
+	xr_vector<u32>			lm_packed;
+	lm.Pack					(lm_packed);
+	xr_vector<u32>			hemi_packed;
+	lm.Pack_hemi			(hemi_packed);
 
 	lm_texture.bHasAlpha		= TRUE;
 	lm_texture.dwWidth			= lm.width;
 	lm_texture.dwHeight			= lm.height;
 	lm_texture.pSurface			= NULL;
+	
 	lm.destroy					();
+	
+	// Saving			(DXT5.dds)
+	Status			("Compression base...");
+	{
+
+
+		string_path				FN;
+		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
+		xr_sprintf					(FN,"%s%s_1.dds",pBuild->path,lm_texture.name);
+		BYTE*	raw_data		= LPBYTE(&*lm_packed.begin());
+		u32	w					= lm_texture.dwWidth;//lm.width;
+		u32	h					= lm_texture.dwHeight;//lm.height;
+		u32	pitch				= w*4;
+
+		STextureParams fmt;
+		fmt.fmt					= STextureParams::tfDXT5;
+		fmt.flags.set			(STextureParams::flDitherColor,		FALSE);
+		fmt.flags.set			(STextureParams::flGenerateMipMaps,	FALSE);
+		fmt.flags.set			(STextureParams::flBinaryAlpha,		FALSE);
+		DXTCompress				(FN,raw_data,0,w,h,pitch,&fmt,4);
+	}
+	lm_packed.clear_and_free();
+	Status			("Compression hemi..."); //.
+	{
+
+
+		u32 w					= lm_texture.dwWidth;//lm.width;
+		u32 h					= lm_texture.dwHeight;//lm.height;
+		u32	pitch				= w*4;
+
+		string_path				FN;
+		xr_sprintf					(lm_texture.name,"lmap#%d",lmapNameID			); 
+		xr_sprintf					(FN,"%s%s_2.dds", pBuild->path, lm_texture.name);
+		BYTE*	raw_data		= LPBYTE(&*hemi_packed.begin());
+
+		STextureParams fmt;
+		fmt.fmt					= STextureParams::tfDXT5;
+		fmt.flags.set			(STextureParams::flDitherColor,		FALSE);
+		fmt.flags.set			(STextureParams::flGenerateMipMaps,	FALSE);
+		fmt.flags.set			(STextureParams::flBinaryAlpha,		FALSE);
+		DXTCompress				(FN,raw_data,0,w,h,pitch,&fmt,4);
+	}
 }

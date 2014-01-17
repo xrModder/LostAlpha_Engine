@@ -69,7 +69,7 @@ template<class _Ty, class _Other>	inline	bool operator!=(const uialloc<_Ty>&, co
 #include "uiabstract.h"
 
 
-class CUIWindow  : public CUISimpleWindow
+class CUIWindow  : public CUISimpleWindow, public CUIIndexableWindow
 {
 public:
 				CUIWindow						();
@@ -78,7 +78,7 @@ public:
 
 	////////////////////////////////////
 	//работа с дочерними и родительскими окнами
-	virtual void			AttachChild			(CUIWindow* pChild);
+	virtual u32				AttachChild			(CUIWindow* pChild, int pos = -1);
 	virtual void			DetachChild			(CUIWindow* pChild);
 	virtual bool			IsChild				(CUIWindow* pChild) const;
 	virtual void			DetachAll			();

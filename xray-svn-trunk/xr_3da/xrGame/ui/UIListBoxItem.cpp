@@ -10,7 +10,9 @@ CUIListBoxItem::CUIListBoxItem(void)
 	txt_color			= 0xffffffff;
 	txt_color_s			= 0xffffffff;
 
-	m_text			= AddTextField("---", 10.0f);
+	SetTextureColor		(0x00000000);
+
+	m_text			= AddTextField("", 10.0f);
 
 	m_dwLastClickTime		= 0;
 	m_dwLastClickFrame		= 0;
@@ -46,7 +48,7 @@ void CUIListBoxItem::OnFocusReceive()
 
 void CUIListBoxItem::InitDefault()
 {
-	InitTexture("ui_listline","hud\\default");
+	InitTexture("ui_listline", "hud\\default");
 }
 
 void CUIListBoxItem::SetFont(CGameFont* F)

@@ -62,6 +62,11 @@ TEX_INFO	get_texture_info(LPCSTR name, LPCSTR def_name)
 	return CUITextureMaster::FindItem(name, def_name);
 }
 
+void attach_child_script(CUIWindow* self, CUIWindow* child)
+{
+	self->AttachChild(child);
+}
+
 using namespace luabind;
 #pragma optimize("s",on)
 void CUIWindow::script_register(lua_State *L)
@@ -90,7 +95,7 @@ void CUIWindow::script_register(lua_State *L)
 
 		class_<CUIWindow>("CUIWindow")
 		.def(							constructor<>())
-		.def("AttachChild",				&CUIWindow::AttachChild, adopt(_2))
+		.def("AttachChild",				&attach_child_script, adopt(_2))
 		.def("DetachChild",				&CUIWindow::DetachChild)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
@@ -185,6 +190,24 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetTextColor",						&CUILabel::SetTextColor)
 		.def("GetTextColor",						&CUILabel::GetTextColor)
 		.def("SetLightAnim",						&CUILabel::SetLightAnim),
+
+		
+		class_<CUITextWnd, CUIWindow>("CUITextWnd")
+		.def(						constructor<>())
+		.def("AdjustHeightToText",	&CUITextWnd::AdjustHeightToText)
+		.def("AdjustWidthToText",	&CUITextWnd::AdjustWidthToText)
+		.def("SetText",				&CUITextWnd::SetText)
+		.def("SetTextST",			&CUITextWnd::SetTextST)
+		.def("GetText",				&CUITextWnd::GetText)
+		.def("SetFont",				&CUITextWnd::SetFont)
+		.def("GetFont",				&CUITextWnd::GetFont)
+		.def("SetTextColor",		&CUITextWnd::SetTextColor)
+		.def("GetTextColor",		&CUITextWnd::GetTextColor)
+		.def("SetTextComplexMode",	&CUITextWnd::SetTextComplexMode)
+		.def("SetTextAlignment",	&CUITextWnd::SetTextAlignment)
+		.def("SetVTextAlignment",	&CUITextWnd::SetVTextAlignment)
+		.def("SetEllipsis",			&CUITextWnd::SetEllipsis)
+		.def("SetTextOffset",		&CUITextWnd::SetTextOffset),
 
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
 		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),

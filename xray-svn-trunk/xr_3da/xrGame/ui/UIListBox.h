@@ -10,7 +10,7 @@ public:
 					CUIListBox						();
 	CUIListBoxItem* AddItem							();
 	CUIListBoxItem* AddTextItem						(LPCSTR text);
-	void			AddExistingItem					(CUIListBoxItem*);
+	void			AddExistingItem					(CUIListBoxItem *item, int pos = -1);
 
 	void			Remove							(CUIListBoxItem* itm);
 	void 			RemoveItem				(int index) 

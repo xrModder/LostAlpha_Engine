@@ -39,7 +39,7 @@ void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizon
 void CUIFrameLineWnd::Init_script(LPCSTR base_name, float x, float y, float width, float height, bool horizontal)
 {
 	InitFrameLineWnd	(Fvector2().set(x,y),Fvector2().set(width, height),horizontal);
-	InitTexture		(base_name,"hud\\default");
+	InitTexture			(base_name,"hud\\default");
 }
 
 void CUIFrameLineWnd::InitTexture(LPCSTR texture, LPCSTR sh_name)

@@ -14,7 +14,7 @@ public:
 	virtual void		Draw					();
 	virtual bool		OnMouseDown				(int mouse_btn);
 	virtual void		OnFocusReceive			();
-	virtual void		SetSelected			(bool b);
+	virtual void		SetSelected				(bool b);
 
 			void		InitDefault				();
 			void		SetTAG					(u32 value);
@@ -26,18 +26,18 @@ public:
 		CUITextWnd*		AddTextField			(LPCSTR txt, float width);
 		CUIStatic*		AddIconField			(float width);
 
-		CUITextWnd*		GetTextItem				(){return m_text;}
+		CUITextWnd*		GetTextItem				()								{return m_text;}
 
 		//TextControl
 		void			SetText					(LPCSTR txt);
 		LPCSTR			GetText					();
-		void			SetTextColor(u32 color, u32 color_s);
+		void			SetTextColor			(u32 color, u32 color_s);
 		void			SetTextColor			(u32 color);
 		u32				GetTextColor			();
 		void			SetFont					(CGameFont* F);
 		CGameFont*		GetFont					();
-		void			SetTextAlignment			(ETextAlignment alignment);
-		ETextAlignment		GetTextAlignment			();
+		void			SetTextAlignment		(ETextAlignment alignment);
+		ETextAlignment	GetTextAlignment		();
 
 protected:
 		CUITextWnd*		m_text;
@@ -46,10 +46,9 @@ protected:
 
 		u32				tag;
 
-
 		//skyloader: время и фрейм для отсчета даблклика
-		u32			m_dwLastClickTime;
-		u32			m_dwLastClickFrame;
+		u32				m_dwLastClickTime;
+		u32				m_dwLastClickFrame;
 
 		void*			pData;
 		float			FieldsLength			() const;
