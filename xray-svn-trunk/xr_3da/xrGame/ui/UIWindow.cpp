@@ -347,8 +347,9 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	//происходит в обратном пор€дке, чем рисование окон
 	//(последние в списке имеют высший приоритет)
 	WINDOW_LIST::reverse_iterator it = m_ChildWndList.rbegin();
+	WINDOW_LIST::reverse_iterator first = m_ChildWndList.rend();
 
-	for(; it!=m_ChildWndList.rend(); ++it)
+	for(; it!=first; ++it)
 	{
 		CUIWindow* w	= (*it);
 #ifdef DEBUG

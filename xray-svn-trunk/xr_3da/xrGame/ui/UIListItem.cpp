@@ -40,6 +40,7 @@ void CUIListItem::InitTexture(LPCSTR tex_name)
 
 bool CUIListItem::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
+
 	if( CUIStatic::OnMouseAction(x, y, mouse_action) ) return true;
 
 	if ( (	WINDOW_LBUTTON_DOWN==mouse_action	||
@@ -66,6 +67,7 @@ bool CUIListItem::OnMouseAction(float x, float y, EUIMessages mouse_action)
 			return true;
 		}
 	}
+	return false;
 }
 
 

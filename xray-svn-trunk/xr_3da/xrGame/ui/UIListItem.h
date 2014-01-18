@@ -48,4 +48,5 @@ protected:
 
 	// подсвечивается кнопка или нет?
 	bool m_bHighlightText;
+
 };
