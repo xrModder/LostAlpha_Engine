@@ -265,45 +265,44 @@ void dxRenderDeviceRender::ResourcesDumpMemoryUsage()
 
 dxRenderDeviceRender::DeviceState dxRenderDeviceRender::GetDeviceState()
 {
+	dxRenderDeviceRender::DeviceState state = dsOK;
 	HW.Validate		();
 #if defined(USE_DX10) || defined(USE_DX11)
-#pragma todo("utak3r: mapping Present results to device state should be carefully checked and corrected if needed.")
+#pragma todo("utak3r: mapping presentation results to device states should be carefully checked and corrected if needed.")
 	switch (m_LastPresentStatus)
 	{
 	case S_OK:
-		return dsOK;
+		state = dsOK;
 		break;
 	case DXGI_ERROR_NOT_CURRENTLY_AVAILABLE:
 	case DXGI_ERROR_FRAME_STATISTICS_DISJOINT:
 	case DXGI_ERROR_WAS_STILL_DRAWING:
 	case DXGI_ERROR_UNSUPPORTED:
-		return dsLost;
+		state = dsLost;
 		break;
 	case DXGI_ERROR_DEVICE_RESET:
 	case DXGI_ERROR_DEVICE_REMOVED:
 	case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
-		return dsNeedReset;
+		state = dsNeedReset;
 		break;
 	default:
-		return dsOK;
+		state = dsOK;
 	}
-	//	TODO: DX10: Implement DXGI_PRESENT_TEST testing
-	//VERIFY(!"dxRenderDeviceRender::overdrawBegin not implemented.");
 #else	//	USE_DX10
 	HRESULT	_hr		= HW.pDevice->TestCooperativeLevel();
 	if (FAILED(_hr))
 	{
 		// If the device was lost, do not render until we get it back
 		if		(D3DERR_DEVICELOST==_hr)
-			return dsLost;
+			state = dsLost;
 
 		// Check if the device is ready to be reset
 		if		(D3DERR_DEVICENOTRESET==_hr)
-			return dsNeedReset;
+			state = dsNeedReset;
 	}
 #endif	//	USE_DX10
 
-	return dsOK;
+	return state;
 }
 
 BOOL dxRenderDeviceRender::GetForceGPU_REF()
