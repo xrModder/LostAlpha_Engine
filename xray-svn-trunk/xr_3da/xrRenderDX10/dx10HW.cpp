@@ -7,6 +7,7 @@
 #pragma warning(disable:4995)
 #include <d3dx9.h>
 #pragma warning(default:4995)
+#include <d3dx10.h>
 #include "../xrRender/HW.h"
 #include "../XR_IOConsole.h"
 #include "../../Include/xrAPI/xrAPI.h"
@@ -26,6 +27,8 @@ void	free_vid_mode_list			()			{}
 void	fill_render_mode_list		()			{}
 void	free_render_mode_list		()			{}
 #endif
+
+#pragma comment (lib, "d3dx10.lib")
 
 CHW			HW;
 
@@ -185,71 +188,32 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	*/
 	
 	// Set up the presentation parameters
-	DXGI_SWAP_CHAIN_DESC	&sd	= m_ChainDesc;
-	ZeroMemory				( &sd, sizeof(sd) );
+	//DXGI_SWAP_CHAIN_DESC	&sd	= m_ChainDesc;
+	ZeroMemory(&m_ChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+	selectResolution(m_ChainDesc.BufferDesc.Width, m_ChainDesc.BufferDesc.Height, bWindowed);
+	m_ChainDesc.BufferCount = 1;
+    m_ChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    m_ChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    m_ChainDesc.OutputWindow = m_hWnd;
+    m_ChainDesc.SampleDesc.Count = 1;
+	m_ChainDesc.SampleDesc.Quality = 0;
+    m_ChainDesc.Windowed = bWindowed;
+    m_ChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	//m_ChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	m_ChainDesc.BufferDesc.RefreshRate = selectRefresh(m_ChainDesc.BufferDesc.Width, 
+														m_ChainDesc.BufferDesc.Height, 
+														m_ChainDesc.BufferDesc.Format);
 
-	selectResolution	(sd.BufferDesc.Width, sd.BufferDesc.Height, bWindowed);
-
-	// Back buffer
-	//	TODO: DX10: implement dynamic format selection
-
-	fTarget = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	sd.BufferDesc.Format = fTarget;
-	sd.BufferCount = 1;
-
-	// Multisample
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-
-	// Windoze
-	//P.SwapEffect			= bWindowed?D3DSWAPEFFECT_COPY:D3DSWAPEFFECT_DISCARD;
-	//P.hDeviceWindow			= m_hWnd;
-	//P.Windowed				= bWindowed;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.OutputWindow = m_hWnd;
-	sd.Windowed = bWindowed;
-
-	sd.BufferDesc.RefreshRate = selectRefresh(sd.BufferDesc.Width, sd.BufferDesc.Height, sd.BufferDesc.Format);
-
-	//	Additional set up
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 	UINT createDeviceFlags = 0;
-#ifdef DEBUG
-	//createDeviceFlags |= D3Dxx_CREATE_DEVICE_DEBUG;
-#endif
-   HRESULT R;
-	// Create the device
-	//	DX10 don't need it?
-	//u32 GPU		= selectGPU();
-#ifdef USE_DX11
-    D3D_FEATURE_LEVEL pFeatureLevels[] =
-    {
-        D3D_FEATURE_LEVEL_11_0,
-//        D3D_FEATURE_LEVEL_10_1,
-//        D3D_FEATURE_LEVEL_10_0,
-    };
-
-   R =  D3D11CreateDeviceAndSwapChain(   0,//m_pAdapter,//What wrong with adapter??? We should use another version of DXGI?????
-                                          m_DriverType,
-                                          NULL,
-                                          createDeviceFlags,
-										  pFeatureLevels,
-										  sizeof(pFeatureLevels)/sizeof(pFeatureLevels[0]),
-										  D3D11_SDK_VERSION,
-                                          &sd,
-                                          &m_pSwapChain,
-		                                  &pDevice,
-										  &FeatureLevel,		
-										  &pContext);
-#else
 #if 1
 #ifdef DEBUG
    createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
 #endif
-   
+
+   HRESULT R;
+
    bool bTryCreate101 = ps_r2_ls_flags.test((u32)R3FLAG_USE_DX10_1) > 0 ? true : false;
 
    pDevice = NULL;
@@ -260,12 +224,12 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
    {
 	   // try to create DX10.1 device
 	   R = D3D10CreateDeviceAndSwapChain1(	m_pAdapter,
-											m_DriverType,
+											D3D_DRIVER_TYPE_HARDWARE, //m_DriverType,
 											NULL,
 											createDeviceFlags,
 											D3D10_FEATURE_LEVEL_10_1,
 											D3D10_1_SDK_VERSION,
-											&sd,
+											&m_ChainDesc,
 											&m_pSwapChain,
 											&pDevice1
 											);
@@ -289,7 +253,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 											NULL,
 											createDeviceFlags,
 											D3D10_SDK_VERSION,
-											&sd,
+											&m_ChainDesc,
 											&m_pSwapChain,
 											&pDevice
 											);
@@ -311,34 +275,10 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	   }
    }
    
-#endif
-
 	R_CHK(R);
 
 	_SHOW_REF	("* CREATE: DeviceREF:", HW.pDevice);
-	/*
-	switch (GPU)
-	{
-	case D3DCREATE_SOFTWARE_VERTEXPROCESSING:
-		Log	("* Vertex Processor: SOFTWARE");
-		break;
-	case D3DCREATE_MIXED_VERTEXPROCESSING:
-		Log	("* Vertex Processor: MIXED");
-		break;
-	case D3DCREATE_HARDWARE_VERTEXPROCESSING:
-		Log	("* Vertex Processor: HARDWARE");
-		break;
-	case D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_PUREDEVICE:
-		Log	("* Vertex Processor: PURE HARDWARE");
-		break;
-	}
-	*/
 
-	// Capture misc data
-//	DX10: Don't need this?
-//#ifdef DEBUG
-//	R_CHK	(pDevice->CreateStateBlock			(D3DSBT_ALL,&dwDebugSB));
-//#endif
 	//	Create render target and depth-stencil views here
 	UpdateViews();
 
@@ -404,7 +344,7 @@ void CHW::Reset (HWND hwnd)
 	cd.Windowed = !bWindowed;
 
 	DXGI_MODE_DESC	&desc = m_ChainDesc.BufferDesc;
-	selectResolution(desc.Width, desc.Height, cd.Windowed);
+	selectResolution(desc.Width, desc.Height, !bWindowed);
 	desc.RefreshRate = selectRefresh(desc.Width, desc.Height, desc.Format);
 
 
@@ -435,7 +375,7 @@ void CHW::Reset (HWND hwnd)
 DXGI_FORMAT CHW::selectDepthStencil	(DXGI_FORMAT fTarget)
 {
 #pragma todo("R3 need to specify depth format")
-	return DXGI_FORMAT_D24_UNORM_S8_UINT;
+	return DXGI_FORMAT_D24_UNORM_S8_UINT;  // D3DFMT_D24S8
 }
 
 void CHW::selectResolution( u32 &dwWidth, u32 &dwHeight, BOOL bWindowed )
@@ -775,7 +715,7 @@ void CHW::UpdateViews()
 	descDepth.Height = sd.BufferDesc.Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // sd.BufferDesc.Format;
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
 	descDepth.Usage = D3D_USAGE_DEFAULT;
@@ -790,7 +730,7 @@ void CHW::UpdateViews()
 	// set format etc.
 	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.Format = descDepth.Format; //DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
