@@ -195,6 +195,8 @@ void CRender::render_menu	()
 	pv->set							(float(_w+EPS),	EPS,			d_Z,	d_W, C, p1.x, p0.y);	pv++;
 	RCache.Vertex.Unlock			(4,Target->g_menu->vb_stride);
 	RCache.Render					(D3DPT_TRIANGLELIST,Offset,0,4,0,2);
+	//HW.m_pSwapChain->Present(1, 0);
+	//Device.End();
 }
 
 void CRender::Render		()
@@ -207,7 +209,10 @@ void CRender::Render		()
 
 	bool	_menu_pp		= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
 	if (_menu_pp)			{
+		Device.Begin();
 		render_menu			()	;
+		//HW.m_pSwapChain->Present(1, 0);
+		Device.End();
 		return					;
 	};
 
@@ -217,13 +222,18 @@ void CRender::Render		()
 	if( !(g_pGameLevel && g_hud)
 		|| bMenu)	
 	{
+		//Device.Begin();
 		Target->u_setrt				( Device.dwWidth,Device.dwHeight,HW.pBaseRT,NULL,NULL,HW.pBaseZB);
+		//HW.m_pSwapChain->Present(1, 0);
+		//Device.End();
 		return;
 	}
 
 	if( m_bFirstFrameAfterReset )
 	{
 		m_bFirstFrameAfterReset = false;
+		HW.m_pSwapChain->Present(1, 0);
+		//Device.End();
 		return;
 	}
 
@@ -515,6 +525,9 @@ void CRender::Render		()
 	}
 
 	VERIFY	(0==mapDistort.size());
+
+	//HW.m_pSwapChain->Present(1, 0);
+	//Device.End();
 }
 
 void CRender::render_forward				()
