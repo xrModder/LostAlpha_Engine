@@ -291,14 +291,16 @@ void CHUDManager::Load()
 
 void CHUDManager::OnScreenResolutionChanged()
 {
-	pUIGame->HideShownDialogs			();
+	if (pUIGame)
+	{
+		pUIGame->HideShownDialogs			();
+		xr_delete							(pWpnScopeXml);
+		pUIGame->UnLoad						();
+		pUIGame->Load						();
 
+		pUIGame->OnConnected();
+	}
 	xr_delete							(pWpnScopeXml);
-
-	pUIGame->UnLoad						();
-	pUIGame->Load						();
-
-	pUIGame->OnConnected();
 }
 
 void CHUDManager::OnDisconnected()

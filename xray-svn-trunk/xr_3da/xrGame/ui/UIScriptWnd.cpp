@@ -5,8 +5,9 @@
 #include "../callback_info.h"
 
 
-CUIDialogWndEx::CUIDialogWndEx()
-{}
+CUIDialogWndEx::CUIDialogWndEx() 
+{
+}
 
 CUIDialogWndEx::~CUIDialogWndEx()
 {

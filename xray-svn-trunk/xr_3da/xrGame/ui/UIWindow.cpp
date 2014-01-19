@@ -39,6 +39,28 @@ void clean_wnd_rects()
 	DRender->DestroyDebugShader(IDebugRender::dbgShaderWindow);
 #endif // DEBUG
 }
+#ifdef DEBUG
+void draw_debug_rect(CUIWindow* w, u32 color)
+{
+	Frect r;
+	w->GetAbsoluteRect(r);
+
+	UI().ClientToScreenScaled(r.lt, r.lt.x, r.lt.y);
+	UI().ClientToScreenScaled(r.rb, r.rb.x, r.rb.y);
+
+	DRender->SetDebugShader(IDebugRender::dbgShaderWindow);
+
+	UIRender->StartPrimitive	(5, IUIRender::ptLineStrip, UI().m_currentPointType);
+
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.lt.y, 0, color, 0,0);
+	UIRender->PushPoint(r.rb.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.rb.y, 0, color, 0,0);
+	UIRender->PushPoint(r.lt.x, r.lt.y, 0, color, 0,0);
+
+	UIRender->FlushPrimitive();
+}
+#endif
 
 void add_rect_to_draw(Frect r)
 {
@@ -113,6 +135,10 @@ m_bClickable(false)
 {
 	Show					(true);
 	Enable					(true);
+#ifdef DEBUG
+	m_debug_color[0] = 0;
+	m_debug_color[1] = 0;
+#endif
 #ifdef LOG_ALL_WNDS
 	ListWndCount++;
 	m_dbg_id = ListWndCount;
@@ -171,6 +197,8 @@ void CUIWindow::Draw()
 		GetAbsoluteRect(r);
 		add_rect_to_draw(r);
 	}
+
+	draw_debug_rect(this, m_debug_color[BOOL(m_bCursorOverWindow)]);
 #endif
 }
 
@@ -279,11 +307,12 @@ void CUIWindow::GetAbsoluteRect(Frect& r)
 //координаты курсора всегда, кроме начального вызова 
 //задаются относительно текущего окна
 
-#define DOUBLE_CLICK_TIME 250
+#define DOUBLE_CLICK_TIME 250 
 
 bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {	
-	Frect	wndRect = GetWndRect();
+	Frect	wndRect;
+	GetAbsoluteRect(wndRect);
 
 	cursor_pos.x = x;
 	cursor_pos.y = y;
@@ -349,19 +378,20 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	WINDOW_LIST::reverse_iterator it = m_ChildWndList.rbegin();
 	WINDOW_LIST::reverse_iterator first = m_ChildWndList.rend();
 
-	for(; it!=first; ++it)
+	for(u32 i = 0; it!=first; ++it, i++)
 	{
 		CUIWindow* w	= (*it);
 #ifdef DEBUG
-		R_ASSERT2(w, make_string("Incorrect window in childlist - [%s]",*m_windowName));
+		R_ASSERT2(w, make_string("Incorrect window in childlist(%d) - [%s]",i,*m_windowName));
 #else
 		if (w==NULL)
 		{
-			Msg("! Founded incorrect child window in [%s] childlist",*m_windowName);
+			Msg("! Founded incorrect child window in [%s] childlist(%d)", *m_windowName, i);
 		} else
 #endif
 		{
-			Frect wndRect	= w->GetWndRect();
+			Frect wndRect;
+			w->GetAbsoluteRect(wndRect);
 			if (wndRect.in(cursor_pos) )
 			{
 				if(w->IsEnabled())
