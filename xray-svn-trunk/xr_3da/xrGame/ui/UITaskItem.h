@@ -42,6 +42,7 @@ class CUITaskRootItem : public CUITaskItem
 {
 	typedef		CUITaskItem	inherited;
 protected:
+	bool			m_can_update;
 	CUIStatic*		m_taskImage;
 	CUIStatic*		m_captionStatic;
 	CUIStatic*		m_captionTime;

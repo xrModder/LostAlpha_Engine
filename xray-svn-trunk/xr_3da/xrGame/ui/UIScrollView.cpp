@@ -222,29 +222,32 @@ void CUIScrollView::Draw				()
 			CUIScrollView* sw			= smart_cast<CUIScrollView*>(*it);
 			VERIFY						(sw==NULL);
 
-			if ((*it)->GetVisible())
+			if ((*it)->GetVisible()){
                 (*it)->Draw();
+			}
 		}
-	}else
-	for(int idx=0; it!=m_pad->GetChildWndList().end(); ++it,++idx)
-	{
-		Frect							item_rect;
-		(*it)->GetAbsoluteRect			(item_rect);
-		if(visible_rect.intersected(item_rect))
+	}else{ 
+		for(int idx=0; it!=m_pad->GetChildWndList().end(); ++it,++idx)
 		{
-			if(m_visible_rgn.x == -1) //first visible
-				m_visible_rgn.x			= idx;
+			Frect							item_rect;
+			(*it)->GetAbsoluteRect			(item_rect);
+			if(visible_rect.intersected(item_rect))
+			{
+				if(m_visible_rgn.x == -1) //first visible
+					m_visible_rgn.x			= idx;
 
-			m_visible_rgn.y				= idx;
+				m_visible_rgn.y				= idx;
 
-			if ((*it)->GetVisible())
-                (*it)->Draw();
-		}else
-			if(m_visible_rgn.x != -1)
-				break;
+				if ((*it)->GetVisible()){
+					(*it)->Draw();
+				}
+			}else
+				if(m_visible_rgn.x != -1)
+					break;
+		}
 	}
 	UI().PopScissor					();
-
+	
 	if(NeedShowScrollBar())
 		m_VScrollBar->Draw					();
 }

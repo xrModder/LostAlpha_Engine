@@ -46,6 +46,7 @@ public:
 
 	IC	BOOL	in (T  x, T  y)		const					{ return (x>=x1) && (x<=x2) && (y>=y1) && (y<=y2);	};
 	IC	BOOL	in (Tvector &p)		const					{ return (p.x>=x1) && (p.x<=x2) && (p.y>=y1) && (p.y<=y2);	};
+
 	IC	BOOL	cmp(_rect<int> &r)							{ return x1==r.x1 && y1==r.y1 && x2==r.x2 && y2==r.y2; };
 	IC	BOOL	cmp(_rect<float> &r)						{ return fsimilar(x1,r.x1) && fsimilar(y1,r.y1) && fsimilar(x2,r.x2) && fsimilar(y2,r.y2); };
 	

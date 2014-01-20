@@ -61,7 +61,7 @@ void CUITaskItem::OnItemClicked(CUIWindow*, void*)
 
 
 CUITaskRootItem::CUITaskRootItem	(CUIEventsWnd* w)
-:inherited(w)
+:inherited(w), m_can_update(false)
 {
 	Init();
 }
@@ -164,9 +164,9 @@ void CUITaskRootItem::Update		()
 		else
 			m_switchDescriptionBtn->InitTexture	("ui_icons_newPDA_showmap");
 	}
-
-//	m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
-
+	if (m_can_update){
+		m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
+	}
 	if(m_remTimeStatic->IsShown())
 	{
 		string512									buff, buff2;
@@ -188,6 +188,7 @@ void CUITaskRootItem::OnSwitchDescriptionClicked	(CUIWindow*, void*)
 
 	m_EventsWnd->SetDescriptionMode						(!m_EventsWnd->GetDescriptionMode());
 	OnItemClicked										(this, NULL);
+	m_can_update = !m_can_update;
 }
 
 void CUITaskRootItem::MarkSelected (bool b)
@@ -214,8 +215,8 @@ void CUITaskSubItem::Init			()
 	m_ActiveObjectiveStatic	= xr_new<CUIStatic>();		m_ActiveObjectiveStatic->SetAutoDelete(true);	AttachChild(m_ActiveObjectiveStatic);
 	m_showDescriptionBtn	= xr_new<CUI3tButton>();	m_showDescriptionBtn->SetAutoDelete(true);		AttachChild(m_showDescriptionBtn);
 
-	m_showDescriptionBtn->SetWindowName	("m_showDescriptionBtn");
-	Register						(m_showDescriptionBtn);
+	m_showDescriptionBtn->SetWindowName		("m_showDescriptionBtn");
+	m_showDescriptionBtn->SetMessageTarget	(this);
 
 	AddCallbackStr						("m_showDescriptionBtn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITaskSubItem::OnShowDescriptionClicked));
 

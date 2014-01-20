@@ -109,6 +109,7 @@ void CUIEventsWnd::Draw				()
 
 void	CUIEventsWnd::SendMessage			(CUIWindow* pWnd, s16 msg, void* pData)
 {
+	inherited::SendMessage(pWnd, msg, pData);
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
 }
 

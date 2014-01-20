@@ -22,6 +22,8 @@ class CUITreeViewBoxItem: public CUIListBoxItemEx
 public:
 	void			SetRoot(bool set);
 	bool			IsRoot() const						{ return isRoot; }
+
+	virtual void	SetAutoDelete(bool auto_delete)		{ inherited::SetAutoDelete(false); }
 	
 	int				GetArticleValue() const					{ return m_value; }
 	void			SetArticleValue(int val)					{ m_value = val; }
