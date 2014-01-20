@@ -39,7 +39,6 @@ public:
 
 	virtual void	Init						(LPCSTR tex_name, float x, float y, float width, float height);	
 	
-	virtual	bool	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual bool 	OnMouseDown					(int mouse_btn);
 	void			SetStretch					(bool stretch_texture)	{m_background->SetStretchTexture(stretch_texture);}
 	void			SetStateTextColor			(u32 color, IBState state){m_dwTextColor[state] = color; m_bUseTextColor[state] = true;}

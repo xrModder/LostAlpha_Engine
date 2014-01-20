@@ -23,6 +23,8 @@ public:
 					CUITaskItem				(CUIEventsWnd* w);
 	virtual			~CUITaskItem			();
 	virtual void	SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+
+	virtual bool	OnMouseDown				(int mouse_btn);
 					
 	virtual void	SetGameTask				(CGameTask* gt, u16 obj_idx);
 	virtual void	MarkSelected				(bool b){};
@@ -36,7 +38,7 @@ public:
 
 class CUI3tButton;
 
-class CUITaskRootItem :public CUITaskItem
+class CUITaskRootItem : public CUITaskItem
 {
 	typedef		CUITaskItem	inherited;
 protected:
@@ -56,6 +58,7 @@ public:
 
 	virtual void	MarkSelected			(bool b);
 	virtual bool	OnDbClick				();
+
 };
 
 class CUITaskSubItem :public CUITaskItem

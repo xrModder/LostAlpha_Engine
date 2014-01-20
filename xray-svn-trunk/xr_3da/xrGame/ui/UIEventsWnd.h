@@ -14,7 +14,8 @@ class CUITaskDescrWnd;
 class CUIScrollView;
 class CUITaskItem;
 
-class CUIEventsWnd	:public CUIWindow, public CUIWndCallback{
+class CUIEventsWnd	:public CUIWindow, public CUIWndCallback
+{
 	typedef CUIWindow			inherited;
 	enum ETaskFilters{	eActiveTask			=	0,
 						eAccomplishedTask,

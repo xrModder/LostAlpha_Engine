@@ -44,22 +44,6 @@ void CUI3tButton::OnFocusLost()
 	inherited::OnFocusLost();
 }
 
-bool CUI3tButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
-{
-	switch (mouse_action)
-	{
-		case WINDOW_LBUTTON_DOWN:
-		case WINDOW_RBUTTON_DOWN:
-		{
-			u32 a = 0;
-			a = 3;
-			break;
-		}
-		default: break;
-	}
-	return inherited::OnMouseAction(x, y, mouse_action);
-}
-
 void CUI3tButton::OnFocusReceive()
 {
 	inherited::OnFocusReceive	();

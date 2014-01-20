@@ -136,8 +136,8 @@ m_bClickable(false)
 	Show					(true);
 	Enable					(true);
 #ifdef DEBUG
-	m_debug_color[0] = 0;
-	m_debug_color[1] = 0;
+	for (u16 i = 0; i < 3; ++i)
+		m_debug_color[i] = 0;
 #endif
 #ifdef LOG_ALL_WNDS
 	ListWndCount++;
@@ -198,7 +198,7 @@ void CUIWindow::Draw()
 		add_rect_to_draw(r);
 	}
 
-	draw_debug_rect(this, m_debug_color[BOOL(m_bCursorOverWindow)]);
+	draw_debug_rect(this, IsEnabled() ? m_debug_color[BOOL(m_bCursorOverWindow)] : m_debug_color[2]);
 #endif
 }
 
@@ -331,6 +331,13 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 		m_dwLastClickTime = dwCurTime;
 	}
+
+	if( WINDOW_LBUTTON_UP == mouse_action )
+	{
+		u32 a;
+		a = 5;
+	}
+
 
 	if(GetParent()== NULL)
 	{

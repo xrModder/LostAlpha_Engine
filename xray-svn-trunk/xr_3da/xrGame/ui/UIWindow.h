@@ -153,11 +153,12 @@ public:
 			void			SetWndRect_script	(Frect rect)									{CUISimpleWindow::SetWndRect(rect);}
 			void			SetWndPos_script	(float x, float y)								{CUISimpleWindow::SetWndPos(Fvector2().set(x, y));}
 			void			SetWndSize_script	(float w, float h)								{CUISimpleWindow::SetWndSize(Fvector2().set(w, h));}
-
-	virtual void			SetDebugColor		(u32 color, u32 hcolor)							{m_debug_color[0] = color; m_debug_color[1] = hcolor;}
+#ifdef DEBUG
+	virtual void			SetDebugColor		(u32 color, u32 hcolor, u32 dcolor = 0xffffffff){m_debug_color[0] = color; m_debug_color[1] = hcolor; m_debug_color[2] = dcolor;}
 protected:
-	u32 m_debug_color[2];
+	u32 m_debug_color[3];
 public:
+#endif
 	//прорисовка окна
 	virtual void			Draw				();
 	virtual void			Draw				(float x, float y);

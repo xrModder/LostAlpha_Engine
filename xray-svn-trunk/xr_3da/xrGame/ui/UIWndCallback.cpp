@@ -49,7 +49,7 @@ void CUIWndCallback::AddCallback(CUIWindow* pWnd, s16 evt, const void_function &
 	SCallbackInfo* c	= NewCallback ();
 	c->m_cpp_callback	= f;
 	c->m_control_ptr	= pWnd;
-	c->m_control_name	= "noname";
+	c->m_control_name	= pWnd->WindowName().size() ? pWnd->WindowName() : "noname";
 	c->m_event			= evt;
 }
 
