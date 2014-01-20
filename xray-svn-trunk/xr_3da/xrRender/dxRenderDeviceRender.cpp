@@ -8,7 +8,7 @@ dxRenderDeviceRender::dxRenderDeviceRender()
 {
 	;
 #if defined(USE_DX10) || defined(USE_DX11)
-	m_LastPresentStatus = S_OK;
+	HW.lastPresentStatus = S_OK;
 #endif
 }
 
@@ -269,7 +269,7 @@ dxRenderDeviceRender::DeviceState dxRenderDeviceRender::GetDeviceState()
 	HW.Validate		();
 #if defined(USE_DX10) || defined(USE_DX11)
 #pragma todo("utak3r: mapping presentation results to device states should be carefully checked and corrected if needed.")
-	switch (m_LastPresentStatus)
+	switch (HW.lastPresentStatus)
 	{
 	case S_OK:
 		state = dsOK;
@@ -329,13 +329,9 @@ void dxRenderDeviceRender::Begin()
 void dxRenderDeviceRender::Clear()
 {
 #if defined(USE_DX10) || defined(USE_DX11)
-	//HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D_CLEAR_DEPTH|D3D_CLEAR_STENCIL, 1.0f, 0);
-
-	if (psDeviceFlags.test(rsClearBB))
-	{
-		FLOAT ColorRGBA[4] = {0.0f,0.0f,0.0f,0.0f};
-		HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
-	}
+	FLOAT ColorRGBA[4] = {0.0f,0.0f,0.0f,0.0f};
+	HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
+	HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0f, 0);
 #else	//	USE_DX10
 	CHK_DX(HW.pDevice->Clear(0,0,
 		D3DCLEAR_ZBUFFER|
@@ -365,8 +361,8 @@ void dxRenderDeviceRender::End()
 	DoAsyncScreenshot();
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
-	m_LastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
+	//UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
+	//HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
 #else	//	USE_DX10
 	CHK_DX				(HW.pDevice->EndScene());
 

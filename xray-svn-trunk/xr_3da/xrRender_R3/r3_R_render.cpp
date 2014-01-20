@@ -209,10 +209,10 @@ void CRender::Render		()
 
 	bool	_menu_pp		= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
 	if (_menu_pp)			{
-		Device.Begin();
+		//Device.Begin();
 		render_menu			()	;
 		//HW.m_pSwapChain->Present(1, 0);
-		Device.End();
+		//Device.End();
 		return					;
 	};
 
@@ -232,7 +232,7 @@ void CRender::Render		()
 	if( m_bFirstFrameAfterReset )
 	{
 		m_bFirstFrameAfterReset = false;
-		HW.m_pSwapChain->Present(1, 0);
+		//HW.m_pSwapChain->Present(1, 0);
 		//Device.End();
 		return;
 	}

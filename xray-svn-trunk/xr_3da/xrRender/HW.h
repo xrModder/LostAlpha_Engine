@@ -69,6 +69,8 @@ public:
 	DXGI_SWAP_CHAIN_DESC	m_ChainDesc;	//	DevPP equivalent
 	bool					m_bUsePerfhud;
 	D3D_FEATURE_LEVEL		FeatureLevel;
+
+	HRESULT					lastPresentStatus;
 #elif defined(USE_DX10)
 public:
 	IDXGIAdapter*			m_pAdapter;	//	pD3D equivalent
@@ -86,6 +88,9 @@ public:
 	DXGI_SWAP_CHAIN_DESC	m_ChainDesc;	//	DevPP equivalent
 	bool					m_bUsePerfhud;
 	D3D_FEATURE_LEVEL		FeatureLevel;
+
+	HRESULT					lastPresentStatus;
+
 #else
 private:
 	HINSTANCE 				hD3D;

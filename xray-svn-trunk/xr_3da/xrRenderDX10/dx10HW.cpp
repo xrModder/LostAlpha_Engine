@@ -279,7 +279,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 
 	_SHOW_REF	("* CREATE: DeviceREF:", HW.pDevice);
 
-	//	Create render target and depth-stencil views here
+	//	Create backbuffer and depth-stencil views here
 	UpdateViews();
 
 	//u32	memory									= pDevice->GetAvailableTextureMem	();
@@ -403,45 +403,10 @@ void CHW::selectResolution( u32 &dwWidth, u32 &dwHeight, BOOL bWindowed )
 	}
 }
 
-//	TODO: DX10: check if we need these
-/*
-u32	CHW::selectPresentInterval	()
-{
-	D3DCAPS9	caps;
-	pD3D->GetDeviceCaps(DevAdapter,DevT,&caps);
-
-	if (!psDeviceFlags.test(rsVSync)) 
-	{
-		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE)
-			return D3DPRESENT_INTERVAL_IMMEDIATE;
-		if (caps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE)
-			return D3DPRESENT_INTERVAL_ONE;
-	}
-	return D3DPRESENT_INTERVAL_DEFAULT;
-}
-
-u32 CHW::selectGPU ()
-{
-	if (Caps.bForceGPU_SW) return D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-
-	D3DCAPS9	caps;
-	pD3D->GetDeviceCaps(DevAdapter,DevT,&caps);
-
-	if(caps.DevCaps&D3DDEVCAPS_HWTRANSFORMANDLIGHT)
-	{
-		if (Caps.bForceGPU_NonPure)	return D3DCREATE_HARDWARE_VERTEXPROCESSING;
-		else {
-			if (caps.DevCaps&D3DDEVCAPS_PUREDEVICE) return D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_PUREDEVICE;
-			else return D3DCREATE_HARDWARE_VERTEXPROCESSING;
-		}
-		// return D3DCREATE_MIXED_VERTEXPROCESSING;
-	} else return D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-}
-*/
 DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 {
 	// utak3r: when resizing target, let DXGI calculate the refresh rate for itself.
-	// This is very important for performance, this value is correct.
+	// This is very important for performance, that this value is correct.
 	DXGI_RATIONAL refresh;
 	refresh.Numerator = 0;
 	refresh.Denominator = 1;
@@ -696,30 +661,29 @@ void CHW::UpdateViews()
 	HRESULT R;
 
 	// Create a render target view
-	//R_CHK	(pDevice->GetRenderTarget			(0,&pBaseRT));
-	ID3DTexture2D *pBuffer;
-	R = m_pSwapChain->GetBuffer( 0, __uuidof( ID3DTexture2D ), (LPVOID*)&pBuffer );
+	ID3D10Texture2D *pBuffer;
+	R = m_pSwapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), reinterpret_cast<void **>(&pBuffer));
 	R_CHK(R);
 
-	R = pDevice->CreateRenderTargetView( pBuffer, NULL, &pBaseRT);
+	R = pDevice->CreateRenderTargetView(pBuffer, NULL, &pBaseRT);
 	_RELEASE(pBuffer);
 	R_CHK(R);
 
 	//	Create Depth/stencil buffer
 	//	HACK: DX10: hard depth buffer format
 	//R_CHK	(pDevice->GetDepthStencilSurface	(&pBaseZB));
-	ID3DTexture2D* pDepthStencil = NULL;
-	D3D_TEXTURE2D_DESC descDepth;
+	ID3D10Texture2D* pDepthStencil = NULL;
+	D3D10_TEXTURE2D_DESC descDepth;
 	ZeroMemory(&descDepth, sizeof(descDepth));
 	descDepth.Width = sd.BufferDesc.Width;
 	descDepth.Height = sd.BufferDesc.Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // sd.BufferDesc.Format;
+	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D_BIND_DEPTH_STENCIL;
+	descDepth.Usage = D3D10_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D10_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 	R = pDevice->CreateTexture2D( &descDepth,       // Texture desc
@@ -735,7 +699,7 @@ void CHW::UpdateViews()
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	//	Create Depth/stencil view
-	R = pDevice->CreateDepthStencilView( pDepthStencil, &depthStencilViewDesc, &pBaseZB );
+	R = pDevice->CreateDepthStencilView( pDepthStencil, NULL /*&depthStencilViewDesc*/, &pBaseZB );
 	R_CHK(R);
 
 	_RELEASE(pDepthStencil);

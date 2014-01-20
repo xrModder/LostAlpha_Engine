@@ -21,9 +21,32 @@ void CBackend::OnFrameEnd	()
 #endif    
 	{
 #if defined(USE_DX10) || defined(USE_DX11)
-		//HW.pContext->ClearState();
-		//Invalidate			();
-		// it's not needed here, it's causing only a performance hit
+		// if we're in menu, sync to a v-blank.
+		// if not, read the preferences.
+		UINT VSync = g_pGamePersistent?
+			g_pGamePersistent->m_pMainMenu->IsActive() ?
+			1 : psDeviceFlags.test(rsVSync) ? 1 : 0 : 1;
+		// present and save the results for device state check.
+		HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
+
+		/*try
+		{
+			HW.pContext->ClearState();
+		}
+		catch (...)
+		{
+			Msg("CBackend::OnFrameBegin() - ClearState() raised an exception!");
+			return;
+		}*/
+		try
+		{
+			Invalidate();
+		}
+		catch (...)
+		{
+			Msg("CBackend::OnFrameBegin() - Invalidate() raised an exception!");
+			return;
+		}
 		return;
 #else	//	USE_DX10
 
@@ -48,8 +71,25 @@ void CBackend::OnFrameBegin	()
 	{
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #if defined(USE_DX10) || defined(USE_DX11)
-		Invalidate();
-		//	DX9 sets base rt nd base zb by default
+		/*try
+		{
+			HW.pContext->ClearState();
+		}
+		catch (...)
+		{
+			Msg("CBackend::OnFrameBegin() - ClearState() raised an exception!");
+			return;
+		}*/
+		try
+		{
+			Invalidate();
+		}
+		catch (...)
+		{
+			Msg("CBackend::OnFrameBegin() - Invalidate() raised an exception!");
+			return;
+		}
+		
 		RImplementation.rmNormal();
 		set_RT				(HW.pBaseRT);
 		set_ZB				(HW.pBaseZB);
