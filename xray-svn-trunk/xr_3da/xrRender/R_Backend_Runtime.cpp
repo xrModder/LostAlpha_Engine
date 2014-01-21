@@ -28,25 +28,6 @@ void CBackend::OnFrameEnd	()
 			1 : psDeviceFlags.test(rsVSync) ? 1 : 0 : 1;
 		// present and save the results for device state check.
 		HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
-
-		/*try
-		{
-			HW.pContext->ClearState();
-		}
-		catch (...)
-		{
-			Msg("CBackend::OnFrameBegin() - ClearState() raised an exception!");
-			return;
-		}*/
-		try
-		{
-			Invalidate();
-		}
-		catch (...)
-		{
-			Msg("CBackend::OnFrameBegin() - Invalidate() raised an exception!");
-			return;
-		}
 		return;
 #else	//	USE_DX10
 
@@ -71,29 +52,12 @@ void CBackend::OnFrameBegin	()
 	{
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #if defined(USE_DX10) || defined(USE_DX11)
-		/*try
-		{
-			HW.pContext->ClearState();
-		}
-		catch (...)
-		{
-			Msg("CBackend::OnFrameBegin() - ClearState() raised an exception!");
-			return;
-		}*/
-		try
-		{
-			Invalidate();
-		}
-		catch (...)
-		{
-			Msg("CBackend::OnFrameBegin() - Invalidate() raised an exception!");
-			return;
-		}
-		
+		HW.pContext->ClearState();
+		Invalidate();		
 		RImplementation.rmNormal();
 		set_RT				(HW.pBaseRT);
 		set_ZB				(HW.pBaseZB);
-#endif	//	USE_DX10
+#endif 	//	USE_DX10
 		Memory.mem_fill		(&stat,0,sizeof(stat));
 		Vertex.Flush		();
 		Index.Flush			();
