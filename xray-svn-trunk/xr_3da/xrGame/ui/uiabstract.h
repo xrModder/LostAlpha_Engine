@@ -49,7 +49,7 @@ public:
 	virtual void			SetWndSize			(float x, float y)							{m_wndSize.set(x,y);}
 	IC const Fvector2&		GetWndSize			()						const				{return m_wndSize;}
 	virtual void			SetWndRect			(const Frect& rect)							{m_wndPos.set(rect.lt); rect.getsize(m_wndSize);}
-	virtual void			SetWndRect			(float x, float y, float w, float h)		{SetWndRect(Frect().set(x,y,w,h));}
+	virtual void			SetWndRect			(float x, float y, float w, float h)		{SetWndPos(x,y); SetWndSize(w,h);}
 
 	virtual void			SetHeight			(float height)								{m_wndSize.y = height;}
 	IC		float			GetHeight			()						const				{return m_wndSize.y;}

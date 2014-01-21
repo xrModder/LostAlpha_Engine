@@ -36,8 +36,8 @@ protected:
 	CUITabControl*			UITabControl;
 
 	// Установить игровое время
-	void					UpdateDateTime					();
-	void					DrawUpdatedSections				();
+	void					UpdateDateTime				();
+	void					DrawUpdatedSections			();
 protected:
 	// Бэкграунд
 	CUIStatic*				UIMainPdaFrame;
@@ -61,35 +61,35 @@ public:
 	CUIActorInfoWnd*		UIActorInfo;
 	CUIStalkersRankingWnd*	UIStalkersRanking;
 	CUIEventsWnd*			UIEventsWnd;
-	CUIDialogWndEx*				UIChatWnd;
-	CUIDialogWndEx*				UISkillsWnd;
-	CUIDialogWndEx*				UIDownloadsWnd;
+	CUIDialogWndEx*			UIChatWnd;
+	CUIDialogWndEx*			UISkillsWnd;
+	CUIDialogWndEx*			UIDownloadsWnd;
 	CUI3tButton*			m_pUIClose;
 
-	virtual void			Reset				();
+	virtual void			Reset						();
 
 public:
-							CUIPdaWnd			();
-	virtual					~CUIPdaWnd			();
+							CUIPdaWnd					();
+	virtual					~CUIPdaWnd					();
+	
+	virtual void 			Init						();
 
-	virtual void 			Init				();
+	virtual void 			SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
-	virtual void 			SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
-
-	virtual void 			Draw				();
-	virtual void 			Update				();
-	virtual void 			ShowDialog				(bool bDoHideIndicators);
-	virtual void 			HideDialog				();
+	virtual void 			Draw						();
+	virtual void 			Update						();
+	virtual void 			ShowDialog					(bool bDoHideIndicators);
+	virtual void 			HideDialog					();
 	
 	virtual void 			EnableSkills				(bool val);
 	virtual void 			EnableDownloads				(bool val);
 
 	virtual bool			OnMouseAction				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouseAction(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
 	
-	void					SetActiveSubdialog	(EPdaTabs section);
-	virtual bool			StopAnyMove			(){return false;}
+	void					SetActiveSubdialog			(EPdaTabs section);
+	virtual bool			StopAnyMove					(){return false;}
 
-			void			PdaContentsChanged	(pda_section::part type);
+			void			PdaContentsChanged			(pda_section::part type);
 };
 
 #endif

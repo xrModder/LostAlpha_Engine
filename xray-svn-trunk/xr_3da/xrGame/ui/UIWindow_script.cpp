@@ -111,6 +111,9 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWidth",				(void (CUIWindow::*)(float)) &CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
 		.def("SetHeight",				(void (CUIWindow::*)(float)) &CUIWindow::SetHeight)
+#ifdef DEBUG
+		.def("SetDebugColor",			&CUIWindow::SetDebugColor)
+#endif
 
 
 		.def("Enable",					&CUIWindow::Enable)

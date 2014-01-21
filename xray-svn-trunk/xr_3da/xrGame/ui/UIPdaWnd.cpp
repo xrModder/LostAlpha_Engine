@@ -579,7 +579,7 @@ void CUIPdaWnd::EnableSkills(bool val)
 	else
 		InventoryUtilities::SendInfoToActor("pda_skills_disabled");
 
-	UITabControl->GetButtonsVector()->at(7)->Enable(val);
+	UITabControl->GetButtonsVector()->at(eptSkills)->Enable(val);
 }
 
 void CUIPdaWnd::EnableDownloads(bool val)
@@ -589,5 +589,5 @@ void CUIPdaWnd::EnableDownloads(bool val)
 	else
 		InventoryUtilities::SendInfoToActor("pda_downloads_disabled");
 
-	UITabControl->GetButtonsVector()->at(8)->Enable(val);
+	UITabControl->GetButtonsVector()->at(eptDownloads)->Enable(val);
 }

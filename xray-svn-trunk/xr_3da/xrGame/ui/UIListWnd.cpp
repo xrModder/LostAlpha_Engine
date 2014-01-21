@@ -213,14 +213,22 @@ void CUIListWnd::UpdateList()
 			i<_min(m_ItemList.size(),m_iFirstShownIndex + m_iRowNum+1);
 			++i, ++it)
 	{
-		(*it)->SetWndRect((*it)->GetWndRect().left, m_bVertFlip?GetHeight()-(i-m_iFirstShownIndex)* m_iItemHeight-m_iItemHeight:(i-m_iFirstShownIndex)* m_iItemHeight, 
+		CUIListItem* item = (*it);
+		
+		item->SetWndRect(item->GetWndRect().left, m_bVertFlip?GetHeight()-(i-m_iFirstShownIndex)* m_iItemHeight-m_iItemHeight:(i-m_iFirstShownIndex)* m_iItemHeight, 
 							m_iItemWidth, m_iItemHeight);
-		(*it)->Show(true);
+		
+/*		
+		item->SetWndPos(Fvector2().set(item->GetWndRect().left, 
+				m_bVertFlip?GetHeight()-(i-m_iFirstShownIndex)* m_iItemHeight-m_iItemHeight:(i-m_iFirstShownIndex)* m_iItemHeight));
+		item->SetWndSize(Fvector2().set(m_iItemWidth, m_iItemHeight));
+*/
+		item->Show(true);
 		
 		if (m_bListActivity) 
-			(*it)->Enable(true);
+			item->Enable(true);
 		else
-			(*it)->Enable(false);
+			item->Enable(false);
 	}
 
 	--it;
@@ -486,21 +494,24 @@ int CUIListWnd::FindItemWithValue(int iValue)
 
 bool CUIListWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
+	
+	inherited::OnMouseAction(x, y, mouse_action);
+
 	switch(mouse_action)
 	{
-	case WINDOW_LBUTTON_DB_CLICK:
-			break;
-	case WINDOW_MOUSE_WHEEL_DOWN:
-			m_ScrollBar->TryScrollInc	();
-			return						true;
-			break;
-	case WINDOW_MOUSE_WHEEL_UP:
-			m_ScrollBar->TryScrollDec();
-			return						true;
-			break;
+		case WINDOW_LBUTTON_DB_CLICK:
+				break;
+		case WINDOW_MOUSE_WHEEL_DOWN:
+				m_ScrollBar->TryScrollInc	();
+				return						true;
+				break;
+		case WINDOW_MOUSE_WHEEL_UP:
+				m_ScrollBar->TryScrollDec();
+				return						true;
+				break;
 	}
 
-	return inherited::OnMouseAction(x, y, mouse_action);
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -579,6 +590,7 @@ void CUIListWnd::Update()
 	inherited::Update();
 	if(m_ActiveBackgroundFrame)
 		m_ActiveBackgroundFrame->Update();
+
 }
 
 void CUIListWnd::SetFocusedItem(int iNewFocusedItem)

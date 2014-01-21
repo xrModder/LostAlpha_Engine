@@ -148,11 +148,17 @@ public:
 			void			Init_script		(float x, float y, float w, float h)	{CUISimpleWindow::SetWndPos(Fvector2().set(x, y));
 														CUISimpleWindow::SetWndSize(Fvector2().set(w, h));}
 
-			void			SetWndRect_script	(float x, float y, float w, float h)							{CUISimpleWindow::SetWndRect(Frect().set(x, y, w, h));}
+			void			SetWndRect_script	(float x, float y, float w, float h)			{CUISimpleWindow::SetWndPos(Fvector2().set(x, y));
+																									CUISimpleWindow::SetWndSize(Fvector2().set(w, h));}
 			void			SetWndRect_script	(Frect rect)									{CUISimpleWindow::SetWndRect(rect);}
 			void			SetWndPos_script	(float x, float y)								{CUISimpleWindow::SetWndPos(Fvector2().set(x, y));}
 			void			SetWndSize_script	(float w, float h)								{CUISimpleWindow::SetWndSize(Fvector2().set(w, h));}
-
+#ifdef DEBUG
+	virtual void			SetDebugColor		(u32 color, u32 hcolor, u32 dcolor = 0xffffffff){m_debug_color[0] = color; m_debug_color[1] = hcolor; m_debug_color[2] = dcolor;}
+protected:
+	u32 m_debug_color[3];
+public:
+#endif
 	//прорисовка окна
 	virtual void			Draw				();
 	virtual void			Draw				(float x, float y);
@@ -250,3 +256,6 @@ public:
 };
 
 bool fit_in_rect(CUIWindow* w, Frect const& vis_rect, float border = 0.0f, float dx16pos = 0.0f );
+#ifdef DEBUG
+void draw_debug_rect(CUIWindow* w, u32 color = 0xffff0000);
+#endif

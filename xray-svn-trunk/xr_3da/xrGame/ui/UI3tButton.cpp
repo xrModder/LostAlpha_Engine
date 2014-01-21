@@ -177,11 +177,6 @@ void CUI3tButton::SetTextureOffset(float x, float y)
 	}
 }
 
-void  CUI3tButton::Draw()
-{
-	inherited::Draw();
-}
-
 void CUI3tButton::DrawTexture()
 {
 	if ( m_bTextureEnable )

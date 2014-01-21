@@ -42,5 +42,5 @@ void CUIListItemEx::SetSelectionColor(u32 dwColor)
 
 void CUIListItemEx::Draw()
 {
-	inherited::Draw();	
+	inherited::Draw();
 }
