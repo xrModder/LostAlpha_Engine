@@ -329,9 +329,13 @@ void dxRenderDeviceRender::Begin()
 void dxRenderDeviceRender::Clear()
 {
 #if defined(USE_DX10) || defined(USE_DX11)
-	FLOAT ColorRGBA[4] = {0.0f,0.0f,0.0f,0.0f};
-	HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
-	HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0f, 0);
+
+	if (psDeviceFlags.test(rsClearBB))
+	{
+		FLOAT ColorRGBA[4] = {0.0f,0.0f,0.0f,0.0f};
+		HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
+		HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0f, 0);
+	}
 #else	//	USE_DX10
 	CHK_DX(HW.pDevice->Clear(0,0,
 		D3DCLEAR_ZBUFFER|
