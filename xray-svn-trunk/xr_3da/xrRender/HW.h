@@ -34,6 +34,7 @@ public:
 	void					selectResolution		(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed);
 #if defined(USE_DX10)
 	DXGI_FORMAT				selectDepthStencil		(DXGI_FORMAT);
+	DXGI_FORMAT				selectFormat			(bool isForOutput);
 #else
 	D3DFORMAT				selectDepthStencil		(D3DFORMAT);
 #endif // USE_DX10

@@ -192,7 +192,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	ZeroMemory(&m_ChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 	selectResolution(m_ChainDesc.BufferDesc.Width, m_ChainDesc.BufferDesc.Height, bWindowed);
 	m_ChainDesc.BufferCount = 1;
-    m_ChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    m_ChainDesc.BufferDesc.Format = selectFormat(true);
     m_ChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     m_ChainDesc.OutputWindow = m_hWnd;
     m_ChainDesc.SampleDesc.Count = 1;
@@ -372,9 +372,39 @@ void CHW::Reset (HWND hwnd)
 
 }
 
+DXGI_FORMAT CHW::selectFormat(bool isForOutput)
+{
+#pragma todo("utak3r: selectFormat needs reflecting vid_bpp variable.") 
+	DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
+	/*
+	// check which format is supported:
+	switch (psCurrentBPP)
+	{
+	case 32:
+		// DXGI_FORMAT_B8G8R8A8_UNORM
+		// DXGI_FORMAT_R8G8B8A8_UNORM
+		// DXGI_FORMAT_B8G8R8X8_UNORM
+		break;
+	case 16:
+	default:
+		// DXGI_FORMAT_B5G6R5_UNORM
+		break;
+	}
+	// stencil: DXGI_FORMAT_D16_UNORM
+	// stencil: DXGI_FORMAT_D24_UNORM_S8_UINT
+	*/
+
+	if (isForOutput)
+		format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	else
+		format = DXGI_FORMAT_D16_UNORM;
+
+	return format;
+}
+
 DXGI_FORMAT CHW::selectDepthStencil	(DXGI_FORMAT fTarget)
 {
-#pragma todo("R3 need to specify depth format")
+	// this is UNUSED!
 	return DXGI_FORMAT_D24_UNORM_S8_UINT;  // D3DFMT_D24S8
 }
 
@@ -601,7 +631,7 @@ void fill_vid_mode_list(CHW* _hw)
 	VERIFY(pOutput);
 
 	UINT num = 0;
-	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DXGI_FORMAT format = _hw->selectFormat(true);
 	UINT flags         = 0;
 
 	// Get the number of display modes available
@@ -679,7 +709,7 @@ void CHW::UpdateViews()
 	descDepth.Height = sd.BufferDesc.Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDepth.Format = selectFormat(false);
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
 	descDepth.Usage = D3D10_USAGE_DEFAULT;
@@ -694,7 +724,7 @@ void CHW::UpdateViews()
 	// set format etc.
 	D3D10_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
-	depthStencilViewDesc.Format = descDepth.Format; //DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.Format = descDepth.Format; 
 	depthStencilViewDesc.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
