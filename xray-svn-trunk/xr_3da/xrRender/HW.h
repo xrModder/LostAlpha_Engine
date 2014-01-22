@@ -35,6 +35,7 @@ public:
 #if defined(USE_DX10)
 	DXGI_FORMAT				selectDepthStencil		(DXGI_FORMAT);
 	DXGI_FORMAT				selectFormat			(bool isForOutput);
+	bool              isSupportingColorFormat(DXGI_FORMAT format, D3D10_FORMAT_SUPPORT support);
 #else
 	D3DFORMAT				selectDepthStencil		(D3DFORMAT);
 #endif // USE_DX10

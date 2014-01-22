@@ -242,6 +242,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	   {
 		   pContext = pDevice1;
 		   pDevice = pDevice1;
+		   FeatureLevel = D3D_FEATURE_LEVEL_10_1;
 	   }
    }
 
@@ -272,6 +273,7 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	   else
 	   {
 		   pContext = pDevice;
+		   FeatureLevel = D3D_FEATURE_LEVEL_10_0;
 	   }
    }
    
@@ -372,33 +374,55 @@ void CHW::Reset (HWND hwnd)
 
 }
 
+bool CHW::isSupportingColorFormat(DXGI_FORMAT format, D3D10_FORMAT_SUPPORT support)
+{
+	UINT values = 0;
+	if (!pDevice)
+	  return false;
+	if (FAILED(pDevice->CheckFormatSupport(format, &values)))
+		return false;
+
+	if (values && support)
+		return true;
+
+	return false;
+}
+
 DXGI_FORMAT CHW::selectFormat(bool isForOutput)
 {
-#pragma todo("utak3r: selectFormat needs reflecting vid_bpp variable.") 
 	DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
-	/*
-	// check which format is supported:
-	switch (psCurrentBPP)
-	{
-	case 32:
-		// DXGI_FORMAT_B8G8R8A8_UNORM
-		// DXGI_FORMAT_R8G8B8A8_UNORM
-		// DXGI_FORMAT_B8G8R8X8_UNORM
-		break;
-	case 16:
-	default:
-		// DXGI_FORMAT_B5G6R5_UNORM
-		break;
-	}
-	// stencil: DXGI_FORMAT_D16_UNORM
-	// stencil: DXGI_FORMAT_D24_UNORM_S8_UINT
-	*/
-
+	
 	if (isForOutput)
-		format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	{
+	  switch (psCurrentBPP)
+	  {
+	  case 32:
+	    if ((FeatureLevel >= D3D_FEATURE_LEVEL_10_1) && 
+	          isSupportingColorFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D3D10_FORMAT_SUPPORT_RENDER_TARGET))
+	      format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	    else
+	      // it should be supported on every device...
+	      format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	    break;
+	  case 16:
+	  default:
+	    if (isSupportingColorFormat(DXGI_FORMAT_B5G6R5_UNORM, D3D10_FORMAT_SUPPORT_RENDER_TARGET))
+	      format = DXGI_FORMAT_B5G6R5_UNORM;
+	    else
+	      // it should be supported on every device...
+	      format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	    break;
+	  }
+	}
 	else
-		format = DXGI_FORMAT_D16_UNORM;
-
+	{
+	  // for some reason, xray is written in a way it *REQUIRES*
+	  // the depth stencil texture to be DXGI_FORMAT_D24_UNORM_S8_UINT
+	  // if we select some 16-bit texture format, like DXGI_FORMAT_D16_UNORM
+	  // it will render an incorrect image.
+    format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	}
+	
 	return format;
 }
 
