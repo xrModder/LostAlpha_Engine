@@ -312,7 +312,7 @@ void CUIWindow::GetAbsoluteRect(Frect& r)
 bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {	
 	Frect	wndRect;
-	GetAbsoluteRect(wndRect);
+	GetWndRect(wndRect);
 
 	cursor_pos.x = x;
 	cursor_pos.y = y;
@@ -397,20 +397,20 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		} else
 #endif
 		{
-			Frect wndRect;
-			w->GetAbsoluteRect(wndRect);
-			if (wndRect.in(cursor_pos) )
+			Frect childRect;
+			w->GetWndRect(childRect);
+			if (childRect.in(cursor_pos) )
 			{
 				if(w->IsEnabled())
 				{
-					if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
-								   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
+					if( w->OnMouseAction(cursor_pos.x -childRect.left, 
+								   cursor_pos.y -childRect.top, mouse_action))return true;
 				}
 			}
 			else if (w->IsEnabled() && w->CursorOverWindow())
 			{
-				if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
-							   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
+				if( w->OnMouseAction(cursor_pos.x -childRect.left, 
+							   cursor_pos.y -childRect.top, mouse_action))return true;
 			}
 		}
 	}

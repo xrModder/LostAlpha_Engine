@@ -205,6 +205,13 @@ void CUIEventsWnd::SetDescriptionMode		(bool bMap)
 		m_UIRightWnd->AttachChild		(m_UITaskInfoWnd);
 	}
 	m_flags.set(flMapMode, bMap);
+	u32 sz = m_ListWnd->GetSize ();
+	for (u32 i=0; i<sz; ++i)
+	{
+		CUITaskItem* itm = smart_cast<CUITaskItem*>(m_ListWnd->GetItem(i));
+		itm->OnMapShown(bMap);
+	}
+
 }
 
 bool CUIEventsWnd::GetDescriptionMode		()

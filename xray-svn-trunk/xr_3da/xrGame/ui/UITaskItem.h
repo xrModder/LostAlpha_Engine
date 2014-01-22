@@ -11,7 +11,7 @@ class CUIEventsWnd;
 class CUIEditBoxEx;
 class CUIEditBox;
 
-class CUITaskItem :public CUIWindow, public CUIWndCallback
+class XR_ABSTRACT CUITaskItem : public CUIWindow, public CUIWndCallback
 {
 	typedef		CUIWindow	inherited;
 protected:
@@ -27,7 +27,9 @@ public:
 	virtual bool	OnMouseDown				(int mouse_btn);
 					
 	virtual void	SetGameTask				(CGameTask* gt, u16 obj_idx);
-	virtual void	MarkSelected				(bool b){};
+
+	virtual void	MarkSelected			(bool b) = 0;
+	virtual void    OnMapShown				(bool state) = 0;
 
 	CGameTask*		GameTask				()	{return m_GameTask;}
 	u16				ObjectiveIdx			()	{return m_TaskObjectiveIdx;}
@@ -59,6 +61,7 @@ public:
 
 	virtual void	MarkSelected			(bool b);
 	virtual bool	OnDbClick				();
+	virtual void    OnMapShown				(bool state);
 
 };
 
@@ -85,6 +88,7 @@ public:
 	void __stdcall	OnShowDescriptionClicked(CUIWindow*, void*);
 	virtual void	MarkSelected			(bool b);
 	virtual bool	OnDbClick				();
+	virtual void    OnMapShown				(bool state);
 };
 /*
 class CUIUserTaskEditWnd;

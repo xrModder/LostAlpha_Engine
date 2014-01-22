@@ -99,6 +99,8 @@
 
 #define	xr_pure_interface	__interface
 
+#define XR_ABSTRACT __declspec(novtable)
+
 #ifndef DEBUG
 	#pragma inline_depth	( 254 )
 	#pragma inline_recursion( on )

@@ -214,6 +214,7 @@ void CUIPdaWnd::ShowDialog(bool bDoHideIndicators)
 		Init();
 	InventoryUtilities::SendInfoToActor("ui_pda");
 	inherited::ShowDialog(bDoHideIndicators);
+	//BringToTop(UITabControl);
 }
 
 void CUIPdaWnd::HideDialog()

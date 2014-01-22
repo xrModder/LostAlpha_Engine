@@ -41,10 +41,11 @@ void CUIScrollView::InitScrollView				()
 {
 	if (!m_pad)
 	{
-        m_pad						= xr_new<CUIWindow>(); m_pad->SetAutoDelete(true);
+        m_pad						= xr_new<CUIWindow>(); 
+		m_pad->SetAutoDelete		(true);
 		AttachChild					(m_pad);
 	}
-	m_pad->SetWndPos			(Fvector2().set(0,0));
+	m_pad->SetWndPos			(Fvector2().set(0,0)); 
 	if (!m_VScrollBar)
 	{
 		m_VScrollBar = xr_new<CUIScrollBar>();
@@ -209,6 +210,7 @@ void CUIScrollView::Draw				()
 	GetAbsoluteRect		(visible_rect);
 	visible_rect.top	+= m_upIndent;
 	visible_rect.bottom -= m_downIndent;
+	
 	UI().PushScissor					(visible_rect);
 	
 	WINDOW_LIST_it it					= m_pad->GetChildWndList().begin();

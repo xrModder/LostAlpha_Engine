@@ -154,6 +154,11 @@ void CUITaskRootItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 	}
 }
 
+void CUITaskRootItem::OnMapShown (bool state)
+{
+	m_switchDescriptionBtn->SetButtonState(state ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
+}
+
 void CUITaskRootItem::Update		()
 {
 	inherited::Update();
@@ -164,9 +169,9 @@ void CUITaskRootItem::Update		()
 		else
 			m_switchDescriptionBtn->InitTexture	("ui_icons_newPDA_showmap");
 	}
-	if (m_can_update){
-		m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
-	}
+
+//	m_switchDescriptionBtn->SetButtonState(m_EventsWnd->GetDescriptionMode() ? CUIButton::BUTTON_NORMAL : CUIButton::BUTTON_PUSHED);
+	
 	if(m_remTimeStatic->IsShown())
 	{
 		string512									buff, buff2;
@@ -294,6 +299,10 @@ void CUITaskSubItem::OnActiveObjectiveClicked()
 void CUITaskSubItem::OnShowDescriptionClicked (CUIWindow*, void*)
 {
 	m_EventsWnd->ShowDescription						(GameTask(), ObjectiveIdx());
+}
+
+void CUITaskSubItem::OnMapShown (bool state)
+{
 }
 
 void CUITaskSubItem::MarkSelected (bool b)

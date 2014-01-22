@@ -15,7 +15,7 @@ CUITabButton::CUITabButton()
 
 CUITabButton::~CUITabButton()
 {}
-
+ 
 bool CUITabButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	return CUIWindow::OnMouseAction(x, y, mouse_action);
@@ -27,8 +27,8 @@ bool CUITabButton::OnMouseDown(int mouse_btn)
 	{
 		GetMessageTarget()->SendMessage(this, TAB_CHANGED, NULL);
 		return true;
-	} else
-		return false;
+	} 
+	return false;
 }
 
 void CUITabButton::Update()
