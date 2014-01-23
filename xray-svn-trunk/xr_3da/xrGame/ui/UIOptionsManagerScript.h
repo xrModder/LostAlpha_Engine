@@ -14,6 +14,9 @@ public:
 	void 		SendMessage2Group		(LPCSTR group, LPCSTR message);
 	bool 		NeedSystemRestart		();
 	bool 		NeedVidRestart			();
+	void 		DoVidRestart		();
+	void 		DoSndRestart		();
+	void 		DoSystemRestart		();
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

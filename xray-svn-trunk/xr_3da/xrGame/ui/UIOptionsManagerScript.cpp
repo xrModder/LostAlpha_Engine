@@ -32,6 +32,18 @@ void CUIOptionsManagerScript::SendMessage2Group(const char* group, const char* m
 	CUIOptionsItem::GetOptionsManager()->SendMessage2Group(group, message);
 }
 
+void CUIOptionsManagerScript::DoVidRestart(){
+	CUIOptionsItem::GetOptionsManager()->DoVidRestart();
+}
+
+void CUIOptionsManagerScript::DoSndRestart(){
+	CUIOptionsItem::GetOptionsManager()->DoSndRestart();
+}
+
+void CUIOptionsManagerScript::DoSystemRestart(){
+	CUIOptionsItem::GetOptionsManager()->DoSystemRestart();
+}
+
 bool CUIOptionsManagerScript::NeedSystemRestart()
 {
 	return CUIOptionsItem::GetOptionsManager()->NeedSystemRestart();
@@ -57,5 +69,8 @@ void CUIOptionsManagerScript::script_register(lua_State *L)
 			.def("SendMessage2Group",	&CUIOptionsManagerScript::SendMessage2Group )
 			.def("NeedSystemRestart",	&CUIOptionsManagerScript::NeedSystemRestart )
 			.def("NeedVidRestart",		&CUIOptionsManagerScript::NeedVidRestart )
+			.def("DoVidRestart",		&CUIOptionsManagerScript::DoVidRestart )
+			.def("DoSndRestart",		&CUIOptionsManagerScript::DoSndRestart )
+			.def("DoSystemRestart",		&CUIOptionsManagerScript::DoSystemRestart )
 		];
 }
