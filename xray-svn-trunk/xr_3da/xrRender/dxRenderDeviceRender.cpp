@@ -7,6 +7,9 @@ dxRenderDeviceRender::dxRenderDeviceRender()
 	:	Resources(0)
 {
 	;
+#if defined(USE_DX10) || defined(USE_DX11)
+	HW.lastPresentStatus = S_OK;
+#endif
 }
 
 void dxRenderDeviceRender::Copy(IRenderDeviceRender &_in)
@@ -87,7 +90,7 @@ void dxRenderDeviceRender::SetupStates()
 
 #if defined(USE_DX10) || defined(USE_DX11)
 	//	TODO: DX10: Implement Resetting of render states into default mode
-	//VERIFY(!"dxRenderDeviceRender::SetupStates not implemented.");
+	//HW.pContext->ClearState();
 #else	//	USE_DX10
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)				{
 		float fBias = -.5f	;
@@ -262,26 +265,44 @@ void dxRenderDeviceRender::ResourcesDumpMemoryUsage()
 
 dxRenderDeviceRender::DeviceState dxRenderDeviceRender::GetDeviceState()
 {
+	dxRenderDeviceRender::DeviceState state = dsOK;
 	HW.Validate		();
 #if defined(USE_DX10) || defined(USE_DX11)
-	//	TODO: DX10: Implement GetDeviceState
-	//	TODO: DX10: Implement DXGI_PRESENT_TEST testing
-	//VERIFY(!"dxRenderDeviceRender::overdrawBegin not implemented.");
+#pragma todo("utak3r: mapping presentation results to device states should be carefully checked and corrected if needed.")
+	switch (HW.lastPresentStatus)
+	{
+	case S_OK:
+		state = dsOK;
+		break;
+	case DXGI_ERROR_NOT_CURRENTLY_AVAILABLE:
+	case DXGI_ERROR_FRAME_STATISTICS_DISJOINT:
+	case DXGI_ERROR_WAS_STILL_DRAWING:
+	case DXGI_ERROR_UNSUPPORTED:
+		state = dsLost;
+		break;
+	case DXGI_ERROR_DEVICE_RESET:
+	case DXGI_ERROR_DEVICE_REMOVED:
+	case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+		state = dsNeedReset;
+		break;
+	default:
+		state = dsOK;
+	}
 #else	//	USE_DX10
 	HRESULT	_hr		= HW.pDevice->TestCooperativeLevel();
 	if (FAILED(_hr))
 	{
 		// If the device was lost, do not render until we get it back
 		if		(D3DERR_DEVICELOST==_hr)
-			return dsLost;
+			state = dsLost;
 
 		// Check if the device is ready to be reset
 		if		(D3DERR_DEVICENOTRESET==_hr)
-			return dsNeedReset;
+			state = dsNeedReset;
 	}
 #endif	//	USE_DX10
 
-	return dsOK;
+	return state;
 }
 
 BOOL dxRenderDeviceRender::GetForceGPU_REF()
@@ -308,13 +329,12 @@ void dxRenderDeviceRender::Begin()
 void dxRenderDeviceRender::Clear()
 {
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.pContext->ClearDepthStencilView(RCache.get_ZB(), 
-		D3D_CLEAR_DEPTH|D3D_CLEAR_STENCIL, 1.0f, 0);
 
 	if (psDeviceFlags.test(rsClearBB))
 	{
 		FLOAT ColorRGBA[4] = {0.0f,0.0f,0.0f,0.0f};
 		HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
+		HW.pContext->ClearDepthStencilView(RCache.get_ZB(), D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0f, 0);
 	}
 #else	//	USE_DX10
 	CHK_DX(HW.pDevice->Clear(0,0,
@@ -330,6 +350,11 @@ void DoAsyncScreenshot();
 
 void dxRenderDeviceRender::End()
 {
+	if (!HW.pDevice)
+	{
+		Msg("FATAL ERROR: dxRenderDeviceRender::End(): HW.pDevice is lost!");
+		FlushLog();
+	}
 	VERIFY	(HW.pDevice);
 
 	if (HW.Caps.SceneMode)	overdrawEnd();
@@ -340,8 +365,8 @@ void dxRenderDeviceRender::End()
 	DoAsyncScreenshot();
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
-	HW.m_pSwapChain->Present( VSync, 0 );
+	//UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
+	//HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
 #else	//	USE_DX10
 	CHK_DX				(HW.pDevice->EndScene());
 

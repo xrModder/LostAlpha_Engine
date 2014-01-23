@@ -32,7 +32,13 @@ public:
 	void					Reset					(HWND hw);
 
 	void					selectResolution		(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed);
+#if defined(USE_DX10)
+	DXGI_FORMAT				selectDepthStencil		(DXGI_FORMAT);
+	DXGI_FORMAT				selectFormat			(bool isForOutput);
+	bool              isSupportingColorFormat(DXGI_FORMAT format, D3D10_FORMAT_SUPPORT support);
+#else
 	D3DFORMAT				selectDepthStencil		(D3DFORMAT);
+#endif // USE_DX10
 	u32						selectPresentInterval	();
 	u32						selectGPU				();
 	u32						selectRefresh			(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt);
@@ -65,6 +71,8 @@ public:
 	DXGI_SWAP_CHAIN_DESC	m_ChainDesc;	//	DevPP equivalent
 	bool					m_bUsePerfhud;
 	D3D_FEATURE_LEVEL		FeatureLevel;
+
+	HRESULT					lastPresentStatus;
 #elif defined(USE_DX10)
 public:
 	IDXGIAdapter*			m_pAdapter;	//	pD3D equivalent
@@ -82,6 +90,9 @@ public:
 	DXGI_SWAP_CHAIN_DESC	m_ChainDesc;	//	DevPP equivalent
 	bool					m_bUsePerfhud;
 	D3D_FEATURE_LEVEL		FeatureLevel;
+
+	HRESULT					lastPresentStatus;
+
 #else
 private:
 	HINSTANCE 				hD3D;

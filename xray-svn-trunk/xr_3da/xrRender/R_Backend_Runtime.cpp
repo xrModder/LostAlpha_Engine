@@ -21,8 +21,14 @@ void CBackend::OnFrameEnd	()
 #endif    
 	{
 #if defined(USE_DX10) || defined(USE_DX11)
-		HW.pContext->ClearState();
-		Invalidate			();
+		// if we're in menu, sync to a v-blank.
+		// if not, read the preferences.
+		UINT VSync = g_pGamePersistent?
+			g_pGamePersistent->m_pMainMenu->IsActive() ?
+			1 : psDeviceFlags.test(rsVSync) ? 1 : 0 : 1;
+		// present and save the results for device state check.
+		HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
+		return;
 #else	//	USE_DX10
 
 		for (u32 stage=0; stage<HW.Caps.raster.dwStages; stage++)
@@ -46,12 +52,12 @@ void CBackend::OnFrameBegin	()
 	{
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #if defined(USE_DX10) || defined(USE_DX11)
-		Invalidate();
-		//	DX9 sets base rt nd base zb by default
+		HW.pContext->ClearState();
+		Invalidate();		
 		RImplementation.rmNormal();
 		set_RT				(HW.pBaseRT);
 		set_ZB				(HW.pBaseZB);
-#endif	//	USE_DX10
+#endif 	//	USE_DX10
 		Memory.mem_fill		(&stat,0,sizeof(stat));
 		Vertex.Flush		();
 		Index.Flush			();
@@ -76,12 +82,14 @@ void CBackend::Invalidate	()
 	state						= NULL;
 	ps							= NULL;
 	vs							= NULL;
-DX10_ONLY(gs					= NULL);
-#ifdef USE_DX11
+#if defined(USE_DX10) || defined(USE_DX11)
+	gs							= NULL;
+#if defined(USE_DX11)
 	hs = 0;
 	ds = 0;
 	cs = 0;
-#endif
+#endif // USE_DX11
+#endif // USE_DX10
 	ctable						= NULL;
 
 	T							= NULL;

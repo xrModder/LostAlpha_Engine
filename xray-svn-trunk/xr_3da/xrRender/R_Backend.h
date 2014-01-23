@@ -132,11 +132,11 @@ private:
 	ID3DVertexShader*				vs;
 #if defined(USE_DX10) || defined(USE_DX11)
 	ID3DGeometryShader*				gs;
-#	ifdef USE_DX11
+#if defined(USE_DX11)
 	ID3D11HullShader*				hs;
 	ID3D11DomainShader*				ds;
 	ID3D11ComputeShader*			cs;
-#	endif
+#endif
 #endif	//	USE_DX10
 
 #ifdef DEBUG
@@ -176,11 +176,11 @@ private:
 	CTexture*						textures_vs	[mtMaxVertexShaderTextures];	// 4 vs
 #if defined(USE_DX10) || defined(USE_DX11)
 	CTexture*						textures_gs	[mtMaxGeometryShaderTextures];	// 4 vs
-#	ifdef USE_DX11
+#if defined(USE_DX11)
 	CTexture*						textures_hs	[mtMaxHullShaderTextures];	// 4 vs
 	CTexture*						textures_ds	[mtMaxDomainShaderTextures];	// 4 vs
 	CTexture*						textures_cs	[mtMaxComputeShaderTextures];	// 4 vs
-#	endif
+#endif
 #endif	//	USE_DX10
 #ifdef _EDITOR
 	CMatrix*						matrices	[8	];	// matrices are supported only for FFP
@@ -287,7 +287,7 @@ public:
 	ICF void						set_GS				(ID3DGeometryShader* _gs, LPCSTR _n=0);
 	ICF void						set_GS				(ref_gs& _gs)						{ set_GS(_gs->gs,_gs->cName.c_str());				}
 
-#	ifdef USE_DX11
+#if defined(USE_DX11)
 	ICF void						set_HS				(ID3D11HullShader* _hs, LPCSTR _n=0);
 	ICF void						set_HS				(ref_hs& _hs)						{ set_HS(_hs->sh,_hs->cName.c_str());				}
 
@@ -296,7 +296,7 @@ public:
 
 	ICF void						set_CS				(ID3D11ComputeShader* _cs, LPCSTR _n=0);
 	ICF void						set_CS				(ref_cs& _cs)						{ set_CS(_cs->sh,_cs->cName.c_str());				}
-#	endif
+#endif
 
 #endif	//	USE_DX10
 

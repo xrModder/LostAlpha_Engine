@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib d3dcompiler.lib d3d10.lib d3dx10.lib dxgi.lib nvapi.lib atimgpud_s_x86.lib"
+				AdditionalDependencies="dxguid.lib d3dcompiler.lib d3d10.lib D3D10_1.lib d3dx10.lib dxgi.lib nvapi.lib atimgpud_s_x86.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../../libraries_release;../../../SDK/dxsdk/lib;../../../SDK/NVAPI;../../../SDK/ATI"
 				GenerateDebugInformation="true"
@@ -277,7 +277,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib d3dcompiler.lib d3d10.lib d3dx10.lib dxgi.lib nvapi.lib atimgpud_s_x86.lib"
+				AdditionalDependencies="dxguid.lib d3dcompiler.lib d3d10.lib D3D10_1.lib d3dx10.lib dxgi.lib nvapi.lib atimgpud_s_x86.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../../libraries;../../../SDK/dxsdk/lib;../../../SDK/NVAPI;../../../SDK/ATI"
 				GenerateDebugInformation="true"

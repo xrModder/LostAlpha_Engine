@@ -234,15 +234,19 @@ BOOL R_constant_table::parseResources(ID3DShaderReflection* pReflection, int Res
 
 		switch(ResDesc.Type)
 		{
+#ifdef USE_DX10
 		case D3D10_SIT_TEXTURE:
 			type = RC_dx10texture;
 			break;
 		case D3D10_SIT_SAMPLER:
 			type = RC_sampler;
 			break;
+#endif
+#ifdef USE_DX11
 		case D3D11_SIT_UAV_RWTYPED:
 			type = RC_dx11UAV;
 			break;
+#endif
 		default:
 			continue;
 		}
