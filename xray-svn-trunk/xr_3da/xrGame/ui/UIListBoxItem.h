@@ -6,7 +6,7 @@ class CUIStatic;
 
 class CUIListBoxItem : public CUIFrameLineWnd, public CUISelectable
 {
-	friend	class		CUITreeViewItem;
+	friend	class		CUITreeViewBoxItem;
 	typedef				CUIFrameLineWnd inherited;
 public:
 						CUIListBoxItem			(void);
