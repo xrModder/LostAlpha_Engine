@@ -237,7 +237,7 @@
       <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;openAL32.lib;nvapi.lib;atimgpud_s_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs;../../SDK/eax;../../SDK/NVAPI;../../SDK/ATI;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs/2012;../../SDK/eax;../../SDK/NVAPI;../../SDK/ATI;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -297,7 +297,7 @@
       <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>msacm32.lib;vfw32.lib;ogg_static.lib;theora_static.lib;nvapi.lib;atimgpud_s_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs;../../SDK/eax;../../SDK/NVAPI;../../SDK/ATI;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs/2012;../../SDK/eax;../../SDK/NVAPI;../../SDK/ATI;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>

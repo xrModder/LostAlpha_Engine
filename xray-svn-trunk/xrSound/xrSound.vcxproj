@@ -146,7 +146,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>vorbisfile_static.lib;ogg_static.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../../libraries_release;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../libraries_release;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs/2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
@@ -189,7 +189,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>vorbisfile_static.lib;ogg_static.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../../libraries;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../libraries;../../SDK/eax;../../SDK/dxsdk/lib;../../SDK/OpenAL/libs;../../SDK/Xiph/Libs/2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
