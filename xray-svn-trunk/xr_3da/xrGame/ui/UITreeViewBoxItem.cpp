@@ -32,13 +32,13 @@ CUITreeViewBoxItem::CUITreeViewBoxItem()
 		pOwner				(NULL),
 		m_uUnreadedColor	(UNREAD_COLOR),
 		m_uReadedColor		(READ_COLOR),
-		m_value				(-1)
+		m_value				(-1),
+		m_real_parent		(NULL)
 {
 	AttachChild(&UIBkg);
 	UIBkg.InitTexture(treeItemBackgroundTexture);
 	UIBkg.TextureOff();
 	UIBkg.SetTextureOffset(-20, 0);
-
 	m_bManualSetColor = false;
 }
 
@@ -46,6 +46,7 @@ CUITreeViewBoxItem::CUITreeViewBoxItem()
 
 CUITreeViewBoxItem::~CUITreeViewBoxItem()
 {
+	Close();
 	DeleteAllSubItems();
 }
 
@@ -94,6 +95,7 @@ void CUITreeViewBoxItem::OnRootChanged()
 			str.replace(pos, 1, " ");
 
 		inherited::SetText(str.c_str());
+		SetItemColor();
 	}
 }
 
@@ -120,6 +122,7 @@ void CUITreeViewBoxItem::OnOpenClose()
 	}
 
 	inherited::SetText(str.c_str());
+	SetItemColor();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -142,8 +145,8 @@ void CUITreeViewBoxItem::Open()
 
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-		(*it)->SetAutoDelete(false);
 		pList->AddExistingItem(*it, ++pos);
+		(*it)->m_bAutoDelete = true;
 	}
 }
 
@@ -172,7 +175,7 @@ void CUITreeViewBoxItem::Close()
 	// Затем все датачим
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
-		(*it)->SetAutoDelete(false);
+		(*it)->m_bAutoDelete = false;
 		pList->Remove(*it);
 	}
 }
@@ -187,10 +190,9 @@ void CUITreeViewBoxItem::AddSubItem(CUITreeViewBoxItem *pItem)
 	pItem->SetTextShift(subShift + iTextShift);
 
 	vSubItems.push_back(pItem);
-	pItem->SetAutoDelete(false);
-
 	pItem->SetOwner(this);
 	pItem->SetText(pItem->GetText());
+	pItem->SetItemColor();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,11 +202,11 @@ void CUITreeViewBoxItem::DeleteAllSubItems()
 	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
 	{
 		VERIFY(*it);
-		CUIWindow *pWindow = (*it)->GetParent();
-		if (pWindow)
-			pWindow->DetachChild(*it);
+		CUIListBox *list = (*it)->m_real_parent;
+		if (list)
+			list->Remove(*it);
 
-		xr_delete(*it);
+		//xr_delete(*it); // auto delete 
 	}
 
 	vSubItems.clear();
@@ -215,7 +217,7 @@ void CUITreeViewBoxItem::DeleteAllSubItems()
 void CUITreeViewBoxItem::SetRoot(bool set)
 {
 	if (isRoot) return;
-
+	
 	isRoot = set;
 	OnRootChanged();
 }
@@ -238,6 +240,7 @@ void CUITreeViewBoxItem::SetText(LPCSTR str)
 	}
 
 	inherited::SetText(s.c_str());
+	SetItemColor();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -552,8 +555,7 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 		pTVItemChilds->SetReadedColor(rootColor);
 		pTVItemChilds->SetRoot(true);
 		pListToAdd->AddExistingItem(pTVItemChilds);
-		pListToAdd->SetAutoDelete(false);
-
+	
 		// Если в списке вложенности 1 элемент, то хвоста нет, и соответственно ничего не добавляем
 		if (groupTree.size() > 1)
 			pTVItemChilds = AddTreeTail(groupTree.begin() + 1, groupTree, pTVItemChilds);
@@ -573,6 +575,5 @@ void CreateTreeBranch(shared_str nesting, shared_str leafName, CUIListBox *pList
 	pTVItemChilds->AddSubItem(pTVItem);
 	pTVItem->MarkArticleAsRead(markRead);
 	pTVItem->SetListParent(pListToAdd);
-	pTVItem->SetAutoDelete(false);
 	//	}
 }
