@@ -259,6 +259,8 @@
 #     define BOOST_COMPILER_VERSION 9.0
 #   elif _MSC_VER == 1600
 #     define BOOST_COMPILER_VERSION 10.0
+#   elif _MSC_VER == 1700
+#     define BOOST_COMPILER_VERSION 11.0
 #   else
 #     define BOOST_COMPILER_VERSION _MSC_VER
 #   endif
@@ -274,7 +276,7 @@
 #endif
 //
 // last known and checked version is 1600 (VC10, aka 2010):
-#if (_MSC_VER > 1600)
+#if (_MSC_VER > 1700)
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else
