@@ -7,9 +7,9 @@
 
 class CUIListBox;
 
-class CUITreeViewBoxItem: public CUIListBoxItemEx
+class CUITreeViewBoxItem : public CUIListBoxItem
 {
-	typedef CUIListBoxItemEx inherited;
+	typedef CUIListBoxItem inherited;
 	
 	bool			isRoot;
 
@@ -23,8 +23,6 @@ public:
 	void			SetRoot(bool set);
 	bool			IsRoot() const						{ return isRoot; }
 
-	virtual void	SetAutoDelete(bool auto_delete)		{ inherited::SetAutoDelete(false); }
-	
 	int				GetArticleValue() const					{ return m_value; }
 	void			SetArticleValue(int val)					{ m_value = val; }
 
@@ -86,7 +84,7 @@ public:
 	
 	void	SetItemColor()
 	{
-		m_bArticleRead ? SetTextColor(m_uReadedColor) :SetTextColor(m_uUnreadedColor);
+		m_bArticleRead ? SetTextColor(m_uReadedColor, m_uReadedColor) : SetTextColor(m_uUnreadedColor, m_uUnreadedColor);
 	}
 
 	void SetListParent(CUIListBox* p)
