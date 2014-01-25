@@ -374,6 +374,12 @@ void CHW::Reset (HWND hwnd)
 
 }
 
+void CHW::safeClearState()
+{
+	if (S_OK == lastPresentStatus)
+		pContext->ClearState();
+}
+
 bool CHW::isSupportingColorFormat(DXGI_FORMAT format, D3D10_FORMAT_SUPPORT support)
 {
 	UINT values = 0;

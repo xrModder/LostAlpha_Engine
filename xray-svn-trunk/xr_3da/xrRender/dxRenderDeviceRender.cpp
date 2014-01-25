@@ -88,10 +88,10 @@ void dxRenderDeviceRender::SetupStates()
 {
 	HW.Caps.Update			();
 
-#if defined(USE_DX10) || defined(USE_DX11)
-	//	TODO: DX10: Implement Resetting of render states into default mode
-	//HW.pContext->ClearState();
-#else	//	USE_DX10
+// In DX10 we have a shader pipeline instead. 
+// Rasterizer and depth stencil states are managed
+// in state cache.
+#if !defined(USE_DX10) && !defined(USE_DX11)
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)				{
 		float fBias = -.5f	;
 		CHK_DX(HW.pDevice->SetSamplerState	( i, D3DSAMP_MAXANISOTROPY, 4				));
