@@ -139,6 +139,7 @@
       <BrowseInformation />
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>../../SDK/dxsdk/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -182,6 +183,7 @@
       <BrowseInformation />
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>../../SDK/dxsdk/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

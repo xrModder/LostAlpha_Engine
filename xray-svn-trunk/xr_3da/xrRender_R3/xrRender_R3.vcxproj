@@ -135,6 +135,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/MP</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dxguid.lib;d3dcompiler.lib;d3d10.lib;D3D10_1.lib;d3dx10.lib;dxgi.lib;nvapi.lib;atimgpud_s_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -178,7 +179,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>-Zm111 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MP /Zm200</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dxguid.lib;d3dcompiler.lib;d3d10.lib;D3D10_1.lib;d3dx10.lib;dxgi.lib;nvapi.lib;atimgpud_s_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
