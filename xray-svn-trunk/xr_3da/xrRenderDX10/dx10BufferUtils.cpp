@@ -67,10 +67,11 @@ VertexFormatPairs	VertexFormatList[] =
 	{ D3DDECLTYPE_SHORT4N,	DXGI_FORMAT_R16G16B16A16_SNORM },
 	{ D3DDECLTYPE_USHORT2N,	DXGI_FORMAT_R16G16_UNORM },
 	{ D3DDECLTYPE_USHORT4N,	DXGI_FORMAT_R16G16B16A16_UNORM },
-	//D3DDECLTYPE_UDEC3 Not available 
-	//D3DDECLTYPE_DEC3N Not available 
+	{ D3DDECLTYPE_UDEC3,    DXGI_FORMAT_R10G10B10A2_UINT },
+	{ D3DDECLTYPE_DEC3N,    DXGI_FORMAT_R10G10B10A2_UNORM },
 	{ D3DDECLTYPE_FLOAT16_2,DXGI_FORMAT_R16G16_FLOAT },
-	{ D3DDECLTYPE_FLOAT16_4,DXGI_FORMAT_R16G16B16A16_FLOAT }
+	{ D3DDECLTYPE_FLOAT16_4,DXGI_FORMAT_R16G16B16A16_FLOAT },
+	{ D3DDECLTYPE_UNUSED,   DXGI_FORMAT_UNKNOWN }
 };
 
 DXGI_FORMAT	ConvertVertexFormat(D3DDECLTYPE dx9FMT)
@@ -94,20 +95,20 @@ struct VertexSemanticPairs
 
 VertexSemanticPairs	VertexSemanticList[] = 
 {
-	{ D3DDECLUSAGE_POSITION,		"POSITION" },		//	0
-	{ D3DDECLUSAGE_BLENDWEIGHT,		"BLENDWEIGHT" },	// 1
-	{ D3DDECLUSAGE_BLENDINDICES,	"BLENDINDICES" },	// 2
-	{ D3DDECLUSAGE_NORMAL,			"NORMAL" },			// 3
-	{ D3DDECLUSAGE_PSIZE,			"PSIZE" },			// 4
-	{ D3DDECLUSAGE_TEXCOORD,		"TEXCOORD" },		// 5
-	{ D3DDECLUSAGE_TANGENT,			"TANGENT" },		// 6
-	{ D3DDECLUSAGE_BINORMAL,		"BINORMAL" },		// 7
-	//D3DDECLUSAGE_TESSFACTOR,    // 8
-	{ D3DDECLUSAGE_POSITIONT,		"POSITIONT" },		// 9
-	{ D3DDECLUSAGE_COLOR,			"COLOR" },			// 10
-	//D3DDECLUSAGE_FOG,           // 11
-	//D3DDECLUSAGE_DEPTH,         // 12
-	//D3DDECLUSAGE_SAMPLE,        // 13
+	{ D3DDECLUSAGE_POSITION, "POSITION"},
+	{ D3DDECLUSAGE_BLENDWEIGHT, "BLENDWEIGHT"},
+	{ D3DDECLUSAGE_BLENDINDICES, "BLENDINDICES"},
+	{ D3DDECLUSAGE_NORMAL, "NORMAL"},
+	{ D3DDECLUSAGE_PSIZE, "PSIZE"},
+	{ D3DDECLUSAGE_TEXCOORD, "TEXCOORD"},
+	{ D3DDECLUSAGE_TANGENT, "TANGENT"},
+	{ D3DDECLUSAGE_BINORMAL, "BINORMAL"},
+	{ D3DDECLUSAGE_TESSFACTOR, "TESSFACTOR"},
+	{ D3DDECLUSAGE_POSITIONT, "POSITIONT"},
+	{ D3DDECLUSAGE_COLOR, "COLOR"},
+	{ D3DDECLUSAGE_FOG, "FOG"},
+	{ D3DDECLUSAGE_DEPTH, "DEPTH"},
+	{ D3DDECLUSAGE_SAMPLE, "SAMPLE"}
 };
 
 LPCSTR	ConvertSemantic(D3DDECLUSAGE Semantic)
@@ -123,7 +124,7 @@ LPCSTR	ConvertSemantic(D3DDECLUSAGE Semantic)
 	return 0;
 }
 
-void ConvertVertexDeclaration( const xr_vector<D3DVERTEXELEMENT9> &declIn, xr_vector<D3D_INPUT_ELEMENT_DESC> &declOut)
+void ConvertVertexDeclaration( const xr_vector<D3DVERTEXELEMENT9> &declIn, xr_vector<D3D10_INPUT_ELEMENT_DESC> &declOut)
 {
 	int iDeclSize = declIn.size()-1;
 	declOut.resize(iDeclSize+1);
@@ -131,14 +132,14 @@ void ConvertVertexDeclaration( const xr_vector<D3DVERTEXELEMENT9> &declIn, xr_ve
 	for (int i=0; i<iDeclSize; ++i)
 	{
 		const D3DVERTEXELEMENT9		&descIn = declIn[i];
-		D3D_INPUT_ELEMENT_DESC		&descOut = declOut[i];
+		D3D10_INPUT_ELEMENT_DESC		&descOut = declOut[i];
 		
 		descOut.SemanticName = ConvertSemantic((D3DDECLUSAGE)descIn.Usage);
 		descOut.SemanticIndex = descIn.UsageIndex;
 		descOut.Format = ConvertVertexFormat((D3DDECLTYPE)descIn.Type);
 		descOut.InputSlot = descIn.Stream;
 		descOut.AlignedByteOffset = descIn.Offset;
-		descOut.InputSlotClass = D3D_INPUT_PER_VERTEX_DATA;
+		descOut.InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
 		descOut.InstanceDataStepRate = 0;
 	}
 
