@@ -42,6 +42,7 @@
 #		define VERIFY3(expr, e2, e3)	do {static bool ignore_always = false; if (!ignore_always && !(expr)) ::Debug.fail(#expr,e2,e3,DEBUG_INFO,ignore_always);} while(0)
 #		define VERIFY4(expr, e2, e3, e4)do {static bool ignore_always = false; if (!ignore_always && !(expr)) ::Debug.fail(#expr,e2,e3,e4,DEBUG_INFO,ignore_always);} while(0)
 #		define CHK_DX(expr)				do {static bool ignore_always = false; HRESULT hr = expr; if (!ignore_always && FAILED(hr)) ::Debug.error(hr,#expr,DEBUG_INFO,ignore_always);} while(0)
+#   define LOG_IF_FAIL_DX(func) HRESULT inline_hresult = func; if (FAILED(inline_hresult)) { string32 str; switch (inline_hresult) { case D3D10_ERROR_FILE_NOT_FOUND: xr_sprintf(str, sizeof(str), "D3D10_ERROR_FILE_NOT_FOUND"); break; case D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS: xr_sprintf(str, sizeof(str), "D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS"); break; case D3DERR_WASSTILLDRAWING: xr_sprintf(str, sizeof(str), "D3DERR_WASSTILLDRAWING"); break; case E_INVALIDARG: xr_sprintf(str, sizeof(str), "E_INVALIDARG"); break; case E_OUTOFMEMORY: xr_sprintf(str, sizeof(str), "E_OUTOFMEMORY"); break; } Msg("%s failed with error: %s", #func, str); }
 #	else // DEBUG
 #		ifdef __BORLANDC__
 #			define NODEFAULT
@@ -53,6 +54,8 @@
 #		define VERIFY3(expr, e2, e3)	do {} while (0)
 #		define VERIFY4(expr, e2, e3, e4)do {} while (0)
 #		define CHK_DX(a) a
+#   define LOG_IF_FAIL_DX(func) func
+
 #	endif // DEBUG
 //---------------------------------------------------------------------------------------------
 // FIXMEs / TODOs / NOTE macros
