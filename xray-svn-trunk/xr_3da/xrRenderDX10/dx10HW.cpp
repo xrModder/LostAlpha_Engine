@@ -562,29 +562,20 @@ BOOL CHW::support( D3DFORMAT fmt, DWORD type, DWORD usage)
 void CHW::updateWindowProps(HWND m_hWnd)
 {
 	// utak3r: with DX10 we no longer want to play with window's styles and flags,
-	// DXGI will do this for its own for us.
-	return;
+	// DXGI will do this for its own for us, if we're in a fullscreen mode.
+	// Thus, we will check if the current mode is a windowed mode
+	// and only then perform our actions.
 
-	/*
-	//	BOOL	bWindowed				= strstr(Core.Params,"-dedicated") ? TRUE : !psDeviceFlags.is	(rsFullscreen);
 	BOOL	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
 
-	u32		dwWindowStyle			= 0;
-	// Set window properties depending on what mode were in.
 	if (bWindowed)		{
 		if (m_move_window) {
+      LONG dwWindowStyle = 0;
+      
 			if (strstr(Core.Params,"-no_dialog_header"))
 				SetWindowLong	( m_hWnd, GWL_STYLE, dwWindowStyle=(WS_BORDER|WS_VISIBLE) );
 			else
 				SetWindowLong	( m_hWnd, GWL_STYLE, dwWindowStyle=(WS_BORDER|WS_DLGFRAME|WS_VISIBLE|WS_SYSMENU|WS_MINIMIZEBOX ) );
-			// When moving from fullscreen to windowed mode, it is important to
-			// adjust the window size after recreating the device rather than
-			// beforehand to ensure that you get the window size you want.  For
-			// example, when switching from 640x480 fullscreen to windowed with
-			// a 1000x600 window on a 1024x768 desktop, it is impossible to set
-			// the window size to 1000x600 until after the display mode has
-			// changed to 1024x768, because windows cannot be larger than the
-			// desktop.
 
 			RECT			m_rcWindowBounds;
 			BOOL			bCenter = TRUE;
@@ -608,9 +599,9 @@ void CHW::updateWindowProps(HWND m_hWnd)
 					m_ChainDesc.BufferDesc.Height);
 			};
 
-			AdjustWindowRect		(	&m_rcWindowBounds, dwWindowStyle, FALSE );
+			AdjustWindowRect(&m_rcWindowBounds, dwWindowStyle, FALSE);
 
-			SetWindowPos			(	m_hWnd, 
+			SetWindowPos(m_hWnd, 
 				HWND_NOTOPMOST,	
 				m_rcWindowBounds.left, 
 				m_rcWindowBounds.top,
@@ -619,14 +610,9 @@ void CHW::updateWindowProps(HWND m_hWnd)
 				SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
-	else
-	{
-		SetWindowLong			( m_hWnd, GWL_STYLE, dwWindowStyle=(WS_POPUP|WS_VISIBLE) );
-	}
 
 	ShowCursor	(FALSE);
 	SetForegroundWindow( m_hWnd );
-	*/
 }
 
 
