@@ -239,6 +239,11 @@ void CBuild::ImplicitLighting()
 			}
 		}
 
+		xr_vector<u32>				packed;
+		defl.lmap.Pack				(packed);
+		defl.Deallocate				();
+		
+		
 		// base
 		Status	("Saving base...");
 		{
@@ -265,8 +270,8 @@ void CBuild::ImplicitLighting()
 		// lmap
 		Status	("Saving lmap...");
 		{
-			xr_vector<u32>			packed;
-			defl.lmap.Pack			(packed);
+			//xr_vector<u32>			packed;
+			//defl.lmap.Pack			(packed);
 
 			string_path				name, out_name;
 			sscanf					(strstr(GetCommandLine(),"-f")+2,"%s",name);
@@ -286,7 +291,7 @@ void CBuild::ImplicitLighting()
 			fmt.flags.set			(STextureParams::flBinaryAlpha,		FALSE);
 			DXTCompress				(out_name,raw_data,0,w,h,pitch,&fmt,4);
 		}
-		defl.Deallocate				();
+		//defl.Deallocate				();
 	}
 
 	xr_delete			(ImplicitHash);

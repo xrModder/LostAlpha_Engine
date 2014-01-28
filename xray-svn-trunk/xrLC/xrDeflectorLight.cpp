@@ -41,7 +41,28 @@ void Jitter_Select(Fvector2* &Jitter, u32& Jcount)
 	}
 }
 
-void GET			(lm_layer &lm, int x, int y, u32 ref, u32 &count,  base_color_c& dst)
+
+void GET(const base_color &surface_color,
+		 const u8 marker,
+		//u32 width, u32 height, int x,  int y, 
+		u32 ref, u32 &count,  base_color_c& dst )
+{
+	//if (x<0) return;
+	//else if (x>=(int)width)		return;
+	//if (y<0) return;
+	//else if (y>=(int)height)	return;
+
+	// summarize
+	//u32		id	= y*width + x;
+	if (marker<=ref)		return;
+
+	base_color_c		C;
+	surface_color._get	(C);
+	dst.add				(C);
+	count				++;
+}
+
+void GET			(const lm_layer &lm, int x, int y, u32 ref, u32 &count,  base_color_c& dst)
 {
 	// wrap pixels
 	if (x<0) return;
@@ -59,7 +80,146 @@ void GET			(lm_layer &lm, int x, int y, u32 ref, u32 &count,  base_color_c& dst)
 	count				++;
 }
 
-BOOL ApplyBorders	(lm_layer &lm, u32 ref) 
+struct lm_line
+{
+ buffer_vector<base_color>	&surface;
+ buffer_vector<u8>			&marker;
+ u32 y;
+ u32 height;
+ lm_line( buffer_vector<base_color>& surf_buf, buffer_vector<u8>& mark_buf ):
+	surface( surf_buf ), marker( mark_buf ), y(u32(-1)), height(u32(-1))
+ {}
+ void save( int _y, const lm_layer &lm )
+	{
+		y		= _y;
+		height	= lm.height;
+
+		{
+			xr_vector<base_color>::const_iterator from = lm.surface.begin() + y*lm.width;
+			xr_vector<base_color>::const_iterator to	=  from + lm.width;
+			surface.assign( from, to );
+		}
+
+		{
+			xr_vector<u8>::const_iterator from = lm.marker.begin() + y*lm.width;
+			xr_vector<u8>::const_iterator to	=  from + lm.width;
+			marker.assign( from, to );
+		}
+
+		//surface.resize( lm.width );
+		//marker.resize(  lm.width );
+		//for (int x=0; x<(int)lm.width; x++)
+		//{
+		//	surface[x] = lm.surface[y*lm.width+x];
+		//	marker[x]	= lm.marker[y*lm.width+x];
+		//}
+	}
+} ;
+void GET		( const lm_line& l, int x, u32 width, u32 ref,  u32 &count,  base_color_c& dst  )
+{
+	if (x<0) return;
+	else if (x>=(int)width)			return;
+	if (l.y<0) return;
+	else if (l.y>=(int)l.height)	return;
+
+	// summarize
+	u32		id	=  x;
+	if (l.marker[id]<=ref)		return;
+
+	base_color_c		C;
+	l.surface[id]._get	(C);
+	dst.add				(C);
+	count				++;
+}
+
+
+
+BOOL NEW_ApplyBorders	(lm_layer &lm, u32 ref) 
+{
+	bool			bNeedContinue = false;
+	
+	buffer_vector<base_color>	buf_surf_line0( _alloca( lm.width*sizeof( base_color ) ), lm.width );
+	
+	buffer_vector<base_color>	buf_surf_line1( _alloca( lm.width*sizeof( base_color ) ), lm.width );
+
+	buffer_vector<u8>			buf_marker_line0( _alloca( lm.width*sizeof( u8 ) ), lm.width );
+
+	buffer_vector<u8>			buf_marker_line1( _alloca( lm.width*sizeof( u8 ) ), lm.width );
+
+
+	lm_line line0( buf_surf_line0, buf_marker_line0 );
+	lm_line line1( buf_surf_line1, buf_marker_line1 );
+
+	try {
+		//lm_layer	result	= lm;
+
+		lm_line *l_0  = &line0;
+		lm_line *l_1  = &line1;
+
+		for (int y=0; y<(int)lm.height; y++) {
+	
+			l_0->save( y, lm );
+
+			std::swap( l_0, l_1 );
+
+			lm_line &line = *l_0;
+
+			base_color sv_color0; sv_color0._set( -1,-1,-1 );
+			u8		   sv_marker0 = u8(-1);
+			for (int x=0; x<(int)lm.width; x++)
+			{
+				base_color sv_color  = sv_color0;
+				u8		   sv_marker = sv_marker0;
+				sv_color0  = lm.surface[y*lm.width+x];
+				sv_marker0 = lm.marker[y*lm.width+x];
+				if (lm.marker[y*lm.width+x]==0) 
+				{
+
+					base_color_c	clr;
+					u32			C	=0;
+					if( y > 0 )
+					{
+						GET(line,x-1,lm.width,ref,C,clr);
+						GET(line,x  ,lm.width,ref,C,clr);
+						GET(line,x+1,lm.width,ref,C,clr);
+					}
+					//GET(lm,x-1,y-1,ref,C,clr);
+					//GET(lm,x  ,y-1,ref,C,clr);
+					//GET(lm,x+1,y-1,ref,C,clr);
+
+					//GET(lm,x-1,y  ,ref,C,clr);
+					if( x>0 )
+						GET( sv_color, sv_marker, ref, C, clr );
+
+
+
+					GET(lm,x+1,y  ,ref,C,clr);
+
+					GET(lm,x-1,y+1,ref,C,clr);
+					GET(lm,x  ,y+1,ref,C,clr);
+					GET(lm,x+1,y+1,ref,C,clr);
+					
+					if (C) {
+						clr.scale			(C);
+						lm.surface		[y*lm.width+x]._set(clr);
+						lm.marker		[y*lm.width+x]=u8(ref);
+						bNeedContinue		= TRUE;
+					}
+					
+				}
+			}
+		}
+		//lm	= result;
+	} catch (...)
+	{
+		clMsg("* ERROR: ApplyBorders");
+	}
+	return bNeedContinue;
+}
+
+
+
+BOOL OLD_ApplyBorders	(lm_layer &lm, u32 ref) 
 {
 	BOOL			bNeedContinue = FALSE;
 
@@ -100,6 +260,29 @@ BOOL ApplyBorders	(lm_layer &lm, u32 ref)
 	}
 	return bNeedContinue;
 }
+
+BOOL ApplyBorders( lm_layer &lm, u32 ref ) 
+{
+	
+	//lm_layer r_new = lm;
+	//BOOL bres_new = NEW_ApplyBorders( r_new, ref );
+	//lm_layer r_old = lm;
+	//BOOL bres_old = OLD_ApplyBorders( r_old, ref );
+
+	//R_ASSERT( r_old.similar( r_new, 0 ) );
+	//R_ASSERT( bres_new == bres_old );
+
+	//
+	//lm = r_new;
+	//return bres_new;
+	//
+#if 1	
+	return NEW_ApplyBorders( lm, ref );
+#else
+	return OLD__ApplyBorders( lm, ref );
+#endif
+}
+
 
 float getLastRP_Scale(CDB::COLLIDER* DB, CDB::MODEL* MDL, R_Light& L, Face* skip, BOOL bUseFaceDisable)
 {

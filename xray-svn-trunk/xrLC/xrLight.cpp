@@ -182,6 +182,24 @@ public:
 };
 CVertexLightTasker		VLT;
 
+
+bool GetTranslucency(const Vertex* V,float &v_trans )
+{
+	// Get transluency factor
+			
+	bool		bVertexLight= FALSE;
+	u32 		L_flags		= 0;
+	for (u32 f=0; f<V->adjacent.size(); ++f)
+	{
+		Face*	F								=	V->adjacent[f];
+		v_trans									+=	F->Shader().vert_translucency;
+		if	(F->Shader().flags.bLIGHT_Vertex)	
+			bVertexLight		= TRUE;
+	}
+	v_trans				/=	float(V->adjacent.size());
+	return bVertexLight;
+}
+
 class CVertexLightThread : public CThread
 {
 public:
@@ -191,8 +209,8 @@ public:
 	}
 	virtual void		Execute	()
 	{
-		CDB::COLLIDER	DB;
-		DB.ray_options	(0);
+		//CDB::COLLIDER	DB;
+		//DB.ray_options	(0);
 		
 		u32	counter		= 0;
 		for (;; counter++)
@@ -203,22 +221,15 @@ public:
 			Vertex* V		= g_vertices[id];
 			R_ASSERT		(V);
 			
-			// Get transluency factor
 			float		v_trans		= 0.f;
-			BOOL		bVertexLight= FALSE;
-			u32 		L_flags		= 0;
-			for (u32 f=0; f<V->adjacent.size(); f++)
-			{
-				Face*	F								=	V->adjacent		[f];
-				v_trans									+=	F->Shader().vert_translucency;
-				if	(F->Shader().flags.bLIGHT_Vertex)	bVertexLight		= TRUE;
-			}
-			v_trans				/=	float(V->adjacent.size());
 
-			// 
-			if (bVertexLight)	{
+			if (GetTranslucency( V, v_trans )){
 				base_color_c		vC, old;
 				V->C._get			(old);
+				
+				CDB::COLLIDER	DB;
+				DB.ray_options	(0);
+
 				LightPoint			(&DB, RCAST_Model, vC, V->P, V->N, pBuild->L_static, (b_nosun?LP_dont_sun:0)|LP_dont_hemi, 0);
 				vC._tmp_			= v_trans;
 				vC.mul				(.5f);
