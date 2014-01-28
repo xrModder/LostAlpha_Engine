@@ -319,7 +319,7 @@ u32	CSpaceRestriction::accessible_nearest		(const Fvector &position, Fvector &re
 {
 	if (m_out_space_restriction)
 		return						(m_out_space_restriction->accessible_nearest(this,position,result,true));
-	VERIFY							(m_in_space_restriction);
+	VERIFY2							(m_in_space_restriction, *(name()));
 	return							(m_in_space_restriction->accessible_nearest(m_in_space_restriction,position,result,false));
 }
 

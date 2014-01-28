@@ -17,6 +17,8 @@ struct R_Light
 	float			range2;				// ^2
 #ifdef USE_PORTED_XRLC
 	float			falloff;			// precalc to make light aqal to zero at light range
+#else
+	float			falloff				() const { return 1.0f/(range * (attenuation0 + attenuation1 * range + attenuation2 * range2)); }
 #endif
 	float	        attenuation0;		// Constant attenuation		
 	float	        attenuation1;		// Linear attenuation		

@@ -100,6 +100,7 @@ void CUIFrameLineWnd::DrawElements()
 
 	Frect						rect;
 	GetAbsoluteRect				(rect);
+	
 	UI().ClientToScreenScaled	(rect.lt);
 	UI().ClientToScreenScaled	(rect.rb);
 	

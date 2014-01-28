@@ -210,7 +210,7 @@ void CBuild::ImplicitLighting()
 		}
 
 		// Start threads
-		u32 NUM_THREADS = 8;
+		u32 NUM_THREADS = 4;
 		if (strstr(Core.Params,"-t "))
 			sscanf (strstr(Core.Params,"-t ")+3,"%d",&NUM_THREADS);
 

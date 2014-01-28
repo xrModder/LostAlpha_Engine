@@ -244,7 +244,7 @@ CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 
 	Register						(m_text);
 	m_text->SetWindowName			("text_button");
-	AddCallbackStr						("text_button",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));
+	AddCallbackStr					("text_button",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));
 
 	m_num_text						= xr_new<CUITextWnd>();
 	m_num_text->SetAutoDelete		(true);

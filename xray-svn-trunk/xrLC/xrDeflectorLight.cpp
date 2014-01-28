@@ -236,8 +236,18 @@ void LightPoint(CDB::COLLIDER* DB, CDB::MODEL* MDL, base_color_c &C, Fvector &P,
 					float R		= _sqrt(sqD);
 					float scale = D*L->energy*rayTrace(DB,MDL, *L,Pnew,Ldir,R,skip,bUseFaceDisable);
 					float A		;
-					if (gl_linear)	A	= 1-R/L->range;
-					else			A	= scale / (L->attenuation0 + L->attenuation1*R + L->attenuation2*sqD);
+					if ( gl_linear )
+						A	= 1-R/L->range;
+					else
+					{
+						//	Igor: let A equal 0 at the light boundary
+						A	= scale * 
+							(
+								1/(L->attenuation0 + L->attenuation1*R + L->attenuation2*sqD) - 
+								R*L->falloff()
+							);
+
+					}
 
 					C.rgb.x += A * L->diffuse.x;
 					C.rgb.y += A * L->diffuse.y;
