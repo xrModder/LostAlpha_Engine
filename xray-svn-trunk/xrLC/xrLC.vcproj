@@ -824,6 +824,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MeshMenderLayerOGF.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshMenderLayerOrdinaryStatic.h"
+				>
+			</File>
+			<File
 				RelativePath=".\progmesh.h"
 				>
 			</File>
@@ -908,6 +916,84 @@
 				</File>
 				<File
 					RelativePath="NVMeshMender.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="NVMeshMender2003"
+				>
+				<File
+					RelativePath=".\NVMeshMender2003\convert.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NVMeshMender2003\mender_input_output.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NVMeshMender2003\NVMeshMender.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Mixed|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Mixed_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_Priquel|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\NVMeshMender2003\NVMeshMender.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NVMeshMender2003\remove_isolated_verts.h"
 					>
 				</File>
 			</Filter>
@@ -1704,6 +1790,10 @@
 				</File>
 				<File
 					RelativePath=".\fmesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\OGF_CalculateTB.cpp"
 					>
 				</File>
 				<File
