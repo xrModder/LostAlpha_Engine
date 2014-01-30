@@ -456,24 +456,33 @@ IC void CBackend::ApplyVertexLayout()
 
 	it = decl->vs_to_layout.find(m_pInputSignature);
 
+	bool new_is_ok = false;
 	if (it==decl->vs_to_layout.end())
 	{
-		ID3DInputLayout* pLayout;
+		ID3DInputLayout* pLayout = NULL;
 
     HRESULT res;
-		LOG_IF_FAIL_DX(res = HW.pDevice->CreateInputLayout(
- 			&decl->dx10_dcl_code[0],
- 			decl->dx10_dcl_code.size()-1,
- 			m_pInputSignature->GetBufferPointer(),
- 			m_pInputSignature->GetBufferSize(),
- 			&pLayout
-			));
-		if (SUCCEEDED(res))
-		  it = decl->vs_to_layout.insert(
-			  std::pair<ID3DBlob*, ID3DInputLayout*>(m_pInputSignature, pLayout)).first;
+
+	  res = HW.pDevice->CreateInputLayout(
+		  &decl->dx10_dcl_code[0],
+		  decl->dx10_dcl_code.size()-1,
+		  m_pInputSignature->GetBufferPointer(),
+		  m_pInputSignature->GetBufferSize(),
+		  &pLayout
+		  );
+
+    if (FAILED(res) || !pLayout)
+    {
+#pragma todo("u3: find out, what's wrong with render_sun_cascade()")
+	    // broken vertex layout! temporarily turning it off!
+	    return;
+	  }
+
+    it = decl->vs_to_layout.insert(
+	    std::pair<ID3DBlob*, ID3DInputLayout*>(m_pInputSignature, pLayout)).first;
 	}
 
-	if ( m_pInputLayout != it->second)
+	if (m_pInputLayout != it->second && it->second)
 	{
 		m_pInputLayout = it->second;
 		HW.pContext->IASetInputLayout(m_pInputLayout);
