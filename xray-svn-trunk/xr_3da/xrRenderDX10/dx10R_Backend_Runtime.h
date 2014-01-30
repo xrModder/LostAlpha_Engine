@@ -456,7 +456,6 @@ IC void CBackend::ApplyVertexLayout()
 
 	it = decl->vs_to_layout.find(m_pInputSignature);
 
-	bool new_is_ok = false;
 	if (it==decl->vs_to_layout.end())
 	{
 		ID3DInputLayout* pLayout = NULL;
@@ -474,15 +473,23 @@ IC void CBackend::ApplyVertexLayout()
     if (FAILED(res) || !pLayout)
     {
 #pragma todo("u3: find out, what's wrong with render_sun_cascade()")
-	    // broken vertex layout! temporarily turning it off!
-	    return;
+#ifdef DEBUG
+	    Msg("Broken vertex layout!");
+	    //ID3D10VertexShader *ppVertexShader;
+	    //HW.pContext->VSGetShader(&ppVertexShader);
+	    //Msg("VS: %s", vs_name);
+	    Msg("Semantic name: %s", &decl->dx10_dcl_code[0].SemanticName);
+	    Msg("SemanticIndex: %x", &decl->dx10_dcl_code[0].SemanticIndex);
+	    Msg("Format: %x", &decl->dx10_dcl_code[0].Format);
+	    Msg("InputSlot: %x", &decl->dx10_dcl_code[0].InputSlot);
+	    Msg("AlignedByteOffset: %x", &decl->dx10_dcl_code[0].AlignedByteOffset);
+#endif
 	  }
-
     it = decl->vs_to_layout.insert(
-	    std::pair<ID3DBlob*, ID3DInputLayout*>(m_pInputSignature, pLayout)).first;
+      std::pair<ID3DBlob*, ID3DInputLayout*>(m_pInputSignature, pLayout)).first;
 	}
 
-	if (m_pInputLayout != it->second && it->second)
+	if (m_pInputLayout != it->second)
 	{
 		m_pInputLayout = it->second;
 		HW.pContext->IASetInputLayout(m_pInputLayout);
