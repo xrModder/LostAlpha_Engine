@@ -246,7 +246,7 @@ void	Face::CalcNormal2	()
 	}
 }
 
-float Face::CalcArea()
+float Face::CalcArea() const
 {
 	float	e1 = v[0]->P.distance_to(v[1]->P);
 	float	e2 = v[0]->P.distance_to(v[2]->P);
@@ -255,7 +255,7 @@ float Face::CalcArea()
 	float	p  = (e1+e2+e3)/2.f;
 	return	_sqrt( p*(p-e1)*(p-e2)*(p-e3) );
 }
-float Face::CalcMaxEdge()
+float Face::CalcMaxEdge() const
 {
 	float	e1 = v[0]->P.distance_to(v[1]->P);
 	float	e2 = v[0]->P.distance_to(v[2]->P);

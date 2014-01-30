@@ -230,6 +230,155 @@ void CBuild::xrPhase_AdaptiveHT	()
 	*/
 }
 
+void CollectProblematicFaces(const Face &F, int max_id, xr_vector<Face*> & reult, Vertex** V1, Vertex** V2 )
+{
+	xr_vector<Face*>			&adjacent_vec = reult;
+	adjacent_vec.reserve		(6*2*3);
+	// now, we need to tesselate all faces which shares this 'problematic' edge
+	// collect all this faces
+
+	F.EdgeVerts		( max_id, V1, V2 );
+	adjacent_vec.clear	();
+	for ( u32 adj=0; adj<(*V1)->adjacent.size(); ++adj )
+	{
+		Face* A					= (*V1)->adjacent[adj];
+		if ( A->flags.bSplitted )	
+			continue;
+
+		if ( A->VContains( *V2 ) )	
+			adjacent_vec.push_back	( A );
+	}
+
+	std::sort			(adjacent_vec.begin(), adjacent_vec.end());
+	adjacent_vec.erase	(std::unique(adjacent_vec.begin(),adjacent_vec.end()),adjacent_vec.end());
+}
+
+bool check_and_destroy_splited( u32 face_it )
+{
+	Face* F	= g_faces[face_it];
+	VERIFY( F );
+	if (F->flags.bSplitted)	
+	{
+		if (!F->flags.bLocked)	
+			FacePool.destroy	(g_faces[face_it]);
+		return false;//continue;
+	}
+	return true;
+}
+bool do_tesselate_face( const Face &F, tesscb_estimator* cb_E, int &max_id )
+{
+	if (F.CalcArea()<EPS_L)	
+		return false;//continue;
+	max_id				= cb_E(&F);
+	if		(max_id<0)		
+		return false;//continue;	// nothing selected
+	return true;
+}
+/*
+void	tessalate_faces( xr_vector<Face*> & faces, Vertex* V1, Vertex* V2,  tesscb_face* cb_F, tesscb_vertex* cb_V  )
+{
+		xr_vector<Face*> & adjacent_vec = faces;
+		// create new vertex (lerp)
+		Vertex*		V		= VertexPool.create();
+		V->P.lerp			(V1->P, V2->P, .5f);
+
+		// iterate on faces which share this 'problematic' edge
+		for (u32 af_it=0; af_it<adjacent_vec.size(); ++af_it)
+		{
+			Face*	AF			= adjacent_vec[af_it];
+			VERIFY				(false==AF->flags.bSplitted);
+			AF->flags.bSplitted	= true;
+			_TCF&	atc			= AF->tc.front();
+
+			// indices & tc
+			int id1				= AF->VIndex(V1);
+			VERIFY				( id1>=0 && id1<=2 );
+			int id2				= AF->VIndex(V2);
+			VERIFY				( id2>=0 && id2<=2 );
+			int idB				= 3-(id1+id2);
+			VERIFY				( idB>=0 && idB<=2 );
+
+			Fvector2			UV;
+			UV.averageA			(atc.uv[id1],atc.uv[id2]);
+
+			// Create F1 & F2
+			Face* F1			= FacePool.create();
+			F1->flags.bSplitted	= false;
+			F1->flags.bLocked	= false;
+			F1->dwMaterial		= AF->dwMaterial;
+			F1->dwMaterialGame	= AF->dwMaterialGame;
+			Face* F2			= FacePool.create();
+			F2->flags.bSplitted	= false;
+			F2->flags.bLocked	= false;
+			F2->dwMaterial		= AF->dwMaterial;
+			F2->dwMaterialGame	= AF->dwMaterialGame;
+
+
+			set_backface( F1->sm_group, is_backface( AF->sm_group ) );
+			set_backface( F2->sm_group, is_backface( AF->sm_group ) );
+
+			if (is_CCW(id1,id2))	
+			{
+				bool id1_id2_soft = is_soft_edge( AF->sm_group, id1 );
+				bool id2_idB_soft = is_soft_edge( AF->sm_group, id2 );
+				bool idB_id1_soft = is_soft_edge( AF->sm_group, idB );
+				
+				// F1
+				F1->SetVertices		( AF->v[idB],	AF->v[id1],		V );
+				F1->AddChannel		( atc.uv[idB],	atc.uv[id1],	UV );
+
+				set_soft_edge		( F1->sm_group, 0, idB_id1_soft );
+				set_soft_edge		( F1->sm_group, 1, id1_id2_soft );
+				set_soft_edge		( F1->sm_group, 2, true );
+
+				// F2
+				F2->SetVertices		(AF->v[idB],	V,				AF->v[id2]);
+				F2->AddChannel		(atc.uv[idB],	UV,				atc.uv[id2]);
+
+				set_soft_edge		( F2->sm_group, 0, true );
+				set_soft_edge		( F2->sm_group, 1, id1_id2_soft );
+				set_soft_edge		( F2->sm_group, 2, id2_idB_soft );
+
+			} else {
+
+				bool id1_id2_soft = is_soft_edge( AF->sm_group, id2 );
+				bool id2_idB_soft = is_soft_edge( AF->sm_group, idB );
+				bool idB_id1_soft = is_soft_edge( AF->sm_group, id1 );
+
+				// F1
+				F1->SetVertices		(AF->v[idB],	V,				AF->v[id1]);
+				F1->AddChannel		(atc.uv[idB],	UV,				atc.uv[id1]);
+
+				set_soft_edge		( F1->sm_group, 0, true );
+				set_soft_edge		( F1->sm_group, 1, id1_id2_soft );
+				set_soft_edge		( F1->sm_group, 2, idB_id1_soft );
+
+				// F2
+				F2->SetVertices		(AF->v[idB],	AF->v[id2],		V);
+				F2->AddChannel		(atc.uv[idB],	atc.uv[id2],	UV);
+
+				set_soft_edge		( F2->sm_group, 0, id2_idB_soft );
+				set_soft_edge		( F2->sm_group, 1, id1_id2_soft );
+				set_soft_edge		( F2->sm_group, 2, true );
+			}
+
+			// Normals and checkpoint
+			F1->N		= AF->N;		if (cb_F)	cb_F(F1);
+			F2->N		= AF->N;		if (cb_F)	cb_F(F2);
+			//smoth groups
+			//F1->sm_group= AF->sm_group;
+			//F2->sm_group= AF->sm_group;
+			// don't destroy old face	(it can be used as occluder during ray-trace)
+			// if (AF->bLocked)	continue;
+			// FacePool.destroy	(g_faces[I]);
+		}
+		// calc vertex attributes
+		{
+			V->normalFromAdj		();
+			if (cb_V)				cb_V	(V);
+		}
+}
+*/
 void CBuild::u_Tesselate	(tesscb_estimator* cb_E, tesscb_face* cb_F, tesscb_vertex* cb_V)
 {
 	// main process
@@ -243,33 +392,25 @@ void CBuild::u_Tesselate	(tesscb_estimator* cb_E, tesscb_face* cb_F, tesscb_vert
 	for (u32 I=0; I<g_faces.size(); I++)
 	{
 		Face* F					= g_faces[I];
-		if (0==F)				continue;
-		if (F->flags.bSplitted)	{
-			if (!F->flags.bLocked)	FacePool.destroy	(g_faces[I]);
+		if (0==F)				
 			continue;
-		}
-		if (F->CalcArea()<EPS_L)	continue;
+		if( !check_and_destroy_splited( I ) )
+			continue;
 
 		Progress				(float(I)/float(g_faces.size()));
-		int		max_id			=	cb_E	(F);
-		if		(max_id<0)		continue;	// nothing selected
+		int max_id = -1;
+		if( !do_tesselate_face( *F, cb_E, max_id ) )
+			continue;
+
+		xr_vector<Face*>		adjacent_vec;
 
 		// now, we need to tesselate all faces which shares this 'problematic' edge
 		// collect all this faces
 		Vertex			*V1,*V2;
-		F->EdgeVerts	(max_id,&V1,&V2);
-		adjacent.clear	();
-		for (u32 adj=0; adj<V1->adjacent.size(); adj++)
-		{
-			Face* A					= V1->adjacent[adj];
-			if (A->flags.bSplitted)	continue;
-			if (A->VContains(V2))	adjacent.push_back	(A);
-		}
-		std::sort		(adjacent.begin(),adjacent.end());
-		adjacent.erase	(std::unique(adjacent.begin(),adjacent.end()),adjacent.end());
+		CollectProblematicFaces( *F, max_id, adjacent_vec, &V1, &V2 );
 
 		// create new vertex (lerp)
-		counter_create		++;
+		++counter_create;
 		if (0==(counter_create%10000))	{
 			for (u32 I=0; I<g_vertices.size(); I++)	if (0==g_vertices[I]->adjacent.size())	VertexPool.destroy	(g_vertices[I]);
 			Status				("Working: %d verts created, %d(now) / %d(was) ...",counter_create,g_vertices.size(),cnt_verts);

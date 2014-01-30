@@ -244,8 +244,8 @@ public:
 		*B = v[edge2idx[e][1]];
 	}
 
-	float		CalcArea			();
-	float		CalcMaxEdge			();
+	float		CalcArea			() const;
+	float		CalcMaxEdge			() const;
 	void		CalcCenter			(Fvector &C);
 	BOOL		RenderEqualTo		(Face *F);
 	void		Unwarp				(int connect_edge, float u1, float v1, float u2, float v2);
