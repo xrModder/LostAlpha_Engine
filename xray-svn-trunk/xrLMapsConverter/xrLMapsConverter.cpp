@@ -4,6 +4,10 @@
 #include <dxsdk\Include\D3Dx10core.h>
 #include <dxsdk\Include\D3DCompiler.h>
 
+#include "BC.h"
+
+#include <directxmath.h>
+#include <directxpackedvector.h>
 
 typedef void DUMMY_STUFF (const void*,const u32&,void*);
 XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
@@ -26,7 +30,7 @@ string_path g_folder_path = { 0 };
 
 ID3D10Device* g_device = 0;
 
-void __cdecl clMsg( const char *format, ...)
+void __cdecl clMsg(const char *format, ...)
 {
 	va_list		mark;
 	string1024	buff;
@@ -62,7 +66,7 @@ void parse_params(LPCSTR params)
 	if (strstr(cmd, "-?") || strstr(cmd, "-h") || !strstr(cmd, "-f"))	
 	{
 		usage();
-		return;
+		TerminateProcess(GetCurrentProcess(), 0);
 	}
 	sscanf(strstr(cmd,"-f") + 2, "%s", temp);	
 	FS.update_path(g_folder_path, "$game_levels$", temp);
@@ -82,17 +86,18 @@ void destroy_device()
 	g_device = 0;
 }
 
-ID3D10Texture2D* load_dds(LPCSTR file_name, D3DX10_IMAGE_INFO& info)
+ID3D10Texture2D* load_dds(LPCSTR file_name)
 {
 	IReader* reader = NULL;
 	ID3D10Resource *texture;
 	D3DX10_IMAGE_LOAD_INFO loader;
+	D3DX10_IMAGE_INFO info;
 
 	ZeroMemory(&info, sizeof(D3DX10_IMAGE_INFO));
 	reader = FS.r_open(file_name);
 
 	R_CHK(D3DX10GetImageInfoFromMemory(reader->pointer(), reader->length(), 0, &info, 0));
-	clMsg("loaded %s: %d %d", file_name, info.Format, info.ResourceDimension); //it's DXGI_FORMAT_BC3_UNORM -> D3DFMT_DXT4
+	clMsg("loaded %s: %d", file_name, info.Format); //it's DXGI_FORMAT_BC3_UNORM -> D3DFMT_DXT4
 
 	loader.Usage = D3D10_USAGE_STAGING;
 	loader.Width = info.Width;
@@ -168,8 +173,9 @@ void save_dds(LPCSTR file_name, ID3D10Texture2D *dds)
 {
 	IWriter* writer = NULL;
 	string_path path;
-	xr_sprintf(path, "%s.new", file_name);
-	R_CHK(D3DX10SaveTextureToFile(dds, D3DX10_IFF_DDS, path));
+	xr_sprintf(path, "%s.old", file_name);
+	FS.file_rename(file_name, path);
+	R_CHK(D3DX10SaveTextureToFile(dds, D3DX10_IFF_DDS, file_name));
 }
 
 char* rstrstr(LPCSTR s1, LPCSTR s2)
@@ -184,19 +190,6 @@ char* rstrstr(LPCSTR s1, LPCSTR s2)
 			break;
 	return const_cast<char*>(s);
 }
-#pragma pack(push,1)
-struct bc1_color
-{
-	u16 rgb[2]; // 565 colors
-    u32 bitmap; // 2bpp rgb bitmap
-};
-struct bc3_color
-{
-	u8 alpha[2];   // alpha values
-	u8 bitmap[6];  // 3bpp alpha bitmap
-	bc1_color bc1; // BC1 rgb data
-};
-#pragma pack(pop)
 
 void process_lmap(LPCSTR file_name)
 {
@@ -204,32 +197,44 @@ void process_lmap(LPCSTR file_name)
 	clMsg("Processing: %s, %d", file_name, lmap_id);
 	if (lmap_id == 1) 
 		return;
-	D3DX10_IMAGE_INFO info;
 	D3D10_TEXTURE2D_DESC wdescr;
-	D3D10_MAPPED_TEXTURE2D mapped_dds;
 	D3D10_MAPPED_TEXTURE2D mapped_wdds;
-	ID3D10Texture2D* dds = load_dds(file_name, info);
+	ID3D10Texture2D* dds = load_dds(file_name);
 	ID3D10Texture2D* wdds = reload_dds_for_writing(dds);
 	wdds->GetDesc(&wdescr);
-	R_CHK(dds->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_READ, 0, &mapped_dds)); // subres: 0
+	//R_CHK(dds->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_READ, 0, &mapped_dds)); // subres: 0
 	R_CHK(wdds->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_READ_WRITE, 0, &mapped_wdds));
 	u8* src = (u8*) mapped_wdds.pData;
 	switch (wdescr.Format)
 	{
 		case DXGI_FORMAT_BC3_UNORM: // DXT4
 		{
-			for (u32 row = 0; row < info.Height; row += 4)
+			for (u32 row = 0; row < wdescr.Height; row += 4)
 			{
 				u8* ptr = src;
 				for (u32 col = 0; col < mapped_wdds.RowPitch; col += 16)
 				{
 					try
 					{
+						using namespace DirectX;
+						XMVECTOR temp[16];				
+						D3DXDecodeBC3(temp, ptr);
+						for (u16 i = 0; i < 16; i++)
+						{
+							PackedVector::XMCOLOR clr, new_clr;		
+							XMStoreColor(&clr, temp[i]);
+							new_clr.r = clr.a;
+							new_clr.g = clr.a;
+							new_clr.b = clr.a;
+							new_clr.a = u8(u32(u32(clr.r) + u32(clr.g) + u32(clr.b)) / 3);
+							temp[i] = XMLoadColor(&new_clr);
+						}
+						D3DXEncodeBC3(ptr, temp, BC_FLAGS_DITHER_A);
 						ptr += 16;
 					}
 					catch (...)
 					{
-						clMsg("error: %d x %d", row, col);
+						clMsg("error: %dx%d", row, col);
 						return;
 					}
 				}
@@ -239,11 +244,11 @@ void process_lmap(LPCSTR file_name)
 		}
 		default:
 		{
-			clMsg("error unattended format: %d", info.Format);
+			clMsg("error unattended format: %d", wdescr.Format);
 			break;
 		}
 	}	
-	dds->Unmap(D3D10CalcSubresource(0, 0, 1));
+	//dds->Unmap(D3D10CalcSubresource(0, 0, 1));
 	wdds->Unmap(D3D10CalcSubresource(0, 0, 1));
 	save_dds(file_name, wdds);
 	dds->Release();

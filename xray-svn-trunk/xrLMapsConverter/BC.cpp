@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "common.h"
+#include "DirectXTexp.h"
 
 // Experiemental encoding variants, not enabled by default
 //#define COLOR_WEIGHTS

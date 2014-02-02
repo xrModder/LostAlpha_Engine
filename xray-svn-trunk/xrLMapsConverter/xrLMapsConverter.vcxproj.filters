@@ -27,10 +27,10 @@
     <ClInclude Include="BC.h">
       <Filter>BCx Format</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
+    <ClInclude Include="DirectXTex.h">
       <Filter>BCx Format</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXTex.h">
+    <ClInclude Include="DirectXTexp.h">
       <Filter>BCx Format</Filter>
     </ClInclude>
   </ItemGroup>
