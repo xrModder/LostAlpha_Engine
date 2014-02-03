@@ -47,7 +47,7 @@ struct is_pm_classify<false>	{
 template<typename T>	
 struct	is_polymorphic			{
 	enum						{
-		result	= is_pm_classify<is_class<T>::result> :: _detail<T> :: result
+		result	= is_pm_classify<::is_class<T>::result> :: _detail<T> :: result
 	};
 };
 

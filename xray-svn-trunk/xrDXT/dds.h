@@ -9,7 +9,7 @@
 
 #ifndef _DDS_H_
 #define _DDS_H_
-
+/*
 struct DDS_PIXELFORMAT
 {
     DWORD dwSize;
@@ -21,7 +21,7 @@ struct DDS_PIXELFORMAT
     DWORD dwBBitMask;
     DWORD dwABitMask;
 };
-
+*/
 #define DDS_FOURCC 0x00000004  // DDPF_FOURCC
 #define DDS_RGB    0x00000040  // DDPF_RGB
 #define DDS_RGBA   0x00000041  // DDPF_RGB | DDPF_ALPHAPIXELS

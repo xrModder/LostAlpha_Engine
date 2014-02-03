@@ -910,14 +910,6 @@
 					RelativePath="nv_mathdecl.h"
 					>
 				</File>
-				<File
-					RelativePath="NVMeshMender.cpp"
-					>
-				</File>
-				<File
-					RelativePath="NVMeshMender.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="NVMeshMender2003"

@@ -12,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="colorconvert.h">
-      <Filter>Convert</Filter>
-    </ClInclude>
     <ClInclude Include="ddsTypes.h">
       <Filter>Convert</Filter>
     </ClInclude>
@@ -50,6 +47,12 @@
     </ClInclude>
     <ClInclude Include="dds.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="nvErrorCodes.h">
+      <Filter>Convert</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvertColor.h">
+      <Filter>Convert</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXT.cpp">
@@ -79,11 +82,11 @@
     <ClCompile Include="StdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <Library Include="nvDXTlibMTDLL.lib">
       <Filter>Convert</Filter>
     </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

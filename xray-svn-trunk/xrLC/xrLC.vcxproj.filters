@@ -46,6 +46,9 @@
     <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Model">
       <UniqueIdentifier>{f85e568c-c9ed-4ba4-81c5-8fe0a325e040}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External\NVMeshMender2003">
+      <UniqueIdentifier>{d0132740-a4bf-425a-bdb8-32de661b86c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -129,9 +132,6 @@
     <ClInclude Include="nv_mathdecl.h">
       <Filter>External\NV_Basis</Filter>
     </ClInclude>
-    <ClInclude Include="NVMeshMender.h">
-      <Filter>External\NV_Basis</Filter>
-    </ClInclude>
     <ClInclude Include="_rect.h">
       <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
     </ClInclude>
@@ -202,6 +202,24 @@
       <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
     </ClInclude>
     <ClInclude Include="xrGameMaterials.h" />
+    <ClInclude Include="MeshMenderLayerOGF.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshMenderLayerOrdinaryStatic.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="NVMeshMender2003\convert.h">
+      <Filter>External\NVMeshMender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="NVMeshMender2003\mender_input_output.h">
+      <Filter>External\NVMeshMender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="NVMeshMender2003\NVMeshMender.h">
+      <Filter>External\NVMeshMender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="NVMeshMender2003\remove_isolated_verts.h">
+      <Filter>External\NVMeshMender2003</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -229,9 +247,6 @@
       <Filter>External\NV_Strips</Filter>
     </ClCompile>
     <ClCompile Include="nv_algebra.cpp">
-      <Filter>External\NV_Basis</Filter>
-    </ClCompile>
-    <ClCompile Include="NVMeshMender.cpp">
       <Filter>External\NV_Basis</Filter>
     </ClCompile>
     <ClCompile Include="xrDetailPatch.cpp">
@@ -425,6 +440,12 @@
     </ClCompile>
     <ClCompile Include="xrMU_Model_Load.cpp">
       <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="NVMeshMender2003\NVMeshMender.cpp">
+      <Filter>External\NVMeshMender2003</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_CalculateTB.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

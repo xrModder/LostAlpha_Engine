@@ -17,331 +17,81 @@
 
 #include <windows.h>
 #include "tPixel.h"
-
-typedef HRESULT (__cdecl *MIPcallback)(void * data, int miplevel, DWORD size, int width, int height, void * user_data);
-                     
-
-inline char * GetDXTCVersion() { return "Version 7.33";}
-
-
-enum NVDXT_OPTIONS
-{
-
-    dBackgroundNameStatic = 3,
-    dProfileDirNameStatic = 4,
-    dSaveButton = 5,
-    dProfileNameStatic = 6,
-
-
-
-    dGenerateMipMaps = 30,
-    dMIPMapSourceFirst = dGenerateMipMaps,
-    dUseExistingMipMaps = 31,
-    dNoMipMaps = 32,
-    dMIPMapSourceLast = dNoMipMaps,
-
-    dSpecifiedMipMapsCombo = 39,
-
-
-
-    dbShowDifferences = 40,
-    dbShowFiltering = 41,
-    dbShowMipMapping = 42,
-    dbShowAnisotropic = 43,
-
-    dChangeClearColorButton = 50,
-    dDitherColor = 53,
-
-    dLoadBackgroundImageButton = 54,
-    dUseBackgroundImage = 55,
-
-    dbBinaryAlpha = 56,
-    dAlphaBlending = 57,
-
-    dFadeColor = 58,  //.
-    dFadeAlpha = 59,
-
-    dFadeToColorButton = 60,
-    dAlphaBorder = 61,
-    dBorder = 62,
-    dBorderColorButton = 63,
-
-    dNormalMapCombo = 64,
-
-    dDitherMIP0 = 66,
-    dGreyScale = 67,
-    dQuickCompress = 68,
-    dLightingEnable = 69,
-
-    dbPreviewDisableMIPmaps = 71,
-
-
-
-
-    dZoom = 79,
-
-
-    dTextureTypeCombo = 80,
-
-    dFadeAmount = 90,
-    dFadeToAlpha = 91,
-    dFadeToDelay = 92,
-
-    dBinaryAlphaThreshold = 94,
-
-    dFilterGamma = 100,
-    dFilterBlur = 101,
-    dFilterWidth = 102,
-    dbOverrideFilterWidth = 103,
-    dLoadProfile = 104,
-    dSaveProfile = 105,
-    dSharpenMethodCombo = 106,
-    dProfileCombo = 107,
-    dSelectProfileDirectory = 108,
-    dbEnableGammaCorrection = 109,
-    dbAlphaModulate = 110,
-    dbDXT5NormalMap = 111,
-
-
-
-
-
-    dViewDXT1 = 200,
-    dViewDXT2 = 201,
-    dViewDXT3 = 202,
-    dViewDXT5 = 203,
-    dViewA4R4G4B4 = 204,
-    dViewA1R5G5B5 = 205,
-    dViewR5G6B5 = 206,
-    dViewA8R8G8B8 = 207,
-
-
-    // 3d viewing options
-    d3DPreviewButton = 300, 
-    d2DPreviewButton = 301, 
-    dPreviewRefresh = 302, 
-
-
-
-
-    dAskToLoadMIPMaps = 400,
-    dShowAlphaWarning = 401,
-    dShowPower2Warning = 402,
-    dTextureFormatBasedOnAlpha = 403,
-    dSystemMessage = 404,
-    dHidePreviewButtons = 405,
-    dCalculateLuminance = 406,
-
-    dSpecifyAlphaBlendingButton = 500,
-    dUserSpecifiedFadingAmounts = 501,
-    dSharpenSettingsButton = 502,
-    dFilterSettingsButton = 503,
-    dNormalMapGenerationSettingsButton = 504,
-    dConfigSettingsButton = 505,
-    dFadingDialogButton = 506,
-    dPreviewDialogButton = 507,
-    dResetDefaultsButton = 508,
-    dImageDialogButton = 510,
-
-
-
-    dSaveTextureFormatCombo = 600,
-    dMIPFilterCombo = 601,
-
-
-    ///////////  Normal Map
-
-
-    dScaleEditText = 1003,
-    dProxyItem = 1005,
-    dMinZEditText = 1008,
-
-
-
-    dALPHA = 1009,
-    dFirstCnvRadio = dALPHA,
-    dAVERAGE_RGB = 1010,
-    dBIASED_RGB = 1011,
-    dRED = 1012,
-    dGREEN = 1013,
-    dBLUE = 1014,
-    dMAX = 1015,
-    dCOLORSPACE = 1016,
-    dNORMALIZE = 1017,
-    dConvertToHeightMap = 1018,
-    dLastCnvRadio = dConvertToHeightMap,
-
-    dbAddHeightMap = 1019,
-
-    d3DPreview = 1021,      
-    dDecalTexture = 1022,
-    dbUseDecalTexture = 1023,
-    dbBrighten = 1024,
-    dbAnimateLight = 1025,
-    dStaticDecalName = 1026,
-    dbSignedOutput = 1027,
-    dbNormalMapSwapRGB = 1028,
-
-
-    dbWrap = 1030,
-    dbMultipleLayers = 1031,
-    db_16_16 = 1032,
-
-    dAlphaNone = 1033,
-    dFirstAlphaRadio = dAlphaNone,
-    dAlphaHeight = 1034,
-    dAlphaClear = 1035,
-    dAlphaWhite = 1036,
-    dLastAlphaRadio = dAlphaWhite,
-
-    dbInvertY = 1037,
-    db_12_12_8 = 1038,
-    dbInvertX = 1039,
-
-    dFilter4x = 1040,
-    dFirstFilterRadio = dFilter4x,
-    dFilter3x3 = 1041,
-    dFilter5x5 = 1042,
-    dFilterDuDv = 1043,
-    dFilter7x7 = 1044,
-    dFilter9x9 = 1045,
-    dFilterQ8W8V8U8 = 1046,
-    dLastFilterRadio = dFilterQ8W8V8U8,
-
-
-    dbEnableNormalMapConversion = 1050,
-    dbErrorDiffusion = 1051,
-
-
-    dCustomFilterDataFirst = 2000,
-    // 5x5  Filter 0- 24
-    dCustomFilterDataLast = 2024,  
-
-    dCustomDiv = 2025,
-    dCustomBias = 2026,
-
-    dUnSharpRadius = 2027,
-    dUnSharpAmount = 2028,
-    dUnSharpThreshold = 2029,
-
-    dXSharpenStrength = 2030,
-    dXSharpenThreshold = 2031,
-
-
-
-    dSharpenTimesMIP0 = 2100,
-    dSharpenTimesFirst = dSharpenTimesMIP0,
-
-    dSharpenTimesMIP1 = 2101,
-    dSharpenTimesMIP2 = 2102,
-    dSharpenTimesMIP3 = 2103,
-    dSharpenTimesMIP4 = 2104,
-    dSharpenTimesMIP5 = 2105,
-    dSharpenTimesMIP6 = 2106,
-    dSharpenTimesMIP7 = 2107,
-    dSharpenTimesMIP8 = 2108,
-    dSharpenTimesMIP9 = 2109,
-    dSharpenTimesMIP10 = 2110,
-    dSharpenTimesMIP11 = 2111,
-    dSharpenTimesMIP12 = 2112,
-    dSharpenTimesMIP13 = 2113,
-    dSharpenTimesLast = dSharpenTimesMIP13,
-
-    dDeriveDiv = 2200,   // balance
-    dDeriveBias = 2201,
-
-
-
-};
-
 #include "ddsTypes.h"
+                    
+inline char * GetDXTCVersion() { return "Version 8.30";}
+
+// max mip maps
+#define MAX_MIP_MAPS 17
+
+
+typedef unsigned char nvBoolean;  // for photoshop scripting
 
 
 
 
-// Windows handle for our plug-in (seen as a dynamically linked library):
-extern HANDLE hDllInstance;
-
-
-
-
-#define SHARP_TIMES_ENTRIES 14
-
-typedef unsigned char Boolean;  // for photoshop scripting
-
-
-
-
-typedef struct CNormalMap
+typedef struct nvNormalMap
 {
 public:
+
         
-    CNormalMap()
+    nvNormalMap()
     {
         bEnableNormalMapConversion = false;
 
         minz = 0;
         scale = 1;
-        filterKernel = dFilter3x3;
+        filterKernel = kFilter3x3;
          
-        heightConversionMethod = dAVERAGE_RGB;
-        alphaResult = dAlphaNone;
+        heightConversionMethod = kAverageRGB;
+        alphaResult = kAlphaUnchanged;
 
         bWrap = false;
         bInvertX = false;
         bInvertY = false;
-        bSignedOutput = true;
+        bInvertZ = false;
         bAddHeightMap = false;
         bNormalMapSwapRGB = false;
 
 
     }
-    Boolean bEnableNormalMapConversion; // do not convert to a normal map
+    nvBoolean bEnableNormalMapConversion; // do not convert to a normal map
     int minz;       // minimum value the z value can attain in the x y z  normal
                     // keeps normal point "upwards"
     float scale;    // height multiplier
 
-    //dFilter4x = 1040,
-    //dFilter3x3 = 1041,
-    //dFilter5x5 = 1042,
-    //dFilterDuDv = 1043,
-    //dFilter7x7 = 1044,
-    //dFilter9x9 = 1045,
-
-    int filterKernel;  // kernel used to create normal maps.  Done this way to be compatible with plugins
 
 
-    //dALPHA = 1009,
-    //dAVERAGE_RGB = 1010,
-    //dBIASED_RGB = 1011,
-    //dRED = 1012,
-    //dGREEN = 1013,
-    //dBLUE = 1014,
-    //dMAX = 1015,
-    //dCOLORSPACE = 1016,
-    //dNORMALIZE = 1017,
-    int heightConversionMethod;  // method to convert color to height
+    nvNormalMapFilters filterKernel;  // kernel used to create normal maps.  Done this way to be compatible with plugins
+    nvHeightConversionMethods heightConversionMethod;  // method to convert color to height
+    nvAlphaResult alphaResult;     // what to do with the alpha channel when done
 
-    //dAlphaNone = 1033,
-    //dAlphaHeight = 1034,
-    //dAlphaClear = 1035,
-    //dAlphaWhite = 1036,
-    int alphaResult;     // what to do with the alpha channel when done
+    nvBoolean bWrap;
+    nvBoolean bInvertX;       // flip the x direction
+    nvBoolean bInvertY;       // flip the y direction
+    nvBoolean bInvertZ;       // flip the z direction
 
-    Boolean bWrap;
-    Boolean bInvertX;       // flip the x direction
-    Boolean bInvertY;       // flip the y direction
-    Boolean bSignedOutput;  // output is -128 to 127
-    Boolean bAddHeightMap;
-    Boolean bNormalMapSwapRGB; // swap color channels
-} CNormalMap;
+    nvBoolean bAddHeightMap;
+    nvBoolean bNormalMapSwapRGB; // swap color channels
+} nvNormalMap;
 
-typedef struct CompressionOptions
+class nvCompressionOptions
 {
-    CompressionOptions()
+public:
+
+    nvCompressionOptions()
     {
-        rescaleImageType = RESCALE_NONE; 
-        rescaleImageFilter = kMIPFilterCubic; 
+        SetDefaultOptions();
+    }
+
+
+    void SetDefaultOptions()
+    {
+        quality = kQualityProduction;
+        rmsErrorSearchThreshold = 400; // in  kQualityHighest mode, rms error above which will cause a long search for a better answer
+
+        rescaleImageType = kRescaleNone; 
+        rescaleImageFilter = kMipFilterCubic; 
         scaleX = 1;
         scaleY = 1;
         bClamp = false;
@@ -352,15 +102,12 @@ typedef struct CompressionOptions
         clampScaleX = 4096;
         clampScaleY = 4096;
 
-        MipMapType = dGenerateMipMaps;         // dNoMipMaps, dUseExistingMipMaps, dGenerateMipMaps
-        SpecifiedMipMaps = 0;   // if dSpecifyMipMaps or dUseExistingMipMaps is set (number of mipmaps to generate)
+        mipMapGeneration = kGenerateMipMaps;         // dNoMipMaps, dUseExistingMipMaps, dGenerateMipMaps
+        numMipMapsToWrite = 0;   // (number of mipmaps to write out)
 
-        MIPFilterType = kMIPFilterTriangle;      // for MIP maps
+        mipFilterType = kMipFilterTriangle;      // for MIP maps
         
         bBinaryAlpha = false;       // zero or one alpha channel
-
-
-
 
         bRGBE = false;
 
@@ -371,35 +118,37 @@ typedef struct CompressionOptions
         bAlphaBorderTop = false;     
         bAlphaBorderBottom = false;  
 
-
-
-
+        
         bBorder = false;            // make a color border
-        BorderColor.u = 0;        // color of border
-
+        borderColor32F.r = 0.0f;        // color of border
+        borderColor32F.g = 0.0f;        // color of border
+        borderColor32F.b = 0.0f;        // color of border
+        borderColor32F.a = 0.0f;        // alpha of border
 
         bFadeColor = false;         // fade color over MIP maps
         bFadeAlpha = false;         // fade alpha over MIP maps
 
-        FadeToColor.u = 0;        // color to fade to
-        FadeToAlpha = 0;        // alpha value to fade to (0-255)
+        fadeToColor32F.r = 0.0f;        // color to fade to
+        fadeToColor32F.g = 0.0f;        // color to fade to
+        fadeToColor32F.b = 0.0f;        // color to fade to
+        fadeToColor32F.a = 0.0f;        // alpha to fade to
 
-        FadeToDelay = 0;        // start fading after 'n' MIP maps
+        fadeToDelay = 0;        // start fading after 'n' MIP maps
 
-        FadeAmount = 0;         // percentage of color to fade in
+        fadeAmount32F = 0.15f;         // percentage of color to fade in %15
 
-        BinaryAlphaThreshold = 0;  //. 128 When Binary Alpha is selected, below this value, alpha is zero
+        alphaThreshold32F = 0.5;  // When Binary Alpha is selected, below this value, alpha is zero
 
 
         bDitherColor = false;       // enable dithering during 16 bit conversion
-        bDitherMIP0 = false;// enable dithering during 16 bit conversion for each MIP level (after filtering)
+        bDitherMip0 = false;// enable dithering during 16 bit conversion for each MIP level (after filtering)
 
-        bQuickCompress = false;         // Fast compression scheme
         bForceDXT1FourColors = false;  // do not let DXT1 use 3 color representation
 
 
-        SharpenFilterType = kSharpenFilterNone;
+        sharpenFilterType = kSharpenFilterNone;
         bErrorDiffusion = false;
+        errorDiffusionWidth = 1;
 
         weightType = kLuminanceWeighting;     
         bNormalizeTexels = false;
@@ -410,125 +159,375 @@ typedef struct CompressionOptions
 
         // gamma value for all filters
         bEnableFilterGamma = false;
-        FilterGamma = 2.2f;
+        filterGamma = 2.2f;
 
         // alpha value for 
-        FilterBlur = 1.0f;
+        filterBlur = 1.0f;
         // width of filter
-        FilterWidth = 10.0f;
+        filterWidth = 10.0f;
         bOverrideFilterWidth = false;
 
-        TextureType = kTextureType2D;        // regular decal, cube or volume  
-        TextureFormat = kDXT1;	             // 
+        textureType = kTextureTypeTexture2D;        // regular decal, cube or volume  
+        textureFormat = kDXT1;	             // 
 
-        bSwapRGB = false;           // swap color positions R and G
+        bSwapRG = false;           // swap color positions R and G
+		bSwapRB = false;           // swap color positions R and G
         user_data = NULL;            // user supplied point passed down to write functions
 
         int i,j;
 
         float default_filter[5][5] = 
         { 
-            0, 0, 0, 0, 0,
-                0,0,-2,0,0,
-                0,-2,11,-2,0,
-                0, 0,-2, 0,0,
-                0, 0, 0, 0, 0,  
+            0, 0,  0, 0, 0,
+            0, 0, -2, 0, 0,
+            0,-2, 11,-2, 0,
+            0, 0, -2, 0, 0,
+            0, 0,  0, 0, 0,  
         };
 
 
         for(i = 0; i<5; i++)
+        {    
             for(j = 0; j<5; j++)
+            {
                 custom_filter_data.filter[i][j] = default_filter[i][j];
-
+            }
+        }
 
         custom_filter_data.div = 3;   // div
         custom_filter_data.bias = 0;  // bias
 
-        unsharp_data.radius = 5.0; // radius
-        unsharp_data.amount = 0.5;  // amount
-        unsharp_data.threshold = 0;     // threshold
+        unsharp_data.radius32F = 5.0; // radius
+        unsharp_data.amount32F = 0.5;  // amount
+        unsharp_data.threshold32F = 0;     // threshold
 
-        xsharp_data.strength  = 255; // xsharp strength
-        xsharp_data.threshold  = 255; // xsharp threshold
+        xsharp_data.strength32F  = 1.0f; // xsharp strength
+        xsharp_data.threshold32F  = 1.0f; // xsharp threshold
 
 
         sharpening_passes_per_mip_level[0] = 0;
 
-        for(i = 1; i<SHARP_TIMES_ENTRIES; i++)
+        for(i = 1; i<MAX_MIP_MAPS; i++)
             sharpening_passes_per_mip_level[i] = 1;
-        for(i = 0; i<SHARP_TIMES_ENTRIES; i++)
-            sharpening_passes_per_mip_level[i] = 0;
 
-        bAlphaModulate = false;
-        bDXT5NormalMap = false;
+        bAlphaFilterModulate = false;
+        bPreModulateColorWithAlpha = false;
+
+
+        bUserSpecifiedFadingAmounts = false;
+
+
+        for(i = 0; i<256; i++)
+        {
+            color_palette[i].r = 0;
+            color_palette[i].g = 0;
+            color_palette[i].b = 0;
+            color_palette[i].a = 0;
+        }
+
+        paletteSize = 0;                // this will be set by the format read or write
+        autoGeneratePalette = false;
+
+
+        outputScale.r = 1.0f;             // scale and bias when writing output values
+        outputScale.g = 1.0f;             // scale and bias when writing output values
+        outputScale.b = 1.0f;             // scale and bias when writing output values
+        outputScale.a = 1.0f;             // scale and bias when writing output values
+
+        outputBias.r = 0.0f;
+        outputBias.g = 0.0f;
+        outputBias.b = 0.0f;
+        outputBias.a = 0.0f;
+
+        inputScale.r = 1.0f;             // scale and bias after loading data
+        inputScale.g = 1.0f;             // scale and bias 
+        inputScale.b = 1.0f;             // scale and bias 
+        inputScale.a = 1.0f;             // scale and bias 
+
+        inputBias.r = 0.0f;
+        inputBias.g = 0.0f;
+        inputBias.b = 0.0f;
+        inputBias.a = 0.0f;
+
+
+
+        bConvertToGreyScale = false;
+        greyScaleWeight.r = 0.3086f;             // scale and bias after loading data
+        greyScaleWeight.g = 0.6094f;             // scale and bias 
+        greyScaleWeight.b = 0.0820f;             // scale and bias 
+        greyScaleWeight.a = 0.0f;             // scale and bias 
+
+
+        brightness.r = 0.0;             // adjust brightness = 0 none
+        brightness.g = 0.0;             // 
+        brightness.b = 0.0;             // 
+        brightness.a = 0.0;             // 
+
+        contrast.r = 1;                // contrast 1 == none
+        contrast.g = 1;
+        contrast.b = 1;
+        contrast.a = 1;
+
+        bCalcLuminance = false;       // do not convert to luminance by default
+
+        bOutputWrap = false;          // wrap the values when outputting to the desired format
+                                      // 
+
+        bCreateOnePalette = false;
+
     }
 
+    /////////////////////////// COMPRESSION QUALITY //////////////////////////////////
+
+    nvQualitySetting      quality;
+    float rmsErrorSearchThreshold;
     
-    CompressionWeighting  weightType;   // weighting type for DXT compressop
-    float weight[3];                    // weights used for compress
+    
+    void SetQuality(nvQualitySetting setting,  float threshold)
+    {
+        quality = setting;
+        // if setting == kQualityHighest, if the RMS error for a 4x4 block is bigger than
+        // this, an extended search is performed.  In practice this has been equivalent to and 
+        // exhaustive search in the entire domain. aka it doesn't get any better than this.
+
+        rmsErrorSearchThreshold = threshold;
+
+
+    }
+
+    /////////////////////////////// COMPRESSION  WEIGHTING //////////////////////////////
+    nvCompressionWeighting weightType;   // weighting type for DXT compressop
+    float               weight[3];                    // weights used for compress
+
+    void SetCompressionWeighting(nvCompressionWeighting type, float new_weight[3])
+    {
+        weightType = type;
+
+        // if type == kUserDefinedWeighting, then use these weights
+        weight[0] = new_weight[0];
+        weight[1] = new_weight[1];
+        weight[2] = new_weight[2];
+        
+    }
+
+
+    /////////////////////////////////////////////////////////////
+
+    nvNormalMap         normalMap;               // filled when processing normal maps
+    
+    nvBoolean           bNormalizeTexels;        // normalize the texels
 
 
 
-    CNormalMap normalMap;               // filled when processing normal maps
-    Boolean bNormalizeTexels;
+
+    ///////////////////////////  SCALING IMAGE /////////////////////////////////
+
+    nvRescaleTypes        rescaleImageType;     // rescaling type before image before compression
+    nvMipFilterTypes      rescaleImageFilter;   // rescaling filter
+
+    float               scaleX;             // scale to this if we are prescaling images before compressing
+    float               scaleY;
 
 
-    Boolean         bClamp;             // Clamp to max size     
-    float           clampX;             // clamping values
-    float           clampY;
+    // scale the image to this size first
+    void PreScaleImage(float x, float y, nvMipFilterTypes filter)
+    {
+        rescaleImageType = kRescalePreScale;
+        scaleX = x;
+        scaleY = y;
+        rescaleImageFilter = filter;
+    }
+    // relative scaling.  0.5 is half the image size
+    void RelativeScaling(float x, float y, nvMipFilterTypes filter)
+    {
+        rescaleImageType = kRescaleRelScale;
+        scaleX = x;
+        scaleY = y;
+        rescaleImageFilter = filter;
 
-    Boolean         bClampScale;      // maximum value of h or w (retain scale)
-    float           clampScaleX;             // clamping values
-    float           clampScaleY;
-                                        
+    }
 
-    RescaleTypes    rescaleImageType;     // rescaling type before image before compression
-    MIPFilterTypes  rescaleImageFilter;   // rescaling filter
+    void RescaleToNearestPOW2(nvMipFilterTypes filter)
+    {
+        rescaleImageType = kRescaleNearestPower2;
+        rescaleImageFilter = filter;
 
-    float           scaleX;             // scale to this if we are prescaling images before compressing
-    float           scaleY;
+    }
+    void RescaleToNearestBiggestPOW2(nvMipFilterTypes filter)
+    {
+        rescaleImageType = kRescaleBiggestPower2;
+        rescaleImageFilter = filter;
 
-    long            MipMapType;         // dNoMipMaps, dSpecifyMipMaps, dUseExistingMipMaps, dGenerateMipMaps
+    }
+    void RescaleToNearestSmallestPOW2(nvMipFilterTypes filter)
+    {
+        rescaleImageFilter = filter;
+        rescaleImageType = kRescaleSmallestPower2;
 
-    long            SpecifiedMipMaps;   // if dSpecifyMipMaps or dUseExistingMipMaps is set (number of mipmaps to generate)
+    }
+    void RescaleToNearestNextSmallestPOW2(nvMipFilterTypes filter)
+    {
+        rescaleImageType = kRescaleNextSmallestPower2;
+        rescaleImageFilter = filter;
 
-    MIPFilterTypes  MIPFilterType;      // for MIP map, select from MIPFilterTypes
+    }
 
-    Boolean         bBinaryAlpha;       // zero or one alpha channel
+    ///////////////////   CLAMPING IMAGE SIZE ///////////////////////////////////
+    nvBoolean           bClamp;             // Clamp to max size     
+    float               clampX;             // clamping values
+    float               clampY;
 
-
-    Boolean         bRGBE;                  // convert to RGBE
-    Boolean         bAlphaBorder;           // make an alpha border
-    Boolean         bAlphaBorderLeft;       // make an alpha border on just the left
-    Boolean         bAlphaBorderRight;      // make an alpha border on justthe right
-
-    Boolean         bAlphaBorderTop;        // make an alpha border on just the top
-    Boolean         bAlphaBorderBottom;      // make an alpha 
-
-
-    Boolean         bBorder;            // make a color border
-    rgba_t          BorderColor;        // color of border
+    // image no bigger than...
+    void ClampMaxImageSize(float maxX, float maxY)
+    {    
+        bClamp = true;
+        clampX = maxX;
+        clampY = maxY;
+    }
 
 
-    Boolean         bFadeColor;         // fade color over MIP maps
-    Boolean         bFadeAlpha;         // fade alpha over MIP maps
+    nvBoolean           bClampScale;      // maximum value of h or w (retain scale)
+    float               clampScaleX;             // clamping values
+    float               clampScaleY;
 
-    rgba_t          FadeToColor;        // color to fade to
-    long            FadeToAlpha;        // alpha value to fade to (0-255)
+    // clamp max image size and maintain image proportions.
+    // Evenly scale down in both directions so that the given image size is not exceeded
+    void ClampMaxImageSizeContrained(float maxX, float maxY)
+    {    
+        bClampScale = true;
+        clampScaleX = maxX;
+        clampScaleY = maxY;
+    }
 
-    long            FadeToDelay;        // start fading after 'n' MIP maps
+    ///////////////////////////// MIP MAPS ///////////////////////////////////
 
-    long            FadeAmount;         // percentage of color to fade in
+    nvMipMapGeneration  mipMapGeneration;         // changed MIPMaptype to an enum
 
-    long            BinaryAlphaThreshold;  // When Binary Alpha is selected, below this value, alpha is zero
+    long                numMipMapsToWrite;   // max number of Mip maps to generate
 
-    // dithering is currently disabled
-    Boolean         bDitherColor;       // enable dithering during 16 bit conversion
-    Boolean         bDitherMIP0;        // enable dithering during 16 bit conversion for each MIP level (after filtering)
+    // 0 = all
+    void GenerateMIPMaps(int n)
+    {
+        mipMapGeneration = kGenerateMipMaps;
+        numMipMapsToWrite = n;
 
-    Boolean         bQuickCompress;         // Fast compression scheme
-    Boolean         bForceDXT1FourColors;  // do not let DXT1 use 3 color representation
+    }
+    void DoNotGenerateMIPMaps()
+    {
+        mipMapGeneration = kNoMipMaps;
 
+    }
+    void UseExisitingMIPMaps()
+    {
+        // what ever is in the image
+        mipMapGeneration = kUseExistingMipMaps;
+        //numMipMapsToWrite is ignored
+    }
+    void CompleteMIPMapChain(int n)
+    {
+        mipMapGeneration = kCompleteMipMapChain;
+        numMipMapsToWrite = n;
+    }
+
+    nvMipFilterTypes      mipFilterType;      // for MIP map, select from MIPFilterTypes
+
+
+    ///////////////////   ALPHA //////////////////////////////////////////
+    nvBoolean           bBinaryAlpha;       // zero or one alpha channel
+
+    // [0,1]
+    float               alphaThreshold32F;          // threshold for alpha transparency DXT1
+                                              // or wen Binary Alpha is selected, below this value, alpha is zero
+
+    void SetBinaryAlpha(float threshold)
+    {
+        bBinaryAlpha = true;
+        alphaThreshold32F = threshold;
+
+    }
+
+
+
+
+    ////////////////////////// BORDERS /////////////////////////////////////////
+
+    // set any of these to generate an alpha border
+    nvBoolean           bAlphaBorder;           // make an alpha border
+    nvBoolean           bAlphaBorderLeft;       // make an alpha border on just the left
+    nvBoolean           bAlphaBorderRight;      // make an alpha border on just the right
+
+    nvBoolean           bAlphaBorderTop;        // make an alpha border on just the top
+    nvBoolean           bAlphaBorderBottom;      // make an alpha 
+
+    nvBoolean           bBorder;            // make a color border
+    fpPixel             borderColor32F;      // color of border [0,1]
+
+    void SetBorderColor(fpPixel & color)
+    {
+        bBorder = true;
+        borderColor32F = color;
+
+    }
+    void NoBorderColor()
+    {
+        bBorder = false;
+
+    }
+
+    /////////////////////// FADING MIP LEVELS ////////////////////////////
+
+    nvBoolean           bFadeColor;         // fade color over MIP maps
+    nvBoolean           bFadeAlpha;         // fade alpha over MIP maps
+
+    fpPixel             fadeToColor32F;        // color and alpha to fade to
+
+    long                fadeToDelay;        // start fading after 'n' MIP maps
+
+    float               fadeAmount32F;      // percentage of color to fade in
+
+    nvBoolean           bUserSpecifiedFadingAmounts;
+    float               userFadingAmounts[MAX_MIP_MAPS];
+      
+
+    // [0,1]
+    void FadeAlphaInMIPMaps(float alpha)
+    {
+        bFadeAlpha = true;
+        fadeToColor32F.a = alpha;
+
+
+    }
+    // 0 - 255
+    void FadeColorInMIPMaps(float r, float g, float b)
+    {
+        fadeToColor32F.r = r;
+        fadeToColor32F.g = g;
+        fadeToColor32F.b = b;
+
+
+        bFadeColor = true;
+    } 
+    void SetFadingAsPercentage(float percentPerMIP, int mipLevelToStartFading)
+    {
+        bUserSpecifiedFadingAmounts = false;
+
+        fadeAmount32F = percentPerMIP;
+        fadeToDelay = mipLevelToStartFading;
+    }
+    // or 
+    void SpecifyFadingPerMIPLevel(float fadeAmounts[MAX_MIP_MAPS])
+    {
+        bUserSpecifiedFadingAmounts = true;
+
+        for(int i = 0; i < MAX_MIP_MAPS; i++)
+        {
+            userFadingAmounts[i] = fadeAmounts[i];
+        }
+    }
+
+
+
+    /////////////////////////// SHARPENING /////////////////////////////////////
 
     // sharpening after creating each MIP map level
 
@@ -547,46 +546,234 @@ typedef struct CompressionOptions
     // used when unsharpen sharping filter is used
     struct  
     {
-        float radius; // radius
-        float amount;  // amount
-        float threshold;     // threshold
+        float radius32F; // radius
+        float amount32F;  // amount
+        float threshold32F;  // threshold [0,1]
 
     } unsharp_data; 
     
     // used when xsharpen sharping filter is used
     struct 
     {
-        // 0 - 255, stored as float
-        float strength;
-        float threshold;
+        // 0 - 1
+        float strength32F;
+        float threshold32F;
     } xsharp_data;
 
 
-    int sharpening_passes_per_mip_level[SHARP_TIMES_ENTRIES]; 
+    int                 sharpening_passes_per_mip_level[MAX_MIP_MAPS]; 
 
-    SharpenFilterTypes  SharpenFilterType; // post filtering image sharpening
+    nvSharpenFilterTypes  sharpenFilterType; // post filtering image sharpening
 
-    Boolean bErrorDiffusion;        // diffuse error, used for helping gradient images
 
+    void SetNumberOfSharpeningPassesPerMIPLevel( int passes[MAX_MIP_MAPS])
+    {
+        for (int i = 0; i < MAX_MIP_MAPS; i++)
+        {
+            sharpening_passes_per_mip_level[i] = passes[i];
+        }
+    }
+
+    // [0,1]
+    void XSharpenImage(float strength, float threshold)
+    {
+        sharpenFilterType = kSharpenFilterXSharpen;
+        xsharp_data.strength32F = strength;
+        xsharp_data.threshold32F = threshold;
+    }
+
+    void UnSharpenImage(float radius, float amount, float threshold)
+    {
+        sharpenFilterType = kSharpenFilterUnSharp;
+        unsharp_data.radius32F = radius;
+        unsharp_data.amount32F = amount;
+        unsharp_data.threshold32F = threshold;
+    }
+
+    // roll your own post filter sharpen
+    void SetCustomFilter(float filter[5][5], float div, float bias)
+    {
+        sharpenFilterType = kSharpenFilterCustom;
+        custom_filter_data.div = div;
+        custom_filter_data.bias = bias;
+
+        for(int i = 0; i<5; i++)
+            for(int j = 0; j<5; j++)
+                custom_filter_data.filter[i][j] = filter[i][j];
+
+    }
+
+    /////////////////////////////////////////////////////
+
+
+
+    
+
+    nvBoolean           bErrorDiffusion;        // diffuse error, used for helping gradient images
+    int                 errorDiffusionWidth; // number of texel to include
+
+    void EnableErrorDiffusion(int width)
+    {
+        bErrorDiffusion = true;
+        errorDiffusionWidth = width;
+    }
+    ///////////////////// FILTERING ////////////////////////////////////////
     // convert to gamma space before filtering
-    Boolean bEnableFilterGamma;
-    float FilterGamma;               // gamma value for filtering (MIP map generation)
+    nvBoolean           bEnableFilterGamma;
+    float               filterGamma;               // gamma value for filtering (MIP map generation)
 
 
-    float FilterBlur;               // sharpness or blurriness of filtering
-    Boolean bOverrideFilterWidth; // use the specified width in FilterWidth,instead of the default
-    float FilterWidth;     // override fiter width with this value
-
-	TextureTypes 		TextureType;        // what type of texture is this?
-	TextureFormats 		TextureFormat;	    // format to convert to
-
-    Boolean   bSwapRGB;             // swap color positions R and G
-    Boolean   bDXT5NormalMap;             // 
-
-    bool bAlphaModulate;            // modulate color by alpha for filtering
+    float               filterBlur;               // sharpness or blurriness of filtering
+    nvBoolean           bOverrideFilterWidth; // use the specified width in FilterWidth,instead of the default
+    float               filterWidth;     // override fiter width with this value
 
 
-    void * user_data;               // user supplied values passed down to write functions
+    // 0 is no gamma correction
+    void EnableGammaFiltering(float gamma)
+    {
+        bEnableFilterGamma = true;
 
-} CompressionOptions;
+        filterGamma = gamma;
+    }
+
+    void OverrideFilterWidth(float w)
+    {  
+        bOverrideFilterWidth = true;
+        filterWidth = w;
+
+
+    }
+    void SetFilterSharpness(float sharp)
+    {
+        filterBlur = sharp;
+    }
+
+    /////////////////////////////////////////////////////
+
+
+
+
+	nvTextureTypes 		textureType;        // what type of texture is this?
+
+    
+    nvTextureFormats 		textureFormat;	    // format to convert to
+
+    void SetTextureFormat(nvTextureTypes type, nvTextureFormats format )
+    {
+        textureType = type;
+        textureFormat = format;
+    }
+
+
+    size_t              paletteSize;
+    rgba_t              color_palette[256];
+
+    nvBoolean           autoGeneratePalette;     // generate palette for p8 and p4 formats
+
+
+    // for P4 and P8 formats    
+    // set 16 for P4 format and 256 for P8 format
+
+    void SetPalette(int n, rgba_t user_palette[256])
+    {  
+        paletteSize = n;
+        for(int i = 0; i < n; i++)
+            color_palette[i] = user_palette[i];
+
+        autoGeneratePalette = false;
+
+    }
+
+
+
+
+    ////////////////// DATA SCALING 
+
+
+    fpPixel             outputScale;             // scale and bias when writing output values
+    fpPixel             outputBias;
+
+    void ScaleBiasOutput(fpPixel & scale, fpPixel & bias)
+    {
+        outputScale = scale;
+        outputBias = bias;
+
+    }
+
+
+    fpPixel             inputScale;             // scale and bias on input to compressor
+    fpPixel             inputBias;
+
+    void ScaleBiasInput(fpPixel & scale, fpPixel & bias)
+    {
+        inputScale = scale;
+        inputBias = bias;
+
+    }
+
+     ///////////////////////////////////////////////////////////////////////////////////
+
+    bool                bConvertToGreyScale;
+    fpPixel             greyScaleWeight;
+
+    void SetGreyScale(fpPixel & w)
+    {
+        bConvertToGreyScale = true;
+        greyScaleWeight = w;
+
+    }
+
+
+    
+
+    /////////////////////////////////////////////////////////////////////////////
+    fpPixel             brightness;
+    fpPixel             contrast;
+
+
+    void SetBrightnessAndContrast(fpPixel & _brightness, fpPixel & _contrast)
+    {
+        brightness = _brightness;
+        contrast = _contrast;
+    }
+
+
+
+    ///////////   general enables
+   /////////////////////////////////////////////////////////////////////////////
+    nvBoolean           bOutputWrap;          // wrap the values (before clamping to the format range) 
+                                    // when outputting to the desired format
+
+    nvBoolean           bCalcLuminance; // convert color to luminance for 'L' formats
+
+    nvBoolean           bSwapRB;             // swap color positions R and G
+	nvBoolean           bSwapRG;             // swap color positions R and G
+
+ 
+    nvBoolean           bForceDXT1FourColors;  // do not let DXT1 use 3 color representation
+
+    
+    nvBoolean           bRGBE;              // rgba_t is in RGBE format
+    
+    nvBoolean           bCreateOnePalette;      // All 4x4 compression blocks share the same palette
+
+
+
+
+    ///////////////////  DISABLED
+
+    nvBoolean           bDitherColor;       // enable dithering during 16 bit conversion
+    nvBoolean           bDitherMip0;        // enable dithering during 16 bit conversion for each MIP level (after filtering)
+    
+    
+    nvBoolean           bPreModulateColorWithAlpha;    // modulate color by alpha 
+    nvBoolean           bAlphaFilterModulate;            // modulate color by alpha for filtering only
+
+
+
+    ///////////////////////// USER DATA
+
+    void *              user_data;               // user supplied values passed down to write functions
+
+} ;
 

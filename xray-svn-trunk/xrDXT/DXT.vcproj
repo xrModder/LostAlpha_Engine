@@ -344,7 +344,7 @@
 			Name="Convert"
 			>
 			<File
-				RelativePath=".\colorconvert.h"
+				RelativePath=".\ConvertColor.h"
 				>
 			</File>
 			<File
@@ -409,6 +409,10 @@
 			</File>
 			<File
 				RelativePath=".\nvDXTlibMTDLL.lib"
+				>
+			</File>
+			<File
+				RelativePath=".\nvErrorCodes.h"
 				>
 			</File>
 			<File
