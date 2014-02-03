@@ -297,22 +297,26 @@ void process_lmap(LPCSTR file_name)
 	for (u32 k=0; k < image.width() * image.height(); k++)
 		pixels[k].set(pixels[k].a, pixels[k].a, pixels[k].a, pixels[k].r);
 
-	nvCompressionOptions option;
-	option.textureFormat = kDXT5;
-	option.bBinaryAlpha = FALSE;
-	option.bDitherColor = FALSE;
-	option.mipMapGeneration = kNoMipMaps;
-	option.mipFilterType = kMipFilterBox;
-	option.bAlphaBorder = FALSE;
-    option.bBorder = FALSE;
-    option.bFadeColor = FALSE;
-	option.bFadeAlpha = FALSE;
-	option.bDitherMip0 = FALSE;
-	option.textureType = kTextureTypeTexture2D;
-	option.user_data = &ofile;
+	nvCompressionOptions options;
+	options.textureFormat = kDXT5;
+	options.bBinaryAlpha = FALSE;
+	options.bDitherColor = FALSE;
+	options.mipMapGeneration = kNoMipMaps;
+	options.mipFilterType = kMipFilterBox;
+	options.bAlphaBorder = FALSE;
+    options.bBorder = FALSE;
+    options.bFadeColor = FALSE;
+	options.bFadeAlpha = FALSE;
+	options.bDitherMip0 = FALSE;
+	options.textureType = kTextureTypeTexture2D;
+	options.user_data = &ofile;
 
-	NV_ERROR_CODE r = nvDDS::nvDXTcompress(image, &option, nvDXTWriteCallback, 0);
-	R_ASSERT(r == NV_OK);
+	NV_ERROR_CODE result = nvDDS::nvDXTcompress(image, &options, nvDXTWriteCallback, 0);
+	R_ASSERT(result == NV_OK);
+
+	clMsg("fixed %s", file_name);
+	ofile.close();
+	container.rgbaMIPImage.clear();
 }
 
 
