@@ -116,7 +116,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WindowsSDK_IncludePath);../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/Xiph/Include;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;DRENDER;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling />
@@ -162,7 +162,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <AdditionalIncludeDirectories>../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WindowsSDK_IncludePath);../../xrCore;../../xrLua/src;../../../SDK/dxsdk/include;../../../SDK;../../../SDK/luabind/luabind;../../../SDK/loki;../../../SDK/NVAPI;../../../SDK/ATI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>MIXED;WIN32;DEBUG;DRENDER;_WINDOWS;_USRDLL;XRRENDER_R2_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
