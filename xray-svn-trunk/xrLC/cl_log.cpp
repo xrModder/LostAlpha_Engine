@@ -124,7 +124,7 @@ void logThread(void *dummy)
 {
 	#if (_MSC_VER >= 1500)
 		SetThreadPriorityBoost(GetCurrentThread(), TRUE);
-	#elif
+	#else
 		SetProcessPriorityBoost(GetCurrentProcess(), TRUE);
 	#endif
 
