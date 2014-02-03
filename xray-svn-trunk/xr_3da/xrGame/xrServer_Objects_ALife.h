@@ -474,7 +474,8 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSke
 	};
 	xr_vector<SDoorState>			door_states;
 	xr_vector<SWheelState>			wheel_states;
-	float							health, fuel;
+	float							health, fuel, fuel_tank;
+	BOOL							random_health, random_fuel;
 									CSE_ALifeCar		(LPCSTR caSection);
 	virtual							~CSE_ALifeCar		();
 	virtual bool					used_ai_locations	() const;
@@ -482,8 +483,12 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeCar,CSE_ALifeDynamicObjectVisual,CSE_PHSke
 	virtual bool					can_save			() const;
 	virtual CSE_Abstract			*cast_abstract		() {return this;}
 
+
+#ifdef XRGAME_EXPORTS
 	virtual void		add_offline				(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
 	virtual void		add_online				(const bool &update_registries);
+#endif
+
 protected:
 	virtual void					data_load				(NET_Packet &tNetPacket);
 	virtual void					data_save				(NET_Packet &tNetPacket);
@@ -562,8 +567,10 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeInventoryBox,CSE_ALifeDynamicObjectVisual)
 						CSE_ALifeInventoryBox	(LPCSTR caSection);
 	virtual				~CSE_ALifeInventoryBox	();
 
+#ifdef XRGAME_EXPORTS
 	virtual void		add_offline				(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries);
 	virtual void		add_online				(const bool &update_registries);
+#endif
 
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeInventoryBox)

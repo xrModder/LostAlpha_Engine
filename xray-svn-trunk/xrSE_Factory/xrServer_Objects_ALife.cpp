@@ -1427,7 +1427,10 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
 	health						= 1.0f;
-	fuel						= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
+	fuel_tank					= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
+	fuel						= fuel_tank;
+	random_health					= TRUE;
+	random_fuel					= TRUE;
 }
 
 CSE_ALifeCar::~CSE_ALifeCar				()
@@ -1438,13 +1441,18 @@ void CSE_ALifeCar::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
 {
 	inherited1::STATE_Read		(tNetPacket,size);
 
-	if(m_wVersion>65)
+	if (m_wVersion>65)
 		inherited2::STATE_Read		(tNetPacket,size);
 		if ((m_wVersion > 52) && (m_wVersion < 55))
-		tNetPacket.r_float		();
-	if(m_wVersion>92)
-			health=tNetPacket.r_float();
-	if(health>1.0f) health/=100.0f;
+			tNetPacket.r_float		();
+
+	if (m_wVersion>92)
+		health = tNetPacket.r_float();
+
+	if (health>1.0f)
+		health /= 100.0f;
+
+	fuel = tNetPacket.r_float();
 }
 
 void CSE_ALifeCar::STATE_Write			(NET_Packet	&tNetPacket)
@@ -1452,6 +1460,7 @@ void CSE_ALifeCar::STATE_Write			(NET_Packet	&tNetPacket)
 	inherited1::STATE_Write		(tNetPacket);
 	inherited2::STATE_Write		(tNetPacket);
 	tNetPacket.w_float(health);
+	tNetPacket.w_float(fuel);
 }
 
 void CSE_ALifeCar::UPDATE_Read			(NET_Packet	&tNetPacket)
@@ -1558,7 +1567,21 @@ void CSE_ALifeCar::FillProps				(LPCSTR pref, PropItemVec& values)
 {
   	inherited1::FillProps			(pref,values);
 	inherited2::FillProps			(pref,values);
-	PHelper().CreateFloat		(values, PrepareKey(pref,*s_name,"Health"),			&health,			0.f, 1.0f);
+	PHelper().CreateBOOL			(values, PrepareKey(pref,*s_name,"Random health"),		&random_health);
+	if (random_health)
+	{
+		health				= ::Random.randF(.4f,.7f);
+		PHelper().CreateCaption		(values, PrepareKey(pref,*s_name,"Health"),			shared_str().printf("%.2f",health));
+	} else
+		PHelper().CreateFloat		(values, PrepareKey(pref,*s_name,"Health"),			&health,			0.f, 1.0f);
+
+	PHelper().CreateBOOL			(values, PrepareKey(pref,*s_name,"Random fuel"),		&random_fuel);
+	if (random_fuel)
+	{
+		fuel				= ::Random.randF(fuel_tank/100.f*30.f,fuel_tank/100.f*60.f);
+		PHelper().CreateCaption		(values, PrepareKey(pref,*s_name,"Fuel"),			shared_str().printf("%.2f",fuel));
+	} else
+		PHelper().CreateFloat		(values, PrepareKey(pref,*s_name,"Fuel"),			&fuel);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1580,7 +1603,9 @@ void CSE_ALifeMountedTurret::on_spawn			()
 	m_flags.set					(flUseSwitches,		FALSE);
 	m_flags.set					(flSwitchOnline,	TRUE);
 	m_flags.set					(flSwitchOffline,	TRUE);
-	//inherited1::on_spawn		();
+#ifdef XRGAME_EXPORTS
+	inherited1::on_spawn		();
+#endif
 }
 
 void CSE_ALifeMountedTurret::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
