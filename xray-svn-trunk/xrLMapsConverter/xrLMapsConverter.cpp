@@ -216,7 +216,7 @@ void process_lmap(LPCSTR file_name)
 				{
 					try
 					{
-						using namespace DirectX;
+						using namespace DirectX; 
 						XMVECTOR temp[16];				
 						D3DXDecodeBC3(temp, ptr);
 						for (u8 i = 0; i < 16; i++)
@@ -226,10 +226,10 @@ void process_lmap(LPCSTR file_name)
 							new_clr.x = clr.w;
 							new_clr.y = clr.w;
 							new_clr.z = clr.w;
-							new_clr.w = (clr.x + clr.y + clr.z + clr.w) / 4;
+							new_clr.w = clr.x; // (clr.x + clr.y + clr.z + clr.w) / 4;
 							temp[i] = _mm_loadu_ps(&(new_clr.x));
 						}
-						D3DXEncodeBC3(ptr, temp, BC_FLAGS_DITHER_A);
+						D3DXEncodeBC3(ptr, temp, BC_FLAGS_NONE);
 						ptr += 16;
 					}
 					catch (...)
