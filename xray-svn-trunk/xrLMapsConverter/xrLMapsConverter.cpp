@@ -219,15 +219,15 @@ void process_lmap(LPCSTR file_name)
 						using namespace DirectX;
 						XMVECTOR temp[16];				
 						D3DXDecodeBC3(temp, ptr);
-						for (u16 i = 0; i < 16; i++)
+						for (u8 i = 0; i < 16; i++)
 						{
-							PackedVector::XMCOLOR clr, new_clr;		
-							XMStoreColor(&clr, temp[i]);
-							new_clr.r = clr.a;
-							new_clr.g = clr.a;
-							new_clr.b = clr.a;
-							new_clr.a = u8(u32(u32(clr.r) + u32(clr.g) + u32(clr.b)) / 3);
-							temp[i] = XMLoadColor(&new_clr);
+							XMFLOAT4 clr, new_clr;
+							_mm_storeu_ps(&(clr.x), temp[i]);
+							new_clr.x = clr.w;
+							new_clr.y = clr.w;
+							new_clr.z = clr.w;
+							new_clr.w = (clr.x + clr.y + clr.z + clr.w) / 4;
+							temp[i] = _mm_loadu_ps(&(new_clr.x));
 						}
 						D3DXEncodeBC3(ptr, temp, BC_FLAGS_DITHER_A);
 						ptr += 16;
