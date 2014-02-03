@@ -121,8 +121,8 @@
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../../SDK/dxsdk/include;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;DEBUG;USE_XNAMATH"
+				AdditionalIncludeDirectories="../../SDK;"
+				PreprocessorDefinitions="WIN32;USE_NVIDIA_LIBS;NDEBUG;_CONSOLE;DEBUG;USE_XNAMATH"
 				StringPooling="true"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -149,11 +149,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="dxguid.lib d3dcompiler.lib d3d10.lib D3D10_1.lib d3dx10.lib dxgi.lib"
 				ShowProgress="0"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../../../libraries;../../SDK/dxsdk/lib;"
+				AdditionalLibraryDirectories="../../../libraries;../../SDK/dxsdk/lib;../xrdxt;"
 				GenerateDebugInformation="true"
 				GenerateMapFile="false"
 				MapExports="false"
@@ -216,22 +215,6 @@
 			</File>
 			<File
 				RelativePath=".\xrLMapsConverter.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="BCx Format"
-			>
-			<File
-				RelativePath=".\BC.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BC.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common.h"
 				>
 			</File>
 		</Filter>

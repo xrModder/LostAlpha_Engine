@@ -1,13 +1,15 @@
 #include "stdafx.h"
 
+#ifndef USE_NVIDIA_LIBS
 #include <dxsdk\Include\D3D10_1.h>
 #include <dxsdk\Include\D3Dx10core.h>
 #include <dxsdk\Include\D3DCompiler.h>
-
 #include "BC.h"
-
 #include <directxmath.h>
 #include <directxpackedvector.h>
+#else
+#include "..\xrDXT\dxtlib.h"
+#endif
 
 typedef void DUMMY_STUFF (const void*,const u32&,void*);
 XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
@@ -27,9 +29,9 @@ DEFINE_VECTOR(char*, file_list, file_list_it);
 typedef xr_vector<char*> file_list;
 
 string_path g_folder_path = { 0 };
-
+#ifndef USE_NVIDIA_LIBS
 ID3D10Device* g_device = 0;
-
+#endif
 void __cdecl clMsg(const char *format, ...)
 {
 	va_list		mark;
@@ -73,6 +75,21 @@ void parse_params(LPCSTR params)
 	xr_strcat(g_folder_path, "\\");
 	clMsg("level selected: %s", temp);
 }
+
+char* rstrstr(LPCSTR s1, LPCSTR s2)
+{
+	size_t len1 = strlen(s1);
+	size_t len2 = strlen(s2);
+	const char* s = NULL;
+	if (len2 > len1)
+		return NULL;
+	for (s = s1 + len1 - len2; s >= s1; --s)
+		if (strncmp(s, s2, len2) == 0)
+			break;
+	return const_cast<char*>(s);
+}
+
+#ifndef USE_NVIDIA_LIBS
 
 void create_device()
 {
@@ -178,19 +195,6 @@ void save_dds(LPCSTR file_name, ID3D10Texture2D *dds)
 	R_CHK(D3DX10SaveTextureToFile(dds, D3DX10_IFF_DDS, file_name));
 }
 
-char* rstrstr(LPCSTR s1, LPCSTR s2)
-{
-	size_t len1 = strlen(s1);
-	size_t len2 = strlen(s2);
-	const char* s = NULL;
-	if (len2 > len1)
-		return NULL;
-	for (s = s1 + len1 - len2; s >= s1; --s)
-		if (strncmp(s, s2, len2) == 0)
-			break;
-	return const_cast<char*>(s);
-}
-
 void process_lmap(LPCSTR file_name)
 {
 	u32 lmap_id = atoi(rstrstr(file_name, "_") + 1);
@@ -255,13 +259,73 @@ void process_lmap(LPCSTR file_name)
 	wdds->Release();
 }
 
+#else
+
+#include <fstream>
+#include <ios>
+
+NV_ERROR_CODE nvDXTWriteCallback(const void *buffer, size_t count, const MIPMapData* mipMapData, void* userData)
+{
+    std::ostream* s = static_cast<std::ostream*>(userData);
+    s->write(static_cast<const char*>(buffer), (std::streamsize)count);
+    return s->good() ? NV_OK : NV_READ_FAILED;
+}
+
+NV_ERROR_CODE nvDXTReadCallback(void *buffer, size_t count, void * userData)
+{
+    std::istream* s = static_cast<std::istream*>(userData);
+    s->read(static_cast<char*>(buffer), (std::streamsize)count);
+    return s->good() ? NV_OK : NV_READ_FAILED;
+}
+
+
+void process_lmap(LPCSTR file_name)
+{
+	u32 lmap_id = atoi(rstrstr(file_name, "_") + 1);
+	clMsg("Processing: %s, %d", file_name, lmap_id);
+	if (lmap_id == 1) 
+		return;
+	nvImageContainer container;
+	std::ifstream file(file_name, std::ios::in | std::ios::binary);
+    nvDDS::nvDXTdecompress(container, PF_RGBA, 0, nvDXTReadCallback, &file);
+
+	file.close();
+	std::ofstream ofile(file_name, std::ios::out | std::ios::binary);
+
+	RGBAImage& image = container.rgbaMIPImage[0];
+	rgba_t* pixels = image.pixels();
+	for (u32 k=0; k < image.width() * image.height(); k++)
+		pixels[k].set(pixels[k].a, pixels[k].a, pixels[k].a, pixels[k].r);
+
+	nvCompressionOptions option;
+	option.textureFormat = kDXT5;
+	option.bBinaryAlpha = FALSE;
+	option.bDitherColor = FALSE;
+	option.mipMapGeneration = kNoMipMaps;
+	option.mipFilterType = kMipFilterBox;
+	option.bAlphaBorder = FALSE;
+    option.bBorder = FALSE;
+    option.bFadeColor = FALSE;
+	option.bFadeAlpha = FALSE;
+	option.bDitherMip0 = FALSE;
+	option.textureType = kTextureTypeTexture2D;
+	option.user_data = &ofile;
+
+	NV_ERROR_CODE r = nvDDS::nvDXTcompress(image, &option, nvDXTWriteCallback, 0);
+	R_ASSERT(r == NV_OK);
+}
+
+
+#endif
 void execute()
 {
 	const CLocatorAPI::file* folder = FS.exist(g_folder_path);
 	R_ASSERT(folder);
 	file_list* list = FS.file_list_open(folder->name, FS_ListFiles);
 	R_ASSERT(list && !list->empty());
+#ifndef USE_NVIDIA_LIBS
 	create_device();
+#endif
 	for (file_list_it it = list->begin(), last = list->end(); it != last; ++it)
 	{
 		string256 name, ext;
@@ -275,7 +339,9 @@ void execute()
 
 	}
 	FS.file_list_close(list);
+#ifndef USE_NVIDIA_LIBS
 	destroy_device();
+#endif
 }
 
 
