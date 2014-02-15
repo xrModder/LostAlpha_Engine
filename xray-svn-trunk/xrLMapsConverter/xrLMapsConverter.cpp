@@ -56,7 +56,8 @@ void usage()
 	static LPCSTR help = 
 		"The following keys are supported / required:\n"
 		"-? or -h		== this help\n"
-		"-f <NAME>		== level in gamedata\\levels\\<NAME>\\\n";
+		"-f <NAME>		== level in gamedata\\levels\\<NAME>\\\n"
+		"-pure_alloc	== always required";
 	clMsg(help);
 }
 
@@ -65,7 +66,7 @@ void parse_params(LPCSTR params)
 	string512 cmd, temp;
 	xr_strcpy(cmd, params);
 	strlwr(cmd);
-	if (strstr(cmd, "-?") || strstr(cmd, "-h") || !strstr(cmd, "-f"))	
+	if (strstr(cmd, "-?") || strstr(cmd, "-h") || !strstr(cmd, "-f") || !strstr(cmd, "-pure_alloc"))	
 	{
 		usage();
 		TerminateProcess(GetCurrentProcess(), 0);
@@ -355,7 +356,6 @@ void execute()
 	destroy_device();
 #endif
 }
-
 
 int __cdecl main	(int argc, char* argv[])
 {

@@ -54,7 +54,7 @@ void	xrMemory::dbg_register		(void* _p, size_t _size, const char* _name)
 	u32*		_shred		= (u32*)(_ptr + _size);
 	*_shred					= u32	(-1);
 	dbg_header				(dbg,true);
-
+	
 	debug_mode				= TRUE;
 	debug_cs.Leave			();
 }

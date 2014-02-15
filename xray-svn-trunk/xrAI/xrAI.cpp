@@ -99,7 +99,7 @@ void execute	(LPSTR cmd)
 							sscanf	(strstr(cmd,"-verify")+xr_strlen("-verify"),"%s",name);
 
 		if (xr_strlen(name))
-			strcat			(name,"\\");
+			xr_strcat			(name,"\\");
 	}
 
 	string_path			prjName;
@@ -179,8 +179,8 @@ void Startup(LPSTR     lpCmdLine)
 	string4096 cmd;
 	BOOL bModifyOptions		= FALSE;
 
-	strcpy(cmd,lpCmdLine);
-	strlwr(cmd);
+	xr_strcpy(cmd,lpCmdLine);
+	xr_strlwr(cmd);
 	if (strstr(cmd,"-?") || strstr(cmd,"-h"))			{ Help(); return; }
 	if ((strstr(cmd,"-f")==0) && (strstr(cmd,"-g")==0) && (strstr(cmd,"-m")==0) && (strstr(cmd,"-s")==0) && (strstr(cmd,"-t")==0) && (strstr(cmd,"-c")==0) && (strstr(cmd,"-verify")==0) && (strstr(cmd,"-patch")==0))	{ Help(); return; }
 	if (strstr(cmd,"-o"))								bModifyOptions = TRUE;
@@ -198,7 +198,7 @@ void Startup(LPSTR     lpCmdLine)
 	extern				std::string make_time(u32 sec);
 	extern				HWND logWindow;
 	u32					dwEndTime = timeGetTime();
-	sprintf				(stats,"Time elapsed: %s",make_time((dwEndTime-dwStartupTime)/1000).c_str());
+	xr_sprintf			(stats,"Time elapsed: %s",make_time((dwEndTime-dwStartupTime)/1000).c_str());
 	MessageBox			(logWindow,stats,"Congratulation!",MB_OK|MB_ICONINFORMATION);
 
 	bClose				= TRUE;
@@ -231,7 +231,17 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-	Core._initialize		("xrai",0);
+	// check custom fsgame.ltx
+	string_path	fsgame				= "";
+	LPCSTR		fsgame_ltx_name		= "-fsltx ";
+	if (strstr(lpCmdLine, fsgame_ltx_name)) 
+	{
+		u32 sz = xr_strlen	(fsgame_ltx_name);
+		sscanf				(strstr(lpCmdLine, fsgame_ltx_name) + sz, "%[^ ] ", fsgame);
+	}
+
+	Debug._initialize		(false);
+	Core._initialize		("xrai", 0, 1, fsgame[0] ? fsgame : 0);
 
 	HMODULE					hFactory;
 	LPCSTR					g_name	= "xrSE_Factory.dll";

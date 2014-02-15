@@ -76,10 +76,20 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
+
+	// check custom fsgame.ltx
+	string_path	fsgame				= "";
+	LPCSTR		fsgame_ltx_name		= "-fsltx ";
+	if (strstr(lpCmdLine, fsgame_ltx_name)) 
+	{
+		u32 sz = xr_strlen	(fsgame_ltx_name);
+		sscanf				(strstr(lpCmdLine, fsgame_ltx_name) + sz, "%[^ ] ", fsgame);
+	}
+
 	// Initialize debugging
 	Debug._initialize	(false);
-	Core._initialize("xrdo_la");
-	Startup			(lpCmdLine);
+	Core._initialize	("xrdo_la", 0, 1, fsgame[0] ? fsgame : 0);
+	Startup				(lpCmdLine);
 	
 	return 0;
 }

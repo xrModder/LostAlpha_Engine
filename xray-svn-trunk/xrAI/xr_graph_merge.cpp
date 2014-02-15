@@ -429,7 +429,8 @@ void read_levels(CInifile *Ini, xr_set<CLevelInfo> &levels, bool rebuild_graph, 
 	string_path			caFileName, file_name;
 	for (u32 k = 0; Ini->r_line("levels",k,&_N,&V); k++) {
 		string256		N;
-		strlwr			(strcpy(N,_N));
+		xr_strcpy		(N,_N);
+		xr_strlwr		(N);
 
 		if (!Ini->section_exist(N)) {
 			Msg			("! There is no section %s in the %s!",N,GAME_CONFIG);
@@ -454,7 +455,8 @@ void read_levels(CInifile *Ini, xr_set<CLevelInfo> &levels, bool rebuild_graph, 
 		u8				id = Ini->r_u8(N,"id");
 		LPCSTR			_S = Ini->r_string(N,"name");
 		string256		S;
-		strlwr			(strcpy(S,_S));
+		xr_strcpy		(S,_S);
+		xr_strlwr		(S);
 
 		if (needed_levels) {
 			bool		found = false;
@@ -523,7 +525,7 @@ void read_levels(CInifile *Ini, xr_set<CLevelInfo> &levels, bool rebuild_graph, 
 				string_path			prjName;
 				prjName				[0] = 0;
 				FS.update_path		(prjName,"$game_levels$",S);
-				strcat				(prjName,"\\");
+				xr_strcat				(prjName,"\\");
 //				xrBuildGraph		(prjName);
 //				xrBuildCrossTable	(prjName);
 				CGameGraphBuilder().build_graph(prjName);
@@ -583,7 +585,7 @@ LPCSTR generate_temp_file_name	(LPCSTR header0, LPCSTR header1, string_path& buf
 {
 	string_path			path;
 	FS.update_path		(path,"$app_data_root$","temp");
-	strcat_s			(path,sizeof(path),"\\");
+	xr_strcat			(path,sizeof(path),"\\");
 
 	_mkdir				(path);
 	
@@ -675,7 +677,7 @@ CGraphMerger::CGraphMerger(
 		generate_temp_file_name		("raw_cross_table_",*tLevel.m_name,_1);
 		string_path					level_folder;
 		FS.update_path				(level_folder,"$game_levels$",*tLevel.m_name);
-		strcat						(level_folder,"\\");
+		xr_strcat						(level_folder,"\\");
 		CGameGraphBuilder().build_graph	(_0,_1,level_folder);
 #endif // PRIQUEL
 		::CLevelGameGraph			*tpLevelGraph = xr_new<::CLevelGameGraph>(
