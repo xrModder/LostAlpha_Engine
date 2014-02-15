@@ -154,7 +154,7 @@ void	xrMemory::mem_free		(void* P)
 		xr_aligned_free			(_real);
 	} else {
 		// pooled
-		VERIFY2					(pool<mem_pools_count,"Memory corruption");
+		VERIFY2					(pool<mem_pools_count,make_string("Memory corruption, pool='%d', count='%d'", pool, mem_pools_count));
 		mem_pools[pool].destroy	(_real);
 	}
 #ifdef DEBUG_MEMORY_MANAGER

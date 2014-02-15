@@ -148,7 +148,8 @@ void Startup(LPSTR     lpCmdLine)
 	u32	dwEndTime			= dwStartupTime.GetElapsed_ms();
 	xr_sprintf					(inf,"Time elapsed: %s",make_time(dwEndTime/1000).c_str());
 	clMsg					("Build succesful!\n%s",inf);
-	MessageBox				(logWindow,inf,"Congratulation!",MB_OK|MB_ICONINFORMATION);
+	if (strstr(lpCmdLine, "-s") == NULL)
+		MessageBox				(logWindow,inf,"Congratulation!",MB_OK|MB_ICONINFORMATION);
 
 	// Close log
 	bClose					= TRUE;
@@ -180,6 +181,25 @@ int APIENTRY WinMain(HINSTANCE hInst,
 	Core._initialize	("xrlc_la", NULL, TRUE, fsgame[0] ? fsgame : NULL);
 	Startup				(lpCmdLine);
 	Core._destroy		();
-	
+	if (strstr(lpCmdLine, "-s"))
+	{
+		HANDLE				token; 
+		TOKEN_PRIVILEGES	token_privileges; 
+
+		if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) 
+			return FALSE; 
+
+		LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &token_privileges.Privileges[0].Luid); 
+
+		token_privileges.PrivilegeCount				= 1;  
+		token_privileges.Privileges[0].Attributes	= SE_PRIVILEGE_ENABLED; 
+
+		AdjustTokenPrivileges(token, FALSE, &token_privileges, 0, 0, 0); 
+
+		if (GetLastError() != ERROR_SUCCESS) 
+			return FALSE; 
+
+		ExitWindowsEx(EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED);
+	}
 	return 0;
 }

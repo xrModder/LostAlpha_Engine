@@ -127,6 +127,33 @@ void FillRect(u8* data, u8* new_data, u32 offs, u32 pitch, u32 h, u32 full_pitch
 	for (u32 i=0; i<h; i++) CopyMemory(data+(full_pitch*i+offs),new_data+i*pitch,pitch);
 }
 
+NV_ERROR_CODE nvDXTWriteCallback(const void *buffer, size_t count, const MIPMapData* mipMapData, void* user_data)
+{
+	if (count == sizeof(DDS_HEADER))
+	{
+		// correct DDS header
+		DDS_HEADER* hdr=(DDS_HEADER*)buffer;
+		if (hdr->dwSize == count)
+		{
+			switch (hdr->ddspf.dwFourCC)
+			{ 
+				case fcc_DXT1:
+				case fcc_DXT2:
+				case fcc_DXT3:
+				case fcc_DXT4:
+				case fcc_DXT5:
+				{
+					hdr->ddspf.dwRGBBitCount = 0;
+					break;
+				}
+			}
+		}
+	}
+	if (_write(gFileOut, buffer, count) == -1)
+		return NV_FAIL;
+	return NV_OK;
+}
+
 int DXTCompressImage	(LPCSTR out_name, u8* raw_data, u32 w, u32 h, u32 pitch, 
 						STextureParams* fmt, u32 depth)
 {
@@ -142,6 +169,8 @@ int DXTCompressImage	(LPCSTR out_name, u8* raw_data, u32 w, u32 h, u32 pitch,
 // convert to Options
 	nvCompressionOptions		nvOpt;
 	ZeroMemory				(&nvOpt,sizeof(nvOpt));
+
+	nvOpt.user_data			= &gFileOut;
 
 	if (fmt->flags.is(STextureParams::flGenerateMipMaps))	nvOpt.mipMapGeneration=kGenerateMipMaps;
 	else													nvOpt.mipMapGeneration=kNoMipMaps;
@@ -231,7 +260,7 @@ int DXTCompressImage	(LPCSTR out_name, u8* raw_data, u32 w, u32 h, u32 pitch,
 		u8* pixel			= pImagePixels;
 		for (u32 k=0; k<w*2*h; k++,pixel+=4)
 			pixels[k].set	(pixel[2],pixel[1],pixel[0],pixel[3]);
-		hr = nvDDS::nvDXTcompress(pImage, &nvOpt, 0, 0);
+		hr = nvDDS::nvDXTcompress(pImage, &nvOpt, nvDXTWriteCallback, 0);
 		xr_free				(pImagePixels);
 	}else{
 		RGBAImage			pImage(w,h);
@@ -239,7 +268,7 @@ int DXTCompressImage	(LPCSTR out_name, u8* raw_data, u32 w, u32 h, u32 pitch,
 		u8* pixel			= raw_data;
 		for (u32 k=0; k<w*h; k++,pixel+=4)
 			pixels[k].set	(pixel[2],pixel[1],pixel[0],pixel[3]);
-		hr = nvDDS::nvDXTcompress(pImage, &nvOpt, 0, 0);
+		hr = nvDDS::nvDXTcompress(pImage, &nvOpt, nvDXTWriteCallback, 0);
 	}
     _close					(gFileOut);
 	if (hr!=DD_OK){

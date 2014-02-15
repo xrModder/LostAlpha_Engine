@@ -261,36 +261,44 @@ void process_lmap(LPCSTR file_name)
 
 #else
 
-#include <fstream>
-#include <ios>
 
-NV_ERROR_CODE nvDXTWriteCallback(const void *buffer, size_t count, const MIPMapData* mipMapData, void* userData)
+
+NV_ERROR_CODE nvDXTWriteCallback(const void *buffer, size_t count, const MIPMapData* mipMapData, void* user_data)
 {
-    std::ostream* s = static_cast<std::ostream*>(userData);
-    s->write(static_cast<const char*>(buffer), (std::streamsize)count);
-    return s->good() ? NV_OK : NV_READ_FAILED;
+	HFILE* file = static_cast<HFILE*>(user_data);
+	if (_write(*file, buffer, count) == -1)
+		return NV_FAIL;
+	return NV_OK;
 }
 
-NV_ERROR_CODE nvDXTReadCallback(void *buffer, size_t count, void * userData)
+NV_ERROR_CODE nvDXTReadCallback(void *buffer, size_t count, void * user_data)
 {
-    std::istream* s = static_cast<std::istream*>(userData);
-    s->read(static_cast<char*>(buffer), (std::streamsize)count);
-    return s->good() ? NV_OK : NV_READ_FAILED;
+	HFILE* file = static_cast<HFILE*>(user_data);
+	if (_read(*file, buffer, count) == -1)
+		return NV_FAIL;
+	return NV_OK;
 }
-
+#include <sys/stat.h>
+#include <fcntl.h>
 
 void process_lmap(LPCSTR file_name)
 {
+	
 	u32 lmap_id = atoi(rstrstr(file_name, "_") + 1);
 	clMsg("Processing: %s, %d", file_name, lmap_id);
 	if (lmap_id == 1) 
 		return;
 	nvImageContainer container;
-	std::ifstream file(file_name, std::ios::in | std::ios::binary);
-    nvDDS::nvDXTdecompress(container, PF_RGBA, 0, nvDXTReadCallback, &file);
+	HFILE reader = _open(file_name, _O_BINARY | _O_RDONLY, _S_IREAD);
+    nvDDS::nvDXTdecompress(container, PF_RGBA, 0, nvDXTReadCallback, &reader);
+	_close(reader);
 
-	file.close();
-	std::ofstream ofile(file_name, std::ios::out | std::ios::binary);
+	string_path backup;
+	xr_strcpy(backup, file_name);
+	xr_strcat(backup, ".bak");
+	FS.file_rename(file_name, backup);
+
+	HFILE writer = _open(file_name, _O_WRONLY | _O_BINARY | _O_CREAT | _O_TRUNC, _S_IWRITE);
 
 	RGBAImage& image = container.rgbaMIPImage[0];
 	rgba_t* pixels = image.pixels();
@@ -309,13 +317,13 @@ void process_lmap(LPCSTR file_name)
 	options.bFadeAlpha = FALSE;
 	options.bDitherMip0 = FALSE;
 	options.textureType = kTextureTypeTexture2D;
-	options.user_data = &ofile;
+	options.user_data = &writer;
 
 	NV_ERROR_CODE result = nvDDS::nvDXTcompress(image, &options, nvDXTWriteCallback, 0);
 	R_ASSERT(result == NV_OK);
 
 	clMsg("fixed %s", file_name);
-	ofile.close();
+	_close(writer);
 	container.rgbaMIPImage.clear();
 }
 
