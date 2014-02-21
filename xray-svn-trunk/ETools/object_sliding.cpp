@@ -56,7 +56,7 @@ BOOL CalculateSW(Object* object, VIPM_Result* result, u32 optimize_vertex_order)
 		iNumVerts++;
 	}
 	// Er... word indices, guys... nothing supports 32-bit indices yet.
-	R_ASSERT ( iNumVerts < 65535 );
+	R_ASSERT2 ( iNumVerts < 65535, make_string ( "%d", iNumVerts ) );
 
 	// How many tris are we looking at?
 	int iNumTris = 0;
