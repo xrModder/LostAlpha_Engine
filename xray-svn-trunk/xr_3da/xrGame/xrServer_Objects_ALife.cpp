@@ -1429,7 +1429,7 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
 	health						= 1.0f;
 	fuel_tank					= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
 	fuel						= fuel_tank;
-	random_health					= TRUE;
+	random_health				= TRUE;
 	random_fuel					= TRUE;
 }
 

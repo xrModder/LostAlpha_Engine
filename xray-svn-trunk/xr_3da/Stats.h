@@ -7,7 +7,7 @@
 #pragma once
 
 // remove it when fixed
-#define LA_SHADERS_DEBUG
+//#define LA_SHADERS_DEBUG
 
 class ENGINE_API CGameFont;
 #ifdef LA_SHADERS_DEBUG
