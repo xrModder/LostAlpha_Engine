@@ -40,7 +40,7 @@ typedef EStateList::iterator EStateIt;
 class ECORE_API TUI: public IInputReceiver{
 protected:
     friend class CCustomPreferences;
-    friend class CRenderDevice;
+    friend class CEditorRenderDevice;
     TD3DWindow* m_D3DWindow;
     TPanel*		m_D3DPanel;
 
@@ -123,12 +123,12 @@ public:
     void			Quit			()	{	m_Flags.set(flNeedQuit,TRUE); }
 
     IC HANDLE 		GetHWND			()	{   return m_D3DWindow->Handle; }
-    int 			GetRenderWidth	()	{   return Device.dwWidth; }
-    int 			GetRenderHeight	()	{   return Device.dwHeight; }
-    int 			GetRealWidth	()	{   return Device.m_RealWidth; }
-    int 			GetRealHeight	()  {   return Device.m_RealHeight; }
+    int 			GetRenderWidth	()	{   return EDevice.dwWidth; }
+    int 			GetRenderHeight	()	{   return EDevice.dwHeight; }
+    int 			GetRealWidth	()	{   return EDevice.m_RealWidth; }
+    int 			GetRealHeight	()  {   return EDevice.m_RealHeight; }
 
-    IC float 		ZFar			()	{	return Device.m_Camera.m_Zfar; }
+    IC float 		ZFar			()	{	return EDevice.m_Camera.m_Zfar; }
     IC TShiftState	GetShiftState 	()	{	return m_ShiftState; }
 
     virtual bool 	OnCreate		(TD3DWindow* w, TPanel* p);
@@ -145,7 +145,7 @@ public:
     // only redraw scene
     void 			RedrawScene			(bool bForced=false){   m_Flags.set(flRedraw,TRUE); 		if (bForced) RealRedrawScene();}
 
-    void 			SetRenderQuality	(float q)      {   Device.m_ScreenQuality = q;}
+    void 			SetRenderQuality	(float q)      {   EDevice.m_ScreenQuality = q;}
 // mouse action
     void 			EnableSelectionRect	(bool flag );                                               
     void 			UpdateSelectionRect	(const Ivector2& from, const Ivector2& to );

@@ -118,22 +118,23 @@ CCommandVar CLevelTools::CommandShowTarget(CCommandVar p1, CCommandVar p2)
 
 CCommandVar CLevelTools::CommandReadonlyTarget(CCommandVar p1, CCommandVar p2)
 {
-	ESceneCustomMTools* M 	= Scene->GetMTools(p1); VERIFY(M);
-    BOOL res				= TRUE; 
+ESceneCustomMTools* M 		= Scene->GetMTools(p1); VERIFY(M);
+    BOOL res				= TRUE;
 	if (p2){
-        if (!Scene->IfModified()){    
+        if (!Scene->IfModified())
+        {
 		    M->m_EditFlags.set(ESceneCustomMTools::flForceReadonly,FALSE);
             res				= FALSE;
-        }else{
-            xr_string pn	= Scene->LevelPartName(LTools->m_LastFileName.c_str(),M->ClassID);
-         	EFS.UnlockFile	(pn.c_str(),false);
+        }else
+        {
+//.            xr_string pn	= Scene->LevelPartName(LTools->m_LastFileName.c_str(),M->ClassID);
         }
-    }else{
-        xr_string pn		= Scene->LevelPartName(LTools->m_LastFileName.c_str(),M->ClassID);
-    	if (!EFS.CheckLocking(pn.c_str(),false,false))
-         	EFS.LockFile	(pn.c_str(),false);
+    }else
+    {
+//.        xr_string pn		= Scene->LevelPartName(LTools->m_LastFileName.c_str(), M->ClassID);
     }
-    if (res){
+    if (res)
+    {
     	Reset				();
 	    ExecCommand			(COMMAND_REFRESH_UI_BAR);
     }
@@ -258,7 +259,7 @@ CCommandVar CommandClear(CCommandVar p1, CCommandVar p2)
     if( !Scene->locked() ){
         if (!Scene->IfModified()) return TRUE;
         Scene->UnlockLevel		(Tools->m_LastFileName.c_str());
-        Device.m_Camera.Reset	();
+        EDevice.m_Camera.Reset	();
         Scene->Reset			();
         Scene->m_LevelOp.Reset	();
         Tools->m_LastFileName 		= "";
@@ -986,22 +987,22 @@ bool CLevelMain::SelectionFrustum(CFrustum& frustum)
 
     SRayPickInfo pinf;
     for (int i=0; i<4; i++){
-	    Device.m_Camera.MouseRayFromPoint(st, d, pt[i]);
+	    EDevice.m_Camera.MouseRayFromPoint(st, d, pt[i]);
         if (EPrefs->bp_lim_depth){
-			pinf.inf.range = Device.m_Camera._Zfar(); // max pick range
+			pinf.inf.range = EDevice.m_Camera._Zfar(); // max pick range
             if (Scene->RayPickObject(pinf.inf.range, st, d, OBJCLASS_SCENEOBJECT, &pinf, 0))
 	            if (pinf.inf.range > depth) depth = pinf.inf.range;
         }
     }
-    if (depth<Device.m_Camera._Znear()) depth = Device.m_Camera._Zfar();
+    if (depth<EDevice.m_Camera._Znear()) depth = EDevice.m_Camera._Zfar();
     else depth += EPrefs->bp_depth_tolerance;
 
     for (i=0; i<4; i++){
-	    Device.m_Camera.MouseRayFromPoint(st, d, pt[i]);
+	    EDevice.m_Camera.MouseRayFromPoint(st, d, pt[i]);
         p[i].mad(st,d,depth);
     }
 
-    Fvector pos = Device.m_Camera.GetPosition();
+    Fvector pos = EDevice.m_Camera.GetPosition();
     frustum.CreateFromPoints(p,4,pos);
 
     Fplane P; P.build(p[0],p[1],p[2]);
@@ -1066,9 +1067,9 @@ void CLevelMain::OutCameraPos()
 {
 	if (m_bReady){
         AnsiString s;
-        const Fvector& c 	= Device.m_Camera.GetPosition();
+        const Fvector& c 	= EDevice.m_Camera.GetPosition();
         s.sprintf("C: %3.1f, %3.1f, %3.1f",c.x,c.y,c.z);
-    //	const Fvector& hpb 	= Device.m_Camera.GetHPB();
+    //	const Fvector& hpb 	= EDevice.m_Camera.GetHPB();
     //	s.sprintf(" Cam: %3.1f°, %3.1f°, %3.1f°",rad2deg(hpb.y),rad2deg(hpb.x),rad2deg(hpb.z));
         fraBottomBar->paCamera->Caption=s; fraBottomBar->paCamera->Repaint();
     }

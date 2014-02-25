@@ -25,20 +25,20 @@ object frmSoundLib: TfrmSoundLib
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 168
+    Left = 160
     Top = 0
     Width = 2
-    Height = 435
+    Height = 431
     Cursor = crHSplit
     Align = alRight
     Color = 13816530
     ParentColor = False
   end
   object paRight: TPanel
-    Left = 170
+    Left = 162
     Top = 0
     Width = 172
-    Height = 435
+    Height = 431
     Align = alRight
     BevelOuter = bvLowered
     Color = 10528425
@@ -46,7 +46,7 @@ object frmSoundLib: TfrmSoundLib
     TabOrder = 0
     object paCommand: TPanel
       Left = 1
-      Top = 398
+      Top = 394
       Width = 170
       Height = 36
       Align = alBottom
@@ -112,7 +112,7 @@ object frmSoundLib: TfrmSoundLib
       Left = 1
       Top = 1
       Width = 170
-      Height = 397
+      Height = 393
       Align = alClient
       BevelOuter = bvNone
       Color = 10528425
@@ -122,8 +122,8 @@ object frmSoundLib: TfrmSoundLib
   object paItems: TPanel
     Left = 0
     Top = 0
-    Width = 168
-    Height = 435
+    Width = 160
+    Height = 431
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True

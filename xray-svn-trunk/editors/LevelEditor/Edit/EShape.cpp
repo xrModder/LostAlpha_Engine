@@ -3,7 +3,7 @@
 #pragma hdrstop
 
 #include "EShape.h"
-#include "D3DUtils.h"
+#include "../../ecore/editor/D3DUtils.h"
 #include "du_box.h"
 #include "Scene.h"
 
@@ -311,41 +311,48 @@ void CEditShape::FillProp(LPCSTR pref, PropItemVec& values)
 void CEditShape::Render(int priority, bool strictB2F)
 {
 	inherited::Render(priority, strictB2F);
-    if (1==priority){
-        if (strictB2F){
-	        Device.SetShader			(Device.m_WireShader);
-            Device.SetRS				(D3DRS_CULLMODE,D3DCULL_NONE);
+    if (1==priority)
+    {
+        if (strictB2F)
+        {
+	        EDevice.SetShader			(EDevice.m_WireShader);
+            EDevice.SetRS				(D3DRS_CULLMODE,D3DCULL_NONE);
             u32 clr 					= Selected()?subst_alpha(m_DrawTranspColor, color_get_A(m_DrawTranspColor)*2):m_DrawTranspColor;
+                
             Fvector zero				={0.f,0.f,0.f};
-            for (ShapeIt it=shapes.begin(); it!=shapes.end(); it++){
-                switch(it->type){
-                case cfSphere:{
+            for (ShapeIt it=shapes.begin(); it!=shapes.end(); ++it)
+            {
+                switch(it->type)
+                {
+                case cfSphere:
+                {
                     Fsphere& S			= it->data.sphere;
                     Fmatrix B;
                     B.scale				(S.R,S.R,S.R);
                     B.translate_over	(S.P);
                     B.mulA_43			(_Transform());
                     RCache.set_xform_world(B);
-                    Device.SetShader	(Device.m_WireShader);
-                    DU.DrawCross		(zero,1.f,m_DrawEdgeColor,false);
-                    DU.DrawIdentSphere	(true,true,clr,m_DrawEdgeColor);
+                    EDevice.SetShader	(EDevice.m_WireShader);
+                    DU_impl.DrawCross	(zero,1.f,m_DrawEdgeColor,false);
+                    DU_impl.DrawIdentSphere	(true,true,clr,m_DrawEdgeColor);
                 }break;
-                case cfBox:
+                case cfBox:    {
                     Fmatrix B			= it->data.box;
                     B.mulA_43			(_Transform()); 
                     RCache.set_xform_world(B);
-                    DU.DrawIdentBox		(true,true,clr,m_DrawEdgeColor);
-                break;
+                    DU_impl.DrawIdentBox(true,true,clr,m_DrawEdgeColor);
+                }break;
                 }
             }
-            Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+            EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
         }else{
-            if( Selected()&&m_Box.is_valid() ){
-		        Device.SetShader		(Device.m_SelectionShader);
+            if( Selected()&&m_Box.is_valid() )
+            {
+		        EDevice.SetShader		(EDevice.m_SelectionShader);
                 RCache.set_xform_world	(_Transform());
                 u32 clr 				= Locked()?0xFFFF0000:0xFFFFFFFF;
-                Device.SetShader		(Device.m_WireShader);
-                DU.DrawSelectionBox		(m_Box,&clr);
+                EDevice.SetShader		(EDevice.m_WireShader);
+                DU_impl.DrawSelectionBoxB(m_Box,&clr);
             }
         }
     }

@@ -16,7 +16,7 @@
 #include "portalutils.h"
 #include "MgcConvexHull3D.h"
 #include "../ECore/Editor/ui_main.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dutils.h"
 
 #define SECTOR_VERSION   					0x0011
 //----------------------------------------------------
@@ -116,7 +116,7 @@ int CSector::DelMesh	(CSceneObject* O, CEditableMesh* M)
 
 bool CSector::GetBox( Fbox& box )
 {
-	box.set(m_Box);
+	box.set(m_SectorBox);
 	return true;
 }
 
@@ -130,13 +130,14 @@ void CSector::Render(int priority, bool strictB2F)
                 Fcolor color;
                 float k = Selected()?0.4f:0.2f;
                 color.set(sector_color.r,sector_color.g,sector_color.b,k);
-			    Device.SetShader(Device.m_SelectionShader);
-                Device.SetRS(D3DRS_CULLMODE,D3DCULL_NONE);
-                for (SItemIt it=sector_items.begin();it!=sector_items.end();it++){
+			    EDevice.SetShader(EDevice.m_SelectionShader);
+                EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_NONE);
+                for (SItemIt it=sector_items.begin();it!=sector_items.end();++it)
+                {
                     it->object->GetFullTransformToWorld(matrix);
                     it->mesh->RenderSelection( matrix, 0, color.get() );
                 }
-                Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+                EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
             }
         }else if (false==strictB2F){
             Fmatrix matrix;
@@ -146,19 +147,21 @@ void CSector::Render(int priority, bool strictB2F)
             float k2 = Selected()?0.5f:0.2f;
             color.set(sector_color.r*k,sector_color.g*k,sector_color.b*k,1.f);
             color2.set(sector_color.r*k2,sector_color.g*k2,sector_color.b*k2,1.f);
-            if (lt->m_Flags.is(ESceneSectorTools::flDrawSolid)){
-                Device.SetShader(Device.m_WireShader);
-                Device.SetRS(D3DRS_CULLMODE,D3DCULL_NONE);
-                for (SItemIt it=sector_items.begin();it!=sector_items.end();it++){
+            if (lt->m_Flags.is(ESceneSectorTools::flDrawSolid))
+            {
+                EDevice.SetShader(EDevice.m_WireShader);
+                EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_NONE);
+                for (SItemIt it=sector_items.begin();it!=sector_items.end();++it)
+                {
                     it->object->GetFullTransformToWorld(matrix);
                     it->mesh->RenderSelection( matrix, 0, color.get() );
                     it->mesh->RenderEdge( matrix, 0, color2.get() );
                 }
-                Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+                EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
             }
             if (Selected()){
                 RCache.set_xform_world(Fidentity);
-                DU.DrawSelectionBox(m_Box);
+                DU_impl.DrawSelectionBoxB(m_SectorBox);
             }
         }
     }
@@ -189,16 +192,16 @@ void CSector::UpdateVolume()
 {
     Fbox bb;
     Fvector pt;
-    m_Box.invalidate();
+    m_SectorBox.invalidate();
     for (SItemIt s_it=sector_items.begin();s_it!=sector_items.end();s_it++){
         s_it->mesh->GetBox(bb);
         bb.xform(s_it->object->_Transform());
         for(int i=0; i<8; i++){
             bb.getpoint(i, pt);
-            m_Box.modify(pt);
+            m_SectorBox.modify(pt);
         }
     }
-    m_Box.getsphere(m_SectorCenter,m_SectorRadius);
+    m_SectorBox.getsphere(m_SectorCenter,m_SectorRadius);
 
     UI->RedrawScene();
 
@@ -232,10 +235,10 @@ EVisible CSector::Intersect(const Fvector& center, float radius)
 	float dist=m_SectorCenter.distance_to(center);
 
     Fvector R;
-    m_Box.getradius(R);
+    m_SectorBox.getradius(R);
 
 	bool bInSphere = ((dist+radius)<m_SectorRadius)&&(radius>R.x)&&(radius>R.y)&&(radius>R.z);
-	if (m_Box.contains(center)){
+	if (m_SectorBox.contains(center)){
     	if (bInSphere) return fvFully;
         else return fvPartialInside;
     }else{
@@ -247,7 +250,7 @@ EVisible CSector::Intersect(const Fvector& center, float radius)
 
 EVisible CSector::Intersect(const Fbox& box)
 {
-	if (m_Box.intersect(box)){
+	if (m_SectorBox.intersect(box)){
     	Fvector c; float r;
         box.getsphere(c,r);
     	return Intersect(c,r);
@@ -519,7 +522,7 @@ bool CSector::Validate(bool bMsg)
     for (SItemIt it=sector_items.begin();it!=sector_items.end();it++){
         for (SurfFacesPairIt sf_it=it->mesh->m_SurfFaces.begin(); sf_it!=it->mesh->m_SurfFaces.end(); sf_it++){
             CSurface* surf 		= sf_it->first;
-            Shader_xrLC* c_sh	= Device.ShaderXRLC.Get(surf->_ShaderXRLCName());
+            Shader_xrLC* c_sh	= EDevice.ShaderXRLC.Get(surf->_ShaderXRLCName());
             if (c_sh->flags.bRendering)	bRenderableFound = true;
         }
 	}

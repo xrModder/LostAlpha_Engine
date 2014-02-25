@@ -1,7 +1,7 @@
 #ifndef EThumbnailH
 #define EThumbnailH
 
-#include "ETextureParams.h"
+#include "../../../xr_3da/xrRender/ETextureParams.h"
 #include "../xrEProps/PropertiesListHelper.h"
 #include "MXCtrls.hpp"
 //------------------------------------------------------------------------------

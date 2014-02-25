@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 #include "gamefont.h"
+#include <sal.h>
 #include "dxerr.h"
 #include "ImageManager.h"
 #include "ui_main.h"
@@ -11,7 +12,7 @@
 
 #pragma package(smart_init)
 
-CRenderDevice 		Device;
+CEditorRenderDevice 		EDevice;
 
 extern int	rsDVB_Size;
 extern int	rsDIB_Size;
@@ -19,7 +20,7 @@ extern int	rsDIB_Size;
 ENGINE_API BOOL g_bRendering = FALSE; 
 
 //---------------------------------------------------------------------------
-CRenderDevice::CRenderDevice()
+CEditorRenderDevice::CEditorRenderDevice()
 {
 	psDeviceFlags.assign(rsStatistic|rsFilterLinear|rsFog|rsDrawGrid);
 // dynamic buffer size
@@ -30,7 +31,7 @@ CRenderDevice::CRenderDevice()
     dwWidth 		= dwHeight 	= 256;
     m_RealWidth 	= m_RealHeight 		= 256;
     m_RenderWidth_2	= m_RenderHeight_2 	= 128;
-	mProjection.identity();
+	mProject.identity();
     mFullTransform.identity();
     mView.identity	();
 	m_WireShader	= 0;
@@ -56,12 +57,14 @@ CRenderDevice::CRenderDevice()
     dwPrecacheFrame = 0;
 }
 
-CRenderDevice::~CRenderDevice(){
+CEditorRenderDevice::~CEditorRenderDevice(){
 	VERIFY(!b_is_Ready);
 }
 
 extern void Surface_Init();
-void CRenderDevice::Initialize()
+#include "../../Include/xrAPI/xrAPI.h"
+#include "../../../xr_3da/xrRender/dxRenderFactory.h"
+void CEditorRenderDevice::Initialize()
 {
 //	m_Camera.Reset();
 
@@ -80,13 +83,15 @@ void CRenderDevice::Initialize()
     	ELog.DlgMsg(mtInformation,"Can't find file '%s'",fn);
     }
 
+	RenderFactory	= &RenderFactoryImpl;
+
 	// Startup shaders
 	Create				();
 
     ::Render->Initialize();
 }
 
-void CRenderDevice::ShutDown()
+void CEditorRenderDevice::ShutDown()
 {
     ::Render->ShutDown	();
 
@@ -101,7 +106,7 @@ void CRenderDevice::ShutDown()
 //	PSLib.xrShutDown	();
 }
 
-void CRenderDevice::InitTimer(){
+void CEditorRenderDevice::InitTimer(){
 	Timer_MM_Delta	= 0;
 	{
 		u32 time_mm			= timeGetTime	();
@@ -112,22 +117,23 @@ void CRenderDevice::InitTimer(){
 	}
 }
 //---------------------------------------------------------------------------
-void CRenderDevice::RenderNearer(float n){
-    mProjection._43=m_fNearer-n;
-    RCache.set_xform_project(mProjection);
+void CEditorRenderDevice::RenderNearer(float n){
+    mProject._43=m_fNearer-n;
+    RCache.set_xform_project(mProject);
 }
-void CRenderDevice::ResetNearer(){
-    mProjection._43=m_fNearer;
-    RCache.set_xform_project(mProjection);
+void CEditorRenderDevice::ResetNearer(){
+    mProject._43=m_fNearer;
+    RCache.set_xform_project(mProject);
 }
 //---------------------------------------------------------------------------
-bool CRenderDevice::Create()
+bool CEditorRenderDevice::Create()
 {
 	if (b_is_Ready)	return false;
-    Statistic			= xr_new<CStats>();
+    Statistic			= xr_new<CEStats>();
 	ELog.Msg(mtInformation,"Starting RENDER device...");
 
-	HW.CreateDevice		(m_hRenderWnd/*,dwWidth,dwHeight*/);
+
+	HW.CreateDevice		(m_hRenderWnd, false);
 
 	// after creation
 	dwFrame				= 0;
@@ -142,7 +148,7 @@ bool CRenderDevice::Create()
 
     // if build options - load textures immediately
     if (strstr(Core.Params,"-build")||strstr(Core.Params,"-ebuild"))
-        Device.Resources->DeferredLoad(FALSE);
+        EDevice.Resources->DeferredLoad(FALSE);
 
     _Create				(F);
 	FS.r_close			(F);
@@ -153,7 +159,7 @@ bool CRenderDevice::Create()
 }
 
 //---------------------------------------------------------------------------
-void CRenderDevice::Destroy(){
+void CEditorRenderDevice::Destroy(){
 	if (!b_is_Ready) return;
 
 	ELog.Msg( mtInformation, "Destroying Direct3D...");
@@ -171,32 +177,32 @@ void CRenderDevice::Destroy(){
     xr_delete			(Statistic);
 }
 //---------------------------------------------------------------------------
-void CRenderDevice::_SetupStates()
+void CEditorRenderDevice::_SetupStates()
 {
 	HW.Caps.Update();
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++){
 		float fBias = -1.f;
 		CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&fBias))));
 	}
-	Device.SetRS(D3DRS_DITHERENABLE,	TRUE				);
-    Device.SetRS(D3DRS_COLORVERTEX,		TRUE				);
-    Device.SetRS(D3DRS_STENCILENABLE,	FALSE				);
-    Device.SetRS(D3DRS_ZENABLE,			TRUE				);
-    Device.SetRS(D3DRS_SHADEMODE,		D3DSHADE_GOURAUD	);
-	Device.SetRS(D3DRS_CULLMODE,		D3DCULL_CCW			);
-	Device.SetRS(D3DRS_ALPHAFUNC,		D3DCMP_GREATER		);
-	Device.SetRS(D3DRS_LOCALVIEWER,		TRUE				);
-    Device.SetRS(D3DRS_NORMALIZENORMALS,TRUE				);
+	EDevice.SetRS(D3DRS_DITHERENABLE,	TRUE				);
+    EDevice.SetRS(D3DRS_COLORVERTEX,		TRUE				);
+    EDevice.SetRS(D3DRS_STENCILENABLE,	FALSE				);
+    EDevice.SetRS(D3DRS_ZENABLE,			TRUE				);
+    EDevice.SetRS(D3DRS_SHADEMODE,		D3DSHADE_GOURAUD	);
+	EDevice.SetRS(D3DRS_CULLMODE,		D3DCULL_CCW			);
+	EDevice.SetRS(D3DRS_ALPHAFUNC,		D3DCMP_GREATER		);
+	EDevice.SetRS(D3DRS_LOCALVIEWER,		TRUE				);
+    EDevice.SetRS(D3DRS_NORMALIZENORMALS,TRUE				);
 
-	Device.SetRS(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
-	Device.SetRS(D3DRS_SPECULARMATERIALSOURCE,D3DMCS_MATERIAL);
-	Device.SetRS(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
-	Device.SetRS(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_COLOR1	);
+	EDevice.SetRS(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
+	EDevice.SetRS(D3DRS_SPECULARMATERIALSOURCE,D3DMCS_MATERIAL);
+	EDevice.SetRS(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
+	EDevice.SetRS(D3DRS_EMISSIVEMATERIALSOURCE,D3DMCS_COLOR1	);
 
     ResetMaterial();
 }
 //---------------------------------------------------------------------------
-void CRenderDevice::_Create(IReader* F)
+void CEditorRenderDevice::_Create(IReader* F)
 {
 	b_is_Ready				= TRUE;
 
@@ -218,7 +224,7 @@ void CRenderDevice::_Create(IReader* F)
 //	pSystemFont					= xr_new<CGameFont>("hud_font_medium");
 }
 
-void CRenderDevice::_Destroy(BOOL	bKeepTextures)
+void CEditorRenderDevice::_Destroy(BOOL	bKeepTextures)
 {
 	xr_delete					(pSystemFont);
 
@@ -240,7 +246,7 @@ void CRenderDevice::_Destroy(BOOL	bKeepTextures)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall CRenderDevice::Resize(int w, int h)
+void __fastcall CEditorRenderDevice::Resize(int w, int h)
 {
     m_RealWidth 	= w;
     m_RealHeight 	= h;
@@ -252,18 +258,18 @@ void __fastcall CRenderDevice::Resize(int w, int h)
     m_RenderHeight_2= dwHeight * 0.5f;
 
     fASPECT 		= (float)dwHeight / (float)dwWidth;
-    mProjection.build_projection( deg2rad(fFOV), fASPECT, m_Camera.m_Znear, m_Camera.m_Zfar );
-    m_fNearer 		= mProjection._43;
+    mProject.build_projection( deg2rad(fFOV), fASPECT, m_Camera.m_Znear, m_Camera.m_Zfar );
+    m_fNearer 		= mProject._43;
 
     Reset			();
 
-    RCache.set_xform_project(mProjection);
+    RCache.set_xform_project(mProject);
     RCache.set_xform_world	(Fidentity);
 
     UI->RedrawScene	();
 }
 
-void CRenderDevice::Reset  	()
+void CEditorRenderDevice::Reset  	()
 {
     u32 tm_start			= TimerAsync();
     Resources->reset_begin	();
@@ -283,7 +289,7 @@ void CRenderDevice::Reset  	()
     Msg						("*** RESET [%d ms]",tm_end-tm_start);
 }
 
-BOOL CRenderDevice::Begin	()
+BOOL CEditorRenderDevice::Begin	()
 {
 	VERIFY(b_is_Ready);
 	HW.Validate		();
@@ -316,7 +322,7 @@ BOOL CRenderDevice::Begin	()
 }
 
 //---------------------------------------------------------------------------
-void CRenderDevice::End()
+void CEditorRenderDevice::End()
 {
 	VERIFY(HW.pDevice);
 	VERIFY(b_is_Ready);
@@ -324,9 +330,9 @@ void CRenderDevice::End()
     seqRender.Process						(rp_Render);
     
 	Statistic->Show(pSystemFont);
-	Device.SetRS	(D3DRS_FILLMODE,D3DFILL_SOLID);
+	EDevice.SetRS	(D3DRS_FILLMODE,D3DFILL_SOLID);
 	pSystemFont->OnRender();
-    Device.SetRS	(D3DRS_FILLMODE,Device.dwFillMode);
+    EDevice.SetRS	(D3DRS_FILLMODE,EDevice.dwFillMode);
 
 	g_bRendering = 	FALSE;
 
@@ -337,23 +343,19 @@ void CRenderDevice::End()
 	CHK_DX(HW.pDevice->Present( NULL, NULL, NULL, NULL ));
 }
 
-void CRenderDevice::UpdateView()
+void CEditorRenderDevice::UpdateView()
 {
 // set camera matrix
 	m_Camera.GetView(mView);
 
     RCache.set_xform_view(mView);
-    mFullTransform.mul(mProjection,mView);
-	
-	vCameraPosition_saved	= vCameraPosition;
-	mFullTransform_saved	= mFullTransform;
-	mView_saved				= mView;
+    mFullTransform.mul(mProject,mView);
 
 // frustum culling sets
     ::Render->ViewBase.CreateFromMatrix(mFullTransform,FRUSTUM_P_ALL);
 }
 
-void CRenderDevice::FrameMove()
+void CEditorRenderDevice::FrameMove()
 {
 	dwFrame++;
 
@@ -373,7 +375,7 @@ void CRenderDevice::FrameMove()
 	seqFrame.Process(rp_Frame);
 }
 
-void CRenderDevice::DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc)
+void CEditorRenderDevice::DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc)
 {
 	ref_shader S 			= m_CurrentShader?m_CurrentShader:m_WireShader;
     u32 dwRequired			= S->E[0]->passes.size();
@@ -384,7 +386,7 @@ void CRenderDevice::DP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 vBase, u32 pc)
     }
 }
 
-void CRenderDevice::DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
+void CEditorRenderDevice::DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 startV, u32 countV, u32 startI, u32 PC)
 {
 	ref_shader S 			= m_CurrentShader?m_CurrentShader:m_WireShader;
     u32 dwRequired			= S->E[0]->passes.size();
@@ -395,21 +397,21 @@ void CRenderDevice::DIP(D3DPRIMITIVETYPE pt, ref_geom geom, u32 baseV, u32 start
     }
 }
 
-void CRenderDevice::ReloadTextures()
+void CEditorRenderDevice::ReloadTextures()
 {
 	UI->SetStatus("Reload textures...");
 	Resources->ED_UpdateTextures(0);
 	UI->SetStatus("");
 }
 
-void CRenderDevice::UnloadTextures()
+void CEditorRenderDevice::UnloadTextures()
 {
 #ifndef _EDITOR
     Resources->DeferredUnload();
 #endif    
 }
 
-void CRenderDevice::Reset(IReader* F, BOOL bKeepTextures)
+void CEditorRenderDevice::Reset(IReader* F, BOOL bKeepTextures)
 {
 	CTimer tm;
     tm.Start();
@@ -418,4 +420,9 @@ void CRenderDevice::Reset(IReader* F, BOOL bKeepTextures)
 	Msg				("*** RESET [%d ms]",tm.GetElapsed_ms());
 }
 
+void CEditorRenderDevice::time_factor(float v)
+{
+	 Timer.time_factor(v);
+	 TimerGlobal.time_factor(v);
+}
 

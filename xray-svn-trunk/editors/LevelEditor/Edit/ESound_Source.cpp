@@ -4,7 +4,7 @@
 
 #include "ESound_Source.h"
 #include "../../xrSound/SoundRender_Source.h"
-#include "d3dutils.h"
+#include "../../ecore/editor/D3DUtils.h"
 #include "../ECore/Editor/ui_main.h"
 #include "IGame_Persistent.h"
 //----------------------------------------------------
@@ -64,7 +64,7 @@ ESoundSource::~ESoundSource()
 
 //----------------------------------------------------
 
-bool ESoundSource::GetBox( Fbox& box )
+bool ESoundSource::GetBox( Fbox& box ) const
 {
 	box.set( m_Params.position, m_Params.position );
 	box.min.sub(m_Params.max_distance);
@@ -76,14 +76,14 @@ void ESoundSource::Render(int priority, bool strictB2F)
 {
     if((1==priority)&&(false==strictB2F)){
 	 	RCache.set_xform_world	(Fidentity);
-	 	Device.SetShader		(Device.m_WireShader);
+	 	EDevice.SetShader		(EDevice.m_WireShader);
         u32 clr0				= Locked()?SOUND_LOCK_COLOR:(Selected()?SOUND_SEL0_COLOR:SOUND_NORM_COLOR);
         u32 clr1				= Locked()?SOUND_LOCK_COLOR:(Selected()?SOUND_SEL1_COLOR:SOUND_NORM_COLOR);
         if (Selected()){ 
-        	DU.DrawLineSphere	(m_Params.position, m_Params.max_distance, clr1, true);
-        	DU.DrawLineSphere	(m_Params.position, m_Params.min_distance, clr0, false);
+        	DU_impl.DrawLineSphere	(m_Params.position, m_Params.max_distance, clr1, true);
+        	DU_impl.DrawLineSphere	(m_Params.position, m_Params.min_distance, clr0, false);
         }else{
-			DU.DrawSound		(m_Params.position,VIS_RADIUS, clr1);
+			DU_impl.DrawSound		(m_Params.position,VIS_RADIUS, clr1);
         }
     }
 }
@@ -177,9 +177,9 @@ bool ESoundSource::Load(IReader& F)
     ResetSource		();
 
     switch (m_Type){
-	case stStaticSource:
-		if (m_Flags.is(flPlaying)) 		Play();
-    	if (m_Flags.is(flSimulating)) 	Simulate(); 
+    case stStaticSource: 
+    	if (m_Flags.is(flPlaying)) 		Play(); 
+//.    	if (m_Flags.is(flSimulating)) 	Simulate(); 
     break;
 	default:
 		ELog.Msg(mtError, "Unknown sound source type: %d\r\n", m_Type);
@@ -239,7 +239,7 @@ void ESoundSource::OnControlClick(ButtonValue* V, bool& bModif, bool& bSafe)
     switch (V->btn_num){
     case 0: Play();		break;
     case 1: Stop();		break;
-    case 2: Simulate(); break;
+//.    case 2: Simulate(); break;
 	}
     UI->RedrawScene();
     bModif = false;
@@ -302,31 +302,38 @@ void ESoundSource::OnFrame()
 		m_Flags.set			(flPlaying,FALSE);
 		m_Flags.set			(flSimulating,FALSE);
     break;
-    case stSimulate:{
+    case stSimulate:
+    {
+/*    
 		m_Flags.set			(flSimulating,TRUE);
     	if ((fis_zero(m_ActiveTime.x)&&fis_zero(m_ActiveTime.y))||
-        	((g_pGamePersistent->Environment().GetGameTime()>m_ActiveTime.x)&&(g_pGamePersistent->Environment().GetGameTime()<m_ActiveTime.y))){
-            if (0==m_Source._feedback()){
-            	if (fis_zero(m_RandomPause.x)&&fis_zero(m_RandomPause.y)){    
+        	((g_pGamePersistent->Environment().GetGameTime()>m_ActiveTime.x)&&(g_pGamePersistent->Environment().GetGameTime()<m_ActiveTime.y)))
+            {
+            if (0==m_Source._feedback())
+            {
+            	if (fis_zero(m_RandomPause.x)&&fis_zero(m_RandomPause.y))
+                {
                     m_Source.play			(0,sm_Looped);
                     m_Source.set_params		(&m_Params);
                     m_StopTime				= 0xFFFFFFFF;
 				}else{
-                    if (Device.dwTimeGlobal>=m_NextTime){
+                    if (EDevice.dwTimeGlobal>=m_NextTime)
+                    {
                     	bool bFullPlay		= fis_zero(m_PlayTime.x)&&fis_zero(m_PlayTime.y);
                         m_Source.play		(0,bFullPlay?0:sm_Looped);
                         m_Source.set_params	(&m_Params);
-                        if (bFullPlay){
+                        if (bFullPlay)
+                        {
                             m_StopTime		= 0xFFFFFFFF;
-                            m_NextTime		= Device.dwTimeGlobal+m_Source._handle()->length_ms()+Random.randF(m_RandomPause.x,m_RandomPause.y)*1000;
+                            m_NextTime		= EDevice.dwTimeGlobal+iFloor(m_Source.get_length_sec()/1000.0f)+Random.randF(m_RandomPause.x,m_RandomPause.y)*1000;
                         }else{
-                            m_StopTime		= bFullPlay?0:Device.dwTimeGlobal+Random.randF(m_PlayTime.x,m_PlayTime.y)*1000;
+                            m_StopTime		= bFullPlay?0:EDevice.dwTimeGlobal+Random.randF(m_PlayTime.x,m_PlayTime.y)*1000;
                             m_NextTime		= m_StopTime+Random.randF(m_RandomPause.x,m_RandomPause.y)*1000;
                         }
                     }
                 }
             }else{
-                if (Device.dwTimeGlobal>=m_StopTime)
+                if (EDevice.dwTimeGlobal>=m_StopTime)
 	            	m_Source.stop_deffered();
             }
             
@@ -334,6 +341,7 @@ void ESoundSource::OnFrame()
             if (0!=m_Source._feedback())
             	m_Source.stop_deffered();
         }
+*/        
     }break;
     case stNothing:    		break;
     default: THROW;

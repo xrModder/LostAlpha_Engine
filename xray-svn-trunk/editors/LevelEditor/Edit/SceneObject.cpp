@@ -11,7 +11,7 @@
 #include "../ECore/Editor/library.h"
 #include "../ECore/Editor/EditMesh.h"
 #include "../ECore/Editor/ui_main.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/D3DUtils.h"
 
 #ifdef _LEVEL_EDITOR
 	#include "scene.h"
@@ -88,7 +88,7 @@ void CSceneObject::OnUpdateTransform()
     }
 }
 
-bool CSceneObject::GetBox( Fbox& box )
+bool CSceneObject::GetBox( Fbox& box ) const
 {
 	if (!m_pReference) return false;
 	box.set(m_TBBox);
@@ -120,10 +120,10 @@ void CSceneObject::Render(int priority, bool strictB2F)
     if (Selected()){
     	if (1==priority){
             if (false==strictB2F){
-                Device.SetShader(Device.m_WireShader);
+                EDevice.SetShader(EDevice.m_WireShader);
                 RCache.set_xform_world(_Transform());
                 u32 clr = Locked()?0xFFFF0000:0xFFFFFFFF;
-                DU.DrawSelectionBox(m_pReference->GetBox(),&clr);
+                DU_impl.DrawSelectionBoxB(m_pReference->GetBox(),&clr);
             }else{
                 RenderBlink	();
             }
@@ -134,8 +134,8 @@ void CSceneObject::Render(int priority, bool strictB2F)
 void CSceneObject::RenderBlink()
 {
     if (m_iBlinkTime>0){
-        if (m_iBlinkTime>(int)Device.dwTimeGlobal){
-        	int alpha = iFloor(sqrtf(float(m_iBlinkTime-Device.dwTimeGlobal)/BLINK_TIME)*64);
+        if (m_iBlinkTime>(int)EDevice.dwTimeGlobal){
+        	int alpha = iFloor(sqrtf(float(m_iBlinkTime-EDevice.dwTimeGlobal)/BLINK_TIME)*64);
 			m_pReference->RenderSelection(_Transform(),0, m_BlinkSurf, D3DCOLOR_ARGB(alpha,255,255,255));
             UI->RedrawScene	();
         }else{
@@ -250,8 +250,8 @@ void CSceneObject::OnFrame()
 	if (m_pReference) m_pReference->OnFrame();
 	if (psDeviceFlags.is(rsStatistic)){
     	if (IsStatic()||IsMUStatic()||Selected()){
-            Device.Statistic->dwLevelSelFaceCount 	+= GetFaceCount();
-            Device.Statistic->dwLevelSelVertexCount += GetVertexCount();
+            EDevice.Statistic->dwLevelSelFaceCount 	+= GetFaceCount();
+            EDevice.Statistic->dwLevelSelVertexCount += GetVertexCount();
         }
     }
 }
@@ -346,7 +346,7 @@ void CSceneObject::OnShowHint(AStringVec& dest)
 void CSceneObject::Blink(CSurface* surf)
 {
 	m_BlinkSurf		= surf;
-    m_iBlinkTime	= Device.dwTimeGlobal+BLINK_TIME+Device.dwTimeDelta;
+    m_iBlinkTime	= EDevice.dwTimeGlobal+BLINK_TIME+EDevice.dwTimeDelta;
 }
 //----------------------------------------------------
 

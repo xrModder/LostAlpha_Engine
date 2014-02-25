@@ -14,6 +14,16 @@
 #include "bone.h"
 #include "EditMesh.h"
 
+
+#ifdef _EDITOR
+	#include "SkeletonAnimated.h"
+	#include "AnimationKeyCalculate.h"
+#endif
+
+#ifndef _EDITOR
+	bool check_scale( Fmatrix F ){ return true;}
+#endif
+
 //----------------------------------------------------
 class fBoneNameEQ {
 	shared_str	name;
@@ -40,7 +50,7 @@ void CEditableObject::OnFrame()
 	            m_ActiveSMotion->_Evaluate(i,m_SMParam.Frame(),T,R);
                 (*b_it)->_Update(T,R);
             }
-            m_SMParam.Update(Device.fTimeDelta,m_ActiveSMotion->fSpeed,!m_ActiveSMotion->m_Flags.is(esmStopAtEnd));
+            m_SMParam.Update(EDevice.fTimeDelta,m_ActiveSMotion->fSpeed,!m_ActiveSMotion->m_Flags.is(esmStopAtEnd));
         }else{
 		    //for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++) (*b_it)->Reset();
         }
@@ -334,7 +344,9 @@ void CEditableObject::PrepareBones()
     u32 b_cnt			= m_Bones.size();
     m_Bones.clear		();
     fill_bones_by_parent(m_Bones,PARENT);
-    VERIFY				(b_cnt==m_Bones.size());
+
+	u32 cnt_new 		= m_Bones.size();
+    VERIFY				(b_cnt==cnt_new);
     // update SelfID
     for (b_it=m_Bones.begin(); b_it!=m_Bones.end(); b_it++)
         (*b_it)->SelfID		= b_it-m_Bones.begin();

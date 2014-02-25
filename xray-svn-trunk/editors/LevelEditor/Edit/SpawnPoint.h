@@ -24,7 +24,7 @@ public:
     public:
         bool                    b_tmp_lock;
     	CSE_Visual*		source;
-        IRender_Visual*	visual;
+        IRenderVisual*	visual;
         void 			OnChangeVisual	();  
         void 			PlayAnimation	();
     public:

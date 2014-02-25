@@ -64,6 +64,9 @@ enum{
     COMMAND_RUN_MACRO,				// p1 - file name
     COMMAND_ASSIGN_MACRO,			// p1 - slot, p2 - file_name
 
+    COMMAND_SIMULATE,
+    COMMAND_USE_SIMULATE_POSITIONS,
+
     COMMAND_MAIN_LAST
 };
 //------------------------------------------------------------------------------

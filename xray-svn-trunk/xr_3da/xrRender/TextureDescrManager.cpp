@@ -115,7 +115,8 @@ void CTextureDescrMngr::LoadLTX()
 				CInifile::Item& item	= *I;
 
 				texture_desc& desc		= m_texture_details[item.first];
-				desc.m_type				= (u16)atoi(item.second.c_str());
+
+				//desc.m_type				= (u16)atoi(item.second.c_str());
 			}
 		}//"types"
 	}//file-exist

@@ -17,7 +17,7 @@
 #include "KeyBar.h"
 #include "main.h"
 #include "../xrEProps/folderlib.h"
-#include "SkeletonAnimated.h"
+#include "../../xr_3da/xrRender/SkeletonAnimated.h"
 #include "../xrEProps/ItemList.h"
 #include "../ECore/Editor/ImageManager.h"
 
@@ -544,13 +544,15 @@ bool CActorTools::ExportCPP(LPCSTR name)
             sprintf				(tmp,"\tFACE_COUNT %d",mesh->GetFCount());
             W->w_string			(tmp);
             W->w_string			("\tconst Fvector vertices[VERTEX_COUNT] = {");
-			for (u32 v_id=0; v_id<mesh->GetVCount(); v_id++){
+			for (u32 v_id=0; v_id<mesh->GetVCount(); v_id++)
+            {
     	        sprintf			(tmp,"\t\t{% 3.6f,\t% 3.6f,\t% 3.6f},",VPUSH(verts[v_id]));
 	            W->w_string		(tmp);
             }
             W->w_string			("\t}");
             W->w_string			("\tconst u16 faces[FACE_COUNT*3] = {");
-			for (u32 f_id=0; f_id<mesh->GetFCount(); f_id++){
+			for (u32 f_id=0; f_id<mesh->GetFCount(); f_id++)
+            {
     	        sprintf			(tmp,"\t\t%-d,\t\t%-d,\t\t%-d,",faces[f_id].pv[0].pindex,faces[f_id].pv[1].pindex,faces[f_id].pv[2].pindex);
 	            W->w_string		(tmp);
             }
@@ -856,7 +858,8 @@ bool CActorTools::BatchConvert(LPCSTR fn)
 {
 	bool bRes = true;
 	CInifile* ini = CInifile::Create(fn); VERIFY(ini);
-    if (ini->section_exist("ogf")){
+    if (ini->section_exist("ogf"))
+    {
     	CInifile::Sect& sect	= ini->r_section("ogf");
         Msg						("Start converting %d items...",sect.Data.size());
         for (CInifile::Item* it=sect.Data.begin(); it!=sect.Data.end(); it++){

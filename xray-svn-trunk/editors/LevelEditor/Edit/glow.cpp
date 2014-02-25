@@ -8,7 +8,7 @@
 #include "Glow.h"
 #include "xr_trims.h"
 #include "bottombar.h"
-#include "d3dutils.h"
+#include "../../ecore/editor/D3DUtils.h"
 #include "scene.h"
 #include "ESceneGlowTools.h"
 
@@ -61,7 +61,7 @@ void CGlow::ShaderChange(PropValue* value)
 	OnDeviceDestroy();
 }
 
-bool CGlow::GetBox( Fbox& box )
+bool CGlow::GetBox( Fbox& box ) const
 {
 	box.set( PPosition, PPosition );
 	box.min.sub(m_fRadius);
@@ -76,31 +76,33 @@ void CGlow::Render(int priority, bool strictB2F)
         ESceneGlowTools* gt = dynamic_cast<ESceneGlowTools*>(ParentTools); VERIFY(gt);
         RCache.set_xform_world(Fidentity);
         if (gt->m_Flags.is(ESceneGlowTools::flTestVisibility)){ 
-            Fvector D;	D.sub(Device.vCameraPosition,PPosition);
+            Fvector D;
+            D.sub(EDevice.vCameraPosition,PPosition);
             float dist 	= D.normalize_magn();
             if (!Scene->RayPickObject(dist,PPosition,D,OBJCLASS_SCENEOBJECT,0,0)){
-                if (m_GShader){	Device.SetShader(m_GShader);
-                }else{			Device.SetShader(Device.m_WireShader);}
+                if (m_GShader){	EDevice.SetShader(m_GShader);
+                }else{			EDevice.SetShader(EDevice.m_WireShader);}
                 m_RenderSprite.Render(PPosition,m_fRadius,m_Flags.is(gfFixedSize));
-                DU.DrawRomboid(PPosition, VIS_RADIUS, 0x00FF8507);
+                DU_impl.DrawRomboid(PPosition, VIS_RADIUS, 0x00FF8507);
             }else{
                 // рендерим bounding sphere
-                Device.SetShader(Device.m_WireShader);
-                DU.DrawRomboid(PPosition, VIS_RADIUS, 0x00FF8507);
+                EDevice.SetShader(EDevice.m_WireShader);
+                DU_impl.DrawRomboid(PPosition, VIS_RADIUS, 0x00FF8507);
             }
         }else{
-            if (m_GShader){	Device.SetShader(m_GShader);
-            }else{			Device.SetShader(Device.m_WireShader);}
+            if (m_GShader){	EDevice.SetShader(m_GShader);
+            }else{			EDevice.SetShader(EDevice.m_WireShader);}
             m_RenderSprite.Render(PPosition,m_fRadius,m_Flags.is(gfFixedSize));
         }
         if( Selected() ){
             Fbox bb; GetBox(bb);
             u32 clr = Locked()?0xFFFF0000:0xFFFFFFFF;
-            Device.SetShader(Device.m_WireShader);
-            DU.DrawSelectionBox(bb,&clr);  
-            if (gt->m_Flags.is(ESceneGlowTools::flDrawCross)){
+            EDevice.SetShader(EDevice.m_WireShader);
+            DU_impl.DrawSelectionBoxB(bb,&clr);
+            if (gt->m_Flags.is(ESceneGlowTools::flDrawCross))
+            {
             	Fvector sz; bb.getradius(sz);
-        		DU.DrawCross(PPosition,sz.x,sz.y,sz.z, sz.x,sz.y,sz.z,0xFFFFFFFF,false);
+        		DU_impl.DrawCross(PPosition,sz.x,sz.y,sz.z, sz.x,sz.y,sz.z,0xFFFFFFFF,false);
             }
         }
     }

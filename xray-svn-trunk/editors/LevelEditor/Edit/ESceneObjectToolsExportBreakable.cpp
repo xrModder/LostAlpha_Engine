@@ -44,7 +44,7 @@ IC bool build_mesh(const Fmatrix& parent, CEditableMesh* mesh, CGeomPartExtracto
 
         // check engine shader compatibility
         if (!ignore_shader){
-            IBlender* 		B = Device.Resources->_FindBlender(surf->_ShaderName()); 
+            IBlender* 		B = EDevice.Resources->_FindBlender(surf->_ShaderName()); 
             if (FALSE==B){
                 ELog.Msg	(mtError,"Can't find engine shader '%s'. Object '%s', surface '%s'. Export interrupted.",surf->_ShaderName(),mesh->Parent()->m_LibName.c_str(),surf->_Name());
                 bResult 	= FALSE; 

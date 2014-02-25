@@ -7,10 +7,9 @@
 #include "WayPoint.h"
 #include "ui_leveltools.h"
 #include "FrameWayPoint.h"
-#include "d3dutils.h"
 #include "../ECore/Editor/ui_main.h"
 #include "ESceneWayControls.h"
-//#include "PropertiesListHelper.h"
+#include "../ECore/Editor/d3dUtils.h"
 
 //----------------------------------------------------
 
@@ -54,7 +53,7 @@ void CWayPoint::Render(LPCSTR parent_name, bool bParentSelect, bool SpawnEnabled
 	Fvector pos;
     pos.set	(m_vPosition.x,m_vPosition.y+WAYPOINT_SIZE*0.85f,m_vPosition.z);
 	u32 c_cross = (SpawnEnabled)?0x0000ff00:0x00FF0000;
-    DU.DrawCross(pos,WAYPOINT_RADIUS,WAYPOINT_SIZE*0.85f,WAYPOINT_RADIUS,WAYPOINT_RADIUS,WAYPOINT_SIZE*0.15f,WAYPOINT_RADIUS,c_cross);
+    DU_impl.DrawCross(pos,WAYPOINT_RADIUS,WAYPOINT_SIZE*0.85f,WAYPOINT_RADIUS,WAYPOINT_RADIUS,WAYPOINT_SIZE*0.15f,WAYPOINT_RADIUS,c_cross);
 	// draw links
 	Fvector p1;
     p1.set	(m_vPosition.x,m_vPosition.y+WAYPOINT_SIZE*0.85f,m_vPosition.z);
@@ -75,9 +74,9 @@ void CWayPoint::Render(LPCSTR parent_name, bool bParentSelect, bool SpawnEnabled
             xx.sub	(p2,p1);
             xx.mul	(0.95f);
             xx.add	(p1);
-            DU.OutText(xx,AnsiString().sprintf("P: %1.2f",O->probability).c_str(),c,s);
+            DU_impl.OutText(xx,AnsiString().sprintf("P: %1.2f",O->probability).c_str(),c,s);
         }
-	    DU.OutText(m_vPosition,hint.c_str(),c,s);
+	    DU_impl.OutText(m_vPosition,hint.c_str(),c,s);
     }
     
 	Fvector p2;
@@ -86,12 +85,12 @@ void CWayPoint::Render(LPCSTR parent_name, bool bParentSelect, bool SpawnEnabled
     for (WPLIt it=m_Links.begin(); it!=m_Links.end(); it++){
     	SWPLink* O = (SWPLink*)(*it);
 	    p2.set	(O->way_point->m_vPosition.x,O->way_point->m_vPosition.y+WAYPOINT_SIZE*0.85f,O->way_point->m_vPosition.z);
-    	DU.DrawLink(p1,p2,0.25f,l);
+    	DU_impl.DrawLink(p1,p2,0.25f,l);
     }
 	if (bParentSelect&&m_bSelected){
     	Fbox bb; GetBox(bb);
         u32 clr = 0xffffffff;
-		DU.DrawSelectionBox(bb,&clr);
+		DU_impl.DrawSelectionBoxB(bb,&clr);
 	}
 }
 
@@ -491,12 +490,12 @@ void CWayObject::Render(int priority, bool strictB2F)
 //	inherited::Render(priority, strictB2F);
     if ((1==priority)&&(false==strictB2F)){
         RCache.set_xform_world(Fidentity);
-        Device.SetShader		(Device.m_WireShader);
+        EDevice.SetShader		(EDevice.m_WireShader);
         for (WPIt it=m_WayPoints.begin(); it!=m_WayPoints.end(); it++) (*it)->Render(Name,Selected(), m_bSpawnEnabled);
         if( Selected() ){
             u32 clr = Locked()?0xFFFF0000:0xFFFFFFFF;
             Fbox bb; GetBox(bb);
-            DU.DrawSelectionBox(bb,&clr);
+            DU_impl.DrawSelectionBoxB(bb,&clr);
         }
     }
 }

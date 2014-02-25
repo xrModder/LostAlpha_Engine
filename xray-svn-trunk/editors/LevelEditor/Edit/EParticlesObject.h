@@ -5,6 +5,10 @@
 #define EParticlesObjectH
 
 #include "CustomObject.h"
+#include "SpawnPoint.h"
+
+#include "..\..\xr_3da\xrRender\ParticleEffect.h"
+#include "..\..\xr_3da\xrRender\ParticleGroup.h"
 
 class EParticlesObject: public CCustomObject
 {
@@ -34,7 +38,7 @@ public:
   	virtual bool 		Load				(IReader&);
 	virtual void 		Save				(IWriter&);
     virtual bool		ExportGame			(SExportStreams* data);
-	virtual bool    	GetBox      		(Fbox& box);
+	virtual bool    	GetBox      		(Fbox& box) const;
 	virtual void 		OnFrame				();
 
     void 				Play				();

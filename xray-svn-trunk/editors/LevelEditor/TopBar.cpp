@@ -89,13 +89,13 @@ void __fastcall TfraTopBar::ebViewClick(TObject *Sender)
 {
     TExtBtn* btn=dynamic_cast<TExtBtn*>(Sender);
     if (btn){
-        if (btn==ebViewFront)   Device.m_Camera.ViewFront();
-        if (btn==ebViewBack)    Device.m_Camera.ViewBack();
-        if (btn==ebViewLeft)    Device.m_Camera.ViewLeft();
-        if (btn==ebViewRight)   Device.m_Camera.ViewRight();
-        if (btn==ebViewTop)     Device.m_Camera.ViewTop();
-        if (btn==ebViewBottom)  Device.m_Camera.ViewBottom();
-        if (btn==ebViewReset)  	Device.m_Camera.ViewReset();
+        if (btn==ebViewFront)   EDevice.m_Camera.ViewFront();
+        if (btn==ebViewBack)    EDevice.m_Camera.ViewBack();
+        if (btn==ebViewLeft)    EDevice.m_Camera.ViewLeft();
+        if (btn==ebViewRight)   EDevice.m_Camera.ViewRight();
+        if (btn==ebViewTop)     EDevice.m_Camera.ViewTop();
+        if (btn==ebViewBottom)  EDevice.m_Camera.ViewBottom();
+        if (btn==ebViewReset)  	EDevice.m_Camera.ViewReset();
     }
     UI->RedrawScene();
 }
@@ -154,15 +154,15 @@ void __fastcall TfraTopBar::ebZoomExtentsSelectedClick(TObject *Sender)
 
 void __fastcall TfraTopBar::ebCameraStyleClick(TObject *Sender)
 {
-	Device.m_Camera.SetStyle((ECameraStyle)((TExtBtn*)Sender)->Tag);
+	EDevice.m_Camera.SetStyle((ECameraStyle)((TExtBtn*)Sender)->Tag);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TfraTopBar::fsStorageRestorePlacement(TObject *Sender)
 {
-	if (ebCameraPlane->Down) 			Device.m_Camera.SetStyle(csPlaneMove);
-	else if (ebCameraArcBall->Down) 	Device.m_Camera.SetStyle(cs3DArcBall);
-	else if (ebCameraFly->Down) 		Device.m_Camera.SetStyle(csFreeFly);
+	if (ebCameraPlane->Down) 			EDevice.m_Camera.SetStyle(csPlaneMove);
+	else if (ebCameraArcBall->Down) 	EDevice.m_Camera.SetStyle(cs3DArcBall);
+	else if (ebCameraFly->Down) 		EDevice.m_Camera.SetStyle(csFreeFly);
     UI->RedrawScene();
 }
 //---------------------------------------------------------------------------

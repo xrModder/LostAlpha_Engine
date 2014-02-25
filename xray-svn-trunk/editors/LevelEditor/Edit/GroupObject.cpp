@@ -8,7 +8,7 @@
 #include "GroupObject.h"
 #include "Scene.h"
 #include "ESceneCustomMTools.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dutils.h"
 //----------------------------------------------------
 static const float EMPTY_GROUP_SIZE = 0.5f;
 //----------------------------------------------------
@@ -291,7 +291,7 @@ void CGroupObject::Render(int priority, bool strictB2F)
 	    	switch ((*it)->ClassID){
     	    case OBJCLASS_SCENEOBJECT: (*it)->Render(priority,strictB2F); break;
             default:
-                Device.SetShader(strictB2F?Device.m_SelectionShader:Device.m_WireShader);
+                EDevice.SetShader(strictB2F?EDevice.m_SelectionShader:EDevice.m_WireShader);
                 RCache.set_xform_world(Fidentity);
                 (*it)->Render(priority,strictB2F);
         	}
@@ -300,10 +300,10 @@ void CGroupObject::Render(int priority, bool strictB2F)
 	if ((1==priority)&&(false==strictB2F)){
     	Fbox bb;
     	if (Selected()&&GetBox(bb)){
-            Device.SetShader(Device.m_WireShader);
+            EDevice.SetShader(EDevice.m_WireShader);
             RCache.set_xform_world(Fidentity);
             u32 clr = Locked()?0xFFFF0000:(IsOpened()?0xFF7070FF:0xFFFFFFFF);
-            DU.DrawSelectionBox(bb,&clr);
+            DU_impl.DrawSelectionBoxB(bb,&clr);
         }
     }
 }

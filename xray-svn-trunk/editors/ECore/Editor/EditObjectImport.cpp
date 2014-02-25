@@ -74,11 +74,11 @@ bool CEditableObject::Import_LWO(const char* fn, bool bNeedOptimize)
                     }else
 						ELog.Msg(mtError,"CEditableObject: Shader not found on surface '%s'.",Osf->_Name());
 #ifdef _EDITOR
-					if (!Device.Resources->_FindBlender(en_name.c_str())){
+					if (!EDevice.Resources->_FindBlender(en_name.c_str())){
 						ELog.Msg(mtError,"CEditableObject: Render shader '%s' - can't find in library.\nUsing 'default' shader on surface '%s'.", en_name.c_str(), Osf->_Name());
 	                    en_name = "default";
 					}
-					if (!Device.ShaderXRLC.Get(lc_name.c_str())){
+					if (!EDevice.ShaderXRLC.Get(lc_name.c_str())){
 						ELog.Msg(mtError,"CEditableObject: Compiler shader '%s' - can't find in library.\nUsing 'default' shader on surface '%s'.", lc_name.c_str(), Osf->_Name());
 	                    lc_name = "default";
 					}
@@ -113,9 +113,11 @@ bool CEditableObject::Import_LWO(const char* fn, bool bNeedOptimize)
                                 bResult=false;
                                 break;
                             }
-                            string256 tex_name;
+                            string_path tex_name;
+                            xr_string str;
                             _splitpath( tname, 0, 0, tex_name, 0 );
-							Osf->SetTexture(EFS.AppendFolderToName(tex_name,1,TRUE));
+                            str.assign(tex_name);
+							Osf->SetTexture(EFS.AppendFolderToName(str,1,TRUE).c_str());
                             // get vmap refs
                             Osf->SetVMap(Itx->param.imap.vmap_name);
                         }

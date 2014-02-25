@@ -256,21 +256,21 @@ CCommandVar CommandInitialize(CCommandVar p1, CCommandVar p2)
         if (Tools->OnCreate())
         {
         	EPrefs->Load();
-            Device.seqAppStart.Process(rp_AppStart);
+            EDevice.seqAppStart.Process(rp_AppStart);
             ExecCommand	(COMMAND_RESTORE_UI_BAR);
             ExecCommand	(COMMAND_REFRESH_UI_BAR);
             ExecCommand	(COMMAND_CLEAR);
             ExecCommand	(COMMAND_RENDER_FOCUS);
             ExecCommand	(COMMAND_CHANGE_ACTION, etaSelect);
             ExecCommand	(COMMAND_RENDER_RESIZE);
-
+/*
             if(bWeather && EPrefs->sWeather.size() )
             {
                 psDeviceFlags.set(rsEnvironment, TRUE);
                 g_pGamePersistent->Environment().SetWeather(EPrefs->sWeather, true);
 
             }
-
+*/
         }else{
         	res			= FALSE;
         }
@@ -284,7 +284,7 @@ CCommandVar 	CommandDestroy(CCommandVar p1, CCommandVar p2)
     ExecCommand			(COMMAND_SAVE_UI_BAR);
     EPrefs->OnDestroy	();
     ExecCommand			(COMMAND_CLEAR);
-    Device.seqAppEnd.Process(rp_AppEnd);
+    EDevice.seqAppEnd.Process(rp_AppEnd);
     xr_delete			(g_pGamePersistent);
     LALib.OnDestroy		();
     Tools->OnDestroy	();
@@ -307,14 +307,34 @@ CCommandVar 	CommandEditorPrefs(CCommandVar p1, CCommandVar p2)
 }             
 CCommandVar 	CommandChangeAction(CCommandVar p1, CCommandVar p2)
 {
-    Tools->SetAction	(ETAction(u32(p1)));
+     Tools->SetAction	(ETAction(u32(p1)));
     return				TRUE;
 }             
 CCommandVar 	CommandChangeAxis(CCommandVar p1, CCommandVar p2)
 {
     Tools->SetAxis	(ETAxis(u32(p1)));
     return				TRUE;
-}             
+}
+
+CCommandVar 	CommandSimulate(CCommandVar p1, CCommandVar p2)
+{
+
+	Tools->Simulate();
+
+    
+    return				TRUE;
+}
+
+CCommandVar 	CommandUseSimulatePositions(CCommandVar p1, CCommandVar p2)
+{
+
+   Tools->UseSimulatePositions();
+
+    return				TRUE;
+}
+
+
+
 CCommandVar 	CommandSetSettings(CCommandVar p1, CCommandVar p2)
 {
 	Tools->SetSettings(p1,p2);
@@ -356,7 +376,7 @@ CCommandVar 	CommandRefreshTextures(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandReloadTextures(CCommandVar p1, CCommandVar p2)
 {
-    Device.ReloadTextures();
+    EDevice.ReloadTextures();
     UI->RedrawScene		();
     return				TRUE;
 }
@@ -367,7 +387,7 @@ CCommandVar 	CommandChangeSnap(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandUnloadTextures(CCommandVar p1, CCommandVar p2)
 {
-    Device.UnloadTextures();
+    EDevice.UnloadTextures();
     return				TRUE;
 }
 CCommandVar 	CommandEvictObjects(CCommandVar p1, CCommandVar p2)
@@ -377,7 +397,7 @@ CCommandVar 	CommandEvictObjects(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandEvictTextures(CCommandVar p1, CCommandVar p2)
 {
-    Device.Resources->Evict();
+    EDevice.Resources->Evict();
     return				TRUE;
 }
 CCommandVar 	CommandCheckModified(CCommandVar p1, CCommandVar p2)
@@ -416,8 +436,8 @@ CCommandVar 	CommandZoomExtents(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandToggleRenderWire(CCommandVar p1, CCommandVar p2)
 {
-    if (Device.dwFillMode!=D3DFILL_WIREFRAME)	Device.dwFillMode 	= D3DFILL_WIREFRAME;
-    else 										Device.dwFillMode 	= D3DFILL_SOLID;
+    if (EDevice.dwFillMode!=D3DFILL_WIREFRAME)	EDevice.dwFillMode 	= D3DFILL_WIREFRAME;
+    else 										EDevice.dwFillMode 	= D3DFILL_SOLID;
     UI->RedrawScene		();
     return				TRUE;
 }
@@ -436,7 +456,7 @@ CCommandVar 	CommandToggleGrid(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar 	CommandUpdateGrid(CCommandVar p1, CCommandVar p2)
 {
-    DU.UpdateGrid		(EPrefs->grid_cell_count,EPrefs->grid_cell_size);
+    DU_impl.UpdateGrid		(EPrefs->grid_cell_count,EPrefs->grid_cell_size);
     UI->OutGridSize		();
     UI->RedrawScene		();
     return				TRUE;
@@ -476,9 +496,9 @@ CCommandVar 	CommandMuteSound(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar CommandMoveCameraTo(CCommandVar p1, CCommandVar p2)
 {
-    Fvector pos					= Device.m_Camera.GetPosition();
+    Fvector pos					= EDevice.m_Camera.GetPosition();
     if (NumericVectorRun		("Move to",&pos,3))
-        Device.m_Camera.Set		(Device.m_Camera.GetHPB(),pos);
+        EDevice.m_Camera.Set		(EDevice.m_Camera.GetHPB(),pos);
     return 						TRUE;
 }
 
@@ -609,6 +629,11 @@ void TUI::RegisterCommands()
 	REGISTER_CMD_SE		(COMMAND_EXIT,               	"Exit",					CommandExit,		true);
 	REGISTER_CMD_S		(COMMAND_QUIT,           		CommandQuit);
 	REGISTER_CMD_SE		(COMMAND_EDITOR_PREF,    		"Editor Preference",	CommandEditorPrefs, false);
+
+
+    REGISTER_CMD_SE	(COMMAND_SIMULATE,  			"Simulate",      		CommandSimulate, true);
+    REGISTER_CMD_SE	(COMMAND_USE_SIMULATE_POSITIONS,"Use Simulate Positions",CommandUseSimulatePositions, true);
+
 	REGISTER_SUB_CMD_SE	(COMMAND_CHANGE_ACTION,  		"Change Action",      	CommandChangeAction,false);
     	APPEND_SUB_CMD	("Select",						etaSelect,	0);
     	APPEND_SUB_CMD	("Add",							etaAdd,		0);

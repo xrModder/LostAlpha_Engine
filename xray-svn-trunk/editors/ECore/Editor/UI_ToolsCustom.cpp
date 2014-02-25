@@ -105,9 +105,9 @@ bool __fastcall CToolsCustom::MouseStart(TShiftState Shift)
             m_MoveXVector.set(0,0,0);
             m_MoveYVector.set(0,1,0);
         }else{
-            m_MoveXVector.set( Device.m_Camera.GetRight() );
+            m_MoveXVector.set( EDevice.m_Camera.GetRight() );
             m_MoveXVector.y = 0;
-            m_MoveYVector.set( Device.m_Camera.GetDirection() );
+            m_MoveYVector.set( EDevice.m_Camera.GetDirection() );
             m_MoveYVector.y = 0;
             m_MoveXVector.normalize_safe();
             m_MoveYVector.normalize_safe();
@@ -200,57 +200,57 @@ void CToolsCustom::Clear()
 void CToolsCustom::Render()
 {
 	// render errors
-    Device.SetShader		(Device.m_SelectionShader);
+    EDevice.SetShader		(EDevice.m_SelectionShader);
     RCache.set_xform_world	(Fidentity);
-    Device.RenderNearer		(0.0003f);
-    Device.SetRS			(D3DRS_CULLMODE,D3DCULL_NONE);
+    EDevice.RenderNearer		(0.0003f);
+    EDevice.SetRS			(D3DRS_CULLMODE,D3DCULL_NONE);
     AnsiString temp;
     int cnt=0;
     for (SDebugDraw::PointIt vit=m_DebugDraw.m_Points.begin(); vit!=m_DebugDraw.m_Points.end(); ++vit)
     {
         LPCSTR s = NULL;
-        if (vit->i)        
-         {
-        temp.sprintf		("P: %d",cnt++);
-        s = temp.c_str();
-         }
-        
+        if (vit->i)
+        {
+        	temp.sprintf		("P: %d",cnt++);
+            s = temp.c_str();
+        }
+
         if(vit->descr.size())
-         {
+        {
             s = vit->descr.c_str();
-         }
-        DU.dbgDrawVert(vit->p[0],	vit->c,	s?s:"");
+        }
+        DU_impl.dbgDrawVert(vit->p[0],			vit->c,	s?s:"");
     }
-    Device.SetShader		(Device.m_SelectionShader);
+    EDevice.SetShader		(EDevice.m_SelectionShader);
     cnt=0;
     for (SDebugDraw::LineIt eit=m_DebugDraw.m_Lines.begin(); eit!=m_DebugDraw.m_Lines.end(); eit++){
         if (eit->i)        temp.sprintf		("L: %d",cnt++);
-        DU.dbgDrawEdge		(eit->p[0],eit->p[1],				eit->c,	eit->i?temp.c_str():"");
+        DU_impl.dbgDrawEdge		(eit->p[0],eit->p[1],				eit->c,	eit->i?temp.c_str():"");
     }
-    Device.SetShader		(Device.m_SelectionShader);
+    EDevice.SetShader		(EDevice.m_SelectionShader);
     cnt=0;
     for (SDebugDraw::FaceIt fwit=m_DebugDraw.m_WireFaces.begin(); fwit!=m_DebugDraw.m_WireFaces.end(); fwit++){
     	if (fwit->i)        temp.sprintf		("F: %d",cnt++);
-        DU.dbgDrawFace		(fwit->p[0],fwit->p[1],fwit->p[2],fwit->c,	fwit->i?temp.c_str():"");
+        DU_impl.dbgDrawFace		(fwit->p[0],fwit->p[1],fwit->p[2],fwit->c,	fwit->i?temp.c_str():"");
     }
     cnt=0;
     if (!m_DebugDraw.m_SolidFaces.empty()){
-	    Device.SetShader		(Device.m_SelectionShader);
-        DU.DD_DrawFace_begin	(FALSE);
+	    EDevice.SetShader		(EDevice.m_SelectionShader);
+        DU_impl.DD_DrawFace_begin	(FALSE);
         for (SDebugDraw::FaceIt fsit=m_DebugDraw.m_SolidFaces.begin(); fsit!=m_DebugDraw.m_SolidFaces.end(); fsit++)
-            DU.DD_DrawFace_push	(fsit->p[0],fsit->p[1],fsit->p[2],	fsit->c);
-        DU.DD_DrawFace_end		();
+            DU_impl.DD_DrawFace_push	(fsit->p[0],fsit->p[1],fsit->p[2],	fsit->c);
+        DU_impl.DD_DrawFace_end		();
     }
-    Device.SetShader		(Device.m_SelectionShader);
+    EDevice.SetShader		(EDevice.m_SelectionShader);
     cnt=0;
     for (SDebugDraw::OBBVecIt oit=m_DebugDraw.m_OBB.begin(); oit!=m_DebugDraw.m_OBB.end(); oit++)
     {
         temp.sprintf		("OBB: %d",cnt++);
-        DU.DrawOBB			(Fidentity,*oit,0x2F00FF00,0xFF00FF00);
-        DU.OutText			(oit->m_translate,temp.c_str(),0xffff0000,0x0000000);
+        DU_impl.DrawOBB			(Fidentity,*oit,0x2F00FF00,0xFF00FF00);
+        DU_impl.OutText			(oit->m_translate,temp.c_str(),0xffff0000,0x0000000);
     }
-    Device.SetRS			(D3DRS_CULLMODE,D3DCULL_CCW);
-    Device.ResetNearer		();
+    EDevice.SetRS			(D3DRS_CULLMODE,D3DCULL_CCW);
+    EDevice.ResetNearer		();
 }
 //------------------------------------------------------------------------------
 

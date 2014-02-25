@@ -2,7 +2,7 @@
 #define EDetailModelH
 #pragma once
 
-#include "DetailModel.h"
+#include "..\..\..\xr_3da\xrrender\DetailModel.h"
 
 // refs
 class CEditableObject;

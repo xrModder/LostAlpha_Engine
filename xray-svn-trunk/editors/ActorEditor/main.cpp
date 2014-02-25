@@ -17,7 +17,7 @@ TfrmMain *frmMain;
 
 //------------------------------------------------------------------------------
 #include "../xrEProps/ChoseForm.h"
-#include "shader.h"
+#include "../../xr_3da/xrRender/shader.h"
 #include "shader_xrlc.h"
 #include "../ECore/Engine/texture.h"
 #include "../ECore/Editor/Library.h"

@@ -133,7 +133,7 @@ void TfrmSoundLib::RenameSound(LPCSTR p0, LPCSTR p1, EItemType type)
     // rename sound source
 	SndLib->RenameSound(p0,p1,type);
 	// delete old from map
-    FS_FileSetIt old_it=modif_map.find(FS_File(p0)); 
+    FS_FileSetIt old_it=modif_map.find(FS_File(p0));
     if (old_it!=modif_map.end()){
     	modif_map.erase	(old_it);
         AppendModif		(p1);
@@ -262,7 +262,7 @@ void __fastcall TfrmSoundLib::OnControlClick(ButtonValue* V, bool& bModif, bool&
     case 1: m_Snd.stop();			break;
     case 2:{ 
     	bAutoPlay=!bAutoPlay; 
-        V->value[V->btn_num] = shared_str().sprintf("Auto (%s)",bAutoPlay?"on":"off");
+        V->value[V->btn_num] = shared_str().printf("Auto (%s)",bAutoPlay?"on":"off");
     }break;
 	}
     bModif = false;
@@ -329,7 +329,7 @@ void  TfrmSoundLib::OnAttenuationDraw(CanvasValue* sender, void* _canvas, const 
     	float b = thm->MinDist()/(psSoundRolloff*R);
 //		float b = m_Brightness/(m_Attenuation0+m_Attenuation1*R+m_Attenuation2*R*R);
         float bb = h-(h*b);
-        int y = iFloor(y0+bb); clamp(y,int(rect.Top),int(rect.Bottom));
+        s32 y = iFloor(y0+bb); clamp(y,s32(rect.Top),s32(rect.Bottom));
         if (1==d)	canvas->MoveTo(x0+d,y);
         else		canvas->LineTo(x0+d,y);
     }
@@ -387,8 +387,8 @@ void __fastcall TfrmSoundLib::OnItemsFocused(ListItemsVec& items)
         B=PHelper().CreateButton	(props,"Auto Att",		"By Min,By Max",ButtonValue::flFirstOnly);
         B->OnBtnClickEvent.bind		(this,&TfrmSoundLib::OnAttClick);
         
-        PHelper().CreateCaption		(props,"File Length",	shared_str().sprintf("%.2f Kb",float(size)/1024.f));
-        PHelper().CreateCaption		(props,"Total Time", 	shared_str().sprintf("%.2f sec",float(time)/1000.f));
+        PHelper().CreateCaption		(props,"File Length",	shared_str().printf("%.2f Kb",float(size)/1024.f));
+        PHelper().CreateCaption		(props,"Total Time", 	shared_str().printf("%.2f sec",float(time)/1000.f));
         if (!m_Flags.is(flReadOnly)){
 	        B=PHelper().CreateButton(props,"Control",		"Play,Stop",ButtonValue::flFirstOnly);
     	    B->OnBtnClickEvent.bind	(this,&TfrmSoundLib::OnControlClick);

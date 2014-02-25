@@ -8,6 +8,10 @@
 #define BACKUP_FILE_LEVEL 5
 
 class XRCORE_API EFS_Utils {
+#ifdef _EDITOR
+	DEFINE_MAP	(xr_string,void*,HANDLEMap,HANDLEPairIt);
+        HANDLEMap 	m_LockFiles;
+#endif
 protected:
 	bool 		GetOpenNameInternal		(LPCSTR initial, LPSTR buffer, int sz_buf, bool bMulti=false, LPCSTR offset=0, int start_flt_ext=-1 );
 public:
@@ -23,6 +27,13 @@ public:
 
 	bool 		GetSaveName		(LPCSTR initial, string_path& buffer, LPCSTR offset=0, int start_flt_ext=-1 );
 	bool 		GetSaveName		(LPCSTR initial, xr_string& buf, LPCSTR offset=0, int start_flt_ext=-1 );
+
+ #ifdef _EDITOR
+       	BOOL		LockFile		(LPCSTR fn, bool bLog=true);
+	BOOL		UnlockFile		(LPCSTR fn, bool bLog=true);
+	BOOL		CheckLocking	        (LPCSTR fn, bool bOnlySelf, bool bMsg);//, shared_str* owner=0);
+	void 		WriteAccessLog	        (LPCSTR fn, LPCSTR start_msg);
+ #endif
 
 	void 		MarkFile		(LPCSTR fn, bool bDeleteSource);
 

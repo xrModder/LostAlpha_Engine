@@ -26,14 +26,14 @@ public:
     bool			m_bDefLoad;
     void 			ShaderChange	(PropValue* value);
 protected:
-    virtual Fvector& GetScale		()	{ FScale.set(m_fRadius,m_fRadius,m_fRadius); return FScale; 	}
+    virtual const Fvector& GetScale		() const	{ FScale.set(m_fRadius,m_fRadius,m_fRadius); return FScale;	}
 	virtual void 	SetScale		(const Fvector& sc){float v=m_fRadius; if (!fsimilar(FScale.x,sc.x)) v=sc.x; if (!fsimilar(FScale.y,sc.y)) v=sc.y; if (!fsimilar(FScale.z,sc.z)) v=sc.z; FScale.set(v,v,v); m_fRadius=v; UpdateTransform();}
 public:
 	                CGlow       (LPVOID data, LPCSTR name);
     void            Construct   (LPVOID data);
 	virtual         ~CGlow      ();
     virtual bool	CanAttach	() {return true;}
-    
+
     void			Compile		();
 
 	virtual void    Render      (int priority, bool strictB2F);
@@ -42,7 +42,7 @@ public:
     virtual bool 	FrustumPick	( const CFrustum& frustum );
   	virtual bool 	Load		(IReader&);
 	virtual void 	Save		(IWriter&);
-	virtual bool    GetBox      ( Fbox& box );
+	virtual bool    GetBox      ( Fbox& box ) const;
     virtual void	FillProp	( LPCSTR pref, PropItemVec& values );
 
     // device dependent routine

@@ -3,6 +3,7 @@
 
 #include "KeyBar.h"
 #include "UI_ActorTools.h"
+#include "UI_ActorMain.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "ElXPThemedControl"

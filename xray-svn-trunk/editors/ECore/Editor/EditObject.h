@@ -9,6 +9,7 @@
 #	include "../ECore/Engine/GameMtlLib.h"
 #	include "pick_defs.h"
 #endif
+#	include "../../../include/xrrender/kinematics.h"
 //----------------------------------------------------
 struct 	SRayPickInfo;
 class 	CEditableMesh;
