@@ -11,6 +11,9 @@ static float					g_fSlidingWindowErrorTolerance	= 0.1f;
 static BOOL						g_bOptimiseVertexOrder			= FALSE;
 static u32						g_bMaxSlidingWindow				= u32(-1);
 static VIPM_Result*				g_pResult						= 0;
+static u32						g_iVertexCount					= 0;
+static u32						g_iFacesCount					= 0;
+
 
 ETOOLS_API void			 __stdcall VIPM_Init			()
 {
@@ -20,6 +23,7 @@ ETOOLS_API void			 __stdcall VIPM_Init			()
 	g_pResult							= xr_new<VIPM_Result>();
 	g_pObject->iNumCollapses			= 0;
 	g_pObject->iCurSlidingWindowLevel	= 0;
+	g_iVertexCount = g_iFacesCount		= 0;
 }
 
 ETOOLS_API void			 __stdcall VIPM_AppendVertex	(const Fvector3& p, const Fvector2& uv)
@@ -30,11 +34,13 @@ ETOOLS_API void			 __stdcall VIPM_AppendVertex	(const Fvector3& p, const Fvector
 	pt->mypt.fU			= uv.x;
 	pt->mypt.fV			= uv.y;
 	pt->mypt.dwIndex	= g_ppTempPts.size()-1;
+	g_iVertexCount		++;
 }
 
 ETOOLS_API void			 __stdcall VIPM_AppendFace		(u16 v0, u16 v1, u16 v2)
 {
 	xr_new<MeshTri>(g_ppTempPts[v0],g_ppTempPts[v1],g_ppTempPts[v2], &g_pObject->CurTriRoot, &g_pObject->CurEdgeRoot );
+	g_iFacesCount		++;
 }
 
 void CalculateAllCollapses(Object* m_pObject, u32 max_sliding_window=u32(-1), float m_fSlidingWindowErrorTolerance=1.f)
@@ -130,7 +136,7 @@ ETOOLS_API VIPM_Result*	 __stdcall VIPM_Convert		(u32 max_sliding_window, float 
 	g_pObject->Initialize	();
 	if (!g_pObject->Valid())return NULL;
 	CalculateAllCollapses	(g_pObject,max_sliding_window,error_tolerance);
-	if (CalculateSW(g_pObject,g_pResult,optimize_vertex_order)) return g_pResult;
+	if (CalculateSW(g_pObject,g_pResult,optimize_vertex_order,g_iVertexCount)) return g_pResult;
 	else					return NULL;
 }
 
@@ -140,4 +146,5 @@ ETOOLS_API void			 __stdcall VIPM_Destroy		()
 	xr_delete			(g_pResult);
 	xr_delete			(g_pObject);
 	g_ppTempPts.resize	(0);
+	g_iVertexCount = g_iFacesCount = 0;
 }

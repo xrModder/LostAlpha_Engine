@@ -292,7 +292,7 @@ void OGF::MakeProgressive	(float metric_limit)
 	{
 		// prepare progressive geom
 		VIPM_Init				();
-		//clMsg("--- append v start .");
+		clMsg("--- append v start: %d", vertices.size());
 		for (u32 v_idx=0;  v_idx<vertices.size(); v_idx++)	
 			VIPM_AppendVertex	(vertices[v_idx].P,	vertices[v_idx].UV[0]					);
 		//clMsg("--- append f start .");

@@ -282,6 +282,108 @@ NV_ERROR_CODE nvDXTReadCallback(void *buffer, size_t count, void * user_data)
 #include <sys/stat.h>
 #include <fcntl.h>
 
+class CLMapProcessor
+{
+	private:
+		LPCSTR m_file_name;
+	public:
+		CLMapProcessor(LPCSTR file_name)
+		{
+			m_file_name = file_name;
+		}
+		virtual ~CLMapProcessor()
+		{
+		}
+		
+		void Fix()
+		{
+			nvImageContainer input;
+			Read(m_file_name, input);
+			Backup(m_file_name);
+			if (input.bFoundAlphaInRead)
+				FixSecond(input);
+			else
+				FixBoth(input);
+		}
+	private:
+		void Backup(LPCSTR file_name)
+		{
+			string_path backup;
+			xr_strcpy(backup, file_name);
+			xr_strcat(backup, ".bak");
+			FS.file_rename(file_name, backup);
+		}
+	protected:
+		void Read(LPCSTR file_name, nvImageContainer& container)
+		{			
+			HFILE reader = _open(file_name, _O_BINARY | _O_RDONLY, _S_IREAD);
+			nvDDS::nvDXTdecompress(container, PF_RGBA, 0, nvDXTReadCallback, &reader);
+			_close(reader);
+		}
+		void Write(LPCSTR file_name, RGBAImage& image)
+		{
+			HFILE writer = _open(file_name, _O_WRONLY | _O_BINARY | _O_CREAT | _O_TRUNC, _S_IWRITE);
+
+			nvCompressionOptions options;
+			options.textureFormat = kDXT5;
+			options.bBinaryAlpha = FALSE;
+			options.bDitherColor = FALSE;
+			options.mipMapGeneration = kNoMipMaps;
+			options.mipFilterType = kMipFilterBox;
+			options.bAlphaBorder = FALSE;
+			options.bBorder = FALSE;
+			options.bFadeColor = FALSE;
+			options.bFadeAlpha = FALSE;
+			options.bDitherMip0 = FALSE;
+			options.textureType = kTextureTypeTexture2D;
+			options.user_data = &writer;
+
+			NV_ERROR_CODE result = nvDDS::nvDXTcompress(image, &options, nvDXTWriteCallback, 0);
+			R_ASSERT(result == NV_OK);
+
+			_close(writer);
+		}
+		void FixSecond(nvImageContainer& input)
+		{
+			RGBAImage& image = input.rgbaMIPImage[0];
+			rgba_t* pixels = image.pixels();
+			for (size_t k = 0, size = image.width() * image.height(); k < size; k++)
+				pixels[k].set(pixels[k].a, pixels[k].a, pixels[k].a, pixels[k].r);
+
+			Write(m_file_name, image);
+			clMsg("fixed %s", m_file_name);
+		}
+		void FixBoth(nvImageContainer& input)
+		{
+			nvImageContainer lmap1_container;
+			string_path lmap1_path;
+			xr_strcpy(lmap1_path, m_file_name);
+			*(rstrstr(lmap1_path, "_") + 1) = '1';
+			Read(lmap1_path, lmap1_container);
+			Backup(lmap1_path);
+			RGBAImage& lmap1 = lmap1_container.rgbaMIPImage[0];
+			RGBAImage& lmap2 = input.rgbaMIPImage[0];
+
+//			if map#*_2.dds hasn't alpha channel, need to add black alpha channel to lmap#*_1.dds, 
+//			and in lmap#*_2.dds rgb channel move to alpha, and flood rgb with black.. in photoshop too.
+
+			rgba_t* pixels1 = lmap1.pixels();
+			for (size_t k = 0, size = lmap1.width() * lmap1.height(); k < size; k++)
+				pixels1[k].set(pixels1[k].r, pixels1[k].g, pixels1[k].b, 0x00);
+
+			rgba_t* pixels2 = lmap2.pixels();
+			for (size_t k = 0, size = lmap2.width() * lmap2.height(); k < size; k++)
+				pixels2[k].set(0x00, 0x00, 0x00, pixels2[k].r);
+
+			Write(m_file_name, lmap2);
+			Write(lmap1_path, lmap1);
+			clMsg("fixed %s", m_file_name);
+			clMsg("fixed %s", lmap1_path);
+		}
+};
+
+
+
 void process_lmap(LPCSTR file_name)
 {
 	
@@ -289,45 +391,16 @@ void process_lmap(LPCSTR file_name)
 	clMsg("Processing: %s, %d", file_name, lmap_id);
 	if (lmap_id == 1) 
 		return;
-	nvImageContainer container;
-	HFILE reader = _open(file_name, _O_BINARY | _O_RDONLY, _S_IREAD);
-    nvDDS::nvDXTdecompress(container, PF_RGBA, 0, nvDXTReadCallback, &reader);
-	_close(reader);
+	
 
-	string_path backup;
-	xr_strcpy(backup, file_name);
-	xr_strcat(backup, ".bak");
-	FS.file_rename(file_name, backup);
+	CLMapProcessor fixer(file_name);
+	fixer.Fix();
 
-	HFILE writer = _open(file_name, _O_WRONLY | _O_BINARY | _O_CREAT | _O_TRUNC, _S_IWRITE);
 
-	RGBAImage& image = container.rgbaMIPImage[0];
-	rgba_t* pixels = image.pixels();
-	for (u32 k=0; k < image.width() * image.height(); k++)
-		pixels[k].set(pixels[k].a, pixels[k].a, pixels[k].a, pixels[k].r);
 
-	nvCompressionOptions options;
-	options.textureFormat = kDXT5;
-	options.bBinaryAlpha = FALSE;
-	options.bDitherColor = FALSE;
-	options.mipMapGeneration = kNoMipMaps;
-	options.mipFilterType = kMipFilterBox;
-	options.bAlphaBorder = FALSE;
-    options.bBorder = FALSE;
-    options.bFadeColor = FALSE;
-	options.bFadeAlpha = FALSE;
-	options.bDitherMip0 = FALSE;
-	options.textureType = kTextureTypeTexture2D;
-	options.user_data = &writer;
 
-	NV_ERROR_CODE result = nvDDS::nvDXTcompress(image, &options, nvDXTWriteCallback, 0);
-	R_ASSERT(result == NV_OK);
-
-	clMsg("fixed %s", file_name);
-	_close(writer);
-	container.rgbaMIPImage.clear();
+	
 }
-
 
 #endif
 void execute()
