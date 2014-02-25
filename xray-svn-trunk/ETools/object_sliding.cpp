@@ -39,7 +39,7 @@ void OptimiseVertexCoherencyTriList (WORD* pwList, int iHowManyTris, u32 optimiz
 	}
 }
 
-BOOL CalculateSW(Object* object, VIPM_Result* result, u32 optimize_vertex_order)
+BOOL CalculateSW(Object* object, VIPM_Result* result, u32 optimize_vertex_order, u32 iNumVerts)
 {
 	result->swr_records.resize(0);
 
@@ -50,16 +50,17 @@ BOOL CalculateSW(Object* object, VIPM_Result* result, u32 optimize_vertex_order)
 	while ( object->UndoCollapse() ) {}
 
 	// How many vertices are we looking at?
-	u32 iNumVerts = 0;
+	u32 iNumVerts2 = 0;
 	for ( pt = object->CurPtRoot.ListNext(); pt != NULL; pt = pt->ListNext() ){
 		pt->mypt.dwNewIndex = INVALID_INDEX;
-		iNumVerts++;
+		iNumVerts2++;
 	}
 	// Er... word indices, guys... nothing supports 32-bit indices yet.
 	R_ASSERT2 ( iNumVerts < 65535, make_string ( "%d", iNumVerts ) );
+	if (iNumVerts != iNumVerts2) Msg("WTF?! %d != %d", iNumVerts, iNumVerts2);
 
 	// How many tris are we looking at?
-	int iNumTris = 0;
+	u32 iNumTris = 0;
 	for ( tri = object->CurTriRoot.ListNext(); tri != NULL; tri = tri->ListNext() ){
 		tri->mytri.dwNewIndex = INVALID_INDEX;		// Mark them as not being in a collapse.
 		iNumTris++;

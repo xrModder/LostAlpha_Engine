@@ -277,7 +277,7 @@
 				OmitFramePointers="false"
 				EnableFiberSafeOptimizations="true"
 				AdditionalIncludeDirectories="../xrCore;../xrQSlim/src;../../SDK/FreeImage;../../SDK/MagicSoftware/Sdk/Include;../../SDK/dxsdk/include"
-				PreprocessorDefinitions="_USE_MATH_DEFINES,USE_OLD_MESHMENDER,WIN32,DEBUG,_WINDOWS;_SECURE_SCL=0"
+				PreprocessorDefinitions="_USE_MATH_DEFINES,WIN32,DEBUG,_WINDOWS;_SECURE_SCL=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
