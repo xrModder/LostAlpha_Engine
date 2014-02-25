@@ -14,7 +14,10 @@
 #include "ObjectAnimator.h"
 #include "../../xr_3da/xrGame/xrMessages.h"
 #include "scene.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/D3DUtils.h"
+//#include "iniStreamImpl.h"
+#include "../Ecore/Editor/EditObject.h"
+#include "../ETools/ETools.h"
 
 #define SPAWNPOINT_VERSION   			0x0014
 //----------------------------------------------------
@@ -255,8 +258,8 @@ void CSpawnPoint::SSpawnData::Render(bool bSelected, const Fmatrix& parent,int p
     if (m_Motion&&m_Motion->animator&&bSelected&&(1==priority)&&(false==strictB2F))
         m_Motion->animator->DrawPath();
     RCache.set_xform_world		(Fidentity);
-	Device.SetShader			(Device.m_WireShader);
-    m_Data->on_render			(&DU,this,bSelected,parent,priority,strictB2F);
+	EDevice.SetShader			(EDevice.m_WireShader);
+    m_Data->on_render			(&DU_impl,this,bSelected,parent,priority,strictB2F);
 }
 void CSpawnPoint::SSpawnData::OnFrame()
 {
@@ -276,7 +279,7 @@ void CSpawnPoint::SSpawnData::OnFrame()
 	    if (m_Data->m_editor_flags.is(ISE_Abstract::flMotionChange))
         	m_Motion->OnChangeMotion();
     	if (m_Motion->animator)
-    		m_Motion->animator->Update(Device.fTimeDelta);
+    		m_Motion->animator->Update(EDevice.fTimeDelta);
     }
     // reset editor flags
     m_Data->m_editor_flags.zero	();
@@ -425,7 +428,7 @@ bool CSpawnPoint::GetBox( Fbox& box )
     	if (m_SpawnData.Valid()){
 			if (m_SpawnData.m_Visual&&m_SpawnData.m_Visual->visual)
             {
-            	box.set		(m_SpawnData.m_Visual->visual->vis.box);
+            	box.set		(m_SpawnData.m_Visual->visual->getVisData().box);
                 box.xform	(FTransformRP);
             }else{
 			    CEditShape* shape	= dynamic_cast<CEditShape*>(m_AttachedObject);
@@ -498,9 +501,9 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                 ESceneSpawnTools* st= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
 		if (m_bSpawnEnabled)
-                	DU.DrawEntity		(0xffffffff,s);
+                	DU_impl.DrawEntity		(0xffffffff,s);
 		else
-			DU.DrawEntity		(0x00FF0000,s);
+			DU_impl.DrawEntity		(0x00FF0000,s);
             }else{
                 switch (m_Type){
                 case ptRPoint:{
@@ -509,13 +512,13 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                     Fcolor c;
                     c.set(RP_COLORS[r]);
                     c.mul_rgb(k*0.9f+0.1f);
-                    DU.DrawEntity(c.get(),Device.m_WireShader);
+                    DU_impl.DrawEntity(c.get(),EDevice.m_WireShader);
                 }break;
                 case ptEnvMod:{
                 	Fvector pos={0,0,0};
-	                Device.SetShader(Device.m_WireShader);
-                    DU.DrawCross(pos,0.25f,0x20FFAE00,true);
-                    if (Selected()) DU.DrawSphere(Fidentity,PPosition,m_EM_Radius,0x30FFAE00,0x00FFAE00,true,true);
+	                EDevice.SetShader(EDevice.m_WireShader);
+                    DU_impl.DrawCross(pos,0.25f,0x20FFAE00,true);
+                    if (Selected()) DU_impl.DrawSphere(Fidentity,PPosition,m_EM_Radius,0x30FFAE00,0x00FFAE00,true,true);
                 }break;
                 default: THROW2("CSpawnPoint:: Unknown Type");
                 }
@@ -536,18 +539,18 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                     }
                 }
                 
-                Fvector D;	D.sub(Device.vCameraPosition,PPosition);
+                Fvector D;	D.sub(EDevice.vCameraPosition,PPosition);
                 float dist 	= D.normalize_magn();
                 if (!st->m_Flags.is(ESceneSpawnTools::flPickSpawnType)||
                     !Scene->RayPickObject(dist,PPosition,D,OBJCLASS_SCENEOBJECT,0,0))
-                        DU.OutText	(PPosition,s_name.c_str(),0xffffffff,0xff000000);
+                        DU_impl.OutText	(PPosition,s_name.c_str(),0xffffffff,0xff000000);
             }
             if(Selected()){
                 RCache.set_xform_world(Fidentity);
                 Fbox bb; GetBox(bb);
                 u32 clr = Locked()?0xFFFF0000:0xFFFFFFFF;
-                Device.SetShader(Device.m_WireShader);
-                DU.DrawSelectionBox(bb,&clr);
+                EDevice.SetShader(EDevice.m_WireShader);
+                DU_impl.DrawSelectionBoxB(bb,&clr);
             }
         }
     }

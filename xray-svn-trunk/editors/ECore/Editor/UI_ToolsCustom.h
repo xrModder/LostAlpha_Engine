@@ -171,7 +171,11 @@ public:
     virtual void		SetAction			(ETAction act);
     virtual void		SetAxis				(ETAxis axis);
     virtual void		SetSettings			(u32 mask, BOOL val);
-    
+
+    virtual void		Simulate			(){};
+    virtual void		UseSimulatePositions(){};
+
+
 	virtual void		SetFog				(u32 fog_color, float fogness){dwFogColor=fog_color;fFogness=fogness;}
     virtual void		GetCurrentFog		(u32& fog_color, float& s_fog, float& e_fog);
     

@@ -8,7 +8,7 @@
 #include "customobject.h"
 #include "../ECore/Editor/ui_main.h"
 #include "ESceneCustomOTools.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dutils.h"
 #include "motion.h"
 
 #define CUSTOMOBJECT_CHUNK_PARAMS 		0xF900
@@ -191,8 +191,8 @@ void CCustomObject::Render(int priority, bool strictB2F)
 {
 	if ((1==priority)&&(false==strictB2F)){
         if (EPrefs->object_flags.is(epoDrawPivot)&&Selected()){
-            Device.SetShader(Device.m_WireShader);
-            DU.DrawObjectAxis(FTransformRP,0.1f,Selected());
+            EDevice.SetShader(EDevice.m_WireShader);
+            DU_impl.DrawObjectAxis(FTransformRP,0.1f,Selected());
         }
         if (m_Motion&&Visible()&&Selected())
             AnimationDrawPath();

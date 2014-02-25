@@ -56,7 +56,15 @@ void PDomain::Load(IReader& F)
 	F.r_fvector3(v[1]);
 	F.r_fvector3(v[2]);
 }
-
+      /*
+void PDomain::Load2(CInifile& ini, const shared_str& sect)
+{
+	type		= PDomainEnum(ini.r_u32(sect,"type"));
+	v[0]		= ini.r_fvector3(sect,"v0");
+	v[1]		= ini.r_fvector3(sect,"v1");
+	v[2]		= ini.r_fvector3(sect,"v2");
+}
+ */
 void PDomain::Save(IWriter& F)
 {
 	F.w_u32		(type);
@@ -64,8 +72,15 @@ void PDomain::Save(IWriter& F)
 	F.w_fvector3(v[1]);
 	F.w_fvector3(v[2]);
 }
+  /*
+void PDomain::Save2(CInifile& ini, const shared_str& sect)
+{
+	ini.w_u32		(sect.c_str(), "type", type);
+	ini.w_fvector3	(sect.c_str(), "v0", v[0]);
+	ini.w_fvector3	(sect.c_str(), "v1", v[1]);
+	ini.w_fvector3	(sect.c_str(), "v2", v[2]);
+}
 
-/*
 void	PDomain::set(PAPI::PDomainEnum t, 		float inA0, float inA1, float inA2,
                                                 float inA3, float inA4, float inA5, 
                                                 float inA6, float inA7, float inA8	)
@@ -92,61 +107,61 @@ void 	PDomain::Render		(u32 clr, const Fmatrix& parent)
     RCache.set_xform_world	(parent);
 	switch(type){
     case PDPoint: 	
-		Device.SetShader	(Device.m_WireShader);
-    	DU.DrawCross		(v[0], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
+		EDevice.SetShader	(EDevice.m_WireShader);
+    	DU_impl.DrawCross		(v[0], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
     break;
-	case PDLine: 	
-		Device.SetShader	(Device.m_WireShader);
-    	DU.DrawCross		(v[0], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
-	  	DU.DrawCross		(v[1], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
-    	DU.DrawLine 		(v[0], v[1], clr_w);
+	case PDLine:
+		EDevice.SetShader	(EDevice.m_WireShader);
+    	DU_impl.DrawCross		(v[0], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
+	  	DU_impl.DrawCross		(v[1], 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, clr_w);
+    	DU_impl.DrawLine 		(v[0], v[1], clr_w);
     break;
-    case PDTriangle: 	
-		Device.SetShader	(Device.m_SelectionShader);
-        DU.DrawFace			(v[0], v[1], v[2], clr_s, clr_w, true, true);
+    case PDTriangle:
+		EDevice.SetShader	(EDevice.m_SelectionShader);
+        DU_impl.DrawFace			(v[0], v[1], v[2], clr_s, clr_w, true, true);
     break;
 	case PDPlane:{
-		Device.SetShader	(Device.m_SelectionShader);
+		EDevice.SetShader	(EDevice.m_SelectionShader);
         Fvector2 sz			= {100.f,100.f};
-        DU.DrawPlane		(v[0],v[1],sz,clr_s,clr_w,true,true,true);
+        DU_impl.DrawPlane		(v[0],v[1],sz,clr_s,clr_w,true,true,true);
     }break;
-	case PDBox: 	
-		Device.SetShader	(Device.m_SelectionShader);
-    	DU.DrawAABB			(v[0], v[1], clr_s, clr_w, true, true);
+	case PDBox:
+		EDevice.SetShader	(EDevice.m_SelectionShader);
+    	DU_impl.DrawAABB			(v[0], v[1], clr_s, clr_w, true, true);
     break;
-	case PDSphere: 	
-    	DU.DrawSphere		(parent, v[0], f[4], clr_s, clr_w, true, true);
-    	DU.DrawSphere		(parent, v[0], f[3], clr_s, clr_w, true, true);
-    break;                                      
+	case PDSphere:
+    	DU_impl.DrawSphere		(parent, v[0], f[4], clr_s, clr_w, true, true);
+    	DU_impl.DrawSphere		(parent, v[0], f[3], clr_s, clr_w, true, true);
+    break;
 	case PDCylinder:{
     	Fvector c,d;
         float h 			= d.sub(v[1],v[0]).magnitude();
         c.add 				(v[0],v[1]).div(2.f);
         if (!fis_zero(h)){
         	d.div			(h);
-			DU.DrawCylinder	(parent, c, d, h, f[6], clr_s, clr_w, true, true);
-			DU.DrawCylinder	(parent, c, d, h, f[7], clr_s, clr_w, true, true);
+			DU_impl.DrawCylinder	(parent, c, d, h, f[6], clr_s, clr_w, true, true);
+			DU_impl.DrawCylinder	(parent, c, d, h, f[7], clr_s, clr_w, true, true);
         }
     }break;
-	case PDCone:{ 	
+	case PDCone:{
     	Fvector d;
         float h 			= d.sub(v[1],v[0]).magnitude();
         if (!fis_zero(h)){
             d.div			(h);
-            DU.DrawCone		(parent, v[0], d, h, f[6], clr_s, clr_w, true, true);
-            DU.DrawCone		(parent, v[0], d, h, f[7], clr_s, clr_w, true, true);
+            DU_impl.DrawCone		(parent, v[0], d, h, f[6], clr_s, clr_w, true, true);
+            DU_impl.DrawCone		(parent, v[0], d, h, f[7], clr_s, clr_w, true, true);
         }
     }break;
-	case PDBlob: 	
-		Device.SetShader	(Device.m_WireShader);
-    	DU.DrawCross		(v[0], f[3],f[3],f[3], f[3],f[3],f[3], clr);
+	case PDBlob:
+		EDevice.SetShader	(EDevice.m_WireShader);
+    	DU_impl.DrawCross		(v[0], f[3],f[3],f[3], f[3],f[3],f[3], clr);
     break;
 	case PDDisc:
-        DU.DrawCylinder		(parent, v[0], v[1], 0.f, f[6], clr_s, clr_w, true, true);
-        DU.DrawCylinder		(parent, v[0], v[1], 0.f, f[7], clr_s, clr_w, true, true);
+        DU_impl.DrawCylinder		(parent, v[0], v[1], 0.f, f[6], clr_s, clr_w, true, true);
+        DU_impl.DrawCylinder		(parent, v[0], v[1], 0.f, f[7], clr_s, clr_w, true, true);
     break;
-	case PDRectangle: 	
-        DU.DrawRectangle	(v[0], v[1], v[2], clr_s, clr_w, true, true);
+	case PDRectangle:
+        DU_impl.DrawRectangle	(v[0], v[1], v[2], clr_s, clr_w, true, true);
     break;
    }
 }

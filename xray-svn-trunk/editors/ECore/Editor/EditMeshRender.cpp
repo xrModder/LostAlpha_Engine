@@ -189,7 +189,7 @@ void CEditableMesh::Render(const Fmatrix& parent, CSurface* S)
     if (rb_pair!=m_RenderBuffers->end()){
         RBVector& rb_vec = rb_pair->second;
         for (RBVecIt rb_it=rb_vec.begin(); rb_it!=rb_vec.end(); rb_it++)
-            Device.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
+            EDevice.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
     }
 }
 //----------------------------------------------------
@@ -204,25 +204,33 @@ void CEditableMesh::RenderList(const Fmatrix& parent, u32 color, bool bEdge, Int
 
 	if (fl.size()==0) return;
 	RCache.set_xform_world(parent);
-	Device.RenderNearer(0.0006);
+	EDevice.RenderNearer(0.0006);
 	RB_cnt = 0;
     if (bEdge){
-    	Device.SetShader(Device.m_WireShader);
-	    Device.SetRS(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+    	EDevice.SetShader(EDevice.m_WireShader);
+	    EDevice.SetRS(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
     }else
-    	Device.SetShader(Device.m_SelectionShader);
-    for (IntIt dw_it=fl.begin(); dw_it!=fl.end(); dw_it++){
-        st_Face& face = m_Faces[*dw_it];
-        for (int k=0; k<3; k++)	RB[RB_cnt++].set(m_Verts[face.pv[k].pindex]);
-		if (RB_cnt==MAX_VERT_COUNT){
-        	DU.DrawPrimitiveL(D3DPT_TRIANGLELIST,RB_cnt/3,RB,RB_cnt,color,true,false);
+    	EDevice.SetShader(EDevice.m_SelectionShader);
+    for (IntIt dw_it=fl.begin(); dw_it!=fl.end(); ++dw_it)
+    {
+        st_Face& face 		= m_Faces[*dw_it];
+        for (int k=0; k<3; ++k)
+        	RB[RB_cnt++].set(m_Verts[face.pv[k].pindex]);
+
+		if (RB_cnt==MAX_VERT_COUNT)
+        {
+        	DU_impl.DrawPrimitiveL(D3DPT_TRIANGLELIST,RB_cnt/3,RB,RB_cnt,color,true,false);
 			RB_cnt = 0;
         }
     }
 
-	if (RB_cnt)	DU.DrawPrimitiveL(D3DPT_TRIANGLELIST,RB_cnt/3,RB,RB_cnt,color,true,false);
-    if (bEdge)  Device.SetRS(D3DRS_FILLMODE,Device.dwFillMode);
-	Device.ResetNearer();
+	if (RB_cnt)
+    	DU_impl.DrawPrimitiveL(D3DPT_TRIANGLELIST,RB_cnt/3,RB,RB_cnt,color,true,false);
+
+    if (bEdge)
+    	EDevice.SetRS(D3DRS_FILLMODE,EDevice.dwFillMode);
+
+	EDevice.ResetNearer();
 }
 //----------------------------------------------------
 
@@ -239,13 +247,13 @@ void CEditableMesh::RenderSelection(const Fmatrix& parent, CSurface* s, u32 colo
         SurfFacesPairIt sp_it = m_SurfFaces.find(s);
         if (sp_it!=m_SurfFaces.end()) RenderList(parent,color,false,sp_it->second);
     }else{
-	    Device.SetRS(D3DRS_TEXTUREFACTOR,	color);
+	    EDevice.SetRS(D3DRS_TEXTUREFACTOR,	color);
         for (RBMapPairIt p_it=m_RenderBuffers->begin(); p_it!=m_RenderBuffers->end(); p_it++){
             RBVector& rb_vec = p_it->second;
             for (RBVecIt rb_it=rb_vec.begin(); rb_it!=rb_vec.end(); rb_it++)
-                Device.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
+                EDevice.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
         }
-	    Device.SetRS(D3DRS_TEXTUREFACTOR,	0xffffffff);
+	    EDevice.SetRS(D3DRS_TEXTUREFACTOR,	0xffffffff);
     }
 }
 //----------------------------------------------------
@@ -255,25 +263,25 @@ void CEditableMesh::RenderEdge(const Fmatrix& parent, CSurface* s, u32 color)
     if (0==m_RenderBuffers) GenerateRenderBuffers();
 //	if (!m_Visible) return;
 	RCache.set_xform_world(parent);
-	Device.SetShader(Device.m_WireShader);
-	Device.RenderNearer(0.001);
+	EDevice.SetShader(EDevice.m_WireShader);
+	EDevice.RenderNearer(0.001);
 
     // render
-    Device.SetRS(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+    EDevice.SetRS(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
     if (s){
         SurfFacesPairIt sp_it = m_SurfFaces.find(s);
         if (sp_it!=m_SurfFaces.end()) RenderList(parent,color,true,sp_it->second);
     }else{
-	    Device.SetRS(D3DRS_TEXTUREFACTOR,	color);
+	    EDevice.SetRS(D3DRS_TEXTUREFACTOR,	color);
         for (RBMapPairIt p_it=m_RenderBuffers->begin(); p_it!=m_RenderBuffers->end(); p_it++){
             RBVector& rb_vec = p_it->second;
             for (RBVecIt rb_it=rb_vec.begin(); rb_it!=rb_vec.end(); rb_it++)
-                Device.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
+                EDevice.DP(D3DPT_TRIANGLELIST,rb_it->pGeom,0,rb_it->dwNumVertex/3);
         }
-	    Device.SetRS(D3DRS_TEXTUREFACTOR,	0xffffffff);
+	    EDevice.SetRS(D3DRS_TEXTUREFACTOR,	0xffffffff);
     }
-    Device.SetRS(D3DRS_FILLMODE,Device.dwFillMode);
-    Device.ResetNearer();
+    EDevice.SetRS(D3DRS_FILLMODE,EDevice.dwFillMode);
+    EDevice.ResetNearer();
 }
 //----------------------------------------------------
 
@@ -286,7 +294,8 @@ struct svertRender
 };
 void CEditableMesh::RenderSkeleton(const Fmatrix&, CSurface* S)
 {
-    if (false==IsGeneratedSVertices(RENDER_SKELETON_LINKS)) GenerateSVertices(RENDER_SKELETON_LINKS);
+    if (false==IsGeneratedSVertices(RENDER_SKELETON_LINKS))
+    	GenerateSVertices(RENDER_SKELETON_LINKS);
 
 	R_ASSERT2(m_SVertices,"SVertices empty!");
 	SurfFacesPairIt sp_it 	= m_SurfFaces.find(S); R_ASSERT(sp_it!=m_SurfFaces.end());
@@ -298,43 +307,49 @@ void CEditableMesh::RenderSkeleton(const Fmatrix&, CSurface* S)
 	Fvector			P0,N0,P1,N1;
     
     int f_cnt=0;
-    for (IntIt i_it=face_lst.begin(); i_it!=face_lst.end(); i_it++){
-        for (int k=0; k<3; k++,pv++){
-        	st_SVert& SV 		= m_SVertices[*i_it*3+k];
-            pv->uv.set			(SV.uv);
-            float total			= SV.bones[0].w;
+    for (IntIt i_it=face_lst.begin(); i_it!=face_lst.end(); i_it++)
+    {
+        for (int k=0; k<3; k++,pv++)
+        {
+        	st_SVert& SV 			= m_SVertices[*i_it*3+k];
+            pv->uv.set				(SV.uv);
+            float total				= SV.bones[0].w;
 
-            const Fmatrix& M	= m_Parent->m_Bones[SV.bones[0].id]->_RenderTransform();
-            M.transform_tiny	(pv->P,SV.offs);
-            M.transform_dir 	(pv->N,SV.norm);
+            const Fmatrix& M		= m_Parent->m_Bones[SV.bones[0].id]->_RenderTransform();
+            M.transform_tiny		(pv->P,SV.offs);
+            M.transform_dir 		(pv->N,SV.norm);
 
             Fvector P,N;
-                
-            for (u8 cnt=1; cnt<(u8)SV.bones.size(); cnt++){
-                total			+= SV.bones[cnt].w;
-                const Fmatrix& M = m_Parent->m_Bones[SV.bones[cnt].id]->_RenderTransform();
-                M.transform_tiny(P,SV.offs);
-                M.transform_dir (N,SV.norm);
-                pv->P.lerp		(pv->P,P,SV.bones[cnt].w/total);
-                pv->N.lerp		(pv->N,N,SV.bones[cnt].w/total);
+
+            for (u8 cnt=1; cnt<(u8)SV.bones.size(); cnt++)
+            {
+                total			    += SV.bones[cnt].w;
+                const Fmatrix& M     = m_Parent->m_Bones[SV.bones[cnt].id]->_RenderTransform();
+                M.transform_tiny    (P,SV.offs);
+                M.transform_dir     (N,SV.norm);
+                pv->P.lerp		    (pv->P,P,SV.bones[cnt].w/total);
+                pv->N.lerp		    (pv->N,N,SV.bones[cnt].w/total);
             }
         }
         f_cnt++;
-        if (S->m_Flags.is(CSurface::sf2Sided)){
+        if (S->m_Flags.is(CSurface::sf2Sided))
+        {
         	pv->P.set((pv-1)->P);	pv->N.invert((pv-1)->N);	pv->uv.set((pv-1)->uv); pv++;
         	pv->P.set((pv-3)->P);	pv->N.invert((pv-3)->N);	pv->uv.set((pv-3)->uv); pv++;
         	pv->P.set((pv-5)->P);	pv->N.invert((pv-5)->N);	pv->uv.set((pv-5)->uv); pv++;
 	        f_cnt++;
         }
-        if (f_cnt>=SKEL_MAX_FACE_COUNT-1){
+        if (f_cnt>=SKEL_MAX_FACE_COUNT-1)
+        {
             Stream->Unlock		(f_cnt*3,m_Parent->vs_SkeletonGeom->vb_stride);
-            Device.DP			(D3DPT_TRIANGLELIST,m_Parent->vs_SkeletonGeom,vBase,f_cnt);
+            EDevice.DP			(D3DPT_TRIANGLELIST,m_Parent->vs_SkeletonGeom,vBase,f_cnt);
 			pv					= (svertRender*)Stream->Lock(SKEL_MAX_FACE_COUNT*3,m_Parent->vs_SkeletonGeom->vb_stride,vBase);
             f_cnt				= 0;
         }
     }
 	Stream->Unlock				(f_cnt*3,m_Parent->vs_SkeletonGeom->vb_stride);
-	if (f_cnt)	Device.DP		(D3DPT_TRIANGLELIST,m_Parent->vs_SkeletonGeom,vBase,f_cnt);    
+	if (f_cnt)
+    	EDevice.DP		(D3DPT_TRIANGLELIST,m_Parent->vs_SkeletonGeom,vBase,f_cnt);    
 }
 //----------------------------------------------------
 

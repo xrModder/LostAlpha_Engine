@@ -85,8 +85,8 @@ EScene::~EScene()
 
 void EScene::OnCreate()
 {
-//.	Device.seqDevCreate.Add	(this,REG_PRIORITY_NORMAL);
-//.	Device.seqDevDestroy.Add(this,REG_PRIORITY_NORMAL);
+//.	EDevice.seqDevCreate.Add	(this,REG_PRIORITY_NORMAL);
+//.	EDevice.seqDevDestroy.Add(this,REG_PRIORITY_NORMAL);
 
     CreateSceneTools		();
     
@@ -104,8 +104,8 @@ void EScene::OnDestroy()
 	TProperties::DestroyForm(m_SummaryInfo);
     Unload					(FALSE);
     UndoClear				();
-//.	Device.seqDevCreate.Remove(this);
-//.	Device.seqDevDestroy.Remove(this);
+//.	EDevice.seqDevCreate.Remove(this);
+//.	EDevice.seqDevDestroy.Remove(this);
 	ELog.Msg				( mtInformation, "Scene: cleared" );
 	m_LastAvailObject 		= 0;
 	m_Valid 				= false;

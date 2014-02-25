@@ -101,7 +101,7 @@ void __fastcall TfrmEditLibrary::ZoomObject()
         // get bbox&transform
 		Fbox bb;
         if (form->m_pEditObject->GetBox(bb))
-    	    Device.m_Camera.ZoomExtents(bb);
+    	    EDevice.m_Camera.ZoomExtents(bb);
     }
 }
 //---------------------------------------------------------------------------
@@ -118,12 +118,12 @@ void __fastcall TfrmEditLibrary::FormShow(TObject *Sender)
     L.type = D3DLIGHT_DIRECTIONAL;
     L.diffuse.set(1,1,1,1);
     L.direction.set(1,-1,1); L.direction.normalize();
-	Device.SetLight(0,L);
-	Device.LightEnable(0,true);
+	EDevice.SetLight(0,L);
+	EDevice.LightEnable(0,true);
     L.diffuse.set(0.5,0.5,0.5,1);
     L.direction.set(1,-1,-1); L.direction.normalize();
-	Device.SetLight(1,L);
-	Device.LightEnable(1,true);
+	EDevice.SetLight(1,L);
+	EDevice.LightEnable(1,true);
 
 	// check window position
 	UI->CheckWindowPos(this);
@@ -147,8 +147,8 @@ void __fastcall TfrmEditLibrary::FormClose(TObject *Sender, TCloseAction &Action
     UI->EndEState(esEditLibrary);
 
     // remove directional light                             
-	Device.LightEnable(0,false);
-	Device.LightEnable(1,false);
+	EDevice.LightEnable(0,false);
+	EDevice.LightEnable(1,false);
 
     xr_delete(form->m_pEditObject);
 	xr_delete(m_Thm);

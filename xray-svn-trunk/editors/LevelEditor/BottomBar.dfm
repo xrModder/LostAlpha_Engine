@@ -2,7 +2,7 @@ object fraBottomBar: TfraBottomBar
   Left = 0
   Top = 0
   Width = 443
-  Height = 277
+  Height = 270
   VertScrollBar.Visible = False
   Align = alClient
   Color = 10528425
@@ -102,7 +102,7 @@ object fraBottomBar: TfraBottomBar
     object paStatusBar: TPanel
       Left = 219
       Top = 1
-      Width = 1
+      Width = 141
       Height = 15
       Align = alClient
       BevelOuter = bvNone
@@ -123,7 +123,7 @@ object fraBottomBar: TfraBottomBar
       object paStatus: TPanel
         Left = 48
         Top = 0
-        Width = 4
+        Width = 93
         Height = 15
         Align = alClient
         Alignment = taLeftJustify
@@ -137,7 +137,7 @@ object fraBottomBar: TfraBottomBar
         ParentFont = False
         TabOrder = 1
         object cgProgress: TCGauge
-          Left = -125
+          Left = -36
           Top = 2
           Width = 127
           Height = 11
@@ -479,6 +479,67 @@ object fraBottomBar: TfraBottomBar
       GroupIndex = 4
       OnClick = ClickOptionsMenuItem
     end
+    object Device1: TMenuItem
+      Caption = 'Device'
+      GroupIndex = 4
+      object TimeFactor1: TMenuItem
+        Caption = 'Time Factor'
+        object N0051: TMenuItem
+          Tag = 5
+          Caption = '0.05'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N011: TMenuItem
+          Tag = 10
+          Caption = '0.1'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N021: TMenuItem
+          Tag = 20
+          Caption = '0.2'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N031: TMenuItem
+          Tag = 30
+          Caption = '0.3'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N051: TMenuItem
+          Tag = 50
+          Caption = '0.5'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N101: TMenuItem
+          Tag = 100
+          Caption = '1.0'
+          Checked = True
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N301: TMenuItem
+          Tag = 300
+          Caption = '3.0'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N501: TMenuItem
+          Tag = 500
+          Caption = '5.0'
+          RadioItem = True
+          OnClick = N501Click
+        end
+        object N1001: TMenuItem
+          Tag = 1000
+          Caption = '10.0'
+          OnClick = N501Click
+        end
+      end
+    end
   end
   object pmMacro: TMxPopupMenu
     Alignment = paCenter
@@ -495,7 +556,7 @@ object fraBottomBar: TfraBottomBar
     SepLColor = 13158600
     LeftMargin = 10
     Style = msOwnerDraw
-    Left = 5
-    Top = 56
+    Left = 69
+    Top = 24
   end
 end

@@ -21,7 +21,7 @@ class ECORE_API CUI_Camera{
     Fvector			m_Position;
     Fvector			m_Target;
 protected:
-	friend class	CRenderDevice;
+	friend class	CEditorRenderDevice;
 	friend class	TUI;
 
 	float 			m_Znear;

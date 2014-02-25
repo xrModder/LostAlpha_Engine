@@ -124,7 +124,7 @@ public:
 	virtual void 	Scale			(Fvector& amount){;}
 
     // placement functions
-	virtual bool 	GetBox			(Fbox& box);
+	virtual bool 	GetBox			(Fbox& box) const;
 
     // file system function
   	virtual bool 	Load			(IReader&);

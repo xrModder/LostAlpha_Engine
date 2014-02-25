@@ -45,7 +45,8 @@
       -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zi"/>
-    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\particles -D&quot;&quot; -aa -Tpd -GD -x -Gi -v"/>
+    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\particles -D&quot;&quot; -aa -Tpd -GD -x -Gn -Gi 
+      -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -98,6 +99,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
+X:\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visual Components (Design-Time)
 c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
 c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 

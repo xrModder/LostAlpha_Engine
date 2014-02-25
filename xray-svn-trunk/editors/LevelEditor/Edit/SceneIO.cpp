@@ -285,8 +285,8 @@ void EScene::Save(LPCSTR map_name, bool bUndo)
         F->close_chunk	();
     
 		F->open_chunk	(CHUNK_CAMERA);
-        F->w_fvector3	(Device.m_Camera.GetHPB());
-        F->w_fvector3	(Device.m_Camera.GetPosition());
+        F->w_fvector3	(EDevice.m_Camera.GetHPB());
+        F->w_fvector3	(EDevice.m_Camera.GetPosition());
         F->close_chunk	();
 
         F->open_chunk		(CHUNK_SNAPOBJECTS);
@@ -465,8 +465,8 @@ bool EScene::Load(LPCSTR map_name, bool bUndo)
         	Fvector hpb, pos;
 	        F->r_fvector3	(hpb);
     	    F->r_fvector3	(pos);
-            Device.m_Camera.Set(hpb,pos);
-			Device.m_Camera.SetStyle(Device.m_Camera.GetStyle());
+            EDevice.m_Camera.Set(hpb,pos);
+			EDevice.m_Camera.SetStyle(EDevice.m_Camera.GetStyle());
         }
 
 	    if (F->find_chunk(CHUNK_TOOLS_GUID)){

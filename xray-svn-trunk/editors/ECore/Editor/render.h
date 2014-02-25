@@ -2,23 +2,25 @@
 #ifndef renderH
 #define renderH
 
-#include "frustum.h"
+#include "..\..\xrCDB\frustum.h"
 #include "vis_common.h"
-#include "blenders\blender.h"
-#include "blenders\blender_clsid.h"
-#include "xrRender_console.h"
-#include "PSLibrary.h"
-#include "IRenderDetailModel.H"
-#include "DetailModel.H"
-#include "ModelPool.h"
-#include "SkeletonCustom.h"
+
+#include "..\..\..\xr_3da\xrRender\blenders\blender.h"
+#include "..\..\..\xr_3da\xrRender\blenders\blender_clsid.h"
+#include "..\..\..\xr_3da\xrRender\xrRender_console.h"
+#include "..\..\..\xr_3da\xrRender\PSLibrary.h"
+#include "..\..\..\xr_3da\xrRender\IRenderDetailModel.H"
+#include "..\..\..\xr_3da\xrRender\DetailModel.H"
+#include "..\..\..\xr_3da\xrRender\ModelPool.h"
+#include "..\..\..\xr_3da\xrRender\SkeletonCustom.h"
+#include "..\..\Include/xrAPI/xrAPI.h"
 
 // definition (Renderer)
 class CRenderTarget
 {
-public:	
-	virtual u32			get_width			()				{ return Device.dwWidth;	}
-	virtual u32			get_height			()				{ return Device.dwHeight;	}
+public:
+	virtual u32			get_width			()				{ return EDevice.dwWidth;	}
+	virtual u32			get_height			()				{ return EDevice.dwHeight;	}
 };
 
 class IRender_interface{
@@ -70,22 +72,23 @@ public:
     void					Render	 		();
 
 	void					set_Transform	(Fmatrix* M);
-	void					add_Visual   	(IRender_Visual* visual);
+	void					add_Visual   	(IRenderVisual* visual);
 
 	virtual ref_shader		getShader		(int id);
 	CRenderTarget*			getTarget		(){return Target;}
+//.	virtual IRender_Target*	getTarget		(){return Target;}
 
     void					reset_begin				();
     void					reset_end				();
-	virtual IRender_Visual*	model_Create			(LPCSTR name, IReader* data=0);
-	virtual IRender_Visual*	model_CreateChild		(LPCSTR name, IReader* data);
-	virtual IRender_Visual*	model_CreatePE			(LPCSTR name);
-	virtual IRender_Visual*	model_CreateParticles	(LPCSTR name);
-    
-    virtual IRender_DetailModel*	model_CreateDM	(IReader* R);
-	virtual IRender_Visual*	model_Duplicate			(IRender_Visual* V);
-	virtual void			model_Delete			(IRender_Visual* &	V, BOOL bDiscard=TRUE);
-    virtual void			model_Delete			(IRender_DetailModel* & F)
+	virtual IRenderVisual*	model_Create			(LPCSTR name, IReader* data=0);
+	virtual IRenderVisual*	model_CreateChild		(LPCSTR name, IReader* data);
+	virtual IRenderVisual*	model_CreatePE			(LPCSTR name);
+	virtual IRenderVisual*	model_CreateParticles	(LPCSTR name);
+
+    virtual IRender_DetailModel*	model_CreateDM		(IReader* R);
+	virtual IRenderVisual*	model_Duplicate			(IRenderVisual* V);
+	virtual void			model_Delete				(IRenderVisual* &	V, BOOL bDiscard=TRUE);
+    virtual void			model_Delete				(IRender_DetailModel* & F)
     {
         if (F)
         {
@@ -95,12 +98,13 @@ public:
             F				= NULL;
         }
     }
-	void 					model_Render			(IRender_Visual* m_pVisual, const Fmatrix& mTransform, int priority, bool strictB2F, float m_fLOD);
-	void 					model_RenderSingle		(IRender_Visual* m_pVisual, const Fmatrix& mTransform, float m_fLOD);
+	void 					model_Render			(IRenderVisual* m_pVisual, const Fmatrix& mTransform, int priority, bool strictB2F, float m_fLOD);
+	void 					model_RenderSingle		(IRenderVisual* m_pVisual, const Fmatrix& mTransform, float m_fLOD);
 	virtual	GenerationLevel	get_generation			(){return GENERATION_R1;}
+	virtual bool			is_sun_static			() {return true;};
 
 	virtual void			add_SkeletonWallmark	(intrusive_ptr<CSkeletonWallmark> wm){};
-	virtual void			add_SkeletonWallmark	(const Fmatrix* xf, IKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size){};
+	virtual void			add_SkeletonWallmark	(const Fmatrix* xf, CKinematics* obj, ref_shader& sh, const Fvector& start, const Fvector& dir, float size){};
 
 	// Render mode
 	virtual void			rmNear					();
@@ -136,16 +140,14 @@ public:
 		void*							ppShader,
 		void*							ppErrorMsgs,
 		void*							ppConstantTable);
-
-	virtual bool					is_sun_static			(){return true;}
 };
 
 IC  float   CalcSSA(Fvector& C, float R)
 {
-    float distSQ  = Device.m_Camera.GetPosition().distance_to_sqr(C);
+    float distSQ  = EDevice.m_Camera.GetPosition().distance_to_sqr(C);
     return  R*R/distSQ;
 }
 extern ECORE_API CRender  	RImplementation;
-extern ECORE_API CRender*	Render;
+//.extern ECORE_API CRender*	Render;
 
 #endif

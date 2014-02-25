@@ -6,7 +6,7 @@
 #include "scene.h"
 #include "sceneobject.h"
 #include "ui_levelmain.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dUtils.h"
 
 //---------------------------------------------------------------------------
 static WORD CrossIndices[4]={0,2,1,3};
@@ -63,14 +63,15 @@ void C3DCursor::GetPickPoint (Fvector& src, Fvector& dst, Fvector* N)
 //---------------------------------------------------------------------------
 
 void C3DCursor::Render(){
-    if (m_Visible&&!Device.m_Camera.IsMoving()){
+    if (m_Visible&&!EDevice.m_Camera.IsMoving()){
         SRayPickInfo pinf;
         Fvector start, dir, N, D;
         POINT start_pt;
         Ivector2 pt;
-        GetCursorPos(&start_pt); start_pt=UI->GetD3DWindow()->ScreenToClient(start_pt);
+        GetCursorPos(&start_pt); 
+        start_pt=UI->GetD3DWindow()->ScreenToClient(start_pt);
         pt.set(float(start_pt.x),float(start_pt.y));
-        Device.m_Camera.MouseRayFromPoint(start,dir,pt);
+        EDevice.m_Camera.MouseRayFromPoint(start,dir,pt);
         if (LUI->PickGround(pinf.pt,start,dir, -1)){
             N.set(0,1,0);
             D.set(0,0,1);
@@ -80,7 +81,8 @@ void C3DCursor::Render(){
                 Fmatrix m_ViewMat;
                 Fvector at;
                 at.sub(pinf.pt, N);
-                m_ViewMat.build_camera(pinf.pt, at, D); m_ViewMat.invert();
+                m_ViewMat.build_camera	(pinf.pt, at, D); 
+                m_ViewMat.invert		();
                 Fvector p;
                 float s_a = 0;
                 for (u32 idx=0; idx<m_RenderBuffer.size(); s_a+=d_angle, idx++){
@@ -91,25 +93,25 @@ void C3DCursor::Render(){
 
 //                UI->D3D_RenderNearer(0.0001);
                 RCache.set_xform_world(Fidentity);
-				Device.SetShader(Device.m_WireShader);
-                DU.DrawPrimitiveL(D3DPT_LINESTRIP,m_RenderBuffer.size(),m_RenderBuffer.begin(),m_RenderBuffer.size(),dwColor,true,true);
+				EDevice.SetShader(EDevice.m_WireShader);
+                DU_impl.DrawPrimitiveL(D3DPT_LINESTRIP,m_RenderBuffer.size(),m_RenderBuffer.begin(),m_RenderBuffer.size(),dwColor,true,true);
 //                UI->D3D_ResetNearer();
             }break;
             case csPoint:{
             	FVF::TL pt[5];
-                pt[0].transform(pinf.pt,Device.mFullTransform);
+                pt[0].transform(pinf.pt,EDevice.mFullTransform);
                 pt[0].color = dwColor;
-                pt[0].p.x = Device._x2real(pt[0].p.x);
-                pt[0].p.y = Device._y2real(pt[0].p.y);
+                pt[0].p.x = EDevice._x2real(pt[0].p.x);
+                pt[0].p.y = EDevice._y2real(pt[0].p.y);
 				pt[1].set(pt[0].p.x-1,pt[0].p.y  ,pt[0].p.z,pt[0].p.w,dwColor,0,0);
 				pt[2].set(pt[0].p.x+1,pt[0].p.y  ,pt[0].p.z,pt[0].p.w,dwColor,0,0);
 				pt[3].set(pt[0].p.x  ,pt[0].p.y-1,pt[0].p.z,pt[0].p.w,dwColor,0,0);
 				pt[4].set(pt[0].p.x  ,pt[0].p.y+1,pt[0].p.z,pt[0].p.w,dwColor,0,0);
-                Device.RenderNearer(0.001);
+                EDevice.RenderNearer(0.001);
                 RCache.set_xform_world(Fidentity);
-				Device.SetShader(Device.m_WireShader);
-                DU.DrawPrimitiveTL(D3DPT_POINTLIST,5,pt,5,true,true);
-                Device.ResetNearer();
+				EDevice.SetShader(EDevice.m_WireShader);
+                DU_impl.DrawPrimitiveTL(D3DPT_POINTLIST,5,pt,5,true,true);
+                EDevice.ResetNearer();
             }break;
             }
         }
@@ -125,7 +127,7 @@ bool C3DCursor::PrepareBrush(){
     Ivector2 pt;
     GetCursorPos(&start_pt); start_pt=UI->GetD3DWindow()->ScreenToClient(start_pt);
     pt.set(iFloor(start_pt.x),iFloor(start_pt.y));
-    Device.m_Camera.MouseRayFromPoint(brush_start,brush_dir,pt);
+    EDevice.m_Camera.MouseRayFromPoint(brush_start,brush_dir,pt);
     bPickObject 			= !!Scene->RayPickObject(pinf.inf.range,brush_start, brush_dir, OBJCLASS_SCENEOBJECT, &pinf, Scene->GetSnapList(false));
     if (!bPickObject) bPickGround = LUI->PickGround(pinf.pt, brush_start, brush_dir);
     if (bPickObject||bPickGround){

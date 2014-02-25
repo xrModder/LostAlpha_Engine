@@ -42,7 +42,7 @@ public:
     };
     ESoundType		m_Type;
 public:
-    virtual Fvector& GetPosition	()						{ return m_Params.position; 	}
+    virtual const Fvector& GetPosition	()		 const				{ return m_Params.position; 	}
     virtual void 	SetPosition		(const Fvector& pos)	{ m_Params.position.set(pos); if (m_Source._feedback()) m_Source.set_position(m_Params.position);	}
 public:
 					ESoundSource	(LPVOID data, LPCSTR name);
@@ -62,7 +62,7 @@ public:
     virtual	void	OnFrame			();
   	virtual bool 	Load			(IReader&);
 	virtual void 	Save			(IWriter&);
-	virtual bool 	GetBox			(Fbox& box);
+	virtual bool 	GetBox			(Fbox& box) const;
 	virtual void 	Scale			(Fvector& amount){;}
 	virtual void	FillProp		(LPCSTR pref, PropItemVec& values);
 	virtual bool 	GetSummaryInfo	(SSceneSummary* inf);

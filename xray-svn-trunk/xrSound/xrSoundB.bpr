@@ -67,7 +67,7 @@
       -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mu /w2 /zi"/>
-    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\sound -D&quot;&quot; -aa -Tpd -GD -x -Gi -v"/>
+    <LFLAGS value="-lX:\libraries -IX:\intermediate_ed\sound -D&quot;&quot; -aa -Tpd -GD -x -Gn -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -140,6 +140,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Excluded Packages]
+X:\STALKER\SDK\components\ElPack\Code\dclelpB6.bpl=EldoS Visual Components (Design-Time)
 c:\program files (x86)\borland\cbuilder6\Bin\dclclxdb60.bpl=Borland CLX Database Components
 c:\program files (x86)\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
 
@@ -178,11 +179,11 @@ Item29=R:\SDK\DirectX8.0\include;$(BCB)\include;$(BCB)\include\vcl;P:\MagicFM_Bo
 
 [HistoryLists\hlLibraryPath]
 Count=30
-Item0=..\..\sdk\components\elpack\code;$(MAIN_DIR)\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
-Item1=$(MAIN_DIR)\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
-Item2=$(DISC)\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
-Item3=x:\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
-Item4=..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
+Item0=..\..\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
+Item1=..\..\sdk\components\elpack\code;$(MAIN_DIR)\stalker\sdk\components\elpack\code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
+Item2=$(MAIN_DIR)\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
+Item3=$(DISC)\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
+Item4=x:\stalker\sdk\components\elpack\code;..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;$(MAIN_DIR)\libraries
 Item5=..\..\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;X:\libraries
 Item6=..\..\SDK\components\ElPack\Code;E:\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;X:\libraries
 Item7=..\..\SDK\components\ElPack\Code;E:\SDK\components\ElPack\Code;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(BCB)\lib\psdk;D:\Games\STALKER_SRC\trunk\libraries

@@ -5,8 +5,8 @@
 #pragma hdrstop
 
 #include "EParticlesObject.h"
-#include "d3dutils.h"
-#include "PSLibrary.h"
+#include "../ECORE/Editor/D3DUtils.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 #include "../ECore/Editor/ui_main.h"
 
 #define CPSOBJECT_VERSION  				0x0011
@@ -35,11 +35,11 @@ void EParticlesObject::Construct(LPVOID data)
 
 EParticlesObject::~EParticlesObject()
 {
-	::Render->model_Delete	(m_Particles);
+	::Render->model_Delete	(dynamic_cast<IRenderVisual*>(m_Particles) );
 }
 //----------------------------------------------------
 
-bool EParticlesObject::GetBox( Fbox& box )
+bool EParticlesObject::GetBox( Fbox& box ) const
 {
 	box.set( PPosition, PPosition );
 	box.min.x -= PSOBJECT_SIZE;
@@ -65,7 +65,8 @@ void EParticlesObject::OnFrame()
 	inherited::OnFrame();
     Fbox bb; GetBox(bb);
     if (::Render->occ_visible(bb))
-	    if (m_Particles) m_Particles->OnFrame(Device.dwTimeDelta);
+	    if (m_Particles)
+        	m_Particles->OnFrame(EDevice.dwTimeDelta);
 }
 //----------------------------------------------------
 
@@ -78,17 +79,22 @@ void EParticlesObject::Render(int priority, bool strictB2F)
 	    if (1==priority){
             if (false==strictB2F){
                 // draw emitter
-	    		Device.SetShader(Device.m_WireShader);
-    			DU.DrawCross	(PPosition,0.20f,0.25f,0.20f,0.20f,0.25f,0.20f,0xFFFFEBAA,false);
-//                DU.DrawLineSphere(PPosition, PSOBJECT_SIZE/10, C, true);
-                if( Selected() ){
+	    		EDevice.SetShader(EDevice.m_WireShader);
+                if( !Selected() )
+    				DU_impl.DrawCross	(PPosition,0.30f,0.1f,0.3f,0.3f,0.3f,0.3f,0xFFFFEBAA,false);
+                    
+				Fvector p = PPosition;
+                DU_impl.DrawRomboid	(p,0.1f,0x0AFFEBAA);
+                if( Selected() )
+                {
                     Fbox bb; GetBox(bb);
-                    u32 clr = Locked()?0xFFFF0000:0xFFFFFFFF;
-                    DU.DrawSelectionBox(bb,&clr);
+                    u32 clr = 0xFFFFFFFF;
+                    DU_impl.DrawSelectionBoxB(bb,&clr);
                 }
             }
         }
-        if (m_Particles) ::Render->model_Render(m_Particles,_Transform(),priority,strictB2F,1.f);
+        if (m_Particles)
+        	::Render->model_Render(dynamic_cast<IRenderVisual*>(m_Particles), _Transform(),priority,strictB2F,1.f);
     }
 }
 //----------------------------------------------------
@@ -206,9 +212,11 @@ bool EParticlesObject::ExportGame(SExportStreams* F)
 
 bool EParticlesObject::Compile(LPCSTR ref_name)
 {
-	::Render->model_Delete	(m_Particles);
-    if (ref_name){
-		m_Particles 		= (IParticleCustom*)::Render->model_CreateParticles(ref_name);
+	::Render->model_Delete	(dynamic_cast<IRenderVisual*>(m_Particles) );
+    if (ref_name)
+    {
+    	IRenderVisual* base = ::Render->model_CreateParticles(ref_name);
+		m_Particles 		= dynamic_cast<IParticleCustom*>(base);
         if (m_Particles){
 			UpdateTransform	();
 		    m_RefName		= ref_name;

@@ -176,23 +176,23 @@ void CEditableObject::RenderBones(const Fmatrix& parent)
         // render
 		BoneVec& lst = m_Bones;
         for(BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++){
-	        Device.SetShader(Device.m_WireShader);    
+	        EDevice.SetShader(EDevice.m_WireShader);
 	        RCache.set_xform_world(parent);
             Fmatrix& M 		= (*b_it)->_LTransform();
             Fvector p1		= M.c;
             u32 c_joint		= (*b_it)->flags.is(CBone::flSelected)?color_bone_sel_color:color_bone_norm_color;
             if (EPrefs->object_flags.is(epoDrawJoints))
-	            DU.DrawJoint	(p1,joint_size,c_joint);
+	            DU_impl.DrawJoint	(p1,joint_size,c_joint);
             // center of mass
             if ((*b_it)->shape.type!=SBoneShape::stNone){
                 Fvector cm;
                 M.transform_tiny(cm,(*b_it)->center_of_mass);
                 if ((*b_it)->flags.is(CBone::flSelected)){
                     float sz 	= joint_size*2.f;
-                    DU.DrawCross	(cm, sz,sz,sz, sz,sz,sz, 0xFFFFFFFF, false);
-                    DU.DrawRomboid	(cm,joint_size*0.7f,color_bone_sel_cm);
+                    DU_impl.DrawCross	(cm, sz,sz,sz, sz,sz,sz, 0xFFFFFFFF, false);
+                    DU_impl.DrawRomboid	(cm,joint_size*0.7f,color_bone_sel_cm);
                 }else{
-                    DU.DrawRomboid	(cm,joint_size*0.7f,color_bone_norm_cm);
+                    DU_impl.DrawRomboid	(cm,joint_size*0.7f,color_bone_norm_cm);
                 }
             }
 /*
@@ -203,30 +203,30 @@ void CEditableObject::RenderBones(const Fmatrix& parent)
             }
 */
 	     	if ((*b_it)->Parent()){
-		        Device.SetShader(Device.m_SelectionShader);
+		        EDevice.SetShader(EDevice.m_SelectionShader);
 				Fvector& p2 = (*b_it)->Parent()->_LTransform().c;
-        	    DU.DrawLine	(p1,p2,color_bone_link_color);
+        	    DU_impl.DrawLine	(p1,p2,color_bone_link_color);
 			}
 			if (EPrefs->object_flags.is(epoDrawBoneAxis)){ 
             	Fmatrix mat; mat.mul(parent,M);
-	          	DU.DrawObjectAxis(mat,0.03f,(*b_it)->flags.is(CBone::flSelected));
+	          	DU_impl.DrawObjectAxis(mat,0.03f,(*b_it)->flags.is(CBone::flSelected));
             }
 			if (EPrefs->object_flags.is(epoDrawBoneNames)){ 
             	parent.transform_tiny(p1);
             	u32 c = (*b_it)->flags.is(CBone::flSelected)?0xFFFFFFFF:0xFF000000;
             	u32 s = (*b_it)->flags.is(CBone::flSelected)?0xFF000000:0xFF909090;
-            	DU.OutText(p1,(*b_it)->Name().c_str(),c,s);
+            	DU_impl.OutText(p1,(*b_it)->Name().c_str(),c,s);
             }
-			if (EPrefs->object_flags.is(epoDrawBoneShapes)){ 
-		        Device.SetShader(Device.m_SelectionShader);
+			if (EPrefs->object_flags.is(epoDrawBoneShapes)){
+		        EDevice.SetShader(EDevice.m_SelectionShader);
                 Fmatrix mat	= M;
                 mat.mulA_43	(parent);
                 u32 c 		= (*b_it)->flags.is(CBone::flSelected)?0x80ffffff:0x300000ff;
                 if ((*b_it)->shape.Valid()){
                     switch ((*b_it)->shape.type){
-                    case SBoneShape::stBox: 	DU.DrawOBB		(mat,(*b_it)->shape.box,c,c);	break;
-                    case SBoneShape::stSphere:	DU.DrawSphere   (mat,(*b_it)->shape.sphere,c,c,TRUE,TRUE);break;
-                    case SBoneShape::stCylinder:DU.DrawCylinder (mat,(*b_it)->shape.cylinder.m_center,(*b_it)->shape.cylinder.m_direction,(*b_it)->shape.cylinder.m_height,(*b_it)->shape.cylinder.m_radius,c,c,TRUE,TRUE);break;
+                    case SBoneShape::stBox: 	DU_impl.DrawOBB		(mat,(*b_it)->shape.box,c,c);	break;
+                    case SBoneShape::stSphere:	DU_impl.DrawSphere   (mat,(*b_it)->shape.sphere,c,c,TRUE,TRUE);break;
+                    case SBoneShape::stCylinder:DU_impl.DrawCylinder (mat,(*b_it)->shape.cylinder.m_center,(*b_it)->shape.cylinder.m_direction,(*b_it)->shape.cylinder.m_height,(*b_it)->shape.cylinder.m_radius,c,c,TRUE,TRUE);break;
 	                }
                 }
             }

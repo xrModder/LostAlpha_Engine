@@ -455,9 +455,13 @@ public:
     void export_portals()
     {
     	Tools->ClearDebugDraw();
-    	for (sPortalIt p_it=portals.begin(); p_it!=portals.end(); p_it++){
+        int ps = portals.size();
+        int curr = 0;
+    	for (sPortalIt p_it=portals.begin(); p_it!=portals.end(); ++p_it, ++curr)
+        {
 		    if (p_it->e.size()>1)
             {
+                Msg("portal %d of %d", curr, ps);
             	// build vert-list
                 xr_vector<int>	vlist;
                 xr_deque<int>&	elist=p_it->e;

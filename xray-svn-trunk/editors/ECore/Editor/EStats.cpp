@@ -9,7 +9,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CStats::CStats()
+CEStats::CEStats()
 {
 	fFPS		= 30.f;
 	fRFPS		= 30.f;
@@ -18,13 +18,13 @@ CStats::CStats()
 	dwLevelSelVertexCount=0;
 }
 
-CStats::~CStats()
+CEStats::~CEStats()
 {
 
 }
 
 #include "igame_persistent.h"
-void CStats::Show(CGameFont* font)
+void CEStats::Show(CGameFont* font)
 {
 	// Stop timers
 	{
@@ -52,8 +52,8 @@ void CStats::Show(CGameFont* font)
 
 	// calc FPS & TPS
     CBackend::_stats& DPS = RCache.stat;
-	if (Device.fTimeDelta>EPS_S) {
-		float fps  = 1.f/Device.fTimeDelta;
+	if (EDevice.fTimeDelta>EPS_S) {
+		float fps  = 1.f/EDevice.fTimeDelta;
 		float fOne = 0.3f;
 		float fInv = 1.f-fOne;
 		fFPS = fInv*fFPS + fOne*fps;
@@ -95,8 +95,8 @@ void CStats::Show(CGameFont* font)
 		F.OutNext	("TEST 1:       %2.2fms, %d",	TEST1.result,TEST1.count);
 		F.OutNext	("TEST 2:       %2.2fms, %d",	TEST2.result,TEST2.count);
 		F.OutNext	("TEST 3:       %2.2fms, %d",	TEST3.result,TEST3.count);
-		F.OutSkip	();
-		F.OutNext	("GAME TIME:    %s",			FloatTimeToStrTime(g_pGamePersistent->Environment().GetGameTime()).c_str());
+    //		F.OutSkip	();
+  //		F.OutNext	("GAME TIME:    %s",			FloatTimeToStrTime(g_pGamePersistent->Environment().GetGameTime()).c_str());
 //		F.OutSkip	(2.f);
 //        F.OutNext	("Level summary:");
 //        F.OutNext	(" Sel Faces:   %d",			dwLevelSelFaceCount);

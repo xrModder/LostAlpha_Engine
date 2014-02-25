@@ -72,6 +72,17 @@ __published:	// IDE-managed Components
 	TMenuItem *N6;
 	TExtBtn *ebMacro;
 	TMxPopupMenu *pmMacro;
+	TMenuItem *Device1;
+	TMenuItem *TimeFactor1;
+	TMenuItem *N0051;
+	TMenuItem *N011;
+	TMenuItem *N031;
+	TMenuItem *N051;
+	TMenuItem *N101;
+	TMenuItem *N301;
+	TMenuItem *N501;
+	TMenuItem *N021;
+	TMenuItem *N1001;
     void __fastcall ClickOptionsMenuItem(TObject *Sender);
     void __fastcall QualityClick(TObject *Sender);
     void __fastcall fsStorageRestorePlacement(TObject *Sender);
@@ -84,6 +95,7 @@ __published:	// IDE-managed Components
 	void __fastcall miWeatherClick(TObject *Sender);
 	void __fastcall ebMacroMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
+	void __fastcall N501Click(TObject *Sender);
 private:	// User declarations
 	void __fastcall MacroAssignClick(TObject *Sender);
 	void __fastcall MacroClearClick(TObject *Sender);

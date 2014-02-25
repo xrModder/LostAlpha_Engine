@@ -137,13 +137,13 @@ void __fastcall TClipMaker::FormCreate(TObject *Sender)
 	m_ClipList		= TItemList::CreateForm("Clips",paClipList,alClient,0);
 	m_ClipList->SetOnItemsFocusedEvent(TOnILItemsFocused(this,&TClipMaker::OnClipItemFocused));
 
-	Device.seqFrame.Add	(this);
+	EDevice.seqFrame.Add	(this);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TClipMaker::FormDestroy(TObject *Sender)
 {
-	Device.seqFrame.Remove(this);
+	EDevice.seqFrame.Remove(this);
 	Clear			();
 	TProperties::DestroyForm(m_ClipProps);
 	TItemList::DestroyForm	(m_ClipList);

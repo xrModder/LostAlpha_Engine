@@ -5,7 +5,7 @@
 #pragma hdrstop
 
 #include "ESceneAIMapTools.h"
-#include "D3dUtils.h"
+#include "../../ECORE/EDITOR/D3dUtils.h"
 #include "SceneObject.h"
 #include "bottombar.h"
 #include "ui_leveltools.h"
@@ -56,22 +56,22 @@ void ESceneAIMapTools::OnRender(int priority, bool strictB2F)
             RCache.set_xform_world(Fidentity);
 			if (OBJCLASS_AIMAP==LTools->CurrentClassID()){
 	            u32 clr = 0xffffc000;
-	            Device.SetShader	(Device.m_WireShader);
-    	        DU.DrawSelectionBox	(m_AIBBox,&clr);
+	            EDevice.SetShader	(EDevice.m_WireShader);
+    	        DU_impl.DrawSelectionBoxB	(m_AIBBox,&clr);
             }
             if (Valid()){
                 // render nodes
-                Device.SetShader	(m_Shader);
-                Device.SetRS		(D3DRS_CULLMODE,		D3DCULL_NONE);
+                EDevice.SetShader	(m_Shader);
+                EDevice.SetRS		(D3DRS_CULLMODE,		D3DCULL_NONE);
                 Irect rect;
-                HashRect			(Device.m_Camera.GetPosition(),m_VisRadius,rect);
+                HashRect			(EDevice.m_Camera.GetPosition(),m_VisRadius,rect);
 
                 u32 vBase;
                 _VertexStream* Stream= &RCache.Vertex;
                 FVF::LIT* pv		= (FVF::LIT*)Stream->Lock(block_size,m_RGeom->vb_stride,vBase);
                 u32	cnt				= 0;
-//				Device.Statistic.TEST0.Begin();
-//				Device.Statistic.TEST2.Begin();
+//				EDevice.Statistic.TEST0.Begin();
+//				EDevice.Statistic.TEST2.Begin();
                 for (int x=rect.x1; x<=rect.x2; x++){
                     for (int z=rect.y1; z<=rect.y2; z++){
                         AINodeVec* nodes	= HashMap(x,z);
@@ -110,7 +110,7 @@ void ESceneAIMapTools::OnRender(int priority, bool strictB2F)
                                     cnt+=6;
                                     if (cnt>=block_size-6){
                                         Stream->Unlock	(cnt,m_RGeom->vb_stride);
-                                        Device.DP		(D3DPT_TRIANGLELIST,m_RGeom,vBase,cnt/3);
+                                        EDevice.DP		(D3DPT_TRIANGLELIST,m_RGeom,vBase,cnt/3);
                                         pv 				= (FVF::LIT*)Stream->Lock(block_size,m_RGeom->vb_stride,vBase);
                                         cnt				= 0;
                                     }	
@@ -119,11 +119,11 @@ void ESceneAIMapTools::OnRender(int priority, bool strictB2F)
                         }
                     }
                 }
-//                Device.Statistic.TEST2.End();
-//                Device.Statistic.TEST0.End();
+//                EDevice.Statistic.TEST2.End();
+//                EDevice.Statistic.TEST0.End();
 				Stream->Unlock		(cnt,m_RGeom->vb_stride);
-                if (cnt) Device.DP	(D3DPT_TRIANGLELIST,m_RGeom,vBase,cnt/3);
-                Device.SetRS		(D3DRS_CULLMODE,		D3DCULL_CCW);
+                if (cnt) EDevice.DP	(D3DPT_TRIANGLELIST,m_RGeom,vBase,cnt/3);
+                EDevice.SetRS		(D3DRS_CULLMODE,		D3DCULL_CCW);
             }
         }else{
 /*            // render snap

@@ -3,6 +3,7 @@
 
 #include "render.h"
 #include "ResourceManager.h"
+#include "../../Include/xrAPI/xrAPI.h"
 //---------------------------------------------------------------------------
 float ssaDISCARD		= 4.f;
 float ssaDONTSORT		= 32.f;
@@ -10,8 +11,11 @@ float ssaDONTSORT		= 32.f;
 ECORE_API float r_ssaDISCARD;
 ECORE_API float	g_fSCREEN;
 
-CRender 	RImplementation;
-CRender* 	Render = &RImplementation;
+CRender   			RImplementation;
+ECORE_API CRender* 	Render 		= &RImplementation;
+
+//---------------------
+IRenderFactory*	RenderFactory = NULL;
 //---------------------------------------------------------------------------
 
 CRender::CRender	()
@@ -64,12 +68,12 @@ BOOL CRender::occ_visible(vis_data& P)
 void CRender::Calculate()
 {
 	// Transfer to global space to avoid deep pointer access
-	g_fSCREEN						=	float(Device.dwWidth*Device.dwHeight);
+	g_fSCREEN						=	float(EDevice.dwWidth*EDevice.dwHeight);
 	r_ssaDISCARD					=	(ssaDISCARD*ssaDISCARD)/g_fSCREEN;
 //	r_ssaLOD_A						=	(ssaLOD_A*ssaLOD_A)/g_fSCREEN;
 //	r_ssaLOD_B						=	(ssaLOD_B*ssaLOD_B)/g_fSCREEN;
 
-	ViewBase.CreateFromMatrix		(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
+	ViewBase.CreateFromMatrix		(EDevice.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
 }
 
 #include "igame_persistent.h"
@@ -86,14 +90,14 @@ IRender_DetailModel*	CRender::model_CreateDM(IReader* F)
 	return D;
 }
 
-IRender_Visual*	CRender::model_CreatePE(LPCSTR name)	
-{ 
+IRenderVisual*	CRender::model_CreatePE(LPCSTR name)
+{
 	PS::CPEDef*	source		= PSLibrary.FindPED	(name);
 	return Models->CreatePE	(source);
 }
 
-IRender_Visual*			CRender::model_CreateParticles	(LPCSTR name)	
-{ 
+IRenderVisual*			CRender::model_CreateParticles	(LPCSTR name)
+{
 	PS::CPEDef*	SE		= PSLibrary.FindPED	(name);
 	if (SE) return		Models->CreatePE	(SE);
 	else{
@@ -126,13 +130,13 @@ void 	CRender::set_Transform	(Fmatrix* M)
 	current_matrix.set(*M);
 }
 
-void			CRender::add_Visual   		(IRender_Visual* visual)			{ Models->RenderSingle	(visual,current_matrix,1.f);}
-IRender_Visual*	CRender::model_Create		(LPCSTR name, IReader* data)		{ return Models->Create(name,data);		}
-IRender_Visual*	CRender::model_CreateChild	(LPCSTR name, IReader* data)		{ return Models->CreateChild(name,data);}
-void 			CRender::model_Delete		(IRender_Visual* &V, BOOL bDiscard)	{ Models->Delete(V,bDiscard);			}
-IRender_Visual*	CRender::model_Duplicate	(IRender_Visual* V)					{ return Models->Instance_Duplicate(V);	}
-void 			CRender::model_Render		(IRender_Visual* m_pVisual, const Fmatrix& mTransform, int priority, bool strictB2F, float m_fLOD){Models->Render(m_pVisual, mTransform, priority, strictB2F, m_fLOD);}
-void 			CRender::model_RenderSingle	(IRender_Visual* m_pVisual, const Fmatrix& mTransform, float m_fLOD){Models->RenderSingle(m_pVisual, mTransform, m_fLOD);}
+void			CRender::add_Visual   		(IRenderVisual* visual)			{ Models->RenderSingle	(dynamic_cast<dxRender_Visual*>(visual),current_matrix,1.f);}
+IRenderVisual*	CRender::model_Create		(LPCSTR name, IReader* data)		{ return Models->Create(name,data);		}
+IRenderVisual*	CRender::model_CreateChild	(LPCSTR name, IReader* data)		{ return Models->CreateChild(name,data);}
+void 			CRender::model_Delete		(IRenderVisual* &V, BOOL bDiscard)	{ Models->Delete(dynamic_cast<dxRender_Visual*>(V),bDiscard);			}
+IRenderVisual*	CRender::model_Duplicate	(IRenderVisual* V)					{ return Models->Instance_Duplicate(dynamic_cast<dxRender_Visual*>(V));	}
+void 			CRender::model_Render		(IRenderVisual* m_pVisual, const Fmatrix& mTransform, int priority, bool strictB2F, float m_fLOD){Models->Render(dynamic_cast<dxRender_Visual*>(m_pVisual), mTransform, priority, strictB2F, m_fLOD);}
+void 			CRender::model_RenderSingle	(IRenderVisual* m_pVisual, const Fmatrix& mTransform, float m_fLOD){Models->RenderSingle(dynamic_cast<dxRender_Visual*>(m_pVisual), mTransform, m_fLOD);}
 
 //#pragma comment(lib,"d3dx_r1")
 HRESULT	CRender::CompileShader			(

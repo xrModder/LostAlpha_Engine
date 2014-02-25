@@ -194,7 +194,7 @@ void TfrmImageLib::InitItemsList()
     {
 	pb->Inc			();
     	ListItem* I		= LHelper().CreateItem(items,it->name.c_str(),0);
-        I->tag                  = Device.Resources->m_textures_description.GetTextureType(it->name.c_str());
+        I->tag                  = FindUsedTHM(it->name.c_str())->_Format().type;//EDevice.Resources->m_textures_description.GetTextureType(it->name.c_str());
         Msg("%s-%d",it->name.c_str(),I->tag);
     }
     UI->ProgressEnd		(pb);
@@ -298,7 +298,8 @@ void __fastcall TfrmImageLib::ebSyncTypesClick(TObject *Sender)
 
 	UnlockForm();
 
-    if (!bRes) ini->bSaveAtEnd = false;
+    //if (!bRes) ini->bSaveAtEnd = false;
+        ini->save_at_end(bRes);
 	xr_delete(ini);
 }
 //---------------------------------------------------------------------------
@@ -362,9 +363,9 @@ void __fastcall TfrmImageLib::ebRebuildAssociationClick(TObject *)
 
 	if (!bRes)
 	{
-		ini_types->bSaveAtEnd = false;
-		ini_ass->bSaveAtEnd = false;
-		ini_spe->bSaveAtEnd = false;
+		ini_types->save_at_end(false);
+		ini_ass->save_at_end(false);
+		ini_spe->save_at_end(false);
 	}
 
 	xr_delete(ini_types);

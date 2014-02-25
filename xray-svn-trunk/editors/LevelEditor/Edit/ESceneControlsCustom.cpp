@@ -178,8 +178,8 @@ bool __fastcall TUI_CustomControl::MovingStart(TShiftState Shift)
         if (Scene->GetQueryObjects(lst,LTools->CurrentClassID(),1,1,0)){
         	if (lst.size()==1){
                 Fvector p,n;
-                UI->IR_GetMousePosReal(Device.m_hRenderWnd, UI->m_CurrentCp);
-                Device.m_Camera.MouseRayFromPoint(UI->m_CurrentRStart,UI->m_CurrentRNorm,UI->m_CurrentCp);
+                UI->IR_GetMousePosReal(EDevice.m_hRenderWnd, UI->m_CurrentCp);
+                EDevice.m_Camera.MouseRayFromPoint(UI->m_CurrentRStart,UI->m_CurrentRNorm,UI->m_CurrentCp);
                 if (LUI->PickGround(p,UI->m_CurrentRStart,UI->m_CurrentRNorm,1,&n)){
                     for(ObjectIt _F = lst.begin();_F!=lst.end();_F++) (*_F)->MoveTo(p,n);
                     Scene->UndoSave();
@@ -200,9 +200,9 @@ bool __fastcall TUI_CustomControl::MovingStart(TShiftState Shift)
             m_MovingXVector.set(0,0,0);
             m_MovingYVector.set(0,1,0);
         }else{
-            m_MovingXVector.set( Device.m_Camera.GetRight() );
+            m_MovingXVector.set( EDevice.m_Camera.GetRight() );
             m_MovingXVector.y = 0;
-            m_MovingYVector.set( Device.m_Camera.GetDirection() );
+            m_MovingYVector.set( EDevice.m_Camera.GetDirection() );
             m_MovingYVector.y = 0;
             m_MovingXVector.normalize_safe();
             m_MovingYVector.normalize_safe();

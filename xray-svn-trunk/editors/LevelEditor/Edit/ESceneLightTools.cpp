@@ -3,7 +3,7 @@
 
 #include "ESceneLightTools.h"
 #include "IGame_Persistent.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dutils.h"
 #include "communicate.h"
 #include "../ECore/Editor/ui_main.h"
 #include "../xrEProps/TextForm.h"
@@ -46,7 +46,7 @@ void ESceneLightTools::SelectLightsForObject(CCustomObject* obj)
         Fbox bb; 	obj->GetBox(bb);
         Fvector C; 	float R; bb.getsphere(C,R);
         float d 	= C.distance_to(l->PPosition) - l->m_Range - R;
-        Device.LightEnable(i,(d<0));
+        EDevice.LightEnable(i,(d<0));
     }
 }
 
@@ -66,7 +66,7 @@ void ESceneLightTools::AppendFrameLight(CLight* src)
     L.attenuation2		= src->m_Attenuation2;
     L.phi				= src->m_Cone;
     L.falloff			= 1.f;
-    Device.SetLight		(frame_light.size(),L);
+    EDevice.SetLight		(frame_light.size(),L);
     frame_light.push_back(src);
 }
 
@@ -83,31 +83,33 @@ void ESceneLightTools::BeforeRender()
                 	AppendFrameLight(l);
         }
     	// set sun
-		if (m_Flags.is(flShowSun)){
+		if (m_Flags.is(flShowSun))
+        {
             Flight L;
             Fvector C;
-            if (psDeviceFlags.is(rsEnvironment)){
-	            C			= g_pGamePersistent->Environment().CurrentEnv.sun_color;
-            }else{
+//            if (psDeviceFlags.is(rsEnvironment)){
+//	            C			= g_pGamePersistent->Environment().CurrentEnv->sun_color;
+//            }else{
             	C.set		(1.f,1.f,1.f);
-            }
+//            }
             L.direction.setHP(m_SunShadowDir.y,m_SunShadowDir.x);
             L.diffuse.set	(C.x,C.y,C.z,1.f);
             L.ambient.set	(0.f,0.f,0.f,0.f);
             L.specular.set	(C.x,C.y,C.z,1.f);
             L.type			= D3DLIGHT_DIRECTIONAL;
-            Device.SetLight	(frame_light.size(),L);
-            Device.LightEnable(frame_light.size(),TRUE);
+            EDevice.SetLight	(frame_light.size(),L);
+            EDevice.LightEnable(frame_light.size(),TRUE);
         }
 		// ambient
-        if (psDeviceFlags.is(rsEnvironment)){
-	        Fvector& V		= g_pGamePersistent->Environment().CurrentEnv.ambient;
-            Fcolor C;		C.set(V.x,V.y,V.z,1.f);
-            Device.SetRS	(D3DRS_AMBIENT,C.get());
-        }else				Device.SetRS(D3DRS_AMBIENT,0x00000000);
+//        if (psDeviceFlags.is(rsEnvironment)){
+//	        Fvector& V		= g_pGamePersistent->Environment().CurrentEnv->ambient;
+//            Fcolor C;		C.set(V.x,V.y,V.z,1.f);
+//            EDevice.SetRS	(D3DRS_AMBIENT,C.get());
+//        }else				
+        	EDevice.SetRS(D3DRS_AMBIENT,0x00000000);
         
-        Device.Statistic->dwTotalLight 	= l_cnt;
-        Device.Statistic->dwLightInScene = frame_light.size();
+        EDevice.Statistic->dwTotalLight 	= l_cnt;
+        EDevice.Statistic->dwLightInScene = frame_light.size();
     }
 }
 //------------------------------------------------------------------------------
@@ -115,9 +117,9 @@ void ESceneLightTools::BeforeRender()
 void ESceneLightTools::AfterRender()
 {
     if (m_Flags.is(flShowSun))
-        Device.LightEnable(frame_light.size(),FALSE); // sun - last light!
+        EDevice.LightEnable(frame_light.size(),FALSE); // sun - last light!
     for (u32 i=0; i<frame_light.size(); i++)
-		Device.LightEnable(i,FALSE);
+		EDevice.LightEnable(i,FALSE);
     frame_light.clear();
 }
 //------------------------------------------------------------------------------
@@ -128,15 +130,15 @@ void  ESceneLightTools::OnRender(int priority, bool strictB2F)
 	inherited::OnRender(priority, strictB2F);
     if (m_Flags.is(flShowSun)){
         if ((true==strictB2F)&&(1==priority)){
-            Device.SetShader		(Device.m_WireShader);
+            EDevice.SetShader		(EDevice.m_WireShader);
             RCache.set_xform_world	(Fidentity);
             Fvector dir;
             dir.setHP(m_SunShadowDir.y,m_SunShadowDir.x);
             Fvector p;
             float fd				= UI->ZFar()*0.95f;
-            p.mad					(Device.vCameraPosition,dir,-fd);
-            DU.DrawPointLight		( p ,VIS_RADIUS*fd, 0x00FFE020);
-            DU.DrawLineSphere		( p, VIS_RADIUS*fd*0.3f, 0x00FF3000, false );
+            p.mad					(EDevice.vCameraPosition,dir,-fd);
+            DU_impl.DrawPointLight		( p ,VIS_RADIUS*fd, 0x00FFE020);
+            DU_impl.DrawLineSphere		( p, VIS_RADIUS*fd*0.3f, 0x00FF3000, false );
         }
     }
 }
@@ -185,7 +187,7 @@ void ESceneLightTools::FillProp(LPCSTR pref, PropItemVec& items)
     PHelper().CreateAngle	(items,	PrepareKey(pref,"Common\\Sun Shadow\\Longitude"),		&m_SunShadowDir.y,	0,PI_MUL_2);
     // light controls
     PHelper().CreateFlag32	(items, PrepareKey(pref,"Common\\Controls\\Draw Name"),			&m_Flags,			flShowControlName);
-    PHelper().CreateCaption	(items,PrepareKey(pref,"Common\\Controls\\Count"),				shared_str().sprintf("%d",lcontrols.size()));
+    PHelper().CreateCaption	(items,PrepareKey(pref,"Common\\Controls\\Count"),				shared_str().printf("%d",lcontrols.size()));
 //	B=PHelper().CreateButton(items,PHelper().PrepareKey(pref,"Common\\Controls\\Edit"),	"Append",	ButtonValue::flFirstOnly);
 //	B->OnBtnClickEvent	= OnControlAppendClick;
 	RTokenVecIt		_I 	= lcontrols.begin();

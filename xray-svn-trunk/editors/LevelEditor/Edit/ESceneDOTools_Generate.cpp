@@ -13,10 +13,10 @@
 #include "../ECore/Editor/Library.h"
 #include "../ECore/Editor/ui_main.h"
 
-#include "DetailFormat.h"
+#include "..\..\xr_3da\xrRender\DetailFormat.h"
 #include "bottombar.h"
 #include "../ECore/Editor/ImageManager.h"
-#include "../../ETools/ETools.h"
+#include "..\..\ETools\ETools.h"
 
 static Fvector down_vec	={0.f,-1.f,0.f};
 static Fvector left_vec	={-1.f,0.f,0.f};

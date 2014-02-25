@@ -220,7 +220,7 @@ void CEditableMesh::FrustumPickFaces(const CFrustum& frustum, const Fmatrix& par
         for( int k=0;k<3;k++) parent.transform_tiny(p[k],m_Verts[m_Faces[p_id].pv[k].pindex]);
         if (bCulling){
 	        Fplane P; P.build(p[0],p[1],p[2]);
-    	    if (P.classify(Device.m_Camera.GetPosition())<0) continue;
+    	    if (P.classify(EDevice.m_Camera.GetPosition())<0) continue;
         }
         if (frustum.testPolyInside(p,3))
             fl.push_back(p_id);

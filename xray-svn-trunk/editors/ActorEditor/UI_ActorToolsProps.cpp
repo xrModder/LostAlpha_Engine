@@ -9,7 +9,7 @@
 #include "motion.h"
 #include "bone.h"
 #include "leftbar.h"
-#include "SkeletonAnimated.h"
+#include "../../xr_3da/xrRender/SkeletonAnimated.h"
 #include "../xrEProps/ItemList.h"
 //------------------------------------------------------------------------------
 
@@ -472,7 +472,7 @@ void CActorTools::FillBoneProperties(PropItemVec& items, LPCSTR pref, ListItem* 
 	R_ASSERT(m_pEditObject);
 	CBone* BONE = (CBone*)sender->m_Object;
 
-    PHelper().CreateCaption	(items, PrepareKey(pref,"Global\\Bone count"),	shared_str().sprintf("%d",m_pEditObject->BoneCount()));
+    PHelper().CreateCaption	(items, PrepareKey(pref,"Global\\Bone count"),	shared_str().printf("%d",m_pEditObject->BoneCount()));
     ButtonValue* B;
     B=PHelper().CreateButton	(items, PrepareKey(pref,"Global\\File"),"Load,Save",ButtonValue::flFirstOnly);
     B->OnBtnClickEvent.bind		(this,&CActorTools::OnBoneFileClick);
@@ -528,7 +528,7 @@ void CActorTools::FillBoneProperties(PropItemVec& items, LPCSTR pref, ListItem* 
         lim_rot.y 					= rad2deg(lim_rot.y);
         lim_rot.z 				 	= rad2deg(lim_rot.z);
         
-        PHelper().CreateCaption		(items, PrepareKey(pref,"Bone\\Joint\\Current Rotation"),	shared_str().sprintf("{%3.2f, %3.2f, %3.2f}",VPUSH(lim_rot)));
+        PHelper().CreateCaption		(items, PrepareKey(pref,"Bone\\Joint\\Current Rotation"),	shared_str().printf("{%3.2f, %3.2f, %3.2f}",VPUSH(lim_rot)));
     	SJointIKData& data			= BONE->IK_data;
         V=PHelper().CreateFlag32 	(items, PrepareKey(pref,"Bone\\Joint\\Breakable"),		&data.ik_flags, SJointIKData::flBreakable);
         V->OnChangeEvent.bind		(this,&CActorTools::OnJointTypeChange);
@@ -629,8 +629,8 @@ void CActorTools::FillObjectProperties(PropItemVec& items, LPCSTR pref, ListItem
     V->OnChangeEvent.bind			(this,&CActorTools::OnChangeTransform);
     V=PHelper().CreateAngle3		(items, "Object\\Transform\\Rotation",		&m_pEditObject->a_vRotate, 		-10000,	10000,0.1,1);
     V->OnChangeEvent.bind			(this,&CActorTools::OnChangeTransform);
-    V=PHelper().CreateCaption		(items, "Object\\Transform\\BBox Min",		shared_str().sprintf("{%3.2f, %3.2f, %3.2f}",VPUSH(m_pEditObject->GetBox().min)));
-    V=PHelper().CreateCaption		(items, "Object\\Transform\\BBox Max",		shared_str().sprintf("{%3.2f, %3.2f, %3.2f}",VPUSH(m_pEditObject->GetBox().max)));
+    V=PHelper().CreateCaption		(items, "Object\\Transform\\BBox Min",		shared_str().printf("{%3.2f, %3.2f, %3.2f}",VPUSH(m_pEditObject->GetBox().min)));
+    V=PHelper().CreateCaption		(items, "Object\\Transform\\BBox Max",		shared_str().printf("{%3.2f, %3.2f, %3.2f}",VPUSH(m_pEditObject->GetBox().max)));
 
 //.    PHelper().CreateChoose		 (items, "Object\\LOD\\Reference",  			&m_pEditObject->m_LODs, smObject);
     PHelper().CreateChoose			(items, "Object\\LOD\\Reference",  			&m_pEditObject->m_LODs, smVisual);

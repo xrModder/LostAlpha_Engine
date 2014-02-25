@@ -6,7 +6,7 @@
 #include "UI_ActorTools.h"
 #include "topbar.h"
 #include "leftbar.h"
-#include "D3DUtils.h"
+#include "../../xr_3da/xrRender/D3DUtils.h"
 #include "bottombar.h"
 #include "main.h"
 #include "xr_input.h"
@@ -425,7 +425,8 @@ void CActorMain::ResetStatus()
 void CActorMain::SetStatus(LPSTR s, bool bOutLog)
 {
 	VERIFY(m_bReady);
-    if (fraBottomBar->paStatus->Caption!=s){
+    if (fraBottomBar->paStatus->Caption!=s)
+    {
 	    fraBottomBar->paStatus->Caption=s; fraBottomBar->paStatus->Repaint();
     	if (bOutLog&&s&&s[0]) ELog.Msg(mtInformation,s);
     }
@@ -440,7 +441,7 @@ void CActorMain::OutCameraPos()
 {
 	VERIFY(m_bReady);
     AnsiString s;
-	const Fvector& c 	= Device.m_Camera.GetPosition();
+	const Fvector& c 	= EDevice.m_Camera.GetPosition();
 	s.sprintf("C: %3.1f, %3.1f, %3.1f",c.x,c.y,c.z);
 //	const Fvector& hpb 	= Device.m_Camera.GetHPB();
 //	s.sprintf(" Cam: %3.1f°, %3.1f°, %3.1f°",rad2deg(hpb.y),rad2deg(hpb.x),rad2deg(hpb.z));

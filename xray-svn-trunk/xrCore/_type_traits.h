@@ -47,7 +47,11 @@ struct is_pm_classify<false>	{
 template<typename T>	
 struct	is_polymorphic			{
 	enum						{
+#ifdef _EDITOR
+                result	= is_pm_classify<is_class<T>::result>::_detail<T>::result
+#else
 		result	= is_pm_classify<::is_class<T>::result> :: _detail<T> :: result
+#endif
 	};
 };
 

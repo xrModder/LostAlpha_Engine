@@ -40,7 +40,7 @@ class CSector : public CCustomObject {
     u8			m_bDefault;
     bool			m_bHasLoadError;
 
-    Fbox			m_Box;
+    Fbox			m_SectorBox;
 
     Fvector 		m_SectorCenter;
     float 			m_SectorRadius;

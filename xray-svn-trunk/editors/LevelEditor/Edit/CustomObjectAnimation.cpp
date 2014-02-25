@@ -4,7 +4,7 @@
 #include "customobject.h"
 #include "motion.h"
 #include "envelope.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/D3DUtils.h"
 #include "../ECore/Editor/ui_main.h"
 
 void  CCustomObject::OnMotionableChange(PropValue* sender)
@@ -46,7 +46,7 @@ void CCustomObject::AnimationUpdate(float t)
     UpdateTransform			(true);
     m_CO_Flags.set			(flAutoKey,bAK);
     if (m_CO_Flags.is(flCameraView))
-    	Device.m_Camera.Set	(-r.y,-r.x,-r.z,P.x,P.y,P.z);
+    	EDevice.m_Camera.Set	(-r.y,-r.x,-r.z,P.x,P.y,P.z);
 }
 
 void CCustomObject::AnimationOnFrame()
@@ -56,7 +56,7 @@ void CCustomObject::AnimationOnFrame()
     if (Selected()&&m_MotionParams->bPlay)
     {
     	AnimationUpdate			(m_MotionParams->Frame());
-        m_MotionParams->Update	(Device.fTimeDelta,1.f,true);
+        m_MotionParams->Update	(EDevice.fTimeDelta,1.f,true);
     }
 }
 
@@ -79,15 +79,16 @@ void CCustomObject::AnimationDrawPath()
             path_points.push_back(T);
         }
 
-        Device.SetShader		(Device.m_WireShader);
+        EDevice.SetShader		(EDevice.m_WireShader);
         RCache.set_xform_world	(Fidentity);
-        if (!path_points.empty())DU.DrawPrimitiveL		(D3DPT_LINESTRIP,path_points.size()-1,path_points.begin(),path_points.size(),clr,true,false);
+        if (!path_points.empty())
+        	DU_impl.DrawPrimitiveL		(D3DPT_LINESTRIP,path_points.size()-1,path_points.begin(),path_points.size(),clr,true,false);
         CEnvelope* E 			= m_Motion->Envelope();
         for (KeyIt k_it=E->keys.begin(); k_it!=E->keys.end(); k_it++){
             m_Motion->_Evaluate	((*k_it)->time,T,r);
-            if (Device.m_Camera.GetPosition().distance_to_sqr(T)<50.f*50.f){
-                DU.DrawCross	(T,0.1f,0.1f,0.1f, 0.1f,0.1f,0.1f, clr,false);
-                DU.OutText		(T,AnsiString().sprintf("K: %3.3f",(*k_it)->time).c_str(),0xffffffff,0x00000000);
+            if (EDevice.m_Camera.GetPosition().distance_to_sqr(T)<50.f*50.f){
+                DU_impl.DrawCross	(T,0.1f,0.1f,0.1f, 0.1f,0.1f,0.1f, clr,false);
+                DU_impl.OutText		(T,AnsiString().sprintf("K: %3.3f",(*k_it)->time).c_str(),0xffffffff,0x00000000);
             }
         }
     }
@@ -268,8 +269,8 @@ void CCustomObject::AnimationFillProp(LPCSTR pref, PropItemVec& items)
     	V->OnChangeEvent.bind(this,&CCustomObject::OnMotionFrameChange);
 		V				= PHelper().CreateFloat		(items,PrepareKey(pref,"Motion\\Current Frame (sec)"),	&m_MotionParams->t_current, -10000.f, 10000.f,	1.f/30.f, 3);
     	V->OnChangeEvent.bind(this,&CCustomObject::OnMotionCurrentFrameChange);                                     
-        				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Key Count"),			shared_str().sprintf("%d",m_Motion->KeyCount()));
-        				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Length (sec)"),		shared_str().sprintf("%3.2f",m_Motion->GetLength()));
+        				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Key Count"),			shared_str().printf("%d",m_Motion->KeyCount()));
+        				  PHelper().CreateCaption		(items,PrepareKey(pref,"Motion\\Length (sec)"),		shared_str().printf("%3.2f",m_Motion->GetLength()));
 	}
 }
  

@@ -11,7 +11,7 @@
 #include "sector.h"
 #include "MgcConvexHull2D.h"
 #include "MgcAppr3DPlaneFit.h"
-#include "d3dutils.h"
+#include "../../ecore/editor/D3DUtils.h"
 #include "../ECore/Editor/ui_main.h"
 #include "ui_leveltools.h"
 #include "SceneObject.h"
@@ -61,7 +61,7 @@ void CPortal::Render(int priority, bool strictB2F)
         FvectorVec& src 	= m_SimplifyVertices;//(fraBottomBar->miDrawPortalSimpleModel->Checked)?m_SimplifyVertices:m_Vertices;
         if (src.size()<2) 	return;
 
-        Device.SetShader	(Device.m_WireShader);
+        EDevice.SetShader	(EDevice.m_WireShader);
         RCache.set_xform_world	(Fidentity);
 
         u32 				i;
@@ -76,28 +76,28 @@ void CPortal::Render(int priority, bool strictB2F)
 		if (m_SectorFront){
 			col.set			(m_SectorFront->sector_color);
 	        if (!Selected())col.mul_rgb(0.7f);
-		    Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
-    	    DU.DrawPrimitiveL	(D3DPT_TRIANGLEFAN, V.size()-2, V.begin(), V.size(), col.get(), true, false);
-		    Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+		    EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+    	    DU_impl.DrawPrimitiveL	(D3DPT_TRIANGLEFAN, V.size()-2, V.begin(), V.size(), col.get(), true, false);
+		    EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
         }
         // back
 		if (m_SectorBack){
 			col.set			(m_SectorBack->sector_color);
 	        if (!Selected())col.mul_rgb(0.7f);
-		    Device.SetRS(D3DRS_CULLMODE,D3DCULL_CW);
-    	    DU.DrawPrimitiveL	(D3DPT_TRIANGLEFAN, V.size()-2, V.begin(), V.size(), col.get(), true, false);
-		    Device.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
+		    EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CW);
+    	    DU_impl.DrawPrimitiveL	(D3DPT_TRIANGLEFAN, V.size()-2, V.begin(), V.size(), col.get(), true, false);
+		    EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
         }
 		col.set				(1.f,1.f,1.f,1.f);
-		Device.RenderNearer(0.0002);
+		EDevice.RenderNearer(0.0002);
         if (!Selected())	col.mul_rgb(0.5f);
     	// render portal edges
     	EScenePortalTools* lt = dynamic_cast<EScenePortalTools*>(ParentTools); VERIFY(lt);
         FvectorVec& src_ln 	= (lt->m_Flags.is(EScenePortalTools::flDrawSimpleModel))?m_SimplifyVertices:m_Vertices;
-        DU.DrawPrimitiveL	(D3DPT_LINESTRIP, src_ln.size(), src_ln.begin(), src_ln.size(), col.get(), true, true);
-        Device.ResetNearer	();
-        DU.DrawFaceNormal	(m_Center,m_Normal,1,0xFFFFFFFF);
-        DU.DrawFaceNormal	(m_Center,m_Normal,1,0x00000000);
+        DU_impl.DrawPrimitiveL	(D3DPT_LINESTRIP, src_ln.size(), src_ln.begin(), src_ln.size(), col.get(), true, true);
+        EDevice.ResetNearer	();
+        DU_impl.DrawFaceNormal	(m_Center,m_Normal,1,0xFFFFFFFF);
+        DU_impl.DrawFaceNormal	(m_Center,m_Normal,1,0x00000000);
 /*		for (int k=0; k<1000; k++){
         	Fvector dir;
             dir.random_dir(m_Normal,deg2rad(45.f));
@@ -176,13 +176,15 @@ bool CPortal::Update(bool bLoadMode){
     // simplify portal
 	Simplify();
 
-    if (!bLoadMode){
+    if (!bLoadMode)
+    {
         xr_map<CSector*,int> A,B;
         Fvector SF_dir, SB_dir;
         Fvector InvNorm;
         InvNorm.invert(m_Normal);
         float dist;
-        for (int k=0; k<100; k++){
+        for (int k=0; k<100; k++)
+        {
 	        SF_dir.random_dir(m_Normal,PI_DIV_4);
 	        SB_dir.random_dir(InvNorm,PI_DIV_4);
 	        dist=1000; if (m_SectorFront->RayPick(dist,m_Center,SF_dir)) 	A[m_SectorFront]	+= 1;
@@ -193,8 +195,10 @@ bool CPortal::Update(bool bLoadMode){
         int a = A[m_SectorFront]+A[m_SectorBack];
         int b = B[m_SectorFront]+B[m_SectorBack];
         if (a>b);
-        else if (a<b) InvertOrientation(false);
-        else ELog.Msg(mtError, "Check portal orientation: '%s'",Name);
+        else if (a<b)
+            InvertOrientation(false);
+        else
+            ELog.Msg(mtError, "Check portal orientation: '%s'",Name);
     }
 
     return true;

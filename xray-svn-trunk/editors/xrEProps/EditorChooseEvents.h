@@ -2,17 +2,20 @@
 #define EditorChooseEventsH
 
 #include "ChooseTypes.h"
-#include "SkeletonAnimated.h"
-//#include "LevelGameDef.h"
+#include "../../xr_3da/xrRender/SkeletonAnimated.h"
+#include "../../xr_3da/xrRender/ResourceManager.h"
+
+#include "../../xr_3da/xrRender/ParticleEffect.h"
+#include "../../xr_3da/xrRender/ParticleGroup.h"
 
 ref_sound* choose_snd;
 
 namespace ChoseEvents{
 void __stdcall  FillEntity(ChooseItemVec& items, void* param)
 {
-//.    AppendItem						(RPOINT_CHOOSE_NAME);
-    CInifile::Root& data 			= pSettings->sections();
-    for (CInifile::RootIt it=data.begin(); it!=data.end(); it++){
+//.    AppendItem	   					(RPOINT_CHOOSE_NAME);
+    CInifile::Root const & data 			= pSettings->sections();
+    for (CInifile::RootCIt it=data.begin(); it!=data.end(); it++){
     	LPCSTR val;
     	if ((*it)->line_exist("$spawn",&val))
             items.push_back(SChooseItem(*(*it)->Name,""));
@@ -37,7 +40,7 @@ void __stdcall  CloseSoundSource()
 }
 void __stdcall  FillSoundSource(ChooseItemVec& items, void* param)
 {
-    FS_FileSet lst;
+    FS_FileSet 		lst;
     if (SndLib->GetGameSounds(lst))
     {
 	    FS_FileSetIt  it			= lst.begin();
@@ -164,15 +167,15 @@ void __stdcall  DrawLAnim(LPCSTR name, HDC hdc, const Irect& r)
 	CLAItem* item 					= LALib.FindItem(name);
 	    if(item)
     {
-    HBRUSH hbr 						= CreateSolidBrush(item->CalculateBGR(Device.fTimeGlobal,frame));
-    FillRect						(hdc,(RECT*)&r,hbr);
-    DeleteObject 					(hbr);
+        HBRUSH hbr 						= CreateSolidBrush(item->CalculateBGR(EDevice.fTimeGlobal,frame));
+        FillRect						(hdc,(RECT*)&r,hbr);
+        DeleteObject 					(hbr);
     }
 }
 //---------------------------------------------------------------------------
 void __stdcall  FillEShader(ChooseItemVec& items, void* param)
 {
-    CResourceManager::map_Blender& blenders = Device.Resources->_GetBlenders();
+    CResourceManager::map_Blender& blenders = EDevice.Resources->_GetBlenders();
 	CResourceManager::map_BlenderIt _S = blenders.begin();
 	CResourceManager::map_BlenderIt _E = blenders.end();
 	for (; _S!=_E; _S++)			items.push_back(SChooseItem(_S->first,""));
@@ -180,7 +183,7 @@ void __stdcall  FillEShader(ChooseItemVec& items, void* param)
 //---------------------------------------------------------------------------
 void __stdcall  FillCShader(ChooseItemVec& items, void* param)
 {
-    Shader_xrLCVec& shaders 		= Device.ShaderXRLC.Library();
+    Shader_xrLCVec& shaders 		= EDevice.ShaderXRLC.Library();
 	Shader_xrLCIt _F 				= shaders.begin();
 	Shader_xrLCIt _E 				= shaders.end();
 	for ( ;_F!=_E;_F++)				items.push_back(SChooseItem(_F->Name,""));
@@ -188,13 +191,13 @@ void __stdcall  FillCShader(ChooseItemVec& items, void* param)
 //---------------------------------------------------------------------------
 void __stdcall  FillPE(ChooseItemVec& items, void* param)
 {
-    for (PS::PEDIt E=::Render->PSLibrary.FirstPED(); E!=::Render->PSLibrary.LastPED(); E++)items.push_back(SChooseItem(*(*E)->m_Name,""));
+    for (PS::PEDIt E=::Render->PSLibrary.FirstPED(); E!=::Render->PSLibrary.LastPED(); E++)items.push_back(SChooseItem(*(*E)->m_Name,"EFFECT"));
 }
 //---------------------------------------------------------------------------
 void __stdcall  FillParticles(ChooseItemVec& items, void* param)
 {
-    for (PS::PEDIt E=::Render->PSLibrary.FirstPED(); E!=::Render->PSLibrary.LastPED(); E++)items.push_back(SChooseItem(*(*E)->m_Name,""));
-    for (PS::PGDIt G=::Render->PSLibrary.FirstPGD(); G!=::Render->PSLibrary.LastPGD(); G++)items.push_back(SChooseItem(*(*G)->m_Name,""));
+    for (PS::PEDIt E=::Render->PSLibrary.FirstPED(); E!=::Render->PSLibrary.LastPED(); E++)items.push_back(SChooseItem(*(*E)->m_Name,"EFFECT"));
+    for (PS::PGDIt G=::Render->PSLibrary.FirstPGD(); G!=::Render->PSLibrary.LastPGD(); G++)items.push_back(SChooseItem(*(*G)->m_Name,"GROUP"));
 }
 //---------------------------------------------------------------------------
 void __stdcall  FillTexture(ChooseItemVec& items, void* param)
@@ -263,7 +266,7 @@ void __stdcall  FillGameMaterial(ChooseItemVec& items, void* param)
 
 void __stdcall  FillSkeletonAnims(ChooseItemVec& items, void* param)
 {
-	IRender_Visual* V 				= ::Render->model_Create((LPCSTR)param);
+	IRenderVisual* V 				= ::Render->model_Create((LPCSTR)param);
     if (PKinematicsAnimated(V)){
 		u32 cnt						= PKinematicsAnimated(V)->LL_MotionsSlotCount();
     	for (u32 k=0; k<cnt; k++){
@@ -283,7 +286,7 @@ void __stdcall  FillSkeletonAnims(ChooseItemVec& items, void* param)
 }
 void __stdcall  FillSkeletonBones(ChooseItemVec& items, void* param)
 {
-	IRender_Visual* V 				= ::Render->model_Create((LPCSTR)param);
+	IRenderVisual* V 				= ::Render->model_Create((LPCSTR)param);
     if (PKinematics(V))
     {
         CKinematicsAnimated::accel  	*ll_bones	= PKinematics(V)->LL_Bones();

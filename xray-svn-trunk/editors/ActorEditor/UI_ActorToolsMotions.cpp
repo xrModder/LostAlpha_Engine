@@ -10,7 +10,7 @@
 #include "../xrEProps/PropertiesList.h"
 #include "motion.h"
 #include "bone.h"
-#include "SkeletonAnimated.h"
+#include "../../xr_3da/xrRender/SkeletonAnimated.h"
 #include "fmesh.h"
 #include "../xrEProps/folderlib.h"
 #include "leftbar.h"

@@ -249,7 +249,7 @@ void ESceneGroupTools::MakeThumbnail()
 
         U32Vec pixels;
         u32 w=512,h=512;
-        if (Device.MakeScreenshot	(pixels,w,h)){
+        if (EDevice.MakeScreenshot	(pixels,w,h)){
             AnsiString tex_name		= ChangeFileExt(object->Name,".thm");
             SStringVec lst;
             for (ObjectIt it=object->GetObjects().begin(); it!=object->GetObjects().end(); it++)
