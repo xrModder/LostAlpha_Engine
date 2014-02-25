@@ -91,7 +91,7 @@ xr_string	EFS_Utils::AppendFolderToName(xr_string& tex_name, int depth, BOOL ful
 }
 
 // ------------------------------------------------------------ //
-
+#ifdef _EDITOR
 BOOL EFS_Utils::CheckLocking(LPCSTR fname, bool bOnlySelf, bool bMsg)//, shared_str* owner)
 {
 	string256 fn; strcpy(fn,fname);
@@ -212,3 +212,4 @@ shared_str EFS_Utils::GetLockOwner(LPCSTR initial, LPCSTR fname)
 }
 */
 
+#endif
