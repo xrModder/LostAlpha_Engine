@@ -748,6 +748,8 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 	u16* indices		= 0;
 	VERIFY(*m_Indices);
 	indices = *m_Indices;
+
+#if 0 //skyloader: now bloodmarks work incorrect on dx10, can somebody fix them?
 	// fill vertices
 	switch	(RenderMode)
 	{
@@ -759,6 +761,7 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 	case RM_SKINNING_1B:			_FillVerticesHW1W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
 	case RM_SKINNING_2B:			_FillVerticesHW2W		(view,wm,normal,size,V,indices+iBase,*faces);		break;
 	}
+#endif	//0
 }
 
 #else	//	USE_DX10
