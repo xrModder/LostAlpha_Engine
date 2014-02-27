@@ -57,8 +57,6 @@ public:
 	Fvector					m_position_cancel;
 	Fvector					m_angles_cancel;
 	bool					m_b_position_cancel;
-	bool					m_b_allow_change_level;
-	shared_str				m_message_str;
 
 						CChangeLevelWnd				();
 	virtual				~CChangeLevelWnd			()									{};
