@@ -52,12 +52,11 @@ void CUIFrameLineWnd::InitTexture(LPCSTR texture, LPCSTR sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_e"),	sh_name, m_shader, m_tex_rect[flSecond]);
 	if(bHorizontal)
 	{
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flSecond].height()), texture );
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flBack].height()),texture );
-	}else
-	{
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flSecond].width()), texture );
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flBack].width()),texture );
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flSecond].height()), make_string("'%s_b' and '%s_e' should have different heights, frame line is horisontal", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flBack].height()), make_string("'%s_b' and '%s_back' should have different heights, frame line is horisontal", texture, texture));
+	} else {
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flSecond].width()), make_string("'%s_b' and '%s_e' should have different widths, frame line is vertical", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flBack].width()),make_string("'%s_b' and '%s_back' should have different widths, frame line is vertical", texture, texture));
 	}
 }
 
@@ -205,7 +204,10 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 	else
 		RBp.x			= rect.rb.x;
 
-	if(bHorizontal) rect.lt.x = RBp.x;
-	else			rect.lt.y = RBp.y;
+	if(bHorizontal)
+		rect.lt.x 		= RBp.x;
+	else
+		rect.lt.y 		= RBp.y;
+
 	return			true;
 }
