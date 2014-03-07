@@ -1,8 +1,8 @@
 object frmSoundLib: TfrmSoundLib
-  Left = -578
-  Top = 142
-  Width = 350
-  Height = 469
+  Left = 884
+  Top = 162
+  Width = 382
+  Height = 512
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Sound Editor'
   Color = 10528425
@@ -25,20 +25,20 @@ object frmSoundLib: TfrmSoundLib
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 160
+    Left = 200
     Top = 0
     Width = 2
-    Height = 431
+    Height = 478
     Cursor = crHSplit
     Align = alRight
     Color = 13816530
     ParentColor = False
   end
   object paRight: TPanel
-    Left = 162
+    Left = 202
     Top = 0
     Width = 172
-    Height = 431
+    Height = 478
     Align = alRight
     BevelOuter = bvLowered
     Color = 10528425
@@ -46,7 +46,7 @@ object frmSoundLib: TfrmSoundLib
     TabOrder = 0
     object paCommand: TPanel
       Left = 1
-      Top = 394
+      Top = 441
       Width = 170
       Height = 36
       Align = alBottom
@@ -112,7 +112,7 @@ object frmSoundLib: TfrmSoundLib
       Left = 1
       Top = 1
       Width = 170
-      Height = 393
+      Height = 440
       Align = alClient
       BevelOuter = bvNone
       Color = 10528425
@@ -122,8 +122,8 @@ object frmSoundLib: TfrmSoundLib
   object paItems: TPanel
     Left = 0
     Top = 0
-    Width = 160
-    Height = 431
+    Width = 200
+    Height = 478
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True

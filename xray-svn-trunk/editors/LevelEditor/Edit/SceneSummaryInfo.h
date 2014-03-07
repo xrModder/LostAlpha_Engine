@@ -2,7 +2,7 @@
 #define SceneSummaryInfoH
 #pragma once
 
-#include "../ECore/Editor/ETextureParams.h"
+#include "../../../xr_3da/xrRender/ETextureParams.h"
 
 class SSceneSummary{
 public:

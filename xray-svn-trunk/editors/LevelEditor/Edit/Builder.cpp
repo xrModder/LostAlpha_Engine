@@ -91,12 +91,16 @@ BOOL SceneBuilder::Compile(bool b_selected_only)
     	    // build tools
             SceneToolsMapPairIt _I 	= Scene->FirstTools();
             SceneToolsMapPairIt _E	= Scene->LastTools();
-            for (; _I!=_E; _I++){
-            	if (_I->first!=OBJCLASS_DUMMY){
-                    if (_I->second->Valid()){                                  
+            for (; _I!=_E; ++_I)
+            {
+            	if (_I->first!=OBJCLASS_DUMMY)
+                {
+                    if (_I->second->Valid())
+                    {
                         VERIFY_COMPILE(_I->second->Export(m_LevelPath),_I->second->ClassDesc(),"export failed.");
                         ELog.Msg(mtInformation,"Process %s - done.",_I->second->ClassDesc());
-                    }else{
+                    }else
+                    {
                         ELog.Msg(mtError,"Process %s - failed.",_I->second->ClassDesc());
                     }
                 }
@@ -134,6 +138,7 @@ BOOL SceneBuilder::MakeGame( )
         	// build
             VERIFY_COMPILE(PreparePath(),				"Failed to prepare level path.","");
             VERIFY_COMPILE(GetBounding(),				"Failed to acquire level bounding volume.","");
+            VERIFY_COMPILE(RenumerateSectors(), 		"Failed to renumerate sectors","");
             VERIFY_COMPILE(BuildLTX(),					"Failed to build level description.","");
             VERIFY_COMPILE(BuildGame(),					"Failed to build game.","");
         } while(0);

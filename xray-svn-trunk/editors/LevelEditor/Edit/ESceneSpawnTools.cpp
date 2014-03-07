@@ -6,7 +6,11 @@
 #include "ESceneSpawnControls.h"
 #include "FrameSpawn.h"
 #include "Scene.h"
+#include "SceneObject.h"
 #include "spawnpoint.h"
+#include "builder.h"
+#include "levelgamedef.h"
+#include "EditLibrary.h"
 
 static HMODULE hXRSE_FACTORY = 0;
 static LPCSTR xrse_factory_library	= "xrSE_Factory.dll";
@@ -14,6 +18,67 @@ static LPCSTR create_entity_func 	= "_create_entity@4";
 static LPCSTR destroy_entity_func 	= "_destroy_entity@4";
 Tcreate_entity 	create_entity;
 Tdestroy_entity destroy_entity;
+
+CEditableObject* ESceneSpawnTools::get_draw_visual(u8 _RP_TeamID, u8 _RP_Type, const u8& _GameType)
+{
+	CEditableObject* ret = NULL;
+	if(m_draw_RP_visuals.empty())
+    {
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\artefakt_ah"));     		//0
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\artefakt_cta_blue"));     //1
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\artefakt_cta_green"));    //2
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\telo_ah_cta_blue"));      //3
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\telo_ah_cta_green"));     //4
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\telo_dm"));               //5
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\telo_tdm_blue"));         //6
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\telo_tdm_green"));        //7
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\spectator"));        		//8
+        m_draw_RP_visuals.push_back(Lib.CreateEditObject("editor\\item_spawn"));       		//9
+    }
+    switch (_RP_Type)
+    {
+    	case rptActorSpawn: //actor spawn
+        {
+	    if(_GameType == rpgtGameDeathmatch)
+            {
+            	if(_RP_TeamID==0)
+            		ret = m_draw_RP_visuals[5];
+            };
+	    if(_GameType == rpgtGameTeamDeathmatch)
+            {
+            	if(_RP_TeamID==2)
+            		ret = m_draw_RP_visuals[7];
+                else
+            	if(_RP_TeamID==1)
+            		ret = m_draw_RP_visuals[6];
+            };
+
+	   if(_GameType == rpgtGameArtefactHunt)
+            {
+            	if(_RP_TeamID==0)
+            		ret = m_draw_RP_visuals[8]; //spactator
+                else
+            	if(_RP_TeamID==1)
+            		ret = m_draw_RP_visuals[4];
+                else
+            	if(_RP_TeamID==2)
+            		ret = m_draw_RP_visuals[3];
+            };
+            break;
+        }
+    	case rptArtefactSpawn: //AF spawn
+        {
+		
+	    if(_GameType == rpgtGameArtefactHunt)
+            {
+           	ret = m_draw_RP_visuals[0];
+            }
+            break;
+        }
+
+    }
+    return ret;
+}
 
 void __stdcall  FillSpawnItems	(ChooseItemVec& lst, void* param)
 {
@@ -40,8 +105,8 @@ ESceneSpawnTools::ESceneSpawnTools	():ESceneCustomOTools(OBJCLASS_SPAWNPOINT)
     destroy_entity 	= (Tdestroy_entity)	GetProcAddress(hXRSE_FACTORY,destroy_entity_func);	VERIFY3(destroy_entity,"Can't find func:",destroy_entity_func);
 
     m_Classes.clear			();
-    CInifile::Root& data 	= pSettings->sections();
-    for (CInifile::RootIt it=data.begin(); it!=data.end(); it++){
+    CInifile::Root const& data 	= pSettings->sections();
+    for (CInifile::RootCIt it=data.begin(); it!=data.end(); it++){
     	LPCSTR val;
     	if ((*it)->line_exist	("$spawn",&val)){
         	CLASS_ID cls_id	= pSettings->r_clsid((*it)->Name,"class");
@@ -56,6 +121,14 @@ ESceneSpawnTools::~ESceneSpawnTools()
 {
 	FreeLibrary		(hXRSE_FACTORY);
     m_Icons.clear	();
+
+	xr_vector<CEditableObject*>::iterator it 	= m_draw_RP_visuals.begin();
+	xr_vector<CEditableObject*>::iterator it_e 	= m_draw_RP_visuals.end();
+    for(;it!=it_e;++it)
+    {
+		Lib.RemoveEditObject(*it);
+    }
+    m_draw_RP_visuals.clear();
 }
 
 void ESceneSpawnTools::CreateControls()
@@ -101,11 +174,16 @@ ref_shader ESceneSpawnTools::GetIcon(shared_str name)
 	else					return it->second;
 }
 //----------------------------------------------------
+#include "EShape.h"
 
 CCustomObject* ESceneSpawnTools::CreateObject(LPVOID data, LPCSTR name)
 {
 	CCustomObject* O	= xr_new<CSpawnPoint>(data,name);
     O->ParentTools		= this;
+	if(data && name)
+    {
+
+    }
     return O;
 }
 //----------------------------------------------------

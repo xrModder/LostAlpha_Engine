@@ -89,6 +89,8 @@ public:
     virtual CCustomObject* CreateObject			(LPVOID data, LPCSTR name)=0;
 
     virtual int			MultiRenameObjects		();
+	void				OnSelected				(CCustomObject* object);
+	virtual const CCustomObject* LastSelected			() const;
 };
 #endif // ESceneCustomOToolsH
 

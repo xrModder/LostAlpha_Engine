@@ -4,6 +4,8 @@
 
 #include "ESceneCustomOTools.h"
 
+class CEditableObject;
+
 class ESceneSpawnTools: public ESceneCustomOTools
 {
 	typedef ESceneCustomOTools inherited;
@@ -28,6 +30,7 @@ protected:
     ShaderMap 			m_Icons;
     ref_shader 			CreateIcon	(shared_str name);
     ref_shader 			GetIcon		(shared_str name);
+    xr_vector<CEditableObject*> m_draw_RP_visuals;
 public:
 						ESceneSpawnTools		();
 	virtual				~ESceneSpawnTools		();
@@ -50,6 +53,7 @@ public:
 	virtual int 		MultiRenameObjects		();
     
     virtual CCustomObject* CreateObject			(LPVOID data, LPCSTR name);
+   CEditableObject*		get_draw_visual			(u8 _RP_TeamID, u8 _RP_Type, const u8& _GameType); 
 };
 //---------------------------------------------------------------------------
 // refs 

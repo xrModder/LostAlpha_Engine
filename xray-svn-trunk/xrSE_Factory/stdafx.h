@@ -19,9 +19,8 @@
 
 #include "clsid_game.h"
 
-#define BOOST_THROW_EXCEPTION_HPP_INCLUDED
-
-namespace boost {void throw_exception(const std::exception &A);};
+namespace std { class exception; }
+namespace boost { void throw_exception( std::exception const& A ); }
 
 #include "smart_cast.h"
 
@@ -30,9 +29,9 @@ namespace boost {void throw_exception(const std::exception &A);};
 
 #if XRAY_EXCEPTIONS
 IC	xr_string string2xr_string(LPCSTR s) {return s ? s : "";}
-#	define	THROW(xpr)				if (!(xpr)) {throw *shared_str(__FILE__LINE__"\""#xpr"\"");}
-#	define	THROW2(xpr,msg0)		if (!(xpr)) {throw *shared_str(xr_string(__FILE__LINE__).append(" \"").append(#xpr).append(string2xr_string(msg0)).c_str());}
-#	define	THROW3(xpr,msg0,msg1)	if (!(xpr)) {throw *shared_str(xr_string(__FILE__LINE__).append(" \"").append(#xpr).append(string2xr_string(msg0)).append(", ").append(string2xr_string(msg1)).c_str());}
+#	define	THROW(expr)				do {if (!(expr)) {string4096	assertion_info; ::Debug.gather_info(_TRE(#expr),   0,   0,0,DEBUG_INFO,assertion_info); throw assertion_info;}} while(0)
+#	define	THROW2(expr,msg0)		do {if (!(expr)) {string4096	assertion_info; ::Debug.gather_info(_TRE(#expr),msg0,   0,0,DEBUG_INFO,assertion_info); throw assertion_info;}} while(0)
+#	define	THROW3(expr,msg0,msg1)	do {if (!(expr)) {string4096	assertion_info; ::Debug.gather_info(_TRE(#expr),msg0,msg1,0,DEBUG_INFO,assertion_info); throw assertion_info;}} while(0)
 #else
 #	define	THROW					VERIFY
 #	define	THROW2					VERIFY2

@@ -52,7 +52,8 @@ public:
 
 DEFINE_VECTOR(CWayPoint*,WPVec,WPIt);
 
-class CWayObject: public CCustomObject{
+class CWayObject: public CCustomObject
+{
 protected:
     friend class TfrmPropertiesWayPoint;
 	EWayType		m_Type;
@@ -95,7 +96,7 @@ public:
 	virtual void 	Scale			(Fvector& amount){;}
 	virtual void 	ScalePivot		(const Fmatrix& prev_inv, const Fmatrix& current, Fvector& amount){;}
 
-	virtual bool    GetBox      	(Fbox& box);
+	virtual bool    GetBox      	(Fbox& box) const;
 	virtual void    Render      	(int priority, bool strictB2F);
 	virtual bool    RayPick	    	(float& distance, const Fvector& S, const Fvector& D, SRayPickInfo* pinf = NULL);
     virtual bool 	FrustumPick		(const CFrustum& frustum);

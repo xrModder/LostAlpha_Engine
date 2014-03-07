@@ -2,9 +2,9 @@
 #define EToolsH
 
 #ifdef ETOOLS_EXPORTS
-#define ETOOLS_API __declspec( dllexport )
+	#define ETOOLS_API __declspec( dllexport )
 #else
-#define ETOOLS_API __declspec( dllimport )
+	#define ETOOLS_API __declspec( dllimport )
 #endif
 
 #include "../xrCDB/xrCDB.h"

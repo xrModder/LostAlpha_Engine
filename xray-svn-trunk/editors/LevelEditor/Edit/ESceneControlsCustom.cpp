@@ -268,7 +268,8 @@ bool __fastcall TUI_CustomControl::RotateStart(TShiftState Shift)
 
 void __fastcall TUI_CustomControl::RotateProcess(TShiftState _Shift)
 {
-    if (_Shift.Contains(ssLeft)){
+    if (_Shift.Contains(ssLeft))
+    {
         float amount = -UI->m_DeltaCpH.x * UI->m_MouseSR;
 
         if( Tools->GetSettings(etfASnap) ) CHECK_SNAP(m_fRotateSnapAngle,amount,Tools->m_RotateSnapAngle);
@@ -276,7 +277,8 @@ void __fastcall TUI_CustomControl::RotateProcess(TShiftState _Shift)
         ObjectList lst;
         if (Scene->GetQueryObjects(lst,LTools->CurrentClassID(),1,1,0))
             for(ObjectIt _F = lst.begin();_F!=lst.end();_F++)
-                if( Tools->GetSettings(etfCSParent) ){
+                if( Tools->GetSettings(etfCSParent) )
+                {
                     (*_F)->RotateParent( m_RotateVector, amount );
                 } else {
                     (*_F)->RotateLocal( m_RotateVector, amount );

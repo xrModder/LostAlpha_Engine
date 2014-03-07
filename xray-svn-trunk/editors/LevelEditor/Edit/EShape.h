@@ -6,23 +6,28 @@
 #include "ShapeData.h"
 #include "CustomObject.h"
 //---------------------------------------------------------------------------
-class CEditShape: public CCustomObject, CShapeData{
+enum eShapeUsage{eShapeCommon=0, eShapeLevelBound};
+
+class CEditShape: public CCustomObject, CShapeData
+{
 	typedef CCustomObject inherited;
 private:
 // bounds
 	Fbox			m_Box;
 	Fsphere			m_Sphere;
 	void			ComputeBounds	( );
-
-//    void			ScaleShapes		(const Fvector& val);
+public:
+	u8				m_shape_type;
 	u32				m_DrawTranspColor;
 	u32				m_DrawEdgeColor;
-public:
+
 	void			SetDrawColor	(u32 transp, u32 edge){m_DrawTranspColor=transp;m_DrawEdgeColor=edge;}
 	void			ApplyScale		();
 	void			add_sphere		(const Fsphere& S);
 	void			add_box			(const Fmatrix& B);
     const shape_def&get_shape		(int idx){R_ASSERT(idx<(int)shapes.size());return shapes[idx];}
+	virtual void	FillProp		(LPCSTR pref, PropItemVec& values);
+    
 protected:
 	virtual void 	SetScale		(const Fvector& val);
     virtual void	OnUpdateTransform();
@@ -37,7 +42,7 @@ public:
     virtual bool 	FrustumPick	(const CFrustum& frustum);
 
     // placement functions
-	virtual bool 	GetBox		(Fbox& box);
+	virtual bool 	GetBox		(Fbox& box) const;
 
     // change position/orientation methods
 //	virtual void 	Scale		(Fvector& amount){;}
@@ -45,7 +50,7 @@ public:
     // file system function
   	virtual bool 	Load		(IReader&);
 	virtual void 	Save		(IWriter&);
-	virtual void	FillProp	(LPCSTR pref, PropItemVec& values);
+//	virtual void	FillProp	(LPCSTR pref, PropItemVec& values);
 
     // render utility function
 	virtual void 	Render		(int priority, bool strictB2F);
@@ -57,6 +62,8 @@ public:
 
     ShapeVec&		GetShapes	(){return shapes;}
 
+
+    virtual void	OnDetach	();
     // events
     virtual void    OnShowHint  (AStringVec& dest);
 };

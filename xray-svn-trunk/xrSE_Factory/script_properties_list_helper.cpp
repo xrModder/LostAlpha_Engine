@@ -49,6 +49,14 @@ struct CWrapHelper<bool> {
 		owner(object)->add			(value);
 		return						(value->value());
 	}
+
+	template <bool a>
+	static BOOL	*wrap_value				(luabind::object object, luabind::object table, LPCSTR name)
+	{
+		CScriptValueWrapper<bool>	*value = xr_new<CScriptValueWrapper<bool> >(table,name);
+		owner(object)->add			(value);
+		return						(value->value());
+	}
 };
 
 template <typename T>
@@ -58,6 +66,15 @@ typename CWrapHelper<T>::result_type	*wrap_value		(luabind::object object, LPCST
 		is_class<T>::result &&
 		!object_type_traits::is_same<shared_str,T>::value
 	>(object,name));
+}
+
+template <typename T>
+typename CWrapHelper<T>::result_type	*wrap_value		(luabind::object object, luabind::object table, LPCSTR name)
+{
+	return						(CWrapHelper<T>::wrap_value<
+		is_class<T>::result &&
+		!object_type_traits::is_same<shared_str,T>::value
+	>(object,table,name));
 }
 
 bool CScriptPropertiesListHelper::FvectorRDOnAfterEdit	(PropValue* sender,  Fvector& edit_val)

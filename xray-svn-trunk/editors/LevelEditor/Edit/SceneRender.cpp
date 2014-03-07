@@ -102,7 +102,8 @@ void EScene::Render( const Fmatrix& camera )
     {
 	    SceneOToolsIt t_it	= object_tools.begin();
 	    SceneOToolsIt t_end	= object_tools.end();
-        for (; t_it!=t_end; t_it++){
+        for (; t_it!=t_end; t_it++)
+        {
             ObjectList& lst = (*t_it)->GetObjects();
             ObjectIt o_it 	= lst.begin();
             ObjectIt o_end 	= lst.end();

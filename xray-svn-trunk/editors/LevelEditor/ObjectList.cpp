@@ -411,8 +411,7 @@ extern bool __fastcall LookupFunc(TElTreeItem* Item, void* SearchDetails);
 void __fastcall TfrmObjectList::tvItemsKeyPress(TObject *Sender,
       char &Key)
 {
-	if (Key==VK_RETURN)
-	{
+	if (Key==VK_RETURN){
 		ExecCommand	(COMMAND_SHOW_PROPERTIES);
 	}else{
 		TElTreeItem* node = tvItems->Items->LookForItemEx(tvItems->Selected,-1,false,false,false,&Key,LookupFunc);

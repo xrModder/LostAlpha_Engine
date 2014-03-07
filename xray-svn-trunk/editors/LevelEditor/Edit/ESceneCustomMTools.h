@@ -24,7 +24,8 @@ public:
     	flEnable		= (1<<0),
     	flReadonly		= (1<<1),
     	flForceReadonly	= (1<<2),
-    	flVisible		= (1<<3),
+    	flChanged		= (1<<3),
+    	flVisible		= (1<<4),
     };
     Flags32				m_EditFlags;
     BOOL				IsEnabled				(){return m_EditFlags.is(flEnable);}
@@ -124,6 +125,8 @@ public:
 	virtual bool 		GetSummaryInfo			(SSceneSummary* inf)=0;
 	virtual void 		HighlightTexture		(LPCSTR tex_name, bool allow_ratio, u32 t_width, u32 t_height, BOOL mark){}
     virtual void		GetBBox 				(Fbox& bb, bool bSelOnly)=0;
+	virtual const CCustomObject* LastSelected	() const {return NULL;}
+    
 };
 
 DEFINE_MAP(ObjClassID,ESceneCustomMTools*,SceneToolsMap,SceneToolsMapPairIt);

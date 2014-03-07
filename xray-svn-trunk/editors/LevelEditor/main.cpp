@@ -27,7 +27,7 @@ TfrmMain *frmMain;
 #include "../ECore/Editor/ImageManager.h"
 #include "../ECore/Editor/SoundManager.h"
 #include "../ECore/Editor/ui_main.h"
-#include "PSLibrary.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 #include "../ECore/Engine/GameMtlLib.h"
 #include "../../xrSound/soundrender_source.h"
 #include "ResourceManager.h"
@@ -100,16 +100,21 @@ void __fastcall TfrmMain::FormCreate(TObject *Sender)
 
 //---------------------------------------------------------------------------
 
-
+#include "RightForm.h"
 #define MIN_PANEL_HEIGHT 17
 void __fastcall TfrmMain::sbToolsMinClick(TObject *Sender)
 {
-    if (paLeftBar->Tag > 0){
-        paLeftBar->Parent = frmMain;
-        paLeftBar->Tag    = 0;
+    if (paLeftBar->Tag > 0)
+    {
+        paLeftBar->Parent  = frmMain;
+        paLeftBar->Tag     = 0;
+        frmRight->Visible  = false;
     }else{
-        paLeftBar->Parent = paTopBar;
+        paLeftBar->Parent = frmRight; //paTopBar;
+        frmRight->Width		= paLeftBar->Width;
+        frmRight->Height	= 1024;
         paLeftBar->Tag    = 1;
+        frmRight->Visible = true;
     }
 }
 //---------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 object DB_packer: TDB_packer
-  Left = 415
-  Top = 88
+  Left = 467
+  Top = 124
   Width = 687
-  Height = 596
+  Height = 604
   Caption = 'DB_packer'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object DB_packer: TDB_packer
     Left = 0
     Top = 0
     Width = 679
-    Height = 489
+    Height = 470
     Align = alClient
     BevelOuter = bvNone
     Color = 10528425
@@ -26,7 +26,7 @@ object DB_packer: TDB_packer
       Left = 382
       Top = 0
       Width = 297
-      Height = 489
+      Height = 470
       Align = alRight
       BevelInner = bvLowered
       BevelOuter = bvSpace
@@ -36,7 +36,7 @@ object DB_packer: TDB_packer
         Left = 2
         Top = 2
         Width = 293
-        Height = 485
+        Height = 466
         Cursor = crDefault
         LeftPosition = 0
         RootFolder = sfoDesktop
@@ -97,7 +97,7 @@ object DB_packer: TDB_packer
       Left = 0
       Top = 0
       Width = 382
-      Height = 489
+      Height = 470
       Align = alClient
       BevelInner = bvLowered
       BevelOuter = bvSpace
@@ -115,7 +115,7 @@ object DB_packer: TDB_packer
         Left = 2
         Top = 235
         Width = 378
-        Height = 252
+        Height = 233
         Align = alClient
         BevelInner = bvLowered
         BevelOuter = bvSpace
@@ -123,7 +123,7 @@ object DB_packer: TDB_packer
         TabOrder = 0
         DesignSize = (
           378
-          252)
+          233)
         object MxLabel2: TMxLabel
           Left = 8
           Top = 4
@@ -173,7 +173,7 @@ object DB_packer: TDB_packer
           Left = 8
           Top = 24
           Width = 321
-          Height = 220
+          Height = 201
           AllowGrayed = False
           ItemHeight = 13
           MultiSelect = True
@@ -277,9 +277,9 @@ object DB_packer: TDB_packer
   end
   object Panel2: TPanel
     Left = 0
-    Top = 489
+    Top = 470
     Width = 679
-    Height = 73
+    Height = 100
     Align = alBottom
     BevelInner = bvLowered
     BevelOuter = bvSpace

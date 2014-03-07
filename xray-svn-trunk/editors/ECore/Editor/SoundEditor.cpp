@@ -394,11 +394,18 @@ void __fastcall TfrmSoundLib::OnItemsFocused(ListItemsVec& items)
     	    B->OnBtnClickEvent.bind	(this,&TfrmSoundLib::OnControlClick);
         }
     }
-    if (!m_Flags.is(flReadOnly)){
+    if (!m_Flags.is(flReadOnly))
+    {
 	    B=PHelper().CreateButton	(props,"Auto Play",		bAutoPlay?"on":"off",ButtonValue::flFirstOnly);
     	B->OnBtnClickEvent.bind		(this,&TfrmSoundLib::OnControl2Click);
     }
-    
+
+    if (!m_Flags.is(flReadOnly) && m_THM_Current.size())
+    {
+        B=PHelper().CreateButton(props,"MANAGE", "SyncCurrent", ButtonValue::flFirstOnly);
+        B->OnBtnClickEvent.bind	(this,&TfrmSoundLib::OnSyncCurrentClick);
+    }
+
 	m_ItemProps->AssignItems		(props);
 }
 //---------------------------------------------------------------------------
@@ -429,4 +436,26 @@ void TfrmSoundLib::OnFrame()
     }
 }
 
+void __fastcall TfrmSoundLib::OnSyncCurrentClick(ButtonValue* V, bool& bModif, bool& bSafe)
+{
+//.
+	THMIt it 	= m_THM_Current.begin();
+	THMIt it_e 	= m_THM_Current.end();
+
+    for(;it!=it_e; ++it)
+    {
+    	ESoundThumbnail* pTHM 		= *it;
+
+        string_path             src_name, game_name;
+        FS.update_path			(src_name,_sounds_,pTHM->SrcName());
+        strconcat				(sizeof(src_name),src_name,src_name,".wav");
+
+        FS.update_path			(game_name,_game_sounds_,pTHM->SrcName());
+        strconcat				(sizeof(game_name),game_name,game_name,".ogg");
+
+        Msg						("synchronizing [%s]", game_name);
+		SndLib->MakeGameSound	(pTHM, src_name, game_name);
+    }
+    Msg	("Done.");
+}
 

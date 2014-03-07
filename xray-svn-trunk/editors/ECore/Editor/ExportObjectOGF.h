@@ -75,22 +75,17 @@ public:
     CObjectOGFCollectorPacked		(const Fbox &bb, int apx_vertices, int apx_faces);
     void			CalculateTB		();
     void 			MakeProgressive	();
-    IC bool 		check      		(SOGFFace& F){
-		if ((F.v[0]==F.v[1]) || (F.v[0]==F.v[2]) || (F.v[1]==F.v[2])) return false;
-/*        for (OGFFaceIt f_it=m_Faces.begin(); f_it!=m_Faces.end(); f_it++){
-            // Test for 6 variations
-            if ((f_it->v[0]==F.v[0]) && (f_it->v[1]==F.v[1]) && (f_it->v[2]==F.v[2])) return false;
-            if ((f_it->v[0]==F.v[0]) && (f_it->v[2]==F.v[1]) && (f_it->v[1]==F.v[2])) return false;
-            if ((f_it->v[2]==F.v[0]) && (f_it->v[0]==F.v[1]) && (f_it->v[1]==F.v[2])) return false;
-            if ((f_it->v[2]==F.v[0]) && (f_it->v[1]==F.v[1]) && (f_it->v[0]==F.v[2])) return false;
-            if ((f_it->v[1]==F.v[0]) && (f_it->v[0]==F.v[1]) && (f_it->v[2]==F.v[2])) return false;
-            if ((f_it->v[1]==F.v[0]) && (f_it->v[2]==F.v[1]) && (f_it->v[0]==F.v[2])) return false;
-        }
-*/        
-		return true;
+    IC bool 		check      		(SOGFFace& F)
+	{
+		if ((F.v[0]==F.v[1]) || (F.v[0]==F.v[2]) || (F.v[1]==F.v[2])) 
+			return false;
+		else
+			return true;
     }
-	IC bool			add_face	(SOGFVert& v0, SOGFVert& v1, SOGFVert& v2){
-		if (v0.P.similar(v1.P,EPS) || v0.P.similar(v2.P,EPS) || v1.P.similar(v2.P,EPS)){
+	IC bool			add_face	(SOGFVert& v0, SOGFVert& v1, SOGFVert& v2)
+	{
+		if (v0.P.similar(v1.P,EPS) || v0.P.similar(v2.P,EPS) || v1.P.similar(v2.P,EPS))
+		{
 			ELog.Msg(mtError,"Degenerate face found. Removed.");
             return true;
         }
@@ -100,8 +95,10 @@ public:
         v	= VPack(v1); if (0xffff==v) return false; F.v[1] = v;
         v	= VPack(v2); if (0xffff==v) return false; F.v[2] = v;
         
-        if (check(F)) 	m_Faces.push_back(F);
-        else{	
+        if (check(F)) 	
+			m_Faces.push_back(F);
+        else
+		{	
 			ELog.Msg(mtError,"Duplicate(degenerate) face found. Removed.");
             return true;
         }
@@ -110,13 +107,13 @@ public:
     IC OGFVertVec& 	getV_Verts	()	{return m_Verts;}
    	IC OGFFaceVec& 	getV_Faces	()	{return m_Faces;}
     IC SOGFVert*	getVert		() 	{return m_Verts.begin();}
-    IC int			getVS		() 	{return m_Verts.size();}
-    IC int			getTS		() 	{return m_Faces.size();}
+    IC u32			getVS		() 	{return m_Verts.size();}
+    IC u32			getTS		() 	{return m_Faces.size();}
 };
 //----------------------------------------------------
 DEFINE_VECTOR(CObjectOGFCollectorPacked*,COGFCPVec,COGFCPIt)
 
-class CExportObjectOGF
+class ECORE_API CExportObjectOGF
 {
     struct SSplit
     {

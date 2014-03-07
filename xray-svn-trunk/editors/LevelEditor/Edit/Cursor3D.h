@@ -2,7 +2,7 @@
 #ifndef Cursor3DH
 #define Cursor3DH
 //---------------------------------------------------------------------------
-#define CURSOR_PRECISION_SEGMENT 6
+#define CURSOR_PRECISION_SEGMENT 16
 
 enum ECursorStyle{
 	csLasso,

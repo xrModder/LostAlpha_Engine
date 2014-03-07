@@ -1451,8 +1451,9 @@ void CSE_ALifeCar::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
 
 	if (health>1.0f)
 		health /= 100.0f;
-
-	fuel = 1.f; //tNetPacket.r_float();
+	
+	if (m_wVersion > 118)
+		fuel = tNetPacket.r_float();
 }
 
 void CSE_ALifeCar::STATE_Write			(NET_Packet	&tNetPacket)
@@ -1460,7 +1461,7 @@ void CSE_ALifeCar::STATE_Write			(NET_Packet	&tNetPacket)
 	inherited1::STATE_Write		(tNetPacket);
 	inherited2::STATE_Write		(tNetPacket);
 	tNetPacket.w_float(health);
-	//tNetPacket.w_float(fuel);
+	tNetPacket.w_float(fuel);
 }
 
 void CSE_ALifeCar::UPDATE_Read			(NET_Packet	&tNetPacket)
