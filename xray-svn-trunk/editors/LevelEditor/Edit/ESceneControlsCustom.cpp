@@ -83,8 +83,10 @@ CCustomObject* __fastcall TUI_CustomControl::DefaultAddObject(TShiftState Shift,
 		obj->MoveTo(p,n);
         Scene->SelectObjects(false,parent_tool->ClassID);
 		Scene->AppendObject(obj);
-		if (Shift.Contains(ssCtrl)) ExecCommand(COMMAND_SHOW_PROPERTIES);
-        if (!Shift.Contains(ssAlt)) ResetActionToSelect();
+		if (Shift.Contains(ssCtrl)) 
+        	ExecCommand(COMMAND_SHOW_PROPERTIES);
+        if (!Shift.Contains(ssAlt)) 
+        	ResetActionToSelect();
     }
     return obj;
 }
@@ -212,20 +214,23 @@ bool __fastcall TUI_CustomControl::MovingStart(TShiftState Shift)
     return true;
 }
 
-bool __fastcall TUI_CustomControl::DefaultMovingProcess(TShiftState Shift, Fvector& amount){
-    if (Shift.Contains(ssLeft)||Shift.Contains(ssRight)){
+bool __fastcall TUI_CustomControl::DefaultMovingProcess(TShiftState Shift, Fvector& amount)
+{
+    if (Shift.Contains(ssLeft)||Shift.Contains(ssRight))
+    {
         amount.mul( m_MovingXVector, UI->m_MouseSM * UI->m_DeltaCpH.x );
         amount.mad( amount, m_MovingYVector, -UI->m_MouseSM * UI->m_DeltaCpH.y );
 
-        if( Tools->GetSettings(etfMSnap) ){
+        if( Tools->GetSettings(etfMSnap) )
+        {
         	CHECK_SNAP(m_MovingReminder.x,amount.x,Tools->m_MoveSnap);
         	CHECK_SNAP(m_MovingReminder.y,amount.y,Tools->m_MoveSnap);
         	CHECK_SNAP(m_MovingReminder.z,amount.z,Tools->m_MoveSnap);
         }
 
-        if (!(etAxisX==Tools->GetAxis())&&!(etAxisZX==Tools->GetAxis())) amount.x = 0.f;
-        if (!(etAxisZ==Tools->GetAxis())&&!(etAxisZX==Tools->GetAxis())) amount.z = 0.f;
-        if (!(etAxisY==Tools->GetAxis())) amount.y = 0.f;
+        if (!(etAxisX==Tools->GetAxis())&&!(etAxisZX==Tools->GetAxis())) 	amount.x = 0.f;
+        if (!(etAxisZ==Tools->GetAxis())&&!(etAxisZX==Tools->GetAxis())) 	amount.z = 0.f;
+        if (!(etAxisY==Tools->GetAxis())) 									amount.y = 0.f;
 
         return (amount.square_magnitude()>EPS_S);
 	}
@@ -235,7 +240,8 @@ bool __fastcall TUI_CustomControl::DefaultMovingProcess(TShiftState Shift, Fvect
 void __fastcall TUI_CustomControl::MovingProcess(TShiftState _Shift)
 {
 	Fvector amount;
-	if (DefaultMovingProcess(_Shift,amount)){
+	if (DefaultMovingProcess(_Shift,amount))
+    {
         ObjectList lst;
         if (Scene->GetQueryObjects(lst,LTools->CurrentClassID(),1,1,0))
             for(ObjectIt _F = lst.begin();_F!=lst.end();_F++) (*_F)->Move(amount);
@@ -268,7 +274,8 @@ bool __fastcall TUI_CustomControl::RotateStart(TShiftState Shift)
 
 void __fastcall TUI_CustomControl::RotateProcess(TShiftState _Shift)
 {
-    if (_Shift.Contains(ssLeft)){
+    if (_Shift.Contains(ssLeft))
+    {
         float amount = -UI->m_DeltaCpH.x * UI->m_MouseSR;
 
         if( Tools->GetSettings(etfASnap) ) CHECK_SNAP(m_fRotateSnapAngle,amount,Tools->m_RotateSnapAngle);
@@ -276,7 +283,8 @@ void __fastcall TUI_CustomControl::RotateProcess(TShiftState _Shift)
         ObjectList lst;
         if (Scene->GetQueryObjects(lst,LTools->CurrentClassID(),1,1,0))
             for(ObjectIt _F = lst.begin();_F!=lst.end();_F++)
-                if( Tools->GetSettings(etfCSParent) ){
+                if( Tools->GetSettings(etfCSParent) )
+                {
                     (*_F)->RotateParent( m_RotateVector, amount );
                 } else {
                     (*_F)->RotateLocal( m_RotateVector, amount );

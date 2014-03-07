@@ -58,6 +58,9 @@ BOOL APIENTRY DllMain		(HANDLE module_handle, DWORD call_reason, LPVOID reserved
  			Core._initialize			("xrSE_Factory",NULL,TRUE,"fsfactory.ltx");
 			string_path					SYSTEM_LTX;
 			FS.update_path				(SYSTEM_LTX,"$game_config$","system.ltx");
+#ifdef DEBUG
+			Msg							("Updated path to system.ltx is %s", SYSTEM_LTX);
+#endif // #ifdef DEBUG
 			pSettings					= xr_new<CInifile>(SYSTEM_LTX);
 
 			CCharacterInfo::InitInternal					();

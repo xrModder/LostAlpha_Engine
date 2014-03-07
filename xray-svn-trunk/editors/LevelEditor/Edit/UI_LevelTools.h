@@ -118,6 +118,7 @@ public:
     ObjClassID 			CurrentClassID		();
 
     void				ShowObjectList		();
+    virtual bool		GetSelectionPosition(Fmatrix& result);
 
     // commands
     CCommandVar			CommandChangeTarget		(CCommandVar p1, CCommandVar p2);

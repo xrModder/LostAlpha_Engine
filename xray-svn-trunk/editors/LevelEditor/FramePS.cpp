@@ -3,7 +3,7 @@
 
 #include "../ECore/Editor/ui_main.h"
 #include "FramePS.h"
-#include "PSLibrary.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 #include "Scene.h"
 #include "EParticlesObject.h"
 //---------------------------------------------------------------------------

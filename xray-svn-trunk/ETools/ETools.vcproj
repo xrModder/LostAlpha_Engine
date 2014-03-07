@@ -383,6 +383,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Intersect.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\StdAfx.cpp"
 				>
 				<FileConfiguration

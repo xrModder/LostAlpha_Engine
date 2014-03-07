@@ -49,14 +49,28 @@ void ESceneCustomOTools::Clear(bool bInternal)
     	xr_delete(*it);
     m_Objects.clear();
 }
-//----------------------------------------------------
+
+BOOL  ESceneCustomOTools::AllowMouseStart()
+{
+	for(ObjectIt it=m_Objects.begin(); it!=m_Objects.end(); ++it)
+    {
+    	CCustomObject* CO = *it;
+       if(CO->Selected() && !CO->Editable() )
+       	return FALSE;
+    }
+       
+    return TRUE;
+}
 
 void ESceneCustomOTools::OnFrame()
 {
 	ObjectList remove_objects;
-	for (ObjectIt it=m_Objects.begin(); it!=m_Objects.end(); it++){
+	for (ObjectIt it=m_Objects.begin(); it!=m_Objects.end(); it++)
+    {
+    	R_ASSERT				(*it);
     	(*it)->OnFrame			();
-        if ((*it)->IsDeleted())	remove_objects.push_back(*it);
+        if ((*it)->IsDeleted())	
+        	remove_objects.push_back(*it);
     }
     bool need_undo = remove_objects.size();
     while (!remove_objects.empty()){
@@ -313,5 +327,27 @@ int ESceneCustomOTools::MultiRenameObjects()
     }
     return cnt;
 }
+
+void ESceneCustomOTools::OnSelected(CCustomObject* object)
+{
+    for (ObjectIt o_it=m_Objects.begin(); o_it!=m_Objects.end(); ++o_it)
+    {
+    	CCustomObject* obj	= *o_it;
+    	obj->m_RT_Flags.set(CCustomObject::flRT_SelectedLast, FALSE);
+	}
+    object->m_RT_Flags.set(CCustomObject::flRT_SelectedLast, TRUE);
+}
+
+const CCustomObject* ESceneCustomOTools::LastSelected() const
+{
+    for (ObjectList::const_iterator o_it=m_Objects.begin(); o_it!=m_Objects.end(); ++o_it)
+    {
+    	const CCustomObject* obj	= *o_it;
+    	if(obj->m_RT_Flags.test(CCustomObject::flRT_SelectedLast))
+        	return obj;
+	}
+    return NULL;
+}
+
 
 

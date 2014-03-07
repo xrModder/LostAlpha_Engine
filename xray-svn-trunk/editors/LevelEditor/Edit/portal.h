@@ -33,7 +33,7 @@ public:
 	virtual void 	Move		( Fvector& amount ); // need for Shift Level
   	virtual bool 	Load		(IReader&);
 	virtual void 	Save		(IWriter&);
-	virtual bool 	GetBox		(Fbox& box);
+	virtual bool 	GetBox		(Fbox& box) const;
     void			Simplify	();
     bool			Update		(bool bLoadMode=false);
     void 			InvertOrientation(bool bUndo);

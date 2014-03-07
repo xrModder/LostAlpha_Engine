@@ -7,7 +7,7 @@
 #include "du_box.h"
 #include "Scene.h"
 
-#define SHAPE_COLOR_TRANSP		0x1800FF00
+#define SHAPE_COLOR_TRANSP		0x3C808080
 #define SHAPE_COLOR_EDGE		0xFF202020
 //---------------------------------------------------------------------------
 
@@ -16,6 +16,12 @@
 #define SHAPE_CHUNK_VERSION 	0x0000
 #define SHAPE_CHUNK_SHAPES 		0x0001
 //---------------------------------------------------------------------------
+
+xr_token shape_type_tok[]={
+	{ "common",	eShapeCommon		},
+	{ "level bound",	eShapeLevelBound},
+	{ 0,				0	}
+};
 
 CEditShape::CEditShape(LPVOID data, LPCSTR name):CCustomObject(data,name)
 {
@@ -31,6 +37,7 @@ void CEditShape::Construct(LPVOID data)
 	ClassID		= OBJCLASS_SHAPE;
     m_DrawTranspColor	= SHAPE_COLOR_TRANSP;
     m_DrawEdgeColor		= SHAPE_COLOR_EDGE;
+    m_shape_type		= eShapeCommon;
 	m_Box.invalidate();
 }
 
@@ -194,6 +201,14 @@ void CEditShape::Detach()
     }
 }
 
+void CEditShape::OnDetach()
+{
+	inherited::OnDetach	();
+
+    m_DrawTranspColor	= SHAPE_COLOR_TRANSP;
+    m_DrawEdgeColor		= SHAPE_COLOR_EDGE;
+}
+
 bool CEditShape::RayPick(float& distance, const Fvector& start, const Fvector& direction, SRayPickInfo* pinf)
 {
     float dist					= distance;
@@ -207,8 +222,12 @@ bool CEditShape::RayPick(float& distance, const Fvector& start, const Fvector& d
             M.transform_dir		(D,direction);
             FITransform.transform_tiny(S,start);
             Fsphere&	T		= it->data.sphere;
+            float bk_r = T.R;
+//            T.R					= FScale.x;
             T.intersect			(S,D,dist);
             if (dist<=0.f)		dist = distance;
+
+            T.R					= bk_r;
 		}break;
 		case cfBox:{
         	Fbox box;
@@ -262,7 +281,7 @@ bool CEditShape::FrustumPick(const CFrustum& frustum)
 	return false;
 }
 
-bool CEditShape::GetBox(Fbox& box)
+bool CEditShape::GetBox(Fbox& box)  const
 {
 	if (m_Box.is_valid()){
     	box.xform(m_Box,FTransform);
@@ -306,15 +325,14 @@ void CEditShape::Save(IWriter& F)
 void CEditShape::FillProp(LPCSTR pref, PropItemVec& values)
 {
 	inherited::FillProp(pref,values);
+	PHelper().CreateCaption	(values, PrepareKey(pref,"Shape usage"),m_shape_type==eShapeCommon?"common":"level bound");
 }
 
 void CEditShape::Render(int priority, bool strictB2F)
 {
 	inherited::Render(priority, strictB2F);
-    if (1==priority)
-    {
-        if (strictB2F)
-        {
+    if (1==priority){
+        if (strictB2F){
 	        EDevice.SetShader			(EDevice.m_WireShader);
             EDevice.SetRS				(D3DRS_CULLMODE,D3DCULL_NONE);
             u32 clr 					= Selected()?subst_alpha(m_DrawTranspColor, color_get_A(m_DrawTranspColor)*2):m_DrawTranspColor;
@@ -336,7 +354,8 @@ void CEditShape::Render(int priority, bool strictB2F)
                     DU_impl.DrawCross	(zero,1.f,m_DrawEdgeColor,false);
                     DU_impl.DrawIdentSphere	(true,true,clr,m_DrawEdgeColor);
                 }break;
-                case cfBox:    {
+                case cfBox:
+                {
                     Fmatrix B			= it->data.box;
                     B.mulA_43			(_Transform()); 
                     RCache.set_xform_world(B);
@@ -346,11 +365,10 @@ void CEditShape::Render(int priority, bool strictB2F)
             }
             EDevice.SetRS(D3DRS_CULLMODE,D3DCULL_CCW);
         }else{
-            if( Selected()&&m_Box.is_valid() )
-            {
+            if( Selected()&&m_Box.is_valid() ){
 		        EDevice.SetShader		(EDevice.m_SelectionShader);
                 RCache.set_xform_world	(_Transform());
-                u32 clr 				= Locked()?0xFFFF0000:0xFFFFFFFF;
+                u32 clr 				= 0xFFFFFFFF;
                 EDevice.SetShader		(EDevice.m_WireShader);
                 DU_impl.DrawSelectionBoxB(m_Box,&clr);
             }

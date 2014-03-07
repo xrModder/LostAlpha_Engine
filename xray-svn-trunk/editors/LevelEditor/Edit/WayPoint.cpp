@@ -441,11 +441,12 @@ bool CWayObject::FrustumSelect(int flag, const CFrustum& frustum)
     }else 	return inherited::FrustumSelect(flag,frustum);
 }
 
-bool CWayObject::GetBox( Fbox& box )
+bool CWayObject::GetBox( Fbox& box ) const
 {
 	box.invalidate();
-	for (WPIt it=m_WayPoints.begin(); it!=m_WayPoints.end(); it++)
+	for (WPVec::const_iterator it=m_WayPoints.begin(); it!=m_WayPoints.end(); it++)
     	box.modify((*it)->m_vPosition);
+        
     box.max.x+=WAYPOINT_RADIUS;
     box.max.z+=WAYPOINT_RADIUS;
     box.max.y+=WAYPOINT_SIZE;

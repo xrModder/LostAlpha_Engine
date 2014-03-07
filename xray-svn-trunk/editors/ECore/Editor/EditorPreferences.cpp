@@ -27,6 +27,7 @@ CCustomPreferences::CCustomPreferences()
     tools_sens_move		= 0.3f;
     tools_sens_rot		= 0.3f;
     tools_sens_scale	= 0.3f;
+	tools_show_move_axis =false;
     // box pick
     bp_lim_depth		= TRUE;
     bp_cull				= TRUE;
@@ -144,6 +145,8 @@ void CCustomPreferences::FillProp(PropItemVec& props)
     PHelper().CreateBOOL	(props,"Tools\\Box Pick\\Back Face Culling",	&bp_cull);
     PHelper().CreateFloat	(props,"Tools\\Box Pick\\Depth Tolerance",		&bp_depth_tolerance,0.f, 	10000.f);
     PHelper().CreateFloat	(props,"Tools\\Sens\\Move",			          	&tools_sens_move);
+    PHelper().CreateBOOL	(props,"Tools\\Sens\\ShowMoveAxis",				&tools_show_move_axis);
+    
     PHelper().CreateFloat	(props,"Tools\\Sens\\Rotate",		          	&tools_sens_rot);
     PHelper().CreateFloat	(props,"Tools\\Sens\\Scale",		          	&tools_sens_scale);
     PHelper().CreateAngle	(props,"Tools\\Snap\\Angle",		          	&snap_angle,		0, 		PI_MUL_2);
@@ -218,6 +221,7 @@ void CCustomPreferences::Load(CInifile* I)
     tools_sens_move		= R_FLOAT_SAFE	("editor_prefs","tools_sens_move"	,tools_sens_move  	);
     tools_sens_rot		= R_FLOAT_SAFE	("editor_prefs","tools_sens_rot"	,tools_sens_rot		);
     tools_sens_scale	= R_FLOAT_SAFE	("editor_prefs","tools_sens_scale"	,tools_sens_scale	);
+	tools_show_move_axis= R_BOOL_SAFE	("editor_prefs","tools_show_move_axis"	,tools_show_move_axis);
     
     bp_lim_depth		= R_BOOL_SAFE	("editor_prefs","bp_lim_depth"		,bp_lim_depth		);
     bp_cull				= R_BOOL_SAFE	("editor_prefs","bp_lim_depth"		,bp_cull		  	);
@@ -275,7 +279,8 @@ void CCustomPreferences::Save(CInifile* I)
     I->w_float	("editor_prefs","tools_sens_rot",	tools_sens_rot	);
     I->w_float	("editor_prefs","tools_sens_move",	tools_sens_move	);
     I->w_float	("editor_prefs","tools_sens_scale",	tools_sens_scale);
-
+	I->w_bool	("editor_prefs","tools_show_move_axis",tools_show_move_axis);
+    
     I->w_bool	("editor_prefs","bp_lim_depth",		bp_lim_depth	);
     I->w_bool	("editor_prefs","bp_lim_depth",		bp_cull			);
     I->w_float	("editor_prefs","bp_depth_tolerance",bp_depth_tolerance	);
@@ -318,7 +323,7 @@ void CCustomPreferences::Save()
 	string_path			fn;
 	INI_NAME			(fn);
     CInifile* I 		= xr_new<CInifile>(fn, FALSE, TRUE, TRUE);
-    //I->set_override_names(TRUE);
+    I->set_override_names(TRUE);
 	Save				(I);
 	xr_delete			(I);
 }

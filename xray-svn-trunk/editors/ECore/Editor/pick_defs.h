@@ -26,7 +26,17 @@ class CCustomObject;
             float			range;
             CEditableObject*e_obj;
             CEditableMesh*	e_mesh;
-            u32				tag;
+//.            u32				tag;
+            union	{
+                u32			tag;				// 4b
+                struct {
+                    u32		material:14;		//
+                    u32		suppress_shadows:1;	//
+                    u32		suppress_wm:1;		//
+                    u32		sector:16;			//
+                };
+            };
+
             bool operator <	(const SResult& F)const{return range<F.range;}
             SResult			(const SResult& F)
             {
@@ -120,15 +130,22 @@ class CCustomObject;
         	std::sort		(results.begin(),results.end());
         }
     };
+    struct SRayPickObjVisualInfo
+    {
+    	IKinematics   	*K;
+        u16				bone_id;
+        Fvector			normal;
+    };
 	struct SRayPickInfo{
-		CDB::RESULT 		inf;
-		CCustomObject*		s_obj;
-		CEditableObject*	e_obj;
-		CEditableMesh*		e_mesh;
-		Fvector     		pt;
-		SRayPickInfo		(){Reset();}
-		IC void Reset		(){ ZeroMemory(this,sizeof(SRayPickInfo));inf.range = 5000;}
-		IC void SetRESULT	(CDB::MODEL* M, CDB::RESULT* R){inf=*R;inf.id=(M->get_tris()+inf.id)->dummy;}
+		CDB::RESULT 			inf;
+        SRayPickObjVisualInfo   visual_inf;
+		CCustomObject*			s_obj;
+		CEditableObject*		e_obj;
+		CEditableMesh*			e_mesh;
+		Fvector     			pt;
+		SRayPickInfo			(){ Reset(); visual_inf.bone_id = u16(-1); }
+		IC void Reset			(){ ZeroMemory(this,sizeof(SRayPickInfo));inf.range = 5000;}
+		IC void SetRESULT		(CDB::MODEL* M, CDB::RESULT* R){inf=*R;inf.id=(M->get_tris()+inf.id)->dummy;}
 	};
     DEFINE_VECTOR(CDB::RESULT,BPInfVec,BPInfIt);
 	struct SBoxPickInfo{

@@ -9,7 +9,8 @@
 #include "customobject.h"
 class CFrustum;
 
-class CGlow : public CCustomObject {
+class CGlow : public CCustomObject
+{
 	typedef CCustomObject inherited ;
     CTLSprite       m_RenderSprite;
 public:

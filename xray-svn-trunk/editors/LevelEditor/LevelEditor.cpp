@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "splash.h"
 #include "../ECore/Editor/LogForm.h"
+#include "../ECore/Editor/EditMesh.h"
 #include "main.h"
 #include "scene.h"
 #include "UI_LevelMain.h"
@@ -31,6 +32,8 @@ USEFORM("previewimage.cpp", frmPreviewImage);
 USEFORM("PropertiesEObject.cpp", frmPropertiesEObject);
 USEFORM("Splash.cpp", frmSplash);
 USEFORM("FrmDBXpacker.cpp", DB_packer);
+USEFORM("Edit\AppendObjectInfoForm.cpp", frmAppendObjectInfo);
+USEFORM("RightForm.cpp", frmRight);
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int)
 {
@@ -58,7 +61,9 @@ WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int)
 		Scene					= xr_new<EScene>();
 		Application->Title 		= UI->EditorDesc();
         TfrmLog::CreateLog		();
+        TfrmLog::HideLog                ();
 		Application->CreateForm(__classid(TfrmMain), &frmMain);
+                 Application->CreateForm(__classid(TfrmRight), &frmRight);
                  frmMain->SetHInst		(hInst);
 
 		xr_delete(frmSplash);

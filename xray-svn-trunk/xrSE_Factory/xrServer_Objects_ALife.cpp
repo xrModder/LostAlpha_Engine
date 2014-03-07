@@ -1427,9 +1427,9 @@ CSE_ALifeCar::CSE_ALifeCar				(LPCSTR caSection) : CSE_ALifeDynamicObjectVisual(
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
 	health						= 1.0f;
-	fuel_tank					= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0);
+	fuel_tank					= READ_IF_EXISTS(pSettings, r_float, caSection, "fuel_tank", 10.0f);
 	fuel						= fuel_tank;
-	random_health					= TRUE;
+	random_health				= TRUE;
 	random_fuel					= TRUE;
 }
 
@@ -1452,7 +1452,8 @@ void CSE_ALifeCar::STATE_Read			(NET_Packet	&tNetPacket, u16 size)
 	if (health>1.0f)
 		health /= 100.0f;
 
-	fuel = tNetPacket.r_float();
+	if (m_wVersion > 118)
+		fuel = tNetPacket.r_float();
 }
 
 void CSE_ALifeCar::STATE_Write			(NET_Packet	&tNetPacket)

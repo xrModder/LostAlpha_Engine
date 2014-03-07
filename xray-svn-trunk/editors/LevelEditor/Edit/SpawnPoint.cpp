@@ -19,7 +19,6 @@
 #include "../Ecore/Editor/EditObject.h"
 #include "../ETools/ETools.h"
 
-#define SPAWNPOINT_VERSION   			0x0014
 //----------------------------------------------------
 #define SPAWNPOINT_CHUNK_VERSION		0xE411
 #define SPAWNPOINT_CHUNK_POSITION		0xE412
@@ -37,7 +36,8 @@
 
 #define SPAWNPOINT_CHUNK_ENVMOD			0xE422
 #define SPAWNPOINT_CHUNK_ENVMOD2		0xE423
-#define SPAWNPOINT_CHUNK_ENABLED		0xE424
+#define SPAWNPOINT_CHUNK_ENVMOD3		0xE424
+#define SPAWNPOINT_CHUNK_FLAGS			0xE425
 
 //----------------------------------------------------
 #define RPOINT_SIZE 0.5f
@@ -59,22 +59,25 @@ void CSE_Visual::set_visual	   	(LPCSTR name, bool load)
 //------------------------------------------------------------------------------
 CSpawnPoint::CLE_Visual::CLE_Visual(CSE_Visual* src)
 {
-	source			= src;
-    visual			= 0;
-    b_tmp_lock                  = false;
+	source				= src;
+    visual				= 0;
 }
+
+bool CSpawnPoint::CLE_Visual::g_tmp_lock = false;
+
 CSpawnPoint::CLE_Visual::~CLE_Visual()
 {
 	::Render->model_Delete	(visual,TRUE);
 }
+
 void CSpawnPoint::CLE_Visual::OnChangeVisual	()
 {
-    if(b_tmp_lock) return;
     ::Render->model_Delete	(visual,TRUE);
     if (source->visual_name.size())
     {
         visual				= ::Render->model_Create(source->visual_name.c_str());
-        if(NULL==visual)
+
+        if(NULL==visual && !g_tmp_lock)
         {
 		xr_string _msg = "Model [" + xr_string(source->visual_name.c_str())+"] not found. Do you want to select it from library?";
 		int mr = mrNo;
@@ -89,27 +92,122 @@ void CSpawnPoint::CLE_Visual::OnChangeVisual	()
 		}
 
 		LPCSTR _new_val = 0;
-		b_tmp_lock = true;
+		g_tmp_lock = true;
 		if (mr==mrYes && TfrmChoseItem::SelectItem(smVisual,_new_val, 1) )
 		{
 			source->visual_name  =  _new_val;
 			visual = ::Render->model_Create(source->visual_name.c_str());
 		}
-		b_tmp_lock = false;
+		g_tmp_lock = false;
         }
-        PlayAnimation		();
+        PlayAnimationFirstFrame		();
     }
     ExecCommand				(COMMAND_UPDATE_PROPERTIES);
 }
 void CSpawnPoint::CLE_Visual::PlayAnimation ()
 {
-     if(b_tmp_lock) return;
+     if(g_tmp_lock) 			return;
     // play motion if skeleton
-    if (PKinematicsAnimated(visual)){ 
-        MotionID			M = PKinematicsAnimated(visual)->ID_Cycle_Safe(source->startup_animation.c_str());
-        if (M.valid())		PKinematicsAnimated(visual)->PlayCycle(M); 
+    StopAllAnimations			();
+
+    CKinematicsAnimated* KA = PKinematicsAnimated(visual);
+    IKinematics*		K 	= PKinematics(visual);
+    if (KA)
+    {
+        MotionID M 			= KA->ID_Cycle_Safe(source->startup_animation.c_str());
+        if (M.valid())		
+        	KA->PlayCycle	(M);
     }
-    if (PKinematics(visual))PKinematics(visual)->CalculateBones();
+    if (K)
+    	K->CalculateBones();
+}
+
+void CSpawnPoint::CLE_Visual::StopAllAnimations()
+{
+     if(g_tmp_lock) return;
+    // play motion if skeleton
+    CKinematicsAnimated* KA = PKinematicsAnimated(visual);
+    if (KA)
+    {
+        for (u16 i=0; i<MAX_PARTS; ++i)
+           KA->LL_CloseCycle(i, u8(-1));
+    }
+}
+
+void CSpawnPoint::CLE_Visual::PlayAnimationFirstFrame()
+{
+     if(g_tmp_lock) return;
+    // play motion if skeleton
+
+    StopAllAnimations		();
+    
+    CKinematicsAnimated* KA = PKinematicsAnimated(visual);
+    IKinematics*		K 	= PKinematics(visual);
+    if (KA)
+    {
+        MotionID M 			= KA->ID_Cycle_Safe(source->startup_animation.c_str());
+        if (M.valid())
+        {		
+        	KA->PlayCycle	(M);
+            PauseAnimation	();
+        }else
+         Msg("! visual [%s] has no animation [%s]", source->visual_name.c_str(), source->startup_animation.c_str());
+    }
+    if (K)
+    	K->CalculateBones();
+}
+struct SetBlendLastFrameCB : public IterateBlendsCallback
+{
+	virtual	void	operator () ( CBlend &B )
+    {
+        B.timeCurrent = B.timeTotal-0.4444f;
+        B.blendAmount = 1.0f;
+    	B.playing = !B.playing;
+    }
+} g_Set_blend_last_frame_CB;
+
+void CSpawnPoint::CLE_Visual::PlayAnimationLastFrame()
+{
+     if(g_tmp_lock) return;
+    // play motion if skeleton
+
+    StopAllAnimations		();
+    
+    CKinematicsAnimated* KA = PKinematicsAnimated(visual);
+    IKinematics*		K 	= PKinematics(visual);
+    if (KA)
+    {
+        MotionID M 			= KA->ID_Cycle_Safe(source->startup_animation.c_str());
+        if (M.valid())
+        {		
+        	KA->PlayCycle		(M);
+	    	KA->LL_IterateBlends(g_Set_blend_last_frame_CB);
+        }
+    }
+    if (K)
+    	K->CalculateBones();
+}
+
+struct TogglelendCB : public IterateBlendsCallback
+{
+	virtual	void	operator () ( CBlend &B )
+    {
+    	B.playing = !B.playing;
+    }
+} g_toggle_pause_blendCB;
+
+void CSpawnPoint::CLE_Visual::PauseAnimation ()
+{
+     if(g_tmp_lock) return;
+     
+    CKinematicsAnimated* KA = PKinematicsAnimated(visual);
+    IKinematics*		K 	= PKinematics(visual);
+
+    if (KA)
+    	KA->LL_IterateBlends(g_toggle_pause_blendCB);
+
+    if (K)
+    	K->CalculateBones();
 }
 
 //------------------------------------------------------------------------------
@@ -143,22 +241,23 @@ void CSpawnPoint::CLE_Motion::PlayMotion()
 //------------------------------------------------------------------------------
 void CSpawnPoint::SSpawnData::Create(LPCSTR _entity_ref)
 {
-
     m_Data 	= create_entity	(_entity_ref);
-      //ISE_Abstract *mData = create_entity	(_entity_ref);
-
     if (m_Data){
     	m_Data->set_name	(_entity_ref);
-        if (m_Data->visual()){
+        if (m_Data->visual())
+        {
             m_Visual	= xr_new<CLE_Visual>(m_Data->visual());
             m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
         }
-        if (m_Data->motion()){
+        if (m_Data->motion())
+        {
             m_Motion	= xr_new<CLE_Motion>(m_Data->motion());
             m_Data->set_editor_flag(ISE_Abstract::flMotionChange);
         }
-        if (pSettings->line_exist(m_Data->name(),"$player")){
-            if (pSettings->r_bool(m_Data->name(),"$player")){
+        if (pSettings->line_exist(m_Data->name(),"$player"))
+        {
+            if (pSettings->r_bool(m_Data->name(),"$player"))
+            {
 				m_Data->flags().set(M_SPAWN_OBJECT_ASPLAYER,TRUE);
             }
         }
@@ -166,6 +265,12 @@ void CSpawnPoint::SSpawnData::Create(LPCSTR _entity_ref)
     }else{
     	Log("!Can't create entity: ",_entity_ref);
     }
+
+    if(pSettings->line_exist( _entity_ref, "$render_if_selected") )
+    {
+        m_owner->SetRenderIfSelected(TRUE);
+    }else
+        m_owner->SetRenderIfSelected(FALSE);
 
 }
 void CSpawnPoint::SSpawnData::Destroy()
@@ -178,7 +283,6 @@ void CSpawnPoint::SSpawnData::get_bone_xform	(LPCSTR name, Fmatrix& xform)
 {
 	xform.identity		();
 	if (name&&name[0]&&m_Visual&&m_Visual->visual){
-
     	IKinematics* P 	= PKinematics(m_Visual->visual);
     	if (P){
         	u16 id 		= P->LL_BoneID(name);
@@ -193,6 +297,10 @@ void CSpawnPoint::SSpawnData::Save(IWriter& F)
     F.w_stringZ			(m_Data->name());
     F.close_chunk		();
 
+    F.open_chunk		(SPAWNPOINT_CHUNK_FLAGS);
+    F.w_u8				(m_flags.get());
+    F.close_chunk		();
+
     F.open_chunk		(SPAWNPOINT_CHUNK_SPAWNDATA);
     NET_Packet 			Packet;
     m_Data->Spawn_Write	(Packet,TRUE);
@@ -203,7 +311,11 @@ void CSpawnPoint::SSpawnData::Save(IWriter& F)
 bool CSpawnPoint::SSpawnData::Load(IReader& F)
 {
     string64 			temp;
+    R_ASSERT			(F.find_chunk(SPAWNPOINT_CHUNK_ENTITYREF));
     F.r_stringZ			(temp,sizeof(temp));
+
+    if(F.find_chunk(SPAWNPOINT_CHUNK_FLAGS))
+		m_flags.assign	(F.r_u8());
 
     NET_Packet 			Packet;
     R_ASSERT(F.find_chunk(SPAWNPOINT_CHUNK_SPAWNDATA));
@@ -247,61 +359,163 @@ bool CSpawnPoint::SSpawnData::ExportGame(SExportStreams* F, CSpawnPoint* owner)
 
     return true;
 }
+
+void CSpawnPoint::SSpawnData::OnAnimControlClick(ButtonValue* value, bool& bModif, bool& bSafe)
+{
+	ButtonValue* B				= dynamic_cast<ButtonValue*>(value); R_ASSERT(B);
+    switch(B->btn_num)
+    {
+//		"First,Play,Pause,Stop,Last",
+    	case 0: //first
+        {
+			m_Visual->PlayAnimationFirstFrame();
+        }break;
+    	case 1: //play
+        {
+			m_Visual->PlayAnimation();
+        }break;
+    	case 2: //pause
+        {
+			m_Visual->PauseAnimation();
+        }break;
+    	case 3: //stop
+        {
+			m_Visual->StopAllAnimations();
+        }break;
+    	case 4: //last
+        {
+			m_Visual->PlayAnimationLastFrame();
+        }break;
+        
+    }
+}
 void CSpawnPoint::SSpawnData::FillProp(LPCSTR pref, PropItemVec& items)
 {
 	m_Data->FillProp			(pref,items);
+   if(m_Visual)
+   {
+    ButtonValue* BV = PHelper().CreateButton	    (	items, 
+									PrepareKey(pref,m_Data->name(),"Model\\AnimationControl"),
+									"|<<,Play,Pause,Stop,>>|",
+									0);
+   BV->OnBtnClickEvent.bind			(this,&CSpawnPoint::SSpawnData::OnAnimControlClick);
+
+   }
 }
+
 void CSpawnPoint::SSpawnData::Render(bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
 {
-	if (m_Visual&&m_Visual->visual)	
+	if (m_Visual&&m_Visual->visual)
     	::Render->model_Render	(m_Visual->visual,parent,priority,strictB2F,1.f);
+
     if (m_Motion&&m_Motion->animator&&bSelected&&(1==priority)&&(false==strictB2F))
         m_Motion->animator->DrawPath();
+
     RCache.set_xform_world		(Fidentity);
 	EDevice.SetShader			(EDevice.m_WireShader);
     m_Data->on_render			(&DU_impl,this,bSelected,parent,priority,strictB2F);
+ /*
+    if(bSelected)
+    {
+        xr_vector<CLE_Visual*>::iterator it 	= m_VisualHelpers.begin();
+        xr_vector<CLE_Visual*>::iterator it_e 	= m_VisualHelpers.end();
+        Fmatrix M;
+        u32 idx = 0;
+        for(;it!=it_e;++it,++idx)
+        {
+            visual_data* vc 		= m_Data->visual_collection()+idx;
+            M.mul					(parent, vc->matrix);
+            CLE_Visual* v 			= *it;
+            ::Render->model_Render	(v->visual,M,priority,strictB2F,1.f);
+        }
+    }
+*/
 }
 void CSpawnPoint::SSpawnData::OnFrame()
 {
 	if (m_Data->m_editor_flags.is(ISE_Abstract::flUpdateProperties))
     	ExecCommand				(COMMAND_UPDATE_PROPERTIES);
     // visual part
-	if (m_Visual){
+	if (m_Visual)
+    {
 	    if (m_Data->m_editor_flags.is(ISE_Abstract::flVisualChange))
         	m_Visual->OnChangeVisual();
-	    if (m_Data->m_editor_flags.is(ISE_Abstract::flVisualAnimationChange))
-        	m_Visual->PlayAnimation();
+
+	    if(m_Data->m_editor_flags.is(ISE_Abstract::flVisualAnimationChange))
+        {
+        	m_Visual->PlayAnimationFirstFrame();
+            m_Data->m_editor_flags.set(ISE_Abstract::flVisualAnimationChange, FALSE);
+        }
+
     	if (m_Visual->visual&&PKinematics(m_Visual->visual))
 	    	PKinematics			(m_Visual->visual)->CalculateBones(TRUE);
     }
     // motion part
-    if (m_Motion){
+    if (m_Motion)
+    {
 	    if (m_Data->m_editor_flags.is(ISE_Abstract::flMotionChange))
         	m_Motion->OnChangeMotion();
     	if (m_Motion->animator)
     		m_Motion->animator->Update(EDevice.fTimeDelta);
     }
+
+    if (m_Data->m_editor_flags.is(ISE_Abstract::flVisualChange))
+    {
+        xr_vector<CLE_Visual*>::iterator it 	= m_VisualHelpers.begin();
+        xr_vector<CLE_Visual*>::iterator it_e 	= m_VisualHelpers.end();
+        for(;it!=it_e;++it)
+        {
+            CLE_Visual* v 			= *it;
+            xr_delete				(v);
+        }
+        m_VisualHelpers.clear		();
+
+    /*
+        u32 cnt 				= m_Data->visual_collection_size();
+        visual_data* vc 		= m_Data->visual_collection();
+
+        for(u32 i=0; i<cnt; ++i,++vc)
+        {
+            CLE_Visual* V = xr_new<CLE_Visual>(vc->visual);
+            V->OnChangeVisual();
+            m_VisualHelpers.push_back(V);
+            V->PlayAnimation();
+        }  */
+    }
+
+    xr_vector<CLE_Visual*>::iterator it 	= m_VisualHelpers.begin();
+    xr_vector<CLE_Visual*>::iterator it_e 	= m_VisualHelpers.end();
+    for(;it!=it_e;++it)
+    {
+        CLE_Visual* v 			= *it;
+    	if (PKinematics(v->visual))
+	    	PKinematics			(v->visual)->CalculateBones(TRUE);
+    }
+
     // reset editor flags
     m_Data->m_editor_flags.zero	();
 }
 //------------------------------------------------------------------------------
-CSpawnPoint::CSpawnPoint(LPVOID data, LPCSTR name):CCustomObject(data,name)
+CSpawnPoint::CSpawnPoint(LPVOID data, LPCSTR name):CCustomObject(data,name),m_SpawnData(this)
 {
-	Construct(data);
+	m_rpProfile			= "";
+    m_EM_Flags.one		();
+	Construct			(data);
 }
 
 void CSpawnPoint::Construct(LPVOID data)
 {
 	ClassID			= OBJCLASS_SPAWNPOINT;
     m_AttachedObject= 0;
-	m_bSpawnEnabled = true;
     if (data){
-        if (strcmp(LPSTR(data),RPOINT_CHOOSE_NAME)==0){
-            m_Type 		= ptRPoint;
-            m_RP_Type	= rptActorSpawn;
-            m_RP_GameType= rpgtGameAny;
-            m_RP_TeamID	= 0;
-        }else if (strcmp(LPSTR(data),ENVMOD_CHOOSE_NAME)==0){
+        if (strcmp(LPSTR(data),RPOINT_CHOOSE_NAME)==0)
+        {
+            m_Type 				= ptRPoint;
+            m_RP_Type			= rptActorSpawn;
+            m_RP_GameType               = rpgtGameAny;
+            m_RP_TeamID			= 1;
+        }else if (strcmp(LPSTR(data),ENVMOD_CHOOSE_NAME)==0)
+        {
             m_Type 				= ptEnvMod;
             m_EM_Radius			= 10.f;
             m_EM_Power			= 1.f;
@@ -313,19 +527,22 @@ void CSpawnPoint::Construct(LPVOID data)
             m_EM_HemiColor		= 0x00FFFFFF;
         }else{
             CreateSpawnData(LPCSTR(data));
-            if (!m_SpawnData.Valid()){
+            if (!m_SpawnData.Valid())
+            {
             	SetValid(false);
             }else{
-		m_Type			= ptSpawnPoint;
-		if (Tools->GetSettings(etfRandomRot))
-			SetRotation(Fvector().set(0.f,Random.randF(-PI,PI),0.f));
+	        	m_Type			= ptSpawnPoint;
             }
         }
     }else{
 		SetValid(false);
     }
 }
-
+void  CSpawnPoint::	OnSceneRemove	()
+{
+  //	DeletePhysicsShell();
+    inherited::OnSceneRemove	();
+}
 CSpawnPoint::~CSpawnPoint()
 {
 	xr_delete(m_AttachedObject);
@@ -338,18 +555,32 @@ void CSpawnPoint::Select(int  flag)
     if (m_AttachedObject) m_AttachedObject->Select(flag);
 }
 
+void  CSpawnPoint::Move( Fvector& amount )
+{
+	inherited::Move( amount );
+	const float  f_drag_factor = 200.f;
+   // if(m_physics_shell)
+   //  	 ApplyDragForce( Fvector().mul(amount,f_drag_factor) );
+}
+
 void CSpawnPoint::SetPosition(const Fvector& pos)
 {
+   // if(m_physics_shell)
+    //	return;
 	inherited::SetPosition	(pos);
     if (m_AttachedObject) m_AttachedObject->PPosition = pos;
 }
 void CSpawnPoint::SetRotation(const Fvector& rot)
 {
+ //	if(m_physics_shell)
+ //   	return;
 	inherited::SetRotation	(rot);
     if (m_AttachedObject) m_AttachedObject->PRotation = rot;
 }
 void CSpawnPoint::SetScale(const Fvector& scale)
 {
+   //	if(m_physics_shell)
+   // 	return;
 	inherited::SetScale		(scale);
     if (m_AttachedObject) m_AttachedObject->PScale = scale;
 }
@@ -368,11 +599,12 @@ bool CSpawnPoint::AttachObject(CCustomObject* obj)
 //        break;
         }
     }
-    // реальный атач
-	if (bAllowed){
-        DetachObject();
-        m_AttachedObject = obj;           
-        m_AttachedObject->OnAttach(this);
+    //  
+	if (bAllowed)
+    {
+        DetachObject				();
+        OnAppendObject				(obj);
+        m_AttachedObject->OnAttach	(this);
         PPosition 	= m_AttachedObject->PPosition;
         PRotation 	= m_AttachedObject->PRotation;
         PScale 		= m_AttachedObject->PScale;
@@ -382,8 +614,10 @@ bool CSpawnPoint::AttachObject(CCustomObject* obj)
 
 void CSpawnPoint::DetachObject()
 {
-	if (m_AttachedObject){
+	if (m_AttachedObject)
+    {
 		m_AttachedObject->OnDetach();
+        Scene->AppendObject(m_AttachedObject,false);
     	m_AttachedObject = 0;
     }
 }
@@ -408,7 +642,7 @@ bool CSpawnPoint::CreateSpawnData(LPCSTR entity_ref)
 }
 //----------------------------------------------------
 
-bool CSpawnPoint::GetBox( Fbox& box )
+bool CSpawnPoint::GetBox( Fbox& box ) const
 {
     switch (m_Type){
     case ptRPoint: 	
@@ -429,7 +663,11 @@ bool CSpawnPoint::GetBox( Fbox& box )
 			if (m_SpawnData.m_Visual&&m_SpawnData.m_Visual->visual)
             {
             	box.set		(m_SpawnData.m_Visual->visual->getVisData().box);
-                box.xform	(FTransformRP);
+                Fmatrix		transform = FTransformRP;
+              //  if(m_physics_shell)
+              //  		UpdateObjectXform( transform );
+                	
+                box.xform	(transform);
             }else{
 			    CEditShape* shape	= dynamic_cast<CEditShape*>(m_AttachedObject);
                 if (shape&&!shape->GetShapes().empty()){
@@ -482,45 +720,89 @@ void CSpawnPoint::OnFrame()
 {
 	inherited::OnFrame();
     if (m_AttachedObject) 		m_AttachedObject->OnFrame	();
-	if (m_SpawnData.Valid())    m_SpawnData.OnFrame			();
+	if (m_SpawnData.Valid())
+    {
+    	//if(/*m_physics_shell&&*/m_SpawnData.m_Data->m_editor_flags.is(ISE_Abstract::flVisualAnimationChange))
+      //  {
+             //	DeletePhysicsShell			();
+     //       m_SpawnData.OnFrame			();
+          //  CreatePhysicsShell			( &FTransform );
+      //  }
+     //   else 
+          m_SpawnData.OnFrame			();
+    }
 }
+void CSpawnPoint::RenderSimBox()
+{
+    Fbox box;
+    GetBox( box );
 
+    Fvector c,s;
+
+    box.get_CD( c, s );
+    Fmatrix	m;
+    m.scale(Fvector().mul(s,2));
+    m.c.set(c);
+                 
+               //     B.mulA_43			(_Transform());
+	RCache.set_xform_world(m);
+    u32 clr = 0x06005000;
+    DU_impl.DrawIdentBox(true,false,clr,clr);
+}
 void CSpawnPoint::Render( int priority, bool strictB2F )
 {
+
+	Fmatrix SaveTransform =   FTransformRP;
+
+  /*  if( m_physics_shell )
+    {
+      	UpdateObjectXform( FTransformRP );
+        RenderSimBox( );
+    } */
 	inherited::Render			(priority, strictB2F);
 	Scene->SelectLightsForObject(this);
+
+    
     // render attached object
-    if (m_AttachedObject) 		m_AttachedObject->Render(priority, strictB2F);
-	if (m_SpawnData.Valid())    m_SpawnData.Render(Selected(),FTransformRP,priority, strictB2F);
+    if (m_AttachedObject)
+    		m_AttachedObject->Render(priority, strictB2F);
+	if (m_SpawnData.Valid())
+    		m_SpawnData.Render(Selected(),FTransformRP,priority, strictB2F);
 	// render spawn point
     if (1==priority){
         if (strictB2F){
             RCache.set_xform_world(FTransformRP);
             if (m_SpawnData.Valid()){
                 // render icon
-                ESceneSpawnTools* st= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
+                ESceneSpawnTools* st	= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
-		if (m_bSpawnEnabled)
-                	DU_impl.DrawEntity		(0xffffffff,s);
-		else
-			DU_impl.DrawEntity		(0x00FF0000,s);
+                DU_impl.DrawEntity		(0xffffffff,s);
             }else{
-                switch (m_Type){
-                case ptRPoint:{
-                    float k = 1.f/(float(m_RP_TeamID+1)/float(MAX_TEAM));
-                    int r = m_RP_TeamID%MAX_TEAM;
-                    Fcolor c;
-                    c.set(RP_COLORS[r]);
-                    c.mul_rgb(k*0.9f+0.1f);
-                    DU_impl.DrawEntity(c.get(),EDevice.m_WireShader);
-                }break;
-                case ptEnvMod:{
-                	Fvector pos={0,0,0};
-	                EDevice.SetShader(EDevice.m_WireShader);
-                    DU_impl.DrawCross(pos,0.25f,0x20FFAE00,true);
-                    if (Selected()) DU_impl.DrawSphere(Fidentity,PPosition,m_EM_Radius,0x30FFAE00,0x00FFAE00,true,true);
-                }break;
-                default: THROW2("CSpawnPoint:: Unknown Type");
+                switch (m_Type)
+                {
+                    case ptRPoint:
+                    {
+                		ESceneSpawnTools* st	= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
+                    	if( NULL==st->get_draw_visual(m_RP_TeamID, m_RP_Type, m_RP_GameType) )
+                        {
+                            float k = 1.f/(float(m_RP_TeamID+1)/float(MAX_TEAM));
+                            int r = m_RP_TeamID%MAX_TEAM;
+                            Fcolor c;
+                            c.set(RP_COLORS[r]);
+                            c.mul_rgb(k*0.9f+0.1f);
+                            DU_impl.DrawEntity(c.get(),EDevice.m_WireShader);
+                        }
+                    }break;
+                    case ptEnvMod:
+                    {
+                        Fvector pos={0,0,0};
+                        EDevice.SetShader(EDevice.m_WireShader);
+                        DU_impl.DrawCross(pos,0.25f,0x20FFAE00,true);
+                        if (Selected())
+                            DU_impl.DrawSphere(Fidentity,PPosition,m_EM_Radius,0x30FFAE00,0x00FFAE00,true,true);
+                    }break;
+
+	                default: Msg("CSpawnPoint:: Unknown Type");
                 }
             }
         }else{
@@ -535,7 +817,7 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                     case ptEnvMod: 	
                     	s_name.sprintf("EnvMod V:%3.2f, F:%3.2f",m_EM_ViewDist,m_EM_FogDensity); 
 					break;
-                    default: THROW2("CSpawnPoint:: Unknown Type");
+                    default: Msg("CSpawnPoint:: Unknown Type");
                     }
                 }
                 
@@ -554,6 +836,15 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
             }
         }
     }
+    
+	if(m_Type==ptRPoint)
+    {
+        ESceneSpawnTools* st		= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
+        CEditableObject* v		= st->get_draw_visual(m_RP_TeamID, m_RP_Type, m_RP_GameType);
+        if(v)
+        	v->Render				(FTransformRP, priority, strictB2F);
+    }
+    FTransformRP = SaveTransform;      
 }
 
 bool CSpawnPoint::FrustumPick(const CFrustum& frustum)
@@ -591,6 +882,31 @@ bool CSpawnPoint::RayPick(float& distance, const Fvector& start, const Fvector& 
             	if (d<distance){
                     distance	= d;
                     bPick 		= true;
+                    if( pinf && m_SpawnData.m_Visual && m_SpawnData.m_Visual->visual )
+                    {
+
+                        IKinematics*  K = m_SpawnData.m_Visual->visual->dcast_PKinematics();
+                        u16 b_id = u16(-1);
+                        Fvector norm;
+                        if( K )
+                        {
+                           bPick =	ETOOLS::intersect( FTransformRP, *K, start,  direction, b_id, distance,  norm );
+                           if( bPick )
+                           {
+                           	   pinf->visual_inf.K = K;
+                               pinf->visual_inf.normal = norm;
+                               pt.mad( start, direction, distance ); 
+                           }
+
+                        }
+
+
+                    	pinf->s_obj = this;
+                        pinf->e_obj = 0;
+                        pinf->e_mesh = 0;
+                        pinf->pt = pt;
+                        pinf->inf.range = distance;
+                    }
 	            }
             }
         }
@@ -606,6 +922,18 @@ bool CSpawnPoint::OnAppendObject(CCustomObject* object)
     // all right
     m_AttachedObject 		= object;
     object->m_pOwnerObject	= this;
+    Scene->RemoveObject		(object, false);
+
+    CEditShape* sh = dynamic_cast<CEditShape*>(m_AttachedObject);
+    if(m_SpawnData.Valid())
+    {
+        if(pSettings->line_exist(m_SpawnData.m_Data->name(),"shape_transp_color"))
+        {
+            sh->m_DrawTranspColor = pSettings->r_color(m_SpawnData.m_Data->name(),"shape_transp_color");
+            sh->m_DrawEdgeColor = pSettings->r_color(m_SpawnData.m_Data->name(),"shape_edge_color");
+        }
+    }
+
     return true;
 }
 
@@ -613,7 +941,8 @@ bool CSpawnPoint::Load(IReader& F){
 	u32 version = 0;
 
     R_ASSERT(F.r_chunk(SPAWNPOINT_CHUNK_VERSION,&version));
-    if(version!=SPAWNPOINT_VERSION){
+    if(version<0x0014)
+    {
         ELog.Msg( mtError, "SPAWNPOINT: Unsupported version.");
         return false;
     }
@@ -621,8 +950,10 @@ bool CSpawnPoint::Load(IReader& F){
 	CCustomObject::Load(F);
 
     // new generation
-    if (F.find_chunk(SPAWNPOINT_CHUNK_ENTITYREF)){
-        if (!m_SpawnData.Load(F)){
+    if (F.find_chunk(SPAWNPOINT_CHUNK_ENTITYREF))
+    {
+        if (!m_SpawnData.Load(F))
+        {
             ELog.Msg( mtError, "SPAWNPOINT: Can't load Spawn Data.");
             return false;
         }
@@ -640,7 +971,8 @@ bool CSpawnPoint::Load(IReader& F){
             	m_RP_TeamID	= F.r_u8();
                 m_RP_Type	= F.r_u8();
                 m_RP_GameType=F.r_u8();
-                F.advance	(1);
+                if(version>=0x0017)
+                	F.r_stringZ			(m_rpProfile);
             }
         break;
         case ptEnvMod:
@@ -654,14 +986,13 @@ bool CSpawnPoint::Load(IReader& F){
                 m_EM_SkyColor		= F.r_u32();
                 if (F.find_chunk(SPAWNPOINT_CHUNK_ENVMOD2))
                     m_EM_HemiColor	= F.r_u32();
+                if (F.find_chunk(SPAWNPOINT_CHUNK_ENVMOD3))
+                    m_EM_Flags.assign(F.r_u16());
             }
         break;
         default: THROW;
         }
     }
-
-    if (F.find_chunk(SPAWNPOINT_CHUNK_ENABLED))
-        m_bSpawnEnabled			= F.r_u16();
 
 	// objects
     Scene->ReadObjects(F,SPAWNPOINT_CHUNK_ATTACHED_OBJ,OnAppendObject,0);
@@ -698,7 +1029,7 @@ void CSpawnPoint::Save(IWriter& F){
             F.w_u8		(m_RP_TeamID);
             F.w_u8		(m_RP_Type);
             F.w_u8 		(m_RP_GameType);
-            F.w_u8		(0);
+       		F.w_stringZ	(m_rpProfile);            
             F.close_chunk();
         break;
         case ptEnvMod:
@@ -714,13 +1045,14 @@ void CSpawnPoint::Save(IWriter& F){
         	F.open_chunk(SPAWNPOINT_CHUNK_ENVMOD2);
             F.w_u32		(m_EM_HemiColor);
             F.close_chunk();
+
+        	F.open_chunk(SPAWNPOINT_CHUNK_ENVMOD3);
+            F.w_u16		(m_EM_Flags.get());
+            F.close_chunk();
         break;
         default: THROW;
         }
     }
-    F.open_chunk	(SPAWNPOINT_CHUNK_ENABLED);
-    F.w_u16		((u16)m_bSpawnEnabled);
-    F.close_chunk	();
 }
 //----------------------------------------------------
 
@@ -736,8 +1068,6 @@ Fvector3 u32_3f(u32 clr)
 
 bool CSpawnPoint::ExportGame(SExportStreams* F)
 {
-	if (!m_bSpawnEnabled) {Msg("SpawnPoint: '%s' is disabled.", Name); return true;}
-
 	// spawn
 	if (m_SpawnData.Valid()){
     	if (m_SpawnData.m_Data->validate()){
@@ -756,7 +1086,7 @@ bool CSpawnPoint::ExportGame(SExportStreams* F)
             F->rpoint.stream.w_u8		(m_RP_TeamID);
             F->rpoint.stream.w_u8		(m_RP_Type);
             F->rpoint.stream.w_u8		(m_RP_GameType);
-            F->rpoint.stream.w_u8		(0);
+            F->rpoint.stream.w_stringZ	(m_rpProfile);
 			F->rpoint.stream.close_chunk	();
         break;
         case ptEnvMod:
@@ -771,6 +1101,7 @@ bool CSpawnPoint::ExportGame(SExportStreams* F)
             F->envmodif.stream.w_fvector3(u32_3f(m_EM_AmbientColor));
             F->envmodif.stream.w_fvector3(u32_3f(m_EM_SkyColor));
             F->envmodif.stream.w_fvector3(u32_3f(m_EM_HemiColor));
+            F->envmodif.stream.w_u16(m_EM_Flags.get());
 			F->envmodif.stream.close_chunk();
         break;
         default: THROW;
@@ -779,6 +1110,27 @@ bool CSpawnPoint::ExportGame(SExportStreams* F)
     return true;
 }
 //----------------------------------------------------
+void CSpawnPoint::OnFillRespawnItemProfile(ChooseValue* val)
+{
+	val->m_Items->clear		();
+	string_path				fn;
+    FS.update_path			(fn,"$game_config$", "mp\\respawn_items.ltx");
+    CInifile				ini(fn);
+    CInifile::RootIt it 	= ini.sections().begin();
+    CInifile::RootIt it_e 	= ini.sections().end();
+
+    for(;it!=it_e;++it)
+    {
+		shared_str name		= (*it)->Name;
+		shared_str hint;
+        if(ini.line_exist(name,"description"))
+        	hint 			= ini.r_string(name,"description");
+        else
+        	hint 			= "<empty>";
+        
+    	val->m_Items->push_back( SChooseItem( name.c_str(), hint.c_str() ) );
+    }
+}
 
 void CSpawnPoint::OnFillChooseItems		(ChooseValue* val)
 {
@@ -806,82 +1158,106 @@ shared_str CSpawnPoint::EditorToSection(shared_str nm)
     return 0;
 }
 
+void CSpawnPoint::OnRPointTypeChange(PropValue* prop)
+{
+   	ExecCommand				(COMMAND_UPDATE_PROPERTIES);
+}
+
 void CSpawnPoint::OnProfileChange(PropValue* prop)
 {
-	if (m_SpawnData.m_Profile.size()!=0)
-	{
-		shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
-		VERIFY					(s_name.size());
-		if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
-		{
-			int res = mrNo;
-			if (!psDeviceFlags.is(rsChangeProfileParamsYes)&&!psDeviceFlags.is(rsChangeProfileParamsNo))
-			{
-		    		res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo << mbYesToAll << mbNoToAll, "Do you want set all parameters from new profile?");
-				if(res==mrYesToAll)
-				{
-					psDeviceFlags.set(rsChangeProfileParamsYes, TRUE);
-					res = mrYes;
-
-				} else if(res==mrNoToAll) {
-					psDeviceFlags.set(rsChangeProfileParamsNo, TRUE);
-					res = mrNo;
-				}
-
-			} else if (psDeviceFlags.is(rsChangeProfileParamsYes))
-				res = mrYes;
-
-			if (res==mrYes)
-			{
-				ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
-				NET_Packet 			Packet;
-				tmp->Spawn_Write	(Packet,TRUE);
-				R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
-				m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
-				destroy_entity		(tmp);
-			} else {
-				m_SpawnData.m_Data->set_name(*s_name);
-				m_SpawnData.m_Profile = SectionToEditor(m_SpawnData.m_Data->name());
-			}
-		}
-	}else{
+	if (m_SpawnData.m_Profile.size()!=0){
+        shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
+        VERIFY					(s_name.size());
+        if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
+        {
+            ISE_Abstract* tmp	= create_entity	(*s_name);
+            VERIFY				(tmp);
+            NET_Packet 			Packet;
+            tmp->Spawn_Write	(Packet,TRUE);
+            R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
+            m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
+            destroy_entity		(tmp);
+        }
+    }else{
 		m_SpawnData.m_Profile	= SectionToEditor(m_SpawnData.m_Data->name());
-	}
+    }
 }
 
 void CSpawnPoint::FillProp(LPCSTR pref, PropItemVec& items)
 {
 	inherited::FillProp(pref,items);
 
-	PHelper().CreateBOOL	(items,PrepareKey(pref,"Spawn\\enabled"), &m_bSpawnEnabled);
-
-    if (m_SpawnData.Valid()){
+    if (m_SpawnData.Valid())
+    {
 	    shared_str pref1			= PrepareKey(pref,m_SpawnData.m_Data->name());
         m_SpawnData.m_Profile 		= SectionToEditor(m_SpawnData.m_Data->name());
-        ChooseValue* C				= PHelper().CreateChoose(items,PrepareKey(pref1.c_str(),"Profile"),&m_SpawnData.m_Profile,smCustom,0,0,1,cfFullExpand);
+        ChooseValue* C				= PHelper().CreateChoose(items,PrepareKey(pref1.c_str(),"Profile (spawn section)"),&m_SpawnData.m_Profile,smCustom,0,0,1,cfFullExpand);
         C->OnChooseFillEvent.bind	(this,&CSpawnPoint::OnFillChooseItems);
         C->OnChangeEvent.bind		(this,&CSpawnPoint::OnProfileChange);
     	m_SpawnData.FillProp		(pref,items);
     }else{
-    	switch (m_Type){
-        case ptRPoint:{
-			PHelper().CreateU8		(items, PrepareKey(pref,"Respawn Point\\Team"), 		&m_RP_TeamID, 	0,7);
-			PHelper().CreateToken8	(items, PrepareKey(pref,"Respawn Point\\Spawn Type"),	&m_RP_Type, 	rpoint_type);
-			PHelper().CreateToken8	(items, PrepareKey(pref,"Respawn Point\\Game Type"), 	&m_RP_GameType, rpoint_game_type);
+    	switch (m_Type)
+        {
+        case ptRPoint:
+        {
+
+           /* if(m_RP_Type==rptItemSpawn)
+            {                                                            
+                ChooseValue* C				= PHelper().CreateChoose(items,PrepareKey(pref,"Respawn Point\\Profile"),&m_rpProfile,smCustom,0,0,10,cfMultiSelect);
+                C->OnChooseFillEvent.bind	(this,&CSpawnPoint::OnFillRespawnItemProfile);
+             }else*/
+            {
+				PHelper().CreateU8		(items, PrepareKey(pref,"Respawn Point\\Team"), 		&m_RP_TeamID, 	0,7);
+            }
+			Token8Value* TV = PHelper().CreateToken8	(items, PrepareKey(pref,"Respawn Point\\Spawn Type"),	&m_RP_Type, 	rpoint_type);
+            TV->OnChangeEvent.bind		(this,&CSpawnPoint::OnRPointTypeChange);
+
+		//m_GameType.FillProp			(pref, items);
         }break;
         case ptEnvMod:{
         	PHelper().CreateFloat	(items, PrepareKey(pref,"Environment Modificator\\Radius"),			&m_EM_Radius, 	EPS_L,10000.f);
         	PHelper().CreateFloat	(items, PrepareKey(pref,"Environment Modificator\\Power"), 			&m_EM_Power, 	EPS,1000.f);
-        	PHelper().CreateFloat	(items, PrepareKey(pref,"Environment Modificator\\View Distance"),	&m_EM_ViewDist, EPS_L,10000.f);
-        	PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Fog Color"), 		&m_EM_FogColor);
-        	PHelper().CreateFloat	(items, PrepareKey(pref,"Environment Modificator\\Fog Density"), 	&m_EM_FogDensity, 0.f,10000.f);
-        	PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Ambient Color"), 	&m_EM_AmbientColor);
-        	PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Sky Color"), 		&m_EM_SkyColor);
-        	PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Hemi Color"), 	&m_EM_HemiColor);
+
+            Flag16Value* FV 		= NULL;
+            
+	        FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\View Distance"), &m_EM_Flags, eViewDist);
+            FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+            if(m_EM_Flags.test(eViewDist))
+        		PHelper().CreateFloat(items, PrepareKey(pref,"Environment Modificator\\View Distance\\ "),	&m_EM_ViewDist, EPS_L,10000.f);
+                
+	    //    FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\Fog Color"), &m_EM_Flags, eFogColor);
+          //  FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+          //  if(m_EM_Flags.test(eFogColor))
+         //		PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Fog Color\\ "), 		&m_EM_FogColor);
+                
+	   //     FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\Fog Density"), &m_EM_Flags, eFogDensity);
+         //   FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+         //   if(m_EM_Flags.test(eFogDensity))
+          //		PHelper().CreateFloat	(items, PrepareKey(pref,"Environment Modificator\\Fog Density\\ "), 	&m_EM_FogDensity, 0.f,10000.f);
+                
+	        FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\Ambient Color"), &m_EM_Flags, eAmbientColor);
+            FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+            if(m_EM_Flags.test(eAmbientColor))
+	        	PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Ambient Color\\ "), 	&m_EM_AmbientColor);
+
+	        FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\Sky Color"), &m_EM_Flags, eSkyColor);
+            FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+            if(m_EM_Flags.test(eSkyColor))
+        		PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Sky Color\\ "), 		&m_EM_SkyColor);
+                
+	        FV = PHelper().CreateFlag16(items, PrepareKey(pref,"Environment Modificator\\Hemi Color"), &m_EM_Flags, eHemiColor);
+            FV->OnChangeEvent.bind	 (this,&CSpawnPoint::OnEnvModFlagChange);
+            if(m_EM_Flags.test(eHemiColor))
+        		PHelper().CreateColor	(items, PrepareKey(pref,"Environment Modificator\\Hemi Color\\ "), 	&m_EM_HemiColor);
         }break;
         default: THROW;
         }
     }
+}
+#include "UI_LevelTools.h"
+void CSpawnPoint::OnEnvModFlagChange(PropValue* prop)
+{
+	LTools->UpdateProperties(FALSE);
 }
 //----------------------------------------------------
 
@@ -890,4 +1266,14 @@ bool CSpawnPoint::OnChooseQuery(LPCSTR specific)
 	return (m_SpawnData.Valid()&&(0==strcmp(m_SpawnData.m_Data->name(),specific)));
 }
 ///-----------------------------------------------------------------------------
+ void  CSpawnPoint::UseSimulatePose ()
+ {
+
+ }
+ void CSpawnPoint::OnUpdateTransform()
+ {
+  
+      inherited::OnUpdateTransform();
+  
+ }
 

@@ -26,6 +26,13 @@ enum ERPpointType{		// [0..255]
 	rptTeamBaseParticle,
 };
 
+enum EEnvModUsedParams{	eViewDist 		=(1<<0),
+                        eFogColor 		=(1<<1),
+                        eFogDensity 	=(1<<2),
+                        eAmbientColor 	=(1<<3),
+                        eSkyColor 		=(1<<4),
+                        eHemiColor 		=(1<<5)
+};
 
 enum ERPGameType{		// [0..255]
 	rpgtGameAny							= 0,
@@ -54,7 +61,7 @@ extern ECORE_API xr_token rpoint_game_type[];
 #define WAYOBJECT_CHUNK_LINKS		0x0003
 #define WAYOBJECT_CHUNK_TYPE		0x0004
 #define WAYOBJECT_CHUNK_NAME		0x0005
-#define WAYOBJECT_CHUNK_ENABLED		0x0006
+#define WAYOBJECT_CHUNK_ENABLED         0x0006
 
 #define NPC_POINT_VERSION			0x0001
 //----------------------------------------------------
@@ -190,4 +197,5 @@ public:
 
 //---------------------------------------------------------------------------
 #endif //LevelGameDefH
+
 

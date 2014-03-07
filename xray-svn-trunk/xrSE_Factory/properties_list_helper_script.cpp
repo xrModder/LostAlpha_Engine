@@ -36,6 +36,8 @@ void load_prop_helper			()
 		Msg					("! Cannot find entry point of the function %s in the library %s",prop_helper_func,prop_helper_func);
 		return;
 	}
+
+	g_property_list_helper	= xr_new<CScriptPropertiesListHelper>( );
 }
 
 IPropHelper &PHelper()

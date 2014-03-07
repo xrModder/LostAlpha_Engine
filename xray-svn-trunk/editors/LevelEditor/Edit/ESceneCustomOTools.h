@@ -18,6 +18,7 @@ public:
 	virtual				~ESceneCustomOTools		();
                                                
 	virtual	bool		AllowEnabling    		(){return true;}
+    virtual BOOL 		AllowMouseStart			();
 
     // snap 
 	virtual ObjectList* GetSnapList				();
@@ -89,6 +90,8 @@ public:
     virtual CCustomObject* CreateObject			(LPVOID data, LPCSTR name)=0;
 
     virtual int			MultiRenameObjects		();
+	void				OnSelected				(CCustomObject* object);
+	virtual const CCustomObject* LastSelected			() const;
 };
 #endif // ESceneCustomOToolsH
 

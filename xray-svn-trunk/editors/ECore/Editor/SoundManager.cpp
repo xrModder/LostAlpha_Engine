@@ -409,16 +409,13 @@ void CSoundManager::RefreshSounds(bool bSync)
 {
     if (FS.can_write_to_alias(_sounds_)){
         UI->SetStatus("Refresh sounds...");
-        if (bSync)
-        {
+        if (bSync){
             SynchronizeSounds	(true,true,false,0,0);
             CleanupSounds		();
         }
         Sound->refresh_sources();
         UI->SetStatus("");
-    } 
-    else
-    {
+    }else{
         Log("#!You don't have permisions to modify sounds.");
     }
 }

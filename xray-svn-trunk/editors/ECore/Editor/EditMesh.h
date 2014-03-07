@@ -92,9 +92,10 @@ public:
 		name		= nm;
 		if (t==vmtUV) dim=2; else dim=1;
 	}
-    IC Fvector2&	getUV		(int idx)				{VERIFY(type==vmtUV);		return (Fvector2&)vm[idx*dim];}
-    IC float&		getW		(int idx)				{VERIFY(type==vmtWeight);	return vm[idx];}
-    IC FloatVec&	getVM		()						{return vm;}
+	IC const Fvector2& getUV	(int idx) const			{VERIFY(type==vmtUV);		return (Fvector2&)vm[idx*dim];}
+	IC Fvector2&    getUV		(int idx)				{VERIFY(type==vmtUV);		return (Fvector2&)vm[idx*dim];}
+    IC const float&	getW		(int idx) const			{VERIFY(type==vmtWeight);	return vm[idx];}
+    IC const FloatVec& getVM	()	const				{return vm;}
 	IC float*		getVMdata	()						{return &*vm.begin();}
     IC float*		getVMdata	(int start)				{return &*(vm.begin()+start*dim);}
     IC int			VMdatasize	()						{return vm.size()*sizeof(float);}
@@ -104,11 +105,11 @@ public:
     IC int			PIdatasize	()						{return pindices.size()*sizeof(int);}
     IC int			size		()						{return vm.size()/dim;}
     IC void			resize		(int cnt)				{vm.resize(cnt*dim);vindices.resize(cnt);if (polymap) pindices.resize(cnt); }
-	IC void			appendUV	(float u, float v)		{vm.push_back(u);vm.push_back(v);}
-	IC void			appendUV	(Fvector2& uv)			{appendUV(uv.x,uv.y);}
-	IC void			appendW		(float w)				{vm.push_back(w);}
-	IC void			appendVI	(int vi)				{vindices.push_back(vi);}
-	IC void			appendPI	(int pi)				{VERIFY(polymap); pindices.push_back(pi);}
+	IC void			appendUV	(const float u, const float v)	{vm.push_back(u);vm.push_back(v);}
+	IC void			appendUV	(const Fvector2& uv)			{appendUV(uv.x,uv.y);}
+	IC void			appendW		(const float w)			{vm.push_back(w);}
+	IC void			appendVI	(const int vi)				{vindices.push_back(vi);}
+	IC void			appendPI	(const int pi)				{VERIFY(polymap); pindices.push_back(pi);}
     IC void			copyfrom	(float* src, int cnt)	{resize(cnt); CopyMemory(&*vm.begin(),src,cnt*dim*4);}
 };
 
@@ -144,12 +145,22 @@ struct ECORE_API st_SVert{
     	void		sort_by_bone	()	{std::sort(bones.begin(),bones.end(),compare_by_bone);	}
 };
 // faces
+struct st_Face;
 struct ECORE_API st_FaceVert{
-	int 			pindex;		// point index in PointList
-    int				vmref;		// vm-ref index 
+typedef	st_Face	type_face;
+		int 	pindex;		// point index in PointList
+		int		vmref;		// vm-ref index 
+		bool	gt( const st_FaceVert &v ) const { return pindex > v.pindex;  }
+		bool	eq( const st_FaceVert &v ) const { return pindex == v.pindex;  }
 };
 struct ECORE_API st_Face{
     st_FaceVert		pv[3];		// face vertices (P->P...)
+	void EdgeVerts( u8 e, st_FaceVert &v0, st_FaceVert &v1 ) const
+	{
+		VERIFY( e< 3 );
+		v0 = pv[ e ];
+		v1 = pv[ (e+1)%3 ]; 
+	}
 };
 
 // mesh options

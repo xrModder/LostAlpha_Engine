@@ -25,10 +25,11 @@ enum ETAction{
 };
 
 enum ETAxis{
-    etAxisX=0,
 	etAxisY,
+    etAxisX,
     etAxisZ,
-    etAxisZX
+    etAxisZX,
+	etAxisUndefined,
 };
 
 enum ETFlags{
@@ -60,7 +61,7 @@ protected:
     Fvector				m_MoveXVector;
     Fvector				m_MoveYVector;
     Fvector				m_MoveReminder;
-    Fvector				m_MoveAmount;
+    Fvector				m_MovedAmount;
 	// scale
     Fvector				m_ScaleCenter;
     Fvector				m_ScaleAmount;
@@ -116,13 +117,15 @@ public:
 	    	m_Points.clear	();
             m_OBB.clear		();
         }
-        void AppendPoint(const Fvector& p0, u32 c=0xff0000ff, bool i=true, bool m=true)
+        void AppendPoint(const Fvector& p0, u32 c=0xff0000ff, bool i=true, bool m=true, LPCSTR descr = NULL)
         {
         	m_Points.push_back(Point());
             m_Points.back().p[0].set(p0);
             m_Points.back().c	= c;
             m_Points.back().i	= i;
             m_Points.back().m	= m;
+            if(descr)
+            	m_Points.back().descr = descr;
         }
         void AppendLine	(const Fvector& p0, const Fvector& p1, u32 c=0xff00ff00, bool i=true, bool m=true)
         {
@@ -221,6 +224,11 @@ public:
     virtual void		RefreshProperties	()=0;
 
     const AnsiString&	GetEditFileName		()	{ return m_LastFileName; }
+
+    CEditableObject*	m_pAxisMoveObject;
+	Fmatrix				m_axis_xform;
+    
+    virtual bool		GetSelectionPosition	(Fmatrix& result) =0;
 };
 extern ECORE_API CToolsCustom*	Tools;
 

@@ -29,9 +29,13 @@ struct ECORE_API SSkelVert: public st_SVert{
         offs.set 	(_o);
         norm.set	(_n);
         uv.set		(_uv);
-        VERIFY		(_w_cnt>0 && _w_cnt<4);
+        VERIFY		(_w_cnt>0 && _w_cnt<=4);
         bones.resize(_w_cnt);
-        for (u8 k=0; k<_w_cnt; k++)	{bones[k]=b[k];}
+
+        for (u8 k=0; k<_w_cnt; k++)
+        {
+        	bones[k]=b[k];
+        }
         sort_by_bone(); // need to similar 
     }
 	BOOL	similar_pos(SSkelVert& V)
@@ -106,7 +110,7 @@ public:
     }
     SkelVertVec& 	getV_Verts()	{return m_Verts;}
     SkelFaceVec& 	getV_Faces()	{return m_Faces;}
-    SSkelVert*		getVert()		{ return m_Verts.begin();	}
+    SSkelVert*		getVert()		{ return &m_Verts[0];/*.begin();*/	}
     int				getVS()			{ return m_Verts.size();	}
 //    SSkelFace&		getFace(int id)	{ return VERIFY(id<m_Faces.size()); m_Faces[id];	}
     int				getTS() 		{ return m_Faces.size();	}

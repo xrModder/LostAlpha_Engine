@@ -47,10 +47,12 @@ void ESceneAIMapTools::OnDeviceDestroy()
     m_RGeom.destroy();
 }
 
+BOOL ai_map_shown = TRUE;
+
 static const u32 block_size = 0x2000;
 void ESceneAIMapTools::OnRender(int priority, bool strictB2F)
 {
-	if (m_Flags.is(flHideNodes)) return;
+	if (m_Flags.is(flHideNodes) || !ai_map_shown) return;
     if (1==priority){
         if (false==strictB2F){
             RCache.set_xform_world(Fidentity);

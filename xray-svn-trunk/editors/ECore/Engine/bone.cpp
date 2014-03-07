@@ -27,6 +27,8 @@ CBone::CBone()
     ResetData		();
 }
 
+
+
 void CBone::ResetData()
 {
     IK_data.Reset	();

@@ -42,14 +42,16 @@ CPortal::~CPortal(){
 }
 //------------------------------------------------------------------------------
 
-bool CPortal::GetBox( Fbox& box )
+bool CPortal::GetBox( Fbox& box ) const
 {
-	if( m_Vertices.empty() ){
+	if( m_Vertices.empty() )
+    {
 		box.set(0,0,0, 0,0,0);
 		return false;
     }
+    
 	box.set( m_Vertices[0], m_Vertices[0] );
-	for( FvectorIt pt=m_Vertices.begin()+1; pt!=m_Vertices.end(); pt++)
+	for( FvectorVec::const_iterator pt=m_Vertices.begin()+1; pt!=m_Vertices.end(); pt++)
 		box.modify(*pt);
 	return true;
 }
@@ -416,7 +418,7 @@ void CPortal::Simplify()
 bool CPortal::Load(IReader& F){
 	u32 version = 0;
 
-    char buf[64];
+    string64 buf;
     R_ASSERT(F.r_chunk(PORTAL_CHUNK_VERSION,&version));
     if( version!=PORTAL_VERSION ){
         ELog.Msg( mtError, "CPortal: Unsupported version.");

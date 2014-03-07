@@ -7,6 +7,7 @@
 
 #include "customobject.h"
 #include "../ECore/Editor/ui_main.h"
+#include "UI_LevelMain.h"
 #include "ESceneCustomOTools.h"
 #include "../ECore/Editor/d3dutils.h"
 #include "motion.h"
@@ -23,27 +24,29 @@
 
 CCustomObject::CCustomObject(LPVOID data, LPCSTR name)
 {
-    ClassID 	= OBJCLASS_DUMMY;
-    ParentTools	= 0;
-    if (name) 	FName = name;
-    m_CO_Flags.assign(flVisible);
-    m_RT_Flags.assign(flRT_Valid);
-    m_pOwnerObject	= 0;
-    ResetTransform	();
-    m_RT_Flags.set	(flRT_UpdateTransform,TRUE); //.???? было FALSE, нужно когда создается 
-    m_Motion		= NULL;
-    m_MotionParams 	= NULL;
-    FPosition.set	(0,0,0);
-    FScale.set		(1,1,1);
-    FRotation.set	(0,0,0);
+	save_id				= 0;
+    ClassID 			= OBJCLASS_DUMMY;
+    ParentTools			= 0;
+    if (name) 	FName 	= name;
+    m_CO_Flags.assign	(0);
+    m_RT_Flags.assign	(flRT_Valid|flRT_Visible);
+    m_pOwnerObject		= 0;
+    ResetTransform		();
+    m_RT_Flags.set		(flRT_UpdateTransform,TRUE);
+    m_Motion			= NULL;
+    m_MotionParams 		= NULL;
+
+    FPosition.set		(0,0,0);
+    FScale.set			(1,1,1);
+    FRotation.set		(0,0,0);
 }
 
 CCustomObject::CCustomObject(CCustomObject* source)
 {
     ClassID 	= source->ClassID;
     Name		= source->Name;
-    m_CO_Flags.assign	(flVisible);
-    m_RT_Flags.assign	(flRT_Valid);
+    m_CO_Flags.assign	(0);
+    m_RT_Flags.assign	(flRT_Valid|flRT_Visible);
     m_pOwnerObject	= 0;
     m_Motion		= NULL;
     m_MotionParams 	= NULL;
@@ -57,7 +60,7 @@ CCustomObject::~CCustomObject()
 bool CCustomObject::IsRender()
 {
 	Fbox bb; GetBox(bb);
-    return ::Render->occ_visible(bb)||(Selected()&&m_CO_Flags.is(flMotion));
+    return ::Render->occ_visible(bb)||( Selected() && m_CO_Flags.is_any(flRenderAnyWayIfSelected|flMotion) );
 }
 
 void CCustomObject::OnUpdateTransform()
@@ -78,51 +81,58 @@ void CCustomObject::OnUpdateTransform()
 
 void CCustomObject::Select( int flag )
 {
-    if (m_CO_Flags.is(flVisible)&&(!!m_CO_Flags.is(flSelected)!=flag)){ 
-        m_CO_Flags.set		(flSelected,(flag==-1)?(m_CO_Flags.is(flSelected)?FALSE:TRUE):flag);
+    if (m_RT_Flags.is(flRT_Visible) && (!!m_RT_Flags.is(flRT_Selected)!=flag))
+    {
+        m_RT_Flags.set		(flRT_Selected,(flag==-1)?(m_RT_Flags.is(flRT_Selected)?FALSE:TRUE):flag);
         UI->RedrawScene		();
         ExecCommand			(COMMAND_UPDATE_PROPERTIES);
+	    ParentTools->OnSelected(this);
     }
 }
 
 void CCustomObject::Show( BOOL flag )
 {
-	m_CO_Flags.set	   	(flVisible,flag);
-    if (!m_CO_Flags.is(flVisible)) m_CO_Flags.set(flSelected, FALSE);
+	m_RT_Flags.set	   	(flRT_Visible,flag);
+
+    if (!m_RT_Flags.is(flRT_Visible)) 
+    	m_RT_Flags.set(flRT_Selected, FALSE);
+        
     UI->RedrawScene();
 };
 
 void CCustomObject::Lock( BOOL flag )
 {
-	m_CO_Flags.set(flLocked,flag);
-};
+	m_CO_Flags.set(flCO_Locked,flag);
+}
+
+BOOL   CCustomObject::Editable() const 
+{
+	BOOL b1 = m_CO_Flags.is(flObjectInGroup);
+    BOOL b2 = m_CO_Flags.is(flObjectInGroupUnique);
+	return !b1 || (b1&&b2);
+}
 
 bool CCustomObject::Load(IReader& F)
 {
-    if (F.find_chunk(CUSTOMOBJECT_CHUNK_FLAGS)){
+    R_ASSERT(F.find_chunk(CUSTOMOBJECT_CHUNK_FLAGS));
+    {
         m_CO_Flags.assign(F.r_u32());
     	
         R_ASSERT(F.find_chunk(CUSTOMOBJECT_CHUNK_NAME));
         F.r_stringZ		(FName);
-    }else{
-    	
-        R_ASSERT(F.find_chunk(CUSTOMOBJECT_CHUNK_PARAMS));
-        m_CO_Flags.set	(flSelected,F.r_u16());
-        m_CO_Flags.set 	(flVisible,	F.r_u16());
-        F.r_stringZ		(FName);
-
-        if(F.find_chunk(CUSTOMOBJECT_CHUNK_LOCK))
-            m_CO_Flags.set	(flLocked, F.r_u16());
     }
 
-	if(F.find_chunk(CUSTOMOBJECT_CHUNK_TRANSFORM)){
+	if(F.find_chunk(CUSTOMOBJECT_CHUNK_TRANSFORM))
+    {
         F.r_fvector3(FPosition);
         F.r_fvector3(FRotation);
+    VERIFY(_valid(FRotation));
         F.r_fvector3(FScale);
     }
 
     // object motion
-    if (F.find_chunk(CUSTOMOBJECT_CHUNK_MOTION)){
+    if (F.find_chunk(CUSTOMOBJECT_CHUNK_MOTION))
+    {
         m_Motion 	= xr_new<COMotion>();
         if (!m_Motion->Load(F)){
             ELog.Msg(mtError,"CustomObject: '%s' - motion has different version. Load failed.",Name);
@@ -179,6 +189,8 @@ void CCustomObject::OnFrame()
 {
     if (m_Motion) 			AnimationOnFrame();
 	if (m_RT_Flags.is(flRT_UpdateTransform)) OnUpdateTransform();
+    if(m_CO_Flags.test(flObjectInGroup) && m_pOwnerObject==NULL)
+		m_CO_Flags.set(flObjectInGroup, FALSE);
 }
 
 void CCustomObject::RenderRoot(int priority, bool strictB2F)
@@ -191,7 +203,6 @@ void CCustomObject::Render(int priority, bool strictB2F)
 {
 	if ((1==priority)&&(false==strictB2F)){
         if (EPrefs->object_flags.is(epoDrawPivot)&&Selected()){
-            EDevice.SetShader(EDevice.m_WireShader);
             DU_impl.DrawObjectAxis(FTransformRP,0.1f,Selected());
         }
         if (m_Motion&&Visible()&&Selected())

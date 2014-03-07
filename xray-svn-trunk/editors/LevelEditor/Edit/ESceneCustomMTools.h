@@ -24,14 +24,18 @@ public:
     	flEnable		= (1<<0),
     	flReadonly		= (1<<1),
     	flForceReadonly	= (1<<2),
-    	flVisible		= (1<<3),
+    	flChanged		= (1<<3),
+    	flVisible		= (1<<4),
     };
     Flags32				m_EditFlags;
     BOOL				IsEnabled				(){return m_EditFlags.is(flEnable);}
     BOOL				IsEditable				(){return !m_EditFlags.is_any(flReadonly|flForceReadonly);}
     BOOL				IsReadonly				(){return m_EditFlags.is(flReadonly);}
     BOOL				IsForceReadonly			(){return m_EditFlags.is(flForceReadonly);}
+    BOOL				IsChanged				(){return m_EditFlags.is(flChanged);}
+    void				SetChanged				(BOOL b){m_EditFlags.set(flChanged,b);}
     BOOL				IsVisible				(){return m_EditFlags.is(flVisible);}
+    virtual BOOL 		AllowMouseStart			() { }
 public:
 	// modifiers
     shared_str			m_ModifName;
@@ -102,6 +106,7 @@ public:
     // render
     virtual void		BeforeRender			(){;}
     virtual void		OnRender				(int priority, bool strictB2F)=0;
+    		void		OnRenderRoot			(int priority, bool strictB2F){if(IsVisible())OnRender(priority, strictB2F);};
     virtual void		AfterRender				(){;}
 
     // IO
@@ -124,6 +129,8 @@ public:
 	virtual bool 		GetSummaryInfo			(SSceneSummary* inf)=0;
 	virtual void 		HighlightTexture		(LPCSTR tex_name, bool allow_ratio, u32 t_width, u32 t_height, BOOL mark){}
     virtual void		GetBBox 				(Fbox& bb, bool bSelOnly)=0;
+	virtual const CCustomObject* LastSelected	() const {return NULL;}
+    
 };
 
 DEFINE_MAP(ObjClassID,ESceneCustomMTools*,SceneToolsMap,SceneToolsMapPairIt);

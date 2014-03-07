@@ -476,3 +476,46 @@ bool CLevelTools::RayPick(const Fvector& start, const Fvector& dir, float& dist,
     }else return false;
 }
 
+bool CLevelTools::GetSelectionPosition(Fmatrix& result)
+{
+	if(pCurTools)
+    {
+    	Fvector 			center;
+    	Fbox 				BB;
+        BB.invalidate		();
+//    	pCurTool->GetBBox	(BB, true);
+
+        const CCustomObject* object = pCurTools->LastSelected();
+        if(!object)
+        	return false;
+            
+        object->GetBox		(BB);
+        
+        BB.getcenter		(center);
+        center.y			= BB.max.y;
+
+		Fvector2			pt_ss;
+        pt_ss.set			(10000,-10000);
+        Fvector				pt_ss_3d;
+        BB.setb				(center, Fvector().set(1.0f,1.0f,1.0f));
+        for(int k=0;k<8;++k)
+        {
+        	Fvector pt;
+        	BB.getpoint(k,pt);
+			EDevice.mFullTransform.transform(pt_ss_3d, pt);
+            
+            pt_ss.x = _min(pt_ss.x, pt_ss_3d.y);
+            pt_ss.y = _max(pt_ss.y, pt_ss_3d.y);
+        }
+
+        float r_bb_ss	 = pt_ss.y - pt_ss.x;
+        clamp(r_bb_ss, 0.0f,0.10f);
+        float des_radius = 0.2f; 
+        float csale 	 = des_radius/r_bb_ss;
+        
+        result.scale	(csale,csale,csale);
+        result.c 		= center;
+        return 			true;
+    }else
+		return 			false;
+}
