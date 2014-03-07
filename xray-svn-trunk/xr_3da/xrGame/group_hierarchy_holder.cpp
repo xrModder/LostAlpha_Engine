@@ -44,7 +44,8 @@ void CGroupHierarchyHolder::update_leader				()
 
 void CGroupHierarchyHolder::register_in_group			(CEntity *member)
 {
-	VERIFY						(member);
+	if (member==NULL) return; //skyloader: hack
+
 	MEMBER_REGISTRY::iterator	I = std::find(m_members.begin(),m_members.end(),member);
 	VERIFY3						(I == m_members.end(),"Specified group member has already been found",*member->cName());
 
