@@ -53,6 +53,8 @@
 #endif // DEBUG
 
 
+//#define TESTER_BUILD //skyloader: uncomment this define for bins for testers
+
 
 #include "hudmanager.h"
 
@@ -1576,7 +1578,10 @@ void CCC_RegisterCommands()
 
 	//cheats
 	
+#ifndef TESTER_BUILD
 	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
+#endif // TESTER_BUILD
+
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
 #ifdef DEBUG
 	CMD1(CCC_Spawn,				"g_spawn"				);
@@ -1634,7 +1639,10 @@ void CCC_RegisterCommands()
 
 	// Demo
 	CMD1(CCC_DemoPlay,			"demo_play"				);
+
+#ifndef TESTER_BUILD
 	CMD1(CCC_DemoRecord,		"demo_record"			);
+#endif // TESTER_BUILD
 
 #ifndef MASTER_GOLD
 	// ai
