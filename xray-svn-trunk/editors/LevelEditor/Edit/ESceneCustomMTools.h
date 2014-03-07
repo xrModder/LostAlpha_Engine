@@ -32,7 +32,10 @@ public:
     BOOL				IsEditable				(){return !m_EditFlags.is_any(flReadonly|flForceReadonly);}
     BOOL				IsReadonly				(){return m_EditFlags.is(flReadonly);}
     BOOL				IsForceReadonly			(){return m_EditFlags.is(flForceReadonly);}
+    BOOL				IsChanged				(){return m_EditFlags.is(flChanged);}
+    void				SetChanged				(BOOL b){m_EditFlags.set(flChanged,b);}
     BOOL				IsVisible				(){return m_EditFlags.is(flVisible);}
+    virtual BOOL 		AllowMouseStart			() { }
 public:
 	// modifiers
     shared_str			m_ModifName;
@@ -103,6 +106,7 @@ public:
     // render
     virtual void		BeforeRender			(){;}
     virtual void		OnRender				(int priority, bool strictB2F)=0;
+    		void		OnRenderRoot			(int priority, bool strictB2F){if(IsVisible())OnRender(priority, strictB2F);};
     virtual void		AfterRender				(){;}
 
     // IO

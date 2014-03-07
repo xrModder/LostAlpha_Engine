@@ -18,6 +18,7 @@ public:
 	virtual				~ESceneCustomOTools		();
                                                
 	virtual	bool		AllowEnabling    		(){return true;}
+    virtual BOOL 		AllowMouseStart			();
 
     // snap 
 	virtual ObjectList* GetSnapList				();

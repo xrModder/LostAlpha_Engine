@@ -37,7 +37,7 @@ void __fastcall object_StrictB2F_3(EScene::mapObject_Node *N){RENDER_OBJECT(3,tr
             EDevice.SetShader		(B?EDevice.m_SelectionShader:EDevice.m_WireShader);\
             RCache.set_xform_world	(Fidentity);\
             try{\
-            	(*s_it)->OnRender(P,B);\
+            	(*s_it)->OnRenderRoot(P,B);\
             }catch(...){\
 		        ELog.DlgMsg(mtError, "Please notify AlexMX!!! Critical error has occured in render routine!!! [Type B] - Tools: '%s'",(*s_it)->ClassName());\
             }\

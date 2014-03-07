@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = -795
-  Top = 245
+  Left = 426
+  Top = 417
   Width = 770
   Height = 452
   Color = clBtnFace
@@ -27,7 +27,7 @@ object frmMain: TfrmMain
     Left = 524
     Top = 0
     Width = 238
-    Height = 408
+    Height = 401
     Align = alRight
     BevelInner = bvLowered
     BevelOuter = bvNone
@@ -53,9 +53,9 @@ object frmMain: TfrmMain
       end
       object sbToolsMin: TExtBtn
         Left = 223
-        Top = 2
+        Top = 0
         Width = 11
-        Height = 11
+        Height = 13
         Align = alNone
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -120,7 +120,7 @@ object frmMain: TfrmMain
   end
   object paBottomBar: TPanel
     Left = 0
-    Top = 408
+    Top = 401
     Width = 762
     Height = 17
     Align = alBottom
@@ -132,7 +132,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 524
-    Height = 408
+    Height = 401
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
@@ -149,7 +149,7 @@ object frmMain: TfrmMain
       Left = 0
       Top = 18
       Width = 524
-      Height = 390
+      Height = 383
       Align = alClient
       BevelOuter = bvNone
       Color = 4868682

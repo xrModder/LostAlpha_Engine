@@ -49,7 +49,18 @@ void ESceneCustomOTools::Clear(bool bInternal)
     	xr_delete(*it);
     m_Objects.clear();
 }
-//----------------------------------------------------
+
+BOOL  ESceneCustomOTools::AllowMouseStart()
+{
+	for(ObjectIt it=m_Objects.begin(); it!=m_Objects.end(); ++it)
+    {
+    	CCustomObject* CO = *it;
+       if(CO->Selected() && !CO->Editable() )
+       	return FALSE;
+    }
+       
+    return TRUE;
+}
 
 void ESceneCustomOTools::OnFrame()
 {

@@ -802,7 +802,7 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                             DU_impl.DrawSphere(Fidentity,PPosition,m_EM_Radius,0x30FFAE00,0x00FFAE00,true,true);
                     }break;
 
-	                default: THROW2("CSpawnPoint:: Unknown Type");
+	                default: Msg("CSpawnPoint:: Unknown Type");
                 }
             }
         }else{
@@ -817,7 +817,7 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                     case ptEnvMod: 	
                     	s_name.sprintf("EnvMod V:%3.2f, F:%3.2f",m_EM_ViewDist,m_EM_FogDensity); 
 					break;
-                    default: THROW2("CSpawnPoint:: Unknown Type");
+                    default: Msg("CSpawnPoint:: Unknown Type");
                     }
                 }
                 
@@ -844,7 +844,7 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
         if(v)
         	v->Render				(FTransformRP, priority, strictB2F);
     }
-    FTransformRP = SaveTransform;
+    FTransformRP = SaveTransform;      
 }
 
 bool CSpawnPoint::FrustumPick(const CFrustum& frustum)

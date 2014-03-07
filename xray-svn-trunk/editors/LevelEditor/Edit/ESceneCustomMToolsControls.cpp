@@ -51,12 +51,13 @@ void ESceneCustomMTools::UpdateControl()
 void ESceneCustomMTools::OnActivate  ()
 {
     if (pCurControl) 	pCurControl->OnEnter();
-//    if (pFrame)			pFrame->OnActivate();
+
+    ExecCommand			(COMMAND_CHANGE_ACTION,etaSelect,estDefault);
+    SetChanged			(TRUE);
 }
 void ESceneCustomMTools::OnDeactivate()
 {
     if (pCurControl) 	pCurControl->OnExit();
-//    if (pFrame)			pFrame->OnDeactivate();
 }
 void ESceneCustomMTools::SetAction   (int act)
 {
