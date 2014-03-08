@@ -290,8 +290,8 @@ CCommandVar 	CommandDestroy(CCommandVar p1, CCommandVar p2)
     Tools->OnDestroy	();
     SndLib->OnDestroy	();
     xr_delete			(SndLib);
-    Lib.OnDestroy		();
     UI->OnDestroy		();
+	Lib.OnDestroy		();
     Engine.Destroy		();
     return				TRUE;
 }             

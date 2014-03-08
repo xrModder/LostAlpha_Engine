@@ -776,7 +776,7 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                 // render icon
                 ESceneSpawnTools* st	= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
-                DU_impl.DrawEntity		(0xffffffff,s);
+                //DU_impl.DrawEntity		(0xffffffff,s);
             }else{
                 switch (m_Type)
                 {

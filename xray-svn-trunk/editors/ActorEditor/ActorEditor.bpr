@@ -21,8 +21,8 @@
     <RESDEPEN value="$(RESFILES) BonePart.dfm ClipEditor.dfm KeyBar.dfm LeftBar.dfm Splash.dfm 
       main.dfm TopBar.dfm BottomBar.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="editor.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib"/>
+    <LIBRARIES value="editorB.lib editor.lib"/>
+    <SPARELIBS value="rtl.lib vcl.lib bcbsmp.lib vclx.lib editor.lib elpackB6.lib editorB.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi dceldbB6.bpi elpackB6.bpi elpproB6.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
