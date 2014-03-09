@@ -223,7 +223,7 @@ public:
 	virtual void*					GetUpdateCallbackParam() { return Update_Callback_Param;}
 
 	// debug
-#ifdef DRENDER
+#if defined(DRENDER) && defined(DEBUG)
 	void							DebugRender			(Fmatrix& XFORM);
 #else
        void							DebugRender			(Fmatrix& XFORM) { }

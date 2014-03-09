@@ -51,7 +51,7 @@ LPCSTR CKinematics::LL_BoneName_dbg	(u16 ID)
 	return 0;
 }
 
-#ifdef DRENDER
+#if defined(DRENDER) && defined(DEBUG)
 void CKinematics::DebugRender(Fmatrix& XFORM)
 {
 	CalculateBones	();

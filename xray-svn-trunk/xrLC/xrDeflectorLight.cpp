@@ -276,10 +276,10 @@ BOOL ApplyBorders( lm_layer &lm, u32 ref )
 	//lm = r_new;
 	//return bres_new;
 	//
-#if 1	
+#if 0	
 	return NEW_ApplyBorders( lm, ref );
 #else
-	return OLD__ApplyBorders( lm, ref );
+	return OLD_ApplyBorders( lm, ref );
 #endif
 }
 
@@ -419,18 +419,24 @@ void LightPoint(CDB::COLLIDER* DB, CDB::MODEL* MDL, base_color_c &C, Fvector &P,
 					float R		= _sqrt(sqD);
 					float scale = D*L->energy*rayTrace(DB,MDL, *L,Pnew,Ldir,R,skip,bUseFaceDisable);
 					float A		;
+#if 1
 					if ( gl_linear )
 						A	= 1-R/L->range;
 					else
 					{
+
 						//	Igor: let A equal 0 at the light boundary
 						A	= scale * 
 							(
 								1/(L->attenuation0 + L->attenuation1*R + L->attenuation2*sqD) - 
 								R*L->falloff()
 							);
-
 					}
+#else
+						if (gl_linear)	A	= 1-R/L->range;
+						else			A	= scale / (L->attenuation0 + L->attenuation1*R + L->attenuation2*sqD);
+#endif
+					
 
 					C.rgb.x += A * L->diffuse.x;
 					C.rgb.y += A * L->diffuse.y;

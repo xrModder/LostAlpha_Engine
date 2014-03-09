@@ -435,7 +435,7 @@ Fvector CObject::get_new_local_point_on_mesh	( u16& bone_id ) const
 Fvector CObject::get_last_local_point_on_mesh	( Fvector const& local_point, u16 const bone_id ) const
 {
 	//VERIFY				( bone_id == u16(-1) );
-
+	R_ASSERT2				(CFORM(), make_string("invalid cform for '%s'", *NameObject));
 	Fvector				result;
 	// Fetch data
 	Fmatrix				mE;

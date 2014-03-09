@@ -8,6 +8,8 @@
 
 #pragma once
 
+//#define USE_OLD_MESHMENDER
+
 #include "../xrCore/xrCore.h"
 
 #pragma warning(disable:4995)
