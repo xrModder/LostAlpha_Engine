@@ -179,6 +179,7 @@ void CDrawUtilities::UpdateGrid(int number_of_cell, float square_size, int subdi
 
 void CDrawUtilities::OnDeviceCreate()
 {
+        if (m_init) return;
 	EDevice.seqRender.Add			(this,REG_PRIORITY_LOW-1000);
 
 	m_SolidBox.CreateFromData		(D3DPT_TRIANGLELIST,DU_BOX_NUMFACES,		D3DFVF_XYZ|D3DFVF_DIFFUSE,du_box_vertices,			DU_BOX_NUMVERTEX,			du_box_faces,			DU_BOX_NUMFACES*3);
@@ -228,10 +229,12 @@ void CDrawUtilities::OnDeviceCreate()
 	m_Font						= xr_new<CGameFont>("hud_font_small");
 
     m_axis_object = NULL;
+    m_init = true;
 }
 
 void CDrawUtilities::OnDeviceDestroy()
 {
+        if (!m_init) return;
 	EDevice.seqRender.Remove		(this);
 	xr_delete					(m_Font);
     m_SolidBox.Destroy			();
@@ -249,6 +252,7 @@ void CDrawUtilities::OnDeviceDestroy()
 	vs_TL.destroy		();
 	vs_LIT.destroy		();
  	Lib.RemoveEditObject(m_axis_object);
+        m_init = false;
 }
 //----------------
 

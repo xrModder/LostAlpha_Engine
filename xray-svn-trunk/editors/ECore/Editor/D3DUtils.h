@@ -51,6 +51,7 @@ class ECORE_API CDrawUtilities: public CDUInterface, public pureRender{
     SPrimitiveBuffer		m_WireBox;
 	CGameFont* 				m_Font;
     CEditableObject*		m_axis_object;
+    bool                        m_init;
 public:
 	ref_geom 	vs_L;
 	ref_geom 	vs_TL;
@@ -74,7 +75,8 @@ public:
         m_DD_pv			= 0;
         m_DD_pv_start	= 0;
         m_DD_base		= 0;
-		m_Font	= 0;
+        m_Font	= 0;
+        m_init = false;
     }
     
     void OnDeviceCreate	();
