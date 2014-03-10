@@ -1,8 +1,8 @@
 object fraLeftBar: TfraLeftBar
   Left = 0
   Top = 0
-  Width = 303
-  Height = 458
+  Width = 421
+  Height = 386
   HorzScrollBar.Visible = False
   VertScrollBar.Increment = 34
   VertScrollBar.Size = 13
@@ -21,19 +21,19 @@ object fraLeftBar: TfraLeftBar
   object paLeftBar: TPanel
     Left = 0
     Top = 0
-    Width = 300
-    Height = 458
+    Width = 400
+    Height = 386
     Align = alLeft
     BevelInner = bvLowered
     BevelOuter = bvNone
     Color = 10528425
-    Constraints.MaxWidth = 300
-    Constraints.MinWidth = 300
+    Constraints.MaxWidth = 400
+    Constraints.MinWidth = 400
     TabOrder = 0
     object Splitter1: TSplitter
       Left = 1
-      Top = 216
-      Width = 298
+      Top = 242
+      Width = 398
       Height = 2
       Cursor = crVSplit
       Align = alBottom
@@ -43,7 +43,7 @@ object fraLeftBar: TfraLeftBar
     object paScene: TPanel
       Left = 1
       Top = 1
-      Width = 298
+      Width = 398
       Height = 97
       Hint = 'Scene commands'
       Align = alTop
@@ -54,7 +54,7 @@ object fraLeftBar: TfraLeftBar
       object APHeadLabel2: TLabel
         Left = 1
         Top = 1
-        Width = 296
+        Width = 396
         Height = 13
         Align = alTop
         Alignment = taCenter
@@ -87,10 +87,10 @@ object fraLeftBar: TfraLeftBar
         OnClick = PanelMimimizeClick
       end
       object ebSceneFile: TExtBtn
-        Left = 2
-        Top = 14
+        Left = 3
+        Top = 16
         Width = 295
-        Height = 17
+        Height = 12
         Align = alNone
         BevelShow = False
         HotTrack = True
@@ -227,7 +227,7 @@ object fraLeftBar: TfraLeftBar
     object paModel: TPanel
       Left = 1
       Top = 98
-      Width = 298
+      Width = 398
       Height = 49
       Hint = 'Scene commands'
       Align = alTop
@@ -238,7 +238,7 @@ object fraLeftBar: TfraLeftBar
       object Label4: TLabel
         Left = 1
         Top = 1
-        Width = 296
+        Width = 396
         Height = 13
         Align = alTop
         Alignment = taCenter
@@ -441,8 +441,8 @@ object fraLeftBar: TfraLeftBar
     object paObjectProperties: TPanel
       Left = 1
       Top = 147
-      Width = 298
-      Height = 69
+      Width = 398
+      Height = 95
       Align = alClient
       Color = 10528425
       ParentShowHint = False
@@ -451,7 +451,7 @@ object fraLeftBar: TfraLeftBar
       object Label6: TLabel
         Left = 1
         Top = 1
-        Width = 296
+        Width = 396
         Height = 13
         Align = alTop
         Alignment = taCenter
@@ -463,7 +463,7 @@ object fraLeftBar: TfraLeftBar
       object Bevel6: TBevel
         Left = 1
         Top = 14
-        Width = 296
+        Width = 396
         Height = 1
         Align = alTop
         Shape = bsLeftLine
@@ -471,8 +471,8 @@ object fraLeftBar: TfraLeftBar
       object paObjectProps: TPanel
         Left = 1
         Top = 15
-        Width = 296
-        Height = 53
+        Width = 396
+        Height = 79
         Align = alClient
         BevelOuter = bvNone
         Color = 10528425
@@ -481,9 +481,9 @@ object fraLeftBar: TfraLeftBar
     end
     object paCurrentMotion: TPanel
       Left = 1
-      Top = 218
-      Width = 298
-      Height = 239
+      Top = 244
+      Width = 398
+      Height = 141
       Align = alBottom
       Color = 10528425
       ParentShowHint = False
@@ -492,7 +492,7 @@ object fraLeftBar: TfraLeftBar
       object Label1: TLabel
         Left = 1
         Top = 1
-        Width = 296
+        Width = 396
         Height = 13
         Align = alTop
         Alignment = taCenter
@@ -527,15 +527,15 @@ object fraLeftBar: TfraLeftBar
       object paPSList: TPanel
         Left = 1
         Top = 14
-        Width = 296
-        Height = 224
+        Width = 396
+        Height = 126
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
         object Bevel1: TBevel
           Left = 0
           Top = 0
-          Width = 296
+          Width = 396
           Height = 1
           Align = alTop
           Shape = bsLeftLine
@@ -543,8 +543,8 @@ object fraLeftBar: TfraLeftBar
         object paItemProps: TPanel
           Left = 0
           Top = 1
-          Width = 296
-          Height = 223
+          Width = 396
+          Height = 125
           Align = alClient
           BevelOuter = bvNone
           Color = 10528425
@@ -586,7 +586,7 @@ object fraLeftBar: TfraLeftBar
     LeftMargin = 10
     Style = msOwnerDraw
     Left = 181
-    Top = 16
+    Top = 24
     object N7: TMenuItem
       Caption = '-'
     end
@@ -690,7 +690,7 @@ object fraLeftBar: TfraLeftBar
     LeftMargin = 10
     Style = msOwnerDraw
     Left = 181
-    Top = 31
+    Top = 47
     object N8: TMenuItem
       Caption = '-'
     end

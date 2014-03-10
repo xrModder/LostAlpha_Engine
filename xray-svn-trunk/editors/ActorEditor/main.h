@@ -15,6 +15,7 @@
 #include "MxMenus.hpp"
 #include "mxPlacemnt.hpp"
 #include "RenderWindow.hpp"
+#include <Dialogs.hpp>
 //---------------------------------------------------------------------------
 // refs
 

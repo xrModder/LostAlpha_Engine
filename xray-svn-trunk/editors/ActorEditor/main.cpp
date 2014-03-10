@@ -28,8 +28,8 @@ TfrmMain *frmMain;
 #include "../ECore/Editor/ImageManager.h"
 #include "../ECore/Editor/SoundManager.h"
 #include "../ECore/Editor/ui_main.h"
-#include "PSLibrary.h"
-#include "../ECore/Engine/GameMtlLib.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
+#include "GameMtlLib.h"
 #include "../../xrSound/soundrender_source.h"
 #include "ResourceManager.h"
 #include "../xrEProps/EditorChooseEvents.h"
@@ -50,7 +50,7 @@ __fastcall TfrmMain::TfrmMain(TComponent* Owner)
 	if (paLeftBar->Tag > 0) paLeftBar->Parent = paTopBar;
 	else paLeftBar->Parent 	= frmMain;
 
-	Device.SetHandle		(Handle,D3DWindow->Handle);
+	EDevice.SetHandle		(Handle,D3DWindow->Handle);
     EnableReceiveCommands	();
     if (!ExecCommand(COMMAND_INITIALIZE,(u32)D3DWindow,(u32)paRender)){ 
     	FlushLog			();

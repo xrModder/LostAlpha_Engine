@@ -27,6 +27,7 @@
 #pragma link "ElPanel"
 #pragma link "ElSplit"
 #pragma link "multi_edit"
+#pragma link "ElTrackBar"
 #pragma resource "*.dfm"
 
 static const TColor CLIP_INACTIVE_COLOR		= 0x00686868;
@@ -501,7 +502,7 @@ void TClipMaker::RealUpdateProperties()
             CMotion* MI			= ATools->m_RenderObject.FindMotionKeys	(mname.c_str(),slot);
             SBonePart* BP		= (k<(u16)m_CurrentObject->BoneParts().size())?&m_CurrentObject->BoneParts()[k]:0;
             shared_str tmp;
-            if (MI)				tmp.sprintf("%s [%3.2fs, %s]",mname.c_str(),MI->GetLength()/MD->Speed(),MD->bone_or_part?"stop at end":"looped");
+            if (MI)				tmp.printf("%s [%3.2fs, %s]",mname.c_str(),MI->GetLength()/MD->Speed(),MD->bone_or_part?"stop at end":"looped");
             if (BP)				PHelper().CreateCaption	(p_items,PrepareKey("Current Clip\\Cycles",BP->alias.c_str()), tmp);
 		}            
         if (sel_clip->fx.valid())PHelper().CreateFloat		(p_items,PrepareKey("Current Clip\\FXs",*sel_clip->fx.name), &sel_clip->fx_power, 0.f, 1000.f);
@@ -792,6 +793,9 @@ void TClipMaker::RealUpdateClips()
         (*it)->idx	= it-clips.begin();
     }
 	paFrame->Width	= m_TotalLength*m_Zoom;
+    timeTrackBar->Width = paFrame->Width;
+    timeTrackBar->Min = 0;
+    timeTrackBar->Max = m_TotalLength*10000;
     Stop			();
     // clip list
     ListItemsVec	l_items;
@@ -852,7 +856,8 @@ void TClipMaker::OnFrame()
         }
 		// play onframe
     	if (m_CurrentPlayTime>m_TotalLength) m_CurrentPlayTime-=m_TotalLength;
-	    m_CurrentPlayTime+=Device.fTimeDelta;
+	    m_CurrentPlayTime+=EDevice.fTimeDelta;
+        timeTrackBar->Position = m_CurrentPlayTime*10000;
         gtClip->Repaint();
     }
 }

@@ -47,6 +47,17 @@ __published:	// IDE-managed Components
 	TElGraphicButton *BtnDownCh2;
 	TElGraphicButton *BtnDelCh1;
 	TElGraphicButton *BtnDelCh2;
+	TMxPanel *PanelCh3;
+	TLabel *Label4;
+	TElGraphicButton *BtnUpCh3;
+	TElGraphicButton *BtnDownCh3;
+	TElGraphicButton *BtnDelCh3;
+	TMxPanel *PanelCh4;
+	TLabel *Label5;
+	TElGraphicButton *BtnUpCh4;
+	TElGraphicButton *BtnDownCh4;
+	TElGraphicButton *BtnDelCh4;
+	TMultiObjSpinEdit *spinTimeFactor;
 	void __fastcall seLODLWChange(TObject *Sender, int Val);
 	void __fastcall seLODKeyPress(TObject *Sender, char &Key);
 	void __fastcall seLODExit(TObject *Sender);
@@ -58,6 +69,17 @@ __published:	// IDE-managed Components
 	void __fastcall BtnDownCh1Click(TObject *Sender);
 	void __fastcall BtnDelCh1Click(TObject *Sender);
 	void __fastcall BtnDelCh2Click(TObject *Sender);
+	void __fastcall BtnDelCh3Click(TObject *Sender);
+	void __fastcall BtnDelCh4Click(TObject *Sender);
+	void __fastcall BtnUpCh3Click(TObject *Sender);
+	void __fastcall BtnUpCh4Click(TObject *Sender);
+	void __fastcall BtnDownCh3Click(TObject *Sender);
+	void __fastcall BtnDownCh4Click(TObject *Sender);
+	void __fastcall PanelCh3Paint(TObject *Sender);
+	void __fastcall PanelCh4Paint(TObject *Sender);
+	void __fastcall spinTimeFactorExit(TObject *Sender);
+	void __fastcall spinTimeFactorKeyPress(TObject *Sender, char &Key);
+	void __fastcall spinTimeFactorLWChange(TObject *Sender, int Val);
 private:	// User declarations
 	CSMotion*	m_currentEditMotion;
 	void 		draw_marks  (int id);

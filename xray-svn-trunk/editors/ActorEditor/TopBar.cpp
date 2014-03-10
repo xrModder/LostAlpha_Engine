@@ -120,9 +120,11 @@ void __fastcall TfraTopBar::RefreshBar()
     case etAxisY: 		btn=ebAxisY; 	break;
     case etAxisZ: 		btn=ebAxisZ; 	break;
     case etAxisZX: 		btn=ebAxisZX; 	break;
+    case etAxisUndefined:	btn=NULL; 	break;
     default: THROW;
     }
-	btn->Down 			= true;
+	if(btn)
+    	btn->Down 			= true;
     // settings
 	ebCSParent->Down	= Tools->GetSettings(etfCSParent);
 	ebNUScale->Down		= Tools->GetSettings(etfNUScale);
@@ -166,8 +168,20 @@ void __fastcall TfraTopBar::fsStorageRestorePlacement(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TfraTopBar::SimulateButtonClick(TObject *Sender)
+{
 
+	CActorTools*   ActorTools = dynamic_cast<CActorTools*>( Tools )  ;
+    if(!ActorTools)
+    	return;
+   //if(!ActorTools->m_RenderObject.m_pVisual)
+   //		return;
+     /*	if ( SimulateButton->Down )
+			ActorTools->PhysicsSimulate();	//->m_RenderObject.PhysicsSimulate		(ActorTools->m_AVTransform);
+    else
+			ActorTools->PhysicsStopSimulate	();//->m_RenderObject.PhysicsStopSimulate	(); */
+    	
 
-
-
+}
+//---------------------------------------------------------------------------
 

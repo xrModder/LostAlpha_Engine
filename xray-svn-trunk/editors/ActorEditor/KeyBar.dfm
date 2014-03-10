@@ -1,10 +1,10 @@
 object frmKeyBar: TfrmKeyBar
   Left = 88
-  Top = 870
+  Top = 841
   Align = alTop
   BorderIcons = []
   BorderStyle = bsNone
-  ClientHeight = 55
+  ClientHeight = 84
   ClientWidth = 1057
   Color = 10528425
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object frmKeyBar: TfrmKeyBar
     Left = 0
     Top = 0
     Width = 1057
-    Height = 25
+    Height = 24
     Align = alClient
     BevelInner = bvLowered
     Color = 10528425
@@ -31,7 +31,7 @@ object frmKeyBar: TfrmKeyBar
       Left = 2
       Top = 2
       Width = 24
-      Height = 21
+      Height = 20
       Align = alLeft
       Alignment = taCenter
       AutoSize = False
@@ -52,28 +52,22 @@ object frmKeyBar: TfrmKeyBar
       Left = 948
       Top = 2
       Width = 107
-      Height = 21
+      Height = 20
       Align = alRight
       BevelOuter = bvNone
       Color = 10528425
       TabOrder = 0
       object Label1: TLabel
-        Left = 5
+        Left = 2
         Top = 4
         Width = 25
         Height = 13
         Caption = 'LOD:'
       end
-      object Bevel1: TBevel
-        Left = 33
-        Top = 3
-        Width = 70
-        Height = 16
-      end
       object seLOD: TMultiObjSpinEdit
-        Left = 35
+        Left = 30
         Top = 4
-        Width = 67
+        Width = 37
         Height = 14
         LWSensitivity = 0.1
         ButtonKind = bkLightWave
@@ -88,12 +82,31 @@ object frmKeyBar: TfrmKeyBar
         OnExit = seLODExit
         OnKeyPress = seLODKeyPress
       end
+      object spinTimeFactor: TMultiObjSpinEdit
+        Left = 69
+        Top = 5
+        Width = 36
+        Height = 14
+        LWSensitivity = 0.02
+        ButtonKind = bkLightWave
+        Increment = 0.01
+        MaxValue = 10
+        MinValue = 0.01
+        ValueType = vtFloat
+        Value = 1
+        BorderStyle = bsNone
+        Color = 10526880
+        TabOrder = 1
+        OnLWChange = spinTimeFactorLWChange
+        OnExit = spinTimeFactorExit
+        OnKeyPress = spinTimeFactorKeyPress
+      end
     end
     object Panel2: TPanel
       Left = 26
       Top = 2
       Width = 922
-      Height = 21
+      Height = 20
       Align = alClient
       BevelOuter = bvNone
       Color = 10528425
@@ -129,7 +142,7 @@ object frmKeyBar: TfrmKeyBar
         Left = 0
         Top = 0
         Width = 887
-        Height = 21
+        Height = 20
         Align = alClient
         BevelOuter = bvNone
         Color = 10528425
@@ -138,7 +151,7 @@ object frmKeyBar: TfrmKeyBar
           Left = 0
           Top = 0
           Width = 887
-          Height = 21
+          Height = 20
           BeginColor = 6118749
           EndColor = 11777977
           FillDirection = fdUpToBottom
@@ -159,7 +172,7 @@ object frmKeyBar: TfrmKeyBar
             Left = 23
             Top = 1
             Width = 863
-            Height = 19
+            Height = 18
             Max = 100
             Page = 50
             Position = 50
@@ -182,7 +195,7 @@ object frmKeyBar: TfrmKeyBar
             Left = 1
             Top = 1
             Width = 22
-            Height = 19
+            Height = 18
             Cursor = crDefault
             Checked = True
             Flat = True
@@ -203,7 +216,7 @@ object frmKeyBar: TfrmKeyBar
         Left = 887
         Top = 0
         Width = 35
-        Height = 21
+        Height = 20
         Align = alRight
         BevelOuter = bvNone
         Color = 10528425
@@ -212,7 +225,7 @@ object frmKeyBar: TfrmKeyBar
           Left = 0
           Top = 0
           Width = 35
-          Height = 21
+          Height = 20
           Align = alClient
           AutoSize = False
           BorderStyle = sbsSunken
@@ -231,7 +244,7 @@ object frmKeyBar: TfrmKeyBar
   end
   object PanelCh1: TMxPanel
     Left = 0
-    Top = 25
+    Top = 24
     Width = 1057
     Height = 15
     Align = alBottom
@@ -283,7 +296,7 @@ object frmKeyBar: TfrmKeyBar
   end
   object PanelCh2: TMxPanel
     Left = 0
-    Top = 40
+    Top = 39
     Width = 1057
     Height = 15
     Align = alBottom
@@ -330,6 +343,110 @@ object frmKeyBar: TfrmKeyBar
       Caption = 'Del'
       Align = alRight
       OnClick = BtnDelCh2Click
+      DockOrientation = doNoOrient
+    end
+  end
+  object PanelCh3: TMxPanel
+    Left = 0
+    Top = 54
+    Width = 1057
+    Height = 15
+    Align = alBottom
+    TabOrder = 3
+    OnPaint = PanelCh3Paint
+    object Label4: TLabel
+      Left = 5
+      Top = 1
+      Width = 24
+      Height = 13
+      Caption = 'Left2'
+    end
+    object BtnUpCh3: TElGraphicButton
+      Left = 974
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Up'
+      Align = alRight
+      OnClick = BtnUpCh3Click
+      DockOrientation = doNoOrient
+    end
+    object BtnDownCh3: TElGraphicButton
+      Left = 1015
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Down'
+      Align = alRight
+      OnClick = BtnDownCh3Click
+      DockOrientation = doNoOrient
+    end
+    object BtnDelCh3: TElGraphicButton
+      Left = 933
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Del'
+      Align = alRight
+      OnClick = BtnDelCh3Click
+      DockOrientation = doNoOrient
+    end
+  end
+  object PanelCh4: TMxPanel
+    Left = 0
+    Top = 69
+    Width = 1057
+    Height = 15
+    Align = alBottom
+    TabOrder = 4
+    OnPaint = PanelCh4Paint
+    object Label5: TLabel
+      Left = 5
+      Top = 1
+      Width = 31
+      Height = 13
+      Caption = 'Right2'
+    end
+    object BtnUpCh4: TElGraphicButton
+      Left = 974
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Up'
+      Align = alRight
+      OnClick = BtnUpCh4Click
+      DockOrientation = doNoOrient
+    end
+    object BtnDownCh4: TElGraphicButton
+      Left = 1015
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Down'
+      Align = alRight
+      OnClick = BtnDownCh4Click
+      DockOrientation = doNoOrient
+    end
+    object BtnDelCh4: TElGraphicButton
+      Left = 933
+      Top = 1
+      Width = 41
+      Height = 13
+      NumGlyphs = 1
+      ShadowFollowsColor = True
+      Caption = 'Del'
+      Align = alRight
+      OnClick = BtnDelCh4Click
       DockOrientation = doNoOrient
     end
   end

@@ -266,9 +266,9 @@ void CActorTools::FillMotionProperties(PropItemVec& items, LPCSTR pref, ListItem
     if (SM){                                                                     
         B=PHelper().CreateButton	(items, PrepareKey(pref,"Motion\\Control"),	"Play,Stop,Pause",ButtonValue::flFirstOnly);
         B->OnBtnClickEvent.bind		(this,&CActorTools::OnMotionControlClick);
-	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\Start"),	shared_str().sprintf("%d",SM->FrameStart()));
-	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\End"),	shared_str().sprintf("%d",SM->FrameEnd()));
-	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\Length"),	shared_str().sprintf("%d",SM->Length()));
+	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\Start"),	shared_str().printf("%d",SM->FrameStart()));
+	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\End"),	shared_str().printf("%d",SM->FrameEnd()));
+	    PHelper().CreateCaption		(items, PrepareKey(pref,"Motion\\Frame\\Length"),	shared_str().printf("%d",SM->Length()));
         PropValue* P=0;                                              
         P=PHelper().CreateName		(items,PrepareKey(pref,"Motion\\Name"),		&SM->name, sender);
         P->OnChangeEvent.bind		(this,&CActorTools::OnMotionNameChange);
@@ -607,7 +607,7 @@ void CActorTools::FillSurfaceProperties(PropItemVec& items, LPCSTR pref, ListIte
 {
 	R_ASSERT(m_pEditObject);
 	CSurface* SURF = (CSurface*)sender->m_Object;
-	PHelper().CreateCaption			(items, PrepareKey(pref,"Statistic\\Count"),	shared_str().sprintf("%d",m_pEditObject->SurfaceCount()));
+	PHelper().CreateCaption			(items, PrepareKey(pref,"Statistic\\Count"),	shared_str().printf("%d",m_pEditObject->SurfaceCount()));
 	ButtonValue* B;
 	B=PHelper().CreateButton	(items, PrepareKey(pref,"Surfaces"),"Load,Save",ButtonValue::flFirstOnly);
 	B->OnBtnClickEvent.bind		(this,&CActorTools::OnSurfacesFileClick);

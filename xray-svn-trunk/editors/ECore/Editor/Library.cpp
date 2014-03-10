@@ -36,16 +36,16 @@ void ELibrary::OnDestroy()
 {
 	VERIFY(m_bReady);
     m_bReady = false;
-//	Device.seqDevCreate.Remove(this);
-//	Device.seqDevDestroy.Remove(this);
+//	EDevice.seqDevCreate.Remove(this);
+//	EDevice.seqDevDestroy.Remove(this);
 
     // remove all instance CEditableObject
 	EditObjPairIt O = m_EditObjects.begin();
 	EditObjPairIt E = m_EditObjects.end();
     for(; O!=E; O++){
     	if (0!=O->second->m_RefCount){
-        	ELog.DlgMsg(mtError,"Object '%s' still referenced.",O->first.c_str());
-	    	R_ASSERT(0==O->second->m_RefCount);
+//.        	ELog.DlgMsg(mtError,"Object '%s' still referenced.",O->first.c_str());
+//.	    	R_ASSERT(0==O->second->m_RefCount);
         }
     	xr_delete(O->second);
     }
@@ -163,9 +163,11 @@ void ELibrary::Save(FS_FileSet* modif_map)
 	VERIFY(m_bReady);
 	EditObjPairIt O = m_EditObjects.begin();
 	EditObjPairIt E = m_EditObjects.end();
-    if (modif_map){
+    if (modif_map)
+    {
         for(; O!=E; O++)
-        	if (modif_map->end()!=modif_map->find(FS_File(O->second->GetName()))){
+        	if (modif_map->end()!=modif_map->find(FS_File(O->second->GetName())))
+            {
                 string_path 			nm;
                 FS.update_path	(nm,_objects_,O->second->GetName());
                 strcpy(nm, EFS.ChangeFileExt(nm,".object").c_str());
@@ -173,9 +175,11 @@ void ELibrary::Save(FS_FileSet* modif_map)
                 if (!O->second->SaveObject(nm))
                     Log			("!Can't save object:",nm);
             }
-    }else{
+    }else
+    {
         for(; O!=E; O++)
-            if (O->second->IsModified()){
+            if (O->second->IsModified())
+            {
                 string_path		nm;
                 FS.update_path	(nm,_objects_,O->second->GetName());
                 strcpy			(nm, EFS.ChangeFileExt(nm,".object").c_str());

@@ -12,6 +12,7 @@
 #include <ExtCtrls.hpp>
 #include "ExtBtn.hpp"
 #include "mxPlacemnt.hpp"
+#include <Dialogs.hpp>
 //---------------------------------------------------------------------------
 class ECORE_API TfraTopBar : public TFrame
 {
@@ -55,6 +56,7 @@ __published:	// IDE-managed Components
 	TExtBtn *ebViewReset;
 	TExtBtn *ebMTSnap;
 	TExtBtn *ebNormalAlign;
+	TExtBtn *SimulateButton;
     void __fastcall ebEditUndoClick(TObject *Sender);
     void __fastcall ebEditRedoClick(TObject *Sender);
     void __fastcall ActionClick(TObject *Sender);
@@ -65,6 +67,7 @@ __published:	// IDE-managed Components
 	void __fastcall fsStorageRestorePlacement(TObject *Sender);
 	void __fastcall ebAxisClick(TObject *Sender);
 	void __fastcall ebSettingsClick(TObject *Sender);
+	void __fastcall SimulateButtonClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
         __fastcall TfraTopBar(TComponent* Owner);

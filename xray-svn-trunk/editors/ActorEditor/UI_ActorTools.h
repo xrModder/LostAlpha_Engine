@@ -6,11 +6,13 @@
 #include "mxplacemnt.hpp"
 #include "../xrEProps/ItemListHelper.h"
 #include "../Ecore/editor/EditObject.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 #include "SkeletonCustom.h"
 #include "SkeletonAnimated.h"
 #include "ClipEditor.h"
 #include "../Ecore/editor/UI_ToolsCustom.h"
 #include "../Ecore/editor/UI_MainCommand.h"
+#include "../xrEProps/PropertiesList.h"
 // refs
 class TProperties;
 class CEditableObject;
@@ -30,7 +32,7 @@ enum EEditMode{
 
 // refs
 class CSMotion;
-
+static Fmatrix xform  = Fidentity;
 class EngineModel{
     CMemoryWriter	m_GeometryStream;
     CMemoryWriter	m_MotionKeysStream;
@@ -40,7 +42,9 @@ class EngineModel{
     bool			UpdateMotionDefsStream	(CEditableObject* source);
 public:
     float			m_fLOD;
-    IRender_Visual*	m_pVisual;
+    IRenderVisual*	m_pVisual;
+
+    //Fmatrix			m_pobject_matrix;
     CBlend*			m_pBlend;
     struct BPPlayItem{
         AnsiString	name;
@@ -48,8 +52,10 @@ public:
     };
     BPPlayItem		m_BPPlayItems[4];
 public:
-                    EngineModel			(){m_pVisual=0;m_fLOD=1.f;m_pBlend=0;}
-    void			DeleteVisual		(){::Render->model_Delete(m_pVisual);m_pBlend=0;}
+                    EngineModel			(){ m_pVisual = 0; m_fLOD=1.f; m_pBlend=0;  /* m_pobject_matrix = Fidentity;*/ }
+
+    void			DeleteVisual		();
+
     void			Clear				()
     {
         DeleteVisual			();
@@ -114,7 +120,7 @@ class CActorTools: public CToolsCustom
 	CEditableObject*	m_pEditObject;
 
     bool				m_bObjectModified;
-
+    shared_str			m_tmp_mot_refs;
     EEditMode			m_EditMode;
     AnsiString			m_CurrentMotion;
     u16					m_CurrentSlot;
@@ -292,6 +298,7 @@ public:
     void				OptimizeMotions		();
     void				MakeThumbnail		();
     bool				BatchConvert		(LPCSTR fn);
+    virtual bool		GetSelectionPosition	(Fmatrix& result);
 
     // commands
 	CCommandVar			CommandClear		(CCommandVar p1, CCommandVar p2);

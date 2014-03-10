@@ -25,6 +25,13 @@ CActorTools*&	ATools=(CActorTools*)Tools;
 //------------------------------------------------------------------------------
 #define CHECK_SNAP(R,A,C){ R+=A; if(fabsf(R)>=C){ A=snapto(R,C); R=0; }else{A=0;}}
 
+void EngineModel::DeleteVisual		()
+{
+	//DeletePhysicsShell	();
+	Render->model_Delete(m_pVisual);
+    m_pVisual	= 0;
+	m_pBlend	= 0;
+}
 void PreviewModel::RestoreParams(TFormStorage* s)
 {          
     m_Props->RestoreParams(s);
@@ -109,8 +116,9 @@ void PreviewModel::Render()
 
 void PreviewModel::Update()
 {
-    if (m_Flags.is(pmScroll)){
-        m_vPosition.z += m_fSpeed*Device.fTimeDelta;
+    if (m_Flags.is(pmScroll))
+    {
+        m_vPosition.z += m_fSpeed*EDevice.fTimeDelta;
         if (m_vPosition.z>m_fSegment) m_vPosition.z-=m_fSegment;
     }
 }
@@ -197,10 +205,13 @@ void CActorTools::Modified()
 }
 //---------------------------------------------------------------------------
 
-bool CActorTools::IfModified(){
-    if (IsModified()){
+bool CActorTools::IfModified()
+{
+    if (IsModified())
+    {
         int mr = ELog.DlgMsg(mtConfirmation, "The '%s' has been modified.\nDo you want to save your changes?",GetEditFileName().c_str());
-        switch(mr){
+        switch(mr)
+        {
         case mrYes: if (!ExecCommand(COMMAND_SAVE)) return false; else{m_bObjectModified = false;}break;
         case mrNo: m_bObjectModified = false; break;
         case mrCancel: return false;
@@ -235,17 +246,21 @@ void CActorTools::GetStatTime(float& a, float& b, float& c)
     	a = 0;
 		b = m_RenderObject.m_pBlend->timeTotal/m_RenderObject.m_pBlend->speed;
         c = m_RenderObject.m_pBlend->timeCurrent/m_RenderObject.m_pBlend->speed;
-        if (c>b){
+        if (c>b)
+        {
         	int cnt=iFloor(c/b);
         	c-=(cnt*b);
         }
-    }else{
-    	if (fraLeftBar->ebRenderEditorStyle->Down&&m_pEditObject&&m_pEditObject->GetActiveSMotion()){
+    }else
+    {
+    	if (fraLeftBar->ebRenderEditorStyle->Down&&m_pEditObject&&m_pEditObject->GetActiveSMotion())
+        {
 			SAnimParams& P=m_pEditObject->m_SMParam;
 		    a = P.min_t;
     		b = P.max_t;
             c = P.t_current;
-        }else{
+        }else
+        {
         	a = 0;
             b = 0;
             c = 0;
@@ -256,6 +271,15 @@ void CActorTools::GetStatTime(float& a, float& b, float& c)
 //#include "d3dutils.h"
 //DU.DrawIdentSpherePart(false,true,0xffffffff,0xffff);
 #include "igame_persistent.h"
+#include "..\ECore\editor\d3dutils.h"
+
+const u32 color_bone_sel_color	=0xFFFFFFFF;
+const u32 color_bone_norm_color	=0xFFFFFF00;
+const u32 color_bone_link_color	=0xFFA0A000;
+const u32 color_bone_sel_cm		=0xFFFF0000;
+const u32 color_bone_norm_cm	=0xFF700000;
+const float joint_size			=0.025f;
+
 
 void CActorTools::Render()
 {
@@ -272,17 +296,17 @@ void CActorTools::Render()
         }
     }
 
-    if (psDeviceFlags.is(rsEnvironment)) g_pGamePersistent->Environment().RenderLast	();
-
     inherited::Render		();
 }
 //---------------------------------------------------------------------------
 void CActorTools::RenderEnvironment()
 {
+/*
     if (psDeviceFlags.is(rsEnvironment)){
         g_pGamePersistent->Environment().RenderSky	();
         g_pGamePersistent->Environment().RenderClouds	();
     }
+*/    
 }
 
 void CActorTools::OnFrame()
@@ -290,7 +314,8 @@ void CActorTools::OnFrame()
 	if (!m_bReady) return;
 //.    if (m_KeyBar) m_KeyBar->UpdateBar();
     m_PreviewObject.Update();
-	if (m_pEditObject){
+	if (m_pEditObject)
+    {
     	// update matrix
         Fmatrix	mTranslate,mRotate;
         mRotate.setHPB			(m_pEditObject->a_vRotate.y, m_pEditObject->a_vRotate.x, m_pEditObject->a_vRotate.z);
@@ -307,11 +332,15 @@ void CActorTools::OnFrame()
         }
     }
     if (m_KeyBar) m_KeyBar->UpdateBar();
-    if (m_Flags.is(flRefreshShaders)){
+    
+    if (m_Flags.is(flRefreshShaders))
+    {
     	m_Flags.set(flRefreshShaders,FALSE);
         m_pEditObject->OnDeviceDestroy();
     }
-    if (m_Flags.is(flRefreshSubProps)){
+    
+    if (m_Flags.is(flRefreshSubProps))
+    {
     	m_Flags.set(flRefreshSubProps,FALSE);
         ListItemsVec items;
         m_ObjectItems->GetSelected(0,items,false);
@@ -358,7 +387,7 @@ void CActorTools::ZoomObject(BOOL bSelOnly)
         default:
         	BB		= m_pEditObject->GetBox();
         }
-        Device.m_Camera.ZoomExtents(BB);
+        EDevice.m_Camera.ZoomExtents(BB);
     }
 }
 
@@ -371,33 +400,33 @@ void CActorTools::PrepareLighting()
 
     L.diffuse.set(1,1,1,1);
     L.direction.set(1,-1,1); L.direction.normalize();
-	Device.SetLight(0,L);
-	Device.LightEnable(0,true);
+	EDevice.SetLight(0,L);
+	EDevice.LightEnable(0,true);
 
     L.diffuse.set(0.2,0.2,0.2,1);
     L.direction.set(-1,-1,-1); L.direction.normalize();
-	Device.SetLight(1,L);
-	Device.LightEnable(1,true);
+	EDevice.SetLight(1,L);
+	EDevice.LightEnable(1,true);
 
     L.diffuse.set(0.2,0.2,0.2,1);
     L.direction.set(1,-1,-1); L.direction.normalize();
-	Device.SetLight(2,L);
-	Device.LightEnable(2,true);
+	EDevice.SetLight(2,L);
+	EDevice.LightEnable(2,true);
 
     L.diffuse.set(0.2,0.2,0.2,1);
     L.direction.set(-1,-1,1); L.direction.normalize();
-	Device.SetLight(3,L);
-	Device.LightEnable(3,true);
+	EDevice.SetLight(3,L);
+	EDevice.LightEnable(3,true);
 
 	L.diffuse.set(1.0,0.4,0.3,1);
     L.direction.set(0,1,0); L.direction.normalize();
-	Device.SetLight(4,L);
-	Device.LightEnable(4,true);
+	EDevice.SetLight(4,L);
+	EDevice.LightEnable(4,true);
 
 	L.diffuse.set(0.3,1.0,0.4,1);
     L.direction.set(-1,-1,-1); L.direction.normalize();
-	Device.SetLight(5,L);
-	Device.LightEnable(5,true);
+	EDevice.SetLight(5,L);
+	EDevice.LightEnable(5,true);
 }
 
 void CActorTools::OnDeviceCreate()
@@ -529,11 +558,14 @@ bool CActorTools::ExportOBJ(LPCSTR name)
 
 bool CActorTools::ExportCPP(LPCSTR name)
 {
-    if (m_pEditObject){
+    if (m_pEditObject)
+    {
     	EditMeshVec& meshes		= m_pEditObject->Meshes();
         string128 tmp;
         IWriter* W 				= FS.w_open(name);
-        for (EditMeshIt m_it=meshes.begin(); m_it!=meshes.end(); m_it++){
+
+        for (EditMeshIt m_it=meshes.begin(); m_it!=meshes.end(); m_it++)
+        {
 	    	CEditableMesh* mesh = *m_it;
             const st_Face* faces= mesh->GetFaces();
             const Fvector* verts= mesh->GetVerts();
@@ -612,8 +644,10 @@ bool __fastcall CActorTools::MouseStart(TShiftState Shift)
 	inherited::MouseStart(Shift);
 	switch(m_Action){
     case etaSelect:
-    	switch (m_EditMode){
-        case emBone:{
+    	switch (m_EditMode)
+        {
+        case emBone:
+        {
 	        CBone* B 	= m_pEditObject->PickBone(UI->m_CurrentRStart,UI->m_CurrentRNorm,m_AVTransform);
             bool bVal 	= B?Shift.Contains(ssAlt)?false:(Shift.Contains(ssCtrl)?!B->Selected():true):false;
             SelectListItem(BONES_PREFIX,B?MakeFullBoneName(B).c_str():0,bVal,Shift.Contains(ssCtrl)||Shift.Contains(ssAlt),true);
@@ -631,11 +665,14 @@ bool __fastcall CActorTools::MouseStart(TShiftState Shift)
 bool __fastcall CActorTools::MouseEnd(TShiftState Shift)
 {
 	inherited::MouseEnd(Shift);
-	switch(m_Action){
+	switch(m_Action)
+    {
     case etaSelect: 	break;
     case etaAdd: 	break;
-    case etaMove:{
-    	switch (m_EditMode){
+    case etaMove:
+    {
+    	switch (m_EditMode)
+        {
         case emObject:
 			if (Shift.Contains(ssCtrl))
 	        	OnMotionKeysModified();	
@@ -648,8 +685,10 @@ bool __fastcall CActorTools::MouseEnd(TShiftState Shift)
         break;
         }
     }break;
-    case etaRotate:{
-    	switch (m_EditMode){
+    case etaRotate:
+    {
+    	switch (m_EditMode)
+        {
         case emObject:	
 			if (Shift.Contains(ssCtrl))
         		OnMotionKeysModified();	
@@ -662,8 +701,10 @@ bool __fastcall CActorTools::MouseEnd(TShiftState Shift)
         break;
         }
     }break;
-    case etaScale:{
-    	switch (m_EditMode){
+    case etaScale:
+    {
+    	switch (m_EditMode)
+        {
         case emBone:	
 			if (Shift.Contains(ssCtrl))
 		        OnBoneModified();		
@@ -678,70 +719,96 @@ void __fastcall CActorTools::MouseMove(TShiftState Shift)
 {
 	inherited::MouseMove(Shift);
 	if (!m_pEditObject) return;
-	switch(m_Action){
+
+	switch(m_Action)
+    {
     case etaSelect: 	break;
     case etaAdd: 	break;
-    case etaMove:{
-    	switch (m_EditMode){
+    case etaMove:
+    {
+    	switch (m_EditMode)
+        {
         case emObject:
-			if (Shift.Contains(ssCtrl))
-	            m_pEditObject->a_vPosition.add(m_MoveAmount);
+			if (true || Shift.Contains(ssCtrl))
+	            m_pEditObject->a_vPosition.add(m_MovedAmount);
         break;
+
         case emBone:
             BoneVec lst;
-            if (m_pEditObject->GetSelectedBones(lst)){
+            if (m_pEditObject->GetSelectedBones(lst))
+            {
                 if (Shift.Contains(ssCtrl)){
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
-                        (*b_it)->ShapeMove(m_MoveAmount);
-                }else if (Shift.Contains(ssAlt)){
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
-                        (*b_it)->BindMove(m_MoveAmount);
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
+                        (*b_it)->ShapeMove(m_MovedAmount);
+                        
+                }else 
+                if (Shift.Contains(ssAlt))
+                {
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
+                        (*b_it)->BindMove(m_MovedAmount);
+
                     m_pEditObject->OnBindTransformChange();
                     RefreshSubProperties();
                 }else{
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
-                        (*b_it)->BoneMove(m_MoveAmount);
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
+                        (*b_it)->BoneMove(m_MovedAmount);
+                        
 	            	RefreshSubProperties();
                 }
             }
         break;
         }
     }break;
-    case etaRotate:{
-    	switch (m_EditMode){
+    case etaRotate:
+    {
+    	switch (m_EditMode)
+        {
         case emObject:
 			if (Shift.Contains(ssCtrl))             
 	            m_pEditObject->a_vRotate.mad(m_RotateVector,m_RotateAmount);
-        break;
-        case emBone:{
+        	break;
+            
+        case emBone:
+        {
             BoneVec lst;
             Fvector rot;
             rot.mul(m_RotateVector,m_RotateAmount);
-            if (m_pEditObject->GetSelectedBones(lst)){
-                if (Shift.Contains(ssCtrl)){
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
+            if (m_pEditObject->GetSelectedBones(lst))
+            {
+                if (Shift.Contains(ssCtrl))
+                {
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
                         (*b_it)->ShapeRotate(rot);
-                }else if (Shift.Contains(ssAlt)){
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
+                        
+                }else 
+                if (Shift.Contains(ssAlt))
+                {
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
                         (*b_it)->BindRotate(rot);
+                        
                     m_pEditObject->OnBindTransformChange();
 	            	RefreshSubProperties();
-                }else{
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
+                }else
+                {
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
                         (*b_it)->BoneRotate(m_RotateVector,m_RotateAmount);
+                        
 	            	RefreshSubProperties();
                 }
             }
         }break;
         }
     }break;
-    case etaScale:{
-    	switch (m_EditMode){
+    case etaScale:
+    {
+    	switch (m_EditMode)
+        {
         case emBone:
-        	if (Shift.Contains(ssCtrl)){
+        	if (Shift.Contains(ssCtrl))
+            {
                 BoneVec lst;
                 if (m_pEditObject->GetSelectedBones(lst))
-                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); b_it++)
+                    for (BoneIt b_it=lst.begin(); b_it!=lst.end(); ++b_it)
                         (*b_it)->ShapeScale(m_ScaleAmount);
 			}
         break;
@@ -912,4 +979,9 @@ xr_string CActorTools::BuildMotionPref(u16 slot, LPCSTR prefix)
 	return PrepareKey			(prefix,slot_nm).c_str();
 }
 
+bool CActorTools::GetSelectionPosition	(Fmatrix& result)
+{
+	result = m_AVTransform;
+	return true;
+}
 

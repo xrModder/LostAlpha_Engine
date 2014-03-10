@@ -6,8 +6,8 @@
 #include "ParticleEffectDef.h"
 
 #ifdef _EDITOR
-#	include "../../../xr_3da/xrRender/FBasicVisual.h"
-#	include "../../../xr_3da/xrRender/dxParticleCustom.h"
+#	include "../xr_3da/xrRender/FBasicVisual.h"
+#	include "../xr_3da/xrRender/dxParticleCustom.h"
 #else // _EDITOR
 #	include "../xrRender/FBasicVisual.h"
 #	include "../xrRender/dxParticleCustom.h"
