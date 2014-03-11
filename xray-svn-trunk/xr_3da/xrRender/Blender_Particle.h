@@ -11,6 +11,7 @@ class CBlender_Particle		: public IBlender
 	xrP_TOKEN	oBlend;
 	xrP_Integer	oAREF;
 	xrP_BOOL	oClamp;
+	xrP_BOOL	oCanBeSoft;
 public:
 	virtual		LPCSTR		getComment()	{ return "particles";	}
 	virtual		BOOL		canBeLMAPped()	{ return FALSE;			}
