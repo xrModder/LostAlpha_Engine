@@ -200,7 +200,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 		case IRender_interface::SM_FOR_LEVELMAP:
 		case IRender_interface::SM_FOR_CUBEMAP:
 			{
-				VERIFY(!"CRender::Screenshot. This screenshot type is not supported for DX10.");
+				Msg ("! CRender::Screenshot. This screenshot type is not supported for DX10/DX11.");
 				/*
 				string64			t_stemp;
 				string_path			buf;
@@ -229,6 +229,47 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 				xr_free				(data);
 
 				FS.w_close			(fs);
+				*/
+
+				/*D3D10_TEXTURE2D_DESC texDesc;
+				texDesc.ArraySize = 1;
+				texDesc.BindFlags = 0;
+				texDesc.CPUAccessFlags = 0;
+				texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				texDesc.Width = Device.dwWidth;
+				texDesc.Height = Device.dwHeight;
+				texDesc.MipLevels = 1;
+				texDesc.MiscFlags = 0;
+				texDesc.SampleDesc.Count = 1;
+				texDesc.SampleDesc.Quality = 0;
+				texDesc.Usage = D3D10_USAGE_DEFAULT;
+
+#ifdef USE_DX11
+				ID3D11Texture2D *texture;
+#else
+				ID3D10Texture2D *texture;
+#endif
+				CHK_DX(HW.pDevice->CreateTexture2D(&texDesc, 0, &texture));
+				HW.pDevice->CopyResource(texture, pSrcTexture);
+
+				string64 t_stemp;
+				string_path buf;
+				xr_sprintf(buf, sizeof(buf), "%s\\ss_%s_%s_#%s.%s",
+							FS.get_path("$screenshots$")->m_Path,
+							Core.UserName, timestamp(t_stemp),
+							name,
+							(strstr(Core.Params,"-ss_tga")) ? "png" : "jpg"
+							);
+
+#ifdef USE_DX11
+				CHK_DX(D3DX11SaveTextureToFile(texture, 
+					(strstr(Core.Params,"-ss_tga")) ? D3DX11_IFF_PNG : D3DX11_IFF_JPG, buf));
+#else
+				CHK_DX(D3DX10SaveTextureToFile(texture, 
+					(strstr(Core.Params,"-ss_tga")) ? D3DX10_IFF_PNG : D3DX10_IFF_JPG, buf));
+#endif
+				texture->Release();
+
 				*/
 			}
 			break;
