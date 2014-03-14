@@ -23,8 +23,16 @@
 
 void CUIInventoryWnd::EatItem(PIItem itm)
 {
+	if (CurrentItem())
+	{
+		CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
+		owner->DestroyDragItem			();
+		owner->RemoveItem			(CurrentItem(), false);
+	}
 	SetCurrentItem							(NULL);
 	if(!itm->Useful())						return;
+	CActor *pActor							= smart_cast<CActor*>(Level().CurrentEntity());
+	if(!pActor)								return;
 
 	SendEvent_Item_Eat						(itm);
 
@@ -308,15 +316,6 @@ bool CUIInventoryWnd::DropItem(PIItem itm, CUIDragDropListEx* lst)
 	if(lst==m_pUIOutfitList)
 	{
 		return TryUseItem			(itm);
-/*
-		CCustomOutfit*		pOutfit		= smart_cast<CCustomOutfit*>	(CurrentIItem());
-		if(pOutfit)
-			ToSlot			(CurrentItem(), true);
-		else
-			EatItem				(CurrentIItem());
-
-		return				true;
-*/
 	}
 	CUICellItem*	_citem	= lst->ItemsCount() ? lst->GetItemIdx(0) : NULL;
 	PIItem _iitem	= _citem ? (PIItem)_citem->m_pData : NULL;

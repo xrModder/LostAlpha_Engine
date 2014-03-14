@@ -76,7 +76,7 @@ protected:
 
 	CUIStatic					UICacoWnd;
 	CUIStatic					UIBagWnd;
-	CUITextWnd					UIMoneyWnd;
+	CUIStatic					UIMoneyWnd;
 	CUIStatic					UIDescrWnd;
 	CUIFrameWindow				UIPersonalWnd;
 
@@ -97,7 +97,7 @@ protected:
 	CUIDragDropListEx*			m_pUITorchList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
 	void						ClearAllLists				();
-	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
+	void						BindDragDropListEvents		(CUIDragDropListEx* lst);
 	
 	EListType					GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*			GetSlotList					(u32 slot_idx);
@@ -150,7 +150,7 @@ protected:
 	void						ActivatePropertiesBox		();
 
 	void						DropCurrentItem				(bool b_all);
-	void						SumAmmoByDrop				(CInventoryItem* itm, CUIDragDropListEx* old_owner);
+	void						SumAmmoByDrop				(CUICellItem* cell_itm, CUIDragDropListEx* old_owner);
 	void						EatItem						(PIItem itm);
 	
 	bool						ToSlot						(CUICellItem* itm, bool force_place);

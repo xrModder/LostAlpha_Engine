@@ -25,7 +25,9 @@ PIItem CUIInventoryWnd::CurrentIItem()
 void CUIInventoryWnd::SetCurrentItem(CUICellItem* itm)
 {
 	if(m_pCurrentCellItem == itm) return;
+
 	m_pCurrentCellItem				= itm;
+
 	UIItemInfo.InitItem			(CurrentIItem());
 }
 
@@ -141,6 +143,12 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	if(!b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
 	{
 		SendEvent_Item_Drop		(CurrentIItem());
+		if (CurrentItem())
+		{
+			CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
+			owner->DestroyDragItem			();
+			owner->RemoveItem			(CurrentItem(), false);
+		}
 		SetCurrentItem			(NULL);
 		InventoryUtilities::UpdateWeight			(UIBagWnd, true);
 		return;
@@ -150,13 +158,20 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	{
 		u32 cnt = CurrentItem()->ChildsCount();
 
-		for(u32 i=0; i<cnt; ++i){
+		for(u32 i=0; i<cnt; ++i)
+		{
 			CUICellItem*	itm				= CurrentItem()->PopChild(NULL);
 			PIItem			iitm			= (PIItem)itm->m_pData;
 			SendEvent_Item_Drop				(iitm);
 		}
 
 		SendEvent_Item_Drop					(CurrentIItem());
+		if (CurrentItem())
+		{
+			CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
+			owner->DestroyDragItem			();
+			owner->RemoveItem			(CurrentItem(), false);
+		}
 		SetCurrentItem						(NULL);
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		return;
@@ -346,7 +361,7 @@ void CUIInventoryWnd::ColorizeAmmo(CUICellItem* itm)
 	}
 }
 
-void CUIInventoryWnd::SumAmmoByDrop(CInventoryItem* itm, CUIDragDropListEx* owner)
+void CUIInventoryWnd::SumAmmoByDrop(CUICellItem* cell_itm, CUIDragDropListEx* owner)
 {
 	u32 idx = owner->GetItemIdx				(owner->GetDragItemPosition());
 	if (idx==u32(-1)) return;
@@ -356,16 +371,19 @@ void CUIInventoryWnd::SumAmmoByDrop(CInventoryItem* itm, CUIDragDropListEx* owne
 
 	if (!itemTo) return;
 
-	CWeaponAmmo* ammoCurrent =	 smart_cast<CWeaponAmmo*>(itm);
+	CWeaponAmmo* ammoCurrent =	 smart_cast<CWeaponAmmo*>((CInventoryItem*)cell_itm->m_pData);
 	CWeaponAmmo* ammoTo		 =	 smart_cast<CWeaponAmmo*>((CInventoryItem*)itemTo->m_pData);
 
 	if (!ammoCurrent || !ammoTo) return;
 
 	u16 freeSpaceTo = ammoTo->m_boxSize - ammoTo->m_boxCurr;
 
-	if (freeSpaceTo>=ammoCurrent->m_boxCurr) {
+	if (freeSpaceTo>=ammoCurrent->m_boxCurr)
+	{
 		ammoTo->m_boxCurr+=ammoCurrent->m_boxCurr;
-		DeleteFromInventory(itm);
+		owner->DestroyDragItem			();
+		owner->RemoveItem			(cell_itm, false);
+		DeleteFromInventory			((CInventoryItem*)cell_itm->m_pData);
 	} else {
 		ammoCurrent->m_boxCurr-=freeSpaceTo;
 		ammoTo->m_boxCurr=ammoTo->m_boxSize;
@@ -387,7 +405,7 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 	if (old_owner==new_owner)
 	{
 		if (t_new==iwBelt)
-			SumAmmoByDrop((CInventoryItem*)itm->m_pData, old_owner);
+			SumAmmoByDrop(itm, old_owner);
 
 		return false;
 	}

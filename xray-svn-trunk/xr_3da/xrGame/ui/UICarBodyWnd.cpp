@@ -138,8 +138,8 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUITakeAll);
 	xml_init.Init3tButton				(uiXml, "take_all_btn", 0, m_pUITakeAll);
 
-	BindDragDropListEnents			(m_pUIOurBagList);
-	BindDragDropListEnents			(m_pUIOthersBagList);
+	BindDragDropListEvents			(m_pUIOurBagList);
+	BindDragDropListEvents			(m_pUIOthersBagList);
 
 
 }
@@ -237,11 +237,8 @@ void CUICarBodyWnd::HideDialog()
 	inherited::HideDialog();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
-
 	if (m_pCar)
-	{
 		m_pCar->CloseTrunkBone();
-	}
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -646,7 +643,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 	return true;
 }
 
-void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
+void CUICarBodyWnd::BindDragDropListEvents(CUIDragDropListEx* lst)
 {
 	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUICarBodyWnd::OnItemDrop);
 	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUICarBodyWnd::OnItemStartDrag);

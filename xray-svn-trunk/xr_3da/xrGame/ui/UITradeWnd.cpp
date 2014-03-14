@@ -177,10 +177,10 @@ void CUITradeWnd::Init()
 
 	m_uidata->UIDealMsg					= NULL;
 
-	BindDragDropListEnents				(&m_uidata->UIOurBagList);
-	BindDragDropListEnents				(&m_uidata->UIOthersBagList);
-	BindDragDropListEnents				(&m_uidata->UIOurTradeList);
-	BindDragDropListEnents				(&m_uidata->UIOthersTradeList);
+	BindDragDropListEvents				(&m_uidata->UIOurBagList);
+	BindDragDropListEvents				(&m_uidata->UIOthersBagList);
+	BindDragDropListEvents				(&m_uidata->UIOurTradeList);
+	BindDragDropListEvents				(&m_uidata->UIOthersTradeList);
 }
 
 void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
@@ -627,7 +627,7 @@ void CUITradeWnd::SwitchToTalk()
 	GetMessageTarget()->SendMessage		(this, TRADE_WND_CLOSED);
 }
 
-void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
+void CUITradeWnd::BindDragDropListEvents(CUIDragDropListEx* lst)
 {
 	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemDrop);
 	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemStartDrag);

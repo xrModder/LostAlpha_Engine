@@ -91,6 +91,6 @@ protected:
 	bool		xr_stdcall		OnItemSelected		(CUICellItem* itm);
 	bool		xr_stdcall		OnItemRButtonClick	(CUICellItem* itm);
 
-	void				BindDragDropListEnents		(CUIDragDropListEx* lst);
+	void				BindDragDropListEvents		(CUIDragDropListEx* lst);
 
 };

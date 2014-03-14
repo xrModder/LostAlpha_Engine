@@ -47,6 +47,7 @@ CUIListBoxItem* CUIListBox::AddTextItem(LPCSTR text)
 	CUIListBoxItem* pItem			= AddItem();
 
 	pItem->SetWndSize				(Fvector2().set(GetDesiredChildWidth(), m_def_item_height));
+	pItem->SetTextColor				(m_text_color);
 	pItem->SetText					(CStringTable().translate(text).c_str());
 	pItem->GetTextItem()->SetWidth	(GetDesiredChildWidth());
 	pItem->GetTextItem()->SetTextAlignment	(m_text_al);
@@ -64,7 +65,7 @@ CUIListBoxItem*  CUIListBox::AddItem()
 	if(m_selection_texture.size())
 		item->InitTexture		(*m_selection_texture, "hud\\default");
 	else
-        item->InitDefault		();
+		item->InitDefault		();
 
 	item->SetFont				(GetFont());
 	item->SetSelected			(false);
@@ -82,7 +83,7 @@ void CUIListBox::AddExistingItem(CUIListBoxItem* item, int pos)
 	if(m_selection_texture.size())
 		item->InitTexture		(*m_selection_texture, "hud\\default");
 	else
-        item->InitDefault		();
+		item->InitDefault		();
 
 	item->SetSelected			(false);
 	item->SetMessageTarget		(this);
