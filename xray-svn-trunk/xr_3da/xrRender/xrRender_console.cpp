@@ -689,7 +689,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,	2.0f /*1.2f*/	);
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
-	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.026f,	1.0f	);
+	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.22f,	1.0f	);
 
 	CMD4(CCC_Float,		"r__detail_l_ambient",	&ps_r__Detail_l_ambient,	.5f,	.95f	);
 	CMD4(CCC_Float,		"r__detail_l_aniso",	&ps_r__Detail_l_aniso,		.1f,	.5f		);
