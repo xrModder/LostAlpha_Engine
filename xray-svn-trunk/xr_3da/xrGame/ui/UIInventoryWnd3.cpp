@@ -23,12 +23,6 @@
 
 void CUIInventoryWnd::EatItem(PIItem itm)
 {
-	if (CurrentItem())
-	{
-		CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
-		owner->DestroyDragItem			();
-		owner->RemoveItem			(CurrentItem(), false);
-	}
 	SetCurrentItem							(NULL);
 	if(!itm->Useful())						return;
 	CActor *pActor							= smart_cast<CActor*>(Level().CurrentEntity());

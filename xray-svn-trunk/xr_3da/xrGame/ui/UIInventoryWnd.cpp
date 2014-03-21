@@ -32,8 +32,6 @@ using namespace InventoryUtilities;
 #include "UIDragDropListEx.h"
 #include "UIOutfitSlot.h"
 #include "UI3tButton.h"
-#include "UICellItem.h"
-
 
 
 CUIInventoryWnd*	g_pInvWnd = NULL;
@@ -427,12 +425,6 @@ void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 	{
 			m_iCurrentActiveSlot				= pActor->inventory().GetActiveSlot();
 			pActor->inventory().Activate		(NO_ACTIVE_SLOT);
-	}
-	if (CurrentItem())
-	{
-		CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
-		owner->DestroyDragItem			();
-		owner->RemoveItem			(CurrentItem(), false);
 	}
 	SetCurrentItem								(NULL);
 }

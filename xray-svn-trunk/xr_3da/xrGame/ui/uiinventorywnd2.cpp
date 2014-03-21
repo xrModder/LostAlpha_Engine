@@ -143,12 +143,6 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	if(!b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
 	{
 		SendEvent_Item_Drop		(CurrentIItem());
-		if (CurrentItem())
-		{
-			CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
-			owner->DestroyDragItem			();
-			owner->RemoveItem			(CurrentItem(), false);
-		}
 		SetCurrentItem			(NULL);
 		InventoryUtilities::UpdateWeight			(UIBagWnd, true);
 		return;
@@ -166,12 +160,6 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		}
 
 		SendEvent_Item_Drop					(CurrentIItem());
-		if (CurrentItem())
-		{
-			CUIDragDropListEx* owner		= CurrentItem()->OwnerList(); //skyloader: added baaaaad hack :S
-			owner->DestroyDragItem			();
-			owner->RemoveItem			(CurrentItem(), false);
-		}
 		SetCurrentItem						(NULL);
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		return;
@@ -381,8 +369,6 @@ void CUIInventoryWnd::SumAmmoByDrop(CUICellItem* cell_itm, CUIDragDropListEx* ow
 	if (freeSpaceTo>=ammoCurrent->m_boxCurr)
 	{
 		ammoTo->m_boxCurr+=ammoCurrent->m_boxCurr;
-		owner->DestroyDragItem			();
-		owner->RemoveItem			(cell_itm, false);
 		DeleteFromInventory			((CInventoryItem*)cell_itm->m_pData);
 	} else {
 		ammoCurrent->m_boxCurr-=freeSpaceTo;

@@ -120,7 +120,7 @@ public:
 	bool			CrosshairShown			()					{return !!psHUD_Flags.test	(HUD_CROSSHAIR_RT);}
 	
 	virtual void		HideShownDialogs		(){};
-
+	virtual void		ReInitShownUI			(){};
 	virtual void		ReinitDialogs			(){};
 
 	virtual void		AddCustomMessage		(LPCSTR id, float x, float y, float font_size, CGameFont *pFont, u16 alignment, u32 color);

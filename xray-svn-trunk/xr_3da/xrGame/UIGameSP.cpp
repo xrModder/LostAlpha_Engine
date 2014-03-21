@@ -49,6 +49,15 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 	R_ASSERT							(m_game);
 }
 
+void CUIGameSP::ReInitShownUI() 
+{ 
+	if (m_InventoryMenu->IsShown()) 
+		m_InventoryMenu->InitInventory_delayed(); 
+	else if(m_UICarBodyMenu->IsShown())
+		m_UICarBodyMenu->UpdateLists_delayed();
+	
+};
+
 bool CUIGameSP::IR_UIOnKeyboardPress(int dik) 
 {
 	if(inherited::IR_UIOnKeyboardPress(dik)) return true;
