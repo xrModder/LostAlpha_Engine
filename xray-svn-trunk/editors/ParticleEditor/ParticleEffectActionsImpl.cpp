@@ -6,7 +6,7 @@
 #include "../xrEProps/folderlib.h"
 #include "../xrEProps/PropertiesListHelper.h"
 #include "../../xrParticles/particle_actions_collection.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dUtils.h"
 
 using namespace PAPI; 
 #define PARTICLE_ACTION_VERSION		0x0000
@@ -748,8 +748,8 @@ void	EPAJet::Render				(const Fmatrix& parent)
 {
 	EParticleAction::Render			(parent);
     RCache.set_xform_world			(parent);
-    Device.SetShader				(Device.m_WireShader);
-    DU.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x600000ff);
+    EDevice.SetShader				(EDevice.m_WireShader);
+    DU_impl.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x600000ff);
 }
 
 EPAKillOld::EPAKillOld				():EParticleAction(PAPI::PAKillOldID)
@@ -806,13 +806,13 @@ void	EPAOrbitLine::Render		(const Fmatrix& parent)
 {
 	EParticleAction::Render			(parent);
     RCache.set_xform_world			(parent);
-    Device.SetShader				(Device.m_WireShader);
+    EDevice.SetShader				(EDevice.m_WireShader);
     Fvector p0,p1;
     p0								= _vector("Position").val;
     p1.add							(p0,_vector("Axis").val);
-    DU.DrawCross					(p0, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
-    DU.DrawCross					(p1, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
-    DU.DrawLine 					(p0, p1, 0x6000ff00);
+    DU_impl.DrawCross					(p0, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
+    DU_impl.DrawCross					(p1, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
+    DU_impl.DrawLine 					(p0, p1, 0x6000ff00);
 }
 
 EPAOrbitPoint::EPAOrbitPoint		():EParticleAction(PAPI::PAOrbitPointID)
@@ -833,8 +833,8 @@ void	EPAOrbitPoint::Render		(const Fmatrix& parent)
 {
 	EParticleAction::Render			(parent);
     RCache.set_xform_world			(parent);
-    Device.SetShader				(Device.m_WireShader);
-    DU.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
+    EDevice.SetShader				(EDevice.m_WireShader);
+    DU_impl.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x6000ff00);
 }
 
 EPARandomAccel::EPARandomAccel		():EParticleAction(PAPI::PARandomAccelID)
@@ -902,8 +902,8 @@ void	EPAScatter::Render	   		(const Fmatrix& parent)
 {
 	EParticleAction::Render			(parent);
     RCache.set_xform_world			(parent);
-    Device.SetShader				(Device.m_WireShader);
-    DU.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x600000ff);
+    EDevice.SetShader				(EDevice.m_WireShader);
+    DU_impl.DrawCross					(_vector("Center").val, 0.05f,0.05f,0.05f, 0.05f,0.05f,0.05f, 0x600000ff);
 }
 
 EPASink::EPASink					():EParticleAction(PAPI::PASinkID)
@@ -1082,8 +1082,8 @@ DEFINE_VECTOR(Stp,StpVec,StpVecIt);
 static StpVec pts;
 IC bool sort_tp_pred(const Stp& x, const Stp& y)
 {	
-	float a = Device.vCameraPosition.distance_to_sqr(x.p);
-	float b = Device.vCameraPosition.distance_to_sqr(y.p);
+	float a = EDevice.vCameraPosition.distance_to_sqr(x.p);
+	float b = EDevice.vCameraPosition.distance_to_sqr(y.p);
 	return a>b;
 }
 void	EPATurbulence::Render		(const Fmatrix& parent)
@@ -1100,7 +1100,7 @@ void	EPATurbulence::Render		(const Fmatrix& parent)
     bool 	draw_p=true,draw_n=true;
     pts.clear();
 	
-    age		+= Device.fTimeDelta;
+    age		+= EDevice.fTimeDelta;
     // fill 
     if (nval == 0){
         nval = new float**[detail];
@@ -1163,10 +1163,10 @@ void	EPATurbulence::Render		(const Fmatrix& parent)
         }
     }
     std::sort(pts.begin(),pts.end(),sort_tp_pred);
-    Device.SetShader(Device.m_SelectionShader);
+    EDevice.SetShader(EDevice.m_SelectionShader);
     RCache.set_xform_world(Fidentity);
     for (StpVecIt it=pts.begin(); it!=pts.end(); it++)
-        DU.DrawCross	(it->p, csz,csz,csz, csz,csz,csz, it->c.get(), false);
+        DU_impl.DrawCross	(it->p, csz,csz,csz, csz,csz,csz, it->c.get(), false);
 }
 
 void PS::CPEDef::Render(const Fmatrix& parent)

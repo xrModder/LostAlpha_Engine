@@ -51,7 +51,7 @@ __fastcall TfrmMain::TfrmMain(TComponent* Owner)
 	if (paLeftBar->Tag > 0) paLeftBar->Parent = paTopBar;
 	else paLeftBar->Parent 	= frmMain;
 
-	Device.SetHandle		(Handle,D3DWindow->Handle);
+	EDevice.SetHandle		(Handle,D3DWindow->Handle);
     EnableReceiveCommands	();
     if (!ExecCommand(COMMAND_INITIALIZE,(u32)D3DWindow,(u32)paRender)){ 
     	FlushLog			();

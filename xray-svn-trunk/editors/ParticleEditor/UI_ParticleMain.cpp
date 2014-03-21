@@ -7,7 +7,7 @@
 #include "topbar.h"
 #include "leftbar.h"           
 #include "EditorPreferences.h"
-#include "D3DUtils.h"
+#include "../ECore/Editor/d3dUtils.h"
 #include "bottombar.h"                  
 #include "xr_trims.h"
 #include "main.h"
@@ -64,7 +64,7 @@ CCommandVar CParticleTools::CommandValidate(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar CParticleTools::CommandClear(CCommandVar p1, CCommandVar p2)
 {
-    Device.m_Camera.Reset();
+    EDevice.m_Camera.Reset();
     ResetPreviewObject();
     ExecCommand(COMMAND_UPDATE_CAPTION);
     return TRUE;
@@ -185,9 +185,9 @@ void CParticleMain::OutCameraPos()
 {
 	VERIFY(m_bReady);
     AnsiString s;
-	const Fvector& c 	= Device.m_Camera.GetPosition();
+	const Fvector& c 	= EDevice.m_Camera.GetPosition();
 	s.sprintf("C: %3.1f, %3.1f, %3.1f",c.x,c.y,c.z);
-//	const Fvector& hpb 	= Device.m_Camera.GetHPB();
+//	const Fvector& hpb 	= EDevice.m_Camera.GetHPB();
 //	s.sprintf(" Cam: %3.1f°, %3.1f°, %3.1f°",rad2deg(hpb.y),rad2deg(hpb.x),rad2deg(hpb.z));
     fraBottomBar->paCamera->Caption=s; fraBottomBar->paCamera->Repaint();
 }

@@ -39,11 +39,11 @@ void __fastcall TfraBottomBar::ClickOptionsMenuItem(TObject *Sender)
         else if (mi==miFog)					psDeviceFlags.set(rsFog,mi->Checked);
         else if (mi==miRealTime)			psDeviceFlags.set(rsRenderRealTime,mi->Checked);
         else if (mi==miDrawSafeRect)		ExecCommand(COMMAND_TOGGLE_SAFE_RECT);
-        else if (mi==miRenderFillPoint)		Device.dwFillMode 	= D3DFILL_POINT;
-        else if (mi==miRenderFillWireframe)	Device.dwFillMode 	= D3DFILL_WIREFRAME;
-        else if (mi==miRenderFillSolid)		Device.dwFillMode 	= D3DFILL_SOLID;
-        else if (mi==miRenderShadeFlat)		Device.dwShadeMode	= D3DSHADE_FLAT;
-        else if (mi==miRenderShadeGouraud)	Device.dwShadeMode	= D3DSHADE_GOURAUD;
+        else if (mi==miRenderFillPoint)		EDevice.dwFillMode 	= D3DFILL_POINT;
+        else if (mi==miRenderFillWireframe)	EDevice.dwFillMode 	= D3DFILL_WIREFRAME;
+        else if (mi==miRenderFillSolid)		EDevice.dwFillMode 	= D3DFILL_SOLID;
+        else if (mi==miRenderShadeFlat)		EDevice.dwShadeMode	= D3DSHADE_FLAT;
+        else if (mi==miRenderShadeGouraud)	EDevice.dwShadeMode	= D3DSHADE_GOURAUD;
         else if (mi==miRenderHWTransform){	HW.Caps.bForceGPU_SW = !mi->Checked; UI->Resize(); }
     }
     UI->RedrawScene();
@@ -60,12 +60,12 @@ void __fastcall TfraBottomBar::QualityClick(TObject *Sender)
 void __fastcall TfraBottomBar::fsStorageRestorePlacement(TObject *Sender)
 {
     // fill mode
-    if (miRenderFillPoint->Checked) 		Device.dwFillMode=D3DFILL_POINT;
-    else if (miRenderFillWireframe->Checked)Device.dwFillMode=D3DFILL_WIREFRAME;
-	else if (miRenderFillSolid->Checked)	Device.dwFillMode=D3DFILL_SOLID;
+    if (miRenderFillPoint->Checked) 		EDevice.dwFillMode=D3DFILL_POINT;
+    else if (miRenderFillWireframe->Checked)EDevice.dwFillMode=D3DFILL_WIREFRAME;
+	else if (miRenderFillSolid->Checked)	EDevice.dwFillMode=D3DFILL_SOLID;
     // shade mode
-	if (miRenderShadeFlat->Checked)			Device.dwShadeMode=D3DSHADE_FLAT;
-    else if (miRenderShadeGouraud->Checked)	Device.dwShadeMode=D3DSHADE_GOURAUD;
+	if (miRenderShadeFlat->Checked)			EDevice.dwShadeMode=D3DSHADE_FLAT;
+    else if (miRenderShadeGouraud->Checked)	EDevice.dwShadeMode=D3DSHADE_GOURAUD;
     // hw transform
     HW.Caps.bForceGPU_SW 					= !miRenderHWTransform->Checked;
 

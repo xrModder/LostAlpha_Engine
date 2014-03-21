@@ -17,7 +17,7 @@
 #include "../xrEProps/itemdialog.h"
 
 #include "../xrEProps/TextForm.h"
-#include "d3dutils.h"
+#include "../ECore/Editor/d3dUtils.h"
 #include "ObjectAnimator.h"
 #include "../xrEProps/ItemList.h"
 #include "ParticleEffectActions.h"
@@ -166,7 +166,7 @@ void CParticleTools::Render()
     
 	if (m_EditObject)	m_EditObject->RenderSingle(Fidentity);
 	// draw parent axis
-    DU.DrawObjectAxis			(m_Transform,0.05f,true);
+    DU_impl.DrawObjectAxis			(m_Transform,0.05f,true);
 	// draw domains
     switch(m_EditMode){
     case emNone: break;
@@ -204,11 +204,11 @@ void CParticleTools::OnFrame()
     	m_EditObject->OnFrame();
 
     if (m_Flags.is(flAnimatedParent)){
-    	m_ParentAnimator->Update(Device.fTimeDelta);
+    	m_ParentAnimator->Update(EDevice.fTimeDelta);
         if (m_ParentAnimator->IsPlaying()){
         	Fvector new_vel;
             new_vel.sub (m_ParentAnimator->XFORM().c,m_Transform.c);
-            new_vel.div (Device.fTimeDelta);
+            new_vel.div (EDevice.fTimeDelta);
             m_Vel.lerp	(m_Vel,new_vel,0.9);
             m_Transform	= m_ParentAnimator->XFORM();
             m_Flags.set	(flApplyParent,TRUE);
@@ -222,8 +222,8 @@ void CParticleTools::OnFrame()
 	if (m_Flags.is(flCompileEffect))
     	RealCompileEffect();
 
-    m_EditPE->OnFrame(Device.dwTimeDelta);
-    m_EditPG->OnFrame(Device.dwTimeDelta);
+    m_EditPE->OnFrame(EDevice.dwTimeDelta);
+    m_EditPG->OnFrame(EDevice.dwTimeDelta);
 
 	if (m_Flags.is(flRefreshProps))
     	RealUpdateProperties();
@@ -237,7 +237,7 @@ void CParticleTools::OnFrame()
 /*
 	static Fvector pos={0.f,0.f,0.f};
     static Fvector vel={0.f,0.f,100.f};
-    pos.mad(vel,Device.fTimeDelta);
+    pos.mad(vel,EDevice.fTimeDelta);
     if (abs(pos.z)>100.f) pos.set(0,0,0);
 	Fmatrix M,R; M.translate(pos); R.rotateY(PI);
 	M.mulB_43(R);    
@@ -268,7 +268,7 @@ void CParticleTools::ZoomObject(BOOL bSelOnly)
 {
 	VERIFY(m_bReady);
     if (!bSelOnly&&m_EditObject){
-        Device.m_Camera.ZoomExtents(m_EditObject->GetBox());
+        EDevice.m_Camera.ZoomExtents(m_EditObject->GetBox());
 	}else{
     	Fbox box; box.invalidate();
         switch(m_EditMode){
@@ -277,7 +277,7 @@ void CParticleTools::ZoomObject(BOOL bSelOnly)
         case emGroup:	box.set(m_EditPG->vis.box);	break;
 	    default: THROW;
         }
-        if (box.is_valid()){ box.grow(1.f); Device.m_Camera.ZoomExtents(box); }
+        if (box.is_valid()){ box.grow(1.f); EDevice.m_Camera.ZoomExtents(box); }
     }
 }
 
@@ -289,28 +289,28 @@ void CParticleTools::PrepareLighting()
     L.type = D3DLIGHT_DIRECTIONAL;
     L.diffuse.set(1,1,1,1);
     L.direction.set(1,-1,1); L.direction.normalize();
-	Device.SetLight(0,L);
-	Device.LightEnable(0,true);
+	EDevice.SetLight(0,L);
+	EDevice.LightEnable(0,true);
 
     L.diffuse.set(0.3,0.3,0.3,1);
     L.direction.set(-1,-1,-1); L.direction.normalize();
-	Device.SetLight(1,L);
-	Device.LightEnable(1,true);
+	EDevice.SetLight(1,L);
+	EDevice.LightEnable(1,true);
 
     L.diffuse.set(0.3,0.3,0.3,1);
     L.direction.set(1,-1,-1); L.direction.normalize();
-	Device.SetLight(2,L);
-	Device.LightEnable(2,true);
+	EDevice.SetLight(2,L);
+	EDevice.LightEnable(2,true);
 
     L.diffuse.set(0.3,0.3,0.3,1);
     L.direction.set(-1,-1,1); L.direction.normalize();
-	Device.SetLight(3,L);
-	Device.LightEnable(3,true);
+	EDevice.SetLight(3,L);
+	EDevice.LightEnable(3,true);
 
 	L.diffuse.set(1.0,0.8,0.7,1);
     L.direction.set(0,1,0); L.direction.normalize();
-	Device.SetLight(4,L);
-	Device.LightEnable(4,true);
+	EDevice.SetLight(4,L);
+	EDevice.LightEnable(4,true);
 }
 
 void CParticleTools::OnDeviceCreate()

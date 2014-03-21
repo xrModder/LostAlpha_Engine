@@ -6,7 +6,7 @@
 #include "UI_ShaderTools.h"
 #include "topbar.h"
 #include "leftbar.h"
-#include "D3DUtils.h"
+#include "../ecore/editor/D3DUtils.h"
 #include "bottombar.h"
 #include "xr_trims.h"
 #include "main.h"
@@ -47,7 +47,7 @@ CCommandVar CShaderTools::CommandReload(CCommandVar p1, CCommandVar p2)
 }
 CCommandVar CShaderTools::CommandClear(CCommandVar p1, CCommandVar p2)
 {
-    Device.m_Camera.Reset();
+    EDevice.m_Camera.Reset();
     ExecCommand		(COMMAND_UPDATE_CAPTION);
     return TRUE;
 }
@@ -154,9 +154,9 @@ void CShaderMain::OutCameraPos()
 {
 	VERIFY(m_bReady);
     AnsiString s;
-	const Fvector& c 	= Device.m_Camera.GetPosition();
+	const Fvector& c 	= EDevice.m_Camera.GetPosition();
 	s.sprintf("C: %3.1f, %3.1f, %3.1f",c.x,c.y,c.z);
-//	const Fvector& hpb 	= Device.m_Camera.GetHPB();
+//	const Fvector& hpb 	= EDevice.m_Camera.GetHPB();
 //	s.sprintf(" Cam: %3.1f°, %3.1f°, %3.1f°",rad2deg(hpb.y),rad2deg(hpb.x),rad2deg(hpb.z));
     fraBottomBar->paCamera->Caption=s; fraBottomBar->paCamera->Repaint();
 }

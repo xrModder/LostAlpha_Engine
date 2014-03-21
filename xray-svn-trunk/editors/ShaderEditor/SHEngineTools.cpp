@@ -203,7 +203,7 @@ void CSHEngineTools::ZoomObject(bool bOnlySel)
 {
 	if (m_PreviewObject){
     	Fbox bb = m_PreviewObject->GetBox();
-        Device.m_Camera.ZoomExtents(bb);
+        EDevice.m_Camera.ZoomExtents(bb);
     }else{
     	ISHTools::ZoomObject(bOnlySel);
     }
@@ -222,7 +222,7 @@ void CSHEngineTools::RealResetShaders()
     PrepareRender		();
     // reset device shaders from temp file
     IReader data		(m_RenderShaders.pointer(), m_RenderShaders.size());
-    Device.Reset		(&data,TRUE);
+    EDevice.Reset		(&data,TRUE);
 	// enable props vis update
     m_bFreezeUpdate 	= FALSE;
 
