@@ -12,7 +12,7 @@
 CBlender_Particle::CBlender_Particle()
 {
 	description.CLS		= B_PARTICLE;
-	description.version	= 0;
+	description.version	= 1;
 	oBlend.Count		= oBlendCount;
 	oBlend.IDselected	= 0;
 	oAREF.value			= 32;
@@ -54,7 +54,9 @@ void	CBlender_Particle::Load	( IReader& fs, u16 version)
 	xrPREAD_PROP		(fs,xrPID_TOKEN,		oBlend);	oBlend.Count =   oBlendCount;
 	xrPREAD_PROP		(fs,xrPID_BOOL,			oClamp);
 	xrPREAD_PROP		(fs,xrPID_INTEGER,		oAREF);
-	xrPREAD_PROP		(fs,xrPID_BOOL,			oCanBeSoft);
+
+	if (version == 1)
+		xrPREAD_PROP		(fs,xrPID_BOOL,			oCanBeSoft);
 }
 
 #if RENDER==R_R1
