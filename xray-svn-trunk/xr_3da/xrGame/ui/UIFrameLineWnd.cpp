@@ -50,13 +50,14 @@ void CUIFrameLineWnd::InitTexture(LPCSTR texture, LPCSTR sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_back"),	sh_name, m_shader, m_tex_rect[flBack]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_b"),	sh_name, m_shader, m_tex_rect[flFirst]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_e"),	sh_name, m_shader, m_tex_rect[flSecond]);
+
 	if(bHorizontal)
 	{
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flSecond].height()), make_string("'%s_b' and '%s_e' should have different heights, frame line is horisontal", texture, texture));
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flBack].height()), make_string("'%s_b' and '%s_back' should have different heights, frame line is horisontal", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flSecond].height()), make_string("CUIFrameLineWnd: '%s_b' and '%s_e' should have different heights, CUIFrameLineWnd is horisontal", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flBack].height()), make_string("CUIFrameLineWnd: '%s_b' and '%s_back' should have different heights, CUIFrameLineWnd is horisontal", texture, texture));
 	} else {
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flSecond].width()), make_string("'%s_b' and '%s_e' should have different widths, frame line is vertical", texture, texture));
-		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flBack].width()),make_string("'%s_b' and '%s_back' should have different widths, frame line is vertical", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flSecond].width()), make_string("CUIFrameLineWnd: '%s_b' and '%s_e' should have different widths, CUIFrameLineWnd is vertical", texture, texture));
+		R_ASSERT2(fsimilar(m_tex_rect[flFirst].width(), m_tex_rect[flBack].width()),make_string("CUIFrameLineWnd: '%s_b' and '%s_back' should have different widths, CUIFrameLineWnd is vertical", texture, texture));
 	}
 }
 
@@ -155,6 +156,7 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 		RBp				= rect.lt; 
 		RBp.x			+= m_tex_rect[i].width();
 		RBp.y			+= m_tex_rect[i].height();
+
 	}else //i==flBack
 	{
 		if(	(bHorizontal && rect.lt.x + m_tex_rect[flSecond].width()+EPS_L >= rect.rb.x)|| 

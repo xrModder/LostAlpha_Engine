@@ -37,17 +37,13 @@ protected:
 
 	// Установить игровое время
 	void					UpdateDateTime				();
-	void					DrawUpdatedSections			();
 protected:
 	// Бэкграунд
 	CUIStatic*				UIMainPdaFrame;
-	CUIStatic*				m_updatedSectionImage;
-	CUIStatic*				m_oldSectionImage;
 
 	// Текущий активный диалог
 	CUIWindow*				m_pActiveDialog;
 	EPdaTabs				m_pActiveSection;
-	xr_vector<Fvector2>		m_sign_places_main;
 	bool					bUpgraded;
 private:
 	bool					m_initialized;
@@ -64,6 +60,8 @@ public:
 	CUIDialogWndEx*			UIChatWnd;
 	CUIDialogWndEx*			UISkillsWnd;
 	CUIDialogWndEx*			UIDownloadsWnd;
+	CUIDialogWndEx*			UIGamesWnd;
+	CUIDialogWndEx*			UIMPlayerWnd;
 	CUI3tButton*			m_pUIClose;
 
 	virtual void			Reset						();
@@ -76,7 +74,6 @@ public:
 
 	virtual void 			SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
-	virtual void 			Draw						();
 	virtual void 			Update						();
 	virtual void 			ShowDialog					(bool bDoHideIndicators);
 	virtual void 			HideDialog					();
