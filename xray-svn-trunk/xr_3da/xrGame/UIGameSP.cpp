@@ -209,6 +209,15 @@ void CUIGameSP::EnableDownloads(bool val)
 	m_PdaMenu->EnableDownloads(val);
 }
 
+void CUIGameSP::ReinitDialogs()
+{
+	delete_data(m_InventoryMenu);
+	m_InventoryMenu		= xr_new<CUIInventoryWnd>();
+	
+	delete_data(TalkMenu);
+	TalkMenu		= xr_new<CUITalkWnd>();
+}
+
 CChangeLevelWnd::CChangeLevelWnd		()
 {
 	m_messageBox			= xr_new<CUIMessageBox>();	

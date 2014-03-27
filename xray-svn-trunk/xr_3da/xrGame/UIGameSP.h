@@ -35,6 +35,7 @@ public:
 
 	virtual void		HideShownDialogs		();
 	virtual void		ReInitShownUI			();
+	virtual void		ReinitDialogs			();
 
 	void				EnableSkills		(bool val);
 	void				EnableDownloads		(bool val);

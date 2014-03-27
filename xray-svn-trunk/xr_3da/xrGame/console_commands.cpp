@@ -753,8 +753,8 @@ public:
 			if (*value >= 1 && *value <= 3)
 			{
 				//CurrentGameUI()->HideShownDialogs(); //skyloader: скрываем активные диалоги, ибо будем их дестроить //upd: вызов уже есть в OnScreenResolutionChanged
-				HUD().OnScreenResolutionChanged(); //перезагрузка окон :)
-				//CurrentGameUI()->ReinitDialogs(); //это наша функа, для carbody, trade и talk //upd: сейчас не уверен, что она нужна, проверим
+				HUD().OnScreenResolutionChanged(); //перезагрузка окон
+				CurrentGameUI()->ReinitDialogs(); //реинит диалоговых окон вроде talk wnd
 			}
 		}
 	}
