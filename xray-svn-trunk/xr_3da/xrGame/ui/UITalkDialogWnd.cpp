@@ -154,14 +154,12 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number)
 	CUIQuestionItem* itm			= xr_new<CUIQuestionItem>(m_uiXml,"question_item");
 	itm->Init						(value, str);
 	++number; //zero-based index
-	if(number<=10)
-	{
-		string16 buff;
-		xr_sprintf						(buff, "%d.", (number==10)?0:number);
-		itm->m_num_text->SetText		(buff);
-		itm->m_text->SetAccelerator		(DIK_ESCAPE+number, 0);
-	}
 
+	string16						buff;
+	xr_sprintf					(buff, "%d.", number);
+	itm->m_num_text->SetText		(buff);
+	if (number<10)
+		itm->m_text->SetAccelerator		(DIK_ESCAPE+number, 0);
 	itm->SetWindowName				("question_item");
 	UIQuestionsList->AddWindow		(itm, true);
 	Register						(itm);
