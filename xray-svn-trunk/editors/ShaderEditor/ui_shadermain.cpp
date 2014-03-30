@@ -6,7 +6,7 @@
 #include "UI_ShaderTools.h"
 #include "topbar.h"
 #include "leftbar.h"
-#include "../ecore/editor/D3DUtils.h"
+#include "../../xr_3da/xrRender/D3DUtils.h"
 #include "bottombar.h"
 #include "xr_trims.h"
 #include "main.h"

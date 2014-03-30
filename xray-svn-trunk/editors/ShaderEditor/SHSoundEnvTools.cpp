@@ -11,7 +11,7 @@
 #include "../xrEProps/ItemList.h"
 #include "eax.h"
 #include "../../xrSound/SoundRender_Source.h"
-#include "../ecore/editor/D3DUtils.h"
+#include "../../xr_3da/xrRender/D3DUtils.h"
 
 //------------------------------------------------------------------------------
 xr_token eax_environment[]		= {

@@ -28,7 +28,7 @@ TfrmMain *frmMain;
 #include "ImageManager.h"
 #include "SoundManager.h"
 #include "ui_main.h"
-#include "PSLibrary.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 #include "../ECore/Engine/GameMtlLib.h"
 #include "../../xrSound/soundrender_source.h"
 #include "render.h"

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "PSLibrary.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 #include "ParticleEffect.h"
 //------------------------------------------------------------------------------
 

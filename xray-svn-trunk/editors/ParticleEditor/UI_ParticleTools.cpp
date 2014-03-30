@@ -8,7 +8,7 @@
 #include "../ECore/Editor/EditObject.h"
 #include "ui_main.h"
 #include "leftbar.h"
-#include "PSLibrary.h"
+#include "..\..\xr_3da\xrRender\PSLibrary.h"
 //.#include "ParticleSystem.h"
 #include "xr_trims.h"
 #include "../ECore/Editor/library.h"
