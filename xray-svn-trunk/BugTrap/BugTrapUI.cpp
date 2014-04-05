@@ -1105,9 +1105,18 @@ void InitIntro(HWND hwnd, CHyperLink& hlURL)
 		SetWindowText(hwndCtl, g_strUserMessage);
 	} else {
 		hwndCtl = GetDlgItem(hwnd, IDC_DESCRIPTION);
-		TCHAR g_strNoDescription[256];
-		_tcscpy_s(g_strNoDescription, countof(g_strNoDescription), "No description.");
-		SetWindowText(hwndCtl, g_strNoDescription);
+
+		CSymEngine::CStackTraceEntry Entry;
+		if (g_pSymEngine->GetFirstStackTraceEntry(Entry))
+		{
+			TCHAR g_strStackTrace[256];
+			_stprintf_s(g_strStackTrace, countof(g_strStackTrace), _T("Engine error. Last line in stack trace:\n %s %s %s %s"), Entry.m_szFunctionInfo, Entry.m_szSourceFile, Entry.m_szLineInfo, Entry.m_szModule);
+			SetWindowText(hwndCtl, g_strStackTrace);
+		} else {
+			TCHAR g_strNoDescription[256];
+			_tcscpy_s(g_strNoDescription, countof(g_strNoDescription), "No description.");
+			SetWindowText(hwndCtl, g_strNoDescription);
+		}
 	}
 
 	if (*g_szSupportURL)
