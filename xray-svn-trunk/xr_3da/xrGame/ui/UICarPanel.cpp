@@ -13,8 +13,7 @@ void CUICarPanel::Init			(float x, float y, float width, float height)
 	string128		CAR_PANEL_XML;
 	xr_sprintf		(CAR_PANEL_XML, "car_panel_%d.xml", ui_hud_type);
 
-	bool result = uiXml.Load(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
-	R_ASSERT3(result, "xml file not found", CAR_PANEL_XML);
+	uiXml.Load(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
 
 	CUIXmlInit	xml_init;
 	////////////////////////////////////////////////////////////////////
@@ -58,8 +57,7 @@ void CUICarPanel::Init			(float x, float y, float width, float height)
 	Show(false);
 	Enable(false);
 
-//	inherited::Init(x,y, width, height);
-	inherited::SetWndRect(Frect().set(x, y, width, height));
+	inherited::SetWndRect(x, y, width, height);
 }
 
 //////////////////////////////////////////////////////////////////////////

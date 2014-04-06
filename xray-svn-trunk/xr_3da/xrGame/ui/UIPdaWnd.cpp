@@ -61,10 +61,10 @@ CUIPdaWnd::~CUIPdaWnd()
 	delete_data		(UIActorInfo);
 	delete_data		(UIStalkersRanking);
 	delete_data		(UIEventsWnd);
-	delete_data		(UISkillsWnd);
-	delete_data		(UIDownloadsWnd);
-	delete_data		(UIGamesWnd);
-	delete_data		(UIMPlayerWnd);
+	//delete_data		(UISkillsWnd);
+	//delete_data		(UIDownloadsWnd);
+	//delete_data		(UIGamesWnd);
+	//delete_data		(UIMPlayerWnd);
 }
 
 //////////////////////////////////////////////////////////////////////////
