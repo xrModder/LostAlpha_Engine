@@ -185,14 +185,14 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 
 				RBp				= rect.lt; 
 				RBp.x			+= rem_len;
-				RBp.y			+= m_tex_rect[i].height();
+				RBp.y			+= m_tex_rect[i].height()*scale.y;
 			}else
 			{
 				RBt.y			= m_tex_rect[i].lt.y + rem_len;
 				RBt.x			= m_tex_rect[i].rb.x;
 
 				RBp				= rect.lt; 
-				RBp.x			+= m_tex_rect[i].width();
+				RBp.x			+= m_tex_rect[i].width()*scale.x;
 				RBp.y			+= rem_len;
 			}
 		}else
@@ -200,8 +200,8 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 			RBt				= m_tex_rect[i].rb;
 
 			RBp				= rect.lt; 
-			RBp.x			+= m_tex_rect[i].width();
-			RBp.y			+= m_tex_rect[i].height();
+			RBp.x			+= m_tex_rect[i].width()*scale.x;
+			RBp.y			+= m_tex_rect[i].height()*scale.y;
 		}
 	}
 
