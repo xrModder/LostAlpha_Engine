@@ -29705,6 +29705,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ui\UI_IB_FrameLineWnd.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UI_IB_FrameLineWnd.h"
+						>
+					</File>
+					<File
 						RelativePath=".\ui\UIInteractiveBackground.h"
 						>
 					</File>

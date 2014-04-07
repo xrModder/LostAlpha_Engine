@@ -1,6 +1,7 @@
 #pragma once
 #include "UIButton.h"
 #include "UI_IB_Static.h"
+#include "UI_IB_FrameLineWnd.h"
 
 class CUI3tButton : public CUIButton 
 {

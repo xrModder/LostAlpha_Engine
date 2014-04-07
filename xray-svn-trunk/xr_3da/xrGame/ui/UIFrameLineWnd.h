@@ -18,9 +18,10 @@ public:
 			void SetTextureColor	(u32 cl)						{m_texture_color=cl;}
 			bool IsHorizontal		()								{return bHorizontal;}
 			void SetHorizontal		(bool horiz)					{bHorizontal = horiz;}
+			void SetStretchBETextures	(bool stretch)					{m_bStretchBETextures = stretch;}
 
 	// Also we can display textual caption on the frame
-	CUIStatic		UITitleText; //SkyLoader: dont change class to CUITextWnd because it needed for scripts
+	CUIStatic		UITitleText; //SkyLoader: dont change class to CUITextWnd because it is needed for scripts
 	CUIStatic*		GetTitleStatic() {return &UITitleText;};
 
 	virtual void Init_script		(LPCSTR base_name, float x, float y, float width, float height, bool horizontal = true); //SkyLoader: for scripts only
@@ -36,7 +37,9 @@ protected:
 	};
 	u32					m_texture_color;
 	bool				m_bTextureVisible;
+	bool				m_bStretchBETextures;
 	void				DrawElements		();
+	Fvector2				GetStretchingKoeff		();
 
 	ui_shader			m_shader;
 	Frect				m_tex_rect			[flMax];
