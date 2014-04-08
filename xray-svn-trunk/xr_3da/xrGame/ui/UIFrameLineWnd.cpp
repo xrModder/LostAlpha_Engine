@@ -116,7 +116,7 @@ void CUIFrameLineWnd::DrawElements()
 			rect.x2				-= back_len;
 
 		if(back_len>0.0f)
-			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].width()*scale.x);
+			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].width());
 	}else
 	{
 		back_len				= rect.height()-(m_tex_rect[flFirst].height()*scale.y)-(m_tex_rect[flSecond].height()*scale.y);
@@ -124,7 +124,7 @@ void CUIFrameLineWnd::DrawElements()
 			rect.y2				-= back_len;
 
 		if(back_len>0.0f)
-			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].height()*scale.y);
+			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].height());
 	}
 
 	UIRender->StartPrimitive	(prim_count, IUIRender::ptTriList, UI().m_currentPointType);
@@ -171,8 +171,8 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 		LTt				= m_tex_rect[i].lt;
 		LTp				= rect.lt; 
 
-		bool b_draw_reminder = (bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width()*scale.x > rect.rb.x-(m_tex_rect[flSecond].width()*scale.x)) :
-												(rect.lt.y+m_tex_rect[flBack].height()*scale.y > rect.rb.y-(m_tex_rect[flSecond].height()*scale.y));
+		bool b_draw_reminder = (bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width() > rect.rb.x-(m_tex_rect[flSecond].width()*scale.x)) :
+												(rect.lt.y+m_tex_rect[flBack].height() > rect.rb.y-(m_tex_rect[flSecond].height()*scale.y));
 		if(b_draw_reminder)
 		{ //draw reminder
 			float rem_len	= (bHorizontal) ?	rect.rb.x-(m_tex_rect[flSecond].width()*scale.x)-rect.lt.x : 
@@ -185,14 +185,14 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 
 				RBp				= rect.lt; 
 				RBp.x			+= rem_len;
-				RBp.y			+= m_tex_rect[i].height()*scale.y;
+				RBp.y			+= m_tex_rect[i].height();
 			}else
 			{
 				RBt.y			= m_tex_rect[i].lt.y + rem_len;
 				RBt.x			= m_tex_rect[i].rb.x;
 
 				RBp				= rect.lt; 
-				RBp.x			+= m_tex_rect[i].width()*scale.x;
+				RBp.x			+= m_tex_rect[i].width();
 				RBp.y			+= rem_len;
 			}
 		}else
@@ -200,8 +200,8 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 			RBt				= m_tex_rect[i].rb;
 
 			RBp				= rect.lt; 
-			RBp.x			+= m_tex_rect[i].width()*scale.x;
-			RBp.y			+= m_tex_rect[i].height()*scale.y;
+			RBp.x			+= m_tex_rect[i].width();
+			RBp.y			+= m_tex_rect[i].height();
 		}
 	}
 

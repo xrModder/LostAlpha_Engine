@@ -388,10 +388,10 @@ void CUIPdaWnd::Reset()
 	if (UIActorInfo)		UIActorInfo->ResetAll();
 	if (UIStalkersRanking)	UIStalkersRanking->ResetAll();
 	if (UIEventsWnd)		UIEventsWnd->ResetAll();
-	if (UISkillsWnd)			UISkillsWnd->ResetAll();
-	if (UIDownloadsWnd)		UIDownloadsWnd->ResetAll();
-	if (UIGamesWnd)			UIGamesWnd->ResetAll();
-	if (UIMPlayerWnd)		UIMPlayerWnd->ResetAll();
+	//if (UISkillsWnd)			UISkillsWnd->ResetAll();
+	//if (UIDownloadsWnd)		UIDownloadsWnd->ResetAll();
+	//if (UIGamesWnd)			UIGamesWnd->ResetAll();
+	//if (UIMPlayerWnd)		UIMPlayerWnd->ResetAll();
 }
 
 void CUIPdaWnd::EnableSkills(bool val)
