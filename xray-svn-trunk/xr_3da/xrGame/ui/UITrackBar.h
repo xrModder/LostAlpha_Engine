@@ -2,6 +2,7 @@
 
 #include "UIOptionsItem.h"
 #include "UI_IB_Static.h"
+#include "UI_IB_FrameLineWnd.h"
 
 class CUI3tButton;
 class CUITrackButton;

@@ -89,6 +89,8 @@ public:
 	virtual void	OnDeviceReset					();
 	static	bool	is_widescreen					();
 	static	float	get_current_kx					();
+	Fvector2	GetClientToScreenScaledKoeff			() {return *m_current_scale;};
+
 	shared_str		get_xml_name					(LPCSTR fn);
 	
 	IUIRender::ePointType		m_currentPointType;

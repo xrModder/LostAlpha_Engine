@@ -931,6 +931,9 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	InitWindow		(xml_doc, path, index, pWnd);
 	pWnd->InitFrameLineWnd(*base_name, pos, size, !vertical);
 
+	bool stretch_BE_flag	= !!xml_doc.ReadAttribInt(path, index, "stretch_b_e_textures", 0);
+	pWnd->SetStretchBETextures(stretch_BE_flag);
+
 	strconcat(sizeof(buf),buf,path,":title");
 	if(xml_doc.NavigateToNode(buf,index)) InitStatic(xml_doc, buf, index, &pWnd->UITitleText);
 
@@ -1495,6 +1498,8 @@ bool CUIXmlInit::InitTrackBar(CUIXml& xml_doc, LPCSTR path, int index, CUITrackB
 	float step			= xml_doc.ReadAttribFlt(path, index, "step", 0.1f);
 	pWnd->SetStep		(step);
 	
+	bool stretch_BE_flag	= !!xml_doc.ReadAttribInt(path, index, "stretch_b_e_textures", 1);
+	pWnd->SetStretchBETextures(stretch_BE_flag);
 
 	return				true;
 }
@@ -1535,6 +1540,9 @@ bool CUIXmlInit::InitComboBox(CUIXml& xml_doc, LPCSTR path, int index, CUIComboB
 		color					= GetColor(xml_doc, _path, index, 0x00);
 		pWnd->SetTextColorD		(color);
 	}
+
+	bool stretch_BE_flag	= !!xml_doc.ReadAttribInt(path, index, "stretch_b_e_textures", 1);
+	pWnd->m_frameLine.SetStretchBETextures(stretch_BE_flag);
 
 	return true;
 }

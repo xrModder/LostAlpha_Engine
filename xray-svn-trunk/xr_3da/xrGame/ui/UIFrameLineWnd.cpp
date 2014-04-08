@@ -4,7 +4,8 @@
 
 CUIFrameLineWnd::CUIFrameLineWnd()
 :bHorizontal(true),
-m_bTextureVisible(false)
+m_bTextureVisible(false),
+m_bStretchBETextures(false)
 {
 	m_texture_color				= color_argb(255,255,255,255);
 	AttachChild				(&UITitleText);
@@ -100,28 +101,30 @@ void CUIFrameLineWnd::DrawElements()
 
 	Frect						rect;
 	GetAbsoluteRect				(rect);
-	
+
 	UI().ClientToScreenScaled	(rect.lt);
 	UI().ClientToScreenScaled	(rect.rb);
 	
 	float back_len				= 0.0f;
 	u32 prim_count				= 6*2; //first&second 
+	Fvector2 scale 				= GetStretchingKoeff();
+
 	if(bHorizontal)
 	{
-		back_len				= rect.width()-m_tex_rect[flFirst].width()-m_tex_rect[flSecond].width();
+		back_len				= rect.width()-(m_tex_rect[flFirst].width()*scale.x)-(m_tex_rect[flSecond].width()*scale.x);
 		if(back_len<0.0f)
 			rect.x2				-= back_len;
 
 		if(back_len>0.0f)
-			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].width());
+			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].width()*scale.x);
 	}else
 	{
-		back_len				= rect.height()-m_tex_rect[flFirst].height()-m_tex_rect[flSecond].height();
+		back_len				= rect.height()-(m_tex_rect[flFirst].height()*scale.y)-(m_tex_rect[flSecond].height()*scale.y);
 		if(back_len<0)
 			rect.y2				-= back_len;
 
 		if(back_len>0.0f)
-			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].height());
+			prim_count				+= 6* iCeil(back_len / m_tex_rect[flBack].height()*scale.y);
 	}
 
 	UIRender->StartPrimitive	(prim_count, IUIRender::ptTriList, UI().m_currentPointType);
@@ -144,6 +147,8 @@ void CUIFrameLineWnd::DrawElements()
 
 bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, Fvector2& RBp, Fvector2& LTt, Fvector2& RBt)
 {
+	Fvector2 scale = GetStretchingKoeff();
+
 	if(i==flFirst || i==flSecond)
 	{
 		if(counter!=0)	return false;
@@ -154,24 +159,24 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 		LTp				= rect.lt; 
 
 		RBp				= rect.lt; 
-		RBp.x			+= m_tex_rect[i].width();
-		RBp.y			+= m_tex_rect[i].height();
+		RBp.x			+= m_tex_rect[i].width()*scale.x;
+		RBp.y			+= m_tex_rect[i].height()*scale.y;
 
 	}else //i==flBack
 	{
-		if(	(bHorizontal && rect.lt.x + m_tex_rect[flSecond].width()+EPS_L >= rect.rb.x)|| 
-			(!bHorizontal && rect.lt.y + m_tex_rect[flSecond].height()+EPS_L >= rect.rb.y) )
+		if(	(bHorizontal && rect.lt.x + (m_tex_rect[flSecond].width()*scale.x)+EPS_L >= rect.rb.x)|| 
+			(!bHorizontal && rect.lt.y + (m_tex_rect[flSecond].height()*scale.y)+EPS_L >= rect.rb.y) )
 			return false;
 
 		LTt				= m_tex_rect[i].lt;
 		LTp				= rect.lt; 
 
-		bool b_draw_reminder = (bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width() > rect.rb.x-m_tex_rect[flSecond].width()) :
-												(rect.lt.y+m_tex_rect[flBack].height() > rect.rb.y-m_tex_rect[flSecond].height());
+		bool b_draw_reminder = (bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width()*scale.x > rect.rb.x-(m_tex_rect[flSecond].width()*scale.x)) :
+												(rect.lt.y+m_tex_rect[flBack].height()*scale.y > rect.rb.y-(m_tex_rect[flSecond].height()*scale.y));
 		if(b_draw_reminder)
 		{ //draw reminder
-			float rem_len	= (bHorizontal) ?	rect.rb.x-m_tex_rect[flSecond].width()-rect.lt.x : 
-												rect.rb.y-m_tex_rect[flSecond].height()-rect.lt.y;
+			float rem_len	= (bHorizontal) ?	rect.rb.x-(m_tex_rect[flSecond].width()*scale.x)-rect.lt.x : 
+												rect.rb.y-(m_tex_rect[flSecond].height()*scale.y)-rect.lt.y;
 
 			if(bHorizontal)
 			{
@@ -180,14 +185,14 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 
 				RBp				= rect.lt; 
 				RBp.x			+= rem_len;
-				RBp.y			+= m_tex_rect[i].height();
+				RBp.y			+= m_tex_rect[i].height()*scale.y;
 			}else
 			{
 				RBt.y			= m_tex_rect[i].lt.y + rem_len;
 				RBt.x			= m_tex_rect[i].rb.x;
 
 				RBp				= rect.lt; 
-				RBp.x			+= m_tex_rect[i].width();
+				RBp.x			+= m_tex_rect[i].width()*scale.x;
 				RBp.y			+= rem_len;
 			}
 		}else
@@ -195,8 +200,8 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 			RBt				= m_tex_rect[i].rb;
 
 			RBp				= rect.lt; 
-			RBp.x			+= m_tex_rect[i].width();
-			RBp.y			+= m_tex_rect[i].height();
+			RBp.x			+= m_tex_rect[i].width()*scale.x;
+			RBp.y			+= m_tex_rect[i].height()*scale.y;
 		}
 	}
 
@@ -212,4 +217,9 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 		rect.lt.y 		= RBp.y;
 
 	return			true;
+}
+
+Fvector2 CUIFrameLineWnd::GetStretchingKoeff()
+{
+	return m_bStretchBETextures ? Fvector2().set(1.f, 1.f) : UI().GetClientToScreenScaledKoeff();
 }

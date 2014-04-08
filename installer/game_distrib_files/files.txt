@@ -1,0 +1,1 @@
+Game files to be distributed should be put here.

@@ -134,7 +134,7 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return false;
 
-	if(pGameSP->TalkMenu->IsShown())
+	if(pGameSP->TalkMenu && pGameSP->TalkMenu->IsShown())
 	{
 		pGameSP->TalkMenu->NeedUpdateQuestions();
 	}
@@ -154,7 +154,7 @@ void CActor::OnDisableInfo(shared_str info_id) const
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return;
 
-	if(pGameSP->TalkMenu->IsShown())
+	if(pGameSP->TalkMenu && pGameSP->TalkMenu->IsShown())
 		pGameSP->TalkMenu->NeedUpdateQuestions();
 }
 
@@ -164,7 +164,7 @@ void  CActor::ReceivePhrase		(DIALOG_SHARED_PTR& phrase_dialog)
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
 	if(!pGameSP) return;
 
-	if(pGameSP->TalkMenu->IsShown())
+	if(pGameSP->TalkMenu && pGameSP->TalkMenu->IsShown())
 		pGameSP->TalkMenu->NeedUpdateQuestions();
 
 	CPhraseDialogManager::ReceivePhrase(phrase_dialog);
