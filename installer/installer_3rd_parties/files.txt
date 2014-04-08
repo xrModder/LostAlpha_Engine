@@ -1,0 +1,5 @@
+[installer_3rd_parties] (additional software to be installed)
+* installer_3rd_parties\directx_Jun2010_redist.exe (from: http://www.microsoft.com/en-us/download/details.aspx?id=8109 )
+* installer_3rd_parties\oalinst.exe
+* installer_3rd_parties\vcredist_x86.exe (this should be from: http://www.microsoft.com/en-us/download/details.aspx?id=40784 )
+* installer_3rd_parties\Xvid-1.3.2-20110601.exe
