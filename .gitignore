@@ -1,4 +1,6 @@
 *.user
 *.ncb
 *.suo
-
+installer/game_distrib_files/*
+installer/installer_3rd_parties/*
+installer/output/*
