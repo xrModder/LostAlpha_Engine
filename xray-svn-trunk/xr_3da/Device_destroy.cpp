@@ -90,18 +90,6 @@ void CRenderDevice::Reset		(bool precache)
 		
 	seqDeviceReset.Process(rp_DeviceReset);
 
-	{
-		//g_pGameLevel->pHUD->OnScreenRatioChanged(); //skyloader: эта функция реинитит не все, так что лучше юзануть вызов смены худа, в нем реинитится все без багов
-
-		if(g_hud)
-		{
-			u32	type	= g_hud->GetUIHudType();
-			string512		command;
-			xr_sprintf		(command, "ui_hud_type hud_%d", type);
-			Console->Execute	(command);
-		}
-	}
-
 	if(dwWidth_before!=dwWidth || dwHeight_before!=dwHeight) 
 	{
 		seqResolutionChanged.Process(rp_ScreenResolutionChanged);
