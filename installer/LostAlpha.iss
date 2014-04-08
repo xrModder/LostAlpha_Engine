@@ -37,6 +37,14 @@
 #define LA_game_files ".\game_distrib_files"
 #define LA_installer_support_files "."
 
+; versions, names etc.:
+#define LA_shortcut_name "S.T.A.L.K.E.R. - Lost Alpha"
+#define LA_app_name "S.T.A.L.K.E.R.: Lost Alpha"
+#define LA_directory_name "S.T.A.L.K.E.R. - Lost Alpha"
+#define LA_copyright "dezowave"
+#define LA_version "1.0"
+#define LA_version_text "1.0.rc6"
+
 
 [Files]
 Source: "{#LA_game_files}\start.bat"; DestDir: "{app}"; Flags: ignoreversion
@@ -69,24 +77,24 @@ Filename: "{tmp}\directx_Jun2010_redist.exe"
 
 
 [Icons]
-Name: "{commonprograms}\S.T.A.L.K.E.R. - Lost Alpha"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
-Name: "{commondesktop}\S.T.A.L.K.E.R. - Lost Alpha"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
+Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
+Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
 
 [Setup]
-AppName=S.T.A.L.K.E.R.: Lost Alpha
-AppVersion=1.0.rc6
-AppCopyright=dezowave
-DefaultDirName={pf}\S.T.A.L.K.E.R. - Lost Alpha
+AppName={#LA_app_name}
+AppVersion={#LA_version_text}
+AppCopyright={#LA_copyright}
+DefaultDirName={pf}\{#LA_directory_name}
 DisableProgramGroupPage=yes
-AppPublisher=dezowave
-VersionInfoVersion=1.0
-VersionInfoCompany=dezowave
-VersionInfoDescription=S.T.A.L.K.E.R.: Lost Alpha
-VersionInfoTextVersion=1.0.rc6
-VersionInfoCopyright=dezowave
-VersionInfoProductName=S.T.A.L.K.E.R.: Lost Alpha
-VersionInfoProductVersion=1.0
-VersionInfoProductTextVersion=1.0.rc6
+AppPublisher={#LA_copyright}
+VersionInfoVersion={#LA_version}
+VersionInfoCompany={#LA_copyright}
+VersionInfoDescription={#LA_app_name}
+VersionInfoTextVersion={#LA_version_text}
+VersionInfoCopyright={#LA_copyright}
+VersionInfoProductName={#LA_app_name}
+VersionInfoProductVersion={#LA_version}
+VersionInfoProductTextVersion={#LA_version_text}
 MinVersion=0,5.01sp3
 WizardImageFile={#LA_installer_support_files}\installer_images\LAinstallerImage.bmp
 SetupIconFile={#LA_installer_support_files}\installer_images\stalker.ico
