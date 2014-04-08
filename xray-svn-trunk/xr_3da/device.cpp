@@ -19,7 +19,7 @@
 // must be defined before include of FS_impl.h
 #define INCLUDE_FROM_ENGINE
 #include "../xrCore/FS_impl.h"
-
+ 
 #include "igame_persistent.h"
 
 #pragma comment( lib, "d3dx9.lib"		)
