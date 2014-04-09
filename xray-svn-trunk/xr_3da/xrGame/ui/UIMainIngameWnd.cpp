@@ -263,6 +263,8 @@ void CUIMainIngameWnd::Init()
 	
 	AttachChild								(&UICarPanel);
 	xml_init.InitWindow						(uiXml, "car_panel", 0, &UICarPanel);
+	Frect wndrect = UICarPanel.GetWndRect();
+	UICarPanel.Init							(wndrect.x1, wndrect.y1, wndrect.width(), wndrect.height());
 
 	AttachChild								(&UIMotionIcon);
 	UIMotionIcon.Init						();

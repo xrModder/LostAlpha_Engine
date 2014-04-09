@@ -1183,7 +1183,7 @@ void CActor::shedule_Update	(u32 DT)
 				m_BloodSnd.stop();
 	}
 	
-	if (((BOOL)m_bActorShadows == psActorFlags.test(AF_ACTOR_BODY)) && g_Alive())
+	if (((BOOL)m_bActorShadows == psActorFlags.test(AF_ACTOR_BODY)) && g_Alive() && !m_holder)
 	{
 		if (m_bActorShadows)
 			SetDefaultVisualOutfit_legs		(pSettings->r_string(*cNameSect(),"default_outfit_legs"));
