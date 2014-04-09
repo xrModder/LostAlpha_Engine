@@ -57,15 +57,20 @@ void	CCar::OnCameraChange		(int type)
 {
 	if(Owner())
 	{
-		Owner()->setVisible(TRUE);
+		if (type==ectFirst)
+			Owner()->setVisible(TRUE);
+		else if(active_camera->tag==ectFirst)
+			Owner()->setVisible(FALSE);
 
 		IKinematics*	pKinematics	= smart_cast<IKinematics*>(Owner()->Visual());
 		u16 		head_bone	= pKinematics->LL_BoneID("bip01_head");
 
+		/*
 		if (type==ectFirst)
 			pKinematics->LL_HideBoneVisible(head_bone,FALSE);
 		else if (active_camera->tag==ectFirst)
 			pKinematics->LL_HideBoneVisible(head_bone,TRUE);
+		*/
 	}
 	
 	if (!active_camera||active_camera->tag!=type){

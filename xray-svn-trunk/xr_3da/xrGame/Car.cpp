@@ -644,6 +644,7 @@ void CCar::detach_Actor()
 {
 	if(!Owner()) return;
 	Owner()->setVisible(1);
+	if (OwnerActor()) OwnerActor()->SetActorShadows(!psActorFlags.test(AF_ACTOR_BODY));
 	CHolderCustom::detach_Actor();
 	PPhysicsShell()->remove_ObjectContactCallback(ActorObstacleCallback);
 	NeutralDrive();
@@ -678,12 +679,13 @@ bool CCar::attach_Actor(CGameObject* actor)
 		CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
 		driver_xform.set(instance.mTransform);
 	} else {	
-		Owner()->setVisible(0);
 		id=K->LL_GetBoneRoot();
 		CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
 		driver_xform.set(instance.mTransform);
 	}
 
+	Owner()->setVisible(0);
+	if (OwnerActor()) OwnerActor()->SetActorShadows(true);
 	m_sits_transforms.set(driver_xform);
 	actor->XFORM().mul_43	(XFORM(),m_sits_transforms);
 
@@ -776,6 +778,9 @@ void CCar::DoExit()
 		else m_exit_position.set(Position());
 		A->detach_Vehicle();
 		if(A->g_Alive()<=0.f)A->character_physics_support()->movement()->DestroyCharacter();
+
+		if (CurrentGameUI()->UIMainIngameWnd->CarPanel().IsShown())
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
 	}
 }
 
@@ -1888,12 +1893,13 @@ void CCar::CarExplode()
 		else m_exit_position.set(Position());
 		A->detach_Vehicle();
 		if(A->g_Alive()<=0.f)A->character_physics_support()->movement()->DestroyCharacter();
+
+		if (CurrentGameUI()->UIMainIngameWnd->CarPanel().IsShown())
+			CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
 	}
 
 	if(CPHDestroyable::CanDestroy())
 		CPHDestroyable::Destroy(ID(),"physic_destroyable_object");	
-	if (CurrentGameUI()->UIMainIngameWnd->CarPanel().IsShown())
-		CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
 
 }
 //void CCar::object_contactCallbackFun(bool& do_colide,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
