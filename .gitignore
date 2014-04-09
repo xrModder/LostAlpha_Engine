@@ -2,5 +2,6 @@
 *.ncb
 *.suo
 installer/game_distrib_files/*
-installer/installer_3rd_parties/*
-installer/output/*
+installer/output/game/*
+installer/output/setup.exe
+installer/output/3rdparties/*

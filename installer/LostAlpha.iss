@@ -3,10 +3,11 @@
 ; Script for Inno Setup 5 compiler
 ; First version: 2014.04.08
 ; First author to blame: utak3r
-; Last modification: 2014.04.08
+; Last modification: 2014.04.09
 ; Last modifier: utak3r
 ;
-; put the game files in the [game_distrib_files] folder!
+; put the game files in the [game_distrib_files] folder.
+; after this, call prepare_archives.cmd script.
 ;
 ; This script is prepared for and meant to be used with:
 ; Inno Setup 5.5.4 unicode [ http://www.jrsoftware.org/isdl.php ]
@@ -16,22 +17,28 @@
 ; The directory structure to build the installer is as follows:
 ;
 ; LostAlpha.iss (this script)
+; 7za.exe
+; prepare_archives.cmd
 ;
 ; [installer_images]
 ; installer_images\LAinstallerImage.bmp
 ; installer_images\LAinstallerSmallImage.bmp
 ; installer_images\stalker.ico
 ;
-; [installer_3rd_parties] (additional software to be installed)
-; installer_3rd_parties\directx_Jun2010_redist.exe (from: http://www.microsoft.com/en-us/download/details.aspx?id=8109 )
-; installer_3rd_parties\oalinst.exe
-; installer_3rd_parties\vcredist_x86.exe (this should be from: http://www.microsoft.com/en-us/download/details.aspx?id=40784 )
-; installer_3rd_parties\Xvid-1.3.2-20110601.exe
+; [Output\3rdparties] (additional software to be installed)
+; Output\3rdparties\directx_Jun2010_redist.exe (from: http://www.microsoft.com/en-us/download/details.aspx?id=8109 )
+; Output\3rdparties\oalinst.exe
+; Output\3rdparties\vcredist_x86.exe (this should be from: http://www.microsoft.com/en-us/download/details.aspx?id=40784 )
+; Output\3rdparties\Xvid-1.3.2-20110601.exe
 ;
-; [game_distrib_files] (game files go here)
+; [game_distrib_files] (complete release of the game to be installed)
 ; [Output] (the compiled installer will be put here)
+; [Output\game] (archives of the games files will be put here using prepare_archives.cmd script)
 ;
 ;
+
+; password for 7z files!
+#define archpasswd "haslo1234"
 
 ; dirs used:
 #define LA_game_files ".\game_distrib_files"
@@ -45,36 +52,21 @@
 #define LA_version "1.0"
 #define LA_version_text "1.0.rc6"
 
-
 [Files]
-Source: "{#LA_game_files}\start.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\fsgame.ltx"; DestDir: "{app}"; Flags: ignoreversion
-
-; Subdirs here:
-Source: "{#LA_game_files}\appdata\*"; DestDir: "{app}\appdata"; Flags: ignoreversion createallsubdirs recursesubdirs
-Source: "{#LA_game_files}\bins\*"; DestDir: "{app}\bins"; Flags: ignoreversion createallsubdirs recursesubdirs
-Source: "{#LA_game_files}\gamedata\*"; DestDir: "{app}\gamedata"; Flags: ignoreversion createallsubdirs recursesubdirs
-
-Source: "{#LA_game_files}\gamedata.db0"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\gamedata.db1"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\gamedata.db2"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\gamedata.db3"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\gamedata.db4"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LA_game_files}\gamedata.db5"; DestDir: "{app}"; Flags: ignoreversion
-
-; 3rd parties here:
-Source: "{#LA_installer_support_files}\installer_3rd_parties\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
-Source: "{#LA_installer_support_files}\installer_3rd_parties\Xvid-1.3.2-20110601.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
-Source: "{#LA_installer_support_files}\installer_3rd_parties\oalinst.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
-Source: "{#LA_installer_support_files}\installer_3rd_parties\directx_Jun2010_redist.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 
 [Run]
-; prerequisities here:
-Filename: "{tmp}\vcredist_x86.exe"; Check: VCRedistNeedsInstall
-Filename: "{tmp}\Xvid-1.3.2-20110601.exe"
-Filename: "{tmp}\oalinst.exe"
-Filename: "{tmp}\directx_Jun2010_redist.exe"
+; unpack game files
+Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\appdata"" ""{src}\game\appdata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingAppdata}"; StatusMsg: "{cm:msgInstallingAppdata}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\bins"" ""{src}\game\bins.7z"""; Flags: runhidden; Description: "{cm:msgInstallingBins}"; StatusMsg: "{cm:msgInstallingBins}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\gamedata"" ""{src}\game\gamedata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingGamedata}"; StatusMsg: "{cm:msgInstallingGamedata}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}"" ""{src}\game\maindir.7z"""; Flags: runhidden; Description: "{cm:msgInstallingMaindir}"; StatusMsg: "{cm:msgInstallingMaindir}"
 
+; install prerequisities
+Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"
+Filename: "{src}\3rdparties\directx_Jun2010_redist.exe"; Flags: hidewizard; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
+Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
+Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
 
 [Icons]
 Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
@@ -99,6 +91,23 @@ MinVersion=0,5.01sp3
 WizardImageFile={#LA_installer_support_files}\installer_images\LAinstallerImage.bmp
 SetupIconFile={#LA_installer_support_files}\installer_images\stalker.ico
 WizardSmallImageFile={#LA_installer_support_files}\installer_images\LAinstallerSmallImage.bmp
+
+[CustomMessages]
+msgInstallingBins=Installing binaries
+msgInstallingGamedata=Installing game data files
+msgInstallingAppdata=Installing application data files
+msgInstallingMaindir=Installing main game files
+msgInstallingVcredist=Installing Microsoft VC++ runtimes
+msgInstallingDXredist=DirectX runtimes
+msgInstallingOAL=Installing audio codec
+msgInstallingXvid=Installing video codec
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}\bins"
+Type: filesandordirs; Name: "{app}\gamedata"
+Type: files; Name: "{app}\start.bat"
+Type: files; Name: "{app}\gamedata.db?"
+Type: files; Name: "{app}\fsgame.ltx"
 
 [Code]
 #IFDEF UNICODE
