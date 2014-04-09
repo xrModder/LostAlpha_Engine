@@ -40,6 +40,12 @@
 ; password for 7z files!
 #define archpasswd "haslo1234"
 
+; this is an estimated disk usage 
+; it cannot be determined by the installer itself,
+; due to external archives used.
+; It's in bytes!
+#define LA_disk_usage "17716740096"
+
 ; dirs used:
 #define LA_game_files ".\game_distrib_files"
 #define LA_installer_support_files "."
@@ -49,8 +55,8 @@
 #define LA_app_name "S.T.A.L.K.E.R.: Lost Alpha"
 #define LA_directory_name "S.T.A.L.K.E.R. - Lost Alpha"
 #define LA_copyright "dezowave"
-#define LA_version "1.0"
-#define LA_version_text "1.0.rc6"
+#define LA_version "1.3.0"
+#define LA_version_text "1.3.0"
 
 [Files]
 Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
@@ -73,6 +79,7 @@ Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe";
 Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
 
 [Setup]
+ExtraDiskSpaceRequired={#LA_disk_usage}
 AppName={#LA_app_name}
 AppVersion={#LA_version_text}
 AppCopyright={#LA_copyright}
@@ -103,6 +110,8 @@ msgInstallingOAL=Installing audio codec
 msgInstallingXvid=Installing video codec
 
 [UninstallDelete]
+; don't delete: appdata, screenshots, logs.
+; maybe add some question if user wants to remove his player's data?
 Type: filesandordirs; Name: "{app}\bins"
 Type: filesandordirs; Name: "{app}\gamedata"
 Type: files; Name: "{app}\start.bat"
