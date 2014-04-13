@@ -610,6 +610,24 @@ void CHW::updateWindowProps(HWND m_hWnd)
 				SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
+	else
+	{
+		// check we're in fullscreen mode, according to DX documentation
+		BOOL is_fullscreen;
+		IDXGIOutput* output;
+		CHK_DX(m_pSwapChain->GetContainingOutput(&output));
+		if (SUCCEEDED(m_pSwapChain->GetFullscreenState(&is_fullscreen, &output)))
+			output->Release();
+		else
+			is_fullscreen = FALSE;
+		if (!is_fullscreen)
+		{
+			ShowWindow(m_hWnd, SW_MINIMIZE);
+			ShowWindow(m_hWnd, SW_MAXIMIZE);
+			m_pSwapChain->SetFullscreenState(TRUE, NULL);
+		}
+
+	}
 
 	ShowCursor	(FALSE);
 	SetForegroundWindow( m_hWnd );

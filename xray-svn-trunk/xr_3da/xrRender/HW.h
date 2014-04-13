@@ -85,7 +85,7 @@ public:
 	ID3D10RenderTargetView*	pBaseRT;	//	combine with DX9 pBaseRT via typedef
 	ID3D10DepthStencilView*	pBaseZB;
 
-	CHWCaps					Caps;
+	CHWCaps					Caps; 
 
 	D3D10_DRIVER_TYPE		m_DriverType;	//	DevT equivalent
 	DXGI_SWAP_CHAIN_DESC	m_ChainDesc;	//	DevPP equivalent
