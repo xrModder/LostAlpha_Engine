@@ -63,10 +63,10 @@ Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: delete
 
 [Run]
 ; unpack game files
-Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\appdata"" ""{src}\game\appdata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingAppdata}"; StatusMsg: "{cm:msgInstallingAppdata}"
-Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\bins"" ""{src}\game\bins.7z"""; Flags: runhidden; Description: "{cm:msgInstallingBins}"; StatusMsg: "{cm:msgInstallingBins}"
-Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}\gamedata"" ""{src}\game\gamedata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingGamedata}"; StatusMsg: "{cm:msgInstallingGamedata}"
-Filename: "{tmp}\7za.exe"; Parameters: "x -p{#archpasswd} -o""{app}"" ""{src}\game\maindir.7z"""; Flags: runhidden; Description: "{cm:msgInstallingMaindir}"; StatusMsg: "{cm:msgInstallingMaindir}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\appdata"" ""{src}\game\appdata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingAppdata}"; StatusMsg: "{cm:msgInstallingAppdata}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\bins"" ""{src}\game\bins.7z"""; Flags: runhidden; Description: "{cm:msgInstallingBins}"; StatusMsg: "{cm:msgInstallingBins}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\gamedata"" ""{src}\game\gamedata.7z"""; Flags: runhidden; Description: "{cm:msgInstallingGamedata}"; StatusMsg: "{cm:msgInstallingGamedata}"
+Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}"" ""{src}\game\maindir.7z"""; Flags: runhidden; Description: "{cm:msgInstallingMaindir}"; StatusMsg: "{cm:msgInstallingMaindir}"
 
 ; install prerequisities
 Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"
