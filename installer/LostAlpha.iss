@@ -3,7 +3,7 @@
 ; Script for Inno Setup 5 compiler
 ; First version: 2014.04.08
 ; First author to blame: utak3r
-; Last modification: 2014.04.09
+; Last modification: 2014.04.18
 ; Last modifier: utak3r
 ;
 ; put the game files in the [game_distrib_files] folder.
@@ -38,7 +38,7 @@
 ;
 
 ; password for 7z files!
-#define archpasswd "haslo1234"
+#define archpasswd "sdu28042elmd"
 
 ; this is an estimated disk usage 
 ; it cannot be determined by the installer itself,
