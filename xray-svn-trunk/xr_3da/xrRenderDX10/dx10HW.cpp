@@ -610,7 +610,7 @@ void CHW::updateWindowProps(HWND m_hWnd)
 				SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
-	else
+	/*else
 	{
 		// check we're in fullscreen mode, according to DX documentation
 		BOOL is_fullscreen;
@@ -627,7 +627,7 @@ void CHW::updateWindowProps(HWND m_hWnd)
 			m_pSwapChain->SetFullscreenState(TRUE, NULL);
 		}
 
-	}
+	}*/
 
 	ShowCursor	(FALSE);
 	SetForegroundWindow( m_hWnd );
