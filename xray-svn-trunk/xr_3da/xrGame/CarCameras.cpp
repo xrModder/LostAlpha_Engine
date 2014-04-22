@@ -53,17 +53,17 @@ void	CCar::cam_Update			(float dt, float fov)
 }
 
 
-void	CCar::OnCameraChange		(int type)
+void	CCar::OnCameraChange(int type)
 {
-	if(Owner())
+	if (Owner())
 	{
-		if (type==ectFirst)
-			Owner()->setVisible(TRUE);
-		else if(active_camera->tag==ectFirst)
+		if (type == ectFirst)
 			Owner()->setVisible(FALSE);
+		else if (active_camera->tag == ectFirst)
+			Owner()->setVisible(TRUE);
 
-		IKinematics*	pKinematics	= smart_cast<IKinematics*>(Owner()->Visual());
-		u16 		head_bone	= pKinematics->LL_BoneID("bip01_head");
+		IKinematics*	pKinematics = smart_cast<IKinematics*>(Owner()->Visual());
+		u16 		head_bone = pKinematics->LL_BoneID("bip01_head");
 
 		/*
 		if (type==ectFirst)

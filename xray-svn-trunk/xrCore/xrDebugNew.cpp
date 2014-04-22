@@ -463,7 +463,9 @@ please Submit Bug or save report and email it manually (button More...).\
 #endif // #ifndef MASTER_GOLD
 
 	BT_SetDumpType			(minidump_flags);
-	BT_SetSupportEMail		("cop-crash-report@stalker-game.com");
+	BT_SetSupportEMail		("la.crash.report@gmail.com");
+	BT_SetSupportURL		("www.dezowave.com");
+//	BT_SetSupportEMail		("cop-crash-report@stalker-game.com");
 //	BT_SetSupportServer		("localhost", 9999);
 //	BT_SetSupportURL		("www.gsc-game.com");
 }

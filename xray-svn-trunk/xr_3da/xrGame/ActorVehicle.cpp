@@ -35,7 +35,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	m_holder=vehicle;
 
-	cam_Set(eacLookAt);
+	cam_Set				(eacLookAt);
 
 	IKinematics*		 V		= smart_cast<IKinematics*>(Visual()); R_ASSERT(V);
 	IKinematicsAnimated* VA		= smart_cast<IKinematicsAnimated*>(Visual()); R_ASSERT(VA);
