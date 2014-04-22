@@ -76,7 +76,7 @@ void CActor::detach_Vehicle()
 
 	IKinematics*	pKinematics	= smart_cast<IKinematics*>(Visual()); R_ASSERT(pKinematics);
 	u16	head_bone		= pKinematics->LL_BoneID("bip01_head");
-	pKinematics->LL_HideBoneVisible(head_bone,TRUE);
+	//pKinematics->LL_HideBoneVisible(head_bone,TRUE);
 
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
 	if(sh)sh->Deactivate();
