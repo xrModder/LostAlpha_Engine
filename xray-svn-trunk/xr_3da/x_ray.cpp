@@ -775,7 +775,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		SWP_NOMOVE | SWP_SHOWWINDOW// | SWP_NOSIZE
 	);
 	UpdateWindow(logoWindow);
-
+ 
 	// AVI
 	g_bIntroFinished			= TRUE;
 

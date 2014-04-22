@@ -323,6 +323,8 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
+	UIMainPdaFrame->DetachChild		(m_pActiveDialog);
+	m_pActiveDialog->SetParent		(NULL);
 	UIMainPdaFrame->AttachChild		(m_pActiveDialog);
 	m_pActiveDialog->Show			(true);
 
