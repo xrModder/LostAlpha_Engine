@@ -252,7 +252,7 @@ void					CRender::create					()
 	o.depth16			= (strstr(Core.Params,"-depth16"))?		TRUE	:FALSE	;
 	o.noshadows			= (strstr(Core.Params,"-noshadows"))?	TRUE	:FALSE	;
 	o.Tshadows			= (strstr(Core.Params,"-tsh"))?			TRUE	:FALSE	;
-	o.mblur				= TRUE; //(strstr(Core.Params,"-mblur"))?		TRUE	:FALSE	;
+	o.mblur				= ps_r2_ls_flags.test(R2FLAG_MBLUR);
 	o.distortion_enabled= (strstr(Core.Params,"-nodistort"))?	FALSE	:TRUE	;
 	o.distortion		= o.distortion_enabled;
 	o.disasm			= (strstr(Core.Params,"-disasm"))?		TRUE	:FALSE	;
@@ -671,13 +671,7 @@ static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const
 
 /////////
 #pragma comment(lib,"d3dx9.lib")
-/*
-extern "C"
-{
-LPCSTR WINAPI	D3DXGetPixelShaderProfile	(LPDIRECT3DDEVICE9  pDevice);
-LPCSTR WINAPI	D3DXGetVertexShaderProfile	(LPDIRECT3DDEVICE9	pDevice);
-};
-*/
+
 static HRESULT create_shader				(
 		LPCSTR const	pTarget,
 		DWORD const*	buffer,
@@ -690,24 +684,18 @@ static HRESULT create_shader				(
 	HRESULT		_result = E_FAIL;
 	if (pTarget[0] == 'p') {
 		SPS* sps_result = (SPS*)result;
-#ifdef USE_DX11
-		_result			= HW.pDevice->CreatePixelShader(buffer, buffer_size, 0, &sps_result->ps);
-#else // #ifdef USE_DX11
+
 		_result			= HW.pDevice->CreatePixelShader(buffer, buffer_size, &sps_result->ps);
-#endif // #ifdef USE_DX11
+
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! PS: ", file_name);
 			Msg			("! CreatePixelShader hr == 0x%08x", _result);
 			return		E_FAIL;
 		}
 
-		ID3DShaderReflection *pReflection = 0;
+		ID3D10ShaderReflection *pReflection = 0;
 
-#ifdef USE_DX11
-		_result			= D3DReflect( buffer, buffer_size, IID_ID3DShaderReflection, (void**)&pReflection);
-#else
 		_result			= D3D10ReflectShader( buffer, buffer_size, &pReflection);
-#endif
 
 		//	Parse constant, texture, sampler binding
 		//	Store input signature blob
@@ -726,11 +714,8 @@ static HRESULT create_shader				(
 	}
 	else if (pTarget[0] == 'v') {
 		SVS* svs_result = (SVS*)result;
-#ifdef USE_DX11
-		_result			= HW.pDevice->CreateVertexShader(buffer, buffer_size, 0, &svs_result->vs);
-#else // #ifdef USE_DX11
+
 		_result			= HW.pDevice->CreateVertexShader(buffer, buffer_size, &svs_result->vs);
-#endif // #ifdef USE_DX11
 
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! VS: ", file_name);
@@ -738,12 +723,9 @@ static HRESULT create_shader				(
 			return		E_FAIL;
 		}
 
-		ID3DShaderReflection *pReflection = 0;
-#ifdef USE_DX11
-		_result			= D3DReflect( buffer, buffer_size, IID_ID3DShaderReflection, (void**)&pReflection);
-#else
+		ID3D10ShaderReflection *pReflection = 0;
+
 		_result			= D3D10ReflectShader( buffer, buffer_size, &pReflection);
-#endif
 		
 		//	Parse constant, texture, sampler binding
 		//	Store input signature blob
@@ -774,24 +756,18 @@ static HRESULT create_shader				(
 	}
 	else if (pTarget[0] == 'g') {
 		SGS* sgs_result = (SGS*)result;
-#ifdef USE_DX11
-		_result			= HW.pDevice->CreateGeometryShader(buffer, buffer_size, 0, &sgs_result->gs);
-#else // #ifdef USE_DX11
+
 		_result			= HW.pDevice->CreateGeometryShader(buffer, buffer_size, &sgs_result->gs);
-#endif // #ifdef USE_DX11
+
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! GS: ", file_name);
 			Msg			("! CreateGeometryShaderhr == 0x%08x", _result);
 			return		E_FAIL;
 		}
 
-		ID3DShaderReflection *pReflection = 0;
+		ID3D10ShaderReflection *pReflection = 0;
 
-#ifdef USE_DX11
-		_result			= D3DReflect( buffer, buffer_size, IID_ID3DShaderReflection, (void**)&pReflection);
-#else
 		_result			= D3D10ReflectShader( buffer, buffer_size, &pReflection);
-#endif
 
 		//	Parse constant, texture, sampler binding
 		//	Store input signature blob
