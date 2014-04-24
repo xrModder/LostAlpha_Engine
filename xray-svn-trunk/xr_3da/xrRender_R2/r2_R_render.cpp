@@ -399,10 +399,6 @@ void CRender::Render		()
 		Lights_LastFrame.clear	();
 	}
 
-
-	if(L_Glows)
-		L_Glows->Render					();						// glows
-
 	// Directional light - fucking sun
 	if (bSUN)	{
 		RImplementation.stats.l_visible		++;
@@ -470,6 +466,8 @@ void CRender::render_forward				()
 		r_dsgraph_render_graph					(1)	;					// normal level, secondary priority
 		PortalTraverser.fade_render				()	;					// faded-portals
 		r_dsgraph_render_sorted					()	;					// strict-sorted geoms
+		if(L_Glows)
+			L_Glows->Render					();						// glows
 		g_pGamePersistent->Environment().RenderLast()	;					// rain/thunder-bolts
 	}
 
