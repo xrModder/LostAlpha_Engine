@@ -75,8 +75,8 @@ Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard; Description: "{cm:m
 Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
 
 [Icons]
-Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
-Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
+Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch -pure_alloc"
+Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch -pure_alloc"
 
 [Setup]
 ExtraDiskSpaceRequired={#LA_disk_usage}

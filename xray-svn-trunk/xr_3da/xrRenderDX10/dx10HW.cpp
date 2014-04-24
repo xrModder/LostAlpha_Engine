@@ -534,6 +534,7 @@ void CHW::OnAppActivate()
 	{
 		ShowWindow( m_ChainDesc.OutputWindow, SW_RESTORE );
 		m_pSwapChain->SetFullscreenState( TRUE, NULL );
+		Device.m_pRender->updateGamma();
 	}
 }
 
