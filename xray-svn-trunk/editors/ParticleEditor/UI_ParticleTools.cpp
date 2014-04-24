@@ -152,10 +152,12 @@ void CParticleTools::OnItemModified()
 
 void CParticleTools::RenderEnvironment()
 {
+/*
     if (psDeviceFlags.is(rsEnvironment)){
         g_pGamePersistent->Environment().RenderSky	();
         g_pGamePersistent->Environment().RenderClouds	();
     }
+*/
 }
 
 void CParticleTools::Render()
@@ -193,7 +195,7 @@ void CParticleTools::Render()
     if (m_Flags.is(flAnimatedPath))
     	m_ParentAnimator->DrawPath();
 
-    if (psDeviceFlags.is(rsEnvironment)) g_pGamePersistent->Environment().RenderLast	();
+ //   if (psDeviceFlags.is(rsEnvironment)) g_pGamePersistent->Environment().RenderLast	();
     inherited::Render	();
 }
 
@@ -585,7 +587,8 @@ void CParticleTools::MouseMove(TShiftState Shift)
 	switch(m_Action){
     case etaSelect: break;
     case etaAdd: 	break;
-    case etaMove:	m_Transform.c.add(m_MoveAmount); break;
+    case etaMove:	m_Transform.c.add(m_MovedAmount);
+    break;
     case etaRotate:{
     	Fmatrix mR; mR.identity();
     	if (!fis_zero(m_RotateVector.x)) 		mR.rotateX(m_RotateAmount);
@@ -738,5 +741,11 @@ void CParticleTools::EditPreviewPrefs()
     P->AssignItems				(items);
     P->ShowPropertiesModal		();
     TProperties::DestroyForm	(P);
+}
+
+bool CParticleTools::GetSelectionPosition	(Fmatrix& result)
+{
+	result = m_Transform;
+	return true;
 }
 

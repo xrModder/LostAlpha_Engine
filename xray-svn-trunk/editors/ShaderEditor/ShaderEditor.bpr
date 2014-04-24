@@ -39,7 +39,7 @@
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="ShaderEditor.cpp"/>
     <INCLUDEPATH value="$(DXSDK_DIR)\Include;$(COMPONENTS_SOC)\alexmx;$(BCB)\include;$(BCB)\include\vcl;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;$(CORESOC_DIR);../../xr_3da;../../xr_3da/xrRender;$(EAX_DIR)\Include"/>
-    <LIBPATH value="..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries"/>
+    <LIBPATH value="..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries;X:\STALKER\SDK\ETOOLSB"/>
     <WARNINGS value="-w8092 -w8090 -w8089 -w8087 -wprc -wucp -wstv -wstu -wsig -wpin -w-par 
       -wnod -wnak -w-8027 -w-8026 -wdef -wcln -wbbf -wasm -wamp -wamb"/>
     <OTHERFILES value=""/>
@@ -98,7 +98,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=2
-Build=129
+Build=132
 Debug=1
 PreRelease=0
 Special=0
@@ -110,7 +110,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.2.129
+FileVersion=1.0.2.132
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -151,15 +151,16 @@ Item22=C:\Rad\Borland\CBuilder6\Projects;Engine\Animations;Engine\BLENDERS;r:\bo
 Item23=C:\Rad\Borland\CBuilder6\Projects;Engine\Animations;Engine\BLENDERS;r:\borland\components6\alexmx;editor;R:\SDK\DirectX9.0\include;$(BCB)\include;$(BCB)\include\vcl;engine;P:\MagicFM_Borland\Sdk\Include;R:\Borland\Components6\Elpack\Code;R:\Borland\Components6\Elpack\Code\Source;P:\xrCore;P:\xrSound
 
 [HistoryLists\hlLibraryPath]
-Count=8
-Item0=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries
-Item1=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(DISC)\libraries
-Item2=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
-Item3=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
-Item4=$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
-Item5=$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;x:\libraries
-Item6=C:\Rad\Borland\CBuilder6\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;r:\borland\components6\alexmx;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;..\lib\dx;..\lib;x:\;..\ECore;..\ECore\Editor
-Item7=C:\Rad\Borland\CBuilder6\Projects;Engine\Animations;Engine\BLENDERS;c:\rad\borland\CBuilder5\Projects;..\lib\DX;..\lib;engine;editor;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;r:\borland\components6\alexmx;R:\Borland\Components6\Elpack\Code\Source;R:\Borland\Components6\Elpack\Code;x:\
+Count=9
+Item0=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries;X:\STALKER\SDK\ETOOLSB
+Item1=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(MAIN_DIR)\libraries
+Item2=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;$(DISC)\libraries
+Item3=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
+Item4=..\..\..\SDK\components\ElPack\Code;$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
+Item5=$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS_SOC)\alexmx;$(COMPONENTS_SOC)\ElPack\Code;$(COMPONENTS_SOC)\ElPack\Code\Source;x:\libraries
+Item6=$(BCB)\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;$(COMPONENTS)\alexmx;$(COMPONENTS)\ElPack\Code;$(COMPONENTS)\ElPack\Code\Source;x:\libraries
+Item7=C:\Rad\Borland\CBuilder6\Projects;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;r:\borland\components6\alexmx;R:\Borland\Components6\ElPack\Code;R:\Borland\Components6\ElPack\Code\Source;..\lib\dx;..\lib;x:\;..\ECore;..\ECore\Editor
+Item8=C:\Rad\Borland\CBuilder6\Projects;Engine\Animations;Engine\BLENDERS;c:\rad\borland\CBuilder5\Projects;..\lib\DX;..\lib;engine;editor;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\Projects\Lib;r:\borland\components6\alexmx;R:\Borland\Components6\Elpack\Code\Source;R:\Borland\Components6\Elpack\Code;x:\
 
 [HistoryLists\hlDebugSourcePath]
 Count=3

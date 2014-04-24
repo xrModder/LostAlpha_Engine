@@ -2,7 +2,8 @@
 #pragma hdrstop
 
 #include "..\..\xr_3da\xrRender\PSLibrary.h"
-#include "ParticleEffect.h"
+#include "..\..\xr_3da\xrRender\ParticleEffect.h"
+#include "..\..\xr_3da\xrRender\ParticleGroup.h"
 //------------------------------------------------------------------------------
 
 void __fastcall CPSLibrary::FindByName(LPCSTR new_name, bool& res)

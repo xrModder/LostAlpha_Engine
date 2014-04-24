@@ -80,6 +80,7 @@ public:
     virtual void		UpdateProperties	(BOOL bForced=false){m_Flags.set(flRefreshProps,TRUE); if (bForced) RealUpdateProperties();}
     virtual void		RefreshProperties	(){;}
     virtual void		UpdateList			(bool bForced=false){m_Flags.set(flRefreshList,TRUE); if (bForced) RealUpdateList();}
+    virtual bool		GetSelectionPosition	(Fmatrix& result);
 
     LPCSTR				CurrentToolsName	();
 

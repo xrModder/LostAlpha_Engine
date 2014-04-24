@@ -11,7 +11,7 @@
 #include "../xrEProps/ItemList.h"
 #include "eax.h"
 #include "../../xrSound/SoundRender_Source.h"
-#include "../../xr_3da/xrRender/D3DUtils.h"
+#include "../ECORE/Editor/D3DUtils.h"
 
 //------------------------------------------------------------------------------
 xr_token eax_environment[]		= {
@@ -127,8 +127,8 @@ void CSHSoundEnvTools::OnRender()
 	 	EDevice.SetShader	(EDevice.m_WireShader);
         u32 clr0			= SOUND_SEL0_COLOR;
         u32 clr1			= SOUND_SEL1_COLOR;
-        DU.DrawLineSphere	(Fvector().set(0,0,0), m_Params.max_distance, clr1, true);
-        DU.DrawLineSphere	(Fvector().set(0,0,0), m_Params.min_distance, clr0, false);
+        DU_impl.DrawLineSphere	(Fvector().set(0,0,0), m_Params.max_distance, clr1, true);
+        DU_impl.DrawLineSphere	(Fvector().set(0,0,0), m_Params.min_distance, clr0, false);
     }
 }
 //---------------------------------------------------------------------------

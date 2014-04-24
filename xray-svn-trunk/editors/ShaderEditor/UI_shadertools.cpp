@@ -126,17 +126,18 @@ void CShaderTools::OnDestroy()
 
 void CShaderTools::RenderEnvironment()
 {
-    if (psDeviceFlags.is(rsEnvironment)){
+/*    if (psDeviceFlags.is(rsEnvironment)){
         g_pGamePersistent->Environment().RenderSky	();
         g_pGamePersistent->Environment().RenderClouds	();
     }
+*/ 
 }
 
 void CShaderTools::Render()
 {
     PrepareLighting		();
 	Current()->OnRender	();
-    if (psDeviceFlags.is(rsEnvironment)) g_pGamePersistent->Environment().RenderLast	();
+    //if (psDeviceFlags.is(rsEnvironment)) g_pGamePersistent->Environment().RenderLast	();
     inherited::Render	();
 }
 
@@ -336,6 +337,12 @@ void __fastcall CShaderTools::OnItemFocused(ListItemsVec& items)
     }
     Current()->SetCurrentItem(name,false);
     ExecCommand				(COMMAND_UPDATE_PROPERTIES);
+}
+
+bool CShaderTools::GetSelectionPosition	(Fmatrix& result)
+{
+	result = Fidentity;
+   return true;
 }
 //------------------------------------------------------------------------------
 

@@ -153,6 +153,9 @@ public:
     void				EditPreviewPrefs	();
 
     bool 				Validate			(bool bMsg);
+
+    virtual bool		GetSelectionPosition	(Fmatrix& result);
+
     
     // commands
     CCommandVar			CommandSelectPreviewObj	(CCommandVar p1, CCommandVar p2);

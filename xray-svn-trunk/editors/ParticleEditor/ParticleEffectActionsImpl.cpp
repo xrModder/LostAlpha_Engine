@@ -1169,6 +1169,9 @@ void	EPATurbulence::Render		(const Fmatrix& parent)
         DU_impl.DrawCross	(it->p, csz,csz,csz, csz,csz,csz, it->c.get(), false);
 }
 
+#include "../../xr_3da/xrRender/ParticleEffect.h"
+#include "../../xr_3da/xrRender/ParticleGroup.h"
+
 void PS::CPEDef::Render(const Fmatrix& parent)
 {
 	Fmatrix trans; trans.translate(parent.c);
