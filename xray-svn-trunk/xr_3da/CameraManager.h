@@ -87,7 +87,7 @@ protected:
 
 	bool					m_bAutoApply;
 	SPPInfo					pp_affected;
-	void					UpdateDeffered();
+    void __fastcall			UpdateDeffered();
 
 	
 	virtual void			UpdateCamEffectors		();

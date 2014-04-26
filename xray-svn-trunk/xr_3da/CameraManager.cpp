@@ -192,17 +192,18 @@ CEffectorCam* CCameraManager::AddCamEffector(CEffectorCam* ef)
 	return m_EffectorsCam_added_deffered.back();
 }
 
-void CCameraManager::UpdateDeffered()
+void __fastcall CCameraManager::UpdateDeffered()
 {
+#pragma todo("Lox to anyone: FIX THIS FREAKING CAMERA GLITCHING BUG BEFORE RELEASE!!! PRIORITY 1!!!!")
 	EffectorCamIt it		= m_EffectorsCam_added_deffered.begin();
 	EffectorCamIt it_e		= m_EffectorsCam_added_deffered.end();
 	for (; it!=it_e; ++it)
 	{
 		RemoveCamEffector			( (*it)->eType );
-		
+	/*
 		if((*it)->AbsolutePositioning())
 			m_EffectorsCam.push_front(*it);
-		else
+		else */
 			m_EffectorsCam.push_back	(*it);
 	}
 
@@ -261,6 +262,7 @@ void CCameraManager::RemovePPEffector(EEffectorPPType type)
 			}
 			m_EffectorsPP.erase			(it);
 			return;
+
 		}
 }
 
@@ -272,7 +274,7 @@ void CCameraManager::OnEffectorReleased(SBaseEffector* e)
 	xr_delete(e);
 }
 
-void CCameraManager::UpdateFromCamera(const CCameraBase* C)
+void  CCameraManager::UpdateFromCamera(const CCameraBase* C)
 {	
 	Update(C->vPosition,C->vDirection,C->vNormal, C->f_fov, C->f_aspect, g_pGamePersistent->Environment().CurrentEnv->far_plane, C->m_Flags.flags); 
 }

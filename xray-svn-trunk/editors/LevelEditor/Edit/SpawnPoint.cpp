@@ -36,8 +36,9 @@
 
 #define SPAWNPOINT_CHUNK_ENVMOD			0xE422
 #define SPAWNPOINT_CHUNK_ENVMOD2		0xE423
-#define SPAWNPOINT_CHUNK_ENVMOD3		0xE424
-#define SPAWNPOINT_CHUNK_FLAGS			0xE425
+#define SPAWNPOINT_CHUNK_ENABLED		0xE424
+#define SPAWNPOINT_CHUNK_ENVMOD3		0xE425
+#define SPAWNPOINT_CHUNK_FLAGS			0xE426
 
 //----------------------------------------------------
 #define RPOINT_SIZE 0.5f
@@ -507,6 +508,7 @@ void CSpawnPoint::Construct(LPVOID data)
 {
 	ClassID			= OBJCLASS_SPAWNPOINT;
     m_AttachedObject= 0;
+	m_bSpawnEnabled = true;
     if (data){
         if (strcmp(LPSTR(data),RPOINT_CHOOSE_NAME)==0)
         {
@@ -532,6 +534,8 @@ void CSpawnPoint::Construct(LPVOID data)
             	SetValid(false);
             }else{
 	        	m_Type			= ptSpawnPoint;
+				if (Tools->GetSettings(etfRandomRot))
+				SetRotation(Fvector().set(0.f,Random.randF(-PI,PI),0.f));
             }
         }
     }else{
@@ -776,7 +780,13 @@ void CSpawnPoint::Render( int priority, bool strictB2F )
                 // render icon
                 ESceneSpawnTools* st	= dynamic_cast<ESceneSpawnTools*>(ParentTools); VERIFY(st);
                 ref_shader s 	   	= st->GetIcon(m_SpawnData.m_Data->name());
-                //DU_impl.DrawEntity		(0xffffffff,s);
+/*
+//broken!!!!
+				if (m_bSpawnEnabled)
+                	DU_impl.DrawEntity		(0xffffffff,s);
+				else
+					DU_impl.DrawEntity		(0x00FF0000,s);
+*/
             }else{
                 switch (m_Type)
                 {
@@ -993,6 +1003,9 @@ bool CSpawnPoint::Load(IReader& F){
         default: THROW;
         }
     }
+    
+    if (F.find_chunk(SPAWNPOINT_CHUNK_ENABLED))
+        m_bSpawnEnabled			= F.r_u16();
 
 	// objects
     Scene->ReadObjects(F,SPAWNPOINT_CHUNK_ATTACHED_OBJ,OnAppendObject,0);
@@ -1053,6 +1066,9 @@ void CSpawnPoint::Save(IWriter& F){
         default: THROW;
         }
     }
+    F.open_chunk	(SPAWNPOINT_CHUNK_ENABLED);
+    F.w_u16		((u16)m_bSpawnEnabled);
+    F.close_chunk	();
 }
 //----------------------------------------------------
 
@@ -1068,6 +1084,8 @@ Fvector3 u32_3f(u32 clr)
 
 bool CSpawnPoint::ExportGame(SExportStreams* F)
 {
+	if (!m_bSpawnEnabled) {Msg("SpawnPoint: '%s' is disabled.", Name); return true;}
+
 	// spawn
 	if (m_SpawnData.Valid()){
     	if (m_SpawnData.m_Data->validate()){
@@ -1165,27 +1183,53 @@ void CSpawnPoint::OnRPointTypeChange(PropValue* prop)
 
 void CSpawnPoint::OnProfileChange(PropValue* prop)
 {
-	if (m_SpawnData.m_Profile.size()!=0){
-        shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
-        VERIFY					(s_name.size());
-        if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
-        {
-            ISE_Abstract* tmp	= create_entity	(*s_name);
-            VERIFY				(tmp);
-            NET_Packet 			Packet;
-            tmp->Spawn_Write	(Packet,TRUE);
-            R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
-            m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
-            destroy_entity		(tmp);
-        }
-    }else{
+	if (m_SpawnData.m_Profile.size()!=0)
+	{
+		shared_str s_name		= EditorToSection(m_SpawnData.m_Profile);
+		VERIFY					(s_name.size());
+		if (0!=strcmp(m_SpawnData.m_Data->name(),*s_name))
+		{
+			int res = mrNo;
+			if (!psDeviceFlags.is(rsChangeProfileParamsYes)&&!psDeviceFlags.is(rsChangeProfileParamsNo))
+			{
+		    		res = ELog.DlgMsg(mtConfirmation, TMsgDlgButtons() << mbYes << mbNo << mbYesToAll << mbNoToAll, "Do you want set all parameters from new profile?");
+				if(res==mrYesToAll)
+				{
+					psDeviceFlags.set(rsChangeProfileParamsYes, TRUE);
+					res = mrYes;
+
+				} else if(res==mrNoToAll) {
+					psDeviceFlags.set(rsChangeProfileParamsNo, TRUE);
+					res = mrNo;
+				}
+
+			} else if (psDeviceFlags.is(rsChangeProfileParamsYes))
+				res = mrYes;
+
+			if (res==mrYes)
+			{
+				ISE_Abstract* tmp	= create_entity	(*s_name); VERIFY(tmp);
+				NET_Packet 			Packet;
+				tmp->Spawn_Write	(Packet,TRUE);
+				R_ASSERT			(m_SpawnData.m_Data->Spawn_Read(Packet));
+				m_SpawnData.m_Data->set_editor_flag(ISE_Abstract::flVisualChange|ISE_Abstract::flVisualAnimationChange);
+				destroy_entity		(tmp);
+			} else {
+				m_SpawnData.m_Data->set_name(*s_name);
+				m_SpawnData.m_Profile = SectionToEditor(m_SpawnData.m_Data->name());
+			}
+		}
+	}else{
 		m_SpawnData.m_Profile	= SectionToEditor(m_SpawnData.m_Data->name());
-    }
+	}
 }
 
 void CSpawnPoint::FillProp(LPCSTR pref, PropItemVec& items)
 {
 	inherited::FillProp(pref,items);
+
+	PHelper().CreateBOOL	(items,PrepareKey(pref,"Spawn\\enabled"), &m_bSpawnEnabled);
+
 
     if (m_SpawnData.Valid())
     {
