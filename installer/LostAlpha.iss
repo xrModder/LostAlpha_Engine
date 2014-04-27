@@ -98,6 +98,7 @@ MinVersion=0,5.01sp3
 WizardImageFile={#LA_installer_support_files}\installer_images\LAinstallerImage.bmp
 SetupIconFile={#LA_installer_support_files}\installer_images\stalker.ico
 WizardSmallImageFile={#LA_installer_support_files}\installer_images\LAinstallerSmallImage.bmp
+PrivilegesRequired=admin
 
 [CustomMessages]
 msgInstallingBins=Installing binaries
