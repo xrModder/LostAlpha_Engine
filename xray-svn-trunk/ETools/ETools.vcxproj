@@ -244,6 +244,7 @@
     <ClCompile Include="CreateDX.cpp" />
     <ClCompile Include="ETools.cpp" />
     <ClCompile Include="ETools_cm.cpp" />
+    <ClCompile Include="Intersect.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">Create</PrecompiledHeader>

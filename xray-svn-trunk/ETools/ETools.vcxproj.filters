@@ -59,6 +59,9 @@
     <ClCompile Include="resample.cpp">
       <Filter>OGG encoder</Filter>
     </ClCompile>
+    <ClCompile Include="Intersect.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DX_Wrapper.h">
