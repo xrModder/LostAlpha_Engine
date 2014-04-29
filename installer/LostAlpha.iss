@@ -44,7 +44,7 @@
 ; it cannot be determined by the installer itself,
 ; due to external archives used.
 ; It's in bytes!
-#define LA_disk_usage "17716740096"
+#define LA_disk_usage "15510000000"
 
 ; dirs used:
 #define LA_game_files ".\game_distrib_files"
