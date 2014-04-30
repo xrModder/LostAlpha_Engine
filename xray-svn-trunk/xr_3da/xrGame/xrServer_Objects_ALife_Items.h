@@ -161,13 +161,16 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	virtual void					OnEvent				(NET_Packet& P, u16 type, u32 time, ClientID sender );
 	virtual u32						ef_main_weapon_type	() const;
 	virtual u32						ef_weapon_type		() const;
-	u8								get_slot			();
-	u16								get_ammo_limit		();
-	u16								get_ammo_total		();
-	u16								get_ammo_elapsed	();
+	u8								get_slot			() const;
+	u16								get_ammo_limit		() const;
+	u16								get_ammo_total		() const;
+	u16								get_ammo_elapsed	() const;
 	void							set_ammo_elapsed	(u16);
-	u16								get_ammo_magsize	();
-	u8								get_addon_flags		();
+	u16								get_ammo_magsize	() const;
+	u8								get_addon_flags		() const;
+	void							set_addon_flags		(u8 flags)		{ m_addon_flags.assign(flags); }
+	void							set_ammo_type		(u8 type)		{ ammo_type = type; }
+	u8								get_ammo_type		() const        { return ammo_type; }
 
 	virtual BOOL					Net_Relevant		();
 
@@ -210,7 +213,16 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazinedWGL, CSE_ALifeItemWeapon
 	}; 
 
 	grenade_count_t					a_elapsed_grenades;
-	bool						m_bGrenadeMode;
+	bool							m_bGrenadeMode;
+
+	IC bool							is_grenade_mode		() const	{ return m_bGrenadeMode; }
+	IC void							set_grenades_mode	(bool mode)	{ m_bGrenadeMode = mode; }
+	IC u8							get_grenades_type	() const	{ return a_elapsed_grenades.grenades_type; }
+	IC void							set_grenades_type	(u8 type)	{ a_elapsed_grenades.grenades_type = type; }
+	IC u8							get_grenades_count	() const	{ return a_elapsed_grenades.grenades_count; }
+	IC void							set_grenades_count	(u8 count)	{ a_elapsed_grenades.grenades_count = count; }
+
+
 
 	virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
 SERVER_ENTITY_DECLARE_END

@@ -463,27 +463,27 @@ void CSE_ALifeItemWeapon::OnEvent			(NET_Packet	&tNetPacket, u16 type, u32 time,
 	}
 }
 
-u8 CSE_ALifeItemWeapon::get_addon_flags		()
+u8 CSE_ALifeItemWeapon::get_addon_flags		() const
 {
 	return (m_addon_flags.get());
 }
 
-u8	 CSE_ALifeItemWeapon::get_slot			()
+u8	 CSE_ALifeItemWeapon::get_slot			()  const
 {
 	return						((u8)pSettings->r_u8(s_name,"slot"));
 }
 
-u16	 CSE_ALifeItemWeapon::get_ammo_limit	()
+u16	 CSE_ALifeItemWeapon::get_ammo_limit	()  const
 {
 	return						(u16) pSettings->r_u16(s_name,"ammo_limit");
 }
 
-u16	 CSE_ALifeItemWeapon::get_ammo_total	()
+u16	 CSE_ALifeItemWeapon::get_ammo_total	()  const
 {
 	return						((u16)a_current);
 }
 
-u16	 CSE_ALifeItemWeapon::get_ammo_elapsed	()
+u16	 CSE_ALifeItemWeapon::get_ammo_elapsed	()  const
 {
 	return						((u16)a_elapsed);
 }
@@ -493,7 +493,7 @@ void CSE_ALifeItemWeapon::set_ammo_elapsed	(u16 val)
 	a_elapsed = val;
 }
 
-u16	 CSE_ALifeItemWeapon::get_ammo_magsize	()
+u16	 CSE_ALifeItemWeapon::get_ammo_magsize	() const
 {
 	if (pSettings->line_exist(s_name,"ammo_mag_size"))
 		return					(pSettings->r_u16(s_name,"ammo_mag_size"));
@@ -612,7 +612,7 @@ void CSE_ALifeItemWeaponMagazined::FillProps			(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeaponMagazinedWGL::CSE_ALifeItemWeaponMagazinedWGL	(LPCSTR caSection) : CSE_ALifeItemWeaponMagazined(caSection)
 {
-	m_bGrenadeMode				=	0;
+	m_bGrenadeMode						=	0;
 	a_elapsed_grenades.grenades_count	=	0;
 	a_elapsed_grenades.grenades_type	=	0;
 }

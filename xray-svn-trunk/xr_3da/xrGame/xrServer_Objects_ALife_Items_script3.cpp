@@ -21,5 +21,10 @@ void CSE_ALifeItemWeaponMagazinedWGL::script_register(lua_State *L)
 			"cse_alife_item_weapon_magazined_w_gl",
 			CSE_ALifeItemWeaponMagazined
 			)
+			.def("is_grenade_mode", &CSE_ALifeItemWeaponMagazinedWGL::is_grenade_mode)
+			.def("get_grenades_type", &CSE_ALifeItemWeaponMagazinedWGL::get_grenades_type)
+			.def("set_grenades_type", &CSE_ALifeItemWeaponMagazinedWGL::set_grenades_type)
+			.def("get_grenades_count", &CSE_ALifeItemWeaponMagazinedWGL::get_grenades_count)
+			.def("set_grenades_count", &CSE_ALifeItemWeaponMagazinedWGL::set_grenades_count)
 	];
 }

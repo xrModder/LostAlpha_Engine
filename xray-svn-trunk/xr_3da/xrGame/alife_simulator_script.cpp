@@ -481,6 +481,16 @@ void change_actor_level(CALifeSimulator *self, Fvector3 position, u32 level_vert
 //	THROW								(self);
 //}
 
+CSE_ALifeItemWeapon* cast_to_weapon(CALifeSimulator *self, CSE_ALifeDynamicObject* obj)
+{
+	return smart_cast<CSE_ALifeItemWeapon*>(obj);
+}
+
+CSE_ALifeItemWeaponMagazinedWGL* cast_to_weapongl(CALifeSimulator *self, CSE_ALifeDynamicObject* obj)
+{
+	return smart_cast<CSE_ALifeItemWeaponMagazinedWGL*>(obj);
+}
+
 #pragma optimize("s",on)
 void CALifeSimulator::script_register			(lua_State *L)
 {
@@ -517,6 +527,8 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("switch_distance",			&CALifeSimulator::switch_distance)
 			.def("switch_distance",			&CALifeSimulator::set_switch_distance)
 			// lost alpha start
+			.def("cast_to_weapongl", 		&cast_to_weapongl)
+			.def("cast_to_weapon",			&cast_to_weapon)
 			.def("teleport_entity",			&teleport_entity)
 			.def("change_actor_level",		&change_actor_level)
 			.def("create_anomaly",			&CALifeSimulator__spawn_anom)
@@ -526,7 +538,7 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("force_entity_update",		&force_entity_update)
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, ALife::_STORY_ID, const Fvector &, u32, GameGraph::_GRAPH_ID))(CALifeSimulator__spawn_item3))
 			.def("create",					(CSE_Abstract *(*) (CALifeSimulator *, LPCSTR, const Fvector &, const Fvector &, u32, GameGraph::_GRAPH_ID, ALife::_STORY_ID))(CALifeSimulator__spawn_item4))
-			.def("create_restrictor",			&CALifeSimulator__spawn_restrictor)
+			.def("create_restrictor",		&CALifeSimulator__spawn_restrictor)
 			.def("store",					&get_store)
 #ifdef USE_TIMERS_MANAGER
 			.def("timer_manager",			&get_timers_manager)
