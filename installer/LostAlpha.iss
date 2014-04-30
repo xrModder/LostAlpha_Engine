@@ -44,7 +44,7 @@
 ; it cannot be determined by the installer itself,
 ; due to external archives used.
 ; It's in bytes!
-#define LA_disk_usage "17716740096"
+#define LA_disk_usage "15510000000"
 
 ; dirs used:
 #define LA_game_files ".\game_distrib_files"
@@ -69,16 +69,20 @@ Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\gamedata"
 Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}"" ""{src}\game\maindir.7z*"""; Flags: runhidden; Description: "{cm:msgInstallingMaindir}"; StatusMsg: "{cm:msgInstallingMaindir}"
 
 ; install prerequisities
-Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"
-Filename: "{src}\3rdparties\directx_Jun2010_redist.exe"; Flags: hidewizard; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
-Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
-Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
+Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"; Check: VCRedistNeedsInstall
+Filename: "{src}\3rdparties\directx_Jun2010_redist.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
+Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
+Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
+
+[InstallDelete]
+Type: files; Name: "{app}\bins\msvc*.dll"
 
 [Icons]
 Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
 Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
 
 [Setup]
+PrivilegesRequired=admin
 ExtraDiskSpaceRequired={#LA_disk_usage}
 AppName={#LA_app_name}
 AppVersion={#LA_version_text}
@@ -98,7 +102,6 @@ MinVersion=0,5.01sp3
 WizardImageFile={#LA_installer_support_files}\installer_images\LAinstallerImage.bmp
 SetupIconFile={#LA_installer_support_files}\installer_images\stalker.ico
 WizardSmallImageFile={#LA_installer_support_files}\installer_images\LAinstallerSmallImage.bmp
-PrivilegesRequired=admin
 
 [CustomMessages]
 msgInstallingBins=Installing binaries
@@ -109,6 +112,7 @@ msgInstallingVcredist=Installing Microsoft VC++ runtimes
 msgInstallingDXredist=DirectX runtimes
 msgInstallingOAL=Installing audio codec
 msgInstallingXvid=Installing video codec
+msgDeletingUnwantedFiles=Deleting not needed files
 
 [UninstallDelete]
 ; don't delete: appdata, screenshots, logs.
