@@ -37,6 +37,10 @@
 ;
 ;
 
+; for a patch, comment out the below line.
+; uncomment it when releasing a bundle (with external 7z archives).
+;#define BundleRelease
+
 ; password for 7z files!
 #define archpasswd "sdu28042elmd"
 
@@ -55,18 +59,25 @@
 #define LA_app_name "S.T.A.L.K.E.R.: Lost Alpha"
 #define LA_directory_name "S.T.A.L.K.E.R. - Lost Alpha"
 #define LA_copyright "dezowave"
-#define LA_version "1.3.0"
-#define LA_version_text "1.3.0"
+#define LA_version "1.3.1"
+#define LA_version_text "1.3.1"
 
 [Files]
 Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+#ifndef BundleRelease
+Source: "{#LA_game_files}\appdata\*"; DestDir: "{app}\appdata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
+Source: "{#LA_game_files}\bins\*"; DestDir: "{app}\bins"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
+Source: "{#LA_game_files}\gamedata\*"; DestDir: "{app}\gamedata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
+#endif
 
 [Run]
 ; unpack game files
+#ifdef BundleRelease
 Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\appdata"" ""{src}\game\appdata.7z*"""; Flags: runhidden; Description: "{cm:msgInstallingAppdata}"; StatusMsg: "{cm:msgInstallingAppdata}"
 Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\bins"" ""{src}\game\bins.7z*"""; Flags: runhidden; Description: "{cm:msgInstallingBins}"; StatusMsg: "{cm:msgInstallingBins}"
 Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}\gamedata"" ""{src}\game\gamedata.7z*"""; Flags: runhidden; Description: "{cm:msgInstallingGamedata}"; StatusMsg: "{cm:msgInstallingGamedata}"
 Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}"" ""{src}\game\maindir.7z*"""; Flags: runhidden; Description: "{cm:msgInstallingMaindir}"; StatusMsg: "{cm:msgInstallingMaindir}"
+#endif
 
 ; install prerequisities
 Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"; Check: VCRedistNeedsInstall
@@ -83,7 +94,9 @@ Name: "{commondesktop}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; 
 
 [Setup]
 PrivilegesRequired=admin
+#ifdef BundleRelease
 ExtraDiskSpaceRequired={#LA_disk_usage}
+#endif
 AppName={#LA_app_name}
 AppVersion={#LA_version_text}
 AppCopyright={#LA_copyright}
