@@ -64,6 +64,7 @@
 
 [Files]
 Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+Source: "{#LA_installer_support_files}\fsgame_template.ltx"; DestDir: "{tmp}"; Flags: deleteafterinstall
 #ifndef BundleRelease
 Source: "{#LA_game_files}\appdata\*"; DestDir: "{app}\appdata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
 Source: "{#LA_game_files}\bins\*"; DestDir: "{app}\bins"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
@@ -194,4 +195,44 @@ end;
 function VCRedistNeedsInstall: Boolean;
 begin
   Result := not (VCVersionInstalled(VC_2013_REDIST_X86));
+end;
+
+procedure ModifyUserLtx(variable: string; value: string);
+var
+  FileName: String;
+  LineIndex: Integer;
+  StringList: TStringList;
+begin
+  { NOTE: it still doesn't work, don't use it yet! }
+  FileName := ExpandConstant('{app}\appdata\user.ltx');
+  StringList := TStringList.Create;
+  try
+    StringList.LoadFromFile(FileName);
+    MsgBox(StringList.Text, mbInformation, MB_OK);
+    if StringList.Find(variable, LineIndex) then
+    begin
+      MsgBox('Found: '+StringList[LineIndex], mbInformation, MB_OK);
+      StringList[LineIndex] := value;
+      StringList.SaveToFile(FileName);
+    end;
+  finally
+    StringList.Free;
+  end;
+end;
+
+procedure WipeUserLtx;
+begin
+  if MsgBox('It is recommended to recreate your settings for the game. Do you want to do it?', mbConfirmation, MB_YESNO or MB_DEFBUTTON1) = IDYES then
+  begin
+    DeleteFile(ExpandConstant('{app}\appdata\user.ltx'));
+  end;
+
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then begin
+    WipeUserLtx;
+    //ModifyUserLtx('r2_gloss_factor', '1.');
+  end;
 end;
