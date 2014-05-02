@@ -59,16 +59,18 @@
 #define LA_app_name "S.T.A.L.K.E.R.: Lost Alpha"
 #define LA_directory_name "S.T.A.L.K.E.R. - Lost Alpha"
 #define LA_copyright "dezowave"
-#define LA_version "1.3.1"
-#define LA_version_text "1.3.1"
+#define LA_version "1.3001"
+#define LA_version_text "1.3001"
 
 [Files]
 Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
-Source: "{#LA_installer_support_files}\fsgame_template.ltx"; DestDir: "{tmp}"; Flags: deleteafterinstall
+Source: "{#LA_game_files}\lost_alpha_game_manual.pdf"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+;Source: "{#LA_installer_support_files}\fsgame_template.ltx"; DestDir: "{tmp}"; Flags: deleteafterinstall
 #ifndef BundleRelease
 Source: "{#LA_game_files}\appdata\*"; DestDir: "{app}\appdata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
 Source: "{#LA_game_files}\bins\*"; DestDir: "{app}\bins"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
 Source: "{#LA_game_files}\gamedata\*"; DestDir: "{app}\gamedata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
+Source: "{#LA_game_files}\gamedata.db*"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 #endif
 
 [Run]
@@ -88,6 +90,7 @@ Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard skipifdo
 
 [InstallDelete]
 Type: files; Name: "{app}\bins\msvc*.dll"
+Type: files; Name: "{app}\gamedata\scripts\ui_main_dik_keys.script"
 
 [Icons]
 Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
@@ -222,15 +225,20 @@ end;
 
 procedure WipeUserLtx;
 begin
-  if MsgBox('It is recommended to recreate your settings for the game. Do you want to do it?', mbConfirmation, MB_YESNO or MB_DEFBUTTON1) = IDYES then
+  if MsgBox('It is recommended to recreate your settings for the game. Do you want to do it?',  
+            mbConfirmation, MB_YESNO or MB_DEFBUTTON1) 
+            = IDYES 
+  then
   begin
     DeleteFile(ExpandConstant('{app}\appdata\user.ltx'));
   end;
-
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
+  if CurStep = ssInstall then begin
+    DelTree(ExpandConstant('{app}\bins'), True, True, True);
+  end;
   if CurStep = ssPostInstall then begin
     WipeUserLtx;
     //ModifyUserLtx('r2_gloss_factor', '1.');
