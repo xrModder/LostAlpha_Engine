@@ -107,11 +107,11 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bo
 
 	if(m_pItemDataVector->end() == it)
 	{
-		/*
+		
 		int i=0;
-		for(T_VECTOR::iterator it = m_pItemDataVector->begin();	m_pItemDataVector->end() != it; it++,i++)
+		for (T_VECTOR::iterator it = m_pItemDataVector->begin(), last = m_pItemDataVector->end(); last != it; it++, i++)
 			Msg("[%d]=[%s]",i,*(*it).id );
-		*/
+		
 		R_ASSERT2(no_assert, make_string("item [%s] not found!!", *str_id));
 		return NULL;
 	}
@@ -124,7 +124,7 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetByIndex(int index, bool no_assert)
 {
 	if((size_t)index>=m_pItemDataVector->size())
 	{
-		R_ASSERT3(no_assert, "item by index not found in files", file_str);
+		R_ASSERT2(no_assert, make_string("[%s] item by index not found in files", file_str));
 		return NULL;
 	}
 	return &(*m_pItemDataVector)[index];

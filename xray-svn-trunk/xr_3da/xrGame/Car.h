@@ -509,7 +509,9 @@ IC	size_t				CurrentTransmission					(){return m_current_transmission_num;}
 	void UpdateExhausts									();
 	void ClearExhausts									();
 	void UpdateFuel										(float time_delta);
-	float AddFuel										(float ammount); //ammount - fuel to load, ret - fuel loaded
+//	float AddFuel										(float ammount); //ammount - fuel to load, ret - fuel loaded
+	void Refuel											();
+	float GetFuel										() { return m_fuel;  }
 	void CarExplode										();
 	////////////////////////////////////////////		////////
 
@@ -547,9 +549,9 @@ public:
 	bool					Use							(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos);
 	void					DoExit						();
 	void					DoEnter						();
-	void					OpenTrunkBone						();
-	void					CloseTrunkBone						();
-	u16					GetTrunkBone					() const		{return m_bone_trunk;};
+	void					OpenTrunkBone				();
+	void					CloseTrunkBone				();
+	u16						GetTrunkBone				() const		{return m_bone_trunk;};
 	u16						DriverAnimationType 		();
 	// Core events
 	virtual DLL_Pure		*_construct					();

@@ -1749,6 +1749,7 @@ void CCar::UpdateFuel(float time_delta)
 	if(m_fuel<EPS) StopEngine();
 }
 
+/*
 float CCar::AddFuel(float ammount)
 {
 	float free_space=m_fuel_tank-m_fuel;
@@ -1762,6 +1763,12 @@ float CCar::AddFuel(float ammount)
 		m_fuel=m_fuel_tank;
 		return free_space;
 	}
+}
+*/
+
+void CCar::Refuel()
+{
+	m_fuel = m_fuel_tank;
 }
 
 void CCar::ResetKeys()
