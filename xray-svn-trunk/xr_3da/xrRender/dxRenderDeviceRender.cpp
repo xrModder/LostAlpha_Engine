@@ -360,16 +360,15 @@ void dxRenderDeviceRender::End()
 	if (HW.Caps.SceneMode)	overdrawEnd();
 
 	RCache.OnFrameEnd	();
-	Memory.dbg_check		();
+	Memory.dbg_check();
 
 	DoAsyncScreenshot();
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	//UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
-	//HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
+	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
+	HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
 #else	//	USE_DX10
-	CHK_DX				(HW.pDevice->EndScene());
-
+	CHK_DX(HW.pDevice->EndScene());
 	HW.pDevice->Present( NULL, NULL, NULL, NULL );
 #endif	//	USE_DX10
 	//HRESULT _hr		= HW.pDevice->Present( NULL, NULL, NULL, NULL );
