@@ -68,15 +68,15 @@ HRESULT dx10State::Apply()
 	SSManager.CSApplySamplers(m_CSSamplers);
 #endif
 
-//	static const FLOAT BlendFactor[4] = {0.000f, 0.000f, 0.000f, 0.000f};
-//	static const UINT SampleMask = 0xffffffff;
+	static const FLOAT BlendFactor[4] = {0.000f, 0.000f, 0.000f, 0.000f};
+	static const UINT SampleMask = 0xffffffff;
 
-//	VERIFY(m_pRasterizerState);
-//	HW.pDevice->RSSetState(m_pRasterizerState);
-//	VERIFY(m_pDepthStencilState);
-//	HW.pDevice->OMSetDepthStencilState(m_pDepthStencilState, m_uiStencilRef);
-//	VERIFY(m_pBlendState);
-//	HW.pDevice->OMSetBlendState(m_pBlendState, BlendFactor, SampleMask);
+	VERIFY(m_pRasterizerState);
+	HW.pDevice->RSSetState(m_pRasterizerState);
+	VERIFY(m_pDepthStencilState);
+	HW.pDevice->OMSetDepthStencilState(m_pDepthStencilState, m_uiStencilRef);
+	VERIFY(m_pBlendState);
+	HW.pDevice->OMSetBlendState(m_pBlendState, BlendFactor, SampleMask);
 
 	return S_OK;
 }
