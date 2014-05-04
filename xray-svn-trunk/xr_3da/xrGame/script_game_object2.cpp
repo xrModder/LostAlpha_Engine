@@ -322,17 +322,30 @@ void CScriptGameObject::RestoreDefaultStartDialog()
 	pDialogManager->RestoreDefaultStartDialog();
 }
 
+CScriptGameObject* CScriptGameObject::GetActorCar()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (actor)
+	{
+		CCar* car = actor->GetAttachedCar();
+		return car ? car->lua_game_object() : NULL;
+	}
+	ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "ScriptGameObject : attempt to call GetActorCar method for non-actor object");
+	return NULL;
+}
+
 void CScriptGameObject::SetActorPosition			(Fvector pos)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(actor){
 		CCar* car = smart_cast<CCar*>(actor->Holder());
-		if(car)
+		if (car)
 			car->DoExit();
-
+		
 		Fmatrix F = actor->XFORM();
 		F.c = pos;
 		actor->ForceTransform(F);
+		
 	}else
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorPosition method for non-actor object");
 

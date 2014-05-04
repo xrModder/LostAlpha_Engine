@@ -646,21 +646,24 @@ void CScriptGameObject::invulnerable		(bool invulnerable)
 	monster->invulnerable	(invulnerable);
 }
 
-void CScriptGameObject::TeleportAliveEntity (Fvector pos, Fvector dir)
+void CScriptGameObject::TeleportEntity (Fvector pos, Fvector dir)
 {
-	CEntityAlive* pAlive = smart_cast<CEntityAlive*>(&object());
-	if (!pAlive) {
-		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CEntityAlive : cannot access class member TeleportAliveEntity!");
+	CEntity* pEntity = smart_cast<CEntity*>(&object());
+	if (!pEntity) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CEntity : cannot access class member TeleportAliveEntity!");
 		return;
 	}
 
-  	Fmatrix xform = pAlive->XFORM();
+	Fmatrix xform = pEntity->XFORM();
 
 	xform.c = pos;
 	xform.k = dir;
 
-	pAlive->XFORM().set		(xform);
+	pEntity->XFORM().set(xform);
 
+	CEntityAlive* pAlive = smart_cast<CEntityAlive*>(&object());
+
+	if (!pAlive)						return;
 	if(!pAlive->g_Alive())				return;
 
 	if (pAlive->animation_movement_controlled())

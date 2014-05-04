@@ -2,6 +2,7 @@
 #include "alife_space.h"
 #include "Car.h"
 #include "CarWeapon.h"
+#include "Actor.h"
 #include "script_game_object.h"
 
 using namespace luabind;
@@ -40,6 +41,7 @@ void CCar::script_register(lua_State *L)
 		.def("CloseTrunkBone",			&CCar::CloseTrunkBone)
 		.def("GetFuel",					&CCar::GetFuel)
 		.def("Refuel",					&CCar::Refuel)
+		
 		.def(constructor<>())
 	];
 }

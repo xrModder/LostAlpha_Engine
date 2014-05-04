@@ -412,6 +412,13 @@ void teleport_entity(CALifeSimulator *self, CSE_Abstract *object, Fvector &posit
 	self->teleport_object(object->ID, game_vertex_id, level_vertex_id, position);
 }
 
+void teleport_entity(CALifeSimulator *self, ALife::_OBJECT_ID object_id, Fvector &position, u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id)
+{
+	VERIFY(self);
+	self->teleport_object(object_id, game_vertex_id, level_vertex_id, position);
+}
+
+
 
 CSE_Abstract *CALifeSimulator__spawn_restrictor		(CALifeSimulator *self, LPCSTR section, const Fvector &position,
 													 u32 level_vertex_id, GameGraph::_GRAPH_ID game_vertex_id, float radius, u8 restr_type)
@@ -529,7 +536,8 @@ void CALifeSimulator::script_register			(lua_State *L)
 			// lost alpha start
 			.def("cast_to_weapongl", 		&cast_to_weapongl)
 			.def("cast_to_weapon",			&cast_to_weapon)
-			.def("teleport_entity",			&teleport_entity)
+			.def("teleport_entity",			(void(*) (CALifeSimulator*, ALife::_OBJECT_ID, Fvector&, u32, GameGraph::_GRAPH_ID))(teleport_entity))
+			.def("teleport_entity",			(void(*) (CALifeSimulator*, CSE_Abstract*, Fvector&, u32, GameGraph::_GRAPH_ID))(teleport_entity))
 			.def("change_actor_level",		&change_actor_level)
 			.def("create_anomaly",			&CALifeSimulator__spawn_anom)
 			.def("create_anomaly",			&CALifeSimulator__spawn_anom_sid)

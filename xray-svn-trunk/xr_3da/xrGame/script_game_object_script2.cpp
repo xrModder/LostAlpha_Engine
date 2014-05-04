@@ -275,6 +275,8 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("is_blocked_slots_and_inventory",	&CScriptGameObject::IsHandsOnly)
 		.def("set_actor_state",					&CScriptGameObject::SetActorState)
 
+		.def("get_actor_car",					&CScriptGameObject::GetActorCar)
+
 		.def("bone_name_to_id",					&CScriptGameObject::BoneNameToId)
 		.def("get_bone_visible",					&CScriptGameObject::GetBoneVisible)
 		.def("set_bone_visible",					&CScriptGameObject::SetBoneVisible)
@@ -296,7 +298,7 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 #endif // DEBUG
 		.def("invulnerable",				(bool (CScriptGameObject::*)() const)&CScriptGameObject::invulnerable)
 		.def("invulnerable",				(void (CScriptGameObject::*)(bool))&CScriptGameObject::invulnerable)
-		.def("teleport_alive_entity",			&CScriptGameObject::TeleportAliveEntity)
+		.def("teleport_entity",				&CScriptGameObject::TeleportEntity)
 		
 	;return	(instance);
 }

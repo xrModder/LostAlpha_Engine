@@ -700,7 +700,47 @@ bool CCar::attach_Actor(CGameObject* actor)
 	return true;
 }
 
+/*
+void CCar::TeleportCarAndDriver(Fvector3 pos)
+{
 
+	StopEngine();
+	HandBreak();
+
+	renderable.xform.c = pos;
+
+	m_pPhysicsShell->Activate(false);
+	m_pPhysicsShell->mXFORM.set(XFORM());
+	m_pPhysicsShell->Activate(true);
+
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	CInifile* ini = K->LL_UserData();
+	int id;
+	Fmatrix	driver_xform;
+	if (ini->line_exist("car_definition", "driver_position") && ini->line_exist("car_definition", "driver_direction"))
+	{
+		driver_xform.c.set(ini->r_fvector3("car_definition", "driver_position"));
+		driver_xform.k.set(ini->r_fvector3("car_definition", "driver_direction"));
+	}
+	else if (ini->line_exist("car_definition", "driver_place")) {
+
+		id = K->LL_BoneID(ini->r_string("car_definition", "driver_place"));
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
+	}
+	else {
+		id = K->LL_GetBoneRoot();
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
+	}
+
+	Owner()->setVisible(0);
+	if (OwnerActor()) OwnerActor()->SetActorShadows(true);
+	m_sits_transforms.set(driver_xform);
+	Actor()->XFORM().mul_43(XFORM(), m_sits_transforms);
+	
+}
+*/
 bool CCar::is_Door(u16 id,xr_map<u16,SDoor>::iterator& i)
 {
 	i	= m_doors.find(id);

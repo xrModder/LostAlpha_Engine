@@ -212,6 +212,7 @@ public:
 			void				AddAction			(const CScriptEntityAction *tpEntityAction, bool bHighPriority = false);
 			void				ResetActionQueue	();
 	// Actor only
+			CScriptGameObject*  GetActorCar			();
 			void				SetActorPosition	(Fvector pos);
 			void				SetActorDirection	(float dir);
 			void				SetActorDirectionVector	(Fvector dir);
@@ -224,7 +225,7 @@ public:
 			bool				IsHandsOnly		();
 			bool				IsFirstEyeCam		();
 	// CEntityAlive
-			void				TeleportAliveEntity	(Fvector pos, Fvector dir);
+			void				TeleportEntity		(Fvector pos, Fvector dir);
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
 			bool				CheckTypeVisibility	(const char *section_name);

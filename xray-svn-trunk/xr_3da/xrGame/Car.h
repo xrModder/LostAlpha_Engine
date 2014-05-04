@@ -404,7 +404,7 @@ private:
 	xr_map	  <u16,SDoor>	m_doors;
 	xr_vector <SDoor*>		m_doors_update;
 	xr_vector <Fvector>		m_gear_ratious;
-	Fmatrix			m_sits_transforms; // driver_place
+	Fmatrix					m_sits_transforms; // driver_place
 	float					m_current_gear_ratio;
 	xr_vector<u16>				m_items;
 
@@ -553,6 +553,7 @@ public:
 	void					CloseTrunkBone				();
 	u16						GetTrunkBone				() const		{return m_bone_trunk;};
 	u16						DriverAnimationType 		();
+
 	// Core events
 	virtual DLL_Pure		*_construct					();
 	virtual void			Load						( LPCSTR section );

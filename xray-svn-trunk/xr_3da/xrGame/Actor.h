@@ -46,6 +46,8 @@ class CInventoryBox;
 class	CHudItem;
 class   CArtefact;
 
+class CCar;
+
 struct SActorMotions;
 struct SActorVehicleAnims;
 class  CActorCondition;
@@ -789,6 +791,8 @@ private:
 public:
 	virtual bool				register_schedule				() const {return false;}
 // lost alpha start
+
+			CCar*				GetAttachedCar					();
 			void				RechargeTorchBattery			();
 			CTorch				*GetCurrentTorch				();
 			bool				IsLimping						();
