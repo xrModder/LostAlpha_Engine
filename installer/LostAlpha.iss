@@ -234,6 +234,18 @@ begin
   end;
 end;
 
+procedure CreateFsGameLtx(targetPath: String);
+var
+  data: String;
+begin
+  if LoadStringFromFile(ExpandConstant('{tmp}\fsgame_template.ltx'), AnsiString(data)) then
+  begin
+    StringChangeEx(data, '$app_data_root_installer_template$', 
+                   '$app_data_root$		= true|		false|	' + targetPath, True);
+    SaveStringToFile(ExpandConstant('{app}\fsgame.ltx'), data, False);
+  end; 
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssInstall then begin
@@ -241,6 +253,7 @@ begin
   end;
   if CurStep = ssPostInstall then begin
     WipeUserLtx;
+    //CreateFsGameLtx(ExpandConstant('{userdocs}'));
     //ModifyUserLtx('r2_gloss_factor', '1.');
   end;
 end;
