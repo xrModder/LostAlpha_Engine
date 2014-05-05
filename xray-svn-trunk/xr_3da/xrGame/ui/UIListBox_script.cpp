@@ -115,6 +115,6 @@ void CUIListBox::script_register(lua_State *L)
 			value("GAME_TEAMDEATHMATCH",	int(GAME_TEAMDEATHMATCH)),
 			value("GAME_ARTEFACTHUNT",		int(GAME_ARTEFACTHUNT))
 		],
-		def("xrRender_test_r2_hw",			&xrRender_test_hw_script)
+		def("xrRender_test_hw",			&xrRender_test_hw_script)
 	];
 }
