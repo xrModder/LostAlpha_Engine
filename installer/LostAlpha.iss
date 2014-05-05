@@ -59,8 +59,8 @@
 #define LA_app_name "S.T.A.L.K.E.R.: Lost Alpha"
 #define LA_directory_name "S.T.A.L.K.E.R. - Lost Alpha"
 #define LA_copyright "dezowave"
-#define LA_version "1.3001"
-#define LA_version_text "1.3001"
+#define LA_version "1.3002"
+#define LA_version_text "1.3002"
 
 [Files]
 Source: "{#LA_installer_support_files}\7za.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
@@ -89,8 +89,8 @@ Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard skipifdoesntexist; D
 Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
 
 [InstallDelete]
-Type: files; Name: "{app}\bins\msvc*.dll"
-Type: files; Name: "{app}\gamedata\scripts\ui_main_dik_keys.script"
+;Type: files; Name: "{app}\bins\msvc*.dll"
+;Type: files; Name: "{app}\gamedata\scripts\ui_main_dik_keys.script"
 
 [Icons]
 Name: "{commonprograms}\{#LA_shortcut_name}"; Filename: "{app}\bins\XR_3DA.exe"; WorkingDir: "{app}"; Parameters: "-external -noprefetch"
@@ -231,6 +231,9 @@ begin
   then
   begin
     DeleteFile(ExpandConstant('{app}\appdata\user.ltx'));
+    //u3: so - I thought we were going to let engine create user.ltx from scratch...
+    //RenameFile(ExpandConstant('{app}\appdata\user.ltx'), ExpandConstant('{app}\appdata\user_old.ltx'))
+    //RenameFile(ExpandConstant('{app}\appdata\user_default.ltx'), ExpandConstant('{app}\appdata\user.ltx'))
   end;
 end;
 
@@ -249,10 +252,10 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssInstall then begin
-    DelTree(ExpandConstant('{app}\bins'), True, True, True);
+    //DelTree(ExpandConstant('{app}\bins'), True, True, True);
   end;
   if CurStep = ssPostInstall then begin
-    WipeUserLtx;
+    //WipeUserLtx;
     //CreateFsGameLtx(ExpandConstant('{userdocs}'));
     //ModifyUserLtx('r2_gloss_factor', '1.');
   end;
