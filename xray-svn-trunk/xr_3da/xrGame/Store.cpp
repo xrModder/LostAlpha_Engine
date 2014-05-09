@@ -410,11 +410,11 @@ void CStoreHouse::load(IReader &file_stream)
 	xr_strcpy					(fn, pSettings->r_string("lost_alpha_cfg", "on_load_store_callback"));
 	R_ASSERT					(ai().script_engine().functor<void>(fn, callback));
 
-	shared_str					str;
+	xr_string					str;
 	
 	file_stream.r_stringZ		(str);
 
-	callback					(*str);
+	callback					(str.c_str());
 	
 	
 
