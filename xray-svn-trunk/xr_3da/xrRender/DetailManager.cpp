@@ -280,7 +280,11 @@ void CDetailManager::UpdateVisibleM()
 
 						SlotItem			**siIT=&(*sp.items.begin()), **siEND=&(*sp.items.end());
 						for (; siIT!=siEND; siIT++){
-							SlotItem& Item			= *(*siIT);
+						  if (*siIT == NULL)
+						  {
+						    continue;
+						  }
+							SlotItem& Item			= *(*siIT);							
 							float   scale			= Item.scale_calculated	= Item.scale*alpha_i;
 							float	ssa				= scale*scale*Rq_drcp;
 							if (ssa < r_ssaDISCARD)
