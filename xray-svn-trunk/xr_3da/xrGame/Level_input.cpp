@@ -20,6 +20,8 @@
 #include "huditem.h"
 #include "UIGameCustom.h"
 #include "ui/UIDialogWnd.h"
+#include "pch_script.h"
+#include "ui/UIGameTutorial.h"
 #include "clsid_game.h"
 #include "../xr_input.h"
 #include "saved_game_wrapper.h"
@@ -91,6 +93,8 @@ public:
 
 // Обработка нажатия клавиш
 extern bool g_block_pause;
+
+extern CUISequencer* g_tutorial;
 
 void CLevel::IR_OnKeyboardPress	(int key)
 {
@@ -178,20 +182,25 @@ case DIK_MULTIPLY:
 		return;
 	}
 	if(_curr == kQUICK_LOAD && IsGameTypeSingle())
-	{/*
+	{
 #ifdef DEBUG
 		FS.get_path					("$game_config$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
 		FS.get_path					("$game_scripts$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
 		FS.rescan_pathes			();
 #endif // DEBUG
-		string_path					saved_game,command;
-		strconcat					(sizeof(saved_game),saved_game,Core.UserName,"_","quicksave");
+		string_path					saved_game, command;
+		strconcat					(sizeof(saved_game), saved_game,Core.UserName, "_", "quicksave");
 		if (!CSavedGameWrapper::valid_saved_game(saved_game))
 			return;
 
-		strconcat					(sizeof(command),command,"load ",saved_game);
+		strconcat					(sizeof(command), command, "load ", saved_game);
+
+		if (g_tutorial && g_tutorial->IsActive()) {
+			g_tutorial->Stop();
+		}
+
 		Console->Execute			(command);
-*/		return;
+		return;
 	}
 
 #ifndef MASTER_GOLD

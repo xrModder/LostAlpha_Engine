@@ -71,6 +71,15 @@ static HWND g_hwndToolTip = NULL;
 /// URL hyper-link control pointing to support site.
 static CHyperLink g_hlURL;
 
+#include "stdlib.h"
+
+// Vista uses this hook for old-style save dialog
+UINT_PTR CALLBACK OFNHookProcOldStyle(HWND , UINT , WPARAM , LPARAM )
+{
+	// let default hook work on this message
+	return 0;
+}
+
 /**
  * @brief Save bug report on the disk.
  * @param hwndParent - parent window handle.
@@ -85,6 +94,16 @@ static void SaveReport(HWND hwndParent)
 	ofn.lpstrFile = szFileName;
 	ofn.nMaxFile = countof(szFileName);
 	ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+
+	OSVERSIONINFOEX	os_version_info;
+	os_version_info.dwOSVersionInfoSize	= sizeof(os_version_info);
+	GetVersionEx	((LPOSVERSIONINFO)&os_version_info);
+	if (os_version_info.dwMajorVersion == 6)// && !os_version_info.wServicePackMajor)
+	{
+		ofn.Flags |= OFN_ENABLEHOOK;
+		ofn.lpfnHook = OFNHookProcOldStyle;
+	}
+
 	if (g_dwFlags & BTF_DETAILEDMODE)
 	{
 		ofn.lpstrFilter = _T("Zip Archives\0*.zip\0All Files\0*.*\0");
@@ -105,6 +124,8 @@ static void SaveReport(HWND hwndParent)
 		_ASSERT(FALSE);
 		return;
 	}
+	ofn.nFilterIndex = 1;
+
 	g_pSymEngine->GetReportFileName(ofn.lpstrDefExt, szFileName, countof(szFileName));
 	if (GetSaveFileName(&ofn))
 	{
