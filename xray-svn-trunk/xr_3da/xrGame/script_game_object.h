@@ -222,10 +222,11 @@ public:
 			void				SetActorLegsVisible	(bool val);
 			void				SetActorCam		(u32 val);
 			void				SetHandsOnly		(bool val);
-			bool				IsHandsOnly		();
+			bool				IsHandsOnly			();
 			bool				IsFirstEyeCam		();
 	// CEntityAlive
 			void				TeleportEntity		(Fvector pos, Fvector dir);
+//			void				TeleportActorVehicle(Fvector pos, u32 level_vertex_id, u16 game_vertex_id);
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
 			bool				CheckTypeVisibility	(const char *section_name);

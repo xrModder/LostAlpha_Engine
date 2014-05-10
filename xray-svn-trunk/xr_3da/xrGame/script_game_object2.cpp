@@ -529,7 +529,8 @@ void CScriptGameObject::attach_actor_Vehicle	(u32 id)
 	}
 
 	CCar* car = smart_cast<CCar*>(holder);
-	if(car) car->DoEnter();
+	R_ASSERT2(car, "object must be a car");
+	car->DoEnter();
 	actor->attach_Vehicle(holder);
 }
 
