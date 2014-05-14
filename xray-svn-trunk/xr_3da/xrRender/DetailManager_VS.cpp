@@ -266,7 +266,9 @@ void	CDetailManager::hw_Render_dump		(ref_constant x_array, u32 var_id, u32 lod_
 				SlotItemVec*	items		= *_vI;
 				SlotItemVecIt _iI			= items->begin();
 				SlotItemVecIt _iE			= items->end();
-				for (; _iI!=_iE; _iI++){
+				for (; _iI!=_iE; _iI++)
+				{
+				  if (*_iI == NULL) continue;
 					SlotItem&	Instance	= **_iI;
 					u32			base		= dwBatch*4;
 
