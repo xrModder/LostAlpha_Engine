@@ -1046,17 +1046,6 @@ void CRender::render_sun_cascades ( )
 	if ( b_need_to_render_sunshafts )
 		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = true;
 
-	for( u32 i = 0; i < m_sun_cascades.size(); ++i )
-		render_sun_cascade ( i );
-
-	if ( b_need_to_render_sunshafts )
-		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = last_cascade_chain_mode;
-}
-
-void CRender::render_sun_cascade ( u32 cascade_ind )
-{
-	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
-
 	// calculate view-frustum bounds in world space
 	Fmatrix	ex_project, ex_full, ex_full_inverse;
 	{
@@ -1065,6 +1054,17 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 		D3DXMatrixInverse			((D3DXMATRIX*)&ex_full_inverse,0,(D3DXMATRIX*)&ex_full);
 	}
 
+	for( u32 i = 0; i < m_sun_cascades.size(); ++i )
+		render_sun_cascade (i, &ex_full_inverse);
+
+	if ( b_need_to_render_sunshafts )
+		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = last_cascade_chain_mode;
+}
+
+void CRender::render_sun_cascade ( u32 cascade_ind, Fmatrix* inv_matrix )
+{
+	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
+	
 	// Compute volume(s) - something like a frustum for infinite directional light
 	// Also compute virtual light position and sector it is inside
 	CFrustum					cull_frustum;
@@ -1075,7 +1075,7 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 	{
 		FPU::m64r					();
 		// Lets begin from base frustum
-		Fmatrix		fullxform_inv	= ex_full_inverse;
+		Fmatrix		fullxform_inv	= *inv_matrix;
 #ifdef	_DEBUG
 		typedef		DumbConvexVolume<true>	t_volume;
 #else
