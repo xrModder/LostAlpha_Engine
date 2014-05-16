@@ -440,7 +440,7 @@
 ** arbitrary; its only purpose is to stop infinite recursion before
 ** exhausting memory.
 */
-#define LUAI_MAXCALLS	20000
+#define LUAI_MAXCALLS	40000 //20000
 
 
 /*
@@ -451,7 +451,7 @@
 ** functions to consume unlimited stack space. (must be smaller than
 ** -LUA_REGISTRYINDEX)
 */
-#define LUAI_MAXCSTACK	8000
+#define LUAI_MAXCSTACK	10000 //8000
 
 
 /*
@@ -472,21 +472,21 @@
 @@ LUAI_MAXCCALLS is the maximum depth for nested C calls (short) and
 @* syntactical nested non-terminals in a program.
 */
-#define LUAI_MAXCCALLS		200
+#define LUAI_MAXCCALLS		10000 //200
 
 
 /*
 @@ LUAI_MAXVARS is the maximum number of local variables per function
 @* (must be smaller than 250).
 */
-#define LUAI_MAXVARS		200
+#define LUAI_MAXVARS		249 //200
 
 
 /*
 @@ LUAI_MAXUPVALUES is the maximum number of upvalues per function
 @* (must be smaller than 250).
 */
-#define LUAI_MAXUPVALUES	60
+#define LUAI_MAXUPVALUES	249 //60
 
 
 /*
