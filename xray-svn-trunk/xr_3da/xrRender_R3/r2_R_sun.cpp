@@ -1050,12 +1050,13 @@ void CRender::render_sun_cascades ( )
 	Fmatrix	ex_project, ex_full, ex_full_inverse;
 	{
 		ex_project = Device.mProject;
-		ex_full.mul					(ex_project,Device.mView);
-		D3DXMatrixInverse			((D3DXMATRIX*)&ex_full_inverse,0,(D3DXMATRIX*)&ex_full);
-	}
+		ex_full.mul(ex_project,Device.mView);
+		D3DXMatrixInverse((D3DXMATRIX*)&ex_full_inverse, 0, (D3DXMATRIX*)&ex_full);
+	}	
 
-	for( u32 i = 0; i < m_sun_cascades.size(); ++i )
-		render_sun_cascade (i, &ex_full_inverse);
+  //render_sun_cascade (0, &ex_full_inverse);  
+	for (u32 i = 0; i < m_sun_cascades.size(); i++ )
+		render_sun_cascade(i, &ex_full_inverse);	
 
 	if ( b_need_to_render_sunshafts )
 		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = last_cascade_chain_mode;
