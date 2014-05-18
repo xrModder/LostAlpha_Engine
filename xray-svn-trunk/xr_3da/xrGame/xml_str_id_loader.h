@@ -107,11 +107,11 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bo
 
 	if(m_pItemDataVector->end() == it)
 	{
-		
+		/*
 		int i=0;
 		for (T_VECTOR::iterator it = m_pItemDataVector->begin(), last = m_pItemDataVector->end(); last != it; it++, i++)
 			Msg("[%d]=[%s]",i,*(*it).id );
-		
+		*/
 		R_ASSERT2(no_assert, make_string("item [%s] not found!!", *str_id));
 		return NULL;
 	}
