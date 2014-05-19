@@ -20,6 +20,13 @@ void CUIStatic::script_register(lua_State *L)
 
 
 		class_<CUIStatic, CUIWindow>("CUIStatic")
+		.enum_("lanim")
+		[
+			value("LA_CYCLIC", int(LA_CYCLIC)),
+			value("LA_ONLYALPHA", int(LA_ONLYALPHA)),
+			value("LA_TEXTCOLOR", int(LA_TEXTCOLOR)),
+			value("LA_TEXTURECOLOR", int(LA_TEXTURECOLOR))
+		]
 		.def(						constructor<>())
 		.def("TextControl",			&CUIStatic::TextItemControl)
 		.def("SetText",				&CUIStatic::SetText)
@@ -64,6 +71,8 @@ void CUIStatic::script_register(lua_State *L)
 		.def("GetConstHeading",			&CUIStatic::GetConstHeading)
 		.def("SetXformLightAnim",			&CUIStatic::SetXformLightAnim)
 		.def("ResetXformAnimation",			&CUIStatic::ResetXformAnimation)
+		.def("SetColorAnimation",			&CUIStatic::SetColorAnimation)
+		.def("ResetColorAnimation",			&CUIStatic::ResetColorAnimation)
 		.def("CreateShader",			&CUIStatic::CreateShader)
 		.def("GetTextureOffset",			&CUIStatic::GetTextureOffeset)
 		.def("TextureOn",			&CUIStatic::TextureOn)
