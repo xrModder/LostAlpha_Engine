@@ -197,7 +197,7 @@ public:
 	void							render_rain					();
 
 	//void							render_sun_cascade			(u32 cascade_ind);
-	void							render_sun_cascade			(u32 cascade_ind, Fmatrix* inv_matrix);
+	void							render_sun_cascade			(u32 cascade_ind, Fmatrix* inv_frustum, Fmatrix* viewport, Fmatrix* inv_viewport);
 	void							init_cacades				();
 	void							render_sun_cascades			();
 
