@@ -1066,7 +1066,7 @@ void CRender::render_sun_cascades ( )
 	D3DXMatrixInverse((D3DXMATRIX*)&m_viewport_inv, 0, (D3DXMATRIX*)&m_viewport);
 
 	//render_sun_cascade (0, &ex_full_inverse);  
-	for (u32 i = 0; i < m_sun_cascades.size(); i++ )
+	for (u32 i = 0; i < m_sun_cascades.size(); ++i)
 		render_sun_cascade(i, &ex_full_inverse, &m_viewport, &m_viewport_inv);
 
 	if ( b_need_to_render_sunshafts )
