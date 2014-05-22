@@ -1014,7 +1014,7 @@ void CRender::render_sun_filtered	()
 	Target->accum_direct				(SE_SUN_LUMINANCE);
 }
 
-void CRender::init_cacades				( )
+void CRender::init_cacades( )
 {
 	u32 cascade_count = 3;
 	m_sun_cascades.resize(cascade_count);
@@ -1022,13 +1022,13 @@ void CRender::init_cacades				( )
 	float fBias = -0.0000025f;
 	//	float size = MAP_SIZE_START;
 	m_sun_cascades[0].reset_chain = true;
-	m_sun_cascades[0].size = 9;
+	m_sun_cascades[0].size = 8;
 	m_sun_cascades[0].bias = m_sun_cascades[0].size*fBias;
 
-	m_sun_cascades[1].size = 40;
+	m_sun_cascades[1].size = 32;
 	m_sun_cascades[1].bias = m_sun_cascades[1].size*fBias;
 
- 	m_sun_cascades[2].size = 160;
+ 	m_sun_cascades[2].size = 192;
  	m_sun_cascades[2].bias = m_sun_cascades[2].size*fBias;
 
 // 	for( u32 i = 0; i < cascade_count; ++i )
@@ -1046,25 +1046,37 @@ void CRender::render_sun_cascades ( )
 	if ( b_need_to_render_sunshafts )
 		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = true;
 
-	for( u32 i = 0; i < m_sun_cascades.size(); ++i )
-		render_sun_cascade ( i );
+	// calculate view-frustum bounds in world space
+	Fmatrix ex_project, ex_full, ex_full_inverse;
+	{
+		ex_project = Device.mProject;
+		ex_full.mul(ex_project,Device.mView);
+		D3DXMatrixInverse((D3DXMATRIX*)&ex_full_inverse, 0, (D3DXMATRIX*)&ex_full);
+	}
+
+	// calculate viewport and inverted viewport
+	float view_dim = float(RImplementation.o.smapsize);
+	Fmatrix m_viewport = {
+		view_dim/2.f,	0.0f,				0.0f,		0.0f,
+		0.0f,			-view_dim/2.f,		0.0f,		0.0f,
+		0.0f,			0.0f,				1.0f,		0.0f,
+		view_dim/2.f,	view_dim/2.f,		0.0f,		1.0f
+	};
+	Fmatrix m_viewport_inv;
+	D3DXMatrixInverse((D3DXMATRIX*)&m_viewport_inv, 0, (D3DXMATRIX*)&m_viewport);
+
+	//render_sun_cascade (0, &ex_full_inverse);  
+	for (u32 i = 0; i < m_sun_cascades.size(); ++i)
+		render_sun_cascade(i, &ex_full_inverse, &m_viewport, &m_viewport_inv);
 
 	if ( b_need_to_render_sunshafts )
 		m_sun_cascades[m_sun_cascades.size()-1].reset_chain = last_cascade_chain_mode;
 }
 
-void CRender::render_sun_cascade ( u32 cascade_ind )
+void CRender::render_sun_cascade(u32 cascade_ind, Fmatrix* inv_frustum, Fmatrix* viewport, Fmatrix* inv_viewport)
 {
-	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
-
-	// calculate view-frustum bounds in world space
-	Fmatrix	ex_project, ex_full, ex_full_inverse;
-	{
-		ex_project = Device.mProject;
-		ex_full.mul					(ex_project,Device.mView);
-		D3DXMatrixInverse			((D3DXMATRIX*)&ex_full_inverse,0,(D3DXMATRIX*)&ex_full);
-	}
-
+	light* fuckingsun = (light*)Lights.sun_adapted._get();
+	
 	// Compute volume(s) - something like a frustum for infinite directional light
 	// Also compute virtual light position and sector it is inside
 	CFrustum					cull_frustum;
@@ -1074,8 +1086,7 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 	Fmatrix						cull_xform;
 	{
 		FPU::m64r					();
-		// Lets begin from base frustum
-		Fmatrix		fullxform_inv	= ex_full_inverse;
+
 #ifdef	_DEBUG
 		typedef		DumbConvexVolume<true>	t_volume;
 #else
@@ -1089,8 +1100,8 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 		float		largest_sector_vol	= 0;
 		for		(u32 s=0; s<Sectors.size(); s++)
 		{
-			CSector*			S		= (CSector*)Sectors[s]	;
-			dxRender_Visual*		V		= S->root()				;
+			CSector*			S		= (CSector*)Sectors[s];
+			dxRender_Visual*		V		= S->root();
 			float				vol		= V->vis.box.getvolume();
 			if (vol>largest_sector_vol)	{
 				largest_sector_vol		= vol;
@@ -1130,13 +1141,8 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 				Fvector3				near_p, edge_vec;
 				for	(int p=0; p < 4; p++)	
 				{
-// 					Fvector asd = Device.vCameraDirection;
-// 					asd.mul(-2);
-// 					asd.add(Device.vCameraPosition);
-// 					near_p		= Device.vCameraPosition;//wform		(fullxform_inv,asd); //
-					near_p		= wform		(fullxform_inv,corners[facetable[4][p]]);
-
-					edge_vec	= wform		(fullxform_inv,corners[facetable[5][p]]);
+					near_p = wform(*inv_frustum, corners[facetable[4][p]]);
+					edge_vec = wform(*inv_frustum, corners[facetable[5][p]]);
 					edge_vec.sub(near_p);
 					edge_vec.normalize();
 
@@ -1164,17 +1170,6 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 
 
 		/**/
-
-		// build viewport xform
-		float	view_dim			= float(RImplementation.o.smapsize);
-		Fmatrix	m_viewport			= {
-			view_dim/2.f,	0.0f,				0.0f,		0.0f,
-			0.0f,			-view_dim/2.f,		0.0f,		0.0f,
-			0.0f,			0.0f,				1.0f,		0.0f,
-			view_dim/2.f,	view_dim/2.f,		0.0f,		1.0f
-		};
-		Fmatrix				m_viewport_inv;
-		D3DXMatrixInverse	((D3DXMATRIX*)&m_viewport_inv,0,(D3DXMATRIX*)&m_viewport);
 
 		// snap view-position to pixel
 		cull_xform.mul		(mdir_Project,mdir_View	);
@@ -1237,10 +1232,10 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 				cam_proj.set(floorf(cam_proj.x/align_aim_step_coef)+align_aim_step_coef/2, floorf(cam_proj.y/align_aim_step_coef)+align_aim_step_coef/2, floorf(cam_proj.z/align_aim_step_coef)+align_aim_step_coef/2);
 				cam_proj.mul(align_aim_step_coef);
 				Fvector	cam_pixel	= wform		(cull_xform, cam_proj );
-				cam_pixel			= wform		(m_viewport, cam_pixel );
+				cam_pixel			= wform		(*viewport, cam_pixel );
 				Fvector shift_proj	= lightXZshift;
 				cull_xform.transform_dir( shift_proj );
-				m_viewport.transform_dir( shift_proj );
+				viewport->transform_dir( shift_proj );
 
 				const float	align_granularity = 4.f;
 				shift_proj.x = shift_proj.x > 0 ? align_granularity : -align_granularity;
@@ -1255,7 +1250,7 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 
 				cam_pixel.sub		( shift_proj );
 
-				m_viewport_inv.transform_dir	(cam_pixel);
+				inv_viewport->transform_dir	(cam_pixel);
 				cull_xform_inv.transform_dir	(cam_pixel);
 				Fvector diff		= cam_pixel;
 				static float sign_test = -1.f;
