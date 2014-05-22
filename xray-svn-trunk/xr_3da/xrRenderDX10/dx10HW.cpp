@@ -212,6 +212,10 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 #endif
 #endif
 
+#if 1
+   createDeviceFlags |= D3D10_CREATE_DEVICE_SINGLETHREADED;
+#endif
+
    HRESULT R;
 
    bool bTryCreate101 = ps_r2_ls_flags.test((u32)R3FLAG_USE_DX10_1) > 0 ? true : false;
