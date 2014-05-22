@@ -6894,6 +6894,9 @@
     <ClInclude Include="ui\UI_IB_FrameLineWnd.h">
       <Filter>UI\UIWindows\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponAutomaticShotgun.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon Shotgun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -10246,6 +10249,9 @@
     </ClCompile>
     <ClCompile Include="ui\UI_IB_FrameLineWnd.cpp">
       <Filter>UI\UIWindows\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAutomaticShotgun.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon Shotgun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

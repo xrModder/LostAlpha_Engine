@@ -20523,6 +20523,14 @@
 									Name="Weapon Shotgun"
 									>
 									<File
+										RelativePath=".\WeaponAutomaticShotgun.cpp"
+										>
+									</File>
+									<File
+										RelativePath=".\WeaponAutomaticShotgun.h"
+										>
+									</File>
+									<File
 										RelativePath="WeaponShotgun.cpp"
 										>
 									</File>
@@ -29697,19 +29705,19 @@
 					Name="InteractiveBackground"
 					>
 					<File
-						RelativePath=".\ui\UI_IB_Static.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ui\UI_IB_Static.h"
-						>
-					</File>
-					<File
 						RelativePath=".\ui\UI_IB_FrameLineWnd.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\ui\UI_IB_FrameLineWnd.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UI_IB_Static.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ui\UI_IB_Static.h"
 						>
 					</File>
 					<File
