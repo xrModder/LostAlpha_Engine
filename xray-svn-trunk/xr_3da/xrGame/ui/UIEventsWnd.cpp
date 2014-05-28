@@ -298,6 +298,8 @@ bool CUIEventsWnd::ItemHasDescription(CUITaskItem* itm)
 	}else
 	{
 		SGameTaskObjective	*obj				= itm->Objective();
+		if (!obj) 
+			return false;
 		CMapLocation* ml						= obj->LinkedMapLocation();
 		bool bHasLocation						= (NULL != ml);
 		bool bIsMapMode							= GetDescriptionMode(); 

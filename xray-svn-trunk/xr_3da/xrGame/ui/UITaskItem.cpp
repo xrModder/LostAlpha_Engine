@@ -29,6 +29,7 @@ void CUITaskItem::SetGameTask(CGameTask* gt, u16 obj_idx)
 { 
 	m_GameTask			= gt;
 	m_TaskObjectiveIdx	= obj_idx;
+	R_ASSERT(m_GameTask->m_Objectives.size() > m_TaskObjectiveIdx);
 }
 
 void CUITaskItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
@@ -39,6 +40,11 @@ void CUITaskItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
 
 SGameTaskObjective*	CUITaskItem::Objective	()	
 {
+	if (m_TaskObjectiveIdx > m_GameTask->m_Objectives.size())
+	{
+		Msg("! no objective(%d) for task item %s size=[%d]", m_TaskObjectiveIdx, m_GameTask->m_ID.c_str(), m_GameTask->m_Objectives.size());
+		return NULL;
+	}
 	return &m_GameTask->m_Objectives[m_TaskObjectiveIdx];
 }
 

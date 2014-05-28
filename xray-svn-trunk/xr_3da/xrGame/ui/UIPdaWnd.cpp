@@ -263,6 +263,8 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		m_pActiveDialog->Show(false);
 	}
 
+	m_pActiveDialog				= NULL;
+
 	switch (section) 
 	{
 	case eptDiary:
@@ -323,6 +325,8 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
+
+	R_ASSERT(m_pActiveDialog && m_pActiveDialog->GetWidth());
 
 	if (UIMainPdaFrame->IsChild(m_pActiveDialog)) {
 		UIMainPdaFrame->DetachChild(m_pActiveDialog);
