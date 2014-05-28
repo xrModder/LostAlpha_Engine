@@ -122,7 +122,7 @@ void CRenderDevice::End		(void)
 		if (0==dwPrecacheFrame)
 		{
 			//Gamma.Update		();
-			m_pRender->updateGamma();
+			//m_pRender->updateGamma();
 
 			if(precache_light) precache_light->set_active	(false);
 			if(precache_light) precache_light.destroy		();
