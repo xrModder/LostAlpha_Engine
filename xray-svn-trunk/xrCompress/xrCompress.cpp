@@ -77,14 +77,14 @@ BOOL	testSKIP		(LPCSTR path)
 
 	if (0==stricmp(p_ext,".swatch"))return TRUE;
 	if (0==stricmp(p_ext,".db"))	return TRUE;
-	if (PatternMatch(p_ext,"*avi*"))return TRUE;
+	//if (PatternMatch(p_ext,"*avi*"))return TRUE;
 	if (0==stricmp(p_ext,".key"))	return TRUE;
-	if (0==stricmp(p_ext,".tga"))	return TRUE;
+	//if (0==stricmp(p_ext,".tga"))	return TRUE;
 	if (0==stricmp(p_ext,".txt"))	return TRUE;
 	if (0==stricmp(p_ext,".smf"))	return TRUE;
 	if (0==stricmp(p_ext,".uvm"))	return TRUE;
 	if (0==stricmp(p_ext,".raw"))	return TRUE;
-	if (0==stricmp(p_name,"build"))	return TRUE;
+	//if (0==stricmp(p_name,"build")) return TRUE;
 	if ('~'==p_ext[1])				return TRUE;
 	if ('_'==p_ext[1])				return TRUE;
 
