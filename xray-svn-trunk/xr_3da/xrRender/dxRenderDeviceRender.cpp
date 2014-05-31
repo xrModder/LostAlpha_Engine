@@ -134,14 +134,17 @@ void dxRenderDeviceRender::SetupStates()
 
 void dxRenderDeviceRender::OnDeviceCreate(LPCSTR shName)
 {
-	// Signal everyone - device created
-	RCache.OnDeviceCreate		();
-	m_Gamma.Update				();
-	Resources->OnDeviceCreate	(shName);
+	if (!g_dedicated_server)
+	{
+	  // Signal everyone - device created
+	  RCache.OnDeviceCreate		();
+	  m_Gamma.Update				();
+	  Resources->OnDeviceCreate	(shName);
+	}
+
 	::Render->create			();
 	Device.Statistic->OnDeviceCreate	();
 
-//#ifndef DEDICATED_SERVER
 	if (!g_dedicated_server)
 	{
 		m_WireShader.create			("editor\\wire");
@@ -149,7 +152,6 @@ void dxRenderDeviceRender::OnDeviceCreate(LPCSTR shName)
 
 		DUImpl.OnDeviceCreate			();
 	}
-//#endif
 }
 
 void dxRenderDeviceRender::Create( HWND hWnd, u32 &dwWidth, u32 &dwHeight, float &fWidth_2, float &fHeight_2, bool move_window)
@@ -365,8 +367,8 @@ void dxRenderDeviceRender::End()
 	DoAsyncScreenshot();
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
-	HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
+	//UINT VSync = psDeviceFlags.test(rsVSync) ? 1 : 0;
+	//HW.lastPresentStatus = HW.m_pSwapChain->Present(VSync, 0);
 #else	//	USE_DX10
 	CHK_DX(HW.pDevice->EndScene());
 	HW.pDevice->Present( NULL, NULL, NULL, NULL );
