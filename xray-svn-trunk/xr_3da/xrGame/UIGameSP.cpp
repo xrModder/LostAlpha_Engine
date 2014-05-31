@@ -25,7 +25,7 @@ CUIGameSP::CUIGameSP()
 {
 	m_game			= NULL;
 
-	TalkMenu		= xr_new<CUITalkWnd>		();
+	TalkMenu		= xr_new<CUITalkWnd>			();
 	UIChangeLevelWnd= xr_new<CChangeLevelWnd>		();
 }
 
@@ -93,9 +93,8 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	case kACTIVE_JOBS:
 		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			m_PdaMenu->SetActiveSubdialog(eptQuests);
 			if (!m_PdaMenu->IsShown())
-				m_PdaMenu->ShowDialog		(true);
+				m_PdaMenu->ShowDialog		(true, eptQuests);
 			else
 				m_PdaMenu->HideDialog		();
 		}break;
@@ -103,9 +102,8 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	case kMAP:
 		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			m_PdaMenu->SetActiveSubdialog(eptMap);
 			if (!m_PdaMenu->IsShown())
-				m_PdaMenu->ShowDialog		(true);
+				m_PdaMenu->ShowDialog		(true, eptMap);
 			else
 				m_PdaMenu->HideDialog		();
 		}break;
@@ -113,9 +111,8 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	case kCONTACTS:
 		if( !TopInputReceiver() || TopInputReceiver()==m_PdaMenu)
 		{
-			m_PdaMenu->SetActiveSubdialog(eptContacts);
 			if (!m_PdaMenu->IsShown())
-				m_PdaMenu->ShowDialog		(true);
+				m_PdaMenu->ShowDialog		(true, eptContacts);
 			else
 				m_PdaMenu->HideDialog		();
 			break;

@@ -76,6 +76,7 @@ public:
 
 	virtual void 			Update						();
 	virtual void 			ShowDialog					(bool bDoHideIndicators);
+	virtual void 			ShowDialog					(bool bDoHideIndicators, EPdaTabs section);
 	virtual void 			HideDialog					();
 	
 	virtual void 			EnableSkills				(bool val);

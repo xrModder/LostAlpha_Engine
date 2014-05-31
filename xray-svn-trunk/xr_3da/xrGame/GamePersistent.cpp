@@ -525,11 +525,17 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 		if (Device.Paused())
 			Device.Pause		(FALSE, TRUE, TRUE, "eQuickLoad");
 
-		if(CurrentGameUI())
+		CUIGameCustom* ui_game_custom = NULL;
+		if ((ui_game_custom = CurrentGameUI()) != NULL)
 		{
-			CurrentGameUI()->HideShownDialogs();
-			CurrentGameUI()->UIMainIngameWnd->reset_ui();
-			CurrentGameUI()->PdaMenu().Reset();
+			ui_game_custom->HideShownDialogs();
+			ui_game_custom->UIMainIngameWnd->reset_ui();
+
+			//CurrentGameUI()->PdaMenu().Reset();
+			// resetting pda is not enough...
+
+			xr_delete(ui_game_custom->m_PdaMenu);
+			ui_game_custom->m_PdaMenu = xr_new<CUIPdaWnd>();
 		}
 
 		if(g_tutorial)

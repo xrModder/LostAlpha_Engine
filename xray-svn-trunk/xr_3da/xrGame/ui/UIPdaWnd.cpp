@@ -46,8 +46,9 @@ CUIPdaWnd::CUIPdaWnd()
 	UIChatWnd				= NULL;
 	UISkillsWnd				= NULL;
 	UIDownloadsWnd			= NULL;
-	UIGamesWnd			= NULL;
+	UIGamesWnd				= NULL;
 	UIMPlayerWnd			= NULL;
+	m_pActiveDialog			= NULL;
 	bUpgraded				= false;
 	m_initialized			= false;
 }
@@ -61,6 +62,7 @@ CUIPdaWnd::~CUIPdaWnd()
 	delete_data		(UIActorInfo);
 	delete_data		(UIStalkersRanking);
 	delete_data		(UIEventsWnd);
+	m_pActiveDialog	= NULL;
 	//delete_data		(UISkillsWnd);
 	//delete_data		(UIDownloadsWnd);
 	//delete_data		(UIGamesWnd);
@@ -214,6 +216,16 @@ void CUIPdaWnd::ShowDialog(bool bDoHideIndicators)
 	//BringToTop(UITabControl);
 }
 
+void CUIPdaWnd::ShowDialog(bool bDoHideIndicators, EPdaTabs section)
+{
+	if (!m_initialized)
+		Init								();
+	InventoryUtilities::SendInfoToActor		("ui_pda");
+	SetActiveSubdialog						(section);
+	inherited::ShowDialog					(bDoHideIndicators);
+	//BringToTop(UITabControl);
+}
+
 void CUIPdaWnd::HideDialog()
 {
 	inherited::HideDialog();
@@ -324,6 +336,8 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		break;
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
+		m_pActiveDialog = NULL;
+		break;
 	}
 
 	R_ASSERT(m_pActiveDialog && m_pActiveDialog->GetWidth());
