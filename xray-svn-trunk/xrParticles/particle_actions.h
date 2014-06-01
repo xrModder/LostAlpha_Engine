@@ -15,7 +15,7 @@ namespace PAPI{
 		PActionEnum		type;	// Type field
 		ParticleAction	(){m_Flags.zero();}
         
-		virtual void 	Execute		(ParticleEffect *pe, float dt)	= 0;
+		virtual void 	Execute		(ParticleEffect *pe, const float dt, float& m_max)	= 0;
 		virtual void 	Transform	(const Fmatrix& m)				= 0;
 
 		virtual void 	Load		(IReader& F)=0;
@@ -24,22 +24,26 @@ namespace PAPI{
     DEFINE_VECTOR(ParticleAction*,PAVec,PAVecIt);
 	class ParticleActions{
 		PAVec			actions;
+		bool			m_bLocked;
 	public:
-						ParticleActions()						{actions.reserve(4);	}
+						ParticleActions()						{actions.reserve(4);m_bLocked=false;	}
 						~ParticleActions()						{clear();				}
 		IC void			clear			()
         {
+			R_ASSERT(!m_bLocked);
 			for (PAVecIt it=actions.begin(); it!=actions.end(); it++) 
 				xr_delete(*it);
 			actions.clear();
 		}
-		IC void			append			(ParticleAction* pa)	{actions.push_back(pa);	}
+		IC void			append			(ParticleAction* pa)	{R_ASSERT(!m_bLocked);actions.push_back(pa);	}
 		IC bool			empty			()						{return	actions.empty();}
 		IC PAVecIt		begin			()						{return	actions.begin();}
 		IC PAVecIt		end				()						{return actions.end();	}
         IC int			size			()						{return actions.size();	}
-        IC void			resize			(int cnt)        		{actions.resize(cnt);	}
+        IC void			resize			(int cnt)        		{R_ASSERT(!m_bLocked);actions.resize(cnt);	}
         void			copy			(ParticleActions* src);
+		void			lock			()						{R_ASSERT(!m_bLocked);m_bLocked=true;}
+		void			unlock			()						{R_ASSERT(m_bLocked);m_bLocked=false;}
 	};
 };
 //---------------------------------------------------------------------------
