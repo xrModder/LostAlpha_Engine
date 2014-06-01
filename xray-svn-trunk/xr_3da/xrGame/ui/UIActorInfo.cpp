@@ -123,7 +123,7 @@ void CUIActorInfoWnd::FillPointsInfo			()
 				}else
 				{
 					xr_sprintf							(buff,"%d", _totl);
-					itm->m_text2->TextItemControl()->SetTextST				(buff);
+					itm->m_text2->TextItemControl()->SetText				(buff);
 				}
 			}
 		}

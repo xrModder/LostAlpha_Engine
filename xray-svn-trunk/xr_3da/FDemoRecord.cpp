@@ -413,7 +413,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	if (dik == DIK_F12)		MakeScreenshot			();
 	if (dik == DIK_ESCAPE)	fLifeTime				= -1;
 
-#ifndef MASTER_GOLD
+#ifndef PUBLIC_RELEASE
 	if (dik == DIK_RETURN)
 	{	
 		if (g_pGameLevel->CurrentEntity())
