@@ -12,7 +12,7 @@ namespace PAPI{
 		DEFINE_VECTOR				(ParticleEffect*,ParticleEffectVec,ParticleEffectVecIt);
 		DEFINE_VECTOR				(ParticleActions*,ParticleActionsVec,ParticleActionsVecIt);
 		ParticleEffectVec			effect_vec;
-		ParticleActionsVec			alist_vec;
+		ParticleActionsVec			m_alist_vec;
     public:
 		    						CParticleManager	();
         virtual						~CParticleManager	();
