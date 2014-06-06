@@ -52,7 +52,6 @@ void CBackend::OnFrameBegin	()
 	{
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #if defined(USE_DX10) || defined(USE_DX11)
-		HW.safeClearState();
 		Invalidate();		
 		RImplementation.rmNormal();
 		set_RT				(HW.pBaseRT);
