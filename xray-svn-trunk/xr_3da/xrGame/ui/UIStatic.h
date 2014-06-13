@@ -26,7 +26,9 @@ class CUIStatic : public CUIWindow, public ITextureOwner, public CUILightAnimCol
 {
 	friend class CUIXmlInit;
 private:
-	typedef CUIWindow inherited;
+	typedef CUIWindow							inherited;
+	typedef CUILightAnimColorConrollerImpl		inherited1;
+
 	lanim_cont_xf			m_lanim_xform;
 	void					EnableHeading_int		(bool b)				{m_bHeading = b;}
 public:
@@ -84,8 +86,9 @@ public:
 			void 			AdjustHeightToText		();
 			void 			AdjustWidthToText		();
 			void			HighlightText			(bool bHighlight)		{m_bEnableTextHighlighting = bHighlight;}
-	virtual bool				IsHighlightText			();
+	virtual bool			IsHighlightText			();
 
+	virtual void			ResetColorAnimation		()						{ inherited1::ResetColorAnimation();  }
 	
 			void			SetShader				(const ui_shader& sh);
 			CUIStaticItem&	GetUIStaticItem			()						{return m_UIStaticItem;}
@@ -136,8 +139,8 @@ public:
 			void			SetTextPosY			(float y)					{TextItemControl()->m_TextOffset.y = y;}
 			float			GetTextPosY			()							{return TextItemControl()->m_TextOffset.y;}
 
-	virtual void			SetHighlightColor			(const u32 uColor)	{ m_HighlightColor = uColor; }
-		void			EnableTextHighlighting			(bool value)		{ m_bEnableTextHighlighting = value; }
+	virtual void			SetHighlightColor				(const u32 uColor)	{ m_HighlightColor = uColor; }
+			void			EnableTextHighlighting			(bool value)		{ m_bEnableTextHighlighting = value; }
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
