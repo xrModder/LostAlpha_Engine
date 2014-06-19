@@ -84,11 +84,10 @@ Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}"" ""{src}
 
 ; install prerequisities
 Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"; Check: VCRedistNeedsInstall
-;Filename: "{src}\3rdparties\directx_Jun2010_redist.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
 ; include the unpacked version of DirectX runtimes:
 Filename: "{src}\3rdparties\DirectX_runtime\DXSETUP.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
 Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
-Filename: "{src}\3rdparties\Xvid-1.3.2-20110601.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
+Filename: "{src}\3rdparties\Xvid-1.3.3-20140407.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
 
 [InstallDelete]
 ;Type: files; Name: "{app}\bins\msvc*.dll"
@@ -239,22 +238,23 @@ begin
   end;
 end;
 
-procedure CreateFsGameLtx(targetPath: String);
-var
-  data: String;
-begin
-  if LoadStringFromFile(ExpandConstant('{tmp}\fsgame_template.ltx'), AnsiString(data)) then
-  begin
-    StringChangeEx(data, '$app_data_root_installer_template$', 
-                   '$app_data_root$		= true|		false|	' + targetPath, True);
-    SaveStringToFile(ExpandConstant('{app}\fsgame.ltx'), data, False);
-  end; 
-end;
+// procedure CreateFsGameLtx(targetPath: String);
+// var
+//   data: String;
+// begin
+//   if LoadStringFromFile(ExpandConstant('{tmp}\fsgame_template.ltx'), AnsiString(data)) then
+//   begin
+//     StringChangeEx(data, '$app_data_root_installer_template$', 
+//                    '$app_data_root$		= true|		false|	' + targetPath, True);
+//     SaveStringToFile(ExpandConstant('{app}\fsgame.ltx'), data, False);
+//   end; 
+// end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssInstall then begin
-    //DelTree(ExpandConstant('{app}\bins'), True, True, True);
+    DelTree(ExpandConstant('{app}\bins'), True, True, True);
+    DelTree(ExpandConstant('{app}\gamedata'), True, True, True);
   end;
   if CurStep = ssPostInstall then begin
     //WipeUserLtx;
