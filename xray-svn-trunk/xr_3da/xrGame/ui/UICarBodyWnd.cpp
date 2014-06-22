@@ -28,7 +28,6 @@
 #include "../BottleItem.h"
 #include "../Car.h"
 #include "../uicursor.h"
-#include "../string_table.h"
 
 void move_item (u16 from_id, u16 to_id, u16 what_id);
 
@@ -188,14 +187,6 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 				shared_str monster_tex_name = pSettings->r_string(monster->cNameSect(),"icon");
 				m_pUICharacterInfoRight->UIIcon().InitTexture(monster_tex_name.c_str());
 				m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
-
-				if (pSettings->line_exist(monster->cNameSect(),"carbody_name"))  //skyloader: monster name
-				{
-					CStringTable		stbl;
-					string256		str;
-					xr_sprintf		(str, "%s", *stbl.translate(pSettings->r_string(monster->cNameSect(),"carbody_name"));
-					m_pUICharacterInfoRight->UIName().SetText(str);
-				}
 			} else {
 				shared_str car_tex_name = pSettings->r_string(m_pCar->cNameSect(),"icon");
 				m_pUICharacterInfoRight->UIIcon().InitTexture(car_tex_name.c_str());
