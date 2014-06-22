@@ -271,15 +271,16 @@ void CUICharacterInfo::Update()
 
 	if(hasOwner() && (m_bForceUpdate||(Device.dwFrame%100==0))  ){
 		m_bForceUpdate = false;
-		CSE_ALifeTraderAbstract* T = ch_info_get_from_id	(m_ownerID);
-		if (NULL==T){
+		CSE_ALifeCreatureAbstract* pCreature = ch_info_get_from_id	(m_ownerID);
+		if (pCreature==NULL) //skyloader: seems fixed drawing relation of cars and monsters
+		{
 			m_ownerID = u16(-1);
 			return;
-		}else
+		} else
 			UpdateRelation();
 
-		if(m_icons[eUIIcon]){
-			CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(T);
+		if(m_icons[eUIIcon])
+		{
 			if(pCreature && !pCreature->g_Alive())
 				m_icons[eUIIcon]->SetTextureColor	(color_argb(255,255,160,160));
 			else
@@ -305,4 +306,3 @@ void CUICharacterInfo::ClearInfo()
 	for(int i = eUIName; i<eMaxCaption; ++i)
 		if(m_icons[i])m_icons[i]->Show(false);
 }
-
