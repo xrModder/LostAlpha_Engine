@@ -255,6 +255,7 @@ begin
   if CurStep = ssInstall then begin
     DelTree(ExpandConstant('{app}\bins'), True, True, True);
     DelTree(ExpandConstant('{app}\gamedata'), True, True, True);
+    DeleteFile(ExpandConstant('{app}\gamedata.dbb'));
   end;
   if CurStep = ssPostInstall then begin
     //WipeUserLtx;
