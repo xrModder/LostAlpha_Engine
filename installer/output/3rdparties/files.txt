@@ -1,5 +1,0 @@
-[output\3rdparties] (additional software to be installed)
-* output\3rdparties\directx_Jun2010_redist.exe (from: http://www.microsoft.com/en-us/download/details.aspx?id=8109 )
-* output\3rdparties\oalinst.exe
-* output\3rdparties\vcredist_x86.exe (this should be from: http://www.microsoft.com/en-us/download/details.aspx?id=40784 )
-* output\3rdparties\Xvid-1.3.2-20110601.exe

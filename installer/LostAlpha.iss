@@ -52,6 +52,7 @@
 
 ; dirs used:
 #define LA_game_files ".\game_distrib_files"
+#define LA_3rd_party_files ".\game_distrib_files\3rdparties"
 #define LA_installer_support_files "."
 
 ; versions, names etc.:
@@ -71,6 +72,11 @@ Source: "{#LA_game_files}\appdata\*"; DestDir: "{app}\appdata"; Flags: ignorever
 Source: "{#LA_game_files}\bins\*"; DestDir: "{app}\bins"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
 Source: "{#LA_game_files}\gamedata\*"; DestDir: "{app}\gamedata"; Flags: ignoreversion createallsubdirs recursesubdirs skipifsourcedoesntexist
 Source: "{#LA_game_files}\gamedata.db*"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+
+Source: "{#LA_3rd_party_files}\oalinst.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall skipifsourcedoesntexist ignoreversion
+Source: "{#LA_3rd_party_files}\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall skipifsourcedoesntexist ignoreversion
+Source: "{#LA_3rd_party_files}\Xvid-1.3.3-20140407.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall skipifsourcedoesntexist ignoreversion
+Source: "{#LA_3rd_party_files}\DirectX_runtime\*"; DestDir: "{tmp}"; Flags: deleteafterinstall skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs
 #endif
 
 [Run]
@@ -83,11 +89,11 @@ Filename: "{tmp}\7za.exe"; Parameters: "x -y -p{#archpasswd} -o""{app}"" ""{src}
 #endif
 
 ; install prerequisities
-Filename: "{src}\3rdparties\vcredist_x86.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"; Check: VCRedistNeedsInstall
+Filename: "{tmp}\vcredist_x86.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingVcredist}"; StatusMsg: "{cm:msgInstallingVcredist}"; Check: VCRedistNeedsInstall
+Filename: "{tmp}\oalinst.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
+Filename: "{tmp}\Xvid-1.3.3-20140407.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
 ; include the unpacked version of DirectX runtimes:
-Filename: "{src}\3rdparties\DirectX_runtime\DXSETUP.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
-Filename: "{src}\3rdparties\oalinst.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingOAL}"; StatusMsg: "{cm:msgInstallingOAL}"
-Filename: "{src}\3rdparties\Xvid-1.3.3-20140407.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingXvid}"; StatusMsg: "{cm:msgInstallingXvid}"
+Filename: "{tmp}\DXSETUP.exe"; Flags: hidewizard skipifdoesntexist; Description: "{cm:msgInstallingDXredist}"; StatusMsg: "{cm:msgInstallingDXredist}"
 
 [InstallDelete]
 ;Type: files; Name: "{app}\bins\msvc*.dll"
