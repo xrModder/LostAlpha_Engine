@@ -166,6 +166,14 @@ std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(IKinematicsAnimated *
 
 void CStalkerAnimationPair::select_animation(const ANIM_VECTOR &array, const ANIMATION_WEIGHTS *weights)
 {
+	const u32				array_size = array.size();
+
+	if (!array_size)
+	{
+		Msg("* can't select animation!");
+		return;
+	}
+
 	if (!weights) {
 		m_array_animation	= array[::Random.randI(array.size())];
 		VERIFY				(m_array_animation);
@@ -176,7 +184,6 @@ void CStalkerAnimationPair::select_animation(const ANIM_VECTOR &array, const ANI
 	ANIMATION_WEIGHTS::const_iterator	I = weights->begin(), B = I;
 	ANIMATION_WEIGHTS::const_iterator	E = weights->end();
 	
-	u32						array_size = array.size();
 	if (array_size < weights->size())
 		E					= B + array_size;
 
