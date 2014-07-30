@@ -413,7 +413,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	if (dik == DIK_F12)		MakeScreenshot			();
 	if (dik == DIK_ESCAPE)	fLifeTime				= -1;
 	
-	/*
+#ifndef PUBLIC_RELEASE
 	if (dik == DIK_RETURN)
 	{	
 		if (g_pGameLevel->CurrentEntity())
@@ -422,7 +422,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 			fLifeTime		= -1; 
 		}
 	}
-	*/
+#endif
 	if	(dik == DIK_PAUSE)		
 		Device.Pause(!Device.Paused(), TRUE, TRUE, "demo_record");
 }
